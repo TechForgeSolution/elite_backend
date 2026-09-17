@@ -9,6 +9,8 @@ use App\Models\Module;
 use Illuminate\Support\Facades\DB;
 use Database\Seeders\CoursJsonSeeder;
 use Database\Seeders\CoursTheoriqueLinksSeeder;
+use Database\Seeders\CoursVideoLinksSeeder;
+use App\Services\DirectVideoUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -249,6 +251,64 @@ class CoursJsonSeederTest extends TestCase
                 'options' => ['A' => 'Un', 'B' => 'Deux', 'C' => 'Trois', 'D' => 'Quatre'],
             ]],
         ])]);
+    }
+
+    public function test_video_correction_is_targeted_reversible_and_idempotent(): void
+    {
+        $this->fakeSimpleQuiz();
+        $this->seed(CoursJsonSeeder::class);
+        $direct = 'https://drive.usercontent.google.com/download?id=video&export=download&confirm=t';
+        $this->assertSame($direct, Lesson::sole()->url_video_explication);
+        $lesson = Lesson::sole();
+        $lesson->update(['url_video_explication' => 'https://drive.google.com/file/d/video/preview',
+            'url_video' => 'https://example.com/custom.mp4']);
+        $before = $lesson->fresh()->getAttributes();
+        $quizBefore = Quiz::with('questions.answers')->sole()->toArray();
+        $seeder = new CoursVideoLinksSeeder;
+        $seeder->dryRun = true;
+        $seeder->run();
+        $this->assertSame(1, $seeder->report['urls_changed']);
+        $this->assertSame($before, $lesson->fresh()->getAttributes());
+        $seeder->dryRun = false;
+        $seeder->run();
+        $after = $before;
+        $after['url_video_explication'] = $direct;
+        $this->assertSame($after, $lesson->fresh()->getAttributes());
+        $this->assertSame($quizBefore, Quiz::with('questions.answers')->sole()->toArray());
+        $backup = json_decode(File::get($seeder->report['backup']), true);
+        $this->assertSame(['url_video_explication' => $before['url_video_explication']], $backup['changes'][0]['before']);
+        $seeder->run();
+        $this->assertSame(0, $seeder->report['urls_changed']);
+        $this->assertArrayNotHasKey('backup', $seeder->report);
+        $this->assertSame($after, $lesson->fresh()->getAttributes());
+        $lesson->update(['url_video_explication' => 'https://drive.google.com/file/d/custom-file/view']);
+        $seeder->run();
+        $this->assertSame(0, $seeder->report['urls_changed']);
+        $this->assertSame(1, $seeder->report['custom_or_empty_preserved']);
+    }
+
+    public function test_video_correction_rejects_ambiguous_lessons_without_modification(): void
+    {
+        $this->fakeSimpleQuiz();
+        $this->seed(CoursJsonSeeder::class);
+        $lesson = Lesson::sole();
+        $lesson->update(['url_video_explication' => 'https://drive.google.com/file/d/video/view']);
+        $lesson->replicate()->save();
+        $before = DB::table('lessons')->orderBy('id')->get()->toJson();
+        $this->artisan('cours:correct-videos', ['--force' => true])->assertFailed();
+        $this->assertSame($before, DB::table('lessons')->orderBy('id')->get()->toJson());
+    }
+
+    public function test_direct_video_url_keeps_file_identity_and_hosted_mp4_urls(): void
+    {
+        $resolver = new DirectVideoUrl;
+        $this->assertNull($resolver->fromFile(null));
+        $this->assertSame('https://cdn.example.com/movie.mp4', $resolver->fromFile(['url_direct' => 'https://cdn.example.com/movie.mp4']));
+        $this->assertNull($resolver->driveId('https://drive.google.com.evil.example/file/d/video/view'));
+        $this->assertSame('https://drive.usercontent.google.com/download?id=video&export=download&confirm=t&resourcekey=key',
+            $resolver->fromFile(['id' => 'video', 'url_direct' => 'https://drive.google.com/uc?id=video&export=download&resourcekey=key']));
+        $this->expectException(\RuntimeException::class);
+        $resolver->fromFile(['id' => 'different', 'url' => 'https://drive.google.com/file/d/video/view']);
     }
 
     public function test_full_deployment_bundle_imports_offline_and_second_run_changes_nothing(): void

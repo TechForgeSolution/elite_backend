@@ -30,6 +30,7 @@ Elle ne lance ni DatabaseSeeder, ni DigitalCourseSeeder, ni une migration.
 - `import-cours-vps.sh` à la racine du backend (fins de ligne LF)
 - `app/Console/Commands/ImportCours.php`
 - `app/Services/TheoryCourseCatalog.php`
+- `app/Services/DirectVideoUrl.php`
 - `database/seeders/CoursJsonSeeder.php`
 - `database/seeders/CoursTheoriqueLinksSeeder.php`
 - `database/data/cours-quizzes/` : 81 fichiers JSON, hors du dossier public
@@ -131,6 +132,11 @@ Le catalogue contient 14 filières, 82 modules, 420 leçons, 359 HTML et 81 quiz
 Il manque le HTML de Audiovisuel M1 L4 et celui des 30 leçons Restauration et
 des 30 leçons Secrétariat. Réseau & Maintenance M2 n'a pas de quiz.
 Les vidéos restent sur Drive et leur accessibilité dépend de leur partage.
+
+Les nouvelles importations enregistrent les URL de téléchargement vidéo direct
+avec confirmation, et non plus les URL `/preview`. Pour corriger les leçons déjà en base,
+utiliser le correcteur distinct décrit dans [VIDEOS_CORRECTION.md](VIDEOS_CORRECTION.md).
+L'import conservateur ne remplace pas les anciens liens existants.
 
 Les nouveaux packs gardent les valeurs de l'import initial : niveau BEPC,
 prix par défaut de la base, durées non renseignées. Les prix et durées existants

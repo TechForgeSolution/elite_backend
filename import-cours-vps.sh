@@ -52,6 +52,7 @@ done
 for file in artisan .env vendor/autoload.php \
     app/Console/Commands/ImportCours.php \
     app/Services/TheoryCourseCatalog.php \
+    app/Services/DirectVideoUrl.php \
     database/seeders/CoursJsonSeeder.php \
     public/cours.json public/cours_theorique/liens_cours_theorique.json; do
     [[ -r "$file" ]] || fail "Fichier absent ou illisible : $PROJECT_DIR/$file"
@@ -90,6 +91,7 @@ if ! "$PHP_BIN" -r '
 require "vendor/autoload.php";
 exit(class_exists("App\\Console\\Commands\\ImportCours")
     && class_exists("App\\Services\\TheoryCourseCatalog")
+    && class_exists("App\\Services\\DirectVideoUrl")
     && class_exists("Database\\Seeders\\CoursJsonSeeder") ? 0 : 1);
 ' >>"$LOG_FILE" 2>&1; then
     command -v composer >/dev/null 2>&1 || fail 'Autoload incomplet : executer composer dump-autoload --optimize --no-scripts, puis relancer.'

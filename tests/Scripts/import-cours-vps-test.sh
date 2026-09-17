@@ -2,14 +2,17 @@
 # Wrapper smoke tests with fake PHP/flock: never connects to a database.
 set -Eeuo pipefail
 REPO="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)"
+SCRIPT_NAME="${1:-import-cours-vps.sh}"
+case "$SCRIPT_NAME" in import-cours-vps.sh|correct-video-links-vps.sh) ;; *) exit 2 ;; esac
 FIXTURE="$(mktemp -d "${TMPDIR:-/tmp}/elite-import-test-XXXXXXXX")"
 mkdir -p "$FIXTURE/bin" "$FIXTURE/project/storage" "$FIXTURE/project/bootstrap/cache" \
     "$FIXTURE/project/vendor" "$FIXTURE/project/app/Console/Commands" \
     "$FIXTURE/project/app/Services" "$FIXTURE/project/database/seeders" \
     "$FIXTURE/project/database/data/cours-quizzes" "$FIXTURE/project/public/cours_theorique"
-cp "$REPO/import-cours-vps.sh" "$FIXTURE/project/import-cours-vps.sh"
+cp "$REPO/$SCRIPT_NAME" "$FIXTURE/project/$SCRIPT_NAME"
 for file in artisan .env vendor/autoload.php app/Console/Commands/ImportCours.php \
-    app/Services/TheoryCourseCatalog.php database/seeders/CoursJsonSeeder.php \
+    app/Services/TheoryCourseCatalog.php app/Services/DirectVideoUrl.php database/seeders/CoursJsonSeeder.php \
+    app/Console/Commands/CorrectCoursVideos.php database/seeders/CoursVideoLinksSeeder.php \
     public/cours.json public/cours_theorique/liens_cours_theorique.json; do
     touch "$FIXTURE/project/$file"
 done
@@ -30,7 +33,7 @@ MOCK
 chmod +x "$FIXTURE/bin/php" "$FIXTURE/bin/flock"
 export PATH="$FIXTURE/bin:$PATH" PHP_BIN="$FIXTURE/bin/php" TEST_CALLS="$FIXTURE/calls"
 export TEST_FAILURE=''
-SCRIPT="$FIXTURE/project/import-cours-vps.sh"
+SCRIPT="$FIXTURE/project/$SCRIPT_NAME"
 assert_calls() {
     local expected=$1 actual
     actual="$(wc -l < "$TEST_CALLS")"
@@ -67,7 +70,7 @@ assert_calls 1
 export TEST_FAILURE=import
 run_failure
 assert_calls 2
-if grep -q '^Import termine\.' "$FIXTURE/output"; then exit 1; fi
+if grep -Eq '^(Import termine|Correction terminee)\.' "$FIXTURE/output"; then exit 1; fi
 
 # Concurrent run refused before any artisan command.
 : > "$TEST_CALLS"

@@ -8,6 +8,7 @@ use App\Models\Module;
 use App\Models\Pack;
 use App\Models\Quiz;
 use App\Services\TheoryCourseCatalog;
+use App\Services\DirectVideoUrl;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -264,7 +265,7 @@ class CoursJsonSeeder extends Seeder
 
     private function resourceUrl(?array $file): ?string
     {
-        return $file ? ($file['url_preview'] ?? $file['url'] ?? null) : null;
+        return (new DirectVideoUrl)->fromFile($file);
     }
 
     private function loadQuiz(string $id): array
