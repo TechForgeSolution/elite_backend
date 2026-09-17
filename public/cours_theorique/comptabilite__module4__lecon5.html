@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 23 — Indicateurs de performance | Contrôle de gestion</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  td.num.negative{color:var(--color-accent-alt);}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filiere comptabilite
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 4 — Contrôle de gestion</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau débutant / intermédiaire</span>
+    </div>
+    <h1>Leçon 23 — Indicateurs de performance</h1>
+    <p class="lede">Leçon 23 — choisir des KPI réellement utiles à la décision, distinguer indicateurs de résultat et indicateurs avancés, et éviter les pièges d'un tableau de bord surchargé ou trompeur.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Pourquoi bien choisir ses indicateurs" data-num="23.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.1</span><h2>Pourquoi bien choisir ses indicateurs</h2></div>
+      <p>Un indicateur de performance, ou KPI (key performance indicator), mesure un aspect précis de l'activité pour permettre à un responsable de suivre l'atteinte d'un objectif et d'agir à temps. Mais ajouter un indicateur a un coût : temps de collecte, de mise à jour, d'analyse — et attention détournée des chiffres qui comptent vraiment.</p>
+      <p>Le choix des indicateurs n'est donc jamais neutre : un tableau de bord bien construit éclaire la décision, tandis qu'un tableau de bord mal construit peut la brouiller, voire l'orienter dans la mauvaise direction.</p>
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Un bon indicateur n'est pas celui qui décrit le plus de choses, mais celui qui aide réellement à décider : s'il ne change aucune décision, il n'a pas sa place dans le tableau de bord.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="De la stratégie au terrain : la pyramide des indicateurs" data-num="23.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.2</span><h2>De la stratégie au terrain : la pyramide des indicateurs</h2></div>
+      <p>Les indicateurs ne se situent pas tous au même niveau : ceux du comité de direction ne sont pas ceux du chef d'équipe. Plus on descend vers le terrain, plus les indicateurs deviennent nombreux, fréquents et opérationnels.</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 820 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pyramide des indicateurs, de la stratégie au sommet aux indicateurs opérationnels du terrain à la base">
+        <g stroke="#1F6F54" stroke-width="1.2" fill="none">
+          <line x1="300" y1="70" x2="220" y2="86"></line>
+          <line x1="520" y1="70" x2="600" y2="86"></line>
+          <line x1="220" y1="136" x2="140" y2="152"></line>
+          <line x1="600" y1="136" x2="680" y2="152"></line>
+          <line x1="140" y1="202" x2="60" y2="218"></line>
+          <line x1="680" y1="202" x2="760" y2="218"></line>
+        </g>
+        <g font-family="Inter, sans-serif" font-size="13" fill="#0B0F0D">
+          <rect x="300" y="20" width="220" height="50" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="410" y="42" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Stratégie</text>
+          <text x="410" y="58" text-anchor="middle" fill="#1F6F54" font-size="10.5">orientations à 3-5 ans</text>
+
+          <rect x="220" y="86" width="380" height="50" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="410" y="108" text-anchor="middle" font-weight="600" font-size="12">Objectifs</text>
+          <text x="410" y="124" text-anchor="middle" fill="#5A6560" font-size="10.5">cibles chiffrées par service</text>
+
+          <rect x="140" y="152" width="540" height="50" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="410" y="174" text-anchor="middle" font-weight="600" font-size="12">Indicateurs de pilotage</text>
+          <text x="410" y="190" text-anchor="middle" fill="#5A6560" font-size="10.5">signaux avancés (leading)</text>
+
+          <rect x="60" y="218" width="700" height="50" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="410" y="240" text-anchor="middle" font-weight="600" font-size="12">Indicateurs opérationnels</text>
+          <text x="410" y="256" text-anchor="middle" fill="#5A6560" font-size="10.5">mesures quotidiennes du terrain</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Un bon KPI répond aux critères SMART" data-num="23.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.3</span><h2>Un bon KPI répond aux critères SMART</h2></div>
+      <p>Avant de retenir un indicateur, cinq critères permettent de vérifier qu'il sera réellement utile au pilotage :</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 820 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Les cinq critères SMART d'un bon indicateur : spécifique, mesurable, atteignable, relié, temporellement défini">
+        <g font-family="Inter, sans-serif" fill="#0B0F0D">
+          <rect x="10" y="15" width="150" height="150" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="85" y="52" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" fill="#1F6F54" font-size="26">S</text>
+          <text x="85" y="76" text-anchor="middle" font-weight="600" font-size="12">Spécifique</text>
+          <text x="85" y="96" text-anchor="middle" fill="#5A6560" font-size="10.5">objectif précis,</text>
+          <text x="85" y="110" text-anchor="middle" fill="#5A6560" font-size="10.5">non vague</text>
+
+          <rect x="168" y="15" width="150" height="150" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="243" y="52" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" fill="#1F6F54" font-size="26">M</text>
+          <text x="243" y="76" text-anchor="middle" font-weight="600" font-size="12">Mesurable</text>
+          <text x="243" y="96" text-anchor="middle" fill="#5A6560" font-size="10.5">chiffrable à partir</text>
+          <text x="243" y="110" text-anchor="middle" fill="#5A6560" font-size="10.5">de données fiables</text>
+
+          <rect x="326" y="15" width="150" height="150" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="401" y="52" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" fill="#1F6F54" font-size="26">A</text>
+          <text x="401" y="76" text-anchor="middle" font-weight="600" font-size="12">Atteignable</text>
+          <text x="401" y="96" text-anchor="middle" fill="#5A6560" font-size="10.5">réaliste compte tenu</text>
+          <text x="401" y="110" text-anchor="middle" fill="#5A6560" font-size="10.5">des moyens disponibles</text>
+
+          <rect x="484" y="15" width="150" height="150" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="559" y="52" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" fill="#1F6F54" font-size="26">R</text>
+          <text x="559" y="76" text-anchor="middle" font-weight="600" font-size="12">Relié</text>
+          <text x="559" y="96" text-anchor="middle" fill="#5A6560" font-size="10.5">directement rattaché à</text>
+          <text x="559" y="110" text-anchor="middle" fill="#5A6560" font-size="10.5">un objectif stratégique</text>
+
+          <rect x="642" y="15" width="168" height="150" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="726" y="52" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" fill="#1F6F54" font-size="26">T</text>
+          <text x="726" y="76" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Temporellement</text>
+          <text x="726" y="92" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">défini</text>
+          <text x="726" y="112" text-anchor="middle" fill="#1F6F54" font-size="10.5">assorti d'une échéance</text>
+          <text x="726" y="126" text-anchor="middle" fill="#1F6F54" font-size="10.5">ou d'une fréquence</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Quatre familles de KPI" data-num="23.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.4</span><h2>Quatre familles de KPI</h2></div>
+      <p>Un tableau de bord équilibré ne se limite pas aux chiffres financiers : il couvre les principales dimensions de la performance de l'entreprise.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 18l6-8 4 5 6-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <h3>KPI financiers</h3>
+        <p>Marge nette, délai moyen de paiement clients, trésorerie disponible.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+        <h3>KPI opérationnels</h3>
+        <p>Taux de service, délai de production, taux d'utilisation des machines.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"></circle><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <h3>KPI qualité</h3>
+        <p>Taux de non-conformité, taux de réclamation client, taux de retour produit.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"></circle><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><circle cx="17" cy="9" r="2.4" stroke="currentColor" stroke-width="1.6"></circle><path d="M15.5 19c.3-2.2 2-3.8 4.5-3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+        <h3>KPI ressources humaines</h3>
+        <p>Taux d'absentéisme, taux de turnover, taux de formation réalisée.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Indicateurs de résultat et indicateurs avancés" data-num="23.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.5</span><h2>Indicateurs de résultat et indicateurs avancés</h2></div>
+      <p>Un tableau de bord équilibré combine deux natures d'indicateurs, qui ne racontent pas la même histoire.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Types d'indicateurs de performance">
+        <button class="tab-btn" role="tab" id="tab-kpi23-1" aria-controls="panel-kpi23-1" aria-selected="true">Indicateurs de résultat (lagging)</button>
+        <button class="tab-btn" role="tab" id="tab-kpi23-2" aria-controls="panel-kpi23-2" aria-selected="false" tabindex="-1">Indicateurs avancés (leading)</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-kpi23-1" role="tabpanel" aria-labelledby="tab-kpi23-1" tabindex="0">
+        <div class="prose">
+          <p>Mesurent un résultat déjà obtenu, une fois la période close : chiffre d'affaires du mois, marge réalisée, taux de satisfaction client final. Utiles pour évaluer une performance passée, mais trop tardifs pour agir avant la clôture de la période.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-kpi23-2" role="tabpanel" aria-labelledby="tab-kpi23-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Mesurent un signal précoce qui influence le résultat futur : nombre de devis envoyés, taux d'avancement d'un projet, taux de remplissage du carnet de commandes. Permettent d'agir pendant que la période est encore en cours, avant que le résultat ne soit acquis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="La démarche pour définir un bon KPI" data-num="23.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.6</span><h2>La démarche pour définir un bon KPI</h2></div>
+      <p>Définir un indicateur pertinent suit une démarche en plusieurs étapes, plutôt qu'un choix improvisé.</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Partir de l'objectif</h3>
+        <p>Identifier précisément l'objectif que l'indicateur doit éclairer.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Vérifier les critères SMART</h3>
+        <p>S'assurer que l'indicateur envisagé est spécifique, mesurable, atteignable, relié et temporellement défini.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Identifier la source</h3>
+        <p>Vérifier que la donnée existe, est fiable et accessible à intervalle régulier.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Fixer cible et fréquence</h3>
+        <p>Définir le seuil à atteindre et la fréquence de mesure adaptée à la décision qu'il éclaire.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">5</div>
+        <h3>Tester et ajuster</h3>
+        <p>Suivre l'indicateur sur quelques périodes et l'abandonner s'il ne guide aucune décision.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s7" data-title="Cas pratique — sélectionner 5 KPI pour une PME" data-num="23.7">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.7</span><h2>Cas pratique — sélectionner 5 KPI pour une PME</h2></div>
+      <p>Une PME de 40 salariés souhaite mettre en place un tableau de bord de direction resserré, directement relié à ses objectifs prioritaires de l'année.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Tableau de bord de direction — 5 KPI retenus</caption>
+        <thead>
+          <tr><th scope="col">Objectif</th><th scope="col">KPI retenu</th><th scope="col">Fréquence de suivi</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Développer les ventes</td><td>Chiffre d'affaires mensuel</td><td>Mensuelle</td></tr>
+          <tr><td>Maîtriser la trésorerie</td><td>Délai moyen de paiement clients</td><td>Mensuelle</td></tr>
+          <tr><td>Satisfaire les clients</td><td>Taux de réclamation</td><td>Mensuelle</td></tr>
+          <tr><td>Maîtriser les coûts de production</td><td>Coût unitaire de production</td><td>Mensuelle</td></tr>
+          <tr><td>Fidéliser les équipes</td><td>Taux de turnover</td><td>Trimestrielle</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique de sélection</div>
+        <p>Pour une PME, mieux vaut 5 indicateurs suivis avec rigueur que 15 tableaux de bord jamais consultés : chacun des 5 KPI retenus est relié à un objectif business clair, mesurable avec des données déjà disponibles, et suivi à une fréquence qui permet d'agir à temps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s8" data-title="Les pièges des indicateurs trompeurs" data-num="23.8">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">23.8</span><h2>Les pièges des indicateurs trompeurs</h2></div>
+      <p>Un indicateur mal conçu ne se contente pas d'être inutile : il peut activement nuire au pilotage, en orientant les comportements dans la mauvaise direction.</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Qu'est-ce que l'effet Cobra ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Un indicateur mal choisi peut inciter à des comportements contraires à l'objectif visé. L'expression vient d'une prime versée pour chaque cobra tué en Inde coloniale, qui a conduit certains habitants à élever des cobras pour toucher la prime plus facilement. En entreprise, récompenser uniquement le volume produit peut inciter à sacrifier la qualité pour gonfler les chiffres.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Pourquoi trop d'indicateurs nuit-il au pilotage ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Un tableau de bord surchargé dilue l'attention des responsables et retarde la détection des signaux réellement importants. Mieux vaut un nombre restreint d'indicateurs suivis systématiquement qu'une longue liste consultée occasionnellement.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Qu'est-ce qu'un indicateur non actionnable ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Un indicateur que le responsable ne peut influencer par ses propres décisions ne sert à rien pour piloter son activité : il doit être écarté du tableau de bord opérationnel, même s'il reste intéressant à titre d'information générale ailleurs dans l'entreprise.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention aux surcharges d'indicateurs inutiles</div>
+        <p>Ajouter un indicateur parce que la donnée est disponible, sans le relier à une décision précise, alourdit le suivi sans l'améliorer. Chaque KPI conservé doit répondre à une question simple : quelle décision changerait si ce chiffre bougeait ?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s9" data-title="Points clés à retenir" data-num="23.9">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">23.9</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Un bon indicateur aide réellement à décider : s'il ne change aucune décision, il n'a pas sa place dans le tableau de bord.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>Les indicateurs se répartissent en pyramide, de la stratégie aux mesures opérationnelles du terrain.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Un KPI pertinent est spécifique, mesurable, atteignable, relié à un objectif, et temporellement défini (SMART).</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Les indicateurs avancés permettent d'agir avant la clôture de la période ; les indicateurs de résultat ne font qu'en constater l'issue.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Un indicateur mal choisi peut créer un effet Cobra : il oriente les comportements contre l'objectif qu'il était censé servir.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Prévisions et contrôle budgétaire</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante</span>
+        <span class="dest">Pilotage de la performance</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 4</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 4</span>
+    <span>Leçon 23 — Contrôle de gestion</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

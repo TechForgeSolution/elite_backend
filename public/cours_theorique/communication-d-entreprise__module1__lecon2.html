@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 02 — Acteurs et organisation de la fonction communication">
+<title>Leçon 02 — Acteurs et organisation de la fonction communication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F5F2;
+  --color-text:#1B1F2E;
+  --color-accent:#FF5A36;
+  --color-neutral:#9AA3B2;
+  --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --shadow:0 12px 35px rgba(27,31,46,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-text);text-decoration:none}
+a:hover{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:rgba(246,245,242,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font:700 15px/1 Space Grotesk,sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.brand b{color:var(--color-accent)}
+.nav a{font-size:13px;font-weight:600}
+.container{max-width:1180px;margin:auto;padding:0 24px}
+.hero{padding:82px 0 60px;display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:center}
+.eyebrow{font:600 12px/1.3 JetBrains Mono,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:Space Grotesk,sans-serif;line-height:1.1;letter-spacing:-.025em}
+h1{font-size:clamp(42px,6vw,76px);margin:16px 0 22px;max-width:850px}
+h2{font-size:clamp(30px,4vw,46px);margin:0 0 18px}
+h3{font-size:22px;margin:0 0 9px}
+.lead{font-size:19px;max-width:720px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+.badge{padding:7px 11px;border:1px solid var(--border);border-radius:999px;font:600 12px JetBrains Mono,monospace;background:var(--accent-soft)}
+.hero-art{background:var(--bg-alt);border:1px solid var(--border);border-radius:28px;padding:18px;box-shadow:var(--shadow)}
+.hero-art svg{display:block;width:100%;height:auto}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:25px 0;margin-bottom:70px}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.toc a{padding:14px 16px;border-left:3px solid var(--border);font-weight:600}
+.toc a:hover{border-left-color:var(--color-accent);background:var(--accent-soft)}
+section.lesson{padding:78px 0}
+section.lesson:nth-of-type(even){background:var(--bg-alt)}
+.section-inner{max-width:1180px;margin:auto;padding:0 24px}
+.text{max-width:720px}
+.kicker{font:600 12px JetBrains Mono,monospace;color:var(--color-accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{border:1px solid var(--border);background:var(--color-bg);padding:24px;border-radius:18px;transition:.2s ease}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:28px;margin-bottom:13px}
+.card p,.callout p{margin:0;color:var(--muted)}
+.diagram{border:1px solid var(--border);border-radius:22px;padding:14px;background:var(--color-bg);overflow:hidden}
+.diagram svg{width:100%;height:auto;display:block}
+.callout{margin:30px 0;border-left:5px solid var(--color-accent);background:var(--accent-soft);padding:20px 22px;border-radius:0 14px 14px 0}
+.callout strong{display:block;margin-bottom:5px;font-family:Space Grotesk,sans-serif}
+.tabs{margin-top:30px}
+.tab-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab-btn{border:1px solid var(--border);background:var(--color-bg);padding:10px 15px;border-radius:10px;font-weight:600;cursor:pointer;color:var(--color-text)}
+.tab-btn[aria-selected="true"]{border-color:var(--color-accent);background:var(--accent-soft)}
+.tab-panel{display:none;border:1px solid var(--border);padding:24px;border-radius:16px;background:var(--color-bg)}
+.tab-panel.active{display:block}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:30px}
+.step{position:relative;padding:22px 15px;border-top:3px solid var(--color-neutral);background:var(--color-bg)}
+.step:first-child{border-top-color:var(--color-accent)}
+.step-num{font:600 12px JetBrains Mono,monospace;color:var(--color-accent)}
+.step p{font-size:14px;color:var(--muted);margin:8px 0 0}
+table{width:100%;border-collapse:collapse;background:var(--color-bg);font-size:14px}
+th,td{padding:15px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{font:600 12px JetBrains Mono,monospace;text-transform:uppercase;letter-spacing:.04em}
+tr:hover td{background:var(--accent-soft)}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:16px}
+.accordion{border-top:1px solid var(--border)}
+details{border-bottom:1px solid var(--border);padding:16px 0}
+summary{cursor:pointer;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:18px}
+summary::marker{color:var(--color-accent)}
+details p{max-width:720px;color:var(--muted)}
+.key-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.key{padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--color-bg)}
+.key b{font-family:Space Grotesk,sans-serif}
+footer{border-top:1px solid var(--border);padding:35px 0;margin-top:40px}
+.footer-nav{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.nav-card{border:1px solid var(--border);padding:15px 18px;border-radius:14px;max-width:330px}
+.nav-card small{display:block;color:var(--muted);font:600 11px JetBrains Mono,monospace}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);cursor:pointer;font-size:18px}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){
+  .hero,.grid-2{grid-template-columns:1fr}
+  .grid-3,.key-grid{grid-template-columns:1fr 1fr}
+  .stepper{grid-template-columns:1fr 1fr}
+  .toc-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .container,.section-inner{padding:0 17px}
+  .nav{padding:12px 17px}
+  .nav .module-link{display:none}
+  .hero{padding:55px 0 40px}
+  h1{font-size:43px}
+  .grid-3,.key-grid,.toc-grid,.stepper{grid-template-columns:1fr}
+  section.lesson{padding:55px 0}
+  .lead{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*:before,*:after{transition:none!important;animation:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top">Communication <b>d'entreprise</b></a>
+    <a class="module-link" href="#sommaire">Module 1 · Fondamentaux</a>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="container">
+    <section class="hero reveal">
+      <div>
+        <div class="eyebrow">Leçon 02 · Fonction communication</div>
+        <h1>Acteurs et organisation de la fonction communication</h1>
+        <p class="lead">Identifier les principaux acteurs de la communication d'entreprise, comprendre leurs responsabilités et visualiser leur articulation avec la direction générale.</p>
+        <div class="badges">
+          <span class="badge">MODULE 1</span>
+          <span class="badge">DÉBUTANT</span>
+          <span class="badge">15 MIN</span>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Illustration de l'organisation d'une fonction communication">
+        <svg viewBox="0 0 600 470" role="img">
+          <title>Organisation simplifiée d'un service communication</title>
+          <rect x="1" y="1" width="598" height="468" rx="24" fill="none" stroke="#9AA3B2"/>
+          <rect x="190" y="35" width="220" height="75" rx="16" fill="#FF5A36"/>
+          <text x="300" y="66" text-anchor="middle" font-family="Space Grotesk" font-size="20" font-weight="700" fill="#1B1F2E">Direction générale</text>
+          <text x="300" y="91" text-anchor="middle" font-family="Inter" font-size="13" fill="#1B1F2E">orientation &amp; arbitrage</text>
+          <line x1="300" y1="110" x2="300" y2="155" stroke="#1B1F2E" stroke-width="2"/>
+          <rect x="165" y="155" width="270" height="82" rx="16" fill="#F6F5F2" stroke="#FF5A36" stroke-width="3"/>
+          <text x="300" y="188" text-anchor="middle" font-family="Space Grotesk" font-size="22" font-weight="700" fill="#1B1F2E">Directeur communication</text>
+          <text x="300" y="214" text-anchor="middle" font-family="Inter" font-size="13" fill="#1B1F2E">pilotage · stratégie · coordination</text>
+          <line x1="300" y1="237" x2="300" y2="275" stroke="#1B1F2E" stroke-width="2"/>
+          <line x1="90" y1="275" x2="510" y2="275" stroke="#9AA3B2" stroke-width="2"/>
+          <line x1="90" y1="275" x2="90" y2="305" stroke="#9AA3B2" stroke-width="2"/>
+          <line x1="255" y1="275" x2="255" y2="305" stroke="#9AA3B2" stroke-width="2"/>
+          <line x1="345" y1="275" x2="345" y2="305" stroke="#9AA3B2" stroke-width="2"/>
+          <line x1="510" y1="275" x2="510" y2="305" stroke="#9AA3B2" stroke-width="2"/>
+          <g font-family="Space Grotesk" font-size="15" font-weight="700" text-anchor="middle" fill="#1B1F2E">
+            <rect x="35" y="305" width="110" height="100" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/>
+            <text x="90" y="341">Chargé·e</text><text x="90" y="362">de com.</text>
+            <rect x="200" y="305" width="110" height="100" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/>
+            <text x="255" y="341">Community</text><text x="255" y="362">manager</text>
+            <rect x="290" y="305" width="110" height="100" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/>
+            <text x="345" y="341">Attaché·e</text><text x="345" y="362">de presse</text>
+            <rect x="455" y="305" width="110" height="100" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/>
+            <text x="510" y="341">Agences</text><text x="510" y="362">&amp; freelances</text>
+          </g>
+          <text x="300" y="442" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#1B1F2E">UNE ÉQUIPE · DES RÔLES COMPLÉMENTAIRES</text>
+        </svg>
+      </div>
+    </section>
+
+    <nav id="sommaire" class="toc reveal" aria-label="Sommaire">
+      <div class="eyebrow">Sommaire</div>
+      <div class="toc-grid">
+        <a href="#roles">01 · Les principaux acteurs</a>
+        <a href="#organisation">02 · Organisation du service</a>
+        <a href="#direction">03 · Lien avec la direction générale</a>
+        <a href="#prestataires">04 · Collaborer avec l'externe</a>
+        <a href="#coordination">05 · Coordination au quotidien</a>
+        <a href="#essentiel">06 · Points clés à retenir</a>
+      </div>
+    </nav>
+  </div>
+
+  <section id="roles" class="lesson">
+    <div class="section-inner">
+      <div class="text reveal">
+        <div class="kicker">01 · Les rôles</div>
+        <h2>Une fonction portée par plusieurs métiers</h2>
+        <p>La communication d'entreprise ne repose pas sur une seule personne. Elle rassemble des profils complémentaires : certains pilotent la stratégie, d'autres produisent les contenus, animent les communautés, entretiennent les relations avec les médias ou mobilisent des compétences externes.</p>
+      </div>
+      <div class="grid-3" style="margin-top:32px">
+        <article class="card reveal"><div class="icon">◉</div><h3>Directeur de communication</h3><p>Il pilote la fonction communication, définit les grandes orientations, coordonne les équipes et veille à la cohérence des prises de parole.</p></article>
+        <article class="card reveal"><div class="icon">✦</div><h3>Chargé de communication</h3><p>Il contribue à la conception et à la mise en œuvre des actions : contenus, supports, événements, coordination et suivi.</p></article>
+        <article class="card reveal"><div class="icon">#</div><h3>Community manager</h3><p>Il anime les espaces sociaux de l'organisation, publie, répond aux communautés et observe les réactions aux contenus.</p></article>
+        <article class="card reveal"><div class="icon">↗</div><h3>Attaché de presse</h3><p>Il travaille les relations avec les médias : contacts journalistes, diffusion d'informations et accompagnement des opportunités éditoriales.</p></article>
+        <article class="card reveal"><div class="icon">⌁</div><h3>Agences &amp; freelances</h3><p>Ils apportent ponctuellement une expertise ou une capacité de production : création, événementiel, conseil, relations médias ou digital.</p></article>
+        <article class="card reveal"><div class="icon">↔</div><h3>Direction générale</h3><p>Elle donne les orientations de l'organisation et constitue un interlocuteur essentiel pour les décisions et arbitrages de communication.</p></article>
+      </div>
+      <div class="callout reveal"><strong>💡 À retenir</strong><p>Les intitulés peuvent varier selon la taille de l'entreprise. L'essentiel est de distinguer les responsabilités : pilotage, production, animation, relations médias et expertise externe.</p></div>
+    </div>
+  </section>
+
+  <section id="organisation" class="lesson">
+    <div class="section-inner">
+      <div class="grid-2">
+        <div class="text reveal">
+          <div class="kicker">02 · Organisation</div>
+          <h2>Une structure qui s'adapte à l'entreprise</h2>
+          <p>Dans une grande organisation, les responsabilités peuvent être réparties entre plusieurs spécialistes. Dans une petite structure, une même personne peut cumuler plusieurs fonctions. L'organisation dépend donc des moyens, des priorités et des besoins de communication.</p>
+          <p>La logique reste la même : clarifier qui décide, qui prépare, qui produit, qui diffuse et qui coordonne.</p>
+        </div>
+        <div class="diagram reveal">
+          <svg viewBox="0 0 600 430" role="img">
+            <title>Répartition des responsabilités dans une équipe communication</title>
+            <rect x="25" y="25" width="550" height="380" rx="22" fill="none" stroke="#9AA3B2"/>
+            <text x="50" y="65" font-family="JetBrains Mono" font-size="13" fill="#FF5A36">CHAÎNE DE RESPONSABILITÉ</text>
+            <g font-family="Space Grotesk" font-size="18" font-weight="600" fill="#1B1F2E">
+              <rect x="55" y="95" width="490" height="55" rx="12" fill="#FF5A36"/><text x="300" y="129" text-anchor="middle">Orienter</text>
+              <rect x="55" y="170" width="490" height="55" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/><text x="300" y="204" text-anchor="middle">Planifier</text>
+              <rect x="55" y="245" width="490" height="55" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/><text x="300" y="279" text-anchor="middle">Produire</text>
+              <rect x="55" y="320" width="490" height="55" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/><text x="300" y="354" text-anchor="middle">Diffuser &amp; suivre</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="tabs reveal">
+        <div class="tab-buttons" role="tablist" aria-label="Comparaison des organisations">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-small" id="btn-small">Petite structure</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-large" id="btn-large">Grande structure</button>
+        </div>
+        <div id="tab-small" class="tab-panel active" role="tabpanel" aria-labelledby="btn-small">
+          <h3>Polyvalence</h3><p>Un ou quelques collaborateurs peuvent couvrir plusieurs missions : communication digitale, supports internes, relations médias et coordination de prestataires.</p>
+        </div>
+        <div id="tab-large" class="tab-panel" role="tabpanel" aria-labelledby="btn-large">
+          <h3>Spécialisation</h3><p>Les missions peuvent être distribuées entre plusieurs responsables ou équipes, avec davantage de coordination et de procédures communes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="direction" class="lesson">
+    <div class="section-inner">
+      <div class="grid-2">
+        <div class="diagram reveal">
+          <svg viewBox="0 0 600 420" role="img">
+            <title>Flux entre direction générale et communication</title>
+            <circle cx="300" cy="210" r="92" fill="#FF5A36"/>
+            <text x="300" y="202" text-anchor="middle" font-family="Space Grotesk" font-size="22" font-weight="700" fill="#1B1F2E">COMMUNICATION</text>
+            <text x="300" y="229" text-anchor="middle" font-family="Inter" font-size="13" fill="#1B1F2E">conseil · coordination · expression</text>
+            <g fill="#F6F5F2" stroke="#9AA3B2">
+              <rect x="35" y="55" width="150" height="65" rx="14"/><rect x="415" y="55" width="150" height="65" rx="14"/>
+              <rect x="35" y="300" width="150" height="65" rx="14"/><rect x="415" y="300" width="150" height="65" rx="14"/>
+            </g>
+            <g font-family="Space Grotesk" font-size="15" font-weight="600" fill="#1B1F2E" text-anchor="middle">
+              <text x="110" y="94">Vision</text><text x="490" y="94">Arbitrage</text>
+              <text x="110" y="339">Messages</text><text x="490" y="339">Résultats</text>
+            </g>
+            <g stroke="#1B1F2E" stroke-width="2" fill="none">
+              <path d="M185 88 L230 150"/><path d="M415 88 L370 150"/><path d="M185 332 L230 270"/><path d="M415 332 L370 270"/>
+            </g>
+          </svg>
+        </div>
+        <div class="text reveal">
+          <div class="kicker">03 · Gouvernance</div>
+          <h2>Le lien avec la direction générale</h2>
+          <p>La communication est directement liée aux orientations de l'organisation. La direction générale fixe les grandes priorités, tandis que la fonction communication les traduit en messages, actions et supports adaptés aux publics.</p>
+          <div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong><p>Une bonne organisation évite que la communication soit isolée. Le responsable communication doit pouvoir comprendre les enjeux de l'entreprise et faire remonter les informations utiles à la décision.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prestataires" class="lesson">
+    <div class="section-inner">
+      <div class="text reveal">
+        <div class="kicker">04 · Écosystème externe</div>
+        <h2>Quand l'entreprise fait appel à des spécialistes</h2>
+        <p>Les agences et freelances complètent les compétences internes. Ils peuvent intervenir sur une mission précise ou accompagner une équipe dans la durée. Le service communication conserve toutefois la coordination et la cohérence avec les objectifs de l'organisation.</p>
+      </div>
+      <div class="table-wrap reveal" style="margin-top:30px">
+        <table>
+          <thead><tr><th scope="col">Acteur externe</th><th scope="col">Apport possible</th><th scope="col">Relation avec l'équipe interne</th></tr></thead>
+          <tbody>
+            <tr><td>Agence de communication</td><td>Conseil, conception, campagne, production</td><td>Travail en équipe autour d'un brief</td></tr>
+            <tr><td>Freelance</td><td>Expertise ciblée et production spécialisée</td><td>Intervention sur un besoin défini</td></tr>
+            <tr><td>Prestataire événementiel</td><td>Organisation et production logistique</td><td>Coordination avec le responsable du projet</td></tr>
+            <tr><td>Agence / conseil RP</td><td>Relations médias et accompagnement presse</td><td>Articulation avec les messages de l'entreprise</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout reveal"><strong>⚠️ Attention / erreur fréquente</strong><p>Déléguer une production ne signifie pas déléguer la responsabilité de la cohérence globale. Le brief, les objectifs, les messages et la validation restent essentiels.</p></div>
+    </div>
+  </section>
+
+  <section id="coordination" class="lesson">
+    <div class="section-inner">
+      <div class="text reveal">
+        <div class="kicker">05 · Coordination</div>
+        <h2>Faire circuler l'information sans perdre le fil</h2>
+        <p>Le fonctionnement quotidien repose sur une succession logique : une orientation est donnée, les actions sont planifiées, les contenus sont produits, puis diffusés et suivis. Chaque acteur intervient à un moment différent, mais tous doivent partager le même cadre.</p>
+      </div>
+      <div class="stepper reveal" aria-label="Étapes de coordination">
+        <div class="step"><div class="step-num">01</div><h3>Orienter</h3><p>Comprendre le besoin et les priorités.</p></div>
+        <div class="step"><div class="step-num">02</div><h3>Planifier</h3><p>Définir actions, responsables et échéances.</p></div>
+        <div class="step"><div class="step-num">03</div><h3>Produire</h3><p>Créer les contenus et supports nécessaires.</p></div>
+        <div class="step"><div class="step-num">04</div><h3>Diffuser</h3><p>Choisir les canaux et publier les messages.</p></div>
+        <div class="step"><div class="step-num">05</div><h3>Suivre</h3><p>Observer les retours et transmettre les enseignements.</p></div>
+      </div>
+      <div class="accordion reveal" style="margin-top:35px">
+        <details><summary>Pourquoi clarifier les rôles ?</summary><p>Pour éviter les doublons, les oublis et les validations contradictoires. Une répartition claire facilite également la collaboration avec les autres services.</p></details>
+        <details><summary>Pourquoi le community manager n'est-il pas isolé ?</summary><p>Parce que les publications et interactions sociales doivent rester cohérentes avec les orientations et les messages de l'entreprise.</p></details>
+        <details><summary>Quel est le rôle du directeur de communication ?</summary><p>Il assure principalement le pilotage de la fonction, la cohérence des actions et le lien stratégique avec la direction.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="essentiel" class="lesson">
+    <div class="section-inner">
+      <div class="text reveal">
+        <div class="kicker">06 · Synthèse</div>
+        <h2>Points clés à retenir</h2>
+        <p>La fonction communication fonctionne comme un ensemble coordonné. Les métiers sont différents, mais leurs responsabilités se complètent autour d'un même objectif : organiser une communication cohérente avec les orientations de l'entreprise.</p>
+      </div>
+      <div class="key-grid">
+        <div class="key reveal"><b>01 · Piloter</b><p>Le directeur de communication donne le cadre et coordonne.</p></div>
+        <div class="key reveal"><b>02 · Produire</b><p>Le chargé de communication transforme les orientations en actions et supports.</p></div>
+        <div class="key reveal"><b>03 · Animer</b><p>Le community manager fait vivre les communautés et les espaces sociaux.</p></div>
+        <div class="key reveal"><b>04 · Relayer</b><p>L'attaché de presse développe les relations avec les médias.</p></div>
+        <div class="key reveal"><b>05 · Compléter</b><p>Les agences et freelances apportent des expertises ou capacités de production.</p></div>
+        <div class="key reveal"><b>06 · Décider</b><p>La direction générale fixe les grandes orientations et arbitre les priorités.</p></div>
+      </div>
+      <div class="callout reveal"><strong>🔗 Pour aller plus loin</strong><p>La prochaine étape consiste à comprendre à qui l'entreprise s'adresse : cibles, publics et parties prenantes.</p></div>
+    </div>
+  </section>
+</main>
+
+<div class="container">
+<footer>
+  <div class="footer-nav">
+    <a class="nav-card" href="#" aria-label="Leçon précédente"><small>← LEÇON PRÉCÉDENTE</small><strong>Leçon 01 · Introduction à la communication d'entreprise</strong></a>
+    <a class="nav-card" href="#sommaire"><small>MODULE 1</small><strong>Retour au sommaire ↑</strong></a>
+    <a class="nav-card" href="#" aria-label="Leçon suivante"><small>LEÇON SUIVANTE →</small><strong>Leçon 03 · Cibles, publics et parties prenantes</strong></a>
+  </div>
+  <p style="margin:28px 0 0;color:var(--muted);font-size:13px">Filière Communication d'entreprise · Leçon 02 · Support pédagogique</p>
+</footer>
+</div>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progressBar=document.getElementById('progressBar');
+function updateProgress(){
+  const d=document.documentElement;
+  const max=d.scrollHeight-d.clientHeight;
+  progressBar.style.width=(max>0?(d.scrollTop/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+updateProgress();
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tabs=btn.closest('.tabs');
+    tabs.querySelectorAll('.tab-btn').forEach(b=>b.setAttribute('aria-selected','false'));
+    tabs.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.setAttribute('aria-selected','true');
+    document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+  });
+});
+
+document.querySelectorAll('[role="tab"]').forEach(btn=>{
+  btn.addEventListener('keydown',e=>{
+    if(!['ArrowRight','ArrowLeft'].includes(e.key))return;
+    const tabs=[...btn.closest('.tab-buttons').querySelectorAll('[role="tab"]')];
+    let i=tabs.indexOf(btn);
+    i=e.key==='ArrowRight'?(i+1)%tabs.length:(i-1+tabs.length)%tabs.length;
+    tabs[i].focus();tabs[i].click();
+  });
+});
+
+document.getElementById('topBtn').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

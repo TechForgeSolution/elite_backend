@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 04 — Cahier des charges et objectifs du projet | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2314213D'/%3E%3Cpath d='M20 65 L40 45 L55 58 L80 30' stroke='%23FF9F1C' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='80' cy='30' r='6' fill='%23FF9F1C'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg: #F4F6F8;
+    --color-text: #14213D;
+    --color-accent: #FF9F1C;
+    --color-neutral: #8D99AE;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --text-faint: color-mix(in srgb, var(--color-text) 40%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --border-strong: color-mix(in srgb, var(--color-neutral) 80%, var(--color-bg));
+    --accent-bg-light: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-bg-lighter: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+    --accent-border: color-mix(in srgb, var(--color-accent) 55%, var(--color-bg));
+    --card-bg: color-mix(in srgb, var(--color-text) 3%, var(--color-bg));
+
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+
+    --maxw-text: 720px;
+    --maxw-page: 1180px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+
+  body{
+    margin:0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3{
+    font-family: var(--font-display);
+    color: var(--color-text);
+    line-height: 1.25;
+    margin: 0 0 0.5em 0;
+  }
+  h1{ font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 800; letter-spacing: -0.01em; }
+  h2{ font-size: clamp(1.5rem, 3vw, 1.9rem); font-weight: 700; }
+  h3{ font-size: 1.2rem; font-weight: 600; }
+  p{ margin: 0 0 1.1em 0; }
+  a{ color: var(--color-text); }
+
+  .mono{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Barre de progression de lecture ---------- */
+  #reading-progress{
+    position: fixed; top:0; left:0; height: 3px; width: 0%;
+    background: var(--color-accent);
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ---------- Header sticky ---------- */
+  header.site-header{
+    position: sticky; top:0; z-index: 900;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .header-inner{
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 14px 24px;
+    display:flex; align-items:center; justify-content: space-between;
+    gap: 16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family: var(--font-display); font-weight:700; font-size: 1rem; color: var(--color-text); text-decoration:none; }
+  .brand-mark{ width: 26px; height:26px; border-radius:7px; background: var(--color-text); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .brand-mark svg{ width:16px; height:16px; }
+  nav.top-menu{ display:flex; align-items:center; gap: 22px; }
+  nav.top-menu a{
+    font-size: 0.92rem; color: var(--text-muted); text-decoration:none; font-weight:500;
+    border-bottom: 1px solid transparent; padding-bottom: 2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  nav.top-menu a:hover, nav.top-menu a:focus-visible{ color: var(--color-text); border-color: var(--color-accent); }
+
+  .menu-toggle{ display:none; background:none; border:1px solid var(--border-soft); border-radius:8px; padding:8px 10px; cursor:pointer; }
+  .menu-toggle svg{ display:block; }
+
+  /* ---------- Layout général ---------- */
+  main{ max-width: var(--maxw-page); margin: 0 auto; padding: 0 24px; }
+
+  .prose{ max-width: var(--maxw-text); }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding: 56px 0 40px 0; }
+  .badge-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 22px; }
+  .badge{
+    font-family: var(--font-mono); font-size: 0.78rem; padding: 5px 12px;
+    border-radius: 999px; border: 1px solid var(--border-soft);
+    color: var(--text-muted); background: var(--card-bg);
+  }
+  .badge.badge-accent{ border-color: var(--accent-border); color: var(--color-text); background: var(--accent-bg-light); }
+  .hero-eyebrow{ font-size: 0.85rem; color: var(--color-accent); font-weight: 600; margin-bottom: 10px; }
+  .hero h1{ max-width: 850px; }
+  .hero-sub{ font-size: 1.15rem; color: var(--text-muted); max-width: 640px; margin-top: 14px; }
+
+  /* frise mini dans le hero */
+  .hero-thread{ margin-top: 34px; }
+  .hero-thread svg{ width:100%; height:auto; display:block; }
+
+  /* ---------- Sommaire ---------- */
+  .toc{
+    background: var(--card-bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin: 8px 0 48px 0;
+  }
+  .toc h2{ font-size: 1rem; text-transform: none; margin-bottom: 14px; color: var(--text-muted); font-weight:600; letter-spacing: 0.01em;}
+  .toc ol{ margin:0; padding-left: 0; list-style: none; display:grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; counter-reset: toc-counter; }
+  .toc li{ counter-increment: toc-counter; }
+  .toc a{
+    display:flex; gap:10px; align-items:baseline; text-decoration:none; color: var(--color-text);
+    font-size: 0.95rem; padding: 6px 0; border-bottom: 1px solid transparent;
+  }
+  .toc a::before{
+    content: counter(toc-counter, decimal-leading-zero);
+    font-family: var(--font-mono); color: var(--color-accent); font-size: 0.82rem; flex-shrink:0;
+  }
+  .toc a:hover, .toc a:focus-visible{ color: var(--color-accent); }
+
+  /* ---------- Sections ---------- */
+  section.lesson-section{
+    padding: 46px 0;
+    border-top: 1px solid var(--border-soft);
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  section.lesson-section.in-view{ opacity: 1; transform: translateY(0); }
+  section.lesson-section:first-of-type{ border-top: none; }
+  section.lesson-section.alt-bg{ background: var(--bg-alt); margin: 0 -24px; padding-left:24px; padding-right:24px; border-radius: 18px; }
+
+  .section-kicker{ display:flex; align-items:center; gap:10px; margin-bottom: 6px; }
+  .section-index{ font-family: var(--font-mono); color: var(--color-accent); font-size:0.85rem; }
+
+  /* ---------- Encadrés typés ---------- */
+  .callout{
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 26px 0;
+    background: var(--card-bg);
+    max-width: var(--maxw-text);
+  }
+  .callout-head{ display:flex; align-items:center; gap:10px; font-family: var(--font-display); font-weight:700; font-size: 0.98rem; margin-bottom: 8px; }
+  .callout-head .icon{ font-size: 1.15rem; }
+  .callout p:last-child{ margin-bottom:0; }
+
+  /* ---------- Fiches de pilotage ---------- */
+  .pilot-card{
+    background: var(--accent-bg-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 24px 0;
+    max-width: var(--maxw-text);
+    position: relative;
+  }
+  .pilot-card .pilot-label{
+    font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-muted); display:block; margin-bottom: 10px;
+  }
+  .pilot-card pre{
+    font-family: var(--font-mono); font-size: 0.88rem; white-space: pre-wrap; margin:0;
+    color: var(--color-text); line-height: 1.6;
+  }
+  .copy-btn{
+    position:absolute; top: 14px; right: 14px;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    background: var(--color-bg); border: 1px solid var(--accent-border);
+    color: var(--color-text); border-radius: 7px; padding: 5px 10px; cursor:pointer;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover{ background: var(--accent-bg-lighter); }
+
+  /* ---------- Tableaux techniques ---------- */
+  .table-wrap{ overflow-x:auto; margin: 26px 0; border: 1px solid var(--border-soft); border-radius: 12px; }
+  table{ border-collapse: collapse; width:100%; min-width: 560px; font-size: 0.92rem; }
+  thead th{
+    text-align:left; font-family: var(--font-display); font-weight:700; font-size: 0.82rem;
+    background: color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+    color: var(--color-text); padding: 12px 16px; border-bottom: 1px solid var(--border-soft);
+    white-space: nowrap;
+  }
+  tbody td{ padding: 12px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom: none; }
+  td.num, th.num{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  tr.row-highlight td{ background: var(--accent-bg-lighter); border-left: 3px solid var(--color-accent); }
+  tr.row-highlight td:first-child{ padding-left: 13px; }
+
+  /* ---------- Cartes visuelles ---------- */
+  .card-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 26px 0; }
+  .visual-card{
+    background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 14px;
+    padding: 20px; transition: border-color 0.15s;
+  }
+  .visual-card:hover{ border-color: var(--accent-border); }
+  .visual-card .vc-icon{
+    width: 38px; height:38px; border-radius: 9px; background: var(--accent-bg-light);
+    display:flex; align-items:center; justify-content:center; margin-bottom: 12px; font-size: 1.2rem;
+    border: 1px solid var(--accent-border);
+  }
+  .visual-card h3{ font-size: 1rem; margin-bottom: 6px; }
+  .visual-card p{ font-size: 0.9rem; color: var(--text-muted); margin:0; }
+
+  /* ---------- Tabs ---------- */
+  .tabs{ margin: 26px 0; max-width: var(--maxw-text); }
+  .tab-list{ display:flex; gap: 4px; border-bottom: 1px solid var(--border-soft); }
+  .tab-btn{
+    font-family: var(--font-body); font-weight:600; font-size: 0.92rem;
+    background:none; border:none; padding: 11px 18px; cursor:pointer;
+    color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom:-1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn:hover{ color: var(--color-text); }
+  .tab-btn[aria-selected="true"]{ color: var(--color-text); border-bottom-color: var(--color-accent); }
+  .tab-panel{ padding: 20px 2px; display:none; }
+  .tab-panel.active{ display:block; }
+
+  /* ---------- Accordéons ---------- */
+  .accordion{ margin: 26px 0; max-width: var(--maxw-text); border-top: 1px solid var(--border-soft); }
+  .accordion-item{ border-bottom: 1px solid var(--border-soft); }
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap: 12px;
+    padding: 16px 4px; font-family: var(--font-display); font-weight:600; font-size: 0.98rem; color: var(--color-text);
+  }
+  .accordion-trigger .chevron{ flex-shrink:0; transition: transform 0.2s; color: var(--color-accent); }
+  .accordion-trigger[aria-expanded="true"] .chevron{ transform: rotate(45deg); }
+  .accordion-panel{ max-height:0; overflow:hidden; transition: max-height 0.25s ease; }
+  .accordion-panel-inner{ padding: 0 4px 18px 4px; color: var(--text-muted); font-size: 0.95rem; }
+
+  /* ---------- Stepper / frise ---------- */
+  .stepper{ margin: 30px 0; }
+  .stepper-track{ display:flex; overflow-x:auto; gap: 0; padding-bottom: 6px; }
+  .step{ flex: 1 1 200px; min-width: 190px; position: relative; padding: 0 18px 0 0; }
+  .step-marker{ display:flex; align-items:center; gap:8px; margin-bottom: 12px; }
+  .step-dot{
+    width: 30px; height:30px; border-radius:50%; background: var(--color-bg); border: 2px solid var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family: var(--font-mono); font-size: 0.8rem; font-weight:600;
+    color: var(--color-accent); flex-shrink:0;
+  }
+  .step-line{ height:2px; flex:1; background: var(--border-soft); }
+  .step:last-child .step-line{ display:none; }
+  .step h3{ font-size: 0.95rem; margin-bottom: 6px; }
+  .step p{ font-size: 0.87rem; color: var(--text-muted); margin:0; }
+
+  /* ---------- Schémas SVG ---------- */
+  .diagram{ margin: 30px 0; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+  .diagram-caption{ font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; text-align:center; }
+
+  /* ---------- Résumé visuel ---------- */
+  .summary-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 16px; margin-top: 24px; }
+  .summary-item{
+    background: var(--color-text); color: var(--color-bg); border-radius: 14px; padding: 22px;
+  }
+  .summary-item .si-num{ font-family: var(--font-mono); color: var(--color-accent); font-size: 0.8rem; margin-bottom:8px; display:block; }
+  .summary-item h3{ color: var(--color-bg); font-size: 1rem; margin-bottom: 8px; }
+  .summary-item p{ color: color-mix(in srgb, var(--color-bg) 78%, transparent); font-size: 0.88rem; margin:0; }
+
+  /* ---------- Back to top ---------- */
+  #back-to-top{
+    position: fixed; bottom: 26px; right: 26px; z-index: 800;
+    width: 46px; height:46px; border-radius: 50%;
+    background: var(--color-text); color: var(--color-bg); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transform: translateY(10px);
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-text) 25%, transparent);
+  }
+  #back-to-top.visible{ opacity:1; pointer-events:auto; transform: translateY(0); }
+
+  /* ---------- Navigation bas de page ---------- */
+  .lesson-nav{
+    display:flex; justify-content:space-between; gap: 16px; margin: 56px 0 20px 0;
+    border-top: 1px solid var(--border-soft); padding-top: 32px; flex-wrap:wrap;
+  }
+  .nav-link{
+    flex: 1 1 260px; text-decoration:none; color: var(--color-text);
+    border: 1px solid var(--border-soft); border-radius: 12px; padding: 16px 20px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-link:hover, .nav-link:focus-visible{ border-color: var(--accent-border); background: var(--accent-bg-lighter); }
+  .nav-link .nav-dir{ font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); display:block; margin-bottom:4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .nav-link.next{ text-align:right; }
+  .module-link{
+    display:inline-block; margin: 8px 0 28px 0; font-size: 0.9rem; color: var(--text-muted); text-decoration:none;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .module-link:hover{ color: var(--color-accent); border-color: var(--color-accent); }
+
+  footer.site-footer{
+    border-top: 1px solid var(--border-soft); margin-top: 40px; padding: 28px 0 40px 0;
+    text-align:center; color: var(--text-faint); font-size: 0.85rem;
+  }
+
+  :focus-visible{ outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px){
+    .toc ol{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px){
+    nav.top-menu{
+      position: fixed; top: 58px; left:0; right:0; background: var(--color-bg);
+      border-bottom: 1px solid var(--border-soft); flex-direction:column; align-items:flex-start;
+      padding: 16px 24px; gap: 14px; display:none;
+    }
+    nav.top-menu.open{ display:flex; }
+    .menu-toggle{ display:flex; }
+    .hero{ padding-top: 36px; }
+    section.lesson-section.alt-bg{ margin: 0 -16px; padding-left:16px; padding-right:16px; }
+    main{ padding: 0 16px; }
+    .header-inner{ padding: 12px 16px; }
+    #back-to-top{ right: 16px; bottom: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="reading-progress" role="progressbar" aria-label="Progression de lecture" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 15 L9 10 L13 13 L20 6" stroke="#FF9F1C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Gestion de Projet
+    </a>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="top-menu" aria-label="Ouvrir le menu du sommaire">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#14213D" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <nav class="top-menu" id="top-menu">
+      <a href="#besoin">Expression du besoin</a>
+      <a href="#cahier-des-charges">Cahier des charges</a>
+      <a href="#objectifs">Objectifs</a>
+      <a href="#smart">Méthode SMART</a>
+      <a href="#perimetre">Périmètre</a>
+      <a href="#livrables">Livrables</a>
+      <a href="#retenir">Points clés</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="badge-row">
+      <span class="badge badge-accent">Module 1 — Fondamentaux de la gestion de projet</span>
+      <span class="badge mono">Leçon 04</span>
+      <span class="badge mono">15 min</span>
+      <span class="badge mono">Niveau débutant</span>
+    </div>
+    <div class="hero-eyebrow">Fondamentaux de la gestion de projet</div>
+    <h1>Cahier des charges et objectifs du projet</h1>
+    <p class="hero-sub">Comment transformer un besoin exprimé, parfois flou, en objectifs précis et en un périmètre de travail partagé par toute l'équipe projet.</p>
+
+    <div class="hero-thread" aria-hidden="true">
+      <svg viewBox="0 0 900 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frise : du besoin exprimé au cahier des charges, puis aux objectifs et au périmètre">
+        <line x1="30" y1="45" x2="870" y2="45" stroke="#8D99AE" stroke-width="1.5" stroke-dasharray="2 6"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="12" fill="#14213D">
+          <circle cx="60" cy="45" r="7" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.5"/>
+          <text x="60" y="72" text-anchor="middle">Besoin</text>
+          <circle cx="310" cy="45" r="7" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.5"/>
+          <text x="310" y="72" text-anchor="middle">Cahier des charges</text>
+          <circle cx="570" cy="45" r="7" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.5"/>
+          <text x="570" y="72" text-anchor="middle">Objectifs SMART</text>
+          <circle cx="840" cy="45" r="8" fill="#FF9F1C"/>
+          <text x="840" y="72" text-anchor="middle" font-weight="600">Périmètre validé</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><a href="#besoin">Expression du besoin</a></li>
+      <li><a href="#cahier-des-charges">Le cahier des charges</a></li>
+      <li><a href="#objectifs">Objectif général et objectifs spécifiques</a></li>
+      <li><a href="#smart">La méthode SMART</a></li>
+      <li><a href="#perimetre">Périmètre initial du projet</a></li>
+      <li><a href="#livrables">Les livrables</a></li>
+      <li><a href="#retenir">Points clés à retenir</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. Expression du besoin -->
+  <section class="lesson-section" id="besoin">
+    <div class="section-kicker"><span class="section-index mono">01</span></div>
+    <h2>Expression du besoin</h2>
+    <div class="prose">
+      <p>Tout projet démarre par un besoin exprimé par un commanditaire : un client, une direction, un service interne. Ce besoin est rarement formulé de façon opérationnelle dès le départ — il traduit une intention, une difficulté à résoudre ou une opportunité à saisir, mais pas encore une solution précise.</p>
+      <p>Le rôle du chef de projet est de recueillir cette expression du besoin, de la clarifier par des échanges avec les parties prenantes, puis de la reformuler en un langage partagé : ce que l'on va livrer, pour qui, et avec quel niveau d'exigence.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">💡</span> À retenir</div>
+      <p>Un besoin mal exprimé au départ se traduit presque toujours par des dérives de périmètre plus tard dans le projet. Le temps passé à clarifier le besoin en amont est un temps gagné en aval.</p>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma : du besoin flou du commanditaire au besoin clarifié par le chef de projet, via des échanges itératifs">
+        <rect x="20" y="60" width="190" height="80" rx="10" fill="#F4F6F8" stroke="#8D99AE" stroke-width="1.5"/>
+        <text x="115" y="95" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="14" fill="#14213D">Besoin</text>
+        <text x="115" y="115" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">exprimé, imprécis</text>
+
+        <path d="M215 100 C 260 100, 260 60, 310 60" stroke="#FF9F1C" stroke-width="2" fill="none" marker-end="url(#arrow1)"/>
+        <path d="M310 130 C 260 130, 260 100, 215 100" stroke="#8D99AE" stroke-width="1.5" fill="none" stroke-dasharray="3 4" marker-end="url(#arrow2)"/>
+
+        <rect x="310" y="40" width="200" height="120" rx="10" fill="#FFFFFF00" stroke="#FF9F1C" stroke-width="2"/>
+        <text x="410" y="80" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="14" fill="#14213D">Échanges</text>
+        <text x="410" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">entretiens, ateliers,</text>
+        <text x="410" y="112" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">questions de cadrage</text>
+
+        <path d="M510 100 C 560 100, 560 100, 600 100" stroke="#FF9F1C" stroke-width="2" fill="none" marker-end="url(#arrow1)"/>
+
+        <rect x="600" y="60" width="100" height="80" rx="10" fill="#14213D"/>
+        <text x="650" y="95" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="13" fill="#F4F6F8">Besoin</text>
+        <text x="650" y="112" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#FF9F1C">clarifié</text>
+
+        <defs>
+          <marker id="arrow1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#FF9F1C"/></marker>
+          <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#8D99AE"/></marker>
+        </defs>
+      </svg>
+      <p class="diagram-caption">Le besoin se précise par itérations successives avant d'être figé dans le cahier des charges.</p>
+    </div>
+  </section>
+
+  <!-- 2. Cahier des charges -->
+  <section class="lesson-section alt-bg" id="cahier-des-charges">
+    <div class="section-kicker"><span class="section-index mono">02</span></div>
+    <h2>Le cahier des charges</h2>
+    <div class="prose">
+      <p>Le cahier des charges est le document de référence qui formalise le besoin, les objectifs, le périmètre et les contraintes du projet. C'est le point d'accord entre le commanditaire et l'équipe projet : il sert de base à la planification, au chiffrage et, plus tard, à la vérification que le résultat livré correspond bien à ce qui était attendu.</p>
+      <p>Il existe généralement deux niveaux de détail dans un cahier des charges : la partie fonctionnelle, qui décrit ce que le résultat doit permettre de faire, et la partie technique, qui précise comment cela doit être réalisé ou avec quelles contraintes.</p>
+    </div>
+
+    <div class="accordion" id="accordion-cdc">
+      <div class="accordion-item">
+        <h3>
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-1" id="acc-trigger-1">
+            Cahier des charges fonctionnel
+            <span class="chevron" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#FF9F1C" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </span>
+          </button>
+        </h3>
+        <div class="accordion-panel" id="acc-panel-1" role="region" aria-labelledby="acc-trigger-1">
+          <div class="accordion-panel-inner">
+            <p>Il décrit les besoins exprimés en termes de fonctions attendues, indépendamment de la solution technique retenue : à quoi le résultat doit servir, pour quels usagers, dans quelles situations. C'est le document de dialogue privilégié avec le commanditaire, car il reste lisible par un non-spécialiste.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3>
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-2" id="acc-trigger-2">
+            Cahier des charges technique
+            <span class="chevron" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#FF9F1C" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </span>
+          </button>
+        </h3>
+        <div class="accordion-panel" id="acc-panel-2" role="region" aria-labelledby="acc-trigger-2">
+          <div class="accordion-panel-inner">
+            <p>Il traduit les fonctions attendues en spécifications précises : normes à respecter, contraintes de compatibilité, exigences de performance, environnement de réalisation. Il s'adresse davantage aux équipes qui vont produire le résultat qu'au commanditaire lui-même.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3>
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-3" id="acc-trigger-3">
+            Contenu minimal attendu
+            <span class="chevron" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#FF9F1C" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </span>
+          </button>
+        </h3>
+        <div class="accordion-panel" id="acc-panel-3" role="region" aria-labelledby="acc-trigger-3">
+          <div class="accordion-panel-inner">
+            <p>Contexte et enjeux du projet, présentation du commanditaire et des parties prenantes, objectifs poursuivis, périmètre (ce qui est inclus et exclu), contraintes (budget, délai, réglementation), critères de réception et livrables attendus.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pilot-card">
+      <span class="pilot-label">Fiche de pilotage — extrait de cahier des charges</span>
+      <button class="copy-btn" type="button" data-copy-target="cdc-extrait">Copier</button>
+      <pre id="cdc-extrait" class="mono">PROJET       : Refonte de l'espace client en ligne
+COMMANDITAIRE: Direction Relation Client
+CONTRAINTE   : Budget plafonné, mise en service avant fin d'exercice
+PERIMETRE IN : Parcours de connexion, suivi de commande, messagerie
+PERIMETRE OUT: Application mobile native (hors périmètre de ce projet)
+LIVRABLE CLE : Espace client en ligne, recette validée par le commanditaire</pre>
+    </div>
+  </section>
+
+  <!-- 3. Objectifs -->
+  <section class="lesson-section" id="objectifs">
+    <div class="section-kicker"><span class="section-index mono">03</span></div>
+    <h2>Objectif général et objectifs spécifiques</h2>
+    <div class="prose">
+      <p>Une fois le besoin clarifié, il faut le traduire en objectifs. On distingue généralement un objectif général, qui exprime la finalité du projet en une phrase, et des objectifs spécifiques, plus nombreux, qui décomposent cette finalité en résultats concrets et mesurables.</p>
+    </div>
+
+    <div class="tabs" id="tabs-objectifs">
+      <div class="tab-list" role="tablist" aria-label="Comparer objectif général et objectifs spécifiques">
+        <button class="tab-btn" role="tab" id="tab-general" aria-controls="panel-general" aria-selected="true">Objectif général</button>
+        <button class="tab-btn" role="tab" id="tab-specifique" aria-controls="panel-specifique" aria-selected="false" tabindex="-1">Objectifs spécifiques</button>
+      </div>
+      <div class="tab-panel active" id="panel-general" role="tabpanel" aria-labelledby="tab-general">
+        <p>L'objectif général exprime la raison d'être du projet, sa finalité globale, souvent en lien avec une stratégie ou une problématique plus large. Il reste volontairement large et se formule en une phrase.</p>
+        <p><em>Exemple :</em> « Améliorer la satisfaction des clients dans leurs démarches en ligne. »</p>
+      </div>
+      <div class="tab-panel" id="panel-specifique" role="tabpanel" aria-labelledby="tab-specifique" hidden>
+        <p>Les objectifs spécifiques déclinent l'objectif général en résultats concrets, atteignables et vérifiables à l'issue du projet. Chacun doit pouvoir être formulé selon la méthode SMART.</p>
+        <p><em>Exemples :</em> « Réduire le temps moyen de connexion à moins de 10 secondes » ou « Faire passer le taux de résolution en ligne des demandes de 40 % à 70 % d'ici la fin du projet. »</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <caption class="visually-hidden" style="text-align:left; padding:12px 16px; font-size:0.85rem; color: var(--text-muted);">Comparatif objectif général / objectifs spécifiques</caption>
+        <thead>
+          <tr>
+            <th scope="col">Critère</th>
+            <th scope="col">Objectif général</th>
+            <th scope="col">Objectifs spécifiques</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Niveau de précision</td>
+            <td>Large, orienté finalité</td>
+            <td>Précis, orienté résultat</td>
+          </tr>
+          <tr>
+            <td>Nombre</td>
+            <td class="num">1 par projet</td>
+            <td class="num">Plusieurs par projet</td>
+          </tr>
+          <tr>
+            <td>Mesurabilité</td>
+            <td>Pas nécessairement chiffré</td>
+            <td>Chiffré et vérifiable</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Usage principal</td>
+            <td>Communication, sens du projet</td>
+            <td>Pilotage, suivi d'avancement</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. SMART -->
+  <section class="lesson-section alt-bg" id="smart">
+    <div class="section-kicker"><span class="section-index mono">04</span></div>
+    <h2>La méthode SMART</h2>
+    <div class="prose">
+      <p>Pour qu'un objectif spécifique soit réellement exploitable par une équipe projet, il doit répondre à cinq critères, réunis sous l'acronyme SMART. Cette méthode est l'un des outils les plus utilisés en gestion de projet pour transformer une intention en objectif opérationnel.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Lettre</th>
+            <th scope="col">Critère</th>
+            <th scope="col">Question à se poser</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono num">S</td>
+            <td>Spécifique</td>
+            <td>L'objectif est-il précis et sans ambiguïté ?</td>
+          </tr>
+          <tr>
+            <td class="mono num">M</td>
+            <td>Mesurable</td>
+            <td>Peut-on chiffrer ou vérifier son atteinte ?</td>
+          </tr>
+          <tr>
+            <td class="mono num">A</td>
+            <td>Atteignable</td>
+            <td>Est-il réaliste compte tenu des ressources ?</td>
+          </tr>
+          <tr>
+            <td class="mono num">R</td>
+            <td>Réaliste / pertinent</td>
+            <td>Sert-il bien la finalité du projet ?</td>
+          </tr>
+          <tr class="row-highlight">
+            <td class="mono num">T</td>
+            <td>Temporellement défini</td>
+            <td>À quelle échéance doit-il être atteint ?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cinq jauges illustrant les cinq critères de la méthode SMART : spécifique, mesurable, atteignable, réaliste, temporellement défini">
+        <g font-family="Sora, sans-serif" font-weight="700" font-size="26" fill="#14213D">
+          <text x="70" y="60" text-anchor="middle">S</text>
+          <text x="220" y="60" text-anchor="middle">M</text>
+          <text x="370" y="60" text-anchor="middle">A</text>
+          <text x="520" y="60" text-anchor="middle">R</text>
+          <text x="670" y="60" text-anchor="middle">T</text>
+        </g>
+        <g>
+          <circle cx="70" cy="100" r="26" fill="none" stroke="#8D99AE" stroke-width="6"/>
+          <circle cx="70" cy="100" r="26" fill="none" stroke="#FF9F1C" stroke-width="6" stroke-dasharray="163" stroke-dashoffset="20" transform="rotate(-90 70 100)"/>
+          <circle cx="220" cy="100" r="26" fill="none" stroke="#8D99AE" stroke-width="6"/>
+          <circle cx="220" cy="100" r="26" fill="none" stroke="#FF9F1C" stroke-width="6" stroke-dasharray="163" stroke-dashoffset="10" transform="rotate(-90 220 100)"/>
+          <circle cx="370" cy="100" r="26" fill="none" stroke="#8D99AE" stroke-width="6"/>
+          <circle cx="370" cy="100" r="26" fill="none" stroke="#FF9F1C" stroke-width="6" stroke-dasharray="163" stroke-dashoffset="45" transform="rotate(-90 370 100)"/>
+          <circle cx="520" cy="100" r="26" fill="none" stroke="#8D99AE" stroke-width="6"/>
+          <circle cx="520" cy="100" r="26" fill="none" stroke="#FF9F1C" stroke-width="6" stroke-dasharray="163" stroke-dashoffset="30" transform="rotate(-90 520 100)"/>
+          <circle cx="670" cy="100" r="26" fill="none" stroke="#8D99AE" stroke-width="6"/>
+          <circle cx="670" cy="100" r="26" fill="none" stroke="#FF9F1C" stroke-width="6" stroke-dasharray="163" stroke-dashoffset="15" transform="rotate(-90 670 100)"/>
+        </g>
+        <g font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">
+          <text x="70" y="150" text-anchor="middle">Spécifique</text>
+          <text x="220" y="150" text-anchor="middle">Mesurable</text>
+          <text x="370" y="150" text-anchor="middle">Atteignable</text>
+          <text x="520" y="150" text-anchor="middle">Réaliste</text>
+          <text x="670" y="150" text-anchor="middle">Temporel</text>
+        </g>
+      </svg>
+      <p class="diagram-caption">Un objectif SMART complet « remplit » les cinq critères simultanément.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">⚠️</span> Attention / erreur fréquente</div>
+      <p>Un objectif comme « améliorer la qualité du service » n'est pas SMART : il n'est ni mesurable ni daté. Reformulé, il devient : « Faire passer la note de satisfaction moyenne de 3,2/5 à 4/5 d'ici la fin du deuxième trimestre. »</p>
+    </div>
+  </section>
+
+  <!-- 5. Périmètre -->
+  <section class="lesson-section" id="perimetre">
+    <div class="section-kicker"><span class="section-index mono">05</span></div>
+    <h2>Périmètre initial du projet</h2>
+    <div class="prose">
+      <p>Le périmètre délimite ce qui appartient au projet de ce qui n'en fait pas partie. Il est aussi important de préciser ce qui est inclus que ce qui est explicitement exclu, afin d'éviter les malentendus et les dérives de périmètre en cours de réalisation.</p>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma du périmètre du projet : un cercle intérieur représentant le périmètre inclus et une zone extérieure représentant le périmètre exclu">
+        <rect x="10" y="10" width="680" height="240" rx="14" fill="none" stroke="#8D99AE" stroke-width="1.5" stroke-dasharray="4 6"/>
+        <text x="30" y="34" font-family="IBM Plex Mono, monospace" font-size="11" fill="#8D99AE">PÉRIMÈTRE EXCLU</text>
+
+        <circle cx="350" cy="140" r="105" fill="#FF9F1C" fill-opacity="0.10" stroke="#FF9F1C" stroke-width="2.5"/>
+        <text x="350" y="90" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="14" fill="#14213D">Périmètre inclus</text>
+
+        <g font-family="Inter, sans-serif" font-size="12" fill="#14213D">
+          <text x="350" y="120" text-anchor="middle">Parcours de connexion</text>
+          <text x="350" y="145" text-anchor="middle">Suivi de commande</text>
+          <text x="350" y="170" text-anchor="middle">Messagerie client</text>
+        </g>
+
+        <g font-family="Inter, sans-serif" font-size="12" fill="#8D99AE">
+          <text x="120" y="220">Application mobile native</text>
+          <text x="500" y="60">Migration du CRM</text>
+          <text x="500" y="230">Programme de fidélité</text>
+        </g>
+      </svg>
+      <p class="diagram-caption">Ce qui se trouve hors du cercle reste, à ce stade, hors périmètre du projet — et devra passer par une demande de changement pour y entrer.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">📐</span> Bonnes pratiques professionnelles</div>
+      <p>Faites toujours valider le périmètre initial par écrit avec le commanditaire, et rappelez-le en introduction de chaque comité de suivi. C'est le meilleur rempart contre les demandes d'ajout non cadrées en cours de projet.</p>
+    </div>
+  </section>
+
+  <!-- 6. Livrables -->
+  <section class="lesson-section alt-bg" id="livrables">
+    <div class="section-kicker"><span class="section-index mono">06</span></div>
+    <h2>Les livrables</h2>
+    <div class="prose">
+      <p>Les livrables sont les résultats concrets et vérifiables que le projet doit produire. Ils découlent directement des objectifs et du périmètre : chaque objectif spécifique doit pouvoir être rattaché à un ou plusieurs livrables, et chaque livrable doit avoir un critère de réception clair.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">📄</div>
+        <h3>Livrables documentaires</h3>
+        <p>Cahiers des charges, comptes rendus, plans, spécifications — la trace écrite du projet.</p>
+      </div>
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">🛠️</div>
+        <h3>Livrables produits</h3>
+        <p>Le résultat opérationnel attendu : outil, service, aménagement, dispositif mis en œuvre.</p>
+      </div>
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">✅</div>
+        <h3>Livrables de validation</h3>
+        <p>Procès-verbaux de recette, rapports de tests, preuves de conformité aux exigences.</p>
+      </div>
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">🎓</div>
+        <h3>Livrables d'accompagnement</h3>
+        <p>Supports de formation, guides utilisateurs, plans de transition vers l'exploitation courante.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Objectif spécifique</th>
+            <th scope="col">Livrable associé</th>
+            <th scope="col">Critère de réception</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Réduire le temps de connexion à 10 s</td>
+            <td>Nouveau module d'authentification</td>
+            <td>Temps mesuré en environnement de recette</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Porter la résolution en ligne à 70 %</td>
+            <td>Espace client en ligne complet</td>
+            <td>Recette fonctionnelle signée par le commanditaire</td>
+          </tr>
+          <tr>
+            <td>Fiabiliser le suivi de commande</td>
+            <td>Tableau de suivi temps réel</td>
+            <td>Test de bout en bout sans anomalie bloquante</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">🔗</span> Pour aller plus loin</div>
+      <p>La leçon suivante montre comment ces éléments — besoin, objectifs, périmètre et livrables — sont repris et formalisés dans la charte de projet, document qui officialise le lancement.</p>
+    </div>
+  </section>
+
+  <!-- Stepper: étapes de rédaction -->
+  <section class="lesson-section" id="etapes">
+    <div class="section-kicker"><span class="section-index mono">07</span></div>
+    <h2>Les étapes de rédaction du cahier des charges</h2>
+    <div class="stepper">
+      <div class="stepper-track">
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">1</span><span class="step-line"></span></div>
+          <h3>Recueillir le besoin</h3>
+          <p>Entretiens avec le commanditaire et les principales parties prenantes.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">2</span><span class="step-line"></span></div>
+          <h3>Formuler les objectifs</h3>
+          <p>Un objectif général, puis des objectifs spécifiques selon la méthode SMART.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">3</span><span class="step-line"></span></div>
+          <h3>Délimiter le périmètre</h3>
+          <p>Lister explicitement ce qui est inclus et ce qui est exclu du projet.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">4</span><span class="step-line"></span></div>
+          <h3>Lister les livrables</h3>
+          <p>Associer chaque objectif à un livrable et à un critère de réception.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">5</span></div>
+          <h3>Faire valider</h3>
+          <p>Signature ou accord formel du commanditaire avant le lancement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Points clés -->
+  <section class="lesson-section alt-bg" id="retenir">
+    <div class="section-kicker"><span class="section-index mono">08</span></div>
+    <h2>Points clés à retenir</h2>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span class="si-num mono">01</span>
+        <h3>Un besoin se clarifie</h3>
+        <p>Le besoin initial du commanditaire est rarement opérationnel tel quel : il se précise par des échanges itératifs.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">02</span>
+        <h3>Le cahier des charges fait référence</h3>
+        <p>Il formalise besoin, objectifs, périmètre et contraintes, et sert de base d'accord entre les parties.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">03</span>
+        <h3>Un objectif, deux niveaux</h3>
+        <p>Un objectif général donne le sens ; des objectifs spécifiques SMART rendent le résultat mesurable.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">04</span>
+        <h3>Le périmètre protège le projet</h3>
+        <p>Ce qui est explicitement exclu est aussi important que ce qui est inclus.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">05</span>
+        <h3>Chaque livrable est vérifiable</h3>
+        <p>Un livrable sans critère de réception clair n'est pas exploitable pour le pilotage du projet.</p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Navigation entre leçons">
+    <a class="nav-link prev" href="#" onclick="return false;">
+      <span class="nav-dir">← Leçon précédente</span>
+      Leçon 03 — Parties prenantes et rôles du projet
+    </a>
+    <a class="nav-link next" href="#" onclick="return false;">
+      <span class="nav-dir">Leçon suivante →</span>
+      Leçon 05 — Charte de projet et lancement
+    </a>
+  </nav>
+  <a class="module-link" href="#" onclick="return false;">↩ Retour au sommaire du module</a>
+
+</main>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="#F4F6F8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<footer class="site-footer">
+  <p>Filière Gestion de Projet — Module 1 : Fondamentaux de la gestion de projet.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- Barre de progression de lecture ---- */
+  var progressBar = document.getElementById('reading-progress');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+    progressBar.setAttribute('aria-valuenow', Math.round(pct));
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  /* ---- Menu mobile ---- */
+  var menuToggle = document.getElementById('menu-toggle');
+  var topMenu = document.getElementById('top-menu');
+  menuToggle.addEventListener('click', function(){
+    var open = topMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  topMenu.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      topMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ---- Bouton retour en haut ---- */
+  var backToTop = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY || document.documentElement.scrollTop) > 500){
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  }, { passive: true });
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ---- Tabs ---- */
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function activate(tab){
+      tabs.forEach(function(t){
+        var isActive = t === tab;
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        t.tabIndex = isActive ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, i){
+      tab.addEventListener('click', function(){ activate(tab); });
+      tab.addEventListener('keydown', function(e){
+        var idx = i;
+        if(e.key === 'ArrowRight'){ idx = (i + 1) % tabs.length; tabs[idx].focus(); activate(tabs[idx]); e.preventDefault(); }
+        if(e.key === 'ArrowLeft'){ idx = (i - 1 + tabs.length) % tabs.length; tabs[idx].focus(); activate(tabs[idx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  /* ---- Accordéons ---- */
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      if(expanded){
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }
+    });
+  });
+
+  /* ---- Copier (fiches de pilotage) ---- */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var targetId = btn.getAttribute('data-copy-target');
+      var el = document.getElementById(targetId);
+      if(!el) return;
+      var text = el.innerText;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){
+          var original = btn.textContent;
+          btn.textContent = 'Copié !';
+          setTimeout(function(){ btn.textContent = original; }, 1500);
+        });
+      }
+    });
+  });
+
+  /* ---- Animations au scroll (respecte prefers-reduced-motion) ---- */
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = document.querySelectorAll('.lesson-section');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  } else {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    sections.forEach(function(s){ observer.observe(s); });
+  }
+})();
+</script>
+
+</body>
+</html>

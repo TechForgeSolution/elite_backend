@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 16 — Lancement et exécution du projet, filière Gestion de Projet.">
+<title>Leçon 16 — Lancement et exécution du projet | Gestion de Projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+  --shadow:0 14px 35px color-mix(in srgb,var(--color-text) 9%,transparent);
+  --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.68}
+body::selection{background:var(--accent-soft);color:var(--color-text)}
+a{color:var(--color-text);text-decoration:none}
+a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent);transition:width .08s linear}
+.header{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-family:Manrope,sans-serif;font-weight:800;letter-spacing:-.02em}
+.brand-mark{width:28px;height:28px;border:2px solid var(--color-text);display:grid;place-items:center;font:600 12px "IBM Plex Mono",monospace}
+.nav-links{display:flex;gap:18px;align-items:center;font-size:.86rem;font-weight:600}
+.nav-links a{color:var(--muted)}
+.nav-links a:hover{color:var(--color-text)}
+.container{width:min(1180px,calc(100% - 40px));margin:auto}
+.hero{padding:74px 0 54px}
+.hero-grid{display:grid;grid-template-columns:1.5fr .7fr;gap:52px;align-items:end}
+.eyebrow{font:600 .78rem "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent);margin:0 0 13px}
+h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-.035em;line-height:1.13;margin:0}
+h1{font-size:clamp(2.5rem,6vw,5.1rem);max-width:900px}
+.hero-sub{font-size:1.08rem;color:var(--muted);max-width:720px;margin:22px 0 0}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.meta-card{border:1px solid var(--line);background:var(--color-bg);padding:17px;border-radius:14px}
+.meta-label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:5px}
+.meta-value{font:600 .86rem "IBM Plex Mono",monospace}
+.pill{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--accent-soft);padding:7px 11px;border-radius:999px;font:500 .75rem "IBM Plex Mono",monospace}
+.toc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:10px}
+.toc-inner{display:flex;flex-wrap:wrap;gap:9px}
+.toc a{font-size:.84rem;border:1px solid var(--line);padding:8px 11px;border-radius:8px;background:var(--color-bg);transition:.2s}
+.toc a:hover{border-color:var(--color-accent);transform:translateY(-1px)}
+main{padding-bottom:50px}
+.section{padding:68px 0;border-bottom:1px solid var(--line)}
+.section.alt{background:var(--soft)}
+.section-head{display:grid;grid-template-columns:90px 1fr;gap:28px;margin-bottom:30px}
+.section-num{font:600 .78rem "IBM Plex Mono",monospace;color:var(--color-accent);padding-top:6px}
+h2{font-size:clamp(1.8rem,3.4vw,3rem)}
+h3{font-size:1.2rem;margin-bottom:11px}
+.lead{font-size:1.02rem;color:var(--muted);max-width:720px}
+.prose{max-width:720px}
+.prose p{margin:0 0 18px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border:1px solid var(--line);background:var(--color-bg);border-radius:16px;padding:22px;box-shadow:0 7px 20px color-mix(in srgb,var(--color-text) 5%,transparent);transition:.2s}
+.card:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.card-icon{width:36px;height:36px;border:1px solid var(--color-accent);display:grid;place-items:center;border-radius:10px;margin-bottom:15px;font:600 .78rem "IBM Plex Mono",monospace}
+.card p{margin:0;color:var(--muted);font-size:.92rem}
+.callout{border-left:4px solid var(--color-accent);background:var(--accent-soft);padding:18px 20px;border-radius:0 12px 12px 0;margin:24px 0;max-width:820px}
+.callout strong{font-family:Manrope,sans-serif}
+.callout p{margin:6px 0 0;color:var(--muted)}
+.svg-wrap{margin:30px 0;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--color-bg);overflow:auto}
+svg{display:block;width:100%;min-width:700px;height:auto}
+.svg-label{font-family:Inter,sans-serif;fill:var(--color-text)}
+.svg-mono{font-family:"IBM Plex Mono",monospace;fill:var(--color-text)}
+.svg-line{stroke:var(--color-neutral);stroke-width:2}
+.svg-accent{stroke:var(--color-accent);fill:var(--accent-soft)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--color-bg);margin:25px 0}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .73rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em}
+td{font-size:.88rem}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--accent-soft)}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--accent-soft);padding:3px 6px;border-radius:5px}
+.tabs{margin:28px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.tab-btn{border:1px solid var(--line);background:var(--color-bg);border-radius:8px;padding:9px 13px;cursor:pointer;font-size:.82rem;font-weight:600}
+.tab-btn[aria-selected="true"]{border-color:var(--color-accent);background:var(--accent-soft)}
+.tab-panel{display:none;padding:22px 2px;max-width:780px}
+.tab-panel.active{display:block}
+details{border-top:1px solid var(--line);padding:16px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-family:Manrope,sans-serif;font-weight:700}
+details p{max-width:720px;color:var(--muted);margin:10px 0 0}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:35px 0}
+.step{position:relative;padding:0 14px 0 0}
+.step:not(:last-child)::after{content:"";position:absolute;top:16px;left:34px;right:0;border-top:2px solid var(--color-neutral)}
+.step-dot{position:relative;z-index:1;width:34px;height:34px;border:2px solid var(--color-text);border-radius:50%;background:var(--color-bg);display:grid;place-items:center;font:600 .72rem "IBM Plex Mono",monospace;margin-bottom:13px}
+.step:last-child .step-dot{border-color:var(--color-accent)}
+.step h3{font-size:.98rem;margin-bottom:6px}
+.step p{font-size:.82rem;color:var(--muted);margin:0;max-width:180px}
+.pilot{border:1px solid var(--color-accent);background:var(--accent-soft);border-radius:14px;padding:19px;margin:26px 0;max-width:860px}
+.pilot-head{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:12px}
+.pilot-title{font:600 .76rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.07em}
+.copy{border:1px solid var(--color-neutral);background:var(--color-bg);border-radius:7px;padding:6px 9px;cursor:pointer;font-size:.72rem}
+pre{margin:0;white-space:pre-wrap;font:500 .82rem/1.65 "IBM Plex Mono",monospace}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px}
+.key{border:1px solid var(--line);border-radius:14px;padding:17px;background:var(--color-bg)}
+.key b{display:block;font-family:Manrope,sans-serif;margin-bottom:7px}
+.key span{font-size:.82rem;color:var(--muted)}
+.nav-bottom{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:stretch;padding:40px 0}
+.nav-card{border:1px solid var(--line);padding:17px;border-radius:13px;background:var(--color-bg)}
+.nav-card.next{text-align:right}
+.nav-card small{display:block;color:var(--muted);font:500 .7rem "IBM Plex Mono",monospace;text-transform:uppercase;margin-bottom:5px}
+.nav-card strong{font-family:Manrope,sans-serif}
+.top-btn{align-self:center;border:1px solid var(--color-text);background:var(--color-bg);padding:10px 14px;border-radius:8px;cursor:pointer}
+footer{border-top:1px solid var(--line);padding:25px 0 40px;color:var(--muted);font-size:.8rem}
+.footer-inner{display:flex;justify-content:space-between;gap:20px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:850px){
+  .hero-grid,.grid-2{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr;gap:20px}
+  .step{padding-left:48px}
+  .step:not(:last-child)::after{left:17px;top:35px;bottom:-20px;border-top:0;border-left:2px solid var(--color-neutral)}
+  .step-dot{position:absolute;left:0;top:0}
+  .step p{max-width:600px}
+  .key-grid{grid-template-columns:repeat(2,1fr)}
+  .nav-links a:nth-child(n+3){display:none}
+}
+@media(max-width:560px){
+  .container{width:min(100% - 28px,1180px)}
+  .nav{padding:11px 14px}
+  .hero{padding:48px 0 38px}
+  .section{padding:48px 0}
+  .section-head{grid-template-columns:1fr;gap:8px}
+  .grid-3,.key-grid{grid-template-columns:1fr}
+  .meta{grid-template-columns:1fr}
+  .nav-bottom{grid-template-columns:1fr}
+  .nav-card.next{text-align:left}
+  .top-btn{justify-self:start}
+  .footer-inner{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header class="header">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">GP</span><span>Gestion de Projet</span></a>
+    <div class="nav-links">
+      <a href="#sommaire">Sommaire</a>
+      <a href="#cles">Points clés</a>
+      <a href="#navigation">Navigation</a>
+    </div>
+  </nav>
+</header>
+
+<div id="top"></div>
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">Module 4 · Exécution, suivi et contrôle</p>
+      <h1>Leçon 16<br>Lancement et exécution du projet</h1>
+      <p class="hero-sub">Organiser efficacement le démarrage opérationnel pour transformer un projet préparé en travail coordonné, responsable et orienté vers les livrables.</p>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:23px">
+        <span class="pill">Niveau · Avancé</span>
+        <span class="pill">Durée · 18 min</span>
+      </div>
+    </div>
+    <div class="meta" aria-label="Informations de la leçon">
+      <div class="meta-card"><span class="meta-label">Module</span><span class="meta-value">04 / EXÉCUTION</span></div>
+      <div class="meta-card"><span class="meta-label">Leçon</span><span class="meta-value">16 / 30</span></div>
+      <div class="meta-card"><span class="meta-label">Tempo</span><span class="meta-value">18:00 MIN</span></div>
+      <div class="meta-card"><span class="meta-label">Objectif</span><span class="meta-value">DÉMARRAGE OPÉRATIONNEL</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="toc" id="sommaire">
+  <div class="container">
+    <div class="toc-inner" aria-label="Sommaire de la leçon">
+      <a href="#kickoff">01 · Kick-off</a>
+      <a href="#responsabilites">02 · Responsabilités</a>
+      <a href="#ordre">03 · Ordre de travail</a>
+      <a href="#coordination">04 · Coordination</a>
+      <a href="#actions">05 · Actions</a>
+      <a href="#livrables">06 · Livrables</a>
+      <a href="#cles">07 · Synthèse</a>
+    </div>
+  </div>
+</section>
+
+<main>
+<section class="section reveal" id="kickoff">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">01 / 07</div>
+      <div><h2>Réunion de lancement : aligner le projet avant d’agir</h2></div>
+    </div>
+    <div class="prose">
+      <p class="lead">La réunion de lancement, ou <strong>kick-off</strong>, marque le passage de la préparation à l’exécution. Elle donne à l’équipe une compréhension commune du projet et de la manière dont le travail va démarrer.</p>
+      <p>Elle ne consiste pas seulement à présenter le projet. Elle sert à aligner les acteurs sur le résultat attendu, le périmètre, les priorités, les rôles, les premières actions et les modalités de coordination.</p>
+    </div>
+
+    <div class="svg-wrap" role="img" aria-label="Schéma du déroulement d'une réunion de lancement">
+      <svg viewBox="0 0 1050 250" xmlns="http://www.w3.org/2000/svg">
+        <line x1="105" y1="105" x2="945" y2="105" class="svg-line"/>
+        <g>
+          <circle cx="105" cy="105" r="28" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+          <text x="105" y="110" text-anchor="middle" class="svg-mono" font-size="12">01</text>
+          <text x="105" y="158" text-anchor="middle" class="svg-label" font-size="15" font-weight="600">Contexte</text>
+          <text x="105" y="181" text-anchor="middle" class="svg-label" font-size="12">Pourquoi ?</text>
+        </g>
+        <g>
+          <circle cx="315" cy="105" r="28" class="svg-accent" stroke-width="2"/>
+          <text x="315" y="110" text-anchor="middle" class="svg-mono" font-size="12">02</text>
+          <text x="315" y="158" text-anchor="middle" class="svg-label" font-size="15" font-weight="600">Objectifs</text>
+          <text x="315" y="181" text-anchor="middle" class="svg-label" font-size="12">Quoi ?</text>
+        </g>
+        <g>
+          <circle cx="525" cy="105" r="28" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+          <text x="525" y="110" text-anchor="middle" class="svg-mono" font-size="12">03</text>
+          <text x="525" y="158" text-anchor="middle" class="svg-label" font-size="15" font-weight="600">Rôles</text>
+          <text x="525" y="181" text-anchor="middle" class="svg-label" font-size="12">Qui ?</text>
+        </g>
+        <g>
+          <circle cx="735" cy="105" r="28" class="svg-accent" stroke-width="2"/>
+          <text x="735" y="110" text-anchor="middle" class="svg-mono" font-size="12">04</text>
+          <text x="735" y="158" text-anchor="middle" class="svg-label" font-size="15" font-weight="600">Plan d'action</text>
+          <text x="735" y="181" text-anchor="middle" class="svg-label" font-size="12">Comment ?</text>
+        </g>
+        <g>
+          <circle cx="945" cy="105" r="28" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+          <text x="945" y="110" text-anchor="middle" class="svg-mono" font-size="12">05</text>
+          <text x="945" y="158" text-anchor="middle" class="svg-label" font-size="15" font-weight="600">Prochain jalon</text>
+          <text x="945" y="181" text-anchor="middle" class="svg-label" font-size="12">Quand ?</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="callout">
+      <strong>💡 À retenir</strong>
+      <p>Un bon kick-off réduit les ambiguïtés avant qu’elles ne deviennent des retards : chacun doit comprendre le résultat visé, sa contribution et la prochaine étape.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section alt reveal" id="responsabilites">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">02 / 07</div>
+      <div><h2>Clarifier les responsabilités</h2></div>
+    </div>
+    <div class="prose">
+      <p class="lead">L’exécution devient maîtrisable lorsque les responsabilités sont explicites. Une activité doit avoir un responsable identifié, un résultat attendu et des interlocuteurs connus.</p>
+    </div>
+
+    <div class="grid-3" style="margin-top:28px">
+      <article class="card"><div class="card-icon">PM</div><h3>Pilotage</h3><p>Le chef de projet organise, coordonne, arbitre les priorités et maintient la visibilité sur l’exécution.</p></article>
+      <article class="card"><div class="card-icon">EQ</div><h3>Équipe</h3><p>Chaque membre réalise les activités qui lui sont attribuées et signale rapidement les obstacles.</p></article>
+      <article class="card"><div class="card-icon">SP</div><h3>Parties prenantes</h3><p>Les acteurs concernés apportent décisions, informations, validations ou ressources selon leur rôle.</p></article>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Élément</th><th scope="col">Question de pilotage</th><th scope="col">Résultat attendu</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Responsable</strong></td><td>Qui porte l’activité ?</td><td>Un nom ou un rôle clairement identifié</td></tr>
+          <tr><td><strong>Contribution</strong></td><td>Qui apporte une ressource ou une expertise ?</td><td>Contributeurs connus et disponibles</td></tr>
+          <tr><td><strong>Validation</strong></td><td>Qui autorise ou accepte le résultat ?</td><td>Processus de validation explicite</td></tr>
+          <tr><td><strong>Information</strong></td><td>Qui doit être tenu au courant ?</td><td>Flux d’information défini</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>⚠️ Attention / erreur fréquente</strong>
+      <p>« Tout le monde est responsable » ne permet pas de piloter correctement. La responsabilité opérationnelle doit rester identifiable, même lorsqu’une activité mobilise plusieurs personnes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="ordre">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">03 / 07</div>
+      <div><h2>Établir l’ordre de travail</h2></div>
+    </div>
+    <div class="prose">
+      <p class="lead">L’équipe ne peut pas tout exécuter simultanément. L’ordre de travail traduit les dépendances et les priorités en séquence opérationnelle.</p>
+      <p>On commence par les activités nécessaires au démarrage, puis on enchaîne les travaux selon leurs dépendances, leurs contraintes de ressources et les jalons du projet. Une priorité n’est donc pas seulement « importante » : elle doit être reliée au flux réel d’exécution.</p>
+    </div>
+
+    <div class="stepper" aria-label="Séquence de mise en ordre du travail">
+      <div class="step"><div class="step-dot">01</div><h3>Préparer</h3><p>Réunir informations, ressources et autorisations nécessaires.</p></div>
+      <div class="step"><div class="step-dot">02</div><h3>Démarrer</h3><p>Lancer les activités qui débloquent les travaux suivants.</p></div>
+      <div class="step"><div class="step-dot">03</div><h3>Enchaîner</h3><p>Respecter les dépendances et la logique du planning.</p></div>
+      <div class="step"><div class="step-dot">04</div><h3>Coordonner</h3><p>Ajuster les interfaces entre personnes et activités.</p></div>
+      <div class="step"><div class="step-dot">05</div><h3>Livrer</h3><p>Produire et faire vérifier les résultats attendus.</p></div>
+    </div>
+
+    <div class="pilot">
+      <div class="pilot-head"><span class="pilot-title">Fiche de pilotage · ordre de travail</span><button class="copy" data-copy="ordre-text">Copier</button></div>
+      <pre id="ordre-text">ACTIVITÉ : Préparer le premier lot
+DÉPENDANCE : Données et ressources disponibles
+RESPONSABLE : Équipe désignée
+PRIORITÉ : Démarrage
+SORTIE ATTENDUE : Lot prêt pour exécution
+PROCHAIN JALON : Première vérification</pre>
+    </div>
+
+    <div class="svg-wrap" role="img" aria-label="Schéma des dépendances entre activités">
+      <svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="var(--color-neutral)"/></marker></defs>
+        <rect x="45" y="82" width="170" height="76" rx="12" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+        <text x="130" y="112" text-anchor="middle" class="svg-mono" font-size="12">A01</text><text x="130" y="137" text-anchor="middle" class="svg-label" font-size="14" font-weight="600">Préparer</text>
+        <line x1="215" y1="120" x2="315" y2="120" class="svg-line" marker-end="url(#arrow)"/>
+        <rect x="315" y="82" width="170" height="76" rx="12" class="svg-accent" stroke-width="2"/>
+        <text x="400" y="112" text-anchor="middle" class="svg-mono" font-size="12">A02</text><text x="400" y="137" text-anchor="middle" class="svg-label" font-size="14" font-weight="600">Exécuter</text>
+        <line x1="485" y1="120" x2="585" y2="120" class="svg-line" marker-end="url(#arrow)"/>
+        <rect x="585" y="82" width="170" height="76" rx="12" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+        <text x="670" y="112" text-anchor="middle" class="svg-mono" font-size="12">A03</text><text x="670" y="137" text-anchor="middle" class="svg-label" font-size="14" font-weight="600">Vérifier</text>
+        <line x1="755" y1="120" x2="855" y2="120" class="svg-line" marker-end="url(#arrow)"/>
+        <rect x="855" y="82" width="100" height="76" rx="12" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="3"/>
+        <text x="905" y="112" text-anchor="middle" class="svg-mono" font-size="12">J01</text><text x="905" y="137" text-anchor="middle" class="svg-label" font-size="14" font-weight="600">Jalon</text>
+        <text x="500" y="218" text-anchor="middle" class="svg-label" font-size="12">Une activité de démarrage doit être reliée à ce qu’elle débloque ensuite.</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="section alt reveal" id="coordination">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">04 / 07</div>
+      <div><h2>Coordonner l’exécution</h2></div>
+    </div>
+    <div class="prose">
+      <p class="lead">La coordination assure la continuité entre les activités. Elle évite que des équipes avancent avec des informations différentes ou que les dépendances restent bloquées.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-buttons" role="tablist" aria-label="Dimensions de la coordination">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-flux" id="btn-flux">Flux d'information</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-dec" id="btn-dec">Décisions</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-dep" id="btn-dep">Dépendances</button>
+      </div>
+      <div class="tab-panel active" id="tab-flux" role="tabpanel" aria-labelledby="btn-flux">
+        <h3>Faire circuler l'information utile</h3>
+        <p>Les informations doivent atteindre les bonnes personnes au bon moment : avancement, changement, blocage, besoin de décision ou information nécessaire à une autre activité.</p>
+      </div>
+      <div class="tab-panel" id="tab-dec" role="tabpanel" aria-labelledby="btn-dec">
+        <h3>Rendre les décisions visibles</h3>
+        <p>Une décision opérationnelle doit être identifiable, comprise par les acteurs concernés et reliée à l’action qu’elle déclenche.</p>
+      </div>
+      <div class="tab-panel" id="tab-dep" role="tabpanel" aria-labelledby="btn-dep">
+        <h3>Traiter les interfaces</h3>
+        <p>Lorsqu’une activité dépend d’une autre, la coordination vérifie que le résultat amont est disponible avant de laisser l’activité aval progresser à l’aveugle.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <article class="card"><div class="card-icon">01</div><h3>Point de coordination</h3><p>Moment court consacré aux priorités, aux blocages, aux dépendances et aux décisions nécessaires.</p></article>
+      <article class="card"><div class="card-icon">02</div><h3>Trace de décision</h3><p>Information conservée pour que l’équipe sache ce qui a été décidé et pourquoi l’action doit évoluer.</p></article>
+    </div>
+
+    <div class="callout">
+      <strong>📐 Bonnes pratiques professionnelles</strong>
+      <p>La coordination doit être rythmée par le projet : suffisamment fréquente pour détecter les blocages tôt, mais suffisamment structurée pour éviter des réunions sans décision ni action.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="actions">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">05 / 07</div>
+      <div><h2>Transformer les décisions en actions</h2></div>
+    </div>
+    <div class="prose">
+      <p class="lead">Une décision n’a de valeur opérationnelle que lorsqu’elle se traduit par une action identifiable, attribuée et suivie jusqu’à sa clôture.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Action</th><th scope="col">Responsable</th><th scope="col">Échéance</th><th scope="col">État</th><th scope="col">Sortie</th></tr></thead>
+        <tbody>
+          <tr><td>Confirmer les ressources</td><td>Responsable opérationnel</td><td class="mono">J+1</td><td>À lancer</td><td>Ressources confirmées</td></tr>
+          <tr><td>Distribuer le premier lot</td><td>Chef d’équipe</td><td class="mono">J+2</td><td>Planifiée</td><td>Lot attribué</td></tr>
+          <tr><td>Vérifier le résultat initial</td><td>Référent qualité</td><td class="mono">J+4</td><td>À planifier</td><td>Vérification documentée</td></tr>
+          <tr><td>Préparer le prochain jalon</td><td>Chef de projet</td><td class="mono">J+5</td><td>À lancer</td><td>Jalon préparé</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details>
+      <summary>Pourquoi une action doit-elle avoir un responsable ?</summary>
+      <p>Parce que le suivi doit permettre d’identifier rapidement qui peut confirmer l’état réel, expliquer un blocage ou déclencher la suite.</p>
+    </details>
+    <details>
+      <summary>Pourquoi distinguer action et livrable ?</summary>
+      <p>L’action décrit le travail à effectuer ; le livrable décrit le résultat produit et attendu. Cette distinction permet de vérifier non seulement que le travail avance, mais qu’il produit effectivement quelque chose d’utilisable.</p>
+    </details>
+    <details>
+      <summary>Comment reconnaître une action bien formulée ?</summary>
+      <p>Elle utilise un verbe d’action clair, désigne un responsable, possède une échéance ou un jalon de référence et permet d’identifier une sortie attendue.</p>
+    </details>
+  </div>
+</section>
+
+<section class="section alt reveal" id="livrables">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">06 / 07</div>
+      <div><h2>Piloter les livrables</h2></div>
+    </div>
+    <div class="prose">
+      <p class="lead">L’exécution se juge finalement par les résultats produits. Le livrable matérialise ce que le projet doit remettre, faire valider ou mettre à disposition.</p>
+      <p>Le suivi d’un livrable porte notamment sur son responsable, son état, sa date cible et les conditions nécessaires à son acceptation. Le chef de projet maintient ainsi un lien entre le travail quotidien et les résultats attendus du projet.</p>
+    </div>
+
+    <div class="svg-wrap" role="img" aria-label="Cycle simplifié d'un livrable">
+      <svg viewBox="0 0 1000 300" xmlns="http://www.w3.org/2000/svg">
+        <path d="M170 150 C260 60 370 60 450 150 C530 240 640 240 730 150 C800 80 860 95 900 150" fill="none" stroke="var(--color-neutral)" stroke-width="3"/>
+        <circle cx="150" cy="150" r="38" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+        <text x="150" y="146" text-anchor="middle" class="svg-mono" font-size="11">01</text><text x="150" y="164" text-anchor="middle" class="svg-label" font-size="12">Travail</text>
+        <circle cx="450" cy="150" r="38" class="svg-accent" stroke-width="2"/>
+        <text x="450" y="146" text-anchor="middle" class="svg-mono" font-size="11">02</text><text x="450" y="164" text-anchor="middle" class="svg-label" font-size="12">Livrable</text>
+        <circle cx="730" cy="150" r="38" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+        <text x="730" y="146" text-anchor="middle" class="svg-mono" font-size="11">03</text><text x="730" y="164" text-anchor="middle" class="svg-label" font-size="12">Vérification</text>
+        <circle cx="900" cy="150" r="38" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="3"/>
+        <text x="900" y="146" text-anchor="middle" class="svg-mono" font-size="11">04</text><text x="900" y="164" text-anchor="middle" class="svg-label" font-size="12">Acceptation</text>
+        <text x="500" y="278" text-anchor="middle" class="svg-label" font-size="12">Le travail produit un résultat qui doit être identifiable, vérifiable et rattaché à l'objectif du projet.</text>
+      </svg>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Livrable</th><th scope="col">Responsable</th><th scope="col">État</th><th scope="col">Critère de lecture</th></tr></thead>
+        <tbody>
+          <tr><td>Livrable initial</td><td>Équipe désignée</td><td>En préparation</td><td>Production engagée</td></tr>
+          <tr><td>Version de vérification</td><td>Référent</td><td>À venir</td><td>Résultat disponible pour contrôle</td></tr>
+          <tr><td>Version acceptée</td><td>Responsable de validation</td><td>À obtenir</td><td>Résultat conforme et accepté</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pilot">
+      <div class="pilot-head"><span class="pilot-title">Fiche de pilotage · livrable</span><button class="copy" data-copy="livrable-text">Copier</button></div>
+      <pre id="livrable-text">LIVRABLE : Version initiale
+RESPONSABLE : Référent désigné
+ÉTAT : En préparation
+DATE CIBLE : J+4
+VÉRIFICATION : Contrôle du résultat
+SORTIE : Version prête à validation</pre>
+    </div>
+
+    <div class="callout">
+      <strong>💡 À retenir</strong>
+      <p>Le lancement donne le cadre ; l’exécution transforme ce cadre en activités ; les livrables rendent les progrès visibles et vérifiables.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="cles">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">07 / 07</div>
+      <div><h2>Points clés à retenir</h2></div>
+    </div>
+    <div class="prose">
+      <p class="lead">Le lancement et l’exécution reposent sur une idée centrale : créer un rythme de travail où les responsabilités, les actions, la coordination et les livrables restent continuellement alignés.</p>
+    </div>
+    <div class="key-grid">
+      <div class="key"><b>01 · Kick-off</b><span>Aligner le contexte, les objectifs, les rôles et les premières actions.</span></div>
+      <div class="key"><b>02 · Responsabilités</b><span>Identifier clairement qui porte chaque activité et chaque résultat.</span></div>
+      <div class="key"><b>03 · Coordination</b><span>Maintenir les flux d'information et traiter les dépendances.</span></div>
+      <div class="key"><b>04 · Livrables</b><span>Relier le travail quotidien à des résultats vérifiables.</span></div>
+    </div>
+
+    <div class="svg-wrap" role="img" aria-label="Résumé visuel du lancement et de l'exécution du projet">
+      <svg viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg">
+        <line x1="100" y1="105" x2="900" y2="105" class="svg-line"/>
+        <g><circle cx="100" cy="105" r="30" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/><text x="100" y="110" text-anchor="middle" class="svg-mono" font-size="11">KICK</text><text x="100" y="162" text-anchor="middle" class="svg-label" font-size="13" font-weight="600">Aligner</text></g>
+        <g><circle cx="300" cy="105" r="30" class="svg-accent" stroke-width="2"/><text x="300" y="110" text-anchor="middle" class="svg-mono" font-size="11">RÔLES</text><text x="300" y="162" text-anchor="middle" class="svg-label" font-size="13" font-weight="600">Responsabiliser</text></g>
+        <g><circle cx="500" cy="105" r="30" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/><text x="500" y="110" text-anchor="middle" class="svg-mono" font-size="11">ACT</text><text x="500" y="162" text-anchor="middle" class="svg-label" font-size="13" font-weight="600">Exécuter</text></g>
+        <g><circle cx="700" cy="105" r="30" class="svg-accent" stroke-width="2"/><text x="700" y="110" text-anchor="middle" class="svg-mono" font-size="11">SYNC</text><text x="700" y="162" text-anchor="middle" class="svg-label" font-size="13" font-weight="600">Coordonner</text></g>
+        <g><circle cx="900" cy="105" r="30" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="3"/><text x="900" y="110" text-anchor="middle" class="svg-mono" font-size="11">OUT</text><text x="900" y="162" text-anchor="middle" class="svg-label" font-size="13" font-weight="600">Livrer</text></g>
+      </svg>
+    </div>
+  </div>
+</section>
+</main>
+
+<section class="container" id="navigation">
+  <div class="nav-bottom">
+    <a class="nav-card" href="#" aria-label="Leçon précédente">
+      <small>← Leçon précédente</small>
+      <strong>Leçon 15 · Plan de gestion des risques</strong>
+    </a>
+    <button class="top-btn" id="topBtn" type="button">↑ Haut</button>
+    <a class="nav-card next" href="#" aria-label="Leçon suivante">
+      <small>Leçon suivante →</small>
+      <strong>Leçon 17 · Suivi de l'avancement</strong>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <span>Gestion de Projet · Module 4 · Leçon 16</span>
+    <span>Lancement et exécution du projet</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const progress = document.getElementById('progress');
+  const topBtn = document.getElementById('topBtn');
+
+  function updateProgress(){
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    progress.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  topBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons = [...group.querySelectorAll('.tab-btn')];
+    const panels = [...group.querySelectorAll('.tab-panel')];
+    buttons.forEach((btn, index)=>{
+      btn.addEventListener('click', ()=>{
+        buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+        panels.forEach(p=>p.classList.remove('active'));
+        btn.setAttribute('aria-selected','true');
+        panels[index].classList.add('active');
+      });
+      btn.addEventListener('keydown', e=>{
+        if(e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+          e.preventDefault();
+          const dir = e.key === 'ArrowRight' ? 1 : -1;
+          const next = (index + dir + buttons.length) % buttons.length;
+          buttons[next].focus();
+          buttons[next].click();
+        }
+      });
+    });
+  });
+
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const target = document.getElementById(btn.dataset.copy);
+      if(!target) return;
+      try{
+        await navigator.clipboard.writeText(target.innerText);
+        const old = btn.textContent;
+        btn.textContent = 'Copié';
+        setTimeout(()=>btn.textContent=old, 1200);
+      }catch(e){}
+    });
+  });
+
+  const items = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.08});
+    items.forEach(item=>io.observe(item));
+  }else{
+    items.forEach(item=>item.classList.add('visible'));
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const id=a.getAttribute('href');
+      if(id && id.length>1){
+        const el=document.querySelector(id);
+        if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});}
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

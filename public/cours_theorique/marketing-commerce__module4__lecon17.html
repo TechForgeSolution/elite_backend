@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 17 — Découverte des besoins du client | Marketing, Commerce et Vente</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231C2B42'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23C08A34' font-family='Georgia,serif'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#F6F4EF;
+    --color-text:#1C2B42;
+    --color-accent:#C08A34;
+    --color-neutral:#6E7580;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --box-tint: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-soft: color-mix(in srgb, var(--color-accent) 35%, var(--color-bg));
+    --accent-wash: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--color-bg);
+    color:var(--color-text);
+    font-family:'Source Sans 3', -apple-system, sans-serif;
+    font-size:17px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-weight:700;
+    line-height:1.2;
+    margin:0 0 0.5em 0;
+    letter-spacing:0.2px;
+  }
+  h1{font-size:clamp(2.1rem, 4vw, 3.2rem); font-weight:600;}
+  h2{font-size:clamp(1.5rem, 2.6vw, 2rem); color:var(--color-text);}
+  h3{font-size:1.2rem;}
+
+  .mono, table, .badge, .toc a span.num, .stat-num{
+    font-variant-numeric:tabular-nums;
+  }
+  .mono, .protocol-table{
+    font-family:'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  a{color:var(--color-accent);}
+
+  p{max-width:720px;}
+
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:720px;}
+
+  /* Reading progress bar */
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent);
+    z-index:1000;
+    transition:width 80ms linear;
+  }
+
+  /* Header */
+  header.site{
+    position:sticky; top:0; z-index:900;
+    background:color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  header.site .bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px;
+    max-width:960px; margin:0 auto;
+  }
+  .filiere{
+    display:flex; align-items:baseline; gap:10px;
+    font-family:'Cormorant Garamond', serif;
+    font-weight:700; font-size:1.15rem;
+  }
+  .filiere .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--color-accent); display:inline-block;
+  }
+  nav.menu{display:flex; gap:22px; font-size:0.92rem;}
+  nav.menu a{color:var(--color-text); text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px;}
+  nav.menu a:hover{border-color:var(--color-accent); color:var(--color-accent);}
+  .menu-toggle{display:none; background:none; border:1px solid var(--border-soft); border-radius:6px; padding:6px 10px; color:var(--color-text); font-size:1rem;}
+
+  /* Hero */
+  .hero{padding:64px 0 40px 0; border-bottom:1px solid var(--border-soft);}
+  .hero .module-line{color:var(--color-accent); font-size:0.95rem; margin-bottom:14px; font-weight:600;}
+  .hero p.subtitle{color:var(--text-muted); font-size:1.15rem; max-width:640px;}
+  .badges{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;}
+  .badge{
+    border:1px solid var(--border-soft);
+    padding:6px 14px; border-radius:100px;
+    font-size:0.85rem; color:var(--color-text);
+    background:var(--color-bg);
+  }
+  .badge.accent{border-color:var(--accent-soft); color:var(--color-accent);}
+
+  /* TOC */
+  .toc{
+    background:var(--bg-alt);
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    padding:24px 28px;
+    margin:40px 0;
+  }
+  .toc h2{font-size:1.1rem; margin-bottom:14px; font-family:'Source Sans 3',sans-serif; font-weight:600;}
+  .toc ol{margin:0; padding:0; list-style:none; counter-reset:toc;}
+  .toc li{counter-increment:toc; margin-bottom:9px;}
+  .toc a{
+    color:var(--color-text); text-decoration:none; display:flex; gap:10px;
+  }
+  .toc a::before{
+    content:counter(toc, decimal-leading-zero);
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--color-accent);
+    font-size:0.85rem;
+  }
+  .toc a:hover{color:var(--color-accent);}
+
+  /* Sections */
+  section.block{
+    padding:56px 0;
+    border-bottom:1px solid var(--border-soft);
+    opacity:0; transform:translateY(14px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  section.block.in-view{opacity:1; transform:translateY(0);}
+  section.block:last-of-type{border-bottom:none;}
+  section.block .eyebrow{
+    color:var(--color-accent); font-weight:600; font-size:0.88rem; margin-bottom:8px;
+  }
+
+  /* Encadrés */
+  .callout{
+    border:1px solid var(--border-soft);
+    border-left:4px solid var(--color-accent);
+    background:var(--box-tint);
+    border-radius:6px;
+    padding:20px 22px;
+    margin:26px 0;
+    max-width:720px;
+  }
+  .callout .callout-head{
+    display:flex; align-items:center; gap:10px;
+    font-weight:600; margin-bottom:8px; color:var(--color-text);
+  }
+  .callout .callout-head .ic{font-size:1.2rem;}
+  .callout p{margin:0;}
+
+  /* Cards */
+  .card-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr));
+    gap:16px; margin:28px 0;
+  }
+  .card{
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    padding:20px;
+    background:var(--color-bg);
+    transition:border-color 0.2s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .ic{font-size:1.6rem; margin-bottom:10px; display:block;}
+  .card h3{margin-bottom:6px; font-size:1.05rem; font-family:'Source Sans 3',sans-serif; font-weight:600; color:var(--color-text);}
+  .card p{font-size:0.92rem; color:var(--text-muted); margin:0;}
+  .card .letter{
+    display:inline-block; width:26px; height:26px; border-radius:50%;
+    background:var(--accent-wash); color:var(--color-accent);
+    text-align:center; line-height:26px; font-weight:700; margin-bottom:10px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.85rem;
+  }
+
+  /* Tabs */
+  .tabs{margin:28px 0; max-width:720px;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--border-soft);}
+  .tab-btn{
+    background:none; border:none; padding:10px 18px; font-size:0.95rem;
+    color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent;
+    font-family:'Source Sans 3', sans-serif; margin-bottom:-1px;
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-color:var(--color-accent); font-weight:600;}
+  .tab-panel{padding:22px 2px; display:none;}
+  .tab-panel.active{display:block;}
+  .tab-panel ul{padding-left:1.2em; margin:0;}
+  .tab-panel li{margin-bottom:8px;}
+
+  /* Table / protocol */
+  .table-scroll{overflow-x:auto; margin:28px 0; border:1px solid var(--border-soft); border-radius:10px;}
+  table.protocol{
+    width:100%; border-collapse:collapse; min-width:640px;
+    background:var(--color-bg);
+  }
+  table.protocol caption{
+    text-align:left; padding:16px 18px 0 18px; font-weight:600; font-family:'Source Sans 3', sans-serif;
+    caption-side:top;
+  }
+  table.protocol th, table.protocol td{
+    padding:12px 18px; text-align:left; border-bottom:1px solid var(--border-soft);
+    font-size:0.92rem; vertical-align:top;
+  }
+  table.protocol thead th{
+    background:var(--bg-alt); color:var(--color-text);
+    font-family:'Source Sans 3', sans-serif; font-weight:600; font-size:0.85rem;
+    border-bottom:1px solid var(--border-soft);
+  }
+  table.protocol tbody tr:hover{background:var(--accent-wash);}
+  table.protocol td.key{color:var(--color-accent); font-weight:600;}
+
+  /* Accordion */
+  .accordion{max-width:720px; margin:26px 0;}
+  .acc-item{border-bottom:1px solid var(--border-soft);}
+  .acc-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center;
+    font-size:1rem; font-weight:600; color:var(--color-text); font-family:'Source Sans 3', sans-serif;
+  }
+  .acc-trigger .plus{color:var(--color-accent); font-size:1.2rem; transition:transform 0.2s ease;}
+  .acc-trigger[aria-expanded="true"] .plus{transform:rotate(45deg);}
+  .acc-panel{max-height:0; overflow:hidden; transition:max-height 0.3s ease;}
+  .acc-panel .inner{padding:0 4px 18px 4px; color:var(--text-muted);}
+
+  /* Stepper */
+  .stepper{
+    display:flex; gap:0; margin:32px 0; flex-wrap:wrap;
+  }
+  .step{
+    flex:1 1 150px; position:relative; padding:0 14px 0 0;
+  }
+  .step .step-top{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+  .step .step-num{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent);
+    color:var(--color-accent); display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-size:0.85rem; font-weight:600; flex-shrink:0;
+    background:var(--color-bg);
+  }
+  .step .step-line{flex:1; height:1px; background:var(--border-soft);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.98rem; margin-bottom:4px;}
+  .step p{font-size:0.88rem; color:var(--text-muted); margin:0;}
+
+  /* Dialogue */
+  .dialogue{max-width:720px; margin:28px 0; border:1px solid var(--border-soft); border-radius:10px; overflow:hidden;}
+  .dialogue .turn{padding:14px 20px; border-bottom:1px solid var(--border-soft); display:flex; gap:16px;}
+  .dialogue .turn:last-child{border-bottom:none;}
+  .dialogue .who{
+    flex-shrink:0; width:110px; font-weight:600; font-size:0.85rem;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .dialogue .who.client{color:var(--color-neutral);}
+  .dialogue .who.vendeur{color:var(--color-accent);}
+  .dialogue .say{color:var(--color-text); margin:0;}
+  .dialogue .say em{color:var(--text-muted); font-style:italic;}
+
+  /* Key takeaways */
+  .takeaways{
+    background:var(--color-text); color:var(--color-bg);
+    border-radius:14px; padding:40px 36px;
+  }
+  .takeaways h2{color:var(--color-bg);}
+  .takeaways ul{list-style:none; padding:0; margin:0; display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .takeaways li{
+    padding-left:22px; position:relative; font-size:0.96rem; line-height:1.55;
+    color:color-mix(in srgb, var(--color-bg) 90%, transparent);
+  }
+  .takeaways li::before{
+    content:"—"; position:absolute; left:0; color:var(--color-accent); font-weight:700;
+  }
+
+  /* Exercise */
+  .exercise-box{
+    border:1px solid var(--border-soft); border-radius:10px; padding:26px 26px 22px 26px; max-width:720px;
+    background:var(--bg-alt);
+  }
+  .exercise-box .q{font-weight:600; margin-bottom:12px;}
+  .reveal-btn{
+    background:var(--color-text); color:var(--color-bg); border:none;
+    padding:9px 18px; border-radius:6px; font-size:0.88rem; cursor:pointer;
+    font-family:'Source Sans 3', sans-serif;
+  }
+  .reveal-btn:hover{background:var(--color-accent); color:var(--color-text);}
+  .reveal-answer{display:none; margin-top:14px; padding-top:14px; border-top:1px dashed var(--border-soft); color:var(--text-muted);}
+  .reveal-answer.shown{display:block;}
+
+  /* Footer nav */
+  .lesson-nav{
+    display:flex; justify-content:space-between; gap:20px; padding:48px 0; flex-wrap:wrap;
+  }
+  .lesson-nav a{
+    text-decoration:none; color:var(--color-text);
+    border:1px solid var(--border-soft); border-radius:10px;
+    padding:16px 20px; flex:1 1 260px; display:block;
+    transition:border-color 0.2s ease;
+  }
+  .lesson-nav a:hover{border-color:var(--color-accent);}
+  .lesson-nav .dir{font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:4px; display:block;}
+  .lesson-nav .to-module{text-align:center; flex-basis:100%; font-size:0.9rem;}
+  .lesson-nav .next{text-align:right;}
+
+  footer.site{
+    padding:30px 0 60px 0; text-align:center; color:var(--text-muted); font-size:0.85rem;
+  }
+
+  #back-to-top{
+    position:fixed; bottom:28px; right:28px;
+    width:46px; height:46px; border-radius:50%;
+    background:var(--color-text); color:var(--color-bg);
+    border:none; cursor:pointer; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity 0.25s ease;
+    z-index:800;
+  }
+  #back-to-top.show{opacity:1; pointer-events:auto;}
+  #back-to-top:hover{background:var(--color-accent); color:var(--color-text);}
+
+  svg text{font-family:'Source Sans 3', sans-serif;}
+
+  @media (max-width: 720px){
+    nav.menu{display:none;}
+    .menu-toggle{display:inline-block;}
+    .hero{padding:44px 0 30px 0;}
+    section.block{padding:40px 0;}
+    .takeaways{padding:28px 20px;}
+    .lesson-nav .next{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="bar">
+    <div class="filiere"><span class="dot"></span> Marketing, Commerce et Vente</div>
+    <nav class="menu">
+      <a href="#ecoute">Écoute active</a>
+      <a href="#questionnement">Questionnement</a>
+      <a href="#typologie">Typologie</a>
+      <a href="#grille">Grille</a>
+      <a href="#reformulation">Reformulation</a>
+      <a href="#retenir">Points clés</a>
+    </nav>
+    <button class="menu-toggle" aria-label="Ouvrir le sommaire" onclick="document.querySelector('.toc').scrollIntoView({behavior:'smooth'})">☰</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="module-line">MODULE 4 · Techniques de vente et négociation commerciale</div>
+    <h1>Leçon 17 — Découverte des besoins du client</h1>
+    <p class="subtitle">Analyser les attentes du client avant la vente : écouter, questionner et reformuler pour construire un argumentaire qui répond à un besoin réel, pas supposé.</p>
+    <div class="badges">
+      <span class="badge accent">Niveau avancé</span>
+      <span class="badge">25 min de lecture</span>
+      <span class="badge">Module 4 · Leçon 17</span>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><a href="#ecoute">L'écoute active, avant toute chose</a></li>
+      <li><a href="#questionnement">Le questionnement : ouvrir puis cadrer</a></li>
+      <li><a href="#typologie">La typologie des besoins (méthode SONCAS)</a></li>
+      <li><a href="#grille">La grille de découverte client</a></li>
+      <li><a href="#reformulation">La reformulation</a></li>
+      <li><a href="#dialogue">Mini-dialogue commercial</a></li>
+      <li><a href="#retenir">Points clés à retenir</a></li>
+      <li><a href="#exercice">Mini-exercice</a></li>
+    </ol>
+  </nav>
+
+  <section class="block" id="ecoute">
+    <div class="eyebrow">01</div>
+    <h2>L'écoute active, avant toute chose</h2>
+    <div class="prose">
+      <p>Un besoin client se présente rarement sous sa forme complète dès la première phrase. Ce que le client formule au premier abord — une demande de prix, une comparaison de produits, une hésitation — n'est souvent que la partie visible d'une attente plus large : un budget contraint, une mauvaise expérience passée, une pression de son entourage ou de sa hiérarchie.</p>
+      <p>L'écoute active consiste à recueillir ce qui est dit, mais aussi à repérer ce qui ne l'est pas : le ton, les hésitations, les priorités implicites. Elle précède tout argumentaire — vendre avant d'avoir découvert, c'est répondre à une question que le client n'a pas posée.</p>
+    </div>
+
+    <svg viewBox="0 0 700 300" role="img" aria-label="Schéma en iceberg illustrant le besoin exprimé au-dessus de la ligne de flottaison et les besoins réels sous la surface" style="width:100%; max-width:700px; height:auto; margin-top:18px;">
+      <defs>
+        <clipPath id="above"><rect x="0" y="0" width="700" height="110"/></clipPath>
+        <clipPath id="below"><rect x="0" y="110" width="700" height="190"/></clipPath>
+      </defs>
+      <line x1="0" y1="110" x2="700" y2="110" stroke="#6E7580" stroke-width="1" stroke-dasharray="4 5"/>
+      <text x="12" y="102" font-size="12" fill="#6E7580">surface — ce que le client dit</text>
+      <text x="12" y="128" font-size="12" fill="#6E7580">sous la surface — ce que le client ressent</text>
+
+      <g clip-path="url(#above)">
+        <polygon points="350,20 300,110 400,110" fill="none" stroke="#C08A34" stroke-width="2.5"/>
+      </g>
+      <text x="350" y="55" font-size="13" fill="#1C2B42" text-anchor="middle" font-weight="600">Besoin exprimé</text>
+      <text x="350" y="72" font-size="11" fill="#1C2B42" text-anchor="middle">« Je cherche un logiciel moins cher »</text>
+
+      <g clip-path="url(#below)">
+        <polygon points="350,20 140,290 560,290" fill="none" stroke="#1C2B42" stroke-width="1.6" opacity="0.55"/>
+      </g>
+      <text x="350" y="165" font-size="12" fill="#1C2B42" text-anchor="middle">Contrainte budgétaire réelle</text>
+      <text x="350" y="195" font-size="12" fill="#1C2B42" text-anchor="middle">Mauvaise expérience avec un précédent outil</text>
+      <text x="350" y="225" font-size="12" fill="#1C2B42" text-anchor="middle">Besoin de justifier l'achat en interne</text>
+      <text x="350" y="255" font-size="12" fill="#1C2B42" text-anchor="middle">Crainte de se tromper à nouveau</text>
+    </svg>
+
+    <div class="callout">
+      <div class="callout-head"><span class="ic">👨‍🍳</span> Conseil de pro</div>
+      <p>Laissez un silence de deux à trois secondes après la réponse du client avant d'enchaîner. C'est souvent dans ce silence qu'il ajoute l'information la plus utile — celle qu'il n'avait pas prévu de dire.</p>
+    </div>
+  </section>
+
+  <section class="block" id="questionnement">
+    <div class="eyebrow">02</div>
+    <h2>Le questionnement : ouvrir puis cadrer</h2>
+    <div class="prose">
+      <p>Une découverte efficace alterne deux familles de questions. Les questions ouvertes élargissent le champ et laissent le client s'exprimer librement ; les questions fermées vérifient, cadrent et engagent vers une décision. Utiliser uniquement l'une ou l'autre déséquilibre l'entretien : trop d'ouvertes et l'échange tourne en rond, trop de fermées et le client se sent interrogé plutôt qu'écouté.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Comparer les types de questions">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-ouvertes" id="tab-ouvertes">Questions ouvertes</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-fermees" id="tab-fermees">Questions fermées</button>
+      </div>
+      <div class="tab-panel active" id="panel-ouvertes" role="tabpanel" aria-labelledby="tab-ouvertes">
+        <p><strong>Objectif :</strong> faire parler le client, explorer le contexte, révéler ce qu'il n'a pas anticipé de dire.</p>
+        <ul>
+          <li>« Qu'est-ce qui vous a poussé à chercher une solution maintenant ? »</li>
+          <li>« Comment gérez-vous cette situation aujourd'hui ? »</li>
+          <li>« Qu'attendez-vous précisément de ce changement ? »</li>
+          <li>« Qu'est-ce qui vous a déçu dans votre solution actuelle ? »</li>
+        </ul>
+      </div>
+      <div class="tab-panel" id="panel-fermees" role="tabpanel" aria-labelledby="tab-fermees">
+        <p><strong>Objectif :</strong> confirmer une information, cadrer un périmètre, engager vers une étape suivante.</p>
+        <ul>
+          <li>« Le budget est-il déjà validé en interne ? »</li>
+          <li>« Êtes-vous l'unique décideur sur ce dossier ? »</li>
+          <li>« Souhaitez-vous une mise en place avant la fin du trimestre ? »</li>
+          <li>« Cette contrainte de délai est-elle négociable ? »</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="ic">⚠️</span> Erreur fréquente</div>
+      <p>Enchaîner les questions fermées en début d'entretien donne au client l'impression d'un interrogatoire. Ouvrez toujours l'échange avant de le cadrer.</p>
+    </div>
+  </section>
+
+  <section class="block" id="typologie">
+    <div class="eyebrow">03</div>
+    <h2>La typologie des besoins — méthode SONCAS</h2>
+    <div class="prose">
+      <p>Derrière chaque demande se cache un ou plusieurs leviers de motivation. La méthode SONCAS aide à identifier lequel domine chez ce client précis, pour orienter les questions et, plus tard, l'argumentaire vers ce qui compte vraiment pour lui.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><span class="letter">S</span><h3>Sécurité</h3><p>Craint le risque et l'erreur. Cherche des garanties, des références, un accompagnement rassurant.</p></div>
+      <div class="card"><span class="letter">O</span><h3>Orgueil</h3><p>Veut se distinguer, être reconnu. Sensible à l'exclusivité et au statut que confère le produit.</p></div>
+      <div class="card"><span class="letter">N</span><h3>Nouveauté</h3><p>Attiré par l'innovation et la dernière évolution. Se lasse vite de ce qui existe déjà.</p></div>
+      <div class="card"><span class="letter">C</span><h3>Confort</h3><p>Recherche la simplicité d'usage et l'absence de contraintes. Rejette la complexité.</p></div>
+      <div class="card"><span class="letter">A</span><h3>Argent</h3><p>Sensible au prix et au retour sur investissement. Compare, négocie, calcule.</p></div>
+      <div class="card"><span class="letter">S</span><h3>Sympathie</h3><p>Achète aussi la relation. Sensible à la qualité de l'échange avec le vendeur.</p></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="ic">💡</span> À retenir</div>
+      <p>Un client combine généralement deux ou trois leviers dominants, rarement les six à la fois. La découverte sert justement à isoler lesquels priment, plutôt qu'à cocher toute la grille.</p>
+    </div>
+  </section>
+
+  <section class="block" id="grille">
+    <div class="eyebrow">04</div>
+    <h2>La grille de découverte client</h2>
+    <div class="prose">
+      <p>Cette grille structure l'entretien de découverte en quatre familles de questions, à dérouler dans l'ordre pour ne rien omettre. Elle sert de fil conducteur, pas de script à réciter mot pour mot.</p>
+    </div>
+
+    <div class="table-scroll">
+      <table class="protocol">
+        <caption>Grille de découverte client — quatre familles de questions</caption>
+        <thead>
+          <tr>
+            <th scope="col">Famille</th>
+            <th scope="col">Objectif</th>
+            <th scope="col">Exemple de question</th>
+            <th scope="col">Point de vigilance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="key">Situation</td>
+            <td>Comprendre le contexte actuel du client</td>
+            <td>« Comment fonctionnez-vous aujourd'hui sur ce point ? »</td>
+            <td>Rester factuel, ne pas encore évaluer</td>
+          </tr>
+          <tr>
+            <td class="key">Problème</td>
+            <td>Identifier la difficulté ou l'insatisfaction</td>
+            <td>« Qu'est-ce qui ne fonctionne pas dans cette organisation ? »</td>
+            <td>Laisser le client nommer le problème lui-même</td>
+          </tr>
+          <tr>
+            <td class="key">Implication</td>
+            <td>Mesurer le coût réel de ne rien changer</td>
+            <td>« Quel est l'impact de cette situation sur vos équipes ? »</td>
+            <td>Étape la plus souvent négligée — pourtant décisive</td>
+          </tr>
+          <tr>
+            <td class="key">Solution attendue</td>
+            <td>Faire exprimer le résultat souhaité</td>
+            <td>« À quoi ressemblerait une solution idéale pour vous ? »</td>
+            <td>Noter les mots exacts du client pour les réutiliser</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="ic">📌</span> Rappel</div>
+      <p>Chaque réponse obtenue doit être notée avec les mots du client, pas reformulée immédiatement dans votre vocabulaire produit. Ce vocabulaire d'origine sera précieux au moment de l'argumentation.</p>
+    </div>
+  </section>
+
+  <section class="block" id="reformulation">
+    <div class="eyebrow">05</div>
+    <h2>La reformulation</h2>
+    <div class="prose">
+      <p>Reformuler consiste à restituer au client ce qu'il vient d'exprimer, dans des termes légèrement différents, pour vérifier la bonne compréhension et lui montrer qu'il a été entendu. C'est une étape courte mais qui referme chaque grande question de la grille avant de passer à la suivante.</p>
+    </div>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-top"><span class="step-num">1</span><span class="step-line"></span></div>
+        <h3>Reformulation écho</h3>
+        <p>Répéter les derniers mots du client pour l'inciter à préciser sa pensée.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><span class="step-num">2</span><span class="step-line"></span></div>
+        <h3>Reformulation résumé</h3>
+        <p>Synthétiser plusieurs propos épars en une phrase claire et courte.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><span class="step-num">3</span><span class="step-line"></span></div>
+        <h3>Reformulation clarification</h3>
+        <p>Traduire un propos flou en une hypothèse précise, à valider par le client.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><span class="step-num">4</span></div>
+        <h3>Validation</h3>
+        <p>Obtenir un accord explicite du client avant de poursuivre l'entretien.</p>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" aria-expanded="false">Que faire si le client corrige ma reformulation ?</button>
+        <div class="acc-panel"><div class="inner">C'est un signal positif : le client précise son besoin réel. Notez la correction telle quelle et poursuivez sur cette base, sans revenir sur votre première formulation.</div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" aria-expanded="false">Faut-il reformuler après chaque réponse ?</button>
+        <div class="acc-panel"><div class="inner">Non — reformuler après chaque phrase ralentit l'échange et paraît mécanique. Réservez la reformulation aux moments charnières : fin d'une famille de questions, propos ambigu, ou avant de passer à l'argumentaire.</div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" aria-expanded="false">La reformulation doit-elle être neutre ?</button>
+        <div class="acc-panel"><div class="inner">Oui, elle restitue sans juger ni orienter. Une reformulation qui glisse déjà vers un argument de vente n'est plus une reformulation : elle referme la découverte trop tôt.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="dialogue">
+    <div class="eyebrow">06</div>
+    <h2>Mini-dialogue commercial</h2>
+    <div class="prose">
+      <p>Extrait d'un entretien de découverte pour la mise en place d'un logiciel de gestion, illustrant l'alternance question ouverte / question fermée et une reformulation de clarification.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="turn"><span class="who vendeur">Vendeur</span><p class="say">Qu'est-ce qui vous amène à revoir votre outil de gestion actuel ?</p></div>
+      <div class="turn"><span class="who client">Client</span><p class="say">On perd beaucoup de temps à ressaisir les mêmes informations d'un logiciel à l'autre.</p></div>
+      <div class="turn"><span class="who vendeur">Vendeur</span><p class="say">Si je comprends bien, le problème n'est pas l'outil en lui-même, mais l'absence de lien entre vos différents logiciels — c'est bien ça ?</p></div>
+      <div class="turn"><span class="who client">Client</span><p class="say">Exactement, et ça génère aussi des erreurs de saisie.</p></div>
+      <div class="turn"><span class="who vendeur">Vendeur</span><p class="say">Cette ressaisie concerne combien de personnes dans votre équipe aujourd'hui ?</p></div>
+      <div class="turn"><span class="who client">Client</span><p class="say"><em>(question fermée de cadrage)</em> Quatre personnes, à peu près deux heures par semaine chacune.</p></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="ic">💡</span> À retenir</div>
+      <p>La reformulation du vendeur ne propose aucune solution : elle isole le vrai problème — l'absence de connexion entre outils — avant même d'envisager un argumentaire.</p>
+    </div>
+  </section>
+
+  <section class="block" id="retenir">
+    <div class="eyebrow">07</div>
+    <div class="takeaways">
+      <h2>Points clés à retenir</h2>
+      <ul>
+        <li>Le besoin exprimé n'est qu'une partie du besoin réel ; l'écoute active révèle le reste.</li>
+        <li>Alternez questions ouvertes pour explorer et questions fermées pour cadrer.</li>
+        <li>La méthode SONCAS aide à repérer les deux ou trois leviers de motivation dominants.</li>
+        <li>La grille Situation / Problème / Implication / Solution structure un entretien complet.</li>
+        <li>La reformulation valide la compréhension sans jamais orienter vers une solution.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="exercice" style="border-bottom:none;">
+    <div class="eyebrow">08</div>
+    <h2>Mini-exercice</h2>
+    <div class="prose">
+      <p>Un client vous dit : « De toute façon, tous les logiciels de ce type se ressemblent, je ne suis pas sûr que ça vaille le coup de changer. » Avant de lire la piste de réflexion, essayez de formuler la question ouverte que vous poseriez à cet instant.</p>
+    </div>
+    <div class="exercise-box">
+      <div class="q">Quelle question ouvrirait le mieux la découverte à ce moment de l'échange ?</div>
+      <button class="reveal-btn" id="reveal-toggle">Afficher une piste de réflexion</button>
+      <div class="reveal-answer" id="reveal-answer">
+        <p style="margin:0 0 10px 0;">Une piste possible : « Qu'est-ce qui, dans une précédente expérience, vous a donné cette impression ? » — cette question ne conteste pas l'affirmation du client, elle cherche l'événement concret qui l'a formée, souvent plus révélateur que la remarque elle-même.</p>
+        <p style="margin:0;">D'autres formulations sont valables tant qu'elles restent ouvertes et qu'elles évitent de défendre le produit avant d'avoir compris l'origine du doute.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:30px;">
+      <div class="callout-head"><span class="ic">🔗</span> Pour aller plus loin</div>
+      <p>La leçon suivante s'appuie directement sur cette découverte : un besoin mal identifié conduit à un argumentaire hors sujet, quelle que soit la qualité de la réponse aux objections.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="wrap">
+  <nav class="lesson-nav" aria-label="Navigation entre les leçons">
+    <a href="#" class="prev"><span class="dir">← Leçon précédente</span>Leçon 16 — Prospection commerciale</a>
+    <a href="#" class="to-module">Retour au sommaire du Module 4</a>
+    <a href="#" class="next"><span class="dir">Leçon suivante →</span>Leçon 18 — Argumentation et traitement des objections</a>
+  </nav>
+</div>
+
+<footer class="site">
+  <div class="wrap">Filière Marketing, Commerce et Vente · Module 4 — Techniques de vente et négociation commerciale</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Reading progress bar
+  var bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    var pct = height > 0 ? (scrolled / height) * 100 : 0;
+    bar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // Back to top
+  var backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', function(){
+    backBtn.classList.toggle('show', window.scrollY > 500);
+  }, {passive:true});
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+
+  // Tabs
+  document.querySelectorAll('[data-tabs]').forEach(function(group){
+    var tabs = group.querySelectorAll('.tab-btn');
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){
+        tabs.forEach(function(t){ t.setAttribute('aria-selected','false'); });
+        group.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+        tab.setAttribute('aria-selected','true');
+        document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+      });
+      tab.addEventListener('keydown', function(e){
+        var idx = Array.prototype.indexOf.call(tabs, tab);
+        if(e.key === 'ArrowRight'){ tabs[(idx+1) % tabs.length].focus(); tabs[(idx+1) % tabs.length].click(); }
+        if(e.key === 'ArrowLeft'){ tabs[(idx-1+tabs.length) % tabs.length].focus(); tabs[(idx-1+tabs.length) % tabs.length].click(); }
+      });
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.acc-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = trigger.nextElementSibling;
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      panel.style.maxHeight = expanded ? null : panel.scrollHeight + 'px';
+    });
+  });
+
+  // Exercise reveal
+  var revealBtn = document.getElementById('reveal-toggle');
+  var revealAns = document.getElementById('reveal-answer');
+  revealBtn.addEventListener('click', function(){
+    var shown = revealAns.classList.toggle('shown');
+    revealBtn.textContent = shown ? 'Masquer la piste de réflexion' : 'Afficher une piste de réflexion';
+  });
+
+  // Scroll reveal for sections
+  var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = document.querySelectorAll('section.block');
+  if('IntersectionObserver' in window && !reduceMotion){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12});
+    sections.forEach(function(s){ obs.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  }
+})();
+</script>
+
+</body>
+</html>

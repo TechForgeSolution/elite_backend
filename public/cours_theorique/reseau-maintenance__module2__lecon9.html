@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 09 — Gestion de parc informatique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F7FA;
+  --color-text:#10161D;
+  --color-accent:#1F6FEB;
+  --color-neutral:#A9B4BE;
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.68}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:color-mix(in srgb,var(--color-neutral) 25%,var(--color-bg))}
+.progress i{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+.nav{max-width:var(--max);margin:auto;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:.02em}
+.brand span{color:var(--color-accent)}
+.nav a{font-size:.9rem;font-weight:600}
+main{max-width:var(--max);margin:auto;padding:0 22px}
+.hero{padding:72px 0 42px;display:grid;grid-template-columns:1.4fr .6fr;gap:42px;align-items:center}
+.eyebrow{font-family:"IBM Plex Mono";font-size:.78rem;color:var(--color-accent);text-transform:uppercase;letter-spacing:.12em}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12}
+h1{font-size:clamp(2.5rem,6vw,5rem);margin:.25em 0}
+h2{font-size:clamp(1.8rem,3vw,2.7rem);margin:0 0 18px}
+h3{font-size:1.25rem;margin-bottom:8px}
+.lead{font-size:1.15rem;max-width:720px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.badge{padding:6px 10px;border:1px solid var(--color-neutral);border-radius:999px;font-family:"IBM Plex Mono";font-size:.78rem}
+.badge.accent{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.hero-art{border:1px solid var(--color-neutral);border-radius:18px;padding:14px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.hero-art svg{width:100%;height:auto;display:block}
+.toc{border-top:1px solid var(--color-neutral);border-bottom:1px solid var(--color-neutral);padding:24px 0;margin:10px 0 50px}
+.toc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.toc a{padding:12px;border-left:2px solid var(--color-neutral);font-weight:600;font-size:.9rem}
+.toc a:hover{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+section{padding:64px 0}
+section:nth-of-type(even){background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));margin-left:calc((var(--max) - 100vw)/2);margin-right:calc((var(--max) - 100vw)/2);padding-left:max(22px,calc((100vw - var(--max))/2 + 22px));padding-right:max(22px,calc((100vw - var(--max))/2 + 22px))}
+.wrap{max-width:900px}
+.kicker{font-family:"IBM Plex Mono";color:var(--color-accent);font-size:.78rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.card{border:1px solid color-mix(in srgb,var(--color-neutral) 65%,var(--color-bg));border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.6rem}
+.diagram{margin:32px 0;border:1px solid var(--color-neutral);border-radius:16px;padding:16px;background:var(--color-bg);overflow:auto}
+.diagram svg{min-width:680px;width:100%;height:auto}
+.callout{border-left:5px solid var(--color-accent);padding:16px 18px;margin:25px 0;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.callout strong{font-family:"Space Grotesk"}
+table{width:100%;border-collapse:collapse;margin:25px 0;font-family:"IBM Plex Mono";font-size:.88rem}
+th,td{padding:12px;border-bottom:1px solid var(--color-neutral);text-align:left}
+th{color:var(--color-accent);font-weight:600}
+tr:hover td{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:28px 0}
+.step{border-top:3px solid var(--color-accent);padding:15px 8px}
+.num{font-family:"IBM Plex Mono";color:var(--color-accent);font-weight:600}
+details{border-top:1px solid var(--color-neutral);padding:15px 0}
+summary{cursor:pointer;font-family:"Space Grotesk";font-weight:600}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.key{padding:18px;border:1px solid var(--color-neutral);border-radius:12px}
+footer{border-top:1px solid var(--color-neutral);padding:35px 22px;text-align:center}
+.bottom-nav{display:flex;justify-content:space-between;gap:15px;margin-top:35px}
+.btn{display:inline-block;padding:10px 14px;border:1px solid var(--color-neutral);border-radius:9px;font-weight:600}
+.btn:hover{border-color:var(--color-accent);text-decoration:none}
+.top{position:fixed;right:20px;bottom:20px;display:none;background:var(--color-text);color:var(--color-bg);border:0;border-radius:9px;padding:11px 13px;cursor:pointer}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){
+ .hero{grid-template-columns:1fr}
+ .toc-grid{grid-template-columns:repeat(2,1fr)}
+ .grid{grid-template-columns:1fr 1fr}
+ .steps{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+ main{padding:0 16px}.nav{padding:12px 16px}
+ .hero{padding-top:48px}.toc-grid,.grid,.keys{grid-template-columns:1fr}
+ .steps{grid-template-columns:1fr}
+ section{padding:45px 0}
+ section:nth-of-type(even){margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+ h1{font-size:2.65rem}
+ .bottom-nav{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">Maintenance <span>&amp;</span> Réseau Informatique</div>
+    <a href="#sommaire">Sommaire</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div>
+    <div class="eyebrow">Module 2 · Maintenance informatique</div>
+    <h1>Gestion de parc informatique</h1>
+    <p class="lead">Inventorier, déployer et administrer un parc de postes informatiques avec méthode, visibilité et maîtrise du cycle de vie.</p>
+    <div class="badges">
+      <span class="badge accent">LEÇON 09</span><span class="badge">Débutant</span><span class="badge">15 min</span>
+    </div>
+  </div>
+  <div class="hero-art" role="img" aria-label="Illustration d'un parc informatique connecté à une console de gestion">
+    <svg viewBox="0 0 520 330" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="var(--color-text)" stroke-width="3">
+        <rect x="18" y="22" width="484" height="286" rx="14"/>
+        <rect x="45" y="48" width="145" height="88" rx="8"/>
+        <rect x="45" y="163" width="145" height="88" rx="8"/>
+        <rect x="330" y="100" width="145" height="100" rx="8"/>
+        <path d="M190 92h80v58h60M190 207h80v-57"/>
+        <circle cx="280" cy="150" r="28"/>
+        <path d="M266 150h28M280 136v28"/>
+        <path stroke="var(--color-accent)" d="M63 70h110M63 185h110M348 123h109"/>
+      </g>
+      <g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="15">
+        <text x="63" y="95">POSTE-01</text><text x="63" y="210">POSTE-02</text><text x="348" y="150">CONSOLE</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire">
+  <div class="eyebrow">Sommaire</div>
+  <div class="toc-grid">
+    <a href="#inventaire">01 · Inventaire</a>
+    <a href="#deploiement">02 · Déploiement de masse</a>
+    <a href="#outils">03 · Outils de gestion</a>
+    <a href="#cycle">04 · Cycle de vie</a>
+    <a href="#licences">05 · Licences</a>
+  </div>
+</nav>
+
+<section id="inventaire" class="reveal">
+<div class="wrap">
+  <div class="kicker">01 / VISIBILITÉ</div><h2>Inventaire du parc</h2>
+  <p>L'inventaire consiste à recenser les équipements et leurs informations utiles : identité du poste, matériel, système, logiciels et état. Il donne une vue structurée du parc et facilite son administration.</p>
+  <div class="grid">
+    <article class="card"><div class="icon">▣</div><h3>Matériel</h3><p>Processeur, mémoire, stockage, carte réseau, écran et autres composants.</p></article>
+    <article class="card"><div class="icon">⌘</div><h3>Logiciels</h3><p>Système d'exploitation, applications installées et versions observées.</p></article>
+    <article class="card"><div class="icon">◎</div><h3>Identité</h3><p>Nom du poste, utilisateur associé et informations permettant de retrouver l'équipement.</p></article>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 850 300" role="img" aria-label="Schéma d'un inventaire centralisé">
+      <g fill="none" stroke="var(--color-text)" stroke-width="3">
+        <rect x="25" y="45" width="180" height="80" rx="10"/><rect x="25" y="175" width="180" height="80" rx="10"/>
+        <rect x="620" y="90" width="200" height="120" rx="10"/>
+        <path d="M205 85h180v65h235M205 215h180v-65h235"/>
+        <circle cx="410" cy="150" r="28"/>
+      </g>
+      <g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="17">
+        <text x="50" y="92">POSTE A</text><text x="50" y="222">POSTE B</text><text x="653" y="130">INVENTAIRE</text><text x="653" y="158">centralisé</text>
+      </g>
+      <path d="M635 178h170" stroke="var(--color-accent)" stroke-width="7"/>
+    </svg>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><br>Un inventaire fiable transforme un parc « inconnu » en ensemble d'équipements identifiables et administrables.</div>
+  <table>
+    <thead><tr><th scope="col">Catégorie</th><th scope="col">Exemples de données</th><th scope="col">Utilité</th></tr></thead>
+    <tbody>
+      <tr><td>Identification</td><td>Nom, numéro, utilisateur</td><td>Retrouver rapidement un poste</td></tr>
+      <tr><td>Matériel</td><td>CPU, RAM, stockage</td><td>Connaître les capacités</td></tr>
+      <tr><td>Logiciel</td><td>OS, applications, versions</td><td>Suivre la conformité</td></tr>
+      <tr><td>État</td><td>Actif, en réparation, retiré</td><td>Suivre le cycle de vie</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<section id="deploiement" class="reveal">
+<div class="wrap">
+  <div class="kicker">02 / STANDARDISATION</div><h2>Déploiement de masse</h2>
+  <p>Le déploiement de masse vise à installer et configurer plusieurs postes de manière homogène. L'objectif est de réduire les manipulations répétitives et les écarts de configuration.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 850 310" role="img" aria-label="Processus de déploiement de masse">
+      <g fill="none" stroke="var(--color-text)" stroke-width="3">
+        <rect x="25" y="105" width="135" height="80" rx="10"/><rect x="210" y="105" width="135" height="80" rx="10"/>
+        <rect x="395" y="105" width="135" height="80" rx="10"/><rect x="580" y="45" width="135" height="70" rx="10"/><rect x="580" y="175" width="135" height="70" rx="10"/>
+        <path d="M160 145h50M345 145h50M530 145h50M647 115v60"/>
+      </g>
+      <g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="15">
+        <text x="48" y="138">IMAGE</text><text x="48" y="162">STANDARD</text>
+        <text x="230" y="138">INSTALLER</text><text x="230" y="162">POSTES</text>
+        <text x="418" y="138">CONFIGURER</text><text x="418" y="162">POLITIQUES</text>
+        <text x="603" y="78">TESTER</text><text x="603" y="208">RECENSER</text>
+      </g>
+      <path d="M410 55h105" stroke="var(--color-accent)" stroke-width="6"/>
+    </svg>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="num">01</div><b>Préparer</b><br>Standardiser.</div>
+    <div class="step"><div class="num">02</div><b>Déployer</b><br>Installer.</div>
+    <div class="step"><div class="num">03</div><b>Configurer</b><br>Appliquer.</div>
+    <div class="step"><div class="num">04</div><b>Contrôler</b><br>Vérifier.</div>
+    <div class="step"><div class="num">05</div><b>Inventorier</b><br>Documenter.</div>
+  </div>
+  <div class="callout"><strong>⚠️ Attention</strong><br>Un déploiement uniforme n'est utile que si l'image ou la configuration de référence est elle-même correctement préparée et documentée.</div>
+</div>
+</section>
+
+<section id="outils" class="reveal">
+<div class="wrap">
+  <div class="kicker">03 / ADMINISTRATION</div><h2>Outils de gestion de parc</h2>
+  <p>Les outils de gestion centralisent les informations du parc et peuvent aider à inventorier, surveiller, déployer des logiciels, appliquer des configurations et suivre les équipements.</p>
+  <div class="grid">
+    <article class="card"><div class="icon">⌁</div><h3>Inventaire</h3><p>Collecter automatiquement des informations sur les postes et leurs logiciels.</p></article>
+    <article class="card"><div class="icon">◫</div><h3>Déploiement</h3><p>Distribuer des systèmes, applications ou paramètres sur plusieurs machines.</p></article>
+    <article class="card"><div class="icon">▤</div><h3>Supervision</h3><p>Observer l'état du parc et repérer les situations nécessitant une intervention.</p></article>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 850 330" role="img" aria-label="Console de gestion et agents sur les postes">
+      <g fill="none" stroke="var(--color-text)" stroke-width="3">
+        <rect x="315" y="25" width="220" height="90" rx="10"/>
+        <rect x="35" y="205" width="180" height="80" rx="10"/><rect x="335" y="205" width="180" height="80" rx="10"/><rect x="635" y="205" width="180" height="80" rx="10"/>
+        <path d="M425 115v55M125 205v-35h300M425 170h300v35"/>
+      </g>
+      <g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="16">
+        <text x="347" y="63">CONSOLE DE</text><text x="347" y="88">GESTION</text>
+        <text x="60" y="238">POSTE 01</text><text x="360" y="238">POSTE 02</text><text x="660" y="238">POSTE 03</text>
+      </g>
+      <path d="M350 100h150M70 265h110M370 265h110M670 265h110" stroke="var(--color-accent)" stroke-width="6"/>
+    </svg>
+  </div>
+  <details><summary>Pourquoi centraliser ?</summary><p>La centralisation facilite la visibilité globale du parc et limite les opérations effectuées manuellement poste par poste.</p></details>
+  <details><summary>Quelles informations suivre ?</summary><p>L'inventaire matériel, les logiciels, l'état de l'équipement et les informations nécessaires à son suivi administratif.</p></details>
+</div>
+</section>
+
+<section id="cycle" class="reveal">
+<div class="wrap">
+  <div class="kicker">04 / PATRIMOINE</div><h2>Cycle de vie du matériel</h2>
+  <p>Un équipement informatique évolue au cours de sa vie. La gestion de parc doit suivre ses différentes étapes afin de conserver une vision fiable de son état et de son affectation.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 850 260" role="img" aria-label="Cycle de vie du matériel informatique">
+      <g fill="none" stroke="var(--color-text)" stroke-width="3">
+        <circle cx="110" cy="130" r="58"/><circle cx="280" cy="130" r="58"/><circle cx="450" cy="130" r="58"/><circle cx="620" cy="130" r="58"/><circle cx="790" cy="130" r="58"/>
+        <path d="M168 130h54M338 130h54M508 130h54M678 130h54"/>
+      </g>
+      <g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="14" text-anchor="middle">
+        <text x="110" y="126">ACHAT</text><text x="110" y="146">RÉCEPTION</text>
+        <text x="280" y="126">DÉPLOIEMENT</text><text x="280" y="146">AFFECTATION</text>
+        <text x="450" y="126">UTILISATION</text><text x="450" y="146">MAINTENANCE</text>
+        <text x="620" y="126">RENOUVELLEMENT</text><text x="620" y="146">OU RÉFORME</text>
+        <text x="790" y="126">RETRAIT</text><text x="790" y="146">DU PARC</text>
+      </g>
+      <path d="M80 75h60M250 75h60M420 75h60M590 75h60M760 75h60" stroke="var(--color-accent)" stroke-width="5"/>
+    </svg>
+  </div>
+  <div class="callout"><strong>🛠️ Cas pratique</strong><br>Pour chaque poste, conserver une trace de son entrée dans le parc, de son affectation, de ses changements importants et de sa sortie.</div>
+</div>
+</section>
+
+<section id="licences" class="reveal">
+<div class="wrap">
+  <div class="kicker">05 / CONFORMITÉ</div><h2>Gestion des licences</h2>
+  <p>La gestion des licences consiste à suivre les droits d'utilisation des logiciels, leur affectation et leur conformité avec les conditions applicables.</p>
+  <div class="grid">
+    <article class="card"><div class="icon">#</div><h3>Référencer</h3><p>Identifier le logiciel, sa version et le type de licence.</p></article>
+    <article class="card"><div class="icon">≡</div><h3>Affecter</h3><p>Relier les licences disponibles aux utilisateurs ou équipements concernés.</p></article>
+    <article class="card"><div class="icon">✓</div><h3>Suivre</h3><p>Comparer l'utilisation observée avec les droits disponibles et les échéances.</p></article>
+  </div>
+  <table>
+    <thead><tr><th scope="col">Élément</th><th scope="col">À suivre</th><th scope="col">Objectif</th></tr></thead>
+    <tbody>
+      <tr><td>Logiciel</td><td>Nom / version</td><td>Identifier précisément l'installation</td></tr>
+      <tr><td>Licence</td><td>Type / quantité</td><td>Connaître les droits disponibles</td></tr>
+      <tr><td>Affectation</td><td>Poste / utilisateur</td><td>Relier usage et droit</td></tr>
+      <tr><td>Échéance</td><td>Date / renouvellement</td><td>Anticiper les besoins</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><strong>🔒 Sécurité / bonne pratique</strong><br>Conserver une documentation à jour des logiciels et licences facilite les contrôles, les renouvellements et la maîtrise du parc.</div>
+</div>
+</section>
+
+<section class="reveal" id="synthese">
+<div class="wrap">
+  <div class="kicker">SYNTHÈSE</div><h2>Points clés à retenir</h2>
+  <div class="keys">
+    <div class="key"><b>01 · Inventorier</b><br>Identifier les équipements, leurs caractéristiques et leur état.</div>
+    <div class="key"><b>02 · Déployer</b><br>Standardiser les installations pour réduire les écarts et les tâches répétitives.</div>
+    <div class="key"><b>03 · Administrer</b><br>Centraliser les informations et les opérations de gestion du parc.</div>
+    <div class="key"><b>04 · Suivre</b><br>Accompagner le matériel pendant tout son cycle de vie.</div>
+    <div class="key"><b>05 · Maîtriser les licences</b><br>Suivre les logiciels, les droits d'utilisation et leurs échéances.</div>
+    <div class="key"><b>06 · Documenter</b><br>Conserver une information fiable pour faciliter la maintenance et le support.</div>
+  </div>
+</div>
+</section>
+
+<div class="bottom-nav">
+  <a class="btn" href="#sommaire">↑ Retour au sommaire</a>
+  <a class="btn" href="#" aria-label="Leçon précédente">← Leçon 08 · Virtualisation</a>
+  <a class="btn" href="#" aria-label="Leçon suivante">Leçon 10 · Support technique et helpdesk →</a>
+</div>
+</main>
+
+<footer>
+  <div class="brand">Maintenance <span>&amp;</span> Réseau Informatique</div>
+  <small>Module 2 · Leçon 09 · Gestion de parc informatique</small>
+</footer>
+
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('top');
+function update(){
+ const max=document.documentElement.scrollHeight-innerHeight;
+ progress.style.width=(max>0?(scrollY/max)*100:0)+'%';
+ topBtn.style.display=scrollY>500?'block':'none';
+}
+addEventListener('scroll',update,{passive:true}); update();
+topBtn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 05 — Mise en page : grilles, marges, alignement, rythme, hiérarchie et espace négatif.">
+  <meta name="theme-color" content="#FFFFFF">
+
+  <title>Leçon 05 — Mise en page | Module 1</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-bg: #FFFFFF;
+      --color-bg-alt: #F6F8F6;
+      --color-text: #0B0F0D;
+      --color-text-muted: #5A6560;
+      --color-accent: #1F6F54;
+      --color-accent-soft: #E7F2ED;
+      --color-border: #E3E8E5;
+      --color-accent-alt: #B3541E;
+
+      --font-display: "Space Grotesk", sans-serif;
+      --font-body: "Inter", sans-serif;
+      --font-mono: "Roboto Mono", monospace;
+
+      --container: 1180px;
+      --reading-width: 720px;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 8px 30px rgba(11, 15, 13, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--color-accent);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* =========================
+       BARRE DE PROGRESSION
+    ========================= */
+
+    .reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+
+    .reading-progress__bar {
+      height: 100%;
+      width: 0;
+      background: var(--color-accent);
+      transition: width 0.08s linear;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header-inner {
+      max-width: var(--container);
+      margin: auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--color-accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .header-nav a {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      max-width: var(--container);
+      margin: auto;
+      padding: 80px 24px 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 64px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      color: var(--color-accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 2px;
+      background: var(--color-accent);
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      margin: 0 0 22px;
+      max-width: 800px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      font-size: 1.12rem;
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .badge--accent {
+      background: var(--color-accent-soft);
+      border-color: transparent;
+      color: var(--color-accent);
+    }
+
+    .hero-visual {
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    /* =========================
+       SOMMAIRE
+    ========================= */
+
+    .toc-section {
+      background: var(--color-bg-alt);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .toc {
+      max-width: var(--container);
+      margin: auto;
+      padding: 42px 24px;
+    }
+
+    .toc h2 {
+      font-size: 1.4rem;
+      margin: 0 0 20px;
+    }
+
+    .toc-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: toc;
+    }
+
+    .toc-list li {
+      counter-increment: toc;
+    }
+
+    .toc-list a {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-size: 0.92rem;
+      transition: 0.2s ease;
+    }
+
+    .toc-list a::before {
+      content: "0" counter(toc);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-accent);
+    }
+
+    .toc-list a:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* =========================
+       CONTENU
+    ========================= */
+
+    main {
+      overflow: hidden;
+    }
+
+    .lesson-section {
+      padding: 90px 24px;
+    }
+
+    .lesson-section--alt {
+      background: var(--color-bg-alt);
+    }
+
+    .section-inner {
+      max-width: var(--container);
+      margin: auto;
+    }
+
+    .reading-column {
+      max-width: var(--reading-width);
+    }
+
+    .section-number {
+      display: block;
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      margin: 0 0 24px;
+    }
+
+    h3 {
+      font-size: 1.35rem;
+      margin: 0 0 14px;
+    }
+
+    p {
+      margin: 0 0 20px;
+    }
+
+    .lead {
+      font-size: 1.18rem;
+      color: var(--color-text-muted);
+    }
+
+    /* =========================
+       CARTES
+    ========================= */
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 40px;
+    }
+
+    .concept-card {
+      padding: 26px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-bg);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .concept-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .concept-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .concept-card p {
+      color: var(--color-text-muted);
+      font-size: 0.94rem;
+      margin: 0;
+    }
+
+    /* =========================
+       FIGURES / SVG
+    ========================= */
+
+    figure {
+      margin: 46px 0;
+    }
+
+    .diagram {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-bg);
+      padding: 18px;
+      overflow: auto;
+    }
+
+    figcaption {
+      margin-top: 12px;
+      color: var(--color-text-muted);
+      font-size: 0.84rem;
+    }
+
+    /* =========================
+       CALLOUTS
+    ========================= */
+
+    .callout {
+      margin: 34px 0;
+      padding: 22px 24px;
+      border-left: 4px solid var(--color-accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      background: var(--color-accent-soft);
+    }
+
+    .callout--warning {
+      border-left-color: var(--color-accent-alt);
+      background: #F8EEE8;
+    }
+
+    .callout__title {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    /* =========================
+       STEPPER
+    ========================= */
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin-top: 40px;
+      overflow-x: auto;
+    }
+
+    .step {
+      min-width: 180px;
+      position: relative;
+      padding: 18px;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      top: 32px;
+      left: 44px;
+      right: -20px;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    .step:last-child::before {
+      display: none;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: white;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 18px;
+    }
+
+    .step p {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    /* =========================
+       TABLEAUX
+    ========================= */
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 38px 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-bg);
+    }
+
+    table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    th {
+      text-align: left;
+      background: var(--color-bg-alt);
+      font-size: 0.76rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+
+    td.number,
+    th.number {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: var(--color-accent-soft);
+    }
+
+    .total-row td {
+      font-weight: 700;
+      color: var(--color-accent);
+      border-top: 2px solid var(--color-accent);
+    }
+
+    /* =========================
+       TABS
+    ========================= */
+
+    .tabs {
+      margin-top: 40px;
+    }
+
+    .tab-list {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--color-border);
+      overflow-x: auto;
+    }
+
+    .tab-button {
+      border: none;
+      background: transparent;
+      padding: 14px 18px;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tab-button[aria-selected="true"] {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 28px 0;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* =========================
+       ACCORDÉONS
+    ========================= */
+
+    .accordion {
+      margin-top: 32px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .accordion-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 0;
+      border: none;
+      background: transparent;
+      text-align: left;
+      font: 600 1rem var(--font-body);
+      color: var(--color-text);
+      cursor: pointer;
+    }
+
+    .accordion-symbol {
+      color: var(--color-accent);
+      font-size: 1.4rem;
+    }
+
+    .accordion-content {
+      display: none;
+      padding-bottom: 22px;
+      color: var(--color-text-muted);
+    }
+
+    .accordion-item.open .accordion-content {
+      display: block;
+    }
+
+    /* =========================
+       POINTS CLÉS
+    ========================= */
+
+    .key-points {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 38px;
+    }
+
+    .key-point {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+      border-radius: var(--radius);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+    }
+
+    .key-point span {
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    .key-point p {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .lesson-navigation {
+      max-width: var(--container);
+      margin: auto;
+      padding: 70px 24px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .nav-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 130px;
+      padding: 24px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-bg-alt);
+      transition: 0.2s ease;
+    }
+
+    .nav-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .nav-card small {
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+    }
+
+    .nav-card strong {
+      color: var(--color-text);
+      font-family: var(--font-display);
+    }
+
+    .module-link {
+      align-self: center;
+      padding: 12px 18px;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .back-to-top {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      background: var(--color-bg);
+      color: var(--color-accent);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.25s ease;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      padding: 30px 24px;
+      border-top: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      font-size: 0.84rem;
+    }
+
+    .footer-inner {
+      max-width: var(--container);
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stepper {
+        grid-template-columns: repeat(5, minmax(180px, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .header-nav a:not(:last-child) {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 52px;
+      }
+
+      .lesson-section {
+        padding: 64px 20px;
+      }
+
+      .card-grid,
+      .key-points {
+        grid-template-columns: 1fr;
+      }
+
+      .lesson-navigation {
+        grid-template-columns: 1fr;
+      }
+
+      .module-link {
+        justify-self: stretch;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.8rem;
+      }
+
+      h2 {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .header-inner {
+        padding: 12px 16px;
+      }
+
+      .hero,
+      .toc {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .hero-meta {
+        gap: 8px;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+      }
+
+      .diagram {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="reading-progress" aria-hidden="true">
+    <div class="reading-progress__bar" id="progressBar"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#top" class="brand" aria-label="Retour au début de la leçon">
+        <span class="brand-mark">AV</span>
+        <span>Filière Audiovisuel</span>
+      </a>
+
+      <nav class="header-nav" aria-label="Navigation de la leçon">
+        <a href="#sommaire">Sommaire</a>
+        <a href="#points-cles">Points clés</a>
+        <a href="#navigation">Navigation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+
+    <section class="hero">
+      <div class="hero-content reveal">
+        <div class="eyebrow">Module 1 · Fondamentaux visuels</div>
+
+        <h1>Leçon 05<br>Mise en page</h1>
+
+        <p>
+          Organiser textes et images avec une grille claire permet de rendre
+          une information plus lisible, plus cohérente et plus facile à parcourir.
+          La mise en page crée un ordre visuel : elle guide le regard avant même
+          que le lecteur commence à lire.
+        </p>
+
+        <div class="hero-meta">
+          <span class="badge badge--accent">MODULE 1</span>
+          <span class="badge">Débutant</span>
+          <span class="badge">≈ 15 min</span>
+          <span class="badge">Leçon 05</span>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <svg
+          viewBox="0 0 560 390"
+          width="100%"
+          role="img"
+          aria-labelledby="heroDiagramTitle heroDiagramDesc"
+          xmlns="http://www.w3.org/2000/svg">
+
+          <title id="heroDiagramTitle">Illustration d'une mise en page organisée par une grille</title>
+          <desc id="heroDiagramDesc">
+            Une page structurée avec des marges, des colonnes, des blocs de texte et des images alignés.
+          </desc>
+
+          <rect x="40" y="25" width="480" height="340" rx="12" fill="#FFFFFF" stroke="#E3E8E5" stroke-width="2"/>
+
+          <line x1="85" y1="45" x2="85" y2="345" stroke="#1F6F54" stroke-opacity="0.35" stroke-dasharray="5 6"/>
+          <line x1="205" y1="45" x2="205" y2="345" stroke="#E3E8E5" stroke-dasharray="5 6"/>
+          <line x1="325" y1="45" x2="325" y2="345" stroke="#E3E8E5" stroke-dasharray="5 6"/>
+          <line x1="475" y1="45" x2="475" y2="345" stroke="#1F6F54" stroke-opacity="0.35" stroke-dasharray="5 6"/>
+
+          <rect x="85" y="65" width="260" height="34" rx="5" fill="#1F6F54"/>
+          <rect x="85" y="115" width="120" height="105" rx="6" fill="#E7F2ED"/>
+          <rect x="220" y="115" width="125" height="18" rx="4" fill="#0B0F0D"/>
+          <rect x="220" y="145" width="110" height="8" rx="4" fill="#E3E8E5"/>
+          <rect x="220" y="160" width="118" height="8" rx="4" fill="#E3E8E5"/>
+          <rect x="220" y="175" width="95" height="8" rx="4" fill="#E3E8E5"/>
+
+          <rect x="85" y="240" width="180" height="85" rx="6" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <rect x="280" y="240" width="195" height="85" rx="6" fill="#E7F2ED"/>
+
+          <text x="85" y="52" font-family="Roboto Mono" font-size="11" fill="#1F6F54">MARGE</text>
+          <text x="218" y="108" font-family="Roboto Mono" font-size="11" fill="#5A6560">ALIGNEMENT</text>
+          <text x="85" y="340" font-family="Roboto Mono" font-size="11" fill="#1F6F54">RYTHME</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- SOMMAIRE -->
+
+    <section class="toc-section" id="sommaire">
+      <div class="toc reveal">
+        <h2>Sommaire de la leçon</h2>
+
+        <ol class="toc-list">
+          <li><a href="#definition">Comprendre la mise en page</a></li>
+          <li><a href="#grilles">Utiliser une grille</a></li>
+          <li><a href="#marges">Définir les marges</a></li>
+          <li><a href="#alignement">Créer des alignements</a></li>
+          <li><a href="#rythme">Installer un rythme visuel</a></li>
+          <li><a href="#hierarchie">Construire une hiérarchie</a></li>
+          <li><a href="#espace">Exploiter l'espace négatif</a></li>
+          <li><a href="#points-cles">Points clés</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- DEFINITION -->
+
+    <section class="lesson-section" id="definition">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">01 / COMPRENDRE</span>
+          <h2>La mise en page organise l'information</h2>
+
+          <p class="lead">
+            Une mise en page est la manière dont les différents éléments
+            d'un contenu sont répartis et hiérarchisés dans un espace.
+          </p>
+
+          <p>
+            Texte, titres, images, chiffres, illustrations et espaces vides ne
+            doivent pas être placés au hasard. Leur position influence directement
+            la compréhension et le confort de lecture.
+          </p>
+
+          <p>
+            Une bonne composition donne au lecteur des repères. Il comprend
+            rapidement où commencer, quelles informations sont principales et
+            comment les différents éléments sont reliés entre eux.
+          </p>
+
+          <div class="callout">
+            <div class="callout__title">💡 À retenir</div>
+            <p>
+              La mise en page ne consiste pas à remplir un espace. Elle consiste
+              à organiser l'information pour réduire l'effort de lecture.
+            </p>
+          </div>
+        </div>
+
+        <div class="card-grid reveal">
+          <article class="concept-card">
+            <div class="concept-icon">01</div>
+            <h3>Ordre</h3>
+            <p>Chaque élément occupe une place cohérente dans la composition.</p>
+          </article>
+
+          <article class="concept-card">
+            <div class="concept-icon">02</div>
+            <h3>Lisibilité</h3>
+            <p>Le regard peut parcourir le contenu sans hésitation inutile.</p>
+          </article>
+
+          <article class="concept-card">
+            <div class="concept-icon">03</div>
+            <h3>Hiérarchie</h3>
+            <p>Les informations importantes apparaissent clairement avant les détails.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRILLES -->
+
+    <section class="lesson-section lesson-section--alt" id="grilles">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">02 / STRUCTURER</span>
+          <h2>La grille : une structure invisible</h2>
+
+          <p class="lead">
+            Une grille est un ensemble de lignes et de colonnes qui sert de repère
+            pour positionner les éléments d'une page.
+          </p>
+
+          <p>
+            Le lecteur ne voit généralement pas la grille finale, mais il perçoit
+            l'ordre qu'elle crée. Elle facilite l'alignement et permet de maintenir
+            une cohérence entre plusieurs pages ou supports.
+          </p>
+        </div>
+
+        <figure class="reveal">
+          <div class="diagram">
+            <svg
+              viewBox="0 0 1050 420"
+              width="100%"
+              role="img"
+              aria-labelledby="gridTitle gridDesc"
+              xmlns="http://www.w3.org/2000/svg">
+
+              <title id="gridTitle">Exemple de grille à quatre colonnes</title>
+              <desc id="gridDesc">
+                Une page avec quatre colonnes régulières permettant d'aligner différents blocs de contenu.
+              </desc>
+
+              <rect x="20" y="20" width="1010" height="370" rx="14" fill="#FFFFFF" stroke="#E3E8E5"/>
+
+              <g stroke="#1F6F54" stroke-opacity="0.28" stroke-dasharray="6 8">
+                <line x1="90" y1="55" x2="90" y2="355"/>
+                <line x1="315" y1="55" x2="315" y2="355"/>
+                <line x1="540" y1="55" x2="540" y2="355"/>
+                <line x1="765" y1="55" x2="765" y2="355"/>
+                <line x1="960" y1="55" x2="960" y2="355"/>
+              </g>
+
+              <rect x="90" y="70" width="675" height="48" rx="6" fill="#1F6F54"/>
+
+              <rect x="90" y="145" width="195" height="120" rx="8" fill="#E7F2ED"/>
+              <rect x="315" y="145" width="195" height="120" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+              <rect x="540" y="145" width="195" height="120" rx="8" fill="#E7F2ED"/>
+              <rect x="765" y="145" width="195" height="120" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+
+              <rect x="90" y="295" width="420" height="28" rx="5" fill="#0B0F0D"/>
+              <rect x="540" y="295" width="420" height="28" rx="5" fill="#E3E8E5"/>
+
+              <text x="90" y="45" font-family="Roboto Mono" font-size="14" fill="#1F6F54">
+                GRILLE · 4 COLONNES
+              </text>
+            </svg>
+          </div>
+
+          <figcaption>
+            Une même grille peut accueillir différents types de contenu tout en
+            conservant des alignements réguliers.
+          </figcaption>
+        </figure>
+
+        <div class="callout callout--warning reveal">
+          <div class="callout__title">⚠️ Attention</div>
+          <p>
+            Une grille n'est pas une prison. Elle structure la composition, mais
+            certains éléments peuvent volontairement sortir de la grille lorsqu'un
+            choix visuel précis le justifie.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARGES -->
+
+    <section class="lesson-section" id="marges">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">03 / RESPIRER</span>
+          <h2>Les marges définissent le cadre</h2>
+
+          <p class="lead">
+            Les marges créent une zone de respiration autour du contenu.
+          </p>
+
+          <p>
+            Elles empêchent les informations de se retrouver collées aux limites
+            d'une page. Elles participent également à la sensation d'équilibre et
+            de stabilité d'une composition.
+          </p>
+        </div>
+
+        <figure class="reveal">
+          <div class="diagram">
+            <svg
+              viewBox="0 0 900 420"
+              width="100%"
+              role="img"
+              aria-labelledby="marginTitle marginDesc"
+              xmlns="http://www.w3.org/2000/svg">
+
+              <title id="marginTitle">Illustration des marges autour d'une page</title>
+              <desc id="marginDesc">
+                Une page centrale entourée d'espaces extérieurs identifiés comme marges.
+              </desc>
+
+              <rect x="100" y="40" width="700" height="340" rx="12" fill="#E7F2ED"/>
+              <rect x="180" y="85" width="540" height="250" rx="8" fill="#FFFFFF" stroke="#E3E8E5"/>
+
+              <rect x="225" y="120" width="300" height="30" rx="4" fill="#1F6F54"/>
+              <rect x="225" y="180" width="430" height="10" rx="5" fill="#E3E8E5"/>
+              <rect x="225" y="205" width="380" height="10" rx="5" fill="#E3E8E5"/>
+              <rect x="225" y="230" width="420" height="10" rx="5" fill="#E3E8E5"/>
+
+              <line x1="100" y1="210" x2="180" y2="210" stroke="#1F6F54" stroke-width="2"/>
+              <line x1="720" y1="210" x2="800" y2="210" stroke="#1F6F54" stroke-width="2"/>
+
+              <text x="110" y="190" font-family="Roboto Mono" font-size="14" fill="#1F6F54">
+                MARGE
+              </text>
+
+              <text x="705" y="190" font-family="Roboto Mono" font-size="14" fill="#1F6F54">
+                MARGE
+              </text>
+            </svg>
+          </div>
+
+          <figcaption>
+            Les marges ne sont pas des espaces perdus : elles participent à la
+            clarté et à la stabilité visuelle.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ALIGNEMENT -->
+
+    <section class="lesson-section lesson-section--alt" id="alignement">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">04 / ALIGNER</span>
+          <h2>L'alignement crée des relations visuelles</h2>
+
+          <p class="lead">
+            Lorsque plusieurs éléments partagent une même ligne ou une même colonne,
+            le cerveau les perçoit comme appartenant à une structure commune.
+          </p>
+
+          <p>
+            L'alignement permet donc de créer des groupes visuels sans ajouter
+            nécessairement de cadres ou de séparateurs.
+          </p>
+        </div>
+
+        <div class="tabs reveal">
+          <div class="tab-list" role="tablist" aria-label="Comparaison des alignements">
+            <button class="tab-button"
+                    role="tab"
+                    id="tab-aligne"
+                    aria-controls="panel-aligne"
+                    aria-selected="true">
+              Aligné
+            </button>
+
+            <button class="tab-button"
+                    role="tab"
+                    id="tab-desorganise"
+                    aria-controls="panel-desorganise"
+                    aria-selected="false">
+              Désorganisé
+            </button>
+          </div>
+
+          <div class="tab-panel active"
+               id="panel-aligne"
+               role="tabpanel"
+               aria-labelledby="tab-aligne">
+
+            <div class="diagram">
+              <svg
+                viewBox="0 0 900 300"
+                width="100%"
+                role="img"
+                aria-label="Exemple de blocs correctement alignés">
+
+                <line x1="170" y1="35" x2="170" y2="260"
+                      stroke="#1F6F54"
+                      stroke-dasharray="6 7"/>
+
+                <rect x="170" y="55" width="440" height="36" rx="5" fill="#1F6F54"/>
+                <rect x="170" y="115" width="300" height="16" rx="5" fill="#E3E8E5"/>
+                <rect x="170" y="150" width="420" height="16" rx="5" fill="#E3E8E5"/>
+                <rect x="170" y="185" width="260" height="16" rx="5" fill="#E3E8E5"/>
+
+                <text x="170" y="245"
+                      font-family="Roboto Mono"
+                      font-size="13"
+                      fill="#1F6F54">
+                  LIGNE D'ALIGNEMENT COMMUNE
+                </text>
+              </svg>
+            </div>
+
+            <p>
+              Ici, les éléments partagent un point de départ commun.
+              La structure est immédiatement identifiable.
+            </p>
+          </div>
+
+          <div class="tab-panel"
+               id="panel-desorganise"
+               role="tabpanel"
+               aria-labelledby="tab-desorganise">
+
+            <div class="diagram">
+              <svg
+                viewBox="0 0 900 300"
+                width="100%"
+                role="img"
+                aria-label="Exemple de blocs désorganisés">
+
+                <rect x="130" y="55" width="440" height="36" rx="5" fill="#0B0F0D"/>
+                <rect x="195" y="115" width="300" height="16" rx="5" fill="#E3E8E5"/>
+                <rect x="155" y="150" width="420" height="16" rx="5" fill="#E3E8E5"/>
+                <rect x="245" y="185" width="260" height="16" rx="5" fill="#E3E8E5"/>
+
+                <text x="130" y="245"
+                      font-family="Roboto Mono"
+                      font-size="13"
+                      fill="#B3541E">
+                  ABSENCE DE REPÈRE COMMUN
+                </text>
+              </svg>
+            </div>
+
+            <p>
+              Même avec les mêmes contenus, l'absence d'alignement régulier
+              donne une impression de désordre.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RYTHME -->
+
+    <section class="lesson-section" id="rythme">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">05 / RYTHMER</span>
+          <h2>Le rythme guide la lecture</h2>
+
+          <p class="lead">
+            Le rythme correspond à la répétition organisée des espacements,
+            tailles et blocs de contenu.
+          </p>
+
+          <p>
+            Un système cohérent d'espacement rend une interface plus prévisible.
+            Le lecteur comprend progressivement comment parcourir la page.
+          </p>
+        </div>
+
+        <div class="stepper reveal" aria-label="Exemple de rythme de lecture">
+          <div class="step">
+            <div class="step-number">01</div>
+            <h3>Titre</h3>
+            <p>Une information principale crée le point d'entrée.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">02</div>
+            <h3>Espace</h3>
+            <p>Une respiration sépare clairement les niveaux.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">03</div>
+            <h3>Texte</h3>
+            <p>Le contenu principal développe l'information.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">04</div>
+            <h3>Repère</h3>
+            <p>Une illustration ou un bloc visuel relance l'attention.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">05</div>
+            <h3>Suite</h3>
+            <p>Le rythme reprend avec une nouvelle séquence.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HIERARCHIE -->
+
+    <section class="lesson-section lesson-section--alt" id="hierarchie">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">06 / PRIORISER</span>
+          <h2>La hiérarchie indique ce qui compte</h2>
+
+          <p class="lead">
+            Tous les éléments ne doivent pas attirer le regard avec la même force.
+          </p>
+
+          <p>
+            La taille, le poids typographique, la position et l'espace autour
+            d'un élément permettent d'établir une priorité visuelle.
+          </p>
+        </div>
+
+        <div class="table-wrap reveal">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Niveau</th>
+                <th scope="col">Rôle</th>
+                <th scope="col">Traitement visuel</th>
+                <th scope="col" class="number">Importance</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>H1</td>
+                <td>Titre principal</td>
+                <td>Très grand, fort contraste</td>
+                <td class="number">100%</td>
+              </tr>
+
+              <tr>
+                <td>H2</td>
+                <td>Section majeure</td>
+                <td>Grand, espacement important</td>
+                <td class="number">80%</td>
+              </tr>
+
+              <tr>
+                <td>H3</td>
+                <td>Sous-partie</td>
+                <td>Plus compact mais identifiable</td>
+                <td class="number">60%</td>
+              </tr>
+
+              <tr>
+                <td>Texte</td>
+                <td>Information détaillée</td>
+                <td>Taille confortable et neutre</td>
+                <td class="number">40%</td>
+              </tr>
+
+              <tr class="total-row">
+                <td colspan="3">Objectif global</td>
+                <td class="number">Lecture claire</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout reveal">
+          <div class="callout__title">💡 À retenir</div>
+          <p>
+            Une bonne hiérarchie permet de comprendre la structure d'une page
+            même avant d'en lire tous les textes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESPACE NEGATIF -->
+
+    <section class="lesson-section" id="espace">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">07 / RESPIRER</span>
+          <h2>L'espace négatif est une information silencieuse</h2>
+
+          <p class="lead">
+            L'espace négatif correspond aux zones volontairement laissées vides
+            autour et entre les éléments.
+          </p>
+
+          <p>
+            Il permet de séparer, de regrouper et de mettre en valeur.
+            Plus un élément important est entouré d'espace, plus il peut
+            attirer naturellement l'attention.
+          </p>
+        </div>
+
+        <figure class="reveal">
+          <div class="diagram">
+            <svg
+              viewBox="0 0 1000 420"
+              width="100%"
+              role="img"
+              aria-labelledby="spaceTitle spaceDesc"
+              xmlns="http://www.w3.org/2000/svg">
+
+              <title id="spaceTitle">Illustration de l'effet de l'espace négatif</title>
+              <desc id="spaceDesc">
+                Deux compositions comparées, l'une dense et l'autre avec davantage d'espace entre les éléments.
+              </desc>
+
+              <text x="120" y="55"
+                    font-family="Space Grotesk"
+                    font-size="22"
+                    fill="#0B0F0D">
+                Composition dense
+              </text>
+
+              <rect x="90" y="80" width="330" height="270" rx="10" fill="#F6F8F6" stroke="#E3E8E5"/>
+
+              <rect x="115" y="105" width="280" height="38" rx="5" fill="#0B0F0D"/>
+              <rect x="115" y="155" width="280" height="25" rx="5" fill="#E3E8E5"/>
+              <rect x="115" y="190" width="280" height="25" rx="5" fill="#E3E8E5"/>
+              <rect x="115" y="225" width="280" height="25" rx="5" fill="#E3E8E5"/>
+              <rect x="115" y="260" width="280" height="65" rx="5" fill="#E7F2ED"/>
+
+              <text x="600" y="55"
+                    font-family="Space Grotesk"
+                    font-size="22"
+                    fill="#1F6F54">
+                Composition aérée
+              </text>
+
+              <rect x="570" y="80" width="330" height="270" rx="10" fill="#FFFFFF" stroke="#E3E8E5"/>
+
+              <rect x="615" y="110" width="240" height="38" rx="5" fill="#1F6F54"/>
+              <rect x="615" y="190" width="240" height="18" rx="5" fill="#E3E8E5"/>
+              <rect x="615" y="230" width="220" height="18" rx="5" fill="#E3E8E5"/>
+              <rect x="615" y="285" width="240" height="40" rx="5" fill="#E7F2ED"/>
+            </svg>
+          </div>
+
+          <figcaption>
+            L'espace négatif améliore la distinction entre les groupes et
+            réduit la sensation de surcharge.
+          </figcaption>
+        </figure>
+
+        <div class="accordion reveal">
+
+          <div class="accordion-item">
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="acc-1">
+              <span>Pourquoi une page très remplie paraît-elle plus difficile à lire ?</span>
+              <span class="accordion-symbol">+</span>
+            </button>
+
+            <div class="accordion-content" id="acc-1">
+              Lorsque les éléments sont trop proches, le lecteur doit fournir un
+              effort supplémentaire pour identifier les groupes et les niveaux
+              d'information.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="acc-2">
+              <span>Faut-il utiliser le même espace partout ?</span>
+              <span class="accordion-symbol">+</span>
+            </button>
+
+            <div class="accordion-content" id="acc-2">
+              Non. Les espacements doivent être cohérents, mais ils peuvent varier
+              selon la relation entre les éléments. Deux éléments très liés seront
+              généralement plus proches que deux sections indépendantes.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="acc-3">
+              <span>Comment créer une cohérence sur plusieurs pages ?</span>
+              <span class="accordion-symbol">+</span>
+            </button>
+
+            <div class="accordion-content" id="acc-3">
+              En réutilisant une même grille, des marges comparables, une hiérarchie
+              typographique stable et une échelle d'espacement régulière.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- POINTS CLES -->
+
+    <section class="lesson-section lesson-section--alt" id="points-cles">
+      <div class="section-inner">
+        <div class="reading-column reveal">
+          <span class="section-number">SYNTHÈSE</span>
+          <h2>Points clés à retenir</h2>
+
+          <p class="lead">
+            Une mise en page efficace repose sur quelques principes simples
+            qui fonctionnent ensemble.
+          </p>
+        </div>
+
+        <div class="key-points reveal">
+          <div class="key-point">
+            <span>01</span>
+            <p>La grille fournit une structure cohérente et facilite les alignements.</p>
+          </div>
+
+          <div class="key-point">
+            <span>02</span>
+            <p>Les marges créent un cadre et évitent que le contenu manque de respiration.</p>
+          </div>
+
+          <div class="key-point">
+            <span>03</span>
+            <p>L'alignement permet de créer des relations visuelles sans ajouter de décorations.</p>
+          </div>
+
+          <div class="key-point">
+            <span>04</span>
+            <p>Le rythme rend la lecture plus prévisible grâce à la répétition organisée.</p>
+          </div>
+
+          <div class="key-point">
+            <span>05</span>
+            <p>La hiérarchie aide le lecteur à identifier rapidement les informations importantes.</p>
+          </div>
+
+          <div class="key-point">
+            <span>06</span>
+            <p>L'espace négatif améliore la lisibilité et donne de la valeur aux éléments essentiels.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION -->
+
+    <nav class="lesson-navigation" id="navigation" aria-label="Navigation entre les leçons">
+
+      <a href="#" class="nav-card">
+        <small>← Leçon précédente</small>
+        <strong>Leçon 04 — Principes visuels</strong>
+      </a>
+
+      <a href="#sommaire" class="module-link">
+        Sommaire du module ↑
+      </a>
+
+      <a href="#" class="nav-card">
+        <small>Leçon suivante →</small>
+        <strong>Leçon 06 — Retouche photo</strong>
+      </a>
+
+    </nav>
+
+  </main>
+
+  <button class="back-to-top"
+          id="backToTop"
+          aria-label="Retour en haut de la page">
+    ↑
+  </button>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Filière Audiovisuel · Module 1</span>
+      <span>Leçon 05 · Mise en page</span>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================
+       BARRE DE PROGRESSION
+    ========================= */
+
+    const progressBar = document.getElementById("progressBar");
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const documentHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress =
+        documentHeight > 0
+          ? (scrollTop / documentHeight) * 100
+          : 0;
+
+      progressBar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+
+    /* =========================
+       RETOUR EN HAUT
+    ========================= */
+
+    const backToTop = document.getElementById("backToTop");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 600) {
+        backToTop.classList.add("visible");
+      } else {
+        backToTop.classList.remove("visible");
+      }
+    }, { passive: true });
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+
+
+    /* =========================
+       TABS ACCESSIBLES
+    ========================= */
+
+    const tabs = document.querySelectorAll(".tab-button");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        activateTab(tab);
+      });
+
+      tab.addEventListener("keydown", (event) => {
+        const tabArray = Array.from(tabs);
+        const currentIndex = tabArray.indexOf(tab);
+
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          const next =
+            tabArray[(currentIndex + 1) % tabArray.length];
+          next.focus();
+          activateTab(next);
+        }
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          const previous =
+            tabArray[
+              (currentIndex - 1 + tabArray.length) %
+              tabArray.length
+            ];
+          previous.focus();
+          activateTab(previous);
+        }
+      });
+    });
+
+    function activateTab(selectedTab) {
+      const panelId = selectedTab.getAttribute("aria-controls");
+
+      tabs.forEach((tab) => {
+        const selected = tab === selectedTab;
+
+        tab.setAttribute(
+          "aria-selected",
+          selected ? "true" : "false"
+        );
+      });
+
+      document.querySelectorAll(".tab-panel").forEach((panel) => {
+        panel.classList.toggle(
+          "active",
+          panel.id === panelId
+        );
+      });
+    }
+
+
+    /* =========================
+       ACCORDEONS
+    ========================= */
+
+    const accordionButtons =
+      document.querySelectorAll(".accordion-button");
+
+    accordionButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".accordion-item");
+        const isOpen = item.classList.contains("open");
+        const symbol =
+          button.querySelector(".accordion-symbol");
+
+        item.classList.toggle("open", !isOpen);
+
+        button.setAttribute(
+          "aria-expanded",
+          !isOpen ? "true" : "false"
+        );
+
+        symbol.textContent = !isOpen ? "−" : "+";
+      });
+    });
+
+
+    /* =========================
+       ANIMATION AU SCROLL
+    ========================= */
+
+    const revealElements =
+      document.querySelectorAll(".reveal");
+
+    if (
+      "IntersectionObserver" in window &&
+      !window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
+    ) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.12
+        }
+      );
+
+      revealElements.forEach((element) => {
+        observer.observe(element);
+      });
+    } else {
+      revealElements.forEach((element) => {
+        element.classList.add("visible");
+      });
+    }
+  </script>
+
+</body>
+</html>

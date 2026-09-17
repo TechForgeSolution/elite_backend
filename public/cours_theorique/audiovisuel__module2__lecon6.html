@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 06 — Retouche photo : exposition, colorimétrie, peau, nettoyage, Camera Raw et retouche non destructive.">
+  <title>Leçon 06 — Retouche photo | Infographie — Production professionnelle</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-bg: #FFFFFF;
+      --color-bg-alt: #F6F8F6;
+      --color-text: #0B0F0D;
+      --color-text-muted: #5A6560;
+      --color-accent: #1F6F54;
+      --color-accent-soft: #E7F2ED;
+      --color-border: #E3E8E5;
+      --color-accent-alt: #B3541E;
+
+      --font-display: "Space Grotesk", sans-serif;
+      --font-body: "Inter", sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
+
+      --max-width: 1180px;
+      --text-width: 720px;
+      --radius: 14px;
+      --shadow: 0 12px 35px rgba(11, 15, 13, .06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    ::selection {
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    img,
+    svg {
+      max-width: 100%;
+    }
+
+    /* =========================
+       PROGRESS BAR
+    ========================= */
+
+    .reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+    }
+
+    .reading-progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--color-accent);
+      transition: width .08s linear;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .site-header {
+      position: sticky;
+      top: 3px;
+      z-index: 900;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .header-inner {
+      width: min(var(--max-width), calc(100% - 40px));
+      min-height: 68px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid var(--color-accent);
+      color: var(--color-accent);
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--color-text-muted);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .header-nav a {
+      color: var(--color-text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: color .2s ease;
+    }
+
+    .header-nav a:hover,
+    .header-nav a:focus {
+      color: var(--color-accent);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 100px 20px 90px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .hero-grid {
+      width: min(var(--max-width), 100%);
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 430px;
+      align-items: center;
+      gap: 70px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: var(--color-bg-alt);
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-accent);
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-display);
+      line-height: 1.15;
+      letter-spacing: -.035em;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 22px 0 20px;
+      font-size: clamp(42px, 6vw, 72px);
+    }
+
+    .hero h1 span {
+      color: var(--color-accent);
+    }
+
+    .hero-intro {
+      max-width: var(--text-width);
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .meta {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .meta strong {
+      color: var(--color-text);
+    }
+
+    /* Hero visual */
+
+    .hero-visual {
+      position: relative;
+      min-height: 390px;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background:
+        linear-gradient(to bottom, transparent 31px, var(--color-border) 32px, transparent 33px);
+      background-size: 100% 34px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .photo-frame {
+      position: absolute;
+      left: 42px;
+      right: 42px;
+      top: 48px;
+      bottom: 48px;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 8px solid white;
+      box-shadow: 0 15px 35px rgba(11,15,13,.14);
+      background: #dfe5e1;
+    }
+
+    .photo-frame svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .visual-label {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      padding: 5px 8px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: .04em;
+    }
+
+    /* =========================
+       LAYOUT
+    ========================= */
+
+    .container {
+      width: min(var(--max-width), calc(100% - 40px));
+      margin: auto;
+    }
+
+    .text-column {
+      max-width: var(--text-width);
+    }
+
+    section {
+      padding: 100px 0;
+    }
+
+    .section-alt {
+      background: var(--color-bg-alt);
+    }
+
+    .section-heading {
+      max-width: 760px;
+      margin-bottom: 45px;
+    }
+
+    .section-number {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(30px, 4vw, 46px);
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
+
+    p {
+      margin: 0 0 18px;
+    }
+
+    .lead {
+      font-size: 19px;
+      color: var(--color-text-muted);
+    }
+
+    /* =========================
+       TABLE OF CONTENTS
+    ========================= */
+
+    .toc {
+      margin-top: -1px;
+      padding: 34px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .toc-inner {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 35px;
+      align-items: start;
+    }
+
+    .toc-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+    }
+
+    .toc-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 25px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toc-list a {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      color: var(--color-text-muted);
+      border-bottom: 1px solid transparent;
+      font-size: 14px;
+      transition: all .2s ease;
+    }
+
+    .toc-list a:hover {
+      color: var(--color-accent);
+      padding-left: 5px;
+    }
+
+    .toc-list span {
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    /* =========================
+       VISUAL BLOCKS
+    ========================= */
+
+    .visual-wide {
+      margin: 50px 0;
+      padding: 25px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .visual-wide svg {
+      width: 100%;
+      min-height: 250px;
+      display: block;
+    }
+
+    .caption {
+      margin-top: 15px;
+      color: var(--color-text-muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin: 45px 0;
+    }
+
+    .visual-card {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .visual-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .visual-card svg {
+      width: 100%;
+      height: 240px;
+      display: block;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+    }
+
+    .visual-card-content {
+      padding: 24px;
+    }
+
+    .visual-card-content p {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* =========================
+       INFO CARDS
+    ========================= */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 45px 0;
+    }
+
+    .card {
+      padding: 25px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      transition: border-color .2s ease, transform .2s ease;
+    }
+
+    .card:hover {
+      border-color: #b9ccc3;
+      transform: translateY(-3px);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      border-radius: 9px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+    }
+
+    .card p {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* =========================
+       BEFORE / AFTER
+    ========================= */
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      overflow: hidden;
+      margin: 50px 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-border);
+    }
+
+    .comparison-panel {
+      position: relative;
+      min-height: 360px;
+      background: #fff;
+    }
+
+    .comparison-label {
+      position: absolute;
+      z-index: 2;
+      top: 15px;
+      left: 15px;
+      padding: 6px 10px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .comparison-panel svg {
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+    }
+
+    /* =========================
+       EXPOSURE DIAGRAM
+    ========================= */
+
+    .exposure-scale {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin: 35px 0;
+    }
+
+    .exposure-step {
+      height: 80px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      padding-bottom: 10px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      border: 1px solid var(--color-border);
+    }
+
+    .exposure-step:nth-child(1) { background: #18201c; color: white; }
+    .exposure-step:nth-child(2) { background: #46534d; color: white; }
+    .exposure-step:nth-child(3) { background: #87918c; color: white; }
+    .exposure-step:nth-child(4) { background: #cdd3d0; }
+    .exposure-step:nth-child(5) { background: #f4f5f4; }
+
+    /* =========================
+       TABS
+    ========================= */
+
+    .tabs {
+      margin: 45px 0;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 5px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .tab-button {
+      cursor: pointer;
+      padding: 13px 18px;
+      background: transparent;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .tab-button:hover,
+    .tab-button.active {
+      color: var(--color-accent);
+    }
+
+    .tab-button.active {
+      border-bottom-color: var(--color-accent);
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 30px 5px;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fade .25s ease;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================
+       CALLOUTS
+    ========================= */
+
+    .callout {
+      display: grid;
+      grid-template-columns: 45px 1fr;
+      gap: 18px;
+      margin: 35px 0;
+      padding: 25px;
+      background: var(--color-accent-soft);
+      border-left: 3px solid var(--color-accent);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout-icon {
+      color: var(--color-accent);
+      font-size: 23px;
+    }
+
+    .callout h3 {
+      color: var(--color-accent);
+      font-size: 16px;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .callout.warning {
+      background: #faf7f4;
+      border-left-color: var(--color-accent-alt);
+    }
+
+    .callout.warning h3,
+    .callout.warning .callout-icon {
+      color: var(--color-accent-alt);
+    }
+
+    /* =========================
+       NON DESTRUCTIVE DIAGRAM
+    ========================= */
+
+    .layer-stack {
+      display: grid;
+      gap: 8px;
+      max-width: 700px;
+      margin: 45px auto;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 70px 1fr 100px;
+      align-items: center;
+      gap: 15px;
+      min-height: 58px;
+      padding: 10px 15px;
+      border: 1px solid var(--color-border);
+      border-radius: 7px;
+      background: #fff;
+    }
+
+    .layer-number {
+      font-family: var(--font-mono);
+      color: var(--color-accent);
+      font-size: 11px;
+    }
+
+    .layer-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .layer-state {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-muted);
+    }
+
+    /* =========================
+       ACCORDION
+    ========================= */
+
+    .accordion {
+      margin: 40px 0;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .accordion-trigger:hover {
+      color: var(--color-accent);
+    }
+
+    .accordion-symbol {
+      color: var(--color-accent);
+      font-size: 20px;
+      transition: transform .2s ease;
+    }
+
+    .accordion-item.open .accordion-symbol {
+      transform: rotate(45deg);
+    }
+
+    .accordion-content {
+      display: none;
+      padding: 0 40px 22px 0;
+      color: var(--color-text-muted);
+      font-size: 14px;
+    }
+
+    .accordion-item.open .accordion-content {
+      display: block;
+      animation: fade .2s ease;
+    }
+
+    /* =========================
+       PROCESS STEPPER
+    ========================= */
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin: 50px 0;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .step {
+      position: relative;
+      padding: 28px 15px 15px;
+      border-right: 1px solid var(--color-border);
+    }
+
+    .step:last-child {
+      border-right: 0;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: 15px;
+      width: 9px;
+      height: 9px;
+      background: var(--color-accent);
+      border-radius: 50%;
+    }
+
+    .step-number {
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .step strong {
+      display: block;
+      margin: 8px 0;
+      font-family: var(--font-display);
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* =========================
+       READING SUMMARY
+    ========================= */
+
+    .summary {
+      padding: 80px 0;
+      background: var(--color-accent);
+      color: white;
+    }
+
+    .summary h2 {
+      max-width: 650px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,.2);
+      border: 1px solid rgba(255,255,255,.2);
+      margin-top: 40px;
+    }
+
+    .summary-item {
+      padding: 25px;
+      background: var(--color-accent);
+    }
+
+    .summary-item span {
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      opacity: .7;
+    }
+
+    .summary-item strong {
+      font-family: var(--font-display);
+      font-size: 18px;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .lesson-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 70px 0;
+    }
+
+    .nav-card {
+      display: block;
+      padding: 25px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      transition: all .2s ease;
+    }
+
+    .nav-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-3px);
+    }
+
+    .nav-card.next {
+      text-align: right;
+    }
+
+    .nav-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      border-top: 1px solid var(--color-border);
+      padding: 35px 20px;
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    .footer-inner {
+      width: min(var(--max-width), 100%);
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* =========================
+       BACK TO TOP
+    ========================= */
+
+    .back-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 800;
+      width: 43px;
+      height: 43px;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      background: white;
+      color: var(--color-accent);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-top:hover {
+      transform: translateY(-3px);
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        max-width: 600px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stepper {
+        grid-template-columns: 1fr;
+        border-top: 0;
+        border-left: 1px solid var(--color-border);
+      }
+
+      .step {
+        border-right: 0;
+        border-bottom: 1px solid var(--color-border);
+        padding-left: 28px;
+      }
+
+      .step::before {
+        left: -5px;
+        top: 28px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .header-nav a:not(:last-child) {
+        display: none;
+      }
+
+      .header-inner {
+        width: min(var(--max-width), calc(100% - 25px));
+      }
+
+      section {
+        padding: 70px 0;
+      }
+
+      .container {
+        width: min(var(--max-width), calc(100% - 30px));
+      }
+
+      .hero {
+        padding: 65px 15px;
+      }
+
+      .toc-inner {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .toc-list {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-grid,
+      .cards,
+      .comparison,
+      .summary-grid,
+      .lesson-nav {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-wide {
+        padding: 12px;
+        overflow-x: auto;
+      }
+
+      .visual-wide svg {
+        min-width: 620px;
+      }
+
+      .layer {
+        grid-template-columns: 50px 1fr 70px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 450px) {
+      h1 {
+        font-size: 40px;
+      }
+
+      .hero-intro {
+        font-size: 16px;
+      }
+
+      .hero-visual {
+        min-height: 300px;
+      }
+
+      .photo-frame {
+        left: 20px;
+        right: 20px;
+        top: 35px;
+        bottom: 35px;
+      }
+
+      .visual-card svg {
+        height: 190px;
+      }
+
+      .tab-buttons {
+        overflow-x: auto;
+      }
+
+      .tab-button {
+        white-space: nowrap;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Progression de lecture -->
+  <div class="reading-progress" aria-hidden="true">
+    <span id="progressBar"></span>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#top" class="brand" aria-label="Retour au début de la leçon">
+        <span class="brand-mark">Σ</span>
+        <span>
+          Filière Audiovisuel
+          <small>Support pédagogique</small>
+        </span>
+      </a>
+
+      <nav class="header-nav" aria-label="Navigation principale">
+        <a href="#sommaire">Sommaire</a>
+        <a href="#essentiel">À retenir</a>
+        <a href="#navigation">Navigation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-grid">
+
+        <div class="reveal">
+          <span class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            MODULE 2 · PRODUCTION PROFESSIONNELLE
+          </span>
+
+          <h1>
+            LEÇON 06<br>
+            <span>Retouche photo</span>
+          </h1>
+
+          <p class="hero-intro">
+            Corriger et sublimer une image sans perdre son naturel :
+            exposition, colorimétrie, peau, nettoyage, Camera Raw et
+            principes de retouche non destructive.
+          </p>
+
+          <div class="hero-meta">
+            <span class="meta"><strong>Niveau :</strong> Débutant → Intermédiaire</span>
+            <span class="meta"><strong>Durée :</strong> 15 min</span>
+            <span class="meta"><strong>Format :</strong> Cours illustré</span>
+          </div>
+        </div>
+
+        <!-- Illustration principale -->
+        <div class="hero-visual reveal" aria-label="Illustration d'une photographie avant et après retouche">
+
+          <div class="photo-frame">
+            <svg viewBox="0 0 600 500" role="img" aria-labelledby="heroSvgTitle">
+              <title id="heroSvgTitle">Photographie stylisée avant et après correction</title>
+
+              <rect width="600" height="500" fill="#d8dfdb"/>
+
+              <!-- fenêtre -->
+              <rect x="40" y="40" width="180" height="250" rx="5" fill="#f5f7f6"/>
+              <line x1="130" y1="40" x2="130" y2="290" stroke="#c0c9c4" stroke-width="5"/>
+              <line x1="40" y1="165" x2="220" y2="165" stroke="#c0c9c4" stroke-width="5"/>
+
+              <!-- personnage -->
+              <circle cx="365" cy="160" r="70" fill="#d4b39a"/>
+              <path d="M295 150 Q365 55 435 150 Q420 105 365 100 Q310 105 295 150Z" fill="#303936"/>
+              <path d="M285 250 Q365 210 445 250 L500 460 L230 460Z" fill="#52655d"/>
+
+              <!-- visage -->
+              <circle cx="340" cy="160" r="5" fill="#0b0f0d"/>
+              <circle cx="390" cy="160" r="5" fill="#0b0f0d"/>
+              <path d="M345 200 Q365 215 385 200" fill="none" stroke="#7c5544" stroke-width="4" stroke-linecap="round"/>
+
+              <!-- interface -->
+              <rect x="475" y="25" width="90" height="450" rx="8" fill="#ffffff" opacity=".94"/>
+              <rect x="492" y="55" width="55" height="7" rx="3" fill="#1f6f54"/>
+              <rect x="492" y="90" width="55" height="4" rx="2" fill="#d5ddd9"/>
+              <rect x="492" y="105" width="40" height="4" rx="2" fill="#d5ddd9"/>
+              <circle cx="520" cy="150" r="25" fill="#e7f2ed"/>
+              <circle cx="520" cy="150" r="12" fill="none" stroke="#1f6f54" stroke-width="3"/>
+              <line x1="520" y1="125" x2="520" y2="175" stroke="#1f6f54" stroke-width="2"/>
+              <line x1="495" y1="150" x2="545" y2="150" stroke="#1f6f54" stroke-width="2"/>
+
+              <text x="492" y="215" font-family="IBM Plex Mono" font-size="10" fill="#5a6560">EXPOSITION</text>
+              <line x1="492" y1="235" x2="548" y2="235" stroke="#cbd3cf"/>
+              <circle cx="528" cy="235" r="5" fill="#1f6f54"/>
+
+              <text x="492" y="270" font-family="IBM Plex Mono" font-size="10" fill="#5a6560">CONTRASTE</text>
+              <line x1="492" y1="290" x2="548" y2="290" stroke="#cbd3cf"/>
+              <circle cx="515" cy="290" r="5" fill="#1f6f54"/>
+
+              <text x="492" y="325" font-family="IBM Plex Mono" font-size="10" fill="#5a6560">TEXTURE</text>
+              <line x1="492" y1="345" x2="548" y2="345" stroke="#cbd3cf"/>
+              <circle cx="536" cy="345" r="5" fill="#1f6f54"/>
+            </svg>
+          </div>
+
+          <span class="visual-label">RAW → RETOUCHE</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SOMMAIRE -->
+    <section class="toc" id="sommaire">
+      <div class="container toc-inner">
+        <div class="toc-title">Sommaire</div>
+
+        <ol class="toc-list">
+          <li><a href="#introduction"><span>01</span> Comprendre la retouche</a></li>
+          <li><a href="#exposition"><span>02</span> Corriger l'exposition</a></li>
+          <li><a href="#colorimetrie"><span>03</span> Colorimétrie</a></li>
+          <li><a href="#peau"><span>04</span> Retouche de la peau</a></li>
+          <li><a href="#nettoyage"><span>05</span> Nettoyage de l'image</a></li>
+          <li><a href="#camera-raw"><span>06</span> Camera Raw</a></li>
+          <li><a href="#non-destructive"><span>07</span> Retouche non destructive</a></li>
+          <li><a href="#essentiel"><span>08</span> Points clés à retenir</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SECTION 01 -->
+    <section id="introduction">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number">01 / PRINCIPES</span>
+          <h2>Comprendre la retouche photo</h2>
+          <p class="lead">
+            Une bonne retouche ne doit pas nécessairement se voir.
+            Elle consiste d'abord à améliorer la lecture de l'image
+            tout en conservant sa crédibilité et son naturel.
+          </p>
+        </div>
+
+        <div class="visual-wide reveal">
+          <svg viewBox="0 0 1000 350" role="img" aria-labelledby="retouche-title">
+            <title id="retouche-title">Schéma montrant le passage de la photographie brute vers une image corrigée</title>
+
+            <rect x="30" y="65" width="230" height="220" rx="14" fill="#f6f8f6" stroke="#e3e8e5"/>
+            <rect x="385" y="65" width="230" height="220" rx="14" fill="#f6f8f6" stroke="#e3e8e5"/>
+            <rect x="740" y="65" width="230" height="220" rx="14" fill="#e7f2ed" stroke="#1f6f54"/>
+
+            <circle cx="145" cy="145" r="45" fill="#9e765f"/>
+            <path d="M100 140 Q145 75 190 140 Q175 105 145 100 Q115 105 100 140" fill="#343b37"/>
+            <path d="M90 210 Q145 175 200 210 L220 275 L70 275Z" fill="#68756f"/>
+
+            <circle cx="500" cy="145" r="45" fill="#b18a73"/>
+            <path d="M455 140 Q500 75 545 140 Q530 105 500 100 Q470 105 455 140" fill="#343b37"/>
+            <path d="M445 210 Q500 175 555 210 L575 275 L425 275Z" fill="#52655d"/>
+            <circle cx="475" cy="145" r="4" fill="#0b0f0d"/>
+            <circle cx="525" cy="145" r="4" fill="#0b0f0d"/>
+
+            <circle cx="855" cy="145" r="45" fill="#d4b39a"/>
+            <path d="M810 140 Q855 75 900 140 Q885 105 855 100 Q825 105 810 140" fill="#303936"/>
+            <path d="M800 210 Q855 175 910 210 L930 275 L780 275Z" fill="#1f6f54"/>
+            <circle cx="830" cy="145" r="4" fill="#0b0f0d"/>
+            <circle cx="880" cy="145" r="4" fill="#0b0f0d"/>
+
+            <line x1="270" y1="175" x2="370" y2="175" stroke="#1f6f54" stroke-width="3"/>
+            <polygon points="370,175 355,166 355,184" fill="#1f6f54"/>
+
+            <line x1="625" y1="175" x2="725" y2="175" stroke="#1f6f54" stroke-width="3"/>
+            <polygon points="725,175 710,166 710,184" fill="#1f6f54"/>
+
+            <text x="145" y="315" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600">Image originale</text>
+            <text x="500" y="315" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600">Correction</text>
+            <text x="855" y="315" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#1f6f54">Image finalisée</text>
+
+            <text x="145" y="45" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#5a6560">SOURCE</text>
+            <text x="500" y="45" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#5a6560">TRAVAIL</text>
+            <text x="855" y="45" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1f6f54">RÉSULTAT</text>
+          </svg>
+          <p class="caption">
+            La retouche suit une logique progressive : observer → corriger → affiner.
+          </p>
+        </div>
+
+        <div class="cards reveal">
+
+          <article class="card">
+            <div class="card-icon">◐</div>
+            <h3>Corriger</h3>
+            <p>
+              Rééquilibrer l'exposition, les contrastes et les couleurs
+              lorsque la prise de vue ne restitue pas correctement la scène.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">✦</div>
+            <h3>Sublimer</h3>
+            <p>
+              Renforcer certains éléments importants de l'image sans
+              transformer artificiellement le sujet.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">⌁</div>
+            <h3>Préserver</h3>
+            <p>
+              Conserver les détails, les textures et les caractéristiques
+              naturelles qui donnent son authenticité à la photographie.
+            </p>
+          </article>
+
+        </div>
+
+        <div class="callout reveal">
+          <div class="callout-icon">💡</div>
+          <div>
+            <h3>À retenir</h3>
+            <p>
+              La retouche est avant tout un travail d'équilibre. Le but n'est
+              pas de modifier systématiquement l'image, mais de donner au
+              spectateur une lecture plus claire et plus agréable.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 02 -->
+    <section id="exposition" class="section-alt">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number">02 / LUMIÈRE</span>
+          <h2>Corriger l'exposition</h2>
+          <p class="lead">
+            L'exposition détermine la quantité de lumière perçue dans une
+            photographie. Une correction efficace commence par la lecture
+            des zones sombres, moyennes et lumineuses.
+          </p>
+        </div>
+
+        <div class="comparison reveal">
+
+          <div class="comparison-panel">
+            <span class="comparison-label">Sous-exposée</span>
+            <svg viewBox="0 0 600 400" role="img" aria-label="Portrait sous-exposé">
+              <rect width="600" height="400" fill="#202824"/>
+              <circle cx="300" cy="145" r="80" fill="#62493c"/>
+              <path d="M220 140 Q300 45 380 140 Q350 90 300 85 Q250 90 220 140" fill="#171c19"/>
+              <path d="M190 270 Q300 205 410 270 L470 400 L130 400Z" fill="#2d3933"/>
+              <circle cx="270" cy="145" r="6" fill="#111"/>
+              <circle cx="330" cy="145" r="6" fill="#111"/>
+            </svg>
+          </div>
+
+          <div class="comparison-panel">
+            <span class="comparison-label">Équilibrée</span>
+            <svg viewBox="0 0 600 400" role="img" aria-label="Portrait correctement exposé">
+              <rect width="600" height="400" fill="#d9dfdc"/>
+              <circle cx="300" cy="145" r="80" fill="#c99f83"/>
+              <path d="M220 140 Q300 45 380 140 Q350 90 300 85 Q250 90 220 140" fill="#303733"/>
+              <path d="M190 270 Q300 205 410 270 L470 400 L130 400Z" fill="#52655d"/>
+              <circle cx="270" cy="145" r="6" fill="#0b0f0d"/>
+              <circle cx="330" cy="145" r="6" fill="#0b0f0d"/>
+              <path d="M280 190 Q300 205 320 190" fill="none" stroke="#795544" stroke-width="4"/>
+            </svg>
+          </div>
+
+        </div>
+
+        <div class="exposure-scale reveal" aria-label="Échelle de luminosité">
+          <div class="exposure-step">OMBRES</div>
+          <div class="exposure-step">TONS FONCÉS</div>
+          <div class="exposure-step">TONS MOYENS</div>
+          <div class="exposure-step">TONS CLAIRS</div>
+          <div class="exposure-step">HAUTES LUMIÈRES</div>
+        </div>
+
+        <div class="visual-wide reveal">
+          <svg viewBox="0 0 1000 280" role="img" aria-labelledby="hist-title">
+            <title id="hist-title">Représentation simplifiée d'un histogramme photographique</title>
+
+            <line x1="100" y1="220" x2="900" y2="220" stroke="#0b0f0d" stroke-width="2"/>
+            <line x1="100" y1="40" x2="100" y2="220" stroke="#0b0f0d" stroke-width="2"/>
+
+            <rect x="120" y="190" width="20" height="30" fill="#1f6f54"/>
+            <rect x="145" y="170" width="20" height="50" fill="#1f6f54"/>
+            <rect x="170" y="130" width="20" height="90" fill="#1f6f54"/>
+            <rect x="195" y="95" width="20" height="125" fill="#1f6f54"/>
+            <rect x="220" y="65" width="20" height="155" fill="#1f6f54"/>
+            <rect x="245" y="50" width="20" height="170" fill="#1f6f54"/>
+            <rect x="270" y="45" width="20" height="175" fill="#1f6f54"/>
+            <rect x="295" y="60" width="20" height="160" fill="#1f6f54"/>
+            <rect x="320" y="85" width="20" height="135" fill="#1f6f54"/>
+            <rect x="345" y="115" width="20" height="105" fill="#1f6f54"/>
+            <rect x="370" y="145" width="20" height="75" fill="#1f6f54"/>
+            <rect x="395" y="165" width="20" height="55" fill="#1f6f54"/>
+
+            <text x="100" y="250" font-family="IBM Plex Mono" font-size="11" fill="#5a6560">NOIR</text>
+            <text x="480" y="250" font-family="IBM Plex Mono" font-size="11" fill="#5a6560">TONS MOYENS</text>
+            <text x="820" y="250" font-family="IBM Plex Mono" font-size="11" fill="#5a6560">BLANC</text>
+
+            <text x="500" y="30" text-anchor="middle" font-family="Space Grotesk" font-size="17" font-weight="600">
+              Lire l'histogramme avant de corriger
+            </text>
+          </svg>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 03 -->
+    <section id="colorimetrie">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number">03 / COULEUR</span>
+          <h2>Colorimétrie : retrouver une lumière cohérente</h2>
+          <p class="lead">
+            La couleur influence directement l'ambiance, la perception
+            de la lumière et le rendu des matières.
+          </p>
+        </div>
+
+        <div class="visual-grid reveal">
+
+          <article class="visual-card">
+            <svg viewBox="0 0 600 350" role="img" aria-label="Image avec dominante froide">
+              <rect width="600" height="350" fill="#d9e2e5"/>
+              <circle cx="300" cy="140" r="65" fill="#a8b9bd"/>
+              <path d="M235 140 Q300 65 365 140 Q345 100 300 90 Q255 100 235 140" fill="#394b50"/>
+              <path d="M210 250 Q300 200 390 250 L430 350 L170 350Z" fill="#60747b"/>
+              <text x="300" y="320" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#394b50">TEMPÉRATURE FROIDE</text>
+            </svg>
+            <div class="visual-card-content">
+              <h3>Balance des blancs froide</h3>
+              <p>
+                Une température trop basse peut donner à la scène une
+                dominante bleutée et éloigner le rendu de la lumière réelle.
+              </p>
+            </div>
+          </article>
+
+          <article class="visual-card">
+            <svg viewBox="0 0 600 350" role="img" aria-label="Image avec balance des blancs équilibrée">
+              <rect width="600" height="350" fill="#e2ddd4"/>
+              <circle cx="300" cy="140" r="65" fill="#cda989"/>
+              <path d="M235 140 Q300 65 365 140 Q345 100 300 90 Q255 100 235 140" fill="#343936"/>
+              <path d="M210 250 Q300 200 390 250 L430 350 L170 350Z" fill="#59675f"/>
+              <text x="300" y="320" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1f6f54">BALANCE NEUTRE</text>
+            </svg>
+            <div class="visual-card-content">
+              <h3>Balance équilibrée</h3>
+              <p>
+                Les blancs retrouvent une apparence neutre et les tons
+                de peau conservent une perception naturelle.
+              </p>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="tabs reveal">
+          <div class="tab-buttons" role="tablist" aria-label="Paramètres colorimétriques">
+            <button class="tab-button active" role="tab" aria-selected="true" aria-controls="tab-temp">
+              Température
+            </button>
+            <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-teinte">
+              Teinte
+            </button>
+            <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-saturation">
+              Saturation
+            </button>
+          </div>
+
+          <div id="tab-temp" class="tab-panel active" role="tabpanel">
+            <h3>Température</h3>
+            <p>
+              Elle agit sur l'équilibre chaud/froid de l'image. Une température
+              plus élevée réchauffe visuellement les tons ; une température
+              plus basse produit un rendu plus froid.
+            </p>
+          </div>
+
+          <div id="tab-teinte" class="tab-panel" role="tabpanel">
+            <h3>Teinte</h3>
+            <p>
+              La teinte permet notamment de corriger une dominante verte ou
+              magenta créée par certaines sources lumineuses ou certains appareils.
+            </p>
+          </div>
+
+          <div id="tab-saturation" class="tab-panel" role="tabpanel">
+            <h3>Saturation</h3>
+            <p>
+              Elle contrôle l'intensité des couleurs. Une saturation excessive
+              donne rapidement un résultat artificiel : la modération reste essentielle.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout warning reveal">
+          <div class="callout-icon">⚠</div>
+          <div>
+            <h3>Attention à la sursaturation</h3>
+            <p>
+              Une photographie plus colorée n'est pas automatiquement une
+              photographie plus réussie. La couleur doit servir l'image,
+              pas attirer l'attention sur la retouche.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 04 -->
+    <section id="peau" class="section-alt">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number">04 / PORTRAIT</span>
+          <h2>Retoucher la peau sans la rendre artificielle</h2>
+          <p class="lead">
+            Le visage concentre immédiatement l'attention. La retouche doit
+            donc être particulièrement mesurée : préserver la texture est
+            plus important que supprimer chaque irrégularité.
+          </p>
+        </div>
+
+        <div class="visual-wide reveal">
+          <svg viewBox="0 0 1000 430" role="img" aria-labelledby="skin-title">
+            <title id="skin-title">Illustration des niveaux de retouche d'un portrait</title>
+
+            <rect x="50" y="45" width="270" height="300" rx="15" fill="#f6f8f6" stroke="#e3e8e5"/>
+            <rect x="365" y="45" width="270" height="300" rx="15" fill="#f6f8f6" stroke="#e3e8e5"/>
+            <rect x="680" y="45" width="270" height="300" rx="15" fill="#e7f2ed" stroke="#1f6f54"/>
+
+            <!-- portrait 1 -->
+            <circle cx="185" cy="155" r="75" fill="#c3987d"/>
+            <path d="M110 150 Q185 55 260 150 Q240 105 185 95 Q130 105 110 150" fill="#3b403d"/>
+            <circle cx="155" cy="155" r="5"/>
+            <circle cx="215" cy="155" r="5"/>
+            <circle cx="135" cy="190" r="4" fill="#815847"/>
+            <circle cx="220" cy="180" r="3" fill="#815847"/>
+            <circle cx="175" cy="205" r="3" fill="#815847"/>
+
+            <!-- portrait 2 -->
+            <circle cx="500" cy="155" r="75" fill="#c79d81"/>
+            <path d="M425 150 Q500 55 575 150 Q555 105 500 95 Q445 105 425 150" fill="#3b403d"/>
+            <circle cx="470" cy="155" r="5"/>
+            <circle cx="530" cy="155" r="5"/>
+            <circle cx="450" cy="190" r="3" fill="#815847"/>
+            <circle cx="525" cy="180" r="2" fill="#815847"/>
+
+            <!-- portrait 3 -->
+            <circle cx="815" cy="155" r="75" fill="#c99f83"/>
+            <path d="M740 150 Q815 55 890 150 Q870 105 815 95 Q760 105 740 150" fill="#3b403d"/>
+            <circle cx="785" cy="155" r="5"/>
+            <circle cx="845" cy="155" r="5"/>
+
+            <text x="185" y="385" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600">Texture originale</text>
+            <text x="500" y="385" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600">Corrections ciblées</text>
+            <text x="815" y="385" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="#1f6f54">Peau naturelle</text>
+          </svg>
+          <p class="caption">
+            Le résultat recherché se situe généralement entre l'absence de correction
+            et la transformation complète de la texture.
+          </p>
+        </div>
+
+        <div class="cards reveal">
+
+          <article class="card">
+            <div class="card-icon">01</div>
+            <h3>Observer</h3>
+            <p>
+              Identifier les éléments temporaires, les petites distractions
+              et les caractéristiques permanentes du visage.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">02</div>
+            <h3>Cibler</h3>
+            <p>
+              Corriger uniquement ce qui détourne inutilement le regard,
+              plutôt que d'appliquer un effet uniforme à toute la peau.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">03</div>
+            <h3>Préserver</h3>
+            <p>
+              Conserver pores, micro-contrastes et variations naturelles
+              pour éviter l'effet « peau plastique ».
+            </p>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 05 -->
+    <section id="nettoyage">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number">05 / NETTOYAGE</span>
+          <h2>Nettoyer l'image</h2>
+          <p class="lead">
+            Le nettoyage consiste à retirer les petits éléments qui perturbent
+            la composition : poussières, taches, objets parasites ou imperfections
+            temporaires.
+          </p>
+        </div>
+
+        <div class="comparison reveal">
+
+          <div class="comparison-panel">
+            <span class="comparison-label">Avant</span>
+            <svg viewBox="0 0 600 400" role="img" aria-label="Image avant nettoyage">
+              <rect width="600" height="400" fill="#d9dfdc"/>
+              <rect x="70" y="70" width="460" height="260" rx="8" fill="#c6d0ca"/>
+              <circle cx="300" cy="160" r="65" fill="#c99e82"/>
+              <path d="M235 160 Q300 80 365 160 Q340 120 300 110 Q260 120 235 160" fill="#343a36"/>
+              <path d="M220 270 Q300 215 380 270 L420 330 L180 330Z" fill="#53635b"/>
+              <circle cx="135" cy="115" r="10" fill="#5a6560"/>
+              <circle cx="465" cy="240" r="12" fill="#5a6560"/>
+              <circle cx="155" cy="275" r="7" fill="#5a6560"/>
+            </svg>
+          </div>
+
+          <div class="comparison-panel">
+            <span class="comparison-label">Après</span>
+            <svg viewBox="0 0 600 400" role="img" aria-label="Image après nettoyage">
+              <rect width="600" height="400" fill="#d9dfdc"/>
+              <rect x="70" y="70" width="460" height="260" rx="8" fill="#c6d0ca"/>
+              <circle cx="300" cy="160" r="65" fill="#c99e82"/>
+              <path d="M235 160 Q300 80 365 160 Q340 120 300 110 Q260 120 235 160" fill="#343a36"/>
+              <path d="M220 270 Q300 215 380 270 L420 330 L180 330Z" fill="#53635b"/>
+              <circle cx="135" cy="115" r="10" fill="none" stroke="#1f6f54" stroke-width="3"/>
+              <path d="M128 115 L142 115" stroke="#1f6f54" stroke-width="2"/>
+            </svg>
+          </div>
+
+        </div>
+
+        <div class="callout reveal">
+          <div class="callout-icon">💡</div>
+          <div>
+            <h3>La règle du détail</h3>
+            <p>
+              Travaillez en zoom pour effectuer la correction, puis revenez
+              régulièrement à une vue globale. Une imperfection visible à
+              300 % peut être totalement insignifiante à la taille réelle.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 06 -->
+    <section id="camera-raw" class="section-alt">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number">06 / DÉVELOPPEMENT</span>
+          <h2>Camera Raw : la première étape du traitement</h2>
+          <p class="lead">
+            Le développement RAW permet d'agir sur les informations capturées
+            par l'appareil avant de passer aux retouches plus localisées.
+          </p>
+        </div>
+
+        <div class="visual-wide reveal">
+          <svg viewBox="0 0 1000 430" role="img" aria-labelledby="raw-title">
+            <title id="raw-title">Interface stylisée d'un module de développement RAW</title>
+
+            <rect x="30" y="25" width="940" height="380" rx="12" fill="#202522"/>
+
+            <!-- image -->
+            <rect x="70" y="65" width="560" height="300" rx="5" fill="#bfc9c4"/>
+            <circle cx="350" cy="165" r="65" fill="#cba387"/>
+            <path d="M285 165 Q350 80 415 165 Q395 120 350 110 Q305 120 285 165" fill="#303632"/>
+            <path d="M260 280 Q350 215 440 280 L480 365 L220 365Z" fill="#50615a"/>
+
+            <!-- panneau -->
+            <rect x="660" y="45" width="280" height="340" rx="6" fill="#f6f8f6"/>
+
+            <text x="685" y="80" font-family="IBM Plex Mono" font-size="11" fill="#5a6560">RÉGLAGES DE BASE</text>
+
+            <text x="685" y="120" font-family="Inter" font-size="11">Exposition</text>
+            <line x1="685" y1="135" x2="910" y2="135" stroke="#c7cfcb"/>
+            <circle cx="820" cy="135" r="6" fill="#1f6f54"/>
+
+            <text x="685" y="170" font-family="Inter" font-size="11">Contraste</text>
+            <line x1="685" y1="185" x2="910" y2="185" stroke="#c7cfcb"/>
+            <circle cx="845" cy="185" r="6" fill="#1f6f54"/>
+
+            <text x="685" y="220" font-family="Inter" font-size="11">Hautes lumières</text>
+            <line x1="685" y1="235" x2="910" y2="235" stroke="#c7cfcb"/>
+            <circle cx="790" cy="235" r="6" fill="#1f6f54"/>
+
+            <text x="685" y="270" font-family="Inter" font-size="11">Ombres</text>
+            <line x1="685" y1="285" x2="910" y2="285" stroke="#c7cfcb"/>
+            <circle cx="860" cy="285" r="6" fill="#1f6f54"/>
+
+            <text x="685" y="320" font-family="Inter" font-size="11">Texture</text>
+            <line x1="685" y1="335" x2="910" y2="335" stroke="#c7cfcb"/>
+            <circle cx="840" cy="335" r="6" fill="#1f6f54"/>
+          </svg>
+
+          <p class="caption">
+            Le développement RAW établit la base lumineuse et colorimétrique
+            avant les interventions plus précises.
+          </p>
+        </div>
+
+        <div class="stepper reveal">
+
+          <div class="step">
+            <span class="step-number">01</span>
+            <strong>Exposition</strong>
+            <p>Établir une luminosité globale cohérente.</p>
+          </div>
+
+          <div class="step">
+            <span class="step-number">02</span>
+            <strong>Contraste</strong>
+            <p>Structurer la différence entre zones claires et sombres.</p>
+          </div>
+
+          <div class="step">
+            <span class="step-number">03</span>
+            <strong>Hautes lumières</strong>
+            <p>Récupérer ou maîtriser les zones très lumineuses.</p>
+          </div>
+
+          <div class="step">
+            <span class="step-number">04</span>
+            <strong>Ombres</strong>
+            <p>Révéler les détails sans aplatir l'image.</p>
+          </div>
+
+          <div class="step">
+            <span class="step-number">05</span>
+            <strong>Couleur</strong>
+            <p>Finaliser température et équilibre chromatique.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 07 -->
+    <section id="non-destructive">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number">07 / MÉTHODE</span>
+          <h2>La retouche non destructive</h2>
+          <p class="lead">
+            Une méthode professionnelle doit permettre de revenir en arrière,
+            de modifier une correction et de comparer plusieurs versions sans
+            dégrader le fichier original.
+          </p>
+        </div>
+
+        <div class="visual-wide reveal">
+          <svg viewBox="0 0 1000 360" role="img" aria-labelledby="destructive-title">
+            <title id="destructive-title">Comparaison entre une retouche destructive et non destructive</title>
+
+            <!-- destructive -->
+            <text x="250" y="45" text-anchor="middle" font-family="Space Grotesk" font-size="20" font-weight="600">
+              Méthode destructive
+            </text>
+
+            <rect x="100" y="80" width="300" height="70" rx="8" fill="#f6f8f6" stroke="#e3e8e5"/>
+            <text x="250" y="122" text-anchor="middle" font-family="Inter" font-size="14">Image originale</text>
+
+            <line x1="250" y1="150" x2="250" y2="195" stroke="#5a6560" stroke-width="2"/>
+            <polygon points="250,205 244,193 256,193" fill="#5a6560"/>
+
+            <rect x="100" y="210" width="300" height="70" rx="8" fill="#faf7f4" stroke="#b3541e"/>
+            <text x="250" y="252" text-anchor="middle" font-family="Inter" font-size="14">Modification permanente</text>
+
+            <!-- non destructive -->
+            <text x="750" y="45" text-anchor="middle" font-family="Space Grotesk" font-size="20" font-weight="600" fill="#1f6f54">
+              Méthode non destructive
+            </text>
+
+            <rect x="600" y="80" width="300" height="60" rx="8" fill="#f6f8f6" stroke="#e3e8e5"/>
+            <text x="750" y="116" text-anchor="middle" font-family="Inter" font-size="14">Image originale</text>
+
+            <line x1="750" y1="140" x2="750" y2="165" stroke="#1f6f54" stroke-width="2"/>
+
+            <rect x="600" y="175" width="300" height="45" rx="7" fill="#e7f2ed" stroke="#1f6f54"/>
+            <text x="750" y="203" text-anchor="middle" font-family="Inter" font-size="12">Calque / masque / réglage</text>
+
+            <line x1="750" y1="220" x2="750" y2="245" stroke="#1f6f54" stroke-width="2"/>
+
+            <rect x="600" y="255" width="300" height="45" rx="7" fill="#e7f2ed" stroke="#1f6f54"/>
+            <text x="750" y="283" text-anchor="middle" font-family="Inter" font-size="12">Modification réversible</text>
+          </svg>
+        </div>
+
+        <div class="layer-stack reveal" aria-label="Exemple de structure de calques">
+
+          <div class="layer">
+            <span class="layer-number">L.04</span>
+            <span class="layer-name">Corrections locales</span>
+            <span class="layer-state">VISIBLE</span>
+          </div>
+
+          <div class="layer">
+            <span class="layer-number">L.03</span>
+            <span class="layer-name">Nettoyage</span>
+            <span class="layer-state">VISIBLE</span>
+          </div>
+
+          <div class="layer">
+            <span class="layer-number">L.02</span>
+            <span class="layer-name">Réglages colorimétriques</span>
+            <span class="layer-state">VISIBLE</span>
+          </div>
+
+          <div class="layer">
+            <span class="layer-number">L.01</span>
+            <span class="layer-name">Image originale</span>
+            <span class="layer-state">PROTÉGÉE</span>
+          </div>
+
+        </div>
+
+        <div class="accordion reveal">
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false">
+              <span>Pourquoi conserver l'original ?</span>
+              <span class="accordion-symbol">+</span>
+            </button>
+            <div class="accordion-content">
+              <p>
+                Conserver l'original permet de revenir à l'état initial,
+                de comparer différentes versions et de modifier la méthode
+                de retouche sans recommencer tout le travail.
+              </p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false">
+              <span>Pourquoi utiliser les masques ?</span>
+              <span class="accordion-symbol">+</span>
+            </button>
+            <div class="accordion-content">
+              <p>
+                Un masque permet de contrôler précisément la zone sur laquelle
+                un réglage s'applique. On peut ainsi éclaircir un visage,
+                modifier une couleur ou atténuer un élément sans toucher
+                au reste de l'image.
+              </p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false">
+              <span>Quel est le risque d'une retouche excessive ?</span>
+              <span class="accordion-symbol">+</span>
+            </button>
+            <div class="accordion-content">
+              <p>
+                Une retouche trop forte peut supprimer les textures,
+                déformer les couleurs, accentuer artificiellement les détails
+                et donner au sujet une apparence peu naturelle.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ESSENTIEL -->
+    <section id="essentiel" class="summary">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <span class="section-number" style="color:#fff;">08 / SYNTHÈSE</span>
+          <h2>Les points clés à retenir</h2>
+          <p>
+            Une retouche réussie repose davantage sur la maîtrise et la mesure
+            que sur la quantité d'effets appliqués.
+          </p>
+        </div>
+
+        <div class="summary-grid reveal">
+
+          <div class="summary-item">
+            <span>01</span>
+            <strong>Commencer par la lumière</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>02</span>
+            <strong>Équilibrer la couleur</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>03</span>
+            <strong>Préserver la texture de peau</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>04</span>
+            <strong>Nettoyer sans dénaturer</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>05</span>
+            <strong>Utiliser Camera Raw comme base</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>06</span>
+            <strong>Travailler de manière non destructive</strong>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- NAVIGATION -->
+    <section id="navigation">
+      <div class="container">
+
+        <div class="lesson-nav">
+
+          <a class="nav-card" href="#" aria-label="Leçon précédente">
+            <span class="nav-label">← Leçon précédente</span>
+            <span class="nav-title">LEÇON 05 — Composition visuelle</span>
+          </a>
+
+          <a class="nav-card next" href="#" aria-label="Leçon suivante">
+            <span class="nav-label">Leçon suivante →</span>
+            <span class="nav-title">LEÇON 07 — Identité visuelle</span>
+          </a>
+
+        </div>
+
+        <div style="text-align:center;">
+          <a href="#sommaire" style="
+            display:inline-block;
+            padding:11px 18px;
+            border:1px solid var(--color-border);
+            border-radius:8px;
+            color:var(--color-accent);
+            font-size:13px;
+            font-weight:600;
+          ">
+            ↑ Retour au sommaire
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <span>Filière Audiovisuel · Module 2</span>
+      <span>Leçon 06 · Retouche photo</span>
+    </div>
+  </footer>
+
+  <!-- Retour en haut -->
+  <button class="back-top" id="backTop" aria-label="Retour en haut">↑</button>
+
+  <script>
+    /* =========================
+       BARRE DE PROGRESSION
+    ========================= */
+
+    const progressBar = document.getElementById("progressBar");
+    const backTop = document.getElementById("backTop");
+
+    function updateScrollUI() {
+      const scrollTop = window.scrollY;
+      const documentHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress = documentHeight > 0
+        ? (scrollTop / documentHeight) * 100
+        : 0;
+
+      progressBar.style.width = progress + "%";
+
+      if (scrollTop > 500) {
+        backTop.classList.add("visible");
+      } else {
+        backTop.classList.remove("visible");
+      }
+    }
+
+    window.addEventListener("scroll", updateScrollUI, { passive: true });
+
+    backTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+
+    updateScrollUI();
+
+    /* =========================
+       TABS ACCESSIBLES
+    ========================= */
+
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    tabButtons.forEach((button, index) => {
+
+      button.addEventListener("click", () => {
+
+        tabButtons.forEach(btn => {
+          btn.classList.remove("active");
+          btn.setAttribute("aria-selected", "false");
+        });
+
+        tabPanels.forEach(panel => {
+          panel.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        button.setAttribute("aria-selected", "true");
+
+        const panel = document.getElementById(button.getAttribute("aria-controls"));
+
+        if (panel) {
+          panel.classList.add("active");
+        }
+      });
+
+      button.addEventListener("keydown", event => {
+
+        let newIndex = index;
+
+        if (event.key === "ArrowRight") {
+          newIndex = (index + 1) % tabButtons.length;
+        }
+
+        if (event.key === "ArrowLeft") {
+          newIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+        }
+
+        if (newIndex !== index) {
+          event.preventDefault();
+          tabButtons[newIndex].focus();
+          tabButtons[newIndex].click();
+        }
+      });
+
+    });
+
+    /* =========================
+       ACCORDÉONS
+    ========================= */
+
+    const accordionTriggers =
+      document.querySelectorAll(".accordion-trigger");
+
+    accordionTriggers.forEach(trigger => {
+
+      trigger.addEventListener("click", () => {
+
+        const item = trigger.closest(".accordion-item");
+        const isOpen = item.classList.contains("open");
+
+        document.querySelectorAll(".accordion-item").forEach(other => {
+          other.classList.remove("open");
+
+          const otherTrigger =
+            other.querySelector(".accordion-trigger");
+
+          if (otherTrigger) {
+            otherTrigger.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        if (!isOpen) {
+          item.classList.add("open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
+
+    });
+
+    /* =========================
+       ANIMATIONS AU SCROLL
+    ========================= */
+
+    const revealElements = document.querySelectorAll(".reveal");
+
+    if ("IntersectionObserver" in window) {
+
+      const observer = new IntersectionObserver(
+        entries => {
+
+          entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+
+          });
+
+        },
+        {
+          threshold: 0.12
+        }
+      );
+
+      revealElements.forEach(element => observer.observe(element));
+
+    } else {
+
+      revealElements.forEach(element => {
+        element.classList.add("visible");
+      });
+
+    }
+
+    /* =========================
+       NAVIGATION CLAVIER
+    ========================= */
+
+    document.addEventListener("keydown", event => {
+
+      if (event.key === "Escape") {
+
+        document.querySelectorAll(".accordion-item").forEach(item => {
+          item.classList.remove("open");
+
+          const trigger =
+            item.querySelector(".accordion-trigger");
+
+          if (trigger) {
+            trigger.setAttribute("aria-expanded", "false");
+          }
+        });
+
+      }
+
+    });
+  </script>
+
+</body>
+</html>

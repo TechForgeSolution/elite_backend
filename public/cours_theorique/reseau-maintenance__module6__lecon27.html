@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 27 — Durcissement des systèmes">
+<title>Leçon 27 — Durcissement des systèmes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+--line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+--soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+--soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;z-index:1000;width:0;height:4px;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:30;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav,.container,.section-inner{max-width:1180px;margin:auto;padding-inline:22px}.nav{padding-block:13px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700}.brand span{color:var(--color-accent)}.navlinks{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem}
+.hero{max-width:1180px;margin:auto;padding:76px 22px 48px;display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center}
+.eyebrow,.kicker{font:500 .8rem "IBM Plex Mono";color:var(--color-accent);text-transform:uppercase;letter-spacing:.08em}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.15;margin:0 0 18px}h1{font-size:clamp(2.7rem,6vw,5.2rem);letter-spacing:-.055em}h2{font-size:clamp(1.9rem,3vw,2.75rem);letter-spacing:-.035em}h3{font-size:1.22rem}
+.lead{max-width:720px;font-size:1.15rem;color:var(--muted)}.badges{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.badge{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--soft);font:400 .78rem "IBM Plex Mono"}.badge strong{color:var(--color-accent)}
+.hero-art,.diagram{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:17px}svg{display:block;width:100%;height:auto}.caption{font-size:.84rem;color:var(--muted);margin-top:9px}
+.toc{border-block:1px solid var(--line);padding-block:25px;margin-bottom:48px}.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}.toc a{padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--color-bg);font-weight:600}
+section{padding:72px 0}.section-alt{background:var(--soft)}.prose{max-width:720px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:30px}.card{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--color-bg);transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.8rem;color:var(--color-accent);margin-bottom:8px}.callout{padding:19px 21px;margin:24px 0;border:2px solid var(--color-accent);border-radius:12px;background:var(--soft2)}.callout b{color:var(--color-accent)}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:28px 0}.step{padding:13px 9px;border-top:3px solid var(--color-neutral)}.step.active{border-top-color:var(--color-accent)}.step b{display:block;font:600 .78rem "IBM Plex Mono";color:var(--color-accent)}
+.table-wrap{overflow-x:auto;margin:26px 0;border:1px solid var(--line);border-radius:12px}table{width:100%;min-width:720px;border-collapse:collapse;font:400 .88rem "IBM Plex Mono"}th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--line)}th{background:var(--soft)}tbody tr:hover{background:var(--soft)}tr:last-child td{border-bottom:0}
+.tabs{margin-top:28px}.tab-buttons{display:flex;gap:8px;flex-wrap:wrap}.tab-buttons button{padding:10px 15px;border:1px solid var(--line);border-radius:9px;background:var(--color-bg);color:var(--color-text);cursor:pointer;font:600 .9rem "IBM Plex Sans"}.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}
+.tab-panel{display:none;margin-top:10px;padding:21px;border:1px solid var(--line);border-radius:12px;background:var(--color-bg)}.tab-panel.active{display:block}
+.code{padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--soft2);font:400 .9rem/1.7 "IBM Plex Mono";white-space:pre;overflow:auto}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.key{padding:16px;border-left:3px solid var(--color-accent);background:var(--color-bg)}
+details{padding:17px 0;border-block:1px solid var(--line)}summary{cursor:pointer;font-weight:700}.bottom-nav{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:42px 0}.bottom-nav a{padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+footer{padding:30px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}.top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer}
+.reveal{opacity:0;transform:translateY(15px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){.hero,.grid2{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.toc-grid{grid-template-columns:1fr 1fr}.key-grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:540px){.navlinks{display:none}.hero{padding-top:43px}.cards,.toc-grid,.key-grid,.bottom-nav{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}section{padding:52px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><nav class="nav" aria-label="Navigation principale">
+<div class="brand">MAINTENANCE <span>&</span> RÉSEAU</div>
+<div class="navlinks"><a href="#mises-a-jour">Mises à jour</a><a href="#services">Services</a><a href="#permissions">Permissions</a><a href="#edr">Antivirus / EDR</a><a href="#strategie">Stratégie</a><a href="#synthese">Synthèse</a></div>
+</nav></header>
+
+<main>
+<section class="hero">
+<div><div class="eyebrow">Module 6 · Sécurité et projet</div>
+<h1>Durcissement des systèmes</h1>
+<p class="lead">Sécuriser un système contre les attaques courantes en réduisant sa surface d’attaque et en renforçant ses mécanismes de protection.</p>
+<div class="badges"><span class="badge"><strong>Leçon 27</strong></span><span class="badge">Avancé</span><span class="badge">15 min</span><span class="badge">Cybersécurité</span></div></div>
+<div class="hero-art">
+<svg viewBox="0 0 650 440" role="img" aria-labelledby="heroTitle heroDesc">
+<title id="heroTitle">Architecture visuelle du durcissement</title><desc id="heroDesc">Un système protégé par plusieurs couches : mises à jour, réduction des services, permissions minimales et protection endpoint.</desc>
+<rect x="70" y="65" width="510" height="315" rx="18" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+<rect x="215" y="150" width="220" height="135" rx="15" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="4"/>
+<text x="325" y="193" text-anchor="middle" font-family="Space Grotesk" font-size="24" fill="var(--color-text)">SYSTÈME</text>
+<text x="325" y="222" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-accent)">surface d’attaque</text>
+<text x="325" y="250" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-text)">réduite</text>
+<g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"><rect x="25" y="15" width="165" height="55" rx="10"/><rect x="245" y="15" width="165" height="55" rx="10"/><rect x="465" y="15" width="165" height="55" rx="10"/><rect x="25" y="365" width="165" height="55" rx="10"/><rect x="465" y="365" width="165" height="55" rx="10"/></g>
+<g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="15" text-anchor="middle"><text x="107" y="48">Mises à jour</text><text x="327" y="48">Services</text><text x="547" y="48">Permissions</text><text x="107" y="398">Antivirus / EDR</text><text x="547" y="398">Surveillance</text></g>
+<g stroke="var(--color-accent)" stroke-width="4" fill="none"><path d="M190 70L235 150"/><path d="M327 70V150"/><path d="M465 70L415 150"/><path d="M190 365L235 285"/><path d="M465 365L415 285"/></g>
+</svg><div class="caption">Le durcissement repose sur plusieurs mesures complémentaires.</div>
+</div>
+</section>
+
+<div class="container toc"><div class="eyebrow">Sommaire</div><div class="toc-grid">
+<a href="#mises-a-jour">01 · Mises à jour de sécurité</a><a href="#services">02 · Services inutiles</a><a href="#permissions">03 · Permissions minimales</a>
+<a href="#edr">04 · Antivirus / EDR</a><a href="#strategie">05 · Stratégie de durcissement</a><a href="#synthese">06 · Points clés</a>
+</div></div>
+
+<section id="mises-a-jour"><div class="section-inner reveal"><div class="grid2">
+<div class="prose"><div class="kicker">01 · Mises à jour</div><h2>Corriger les vulnérabilités connues</h2>
+<p>Les mises à jour de sécurité servent à corriger des vulnérabilités identifiées et à maintenir le système et ses composants dans un état de sécurité approprié.</p>
+<p>Le durcissement commence par un système maintenu à jour : système d’exploitation, applications et composants de sécurité doivent être suivis régulièrement.</p>
+<div class="callout"><b>💡 À retenir</b><br>Un système obsolète peut rester exposé à une vulnérabilité déjà corrigée par son éditeur.</div></div>
+<div class="diagram"><svg viewBox="0 0 620 390" role="img" aria-label="Cycle de mise à jour de sécurité">
+<circle cx="310" cy="195" r="82" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="4"/><text x="310" y="190" text-anchor="middle" font-family="Space Grotesk" font-size="21" fill="var(--color-text)">SYSTÈME</text><text x="310" y="217" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-accent)">maintenu</text>
+<g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"><rect x="45" y="55" width="145" height="60" rx="10"/><rect x="430" y="55" width="145" height="60" rx="10"/><rect x="430" y="275" width="145" height="60" rx="10"/><rect x="45" y="275" width="145" height="60" rx="10"/></g>
+<g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="15" text-anchor="middle"><text x="117" y="91">Détection</text><text x="502" y="91">Correctif</text><text x="502" y="311">Déploiement</text><text x="117" y="311">Vérification</text></g>
+<path d="M190 85L248 145M430 85L372 145M430 305L372 245M190 305L248 245" fill="none" stroke="var(--color-accent)" stroke-width="4"/>
+</svg><div class="caption">La mise à jour s’inscrit dans une démarche continue de maintien en condition de sécurité.</div></div>
+</div></div></section>
+
+<section id="services" class="section-alt"><div class="section-inner reveal">
+<div class="kicker">02 · Services</div><h2>Réduire la surface d’attaque</h2>
+<p class="prose">Un service actif peut fournir une fonction ou un point d’exposition. Lorsqu’un service n’est pas nécessaire, sa désactivation peut réduire la surface d’attaque du système.</p>
+<div class="diagram"><svg viewBox="0 0 1000 400" role="img" aria-label="Réduction du nombre de services actifs">
+<text x="250" y="45" text-anchor="middle" font-family="Space Grotesk" font-size="22" fill="var(--color-text)">Avant</text><text x="750" y="45" text-anchor="middle" font-family="Space Grotesk" font-size="22" fill="var(--color-text)">Après durcissement</text>
+<rect x="70" y="80" width="360" height="255" rx="15" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/><rect x="570" y="80" width="360" height="255" rx="15" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+<g fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="3"><rect x="105" y="115" width="120" height="65" rx="9"/><rect x="265" y="115" width="120" height="65" rx="9"/><rect x="105" y="210" width="120" height="65" rx="9"/><rect x="265" y="210" width="120" height="65" rx="9"/><rect x="605" y="145" width="120" height="65" rx="9"/></g>
+<g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="12" text-anchor="middle"><text x="165" y="151">Service A</text><text x="325" y="151">Service B</text><text x="165" y="246">Service C</text><text x="325" y="246">Service D</text><text x="665" y="181">Service utile</text></g>
+<path d="M430 208H570" stroke="var(--color-accent)" stroke-width="5"/><text x="500" y="190" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-accent)">réduire</text>
+<text x="250" y="365" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="var(--color-text)">plusieurs fonctions actives</text><text x="750" y="365" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="var(--color-text)">fonctions nécessaires conservées</text>
+</svg></div>
+<div class="cards"><article class="card"><div class="icon">◉</div><h3>Identifier</h3><p>Inventorier les services actifs et comprendre leur fonction.</p></article>
+<article class="card"><div class="icon">?</div><h3>Évaluer</h3><p>Déterminer lesquels sont réellement nécessaires.</p></article>
+<article class="card"><div class="icon">−</div><h3>Réduire</h3><p>Désactiver les fonctions inutiles lorsque cela est justifié.</p></article>
+<article class="card"><div class="icon">✓</div><h3>Contrôler</h3><p>Vérifier les effets du changement et conserver une configuration cohérente.</p></article></div>
+<div class="callout"><b>⚠️ Attention</b><br>Ne pas désactiver un service sans connaître son rôle et ses dépendances.</div>
+</div></section>
+
+<section id="permissions"><div class="section-inner reveal"><div class="grid2">
+<div class="diagram"><svg viewBox="0 0 620 430" role="img" aria-label="Principe du moindre privilège">
+<path d="M310 48L535 130V255C535 335 435 390 310 410C185 390 85 335 85 255V130Z" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="4"/>
+<rect x="225" y="165" width="170" height="95" rx="12" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+<text x="310" y="205" text-anchor="middle" font-family="Space Grotesk" font-size="20" fill="var(--color-text)">DROITS</text><text x="310" y="231" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-accent)">nécessaires uniquement</text>
+<g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"><rect x="70" y="20" width="135" height="50" rx="9"/><rect x="415" y="20" width="135" height="50" rx="9"/></g>
+<text x="137" y="51" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">UTILISATEUR</text><text x="482" y="51" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">SERVICE</text>
+<path d="M205 50L260 150M415 50L360 150" stroke="var(--color-accent)" stroke-width="4"/>
+<text x="310" y="300" text-anchor="middle" font-family="Space Grotesk" font-size="19" fill="var(--color-text)">moindre privilège</text><text x="310" y="328" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-accent)">→ impact potentiel limité</text>
+</svg><div class="caption">Le principe du moindre privilège limite les droits au besoin réel.</div></div>
+<div class="prose"><div class="kicker">03 · Permissions minimales</div><h2>Limiter les privilèges</h2>
+<p>Le principe du moindre privilège consiste à n’accorder à un utilisateur, un service ou un processus que les permissions nécessaires à sa fonction.</p>
+<p>Une permission excessive peut augmenter l’impact d’une compromission. Le durcissement vise donc à limiter les droits et à contrôler les comptes privilégiés.</p>
+<div class="callout"><b>🔒 Sécurité / bonne pratique</b><br>Séparer les usages courants des opérations d’administration lorsque cela est possible et contrôler les comptes à privilèges élevés.</div></div>
+</div>
+<div class="table-wrap"><table><thead><tr><th scope="col">Élément</th><th scope="col">Principe</th><th scope="col">Objectif</th></tr></thead><tbody>
+<tr><td>Utilisateur</td><td>Droits liés à la fonction</td><td>Limiter l’accès</td></tr><tr><td>Administrateur</td><td>Usage contrôlé</td><td>Réduire l’impact d’un compte compromis</td></tr><tr><td>Service</td><td>Permissions minimales</td><td>Limiter les actions possibles</td></tr><tr><td>Ressource</td><td>Accès explicitement autorisé</td><td>Réduire l’exposition</td></tr>
+</tbody></table></div></div></section>
+
+<section id="edr" class="section-alt"><div class="section-inner reveal"><div class="kicker">04 · Antivirus / EDR</div><h2>Protéger et surveiller les endpoints</h2>
+<div class="grid2"><div class="prose"><p>L’antivirus vise à détecter et bloquer les logiciels malveillants et certains comportements selon les capacités de la solution. Un EDR (<em>Endpoint Detection and Response</em>) ajoute une surveillance plus étendue des activités observées sur les endpoints.</p>
+<p>Ces mécanismes constituent une couche complémentaire du durcissement : ils ne remplacent ni les mises à jour, ni la réduction des services, ni le contrôle des permissions.</p>
+<div class="callout"><b>💡 À retenir</b><br>La protection endpoint s’intègre dans une stratégie globale de défense en profondeur.</div></div>
+<div class="diagram"><svg viewBox="0 0 620 420" role="img" aria-label="Chaîne de protection antivirus et EDR">
+<rect x="35" y="145" width="140" height="100" rx="12" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/><rect x="240" y="145" width="140" height="100" rx="12" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="3"/><rect x="445" y="145" width="140" height="100" rx="12" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+<text x="105" y="187" text-anchor="middle" font-family="Space Grotesk" font-size="18" fill="var(--color-text)">Activité</text><text x="105" y="215" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">du poste</text>
+<text x="310" y="183" text-anchor="middle" font-family="Space Grotesk" font-size="18" fill="var(--color-text)">Détection</text><text x="310" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-accent)">AV / EDR</text>
+<text x="515" y="183" text-anchor="middle" font-family="Space Grotesk" font-size="18" fill="var(--color-text)">Analyse</text><text x="515" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">et réponse</text>
+<path d="M175 195H240M380 195H445" stroke="var(--color-accent)" stroke-width="5"/>
+<path d="M515 245V325H105V245" fill="none" stroke="var(--color-neutral)" stroke-width="3"/>
+<text x="310" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-accent)">surveiller → détecter → réagir</text><text x="310" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="var(--color-text)">boucle de surveillance</text>
+</svg><div class="caption">L’endpoint devient une source de protection, d’observation et de détection.</div></div></div>
+<div class="tabs">
+<div class="tab-buttons" role="tablist" aria-label="Comparaison Antivirus et EDR"><button role="tab" aria-selected="true" aria-controls="tab-av">Antivirus</button><button role="tab" aria-selected="false" aria-controls="tab-edr">EDR</button></div>
+<div id="tab-av" class="tab-panel active" role="tabpanel"><h3>Antivirus</h3><p>Protection centrée sur la détection et le blocage des logiciels malveillants et comportements pris en charge.</p></div>
+<div id="tab-edr" class="tab-panel" role="tabpanel"><h3>EDR</h3><p>Surveillance et analyse plus étendues de l’activité des endpoints afin d’aider à détecter et répondre aux événements.</p></div>
+</div></div></section>
+
+<section id="strategie"><div class="section-inner reveal"><div class="kicker">05 · Stratégie</div><h2>Construire un système durci</h2>
+<p class="prose">Le durcissement associe plusieurs mesures. Chacune réduit une partie du risque et complète les autres.</p>
+<div class="steps"><div class="step active"><b>01</b>Mettre à jour</div><div class="step active"><b>02</b>Réduire les services</div><div class="step active"><b>03</b>Limiter les droits</div><div class="step active"><b>04</b>Protéger l’endpoint</div><div class="step active"><b>05</b>Surveiller</div></div>
+<div class="diagram"><svg viewBox="0 0 1000 430" role="img" aria-label="Défense en profondeur">
+<circle cx="500" cy="215" r="83" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="4"/><circle cx="500" cy="215" r="145" fill="none" stroke="var(--color-neutral)" stroke-width="3"/><circle cx="500" cy="215" r="205" fill="none" stroke="var(--color-neutral)" stroke-width="3"/><circle cx="500" cy="215" r="265" fill="none" stroke="var(--color-neutral)" stroke-width="3"/><circle cx="500" cy="215" r="320" fill="none" stroke="var(--color-accent)" stroke-width="3"/>
+<text x="500" y="210" text-anchor="middle" font-family="Space Grotesk" font-size="24" fill="var(--color-text)">SYSTÈME</text><text x="500" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-accent)">protégé</text>
+<g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="13" text-anchor="middle"><text x="500" y="28">SURVEILLANCE</text><text x="820" y="120">AV / EDR</text><text x="790" y="350">PERMISSIONS</text><text x="210" y="350">SERVICES</text><text x="180" y="120">MISES À JOUR</text></g>
+<text x="500" y="410" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="var(--color-text)">plusieurs couches complémentaires</text>
+</svg></div>
+<div class="code">PRINCIPES DE DURCISSEMENT
+
+[1] Maintenir le système et les applications à jour
+[2] Désactiver les services qui ne sont pas nécessaires
+[3] Appliquer le principe du moindre privilège
+[4] Déployer une protection antivirus / EDR adaptée
+[5] Surveiller et vérifier la configuration</div>
+<div class="callout"><b>🔗 Pour aller plus loin</b><br>Une configuration de référence permet de documenter les paramètres attendus, les comptes privilégiés, les services nécessaires et les mécanismes de protection activés.</div>
+</div></section>
+
+<section id="synthese" class="section-alt"><div class="section-inner reveal"><div class="kicker">Synthèse</div><h2>Points clés à retenir</h2>
+<div class="key-grid"><div class="key"><b>Mises à jour</b><br>Corriger les vulnérabilités connues et maintenir le système à niveau.</div>
+<div class="key"><b>Services</b><br>Limiter les fonctions actives aux besoins réels.</div><div class="key"><b>Permissions</b><br>Accorder uniquement les droits nécessaires.</div><div class="key"><b>Antivirus / EDR</b><br>Ajouter une couche de détection, protection et surveillance.</div></div>
+<details style="margin-top:35px"><summary>Pourquoi parle-t-on de défense en profondeur ?</summary><p>Parce que les mesures sont complémentaires : une seule protection ne compense pas un système obsolète, des services inutiles ou des permissions excessives.</p></details>
+<details><summary>Quel est l’objectif global du durcissement ?</summary><p>Réduire la surface d’attaque, limiter l’impact potentiel d’une compromission et améliorer la détection d’activités anormales.</p></details>
+</div></section>
+
+<div class="container"><div class="bottom-nav">
+<a href="#mises-a-jour">← <strong>Leçon 26</strong><br>Cybersécurité fondamentaux</a>
+<a href="#synthese" style="text-align:right"><strong>Leçon 28</strong> →<br>Sauvegarde, PRA et PCA</a>
+</div></div>
+</main>
+
+<footer><div class="container">Module 6 · Administration systèmes & Cybersécurité – Sécurité et projet · Leçon 27</div></footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){const root=document.documentElement,max=root.scrollHeight-root.clientHeight;progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%'}
+window.addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+
+document.querySelectorAll('.tab-buttons').forEach(group=>{
+ const tabs=[...group.querySelectorAll('[role="tab"]')];
+ tabs.forEach(tab=>{
+  tab.addEventListener('click',()=>{
+   const parent=group.parentElement;
+   tabs.forEach(t=>t.setAttribute('aria-selected','false'));
+   parent.querySelectorAll('[role="tabpanel"]').forEach(p=>p.classList.remove('active'));
+   tab.setAttribute('aria-selected','true');
+   document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+  });
+  tab.addEventListener('keydown',e=>{
+   if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+    e.preventDefault();const i=tabs.indexOf(tab),next=tabs[(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length];next.focus();next.click();
+   }
+  });
+ });
+});
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+document.getElementById('topBtn').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

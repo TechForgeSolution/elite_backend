@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 03 — Installation de systèmes d'exploitation">
+<title>Leçon 03 — Installation de systèmes d'exploitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F7FA;
+  --color-text:#10161D;
+  --color-accent:#1F6FEB;
+  --color-neutral:#A9B4BE;
+  --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.68}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.02em}
+.brand span{color:var(--color-accent)}
+.nav a{font-size:.9rem;font-weight:600}
+.container{max-width:1180px;margin:auto;padding:0 24px}
+.hero{padding:72px 0 54px}
+.eyebrow{font:600 .8rem "IBM Plex Mono";color:var(--color-accent);text-transform:uppercase;letter-spacing:.08em}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.15;letter-spacing:-.03em}
+h1{font-size:clamp(2.4rem,6vw,5rem);max-width:850px;margin:14px 0 18px}
+h2{font-size:clamp(1.8rem,3vw,2.7rem);margin:0 0 22px}
+h3{font-size:1.25rem;margin:0 0 10px}
+.lead{font-size:1.15rem;max-width:720px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}
+.badge{border:1px solid var(--line);padding:7px 11px;border-radius:999px;font:500 .8rem "IBM Plex Mono";background:var(--soft)}
+.toc{border:1px solid var(--line);padding:24px;border-radius:14px;background:var(--soft);margin-bottom:64px}
+.toc strong{display:block;margin-bottom:12px;font-family:"Space Grotesk"}
+.toc ol{margin:0;padding-left:22px;columns:2}
+.toc li{margin:5px 0}
+section{padding:72px 0;scroll-margin-top:75px}
+section:nth-of-type(even){background:var(--soft);box-shadow:0 0 0 100vmax var(--soft);clip-path:inset(0 -100vmax)}
+.prose{max-width:720px}
+.diagram{margin:30px 0;border:1px solid var(--line);border-radius:16px;background:var(--color-bg);padding:18px;overflow:auto}
+.diagram svg{display:block;width:100%;min-width:680px;height:auto}
+.caption{font-size:.85rem;color:var(--muted);margin-top:10px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.5rem;margin-bottom:10px}
+.callout{margin:28px 0;padding:20px 22px;border-left:5px solid var(--color-accent);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:10px;background:var(--soft10)}
+.callout b{font-family:"Space Grotesk"}
+.tabs{margin:30px 0}
+.tab-buttons{display:flex;gap:6px;border-bottom:1px solid var(--line);overflow:auto}
+.tab-buttons button{font:600 .9rem "IBM Plex Sans";color:var(--color-text);background:none;border:0;padding:12px 16px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab-buttons button[aria-selected="true"]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+.tab-panel{display:none;padding:22px;border:1px solid var(--line);border-top:0;background:var(--color-bg)}
+.tab-panel.active{display:block}
+.code{font:500 .88rem "IBM Plex Mono";background:var(--soft10);border:1px solid var(--line);border-radius:12px;padding:18px;overflow:auto;white-space:pre}
+table{width:100%;border-collapse:collapse;margin:25px 0;font:500 .86rem "IBM Plex Mono"}
+th,td{padding:13px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--color-accent);font-weight:600}
+tr:hover td{background:var(--soft)}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:32px 0}
+.step{padding:16px;border-top:3px solid var(--color-accent);background:var(--soft)}
+.step small{display:block;color:var(--muted);font:500 .75rem "IBM Plex Mono";margin-bottom:7px}
+details{border-top:1px solid var(--line);padding:17px 0}
+summary{cursor:pointer;font-weight:700;font-family:"Space Grotesk"}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.key{padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--color-bg)}
+.key strong{display:block;color:var(--color-accent);margin-bottom:7px}
+footer{border-top:1px solid var(--line);padding:35px 0;margin-top:40px}
+.footer-nav{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.top{position:fixed;right:22px;bottom:22px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);border-radius:50%;width:44px;height:44px;cursor:pointer;font-weight:700}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+ .toc ol{columns:1}
+ .cards,.keys{grid-template-columns:1fr 1fr}
+ .stepper{grid-template-columns:1fr 1fr}
+ .hero{padding-top:48px}
+}
+@media(max-width:520px){
+ .container{padding:0 16px}.nav{padding:12px 16px}
+ .nav a{display:none}.cards,.keys,.stepper{grid-template-columns:1fr}
+ h1{font-size:2.55rem}
+ section{padding:54px 0}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">MAINTENANCE <span>&amp;</span> RÉSEAU</div>
+    <a href="#sommaire">Sommaire</a>
+  </nav>
+</header>
+
+<main>
+<div class="container">
+<section class="hero" id="accueil">
+  <div class="eyebrow">Module 1 · Maintenance informatique – Matériel et systèmes</div>
+  <h1>Installation de systèmes d'exploitation</h1>
+  <p class="lead">Installer et configurer un système Windows et un système Linux, depuis la préparation du disque jusqu'aux pilotes post-installation.</p>
+  <div class="badges">
+    <span class="badge">LEÇON 03</span><span class="badge">Débutant</span><span class="badge">15 min</span>
+    <span class="badge">Windows + Linux</span>
+  </div>
+</section>
+
+<nav class="toc reveal" id="sommaire" aria-label="Sommaire">
+  <strong>Sommaire de la leçon</strong>
+  <ol>
+    <li><a href="#partitionnement">Partitionnement</a></li>
+    <li><a href="#bios">BIOS / UEFI</a></li>
+    <li><a href="#windows">Installation Windows</a></li>
+    <li><a href="#linux">Installation Linux</a></li>
+    <li><a href="#pilotes">Pilotes post-installation</a></li>
+    <li><a href="#retenir">Points clés à retenir</a></li>
+  </ol>
+</nav>
+
+<section id="partitionnement" class="reveal">
+  <div class="eyebrow">01 · Préparation du stockage</div>
+  <h2>Partitionnement</h2>
+  <div class="prose">
+    <p>Le partitionnement consiste à organiser un disque en zones logiques appelées <strong>partitions</strong>. Avant une installation, cette étape permet de déterminer où seront placés le système, les données et, selon la configuration, les informations nécessaires au démarrage.</p>
+    <p>Le choix du schéma de partitionnement dépend notamment du mode de démarrage utilisé par la machine. Avec un système moderne démarré en UEFI, le format GPT est couramment utilisé ; les installations plus anciennes peuvent utiliser MBR.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Schéma d'un disque GPT contenant une partition système EFI, une partition système et une partition de données">
+    <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="55" width="830" height="145" rx="12" fill="none" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="450" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="18" fill="var(--color-text)">DISQUE — GPT</text>
+      <rect x="60" y="82" width="145" height="90" rx="8" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="132" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" fill="var(--color-text)">EFI</text>
+      <text x="132" y="145" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--muted)">Démarrage</text>
+      <rect x="220" y="82" width="350" height="90" rx="8" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="395" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" fill="var(--color-text)">Système</text>
+      <text x="395" y="145" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--muted)">Windows ou Linux</text>
+      <rect x="585" y="82" width="255" height="90" rx="8" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="712" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" fill="var(--color-text)">Données</text>
+      <text x="712" y="145" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--muted)">Documents / fichiers</text>
+      <line x1="205" y1="220" x2="220" y2="220" stroke="var(--color-accent)" stroke-width="3"/>
+      <line x1="570" y1="220" x2="585" y2="220" stroke="var(--color-accent)" stroke-width="3"/>
+    </svg>
+    <div class="caption">Exemple pédagogique d'organisation d'un disque en mode GPT.</div>
+  </div>
+
+  <div class="callout"><b>💡 À retenir</b><br>Le partitionnement intervient avant ou pendant l'installation. Une modification de partitions peut supprimer des données : vérifier le disque ciblé et sauvegarder les données importantes avant toute opération.</div>
+
+  <table>
+    <thead><tr><th scope="col">Élément</th><th scope="col">Rôle</th><th scope="col">Contexte</th></tr></thead>
+    <tbody>
+      <tr><td>GPT</td><td>Schéma moderne de partitionnement</td><td>Associé couramment à UEFI</td></tr>
+      <tr><td>MBR</td><td>Schéma historique</td><td>Courant sur des configurations anciennes</td></tr>
+      <tr><td>Partition système</td><td>Accueille les fichiers du système</td><td>Windows ou Linux</td></tr>
+      <tr><td>Partition de données</td><td>Stockage des fichiers utilisateur</td><td>Optionnelle selon le besoin</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="bios" class="reveal">
+  <div class="eyebrow">02 · Démarrage de la machine</div>
+  <h2>BIOS / UEFI</h2>
+  <div class="prose">
+    <p>Le <strong>BIOS</strong> et l'<strong>UEFI</strong> sont des micrologiciels exécutés avant le système d'exploitation. Ils initialisent le matériel et permettent de sélectionner un périphérique de démarrage.</p>
+    <p>Lors d'une installation, on peut avoir besoin d'accéder à leur interface pour vérifier le mode de démarrage, l'ordre de boot ou le support d'installation.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Flux de démarrage depuis le bouton de mise sous tension jusqu'au système d'exploitation">
+    <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--color-accent)"/></marker></defs>
+      <rect x="35" y="90" width="145" height="75" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="107" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Mise sous tension</text>
+      <text x="107" y="144" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">POST</text>
+      <line x1="180" y1="128" x2="245" y2="128" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arrow)"/>
+      <rect x="245" y="90" width="145" height="75" rx="10" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="317" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">BIOS / UEFI</text>
+      <text x="317" y="144" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">Boot</text>
+      <line x1="390" y1="128" x2="455" y2="128" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arrow)"/>
+      <rect x="455" y="90" width="145" height="75" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="527" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Support choisi</text>
+      <text x="527" y="144" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">USB / SSD</text>
+      <line x1="600" y1="128" x2="665" y2="128" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arrow)"/>
+      <rect x="665" y="90" width="190" height="75" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="760" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Chargeur de démarrage</text>
+      <text x="760" y="144" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">→ système d'exploitation</text>
+    </svg>
+    <div class="caption">Chaîne simplifiée du démarrage d'une machine.</div>
+  </div>
+
+  <div class="cards">
+    <article class="card"><div class="icon">▣</div><h3>Mode de démarrage</h3><p>Vérifier si la machine utilise UEFI ou un mode compatible ancien avant de préparer le support.</p></article>
+    <article class="card"><div class="icon">↥</div><h3>Ordre de boot</h3><p>Le support USB doit pouvoir être sélectionné comme périphérique de démarrage.</p></article>
+    <article class="card"><div class="icon">⚙</div><h3>Paramètres firmware</h3><p>Les options disponibles varient selon le constructeur de la carte mère.</p></article>
+  </div>
+</section>
+
+<section id="windows" class="reveal">
+  <div class="eyebrow">03 · Installation</div>
+  <h2>Installer Windows</h2>
+  <div class="prose">
+    <p>L'installation de Windows commence par le démarrage sur un support d'installation. L'assistant guide ensuite l'utilisateur dans les choix de langue, de clavier, d'édition et de disque.</p>
+  </div>
+
+  <div class="stepper" aria-label="Étapes d'installation Windows">
+    <div class="step"><small>01</small><b>Préparer</b><br>Support USB</div>
+    <div class="step"><small>02</small><b>Démarrer</b><br>Boot sur USB</div>
+    <div class="step"><small>03</small><b>Choisir</b><br>Langue et disque</div>
+    <div class="step"><small>04</small><b>Installer</b><br>Copie et redémarrages</div>
+    <div class="step"><small>05</small><b>Configurer</b><br>Session et réseau</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-buttons" role="tablist" aria-label="Installation Windows et Linux">
+      <button role="tab" aria-selected="true" aria-controls="win-panel" data-tab="win-panel">Windows</button>
+      <button role="tab" aria-selected="false" aria-controls="linux-panel" data-tab="linux-panel">Linux</button>
+    </div>
+    <div id="win-panel" class="tab-panel active" role="tabpanel">
+      <h3>Points de contrôle Windows</h3>
+      <ul>
+        <li>Vérifier le disque cible avant de supprimer ou créer des partitions.</li>
+        <li>Respecter le mode de démarrage prévu par la machine.</li>
+        <li>Après l'installation, contrôler le réseau et les périphériques.</li>
+      </ul>
+    </div>
+    <div id="linux-panel" class="tab-panel" role="tabpanel">
+      <h3>Points de contrôle Linux</h3>
+      <ul>
+        <li>Choisir la distribution et l'environnement adaptés au besoin.</li>
+        <li>Définir correctement les partitions et le point de montage.</li>
+        <li>Après l'installation, effectuer les mises à jour et contrôler les pilotes nécessaires.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout"><b>⚠️ Attention</b><br>Une installation peut effacer les partitions sélectionnées. Toujours identifier précisément le disque avant de confirmer une opération de formatage ou de suppression.</div>
+</section>
+
+<section id="linux" class="reveal">
+  <div class="eyebrow">04 · Installation</div>
+  <h2>Installer Linux</h2>
+  <div class="prose">
+    <p>Une installation Linux suit le même principe général : démarrage sur un support, préparation du stockage, installation des composants du système, puis configuration initiale.</p>
+    <p>Selon la distribution, l'installateur peut proposer un partitionnement automatique ou permettre une configuration manuelle. Le choix doit correspondre à l'organisation souhaitée du stockage.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Schéma d'une installation Linux depuis une clé USB jusqu'au bureau">
+    <svg viewBox="0 0 900 290" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--color-accent)"/></marker></defs>
+      <circle cx="110" cy="135" r="62" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="110" y="130" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">USB</text><text x="110" y="153" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">installateur</text>
+      <line x1="172" y1="135" x2="250" y2="135" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arr2)"/>
+      <rect x="250" y="78" width="155" height="114" rx="12" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="327" y="112" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Partitionnement</text>
+      <text x="327" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">/ · swap · /home</text>
+      <text x="327" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">selon le choix</text>
+      <line x1="405" y1="135" x2="485" y2="135" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arr2)"/>
+      <rect x="485" y="78" width="155" height="114" rx="12" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="562" y="112" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Installation</text>
+      <text x="562" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">paquets + bootloader</text>
+      <text x="562" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">redémarrage</text>
+      <line x1="640" y1="135" x2="720" y2="135" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arr2)"/>
+      <rect x="720" y="78" width="140" height="114" rx="12" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="790" y="112" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Système prêt</text>
+      <text x="790" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">bureau</text>
+      <text x="790" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">réseau + MAJ</text>
+    </svg>
+    <div class="caption">Vue simplifiée du cheminement d'une installation Linux.</div>
+  </div>
+
+  <details>
+    <summary>Pourquoi le point de montage « / » est-il important ?</summary>
+    <p>Dans Linux, « / » représente la racine de l'arborescence du système de fichiers. Elle constitue le point de départ à partir duquel les autres répertoires sont organisés.</p>
+  </details>
+  <details>
+    <summary>Le partitionnement manuel est-il obligatoire ?</summary>
+    <p>Non. Le cours distingue les possibilités de partitionnement automatique et manuel. Le choix dépend de l'organisation souhaitée et de l'objectif de l'installation.</p>
+  </details>
+</section>
+
+<section id="pilotes" class="reveal">
+  <div class="eyebrow">05 · Après l'installation</div>
+  <h2>Pilotes post-installation</h2>
+  <div class="prose">
+    <p>Un système installé doit ensuite reconnaître correctement les composants matériels. Les <strong>pilotes</strong> permettent au système d'exploitation de communiquer avec les périphériques.</p>
+    <p>La vérification doit notamment porter sur le réseau, l'affichage, l'audio et les autres périphériques présents dans la machine.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Chaîne de vérification des pilotes après installation">
+    <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+      <rect x="40" y="80" width="180" height="90" rx="12" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="130" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Système installé</text>
+      <text x="130" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">OS opérationnel</text>
+      <line x1="220" y1="125" x2="290" y2="125" stroke="var(--color-accent)" stroke-width="3"/>
+      <rect x="290" y="80" width="180" height="90" rx="12" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="380" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Détection matériel</text>
+      <text x="380" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">périphériques</text>
+      <line x1="470" y1="125" x2="540" y2="125" stroke="var(--color-accent)" stroke-width="3"/>
+      <rect x="540" y="80" width="145" height="90" rx="12" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="612" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Pilotes</text>
+      <text x="612" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">installation</text>
+      <line x1="685" y1="125" x2="755" y2="125" stroke="var(--color-accent)" stroke-width="3"/>
+      <rect x="755" y="80" width="105" height="90" rx="12" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="807" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600">Contrôle</text>
+      <text x="807" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">OK</text>
+    </svg>
+    <div class="caption">Méthode simple : détecter → installer → contrôler.</div>
+  </div>
+
+  <div class="cards">
+    <article class="card"><div class="icon">▦</div><h3>Réseau</h3><p>Vérifier que la carte réseau est reconnue et que la connectivité fonctionne.</p></article>
+    <article class="card"><div class="icon">▤</div><h3>Affichage</h3><p>Contrôler la reconnaissance du circuit graphique et le fonctionnement de l'affichage.</p></article>
+    <article class="card"><div class="icon">▥</div><h3>Périphériques</h3><p>Contrôler les périphériques présents et repérer les éléments non reconnus.</p></article>
+  </div>
+
+  <div class="callout"><b>🔒 Sécurité / bonne pratique</b><br>Avant une réinstallation ou une modification importante, sauvegarder les données nécessaires. Après installation, utiliser des sources de pilotes fiables et adaptées au matériel.</div>
+</section>
+
+<section id="retenir" class="reveal">
+  <div class="eyebrow">Synthèse</div>
+  <h2>Points clés à retenir</h2>
+  <div class="keys">
+    <div class="key"><strong>01 · Disque</strong>Le partitionnement organise l'espace de stockage et doit être vérifié avant toute suppression.</div>
+    <div class="key"><strong>02 · Démarrage</strong>BIOS/UEFI initialise le matériel et permet de choisir le support de démarrage.</div>
+    <div class="key"><strong>03 · OS</strong>Windows et Linux suivent un processus d'installation guidé, avec des choix propres au système.</div>
+    <div class="key"><strong>04 · Pilotes</strong>La phase post-installation vérifie que le matériel est correctement reconnu.</div>
+  </div>
+
+  <div class="callout"><b>💡 Vue d'ensemble</b><br><span class="code">Préparer → Démarrer → Partitionner → Installer → Configurer → Vérifier les pilotes</span></div>
+</section>
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-nav">
+      <a href="#accueil">← Leçon 02 · Assemblage et diagnostic matériel</a>
+      <a href="#sommaire">↑ Sommaire du module</a>
+      <a href="#accueil">Leçon 04 · Pilotes et périphériques →</a>
+    </div>
+    <p class="caption">Module 1 · Maintenance informatique – Matériel et systèmes · Leçon 03</p>
+  </div>
+</footer>
+
+<button class="top" id="top" aria-label="Retour en haut" title="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('top');
+
+function updateProgress(){
+  const doc=document.documentElement;
+  const max=doc.scrollHeight-doc.clientHeight;
+  progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+updateProgress();
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+document.querySelectorAll('[data-tab]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const id=btn.dataset.tab;
+    document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b===btn?'true':'false'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id===id));
+  });
+});
+
+document.querySelectorAll('.tab-buttons button').forEach((btn,i,arr)=>{
+  btn.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+      e.preventDefault();
+      const dir=e.key==='ArrowRight'?1:-1;
+      const next=arr[(i+dir+arr.length)%arr.length];
+      next.focus(); next.click();
+    }
+  });
+});
+</script>
+</body>
+</html>

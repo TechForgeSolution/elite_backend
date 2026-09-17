@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Leçon 04 — Pilotes et périphériques : installer, mettre à jour et dépanner les pilotes et périphériques courants." />
+  <title>Leçon 04 — Pilotes et périphériques</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#F4F7FA;
+      --color-text:#10161D;
+      --color-accent:#1F6FEB;
+      --color-neutral:#A9B4BE;
+      --shadow:0 14px 40px rgba(16,22,29,.08);
+      --radius:18px;
+      --radius-sm:12px;
+      --content:1120px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+    a{color:var(--color-accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    :focus-visible{outline:3px solid color-mix(in srgb,var(--color-accent) 65%,var(--color-bg));outline-offset:3px}
+    .progress{position:fixed;top:0;left:0;width:100%;height:4px;background:color-mix(in srgb,var(--color-neutral) 24%,var(--color-bg));z-index:999}
+    .progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+    .topbar{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 92%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg))}
+    .topbar-inner{max-width:var(--content);margin:auto;padding:12px 24px;display:flex;align-items:center;gap:18px;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:11px;font-family:"Space Grotesk",sans-serif;font-weight:700;color:var(--color-text)}
+    .brand-mark{width:36px;height:36px;border:1.5px solid var(--color-accent);border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg))}
+    .topnav{display:flex;gap:16px;font-size:.92rem;flex-wrap:wrap;justify-content:flex-end}
+    .topnav a{color:var(--color-text);opacity:.78}
+    .wrap{max-width:var(--content);margin:auto;padding:0 24px}
+    .hero{padding:64px 0 34px;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg))}
+    .eyebrow{font-family:"JetBrains Mono";font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent);font-weight:600}
+    h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.15;margin:0 0 16px}
+    h1{font-size:clamp(2.4rem,6vw,5.2rem);max-width:900px;letter-spacing:-.045em}
+    h2{font-size:clamp(1.7rem,3.6vw,2.8rem);letter-spacing:-.03em}
+    h3{font-size:1.2rem}
+    .lead{font-size:1.12rem;max-width:720px;color:color-mix(in srgb,var(--color-text) 73%,var(--color-bg));margin:0 0 24px}
+    .badges{display:flex;flex-wrap:wrap;gap:10px}
+    .badge{font-family:"JetBrains Mono";font-size:.78rem;border:1px solid color-mix(in srgb,var(--color-neutral) 55%,var(--color-bg));border-radius:999px;padding:7px 11px;background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:36px;align-items:center}
+    .hero-visual,.visual-card{border:1px solid color-mix(in srgb,var(--color-neutral) 48%,var(--color-bg));border-radius:var(--radius);background:color-mix(in srgb,var(--color-accent) 4%,var(--color-bg));box-shadow:var(--shadow);overflow:hidden}
+    .hero-visual{padding:18px}
+    .toc{margin:32px 0 12px;border:1px solid color-mix(in srgb,var(--color-neutral) 48%,var(--color-bg));border-radius:var(--radius);padding:22px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+    .toc strong{font-family:"Space Grotesk"}
+    .toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 20px;margin-top:12px}
+    .toc a{color:var(--color-text);font-size:.94rem;padding:7px 0;border-bottom:1px dashed color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+    main{padding:28px 0 72px}
+    section.lesson{padding:58px 0;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 36%,var(--color-bg))}
+    section.lesson:nth-of-type(even){background:color-mix(in srgb,var(--color-accent) 4%,var(--color-bg));box-shadow:0 0 0 100vmax color-mix(in srgb,var(--color-accent) 4%,var(--color-bg));clip-path:inset(0 -100vmax)}
+    .section-intro{max-width:720px;margin-bottom:28px;color:color-mix(in srgb,var(--color-text) 78%,var(--color-bg))}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .card{padding:20px;border:1px solid color-mix(in srgb,var(--color-neutral) 48%,var(--color-bg));border-radius:var(--radius-sm);background:var(--color-bg);transition:.2s ease}
+    .card:hover{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-bg));transform:translateY(-2px)}
+    .icon{width:38px;height:38px;border-radius:10px;border:1px solid color-mix(in srgb,var(--color-accent) 40%,var(--color-bg));display:grid;place-items:center;color:var(--color-accent);font-weight:700;margin-bottom:12px;background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+    .callout{margin:24px 0;padding:18px 20px;border-left:5px solid var(--color-accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg))}
+    .callout strong{font-family:"Space Grotesk"}
+    .diagram{margin:26px 0;padding:14px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));border-radius:var(--radius);background:var(--color-bg);overflow:auto}
+    svg{width:100%;height:auto;display:block}
+    .mono,code,kbd{font-family:"JetBrains Mono",monospace}
+    code{background:color-mix(in srgb,var(--color-accent) 9%,var(--color-bg));padding:.12em .4em;border-radius:6px}
+    .terminal{position:relative;margin:20px 0;background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg));border:1px solid color-mix(in srgb,var(--color-neutral) 52%,var(--color-bg));border-radius:var(--radius-sm);overflow:hidden}
+    .terminal-head{padding:10px 14px;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));font-family:"JetBrains Mono";font-size:.78rem;display:flex;justify-content:space-between;gap:10px}
+    .terminal pre{margin:0;padding:18px;overflow:auto;font:400 .88rem/1.7 "JetBrains Mono",monospace;white-space:pre}
+    .copy-btn{border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));background:var(--color-bg);color:var(--color-text);border-radius:8px;padding:5px 9px;font:600 .75rem Inter;cursor:pointer}
+    .table-wrap{overflow:auto;border:1px solid color-mix(in srgb,var(--color-neutral) 48%,var(--color-bg));border-radius:var(--radius-sm);margin:20px 0}
+    table{width:100%;border-collapse:collapse;min-width:720px;background:var(--color-bg)}
+    th,td{padding:14px 16px;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));vertical-align:top}
+    th{font-family:"Space Grotesk";font-size:.9rem;background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+    td.mono{font-size:.84rem}
+    tr:hover td{background:color-mix(in srgb,var(--color-accent) 4%,var(--color-bg))}
+    .stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:26px 0}
+    .step{position:relative;padding:16px;border:1px solid color-mix(in srgb,var(--color-neutral) 48%,var(--color-bg));border-radius:12px;background:var(--color-bg);min-height:120px}
+    .step b{display:block;color:var(--color-accent);font-family:"JetBrains Mono";font-size:.78rem;margin-bottom:8px}
+    .tabs{margin:26px 0}
+    .tablist{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .tabbtn{border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));background:var(--color-bg);border-radius:999px;padding:9px 14px;font-weight:600;cursor:pointer;color:var(--color-text)}
+    .tabbtn[aria-selected="true"]{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));color:var(--color-accent)}
+    .tabpanel{display:none;border:1px solid color-mix(in srgb,var(--color-neutral) 48%,var(--color-bg));border-radius:var(--radius-sm);padding:18px;background:var(--color-bg)}
+    .tabpanel.active{display:block}
+    details{border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));border-radius:12px;background:var(--color-bg);padding:0 16px;margin:10px 0}
+    summary{cursor:pointer;padding:14px 0;font-weight:600;font-family:"Space Grotesk"}
+    .keypoints{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .nav-lessons{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-top:44px}
+    .navbtn{display:block;padding:16px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:12px;color:var(--color-text);background:var(--color-bg)}
+    .navbtn small{display:block;color:color-mix(in srgb,var(--color-text) 58%,var(--color-bg));margin-bottom:4px}
+    .backtop{position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));background:var(--color-bg);color:var(--color-accent);display:grid;place-items:center;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+    .backtop.visible{opacity:1;pointer-events:auto}
+    footer{padding:28px 0 48px;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));font-size:.88rem}
+    .reveal{opacity:0;transform:translateY(14px);transition:.5s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .caption{font-size:.82rem;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));margin-top:8px}
+    @media(max-width:900px){.hero-grid,.grid-3{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}.stepper{grid-template-columns:1fr 1fr}.topnav{display:none}.toc-grid{grid-template-columns:1fr}.nav-lessons{grid-template-columns:1fr}.nav-lessons .center{text-align:center}}
+    @media(max-width:560px){.wrap,.topbar-inner{padding-left:16px;padding-right:16px}.hero{padding-top:42px}h1{font-size:2.55rem}.stepper,.keypoints{grid-template-columns:1fr}.hero-visual{padding:8px}.badge{font-size:.72rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top"><span class="brand-mark">MR</span><span>Maintenance & Réseau Informatique</span></a>
+      <nav class="topnav" aria-label="Navigation de la leçon">
+        <a href="#gestionnaire">Gestionnaire</a><a href="#pilotes">Pilotes</a><a href="#imprimantes">Imprimantes</a><a href="#usb">USB</a><a href="#maj">Mises à jour</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap" id="top">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">MODULE 1 · Maintenance informatique – Matériel et systèmes</div>
+          <h1>Leçon 04 — Pilotes et périphériques</h1>
+          <p class="lead">Comprendre le rôle des pilotes, reconnaître l’état d’un périphérique, installer ou mettre à jour le bon pilote et résoudre les pannes courantes liées aux imprimantes, scanners et périphériques USB.</p>
+          <div class="badges"><span class="badge">Niveau : débutant</span><span class="badge">Durée : 15 min</span><span class="badge">Objectif : installation & dépannage</span></div>
+        </div>
+        <div class="hero-visual" aria-label="Illustration d'un ordinateur relié à plusieurs périphériques">
+          <svg viewBox="0 0 520 360" role="img" aria-labelledby="heroTitle heroDesc">
+            <title id="heroTitle">Ordinateur et périphériques</title><desc id="heroDesc">Un ordinateur communique avec une imprimante, une clé USB, un scanner et une webcam grâce aux pilotes.</desc>
+            <rect x="150" y="85" width="220" height="135" rx="16" fill="none" stroke="#10161D" stroke-width="5"/>
+            <rect x="185" y="110" width="150" height="85" rx="8" fill="rgba(31,111,235,.08)" stroke="#1F6FEB" stroke-width="3"/>
+            <path d="M240 220v35m-55 0h150" stroke="#10161D" stroke-width="5" stroke-linecap="round"/>
+            <text x="260" y="156" text-anchor="middle" font-family="JetBrains Mono" font-size="20" fill="#1F6FEB">PILOTES</text>
+            <g stroke="#1F6FEB" stroke-width="3" fill="none"><path d="M150 140H90V82"/><path d="M370 140h65v-58"/><path d="M150 185H85v78"/><path d="M370 185h70v72"/></g>
+            <g fill="#F4F7FA" stroke="#10161D" stroke-width="4"><rect x="30" y="35" width="120" height="55" rx="10"/><rect x="385" y="35" width="105" height="55" rx="10"/><rect x="25" y="258" width="125" height="62" rx="10"/><rect x="385" y="258" width="110" height="62" rx="10"/></g>
+            <g font-family="Inter" font-size="15" fill="#10161D"><text x="90" y="68" text-anchor="middle">Imprimante</text><text x="438" y="68" text-anchor="middle">Scanner</text><text x="88" y="295" text-anchor="middle">Clé USB</text><text x="440" y="295" text-anchor="middle">Webcam</text></g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="toc">
+        <strong>Sommaire de la leçon</strong>
+        <div class="toc-grid">
+          <a href="#role">1. Rôle d’un pilote</a><a href="#gestionnaire">2. Gestionnaire de périphériques</a>
+          <a href="#pilotes">3. Pilotes signés et installation</a><a href="#imprimantes">4. Imprimantes et scanners</a>
+          <a href="#usb">5. Périphériques USB</a><a href="#maj">6. Mises à jour et dépannage</a>
+          <a href="#resume">7. Points clés à retenir</a><a href="#faq">8. Questions fréquentes</a>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="lesson reveal" id="role">
+        <div class="eyebrow">01 · Comprendre</div><h2>À quoi sert un pilote ?</h2>
+        <p class="section-intro">Un <strong>pilote</strong> est un logiciel intermédiaire qui permet au système d’exploitation de dialoguer correctement avec un composant matériel. Sans le bon pilote, un périphérique peut être absent, mal reconnu, limité ou totalement inutilisable.</p>
+        <div class="grid-3">
+          <article class="card"><div class="icon">OS</div><h3>Système d’exploitation</h3><p>Windows ou Linux détecte le matériel et transmet des demandes : imprimer, lire un fichier, capter une image ou recevoir un flux audio.</p></article>
+          <article class="card"><div class="icon">DRV</div><h3>Pilote</h3><p>Il traduit les demandes du système en instructions comprises par le périphérique.</p></article>
+          <article class="card"><div class="icon">HW</div><h3>Périphérique</h3><p>L’imprimante, le scanner, la carte réseau, la webcam, la clé USB ou tout autre équipement exécute l’action.</p></article>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 900 250" role="img" aria-label="Chaîne de communication entre application, système, pilote et périphérique">
+            <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1F6FEB"/></marker></defs>
+            <g font-family="Space Grotesk" font-weight="700" text-anchor="middle"><rect x="40" y="80" width="170" height="90" rx="14" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/><text x="125" y="130" fill="#10161D">Application</text><rect x="260" y="80" width="170" height="90" rx="14" fill="rgba(31,111,235,.06)" stroke="#10161D" stroke-width="3"/><text x="345" y="130" fill="#10161D">Système</text><rect x="480" y="80" width="170" height="90" rx="14" fill="rgba(31,111,235,.10)" stroke="#1F6FEB" stroke-width="3"/><text x="565" y="130" fill="#1F6FEB">Pilote</text><rect x="700" y="80" width="160" height="90" rx="14" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/><text x="780" y="130" fill="#10161D">Matériel</text></g>
+            <g stroke="#1F6FEB" stroke-width="4" marker-end="url(#arrow)"><line x1="210" y1="125" x2="252" y2="125"/><line x1="430" y1="125" x2="472" y2="125"/><line x1="650" y1="125" x2="692" y2="125"/></g>
+          </svg>
+          <div class="caption">Le pilote constitue l’interface technique entre le système et le matériel.</div>
+        </div>
+        <div class="callout"><strong>💡 À retenir :</strong> lorsqu’un périphérique ne fonctionne plus après une installation système ou une mise à jour, le pilote fait partie des premiers éléments à vérifier.</div>
+      </section>
+
+      <section class="lesson reveal" id="gestionnaire">
+        <div class="eyebrow">02 · Observer</div><h2>Utiliser le Gestionnaire de périphériques</h2>
+        <p class="section-intro">Sous Windows, le Gestionnaire de périphériques permet d’inventorier le matériel, d’identifier un périphérique en erreur, de mettre à jour un pilote, de désinstaller un périphérique ou d’afficher ses propriétés.</p>
+        <div class="grid-2">
+          <div class="visual-card" style="padding:18px">
+            <svg viewBox="0 0 620 410" role="img" aria-label="Interface simplifiée du Gestionnaire de périphériques">
+              <rect x="20" y="20" width="580" height="370" rx="14" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/>
+              <rect x="20" y="20" width="580" height="48" rx="14" fill="rgba(31,111,235,.08)" stroke="#10161D" stroke-width="3"/>
+              <text x="45" y="51" font-family="Space Grotesk" font-size="18" font-weight="700" fill="#10161D">Gestionnaire de périphériques</text>
+              <g font-family="Inter" font-size="17" fill="#10161D"><text x="55" y="110">▾ Cartes réseau</text><text x="85" y="145">• Contrôleur Ethernet</text><text x="55" y="190">▾ Imprimantes</text><text x="85" y="225">• Imprimante USB</text><text x="55" y="270">▾ Contrôleurs USB</text><text x="85" y="305">⚠ Périphérique USB inconnu</text><text x="55" y="350">▸ Périphériques d’images</text></g>
+              <rect x="400" y="275" width="155" height="42" rx="9" fill="rgba(31,111,235,.10)" stroke="#1F6FEB" stroke-width="2"/><text x="478" y="302" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="#1F6FEB">Pilote à vérifier</text>
+            </svg>
+          </div>
+          <div>
+            <div class="card"><h3>Indices visuels importants</h3><p>Un symbole d’avertissement à côté d’un périphérique indique généralement un problème de pilote, de configuration ou de communication matérielle.</p></div>
+            <div class="card" style="margin-top:14px"><h3>Actions disponibles</h3><p><strong>Mettre à jour</strong>, <strong>désactiver</strong>, <strong>désinstaller</strong>, consulter l’<strong>état du périphérique</strong> et identifier les informations du pilote.</p></div>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-head"><span>Windows — ouverture rapide</span><button class="copy-btn" data-copy="devmgmt.msc">Copier</button></div>
+          <pre>devmgmt.msc</pre>
+        </div>
+        <div class="callout"><strong>⚠️ Erreur fréquente :</strong> désinstaller un pilote sans disposer d’une copie ou d’une source fiable peut rendre le périphérique temporairement inutilisable.</div>
+      </section>
+
+      <section class="lesson reveal" id="pilotes">
+        <div class="eyebrow">03 · Installer</div><h2>Pilotes signés, sources fiables et compatibilité</h2>
+        <p class="section-intro">Un pilote signé contient une signature numérique permettant au système de vérifier son origine et son intégrité. En maintenance, on privilégie les pilotes officiels et adaptés au modèle exact du matériel.</p>
+        <div class="grid-3">
+          <article class="card"><div class="icon">✓</div><h3>Pilote signé</h3><p>Meilleure traçabilité de l’éditeur et contrôle d’intégrité par le système.</p></article>
+          <article class="card"><div class="icon">ID</div><h3>Modèle exact</h3><p>Un pilote destiné à un autre modèle peut provoquer une installation incomplète ou un mauvais fonctionnement.</p></article>
+          <article class="card"><div class="icon">64</div><h3>Architecture</h3><p>Vérifier notamment la compatibilité entre le pilote et l’architecture du système, souvent 64 bits.</p></article>
+        </div>
+        <div class="stepper" aria-label="Étapes recommandées pour installer un pilote">
+          <div class="step"><b>ÉTAPE 01</b><strong>Identifier</strong><p>Repérer le périphérique et son modèle.</p></div>
+          <div class="step"><b>ÉTAPE 02</b><strong>Vérifier</strong><p>Contrôler système, version et architecture.</p></div>
+          <div class="step"><b>ÉTAPE 03</b><strong>Télécharger</strong><p>Utiliser une source constructeur ou système fiable.</p></div>
+          <div class="step"><b>ÉTAPE 04</b><strong>Installer</strong><p>Suivre l’assistant ou mettre à jour depuis le gestionnaire.</p></div>
+          <div class="step"><b>ÉTAPE 05</b><strong>Tester</strong><p>Contrôler la détection et le fonctionnement réel.</p></div>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 900 310" role="img" aria-label="Schéma de décision pour choisir un pilote">
+            <g fill="#F4F7FA" stroke="#10161D" stroke-width="3" font-family="Inter" font-size="16" text-anchor="middle">
+              <rect x="330" y="20" width="240" height="60" rx="12"/><text x="450" y="56">Périphérique identifié ?</text>
+              <rect x="80" y="125" width="250" height="70" rx="12"/><text x="205" y="155">Chercher l’ID matériel</text><text x="205" y="178">dans les propriétés</text>
+              <rect x="570" y="125" width="250" height="70" rx="12"/><text x="695" y="155">Vérifier modèle + OS</text><text x="695" y="178">+ architecture</text>
+              <rect x="570" y="230" width="250" height="58" rx="12" fill="rgba(31,111,235,.08)" stroke="#1F6FEB"/><text x="695" y="265" fill="#1F6FEB">Installer le pilote officiel</text>
+            </g>
+            <g stroke="#1F6FEB" stroke-width="3" fill="none"><path d="M390 80v24H205v21"/><path d="M510 80v24h185v21"/><path d="M695 195v35"/></g>
+            <g font-family="JetBrains Mono" font-size="13" fill="#1F6FEB"><text x="255" y="100">NON</text><text x="620" y="100">OUI</text></g>
+          </svg>
+        </div>
+        <div class="callout"><strong>🔒 Bonne pratique :</strong> éviter les sites de pilotes non officiels lorsque le constructeur ou Windows Update fournit déjà une source fiable.</div>
+      </section>
+
+      <section class="lesson reveal" id="imprimantes">
+        <div class="eyebrow">04 · Périphériques courants</div><h2>Imprimantes et scanners</h2>
+        <p class="section-intro">Les imprimantes et scanners combinent souvent plusieurs couches : connexion physique ou réseau, pilote, service système et application. Une panne peut donc venir de plusieurs niveaux.</p>
+        <div class="grid-2">
+          <div class="diagram" style="margin:0">
+            <svg viewBox="0 0 560 360" role="img" aria-label="Chaîne d'impression d'un document vers une imprimante">
+              <defs><marker id="a2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1F6FEB"/></marker></defs>
+              <g font-family="Inter" text-anchor="middle"><rect x="55" y="40" width="180" height="70" rx="12" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/><text x="145" y="81" fill="#10161D">Document</text><rect x="325" y="40" width="180" height="70" rx="12" fill="rgba(31,111,235,.08)" stroke="#1F6FEB" stroke-width="3"/><text x="415" y="81" fill="#1F6FEB">Pilote d’impression</text><rect x="325" y="235" width="180" height="70" rx="12" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/><text x="415" y="276" fill="#10161D">Imprimante</text><rect x="55" y="235" width="180" height="70" rx="12" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/><text x="145" y="268" fill="#10161D">File d’attente</text><text x="145" y="289" fill="#10161D">d’impression</text></g>
+              <g stroke="#1F6FEB" stroke-width="4" marker-end="url(#a2)"><path d="M235 75h80"/><path d="M415 110v115"/><path d="M325 270h-80"/></g>
+            </svg>
+          </div>
+          <div>
+            <article class="card"><h3>Imprimante non détectée</h3><p>Vérifier le câble ou la connexion réseau, l’alimentation, le pilote et la présence de l’imprimante dans les paramètres système.</p></article>
+            <article class="card" style="margin-top:14px"><h3>Scanner indisponible</h3><p>Contrôler le pilote, le logiciel de numérisation, les droits d’accès et la bonne reconnaissance du périphérique d’images.</p></article>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Symptôme</th><th scope="col">Cause probable</th><th scope="col">Vérification utile</th></tr></thead>
+            <tbody>
+              <tr><td>Impression bloquée</td><td>File d’attente ou pilote</td><td>Annuler les travaux puis relancer le service ou l’imprimante</td></tr>
+              <tr><td>Imprimante hors connexion</td><td>Lien USB/réseau interrompu</td><td>Tester câble, port, IP ou Wi‑Fi</td></tr>
+              <tr><td>Scanner absent</td><td>Pilote ou service de numérisation</td><td>Contrôler le Gestionnaire de périphériques</td></tr>
+              <tr><td>Qualité dégradée</td><td>Consommables ou réglages</td><td>Vérifier résolution, encre/toner et entretien</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="lesson reveal" id="usb">
+        <div class="eyebrow">05 · USB</div><h2>Périphériques USB : détection, alimentation et pilotes</h2>
+        <p class="section-intro">Une prise USB transporte des données et peut aussi fournir de l’alimentation. Un périphérique USB défaillant peut donc être lié au port, au câble, à l’alimentation, au pilote ou au périphérique lui-même.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 900 330" role="img" aria-label="Schéma simplifié d'un contrôleur USB relié à plusieurs périphériques">
+            <g fill="#F4F7FA" stroke="#10161D" stroke-width="3" font-family="Inter" text-anchor="middle">
+              <rect x="335" y="115" width="230" height="100" rx="15" fill="rgba(31,111,235,.08)" stroke="#1F6FEB"/><text x="450" y="160" font-size="18" fill="#1F6FEB">Contrôleur USB</text><text x="450" y="188" font-size="14" fill="#10161D">Pilote + gestion d’alimentation</text>
+              <rect x="50" y="35" width="180" height="70" rx="12"/><text x="140" y="78">Clé USB</text>
+              <rect x="50" y="225" width="180" height="70" rx="12"/><text x="140" y="267">Disque externe</text>
+              <rect x="670" y="35" width="180" height="70" rx="12"/><text x="760" y="78">Webcam</text>
+              <rect x="670" y="225" width="180" height="70" rx="12"/><text x="760" y="267">Clavier / souris</text>
+            </g>
+            <g stroke="#1F6FEB" stroke-width="4"><line x1="230" y1="70" x2="335" y2="145"/><line x1="230" y1="260" x2="335" y2="185"/><line x1="565" y1="145" x2="670" y2="70"/><line x1="565" y1="185" x2="670" y2="260"/></g>
+          </svg>
+        </div>
+        <div class="grid-3">
+          <article class="card"><div class="icon">1</div><h3>Tester un autre port</h3><p>Permet de distinguer rapidement un défaut du port d’un défaut du périphérique.</p></article>
+          <article class="card"><div class="icon">2</div><h3>Tester un autre câble</h3><p>Particulièrement utile pour les disques externes, imprimantes et smartphones.</p></article>
+          <article class="card"><div class="icon">3</div><h3>Contrôler le pilote</h3><p>Un « périphérique USB inconnu » peut indiquer un souci de pilote ou de communication.</p></article>
+        </div>
+        <div class="callout"><strong>⚠️ Attention :</strong> un périphérique qui se déconnecte de façon aléatoire peut être lié à un câble instable, un port endommagé ou une alimentation insuffisante.</div>
+      </section>
+
+      <section class="lesson reveal" id="maj">
+        <div class="eyebrow">06 · Maintenir</div><h2>Mises à jour et méthode de dépannage</h2>
+        <p class="section-intro">Mettre à jour un pilote peut corriger des erreurs, améliorer la compatibilité ou prendre en charge un matériel récent. Une mise à jour n’est toutefois pas toujours nécessaire si le périphérique fonctionne correctement.</p>
+        <div class="tabs">
+          <div class="tablist" role="tablist" aria-label="Méthodes de mise à jour">
+            <button class="tabbtn" role="tab" aria-selected="true" aria-controls="tab-wu" id="btn-wu">Windows Update</button>
+            <button class="tabbtn" role="tab" aria-selected="false" aria-controls="tab-dev" id="btn-dev">Gestionnaire</button>
+            <button class="tabbtn" role="tab" aria-selected="false" aria-controls="tab-oem" id="btn-oem">Constructeur</button>
+          </div>
+          <div class="tabpanel active" role="tabpanel" id="tab-wu" aria-labelledby="btn-wu"><strong>Windows Update</strong><p>Approche simple pour les pilotes validés et distribués par Microsoft. Adaptée à de nombreux périphériques courants.</p></div>
+          <div class="tabpanel" role="tabpanel" id="tab-dev" aria-labelledby="btn-dev"><strong>Gestionnaire de périphériques</strong><p>Permet de rechercher une mise à jour ou de sélectionner manuellement un pilote déjà téléchargé.</p></div>
+          <div class="tabpanel" role="tabpanel" id="tab-oem" aria-labelledby="btn-oem"><strong>Site du constructeur</strong><p>Utile lorsque le matériel nécessite une version spécifique, des fonctions avancées ou un pilote plus récent.</p></div>
+        </div>
+
+        <div class="stepper" aria-label="Méthode de dépannage d'un périphérique">
+          <div class="step"><b>01</b><strong>Observer</strong><p>Quel est le symptôme exact ?</p></div>
+          <div class="step"><b>02</b><strong>Isoler</strong><p>Port, câble, pilote ou matériel ?</p></div>
+          <div class="step"><b>03</b><strong>Vérifier</strong><p>État du périphérique et version du pilote.</p></div>
+          <div class="step"><b>04</b><strong>Corriger</strong><p>Mettre à jour, réinstaller ou reconnecter.</p></div>
+          <div class="step"><b>05</b><strong>Confirmer</strong><p>Tester le fonctionnement réel.</p></div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Situation</th><th scope="col">Action prioritaire</th><th scope="col">Pourquoi</th></tr></thead>
+            <tbody>
+              <tr><td>Périphérique non reconnu</td><td>Tester connexion puis pilote</td><td>Écarte d’abord une panne simple de liaison</td></tr>
+              <tr><td>Symbole d’avertissement</td><td>Lire l’état du périphérique</td><td>Le message fournit souvent un indice de configuration</td></tr>
+              <tr><td>Panne après mise à jour</td><td>Réinstaller ou revenir au pilote précédent si disponible</td><td>Le nouveau pilote peut être incompatible avec le matériel</td></tr>
+              <tr><td>Périphérique fonctionne mal</td><td>Comparer avec un autre port ou poste</td><td>Permet d’isoler le composant réellement en cause</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout"><strong>💡 À retenir :</strong> une bonne méthode de dépannage procède du plus simple au plus probable avant de remplacer du matériel.</div>
+      </section>
+
+      <section class="lesson reveal" id="resume">
+        <div class="eyebrow">07 · Synthèse</div><h2>Points clés à retenir</h2>
+        <div class="keypoints">
+          <div class="card"><h3>Le pilote fait le lien</h3><p>Il permet au système d’exploitation de communiquer avec le matériel.</p></div>
+          <div class="card"><h3>Le Gestionnaire est central</h3><p>Il permet d’observer, mettre à jour, désinstaller et diagnostiquer les périphériques.</p></div>
+          <div class="card"><h3>Privilégier les sources fiables</h3><p>Les pilotes signés, officiels et adaptés au modèle exact sont à privilégier.</p></div>
+          <div class="card"><h3>Tester méthodiquement</h3><p>Câble, port, alimentation, pilote puis matériel : cette logique évite les remplacements inutiles.</p></div>
+          <div class="card"><h3>USB = données + alimentation</h3><p>Un défaut de port ou d’alimentation peut imiter un problème de pilote.</p></div>
+          <div class="card"><h3>Mettre à jour avec discernement</h3><p>Une mise à jour est utile pour corriger un problème ou améliorer la compatibilité, mais n’est pas systématiquement nécessaire.</p></div>
+        </div>
+      </section>
+
+      <section class="lesson reveal" id="faq">
+        <div class="eyebrow">08 · Questions fréquentes</div><h2>FAQ rapide</h2>
+        <details><summary>Faut-il toujours installer le pilote fourni sur un CD ?</summary><p>Non. Il vaut mieux vérifier s’il existe une version plus récente et compatible via le système ou le constructeur.</p></details>
+        <details><summary>Que signifie « périphérique inconnu » ?</summary><p>Le système détecte un équipement, mais ne parvient pas à l’identifier correctement ou ne dispose pas du pilote approprié.</p></details>
+        <details><summary>Une imprimante réseau a-t-elle besoin d’un pilote ?</summary><p>Oui, même si elle communique par le réseau, le système utilise généralement un pilote pour produire correctement les données d’impression.</p></details>
+        <details><summary>Pourquoi un périphérique USB fonctionne sur un port mais pas sur un autre ?</summary><p>Le port concerné peut avoir un problème physique, d’alimentation, de contrôleur ou de configuration logicielle.</p></details>
+      </section>
+
+      <nav class="nav-lessons" aria-label="Navigation entre les leçons">
+        <a class="navbtn" href="#"><small>← Leçon précédente</small><strong>LEÇON 03 — Installation de systèmes d’exploitation</strong></a>
+        <a class="navbtn center" href="#top"><small>Retour</small><strong>Sommaire</strong></a>
+        <a class="navbtn" href="#"><small>Leçon suivante →</small><strong>LEÇON 05 — Maintenance préventive et outils</strong></a>
+      </nav>
+    </main>
+
+    <footer>Module 1 · Maintenance informatique – Matériel et systèmes · Leçon 04 — Pilotes et périphériques</footer>
+  </div>
+
+  <a class="backtop" id="backTop" href="#top" aria-label="Retour en haut">↑</a>
+
+  <script>
+    const progressBar=document.getElementById('progressBar');
+    const backTop=document.getElementById('backTop');
+    const updateScroll=()=>{const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;const pct=max?((h.scrollTop/max)*100):0;progressBar.style.width=pct+'%';backTop.classList.toggle('visible',h.scrollTop>500)};
+    document.addEventListener('scroll',updateScroll,{passive:true});updateScroll();
+
+    const tabs=[...document.querySelectorAll('.tabbtn')];
+    tabs.forEach((btn,i)=>btn.addEventListener('click',()=>{tabs.forEach(b=>b.setAttribute('aria-selected','false'));document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));btn.setAttribute('aria-selected','true');document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');}));
+    tabs.forEach((btn,i)=>btn.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const dir=e.key==='ArrowRight'?1:-1;tabs[(i+dir+tabs.length)%tabs.length].focus();}}));
+
+    document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(btn.dataset.copy);const old=btn.textContent;btn.textContent='Copié';setTimeout(()=>btn.textContent=old,1200)}catch(e){}}));
+
+    const reveals=document.querySelectorAll('.reveal');
+    if('IntersectionObserver' in window){const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:.08});reveals.forEach(el=>obs.observe(el));}else{reveals.forEach(el=>el.classList.add('visible'));}
+  </script>
+</body>
+</html>

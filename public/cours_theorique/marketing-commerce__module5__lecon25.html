@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 25 — Analyse de la performance commerciale digitale | Marketing, Commerce et Vente</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231C2B42'/%3E%3Cpath d='M20 65 L40 45 L55 58 L80 30' stroke='%23C08A34' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='80' cy='30' r='6' fill='%23C08A34'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #F6F4EF;
+    --color-text: #1C2B42;
+    --color-accent: #C08A34;
+    --color-neutral: #6E7580;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --box-tint: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-soft: color-mix(in srgb, var(--color-accent) 25%, var(--color-bg));
+    --accent-wash: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.25;
+    margin: 0 0 0.6em;
+  }
+
+  h2 { font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem); }
+  h3 { font-size: clamp(1.15rem, 1rem + 0.6vw, 1.4rem); }
+
+  p { margin: 0 0 1.1em; }
+
+  a { color: var(--color-accent); }
+
+  .mono, .tabular, table td.num, table th.num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .wrap-wide {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- Reading progress bar ---------- */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--color-accent);
+    z-index: 1000;
+    transition: width 80ms linear;
+  }
+
+  /* ---------- Sticky header ---------- */
+  header.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .site-header-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .brand span.filiere {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 22px;
+  }
+
+  .header-nav a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 150ms ease;
+  }
+
+  .header-nav a:hover,
+  .header-nav a:focus-visible {
+    border-color: var(--color-accent);
+  }
+
+  @media (max-width: 640px) {
+    .header-nav { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-soft);
+    color: var(--color-text);
+    background: var(--box-tint);
+  }
+
+  .hero .eyebrow {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 1.5rem + 2vw, 2.9rem);
+    max-width: 16ch;
+  }
+
+  .hero .subtitle {
+    max-width: 60ch;
+    font-size: 1.08rem;
+    color: var(--text-muted);
+  }
+
+  .hero .objectif {
+    margin-top: 26px;
+    padding: 18px 20px;
+    background: var(--box-tint);
+    border-left: 3px solid var(--color-accent);
+  }
+
+  .hero .objectif strong {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  /* ---------- Sommaire ---------- */
+  .toc {
+    padding: 40px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .toc h2 { font-size: 1.05rem; margin-bottom: 18px; }
+
+  .toc ol {
+    list-style: none;
+    margin: 0; padding: 0;
+    columns: 2;
+    column-gap: 32px;
+  }
+
+  @media (max-width: 640px) {
+    .toc ol { columns: 1; }
+  }
+
+  .toc li { break-inside: avoid; margin-bottom: 10px; }
+
+  .toc a {
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 0.93rem;
+    display: flex;
+    gap: 10px;
+  }
+
+  .toc a .n {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    min-width: 1.4em;
+  }
+
+  .toc a:hover { color: var(--color-accent); }
+
+  /* ---------- Sections ---------- */
+  main { padding-bottom: 40px; }
+
+  section.lesson-section {
+    padding: 56px 0;
+    scroll-margin-top: 84px;
+  }
+
+  section.lesson-section.alt {
+    background: var(--bg-alt);
+  }
+
+  .section-index {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--color-accent);
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 550ms ease, transform 550ms ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Callout boxes ---------- */
+  .callout {
+    border-left: 3px solid var(--color-accent);
+    background: var(--box-tint);
+    padding: 18px 20px;
+    margin: 24px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .callout .icon { font-size: 1.3rem; line-height: 1; margin-top: 2px; }
+
+  .callout .label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-accent);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- Formula box ---------- */
+  .formula-box {
+    margin: 22px 0;
+    padding: 18px 22px;
+    border: 1px dashed var(--accent-soft);
+    background: var(--color-bg);
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.02rem;
+    color: var(--color-text);
+    overflow-x: auto;
+  }
+
+  .formula-box .frac {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+    margin: 0 8px;
+  }
+
+  .formula-box .frac .num-line { border-bottom: 2px solid var(--color-text); padding: 0 6px 4px; }
+  .formula-box .frac .den-line { padding: 4px 6px 0; }
+
+  .formula-box .times { margin: 0 6px; color: var(--color-accent); }
+
+  /* ---------- Cards ---------- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .card {
+    border: 1px solid var(--border-soft);
+    padding: 20px;
+    background: var(--color-bg);
+    transition: border-color 150ms ease;
+  }
+
+  .card:hover { border-color: var(--color-accent); }
+
+  .card .icon {
+    font-size: 1.4rem;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .card h3 { font-size: 1rem; margin-bottom: 6px; }
+
+  .card p { font-size: 0.9rem; color: var(--text-muted); margin: 0; }
+
+  /* ---------- Stepper / frise ---------- */
+  .stepper {
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    margin: 32px 0;
+    padding-bottom: 8px;
+  }
+
+  .step {
+    flex: 1 0 150px;
+    position: relative;
+    padding: 0 16px 0 0;
+  }
+
+  .step .step-line {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .step .dot {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--color-bg);
+    flex-shrink: 0;
+  }
+
+  .step .connector {
+    height: 2px;
+    background: var(--border-soft);
+    flex: 1;
+    margin-left: 4px;
+  }
+
+  .step:last-child .connector { display: none; }
+
+  .step h3 { font-size: 0.95rem; margin-bottom: 4px; }
+  .step p { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+  @media (max-width: 640px) {
+    .stepper { flex-direction: column; }
+    .step { padding-right: 0; padding-bottom: 20px; }
+    .step .connector { display: none; }
+  }
+
+  /* ---------- Tables ---------- */
+  .table-scroll {
+    overflow-x: auto;
+    margin: 28px 0;
+    border: 1px solid var(--border-soft);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 560px;
+    font-size: 0.92rem;
+  }
+
+  table caption {
+    text-align: left;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 10px 16px 0;
+  }
+
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  thead th {
+    background: var(--box-tint);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text);
+  }
+
+  tbody tr:hover { background: var(--accent-wash); }
+
+  tbody tr.alert td { border-left: 3px solid var(--color-accent); }
+
+  td.num, th.num { font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---------- Tabs ---------- */
+  .tabs { margin: 28px 0; }
+
+  .tab-list {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .tab-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 12px 18px;
+    cursor: pointer;
+    color: var(--text-muted);
+    margin-bottom: -1px;
+  }
+
+  .tab-btn:hover { color: var(--color-text); }
+
+  .tab-btn[aria-selected="true"] {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent);
+  }
+
+  .tab-btn:focus-visible,
+  a:focus-visible,
+  button:focus-visible,
+  .acc-trigger:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .tab-panel {
+    padding: 22px 4px 4px;
+    display: none;
+  }
+
+  .tab-panel.is-active { display: block; }
+
+  .tab-panel ul { padding-left: 1.1em; margin: 0.6em 0; }
+  .tab-panel li { margin-bottom: 6px; }
+
+  /* ---------- Accordion ---------- */
+  .accordion { margin: 28px 0; border-top: 1px solid var(--border-soft); }
+
+  .acc-item { border-bottom: 1px solid var(--border-soft); }
+
+  .acc-trigger {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 16px 4px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--color-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    gap: 16px;
+  }
+
+  .acc-trigger .plus {
+    color: var(--color-accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: transform 200ms ease;
+  }
+
+  .acc-trigger[aria-expanded="true"] .plus { transform: rotate(45deg); }
+
+  .acc-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 250ms ease;
+  }
+
+  .acc-panel-inner { padding: 0 4px 18px; font-size: 0.93rem; color: var(--text-muted); }
+
+  /* ---------- Summary ---------- */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin-top: 24px;
+  }
+
+  .summary-item {
+    padding: 18px;
+    border-top: 3px solid var(--color-accent);
+    background: var(--color-bg);
+  }
+
+  .summary-item .num {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .summary-item p { font-size: 0.9rem; margin: 0; color: var(--text-muted); }
+
+  /* ---------- Exercise (calcul interactif) ---------- */
+  .exercise {
+    border: 1px solid var(--accent-soft);
+    background: var(--box-tint);
+    padding: 26px;
+    margin-top: 24px;
+  }
+
+  .exercise .scenario {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+
+  .exercise-data {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin: 18px 0 22px;
+  }
+
+  .exercise-data-item {
+    background: var(--color-bg);
+    border: 1px solid var(--border-soft);
+    padding: 12px 14px;
+  }
+
+  .exercise-data-item .label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+  }
+
+  .exercise-data-item .value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .exercise-calc-buttons {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .exercise-calc-btn {
+    text-align: left;
+    padding: 13px 16px;
+    background: var(--color-bg);
+    border: 1px solid var(--border-soft);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 150ms ease;
+  }
+
+  .exercise-calc-btn:hover { border-color: var(--color-accent); }
+
+  .exercise-calc-btn .chevron {
+    color: var(--color-accent);
+    font-family: 'IBM Plex Mono', monospace;
+    transition: transform 200ms ease;
+  }
+
+  .exercise-calc-btn[aria-expanded="true"] .chevron { transform: rotate(90deg); }
+
+  .exercise-calc-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 250ms ease;
+    background: var(--color-bg);
+    border-left: 1px solid var(--border-soft);
+    border-right: 1px solid var(--border-soft);
+  }
+
+  .exercise-calc-panel-inner {
+    padding: 16px 18px;
+    font-size: 0.9rem;
+  }
+
+  .exercise-calc-panel-inner .result {
+    margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  /* ---------- Nav prev/next ---------- */
+  .lesson-nav {
+    border-top: 1px solid var(--border-soft);
+    padding: 40px 0;
+  }
+
+  .lesson-nav-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .lesson-nav-grid { grid-template-columns: 1fr; }
+  }
+
+  .nav-card {
+    border: 1px solid var(--border-soft);
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--color-text);
+    display: block;
+    transition: border-color 150ms ease;
+  }
+
+  .nav-card:hover { border-color: var(--color-accent); }
+
+  .nav-card .dir {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .nav-card.next { text-align: right; }
+
+  .module-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.85rem;
+  }
+
+  /* ---------- Back to top ---------- */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid var(--color-accent);
+    background: var(--color-bg);
+    color: var(--color-accent);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 800;
+    transition: opacity 150ms ease;
+  }
+
+  #back-to-top.visible { display: flex; }
+
+  /* ---------- Footer ---------- */
+  footer.site-footer {
+    border-top: 1px solid var(--border-soft);
+    padding: 28px 0 40px;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  /* ---------- SVG diagrams ---------- */
+  .diagram-wrap {
+    margin: 28px 0;
+    padding: 20px;
+    border: 1px solid var(--border-soft);
+    background: var(--color-bg);
+  }
+
+  .diagram-wrap svg { width: 100%; height: auto; display: block; }
+
+  .diagram-caption {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: auto;
+    background: var(--color-text);
+    color: var(--color-bg);
+    padding: 10px 16px;
+    z-index: 2000;
+  }
+  .skip-link:focus { left: 16px; top: 16px; }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div id="progress-bar" role="progressbar" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="brand">
+      Filière <span class="filiere">Marketing, Commerce et Vente</span>
+    </div>
+    <nav class="header-nav" aria-label="Navigation rapide">
+      <a href="#sommaire">Sommaire</a>
+      <a href="#resume">Points clés</a>
+      <a href="#exercice">Exercice</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Module 5 — Marketing digital et e-commerce</p>
+      <div class="badges">
+        <span class="badge">Leçon 25</span>
+        <span class="badge">Niveau avancé</span>
+        <span class="badge">⏱ 25 min de lecture</span>
+      </div>
+      <h1>Analyse de la performance commerciale digitale</h1>
+      <p class="subtitle">Un site e-commerce qui attire du trafic ne vend pas forcément bien. Cette leçon présente les indicateurs qui permettent de mesurer, de comprendre et d'améliorer l'efficacité réelle d'une boutique en ligne.</p>
+      <div class="objectif">
+        <strong>Objectif pédagogique</strong>
+        <p style="margin:0;">Être capable de mesurer l'efficacité des actions marketing et commerciales en ligne à l'aide des principaux indicateurs de performance digitale.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="toc" id="sommaire">
+    <div class="wrap">
+      <h2>Dans cette leçon</h2>
+      <ol>
+        <li><a href="#pourquoi"><span class="n">01</span> Pourquoi mesurer la performance digitale</span></a></li>
+        <li><a href="#kpi"><span class="n">02</span> Les KPI digitaux essentiels</span></a></li>
+        <li><a href="#conversion"><span class="n">03</span> Le taux de conversion</span></a></li>
+        <li><a href="#panier"><span class="n">04</span> Le panier moyen</span></a></li>
+        <li><a href="#abandon"><span class="n">05</span> Le taux d'abandon</span></a></li>
+        <li><a href="#dashboard"><span class="n">06</span> Tableau de bord e-commerce</span></a></li>
+        <li><a href="#resume"><span class="n">07</span> Points clés à retenir</span></a></li>
+        <li><a href="#exercice"><span class="n">08</span> Mini-exercice de calcul</span></a></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 1. POURQUOI MESURER -->
+  <section class="lesson-section reveal" id="pourquoi">
+    <div class="wrap">
+      <p class="section-index">01 / 08</p>
+      <h2>Pourquoi mesurer la performance digitale</h2>
+      <p>Le trafic seul ne dit rien de la performance commerciale d'un site : 50 000 visiteurs par mois qui n'achètent pas valent moins que 5 000 visiteurs qui convertissent. Mesurer la performance digitale, c'est relier chaque euro dépensé en acquisition (publicité, référencement, e-mailing) à un résultat commercial concret.</p>
+      <p>Sans indicateurs fiables, il est impossible de savoir quelle action a réellement fait progresser les ventes, où se situe le principal point de friction dans le parcours d'achat, et quel budget mérite d'être renforcé ou coupé.</p>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">💡</span>
+        <div>
+          <span class="label">À retenir</span>
+          <p>Un bon indicateur de performance digitale doit toujours être relié à une décision possible : s'il ne peut rien changer à l'action commerciale, ce n'est pas un KPI utile, seulement un chiffre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. KPI ESSENTIELS -->
+  <section class="lesson-section alt reveal" id="kpi">
+    <div class="wrap">
+      <p class="section-index">02 / 08</p>
+      <h2>Les KPI digitaux essentiels</h2>
+      <p>Trois indicateurs forment le socle de l'analyse de performance d'un site e-commerce. Ils se lisent toujours ensemble : améliorer l'un sans surveiller les autres peut détériorer la rentabilité globale.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <span class="icon">🎯</span>
+          <h3>Taux de conversion</h3>
+          <p>La part des visiteurs qui passent réellement commande. L'indicateur central de l'efficacité du site.</p>
+        </div>
+        <div class="card">
+          <span class="icon">🛒</span>
+          <h3>Panier moyen</h3>
+          <p>Le montant moyen dépensé par commande. Il mesure la capacité à vendre plus par client.</p>
+        </div>
+        <div class="card">
+          <span class="icon">🚪</span>
+          <h3>Taux d'abandon</h3>
+          <p>La part des paniers créés qui ne se transforment jamais en commande finalisée.</p>
+        </div>
+      </div>
+
+      <p>D'autres indicateurs complètent cette base selon les objectifs : coût d'acquisition client, taux de retour, valeur vie client. Cette leçon se concentre sur les trois indicateurs fondamentaux, ceux que toute analyse de performance digitale doit maîtriser en premier.</p>
+    </div>
+  </section>
+
+  <!-- 3. TAUX DE CONVERSION -->
+  <section class="lesson-section reveal" id="conversion">
+    <div class="wrap">
+      <p class="section-index">03 / 08</p>
+      <h2>Le taux de conversion</h2>
+      <p>Le taux de conversion mesure la proportion de visiteurs d'un site qui réalisent l'action commerciale attendue — le plus souvent, un achat.</p>
+
+      <div class="formula-box">
+        Taux de conversion (%) =
+        <span class="frac">
+          <span class="num-line">Nombre de commandes</span>
+          <span class="den-line">Nombre de visiteurs</span>
+        </span>
+        <span class="times">×</span> 100
+      </div>
+
+      <p><strong>Exemple :</strong> un site reçoit 8 400 visiteurs sur un mois et enregistre 210 commandes.</p>
+      <div class="formula-box">
+        (210 <span class="times">÷</span> 8 400) <span class="times">×</span> 100 = <strong>2,5 %</strong>
+      </div>
+      <p>Un taux de conversion e-commerce moyen tourne généralement entre 1 % et 3 % selon les secteurs : 2,5 % correspond ici à une performance solide.</p>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">⚠️</span>
+        <div>
+          <span class="label">Attention / erreur fréquente</span>
+          <p>Comparer un taux de conversion dans l'absolu n'a pas de sens sans préciser le secteur, l'appareil (mobile/desktop) et la source de trafic : un visiteur venu d'une recherche de marque convertit rarement au même taux qu'un visiteur venu d'une publicité générique.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PANIER MOYEN -->
+  <section class="lesson-section alt reveal" id="panier">
+    <div class="wrap">
+      <p class="section-index">04 / 08</p>
+      <h2>Le panier moyen</h2>
+      <p>Le panier moyen indique le montant moyen dépensé à chaque commande. Il permet de savoir si la stratégie commerciale doit chercher plus de clients, ou faire dépenser davantage les clients déjà acquis.</p>
+
+      <div class="formula-box">
+        Panier moyen (€) =
+        <span class="frac">
+          <span class="num-line">Chiffre d'affaires</span>
+          <span class="den-line">Nombre de commandes</span>
+        </span>
+      </div>
+
+      <p><strong>Exemple :</strong> sur ce même mois, le site réalise 15 750 € de chiffre d'affaires pour 210 commandes.</p>
+      <div class="formula-box">
+        15 750 <span class="times">÷</span> 210 = <strong>75 €</strong>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <span class="icon">📦</span>
+          <h3>Vente additionnelle</h3>
+          <p>Proposer un produit complémentaire au moment de l'ajout au panier pour augmenter le montant final.</p>
+        </div>
+        <div class="card">
+          <span class="icon">🚚</span>
+          <h3>Seuil de livraison offerte</h3>
+          <p>Fixer le seuil de gratuité légèrement au-dessus du panier moyen actuel pour inciter à ajouter un article.</p>
+        </div>
+        <div class="card">
+          <span class="icon">🎁</span>
+          <h3>Offres groupées</h3>
+          <p>Regrouper plusieurs produits complémentaires en une offre à prix légèrement réduit par rapport à l'achat séparé.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TAUX D'ABANDON -->
+  <section class="lesson-section reveal" id="abandon">
+    <div class="wrap">
+      <p class="section-index">05 / 08</p>
+      <h2>Le taux d'abandon</h2>
+      <p>Le taux d'abandon de panier mesure la part des paniers créés qui ne débouchent jamais sur une commande finalisée. C'est souvent l'indicateur qui révèle le plus de friction dans le parcours d'achat : formulaire trop long, frais de livraison découverts trop tard, absence de moyen de paiement attendu.</p>
+
+      <div class="formula-box">
+        Taux d'abandon (%) =
+        <span class="frac">
+          <span class="num-line">Paniers créés − Commandes finalisées</span>
+          <span class="den-line">Paniers créés</span>
+        </span>
+        <span class="times">×</span> 100
+      </div>
+
+      <p><strong>Exemple :</strong> 560 paniers ont été créés ce mois-ci, pour 210 commandes finalisées.</p>
+      <div class="formula-box">
+        ((560 − 210) <span class="times">÷</span> 560) <span class="times">×</span> 100 = <strong>62,5 %</strong>
+      </div>
+    </div>
+
+    <div class="wrap-wide">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 700 320" role="img" aria-labelledby="funnel-title funnel-desc">
+          <title id="funnel-title">Entonnoir de vente e-commerce</title>
+          <desc id="funnel-desc">Entonnoir en quatre étapes montrant la déperdition de visiteurs entre la visite du site, l'ajout au panier, le démarrage du paiement et la commande finalisée.</desc>
+
+          <!-- Étape 1 : Visiteurs -->
+          <polygon points="60,30 640,30 560,90 140,90" fill="none" stroke="#1C2B42" stroke-width="2"></polygon>
+          <text x="350" y="65" font-family="Inter, sans-serif" font-size="15" fill="#1C2B42" text-anchor="middle">Visiteurs du site</text>
+          <text x="350" y="20" font-family="IBM Plex Mono, monospace" font-size="13" fill="#6E7580" text-anchor="middle">8 400</text>
+
+          <!-- Étape 2 : Ajouts au panier -->
+          <polygon points="140,100 560,100 480,160 220,160" fill="none" stroke="#1C2B42" stroke-width="2"></polygon>
+          <text x="350" y="135" font-family="Inter, sans-serif" font-size="15" fill="#1C2B42" text-anchor="middle">Paniers créés</text>
+          <text x="350" y="90" font-family="IBM Plex Mono, monospace" font-size="13" fill="#6E7580" text-anchor="middle">560</text>
+
+          <!-- Étape 3 : Paiement démarré -->
+          <polygon points="220,170 480,170 420,230 280,230" fill="none" stroke="#C08A34" stroke-width="2"></polygon>
+          <text x="350" y="205" font-family="Inter, sans-serif" font-size="14" fill="#1C2B42" text-anchor="middle">Paiement démarré</text>
+          <text x="350" y="160" font-family="IBM Plex Mono, monospace" font-size="13" fill="#6E7580" text-anchor="middle">310</text>
+
+          <!-- Étape 4 : Commandes finalisées -->
+          <polygon points="280,240 420,240 400,290 300,290" fill="#C08A34" fill-opacity="0.15" stroke="#C08A34" stroke-width="2.5"></polygon>
+          <text x="350" y="270" font-family="Inter, sans-serif" font-weight="700" font-size="14" fill="#C08A34" text-anchor="middle">Commandes</text>
+          <text x="350" y="230" font-family="IBM Plex Mono, monospace" font-size="13" fill="#6E7580" text-anchor="middle">210</text>
+
+          <text x="350" y="310" font-family="IBM Plex Mono, monospace" font-size="12" fill="#6E7580" text-anchor="middle">Taux d'abandon global (panier → commande) : 62,5 %</text>
+        </svg>
+        <p class="diagram-caption">Chaque rétrécissement de l'entonnoir représente une perte de clients potentiels. Le plus grand écart se situe ici entre le paiement démarré (310) et la commande finalisée (210) — un signal à investiguer en priorité.</p>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="callout">
+        <span class="icon" aria-hidden="true">🤝</span>
+        <div>
+          <span class="label">Conseil professionnel</span>
+          <p>Face à un taux d'abandon élevé, commencez toujours par identifier l'étape précise du parcours où la perte est la plus forte, avant d'agir. Réduire les frais de livraison ne sert à rien si l'abandon a lieu avant même l'affichage du prix final.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TABLEAU DE BORD -->
+  <section class="lesson-section alt reveal" id="dashboard">
+    <div class="wrap-wide">
+      <p class="section-index">06 / 08</p>
+      <h2>Tableau de bord e-commerce</h2>
+      <p class="wrap" style="padding:0; max-width:720px;">Un tableau de bord réunit les indicateurs clés sur une période donnée pour suivre leur évolution mois après mois et repérer rapidement une dérive.</p>
+
+      <div class="table-scroll">
+        <table>
+          <caption>Tableau de bord illustratif — boutique en ligne, 3 derniers mois</caption>
+          <thead>
+            <tr>
+              <th scope="col">Mois</th>
+              <th scope="col">Visiteurs</th>
+              <th scope="col">Paniers créés</th>
+              <th scope="col">Commandes</th>
+              <th scope="col">Chiffre d'affaires</th>
+              <th scope="col">Taux de conversion</th>
+              <th scope="col">Panier moyen</th>
+              <th scope="col">Taux d'abandon</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Juin</th>
+              <td class="num">7 900</td>
+              <td class="num">520</td>
+              <td class="num">185</td>
+              <td class="num">12 950 €</td>
+              <td class="num">2,3 %</td>
+              <td class="num">70 €</td>
+              <td class="num">64,4 %</td>
+            </tr>
+            <tr>
+              <th scope="row">Juillet</th>
+              <td class="num">8 100</td>
+              <td class="num">545</td>
+              <td class="num">198</td>
+              <td class="num">14 355 €</td>
+              <td class="num">2,4 %</td>
+              <td class="num">72,5 €</td>
+              <td class="num">63,7 %</td>
+            </tr>
+            <tr class="alert">
+              <th scope="row">Août</th>
+              <td class="num">8 400</td>
+              <td class="num">560</td>
+              <td class="num">210</td>
+              <td class="num">15 750 €</td>
+              <td class="num">2,5 %</td>
+              <td class="num">75 €</td>
+              <td class="num">62,5 %</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.85rem; color:var(--text-muted);">La ligne signalée en couleur montre le mois le plus récent : les trois indicateurs progressent simultanément — conversion, panier moyen en hausse et abandon en léger recul — ce qui traduit une amélioration cohérente du parcours d'achat.</p>
+
+      <div class="wrap" style="padding:0; max-width:720px; margin-top:8px;">
+        <div class="callout">
+          <span class="icon" aria-hidden="true">📌</span>
+          <div>
+            <span class="label">Point clé à ne pas oublier</span>
+            <p>Un tableau de bord n'a de valeur que suivi dans la durée. Un seul mois ne permet pas de savoir si une variation est une tendance ou un simple effet ponctuel (promotion, saisonnalité, panne technique).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. RÉSUMÉ -->
+  <section class="lesson-section reveal" id="resume">
+    <div class="wrap">
+      <p class="section-index">07 / 08</p>
+      <h2>Points clés à retenir</h2>
+
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="num">01</span>
+          <p>Le trafic seul ne mesure pas la performance : seule la conversion en commandes compte réellement.</p>
+        </div>
+        <div class="summary-item">
+          <span class="num">02</span>
+          <p>Taux de conversion = commandes ÷ visiteurs × 100. Il varie fortement selon le secteur et la source de trafic.</p>
+        </div>
+        <div class="summary-item">
+          <span class="num">03</span>
+          <p>Panier moyen = chiffre d'affaires ÷ nombre de commandes. Il indique le potentiel de vente additionnelle.</p>
+        </div>
+        <div class="summary-item">
+          <span class="num">04</span>
+          <p>Taux d'abandon = (paniers créés − commandes) ÷ paniers créés × 100. Il révèle les frictions du parcours d'achat.</p>
+        </div>
+        <div class="summary-item">
+          <span class="num">05</span>
+          <p>Un tableau de bord suivi dans la durée permet de distinguer une vraie tendance d'un effet ponctuel.</p>
+        </div>
+      </div>
+
+      <div class="wrap" style="padding:0; margin-top:28px;">
+        <div class="callout">
+          <span class="icon" aria-hidden="true">🔗</span>
+          <div>
+            <span class="label">Pour aller plus loin</span>
+            <p>La Leçon 26 abordera le management d'une équipe commerciale — comment traduire ces indicateurs de performance en objectifs individuels et collectifs pour l'équipe de vente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. EXERCICE -->
+  <section class="lesson-section alt reveal" id="exercice">
+    <div class="wrap">
+      <p class="section-index">08 / 08</p>
+      <h2>Mini-exercice de calcul</h2>
+      <p>Une boutique en ligne vous transmet les chiffres du mois de septembre. Entraînez-vous à calculer chaque indicateur, puis dépliez le calcul détaillé pour vérifier votre résultat.</p>
+
+      <div class="exercise">
+        <p class="scenario"><strong>Données du mois :</strong></p>
+        <div class="exercise-data">
+          <div class="exercise-data-item">
+            <span class="label">Visiteurs</span>
+            <span class="value">9 200</span>
+          </div>
+          <div class="exercise-data-item">
+            <span class="label">Paniers créés</span>
+            <span class="value">610</span>
+          </div>
+          <div class="exercise-data-item">
+            <span class="label">Commandes</span>
+            <span class="value">230</span>
+          </div>
+          <div class="exercise-data-item">
+            <span class="label">Chiffre d'affaires</span>
+            <span class="value">18 400 €</span>
+          </div>
+        </div>
+
+        <div class="exercise-calc-buttons">
+          <div>
+            <button class="exercise-calc-btn" aria-expanded="false" aria-controls="calc-panel-1">
+              <span>Calculer le taux de conversion</span>
+              <span class="chevron">›</span>
+            </button>
+            <div class="exercise-calc-panel" id="calc-panel-1">
+              <div class="exercise-calc-panel-inner">
+                <p>(230 ÷ 9 200) × 100</p>
+                <p class="result">= 2,5 %</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="exercise-calc-btn" aria-expanded="false" aria-controls="calc-panel-2">
+              <span>Calculer le panier moyen</span>
+              <span class="chevron">›</span>
+            </button>
+            <div class="exercise-calc-panel" id="calc-panel-2">
+              <div class="exercise-calc-panel-inner">
+                <p>18 400 € ÷ 230</p>
+                <p class="result">= 80 €</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="exercise-calc-btn" aria-expanded="false" aria-controls="calc-panel-3">
+              <span>Calculer le taux d'abandon</span>
+              <span class="chevron">›</span>
+            </button>
+            <div class="exercise-calc-panel" id="calc-panel-3">
+              <div class="exercise-calc-panel-inner">
+                <p>((610 − 230) ÷ 610) × 100</p>
+                <p class="result">≈ 62,3 %</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-grid">
+      <a class="nav-card prev" href="#">
+        <span class="dir">← Leçon précédente</span>
+        Leçon 24 — Fondamentaux du e-commerce
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante →</span>
+        Leçon 26 — Management d'une équipe commerciale
+      </a>
+    </div>
+    <a class="module-link" href="#">Retour au sommaire du Module 5</a>
+  </div>
+</nav>
+
+<footer class="site-footer">
+  <div class="wrap">
+    Filière Marketing, Commerce et Vente — Module 5, Leçon 25
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---- Reading progress bar ---- */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  /* ---- Back to top ---- */
+  var backToTop = document.getElementById('back-to-top');
+  function toggleBackToTop() {
+    if ((window.scrollY || document.documentElement.scrollTop) > 500) {
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', toggleBackToTop, { passive: true });
+  toggleBackToTop();
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ---- Scroll reveal ---- */
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+
+  /* ---- Accordion (FAQ + calcul interactif) ---- */
+  function wireAccordion(triggerSelector) {
+    var triggers = document.querySelectorAll(triggerSelector);
+    triggers.forEach(function (trigger) {
+      var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      trigger.addEventListener('click', function () {
+        var expanded = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        if (expanded) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+  }
+  wireAccordion('.acc-trigger');
+  wireAccordion('.exercise-calc-btn');
+
+})();
+</script>
+
+</body>
+</html>

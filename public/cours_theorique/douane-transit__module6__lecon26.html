@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 26 — Gestion de la relation client et du transitaire. Filière Douane et Transit.">
+<title>Leçon 26 — Gestion de la relation client et du transitaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F7F3E8;
+  --color-text:#1C2B3A;
+  --color-accent:#B8863B;
+  --color-neutral:#98A2AD;
+  --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --shadow:0 12px 35px rgba(28,43,58,.08);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-text);text-decoration:none}
+a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress i{display:block;width:0;height:100%;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:100;background:rgba(247,243,232,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700}
+.seal{width:38px;height:38px;border:2px solid var(--color-accent);border-radius:50%;display:grid;place-items:center;font-family:"IBM Plex Mono";font-size:12px}
+.navlinks{display:flex;gap:10px;flex-wrap:wrap}
+.navlinks a{font-size:13px;padding:7px 10px;border-bottom:1px solid transparent}
+.navlinks a:hover{border-color:var(--color-accent)}
+main{max-width:1180px;margin:auto;padding:0 24px 60px}
+.hero{padding:70px 0 48px;display:grid;grid-template-columns:1.25fr .75fr;gap:50px;align-items:center}
+.kicker{font-family:"IBM Plex Mono";font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent);font-weight:600}
+h1,h2,h3{font-family:"Libre Franklin","IBM Plex Sans",sans-serif;line-height:1.12}
+h1{font-size:clamp(38px,5vw,68px);margin:12px 0 18px;letter-spacing:-.04em}
+h2{font-size:32px;margin:0 0 20px}
+h3{font-size:19px;margin:0 0 8px}
+.lead{font-size:19px;max-width:700px;color:var(--text-muted)}
+.meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+.badge{border:1px solid var(--border);padding:7px 11px;border-radius:999px;background:var(--accent-soft);font-size:13px}
+.hero-visual{border:1px solid var(--border);border-radius:24px;padding:22px;background:var(--bg-alt);box-shadow:var(--shadow)}
+.hero-visual svg{width:100%;height:auto;display:block}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;margin-bottom:48px}
+.toc strong{display:block;margin-bottom:12px}
+.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 18px}
+.toc a{font-size:14px;padding:5px 0}
+section{padding:58px 0;border-bottom:1px solid var(--border)}
+.section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:26px}
+.num{font-family:"IBM Plex Mono";font-size:12px;color:var(--color-accent);padding-top:5px}
+.prose{max-width:760px}
+.prose p{margin:0 0 15px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card,.callout,.form,.timeline,.client-board,.table-wrap,.tabs{border:1px solid var(--border);background:var(--bg-alt);border-radius:var(--radius)}
+.card{padding:22px;transition:.2s transform,.2s border-color}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.icon{font-size:27px;margin-bottom:12px}
+.callout{padding:20px 22px;margin:22px 0;border-left:5px solid var(--color-accent)}
+.callout .label{font-weight:700;margin-bottom:5px}
+.callout.warning{border-left-width:5px}
+.form{padding:20px;background:var(--accent-soft);font-family:"IBM Plex Mono";font-size:13px;overflow:auto}
+.form-row{display:grid;grid-template-columns:170px 1fr;gap:14px;border-bottom:1px dashed var(--border);padding:9px 0}
+.form-row:last-child{border-bottom:0}
+.mono{font-family:"IBM Plex Mono";font-variant-numeric:tabular-nums}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:700px}
+th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:"IBM Plex Mono";font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+tbody tr:hover{background:var(--accent-soft)}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:26px 0}
+.step{position:relative;padding:18px 14px;border:1px solid var(--border);border-radius:14px;background:var(--bg-alt)}
+.step b{display:block;font-family:"IBM Plex Mono";color:var(--color-accent);font-size:12px;margin-bottom:8px}
+.step:after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--color-accent)}
+.step:last-child:after{display:none}
+.tabs{overflow:hidden}
+.tab-buttons{display:flex;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tab-buttons button{border:0;background:transparent;padding:13px 18px;cursor:pointer;border-bottom:2px solid transparent}
+.tab-buttons button.active{border-color:var(--color-accent);font-weight:700}
+.tab-panel{display:none;padding:22px}
+.tab-panel.active{display:block}
+details{border-top:1px solid var(--border);padding:15px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-weight:700}
+.client-board{padding:22px}
+.client-row{display:grid;grid-template-columns:150px 1fr 120px;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center}
+.client-row:last-child{border-bottom:0}
+.status{font-family:"IBM Plex Mono";font-size:11px;text-transform:uppercase}
+.points{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.point{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--accent-soft)}
+.navlesson{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:40px}
+.navbox{border:1px solid var(--border);padding:20px;border-radius:16px;background:var(--bg-alt)}
+.navbox.next{text-align:right}
+.backtop{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);cursor:pointer;box-shadow:var(--shadow)}
+footer{border-top:1px solid var(--border);padding:30px 24px;text-align:center;color:var(--text-muted);font-size:13px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .toc-grid{grid-template-columns:repeat(2,1fr)}
+  .grid4,.points{grid-template-columns:repeat(2,1fr)}
+  .stepper{grid-template-columns:1fr}
+  .step:after{content:"↓";right:auto;left:50%;top:auto;bottom:-18px;transform:translateX(-50%)}
+}
+@media(max-width:600px){
+  main{padding:0 16px 40px}
+  .nav{padding:12px 16px}
+  .navlinks{display:none}
+  .hero{padding:45px 0 35px}
+  h1{font-size:40px}
+  h2{font-size:27px}
+  .lead{font-size:17px}
+  .toc-grid,.grid2,.grid4,.points,.navlesson{grid-template-columns:1fr}
+  .client-row{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr;gap:3px}
+  section{padding:42px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{transition:none}
+  .card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top"><span class="seal">D&T</span><span>Douane &amp; Transit</span></a>
+    <div class="navlinks">
+      <a href="#mandat">Mandat</a>
+      <a href="#reporting">Reporting</a>
+      <a href="#litiges">Litiges</a>
+      <a href="#fidelisation">Fidélisation</a>
+      <a href="#essentiel">À retenir</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero reveal">
+  <div>
+    <div class="kicker">Module 6 · Dédouanement — Projet professionnel et relation client</div>
+    <h1>Gestion de la relation client et du transitaire</h1>
+    <p class="lead">Assurer un suivi client fiable tout au long de l’opération : cadrer le mandat, informer avec méthode, traiter les litiges et construire une relation durable.</p>
+    <div class="meta">
+      <span class="badge">Leçon 26</span>
+      <span class="badge">Niveau avancé</span>
+      <span class="badge">15 min</span>
+      <span class="badge">Projet professionnel</span>
+    </div>
+  </div>
+  <div class="hero-visual" aria-label="Schéma du parcours de relation client">
+    <svg viewBox="0 0 560 370" role="img" aria-labelledby="svgtitle svgdesc">
+      <title id="svgtitle">Parcours client et transitaire</title>
+      <desc id="svgdesc">Cinq étapes reliées du mandat jusqu'à la fidélisation.</desc>
+      <rect x="20" y="24" width="520" height="322" rx="22" fill="none" stroke="#98A2AD"/>
+      <path d="M72 190H488" stroke="#B8863B" stroke-width="3"/>
+      <g font-family="IBM Plex Sans" fill="#1C2B3A" text-anchor="middle">
+        <g><circle cx="72" cy="190" r="30" fill="#F7F3E8" stroke="#B8863B" stroke-width="3"/><text x="72" y="186" font-size="12">01</text><text x="72" y="207" font-size="12">Mandat</text></g>
+        <g><circle cx="176" cy="190" r="30" fill="#F7F3E8" stroke="#B8863B" stroke-width="3"/><text x="176" y="186" font-size="12">02</text><text x="176" y="207" font-size="12">Dossier</text></g>
+        <g><circle cx="280" cy="190" r="30" fill="#F7F3E8" stroke="#B8863B" stroke-width="3"/><text x="280" y="186" font-size="12">03</text><text x="280" y="207" font-size="12">Suivi</text></g>
+        <g><circle cx="384" cy="190" r="30" fill="#F7F3E8" stroke="#B8863B" stroke-width="3"/><text x="384" y="186" font-size="12">04</text><text x="384" y="207" font-size="12">Litige</text></g>
+        <g><circle cx="488" cy="190" r="30" fill="#F7F3E8" stroke="#B8863B" stroke-width="3"/><text x="488" y="186" font-size="12">05</text><text x="488" y="207" font-size="12">Fidélisation</text></g>
+      </g>
+      <text x="280" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#1C2B3A">UNE RELATION FIABLE = TRAÇABILITÉ + CLARTÉ + RÉACTIVITÉ</text>
+      <text x="280" y="292" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#98A2AD">Le transitaire transforme l’information opérationnelle en décisions compréhensibles.</text>
+    </svg>
+  </div>
+</section>
+
+<div class="toc reveal" id="sommaire">
+  <strong>Sommaire</strong>
+  <div class="toc-grid">
+    <a href="#enjeu">01 · Enjeu de la relation</a>
+    <a href="#mandat">02 · Prise de mandat</a>
+    <a href="#reporting">03 · Information &amp; reporting</a>
+    <a href="#litiges">04 · Gestion des litiges</a>
+    <a href="#fidelisation">05 · Satisfaction &amp; fidélisation</a>
+    <a href="#processus">06 · Processus de suivi</a>
+    <a href="#cas">07 · Cas de dossier client</a>
+    <a href="#essentiel">08 · Points clés</a>
+  </div>
+</div>
+
+<section id="enjeu" class="reveal">
+  <div class="section-head"><span class="num">01</span><div><h2>Le transitaire, un point de confiance</h2><p class="prose">La relation client ne se limite pas à transmettre des documents. Le transitaire coordonne des informations, des acteurs et des échéances afin de donner au client une vision fiable de son opération.</p></div></div>
+  <div class="grid4">
+    <article class="card"><div class="icon">◎</div><h3>Clarté</h3><p>Expliquer les étapes, pièces attendues, coûts et contraintes dans un langage compréhensible.</p></article>
+    <article class="card"><div class="icon">◫</div><h3>Traçabilité</h3><p>Conserver les références, échanges, décisions et événements importants du dossier.</p></article>
+    <article class="card"><div class="icon">↻</div><h3>Réactivité</h3><p>Identifier rapidement un blocage et informer le client avant qu’il ne devienne critique.</p></article>
+    <article class="card"><div class="icon">✓</div><h3>Fiabilité</h3><p>Ne communiquer que des informations vérifiées et distinguer faits, estimations et actions à venir.</p></article>
+  </div>
+  <div class="callout"><div class="label">💡 À retenir</div>Une bonne relation client repose sur une promesse simple : <strong>le client sait où en est son dossier, ce qui bloque éventuellement et quelle est la prochaine action.</strong></div>
+</section>
+
+<section id="mandat" class="reveal">
+  <div class="section-head"><span class="num">02</span><div><h2>Prise de mandat</h2><p class="prose">Le mandat formalise la mission confiée au transitaire. Avant toute action, il faut clarifier le périmètre de la prestation, les responsabilités, les documents disponibles et les informations nécessaires au traitement du dossier.</p></div></div>
+  <div class="grid2">
+    <div class="card"><h3>Ce qu’il faut cadrer</h3><p>Identité du client, opération concernée, marchandises, flux, représentation, prestations demandées, délais, conditions financières et interlocuteurs autorisés.</p></div>
+    <div class="card"><h3>Ce qu’il faut vérifier</h3><p>Concordance des documents, cohérence des informations commerciales, pièces manquantes, contraintes particulières et possibilité réelle d’exécuter la mission.</p></div>
+  </div>
+  <div class="form" style="margin-top:20px" aria-label="Exemple de fiche de prise de mandat">
+    <div class="form-row"><span>RÉF. DOSSIER</span><strong>DT-26-0048</strong></div>
+    <div class="form-row"><span>CLIENT</span><span>Société importatrice — dossier à identifier</span></div>
+    <div class="form-row"><span>MISSION</span><span>Coordination du dédouanement et suivi documentaire</span></div>
+    <div class="form-row"><span>INTERLOCUTEUR</span><span>Responsable logistique / import</span></div>
+    <div class="form-row"><span>PIÈCES À CONTRÔLER</span><span>Facture · transport · documents réglementaires · références de la marchandise</span></div>
+    <div class="form-row"><span>STATUT</span><span>MANDAT À CADRER AVANT EXÉCUTION</span></div>
+  </div>
+  <div class="callout warning"><div class="label">⚠️ Attention / erreur fréquente</div>Commencer une opération sur la base d’instructions ambiguës crée des risques de malentendu. Le périmètre du mandat doit être explicite et traçable.</div>
+</section>
+
+<section id="reporting" class="reveal">
+  <div class="section-head"><span class="num">03</span><div><h2>Information et reporting client</h2><p class="prose">Le reporting transforme le suivi opérationnel en information utile à la décision. Il doit être régulier, factuel, hiérarchisé et orienté vers les prochaines actions.</p></div></div>
+  <div class="stepper" aria-label="Cycle de reporting">
+    <div class="step"><b>01</b><strong>Collecter</strong><br>Réunir les dernières informations vérifiées.</div>
+    <div class="step"><b>02</b><strong>Vérifier</strong><br>Écarter les données incertaines ou contradictoires.</div>
+    <div class="step"><b>03</b><strong>Synthétiser</strong><br>Faire ressortir statut, blocages et échéances.</div>
+    <div class="step"><b>04</b><strong>Informer</strong><br>Transmettre un message clair au bon interlocuteur.</div>
+    <div class="step"><b>05</b><strong>Tracer</strong><br>Conserver la preuve de l’échange et des décisions.</div>
+  </div>
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist">
+      <button class="active" role="tab" aria-selected="true" data-tab="synthese">Synthèse client</button>
+      <button role="tab" aria-selected="false" data-tab="detail">Suivi détaillé</button>
+    </div>
+    <div id="synthese" class="tab-panel active" role="tabpanel">
+      <h3>Format court : ce que le client doit savoir</h3>
+      <div class="table-wrap"><table><thead><tr><th>Élément</th><th>Information</th><th>Action attendue</th></tr></thead><tbody>
+      <tr><td>Statut</td><td>Dossier en cours de traitement</td><td>—</td></tr>
+      <tr><td>Point bloquant</td><td>Pièce / information à compléter</td><td>Client transmet la pièce</td></tr>
+      <tr><td>Échéance</td><td>À surveiller</td><td>Prioriser l’action</td></tr>
+      <tr><td>Prochaine étape</td><td>Reprise du traitement</td><td>Suivi par le transitaire</td></tr>
+      </tbody></table></div>
+    </div>
+    <div id="detail" class="tab-panel" role="tabpanel">
+      <h3>Format détaillé : journal du dossier</h3>
+      <p>Chaque événement important peut être enregistré avec sa date, sa source, son impact, l’action réalisée, le responsable et la prochaine échéance. Cette traçabilité facilite les relances et la gestion des litiges.</p>
+    </div>
+  </div>
+  <div class="callout"><div class="label">📋 Cas pratique</div>Un client demande « Où en est mon dossier ? ». Une réponse professionnelle ne consiste pas à renvoyer une suite de messages techniques : elle donne le <strong>statut actuel</strong>, le <strong>blocage éventuel</strong>, l’<strong>action attendue</strong> et la <strong>prochaine étape</strong>.</div>
+</section>
+
+<section id="litiges" class="reveal">
+  <div class="section-head"><span class="num">04</span><div><h2>Gestion des litiges</h2><p class="prose">Un litige peut porter sur un délai, un coût, un document, une instruction, une responsabilité ou une différence d’interprétation. La priorité est de revenir aux faits et aux éléments traçables du dossier.</p></div></div>
+  <div class="grid2">
+    <article class="card"><h3>1 · Écouter et qualifier</h3><p>Identifier précisément la réclamation : objet, date, opération concernée et attente du client.</p></article>
+    <article class="card"><h3>2 · Vérifier les faits</h3><p>Comparer les documents, échanges, références et événements enregistrés dans le suivi.</p></article>
+    <article class="card"><h3>3 · Expliquer</h3><p>Présenter les faits sans accusation, distinguer ce qui est établi de ce qui reste à vérifier.</p></article>
+    <article class="card"><h3>4 · Résoudre et tracer</h3><p>Définir l’action corrective, le responsable, le délai et conserver la décision prise.</p></article>
+  </div>
+  <div class="callout warning"><div class="label">⚠️ Attention / erreur fréquente</div>Promettre immédiatement une solution sans avoir vérifié le dossier peut aggraver le litige. La réactivité doit rester compatible avec la vérification des faits.</div>
+  <div class="table-wrap" style="margin-top:20px"><table>
+    <thead><tr><th>Situation</th><th>Réponse professionnelle</th><th>Trace utile</th></tr></thead>
+    <tbody>
+      <tr><td>Retard</td><td>Expliquer le statut et les causes établies</td><td>Chronologie du dossier</td></tr>
+      <tr><td>Coût contesté</td><td>Reprendre le détail et les éléments convenus</td><td>Devis / facture / échanges</td></tr>
+      <tr><td>Document manquant</td><td>Identifier la pièce et son impact</td><td>Checklist documentaire</td></tr>
+      <tr><td>Erreur d’instruction</td><td>Comparer l’instruction reçue avec l’action exécutée</td><td>Mandat / correspondances</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fidelisation" class="reveal">
+  <div class="section-head"><span class="num">05</span><div><h2>Satisfaction et fidélisation</h2><p class="prose">La fidélisation résulte d’une expérience régulière et prévisible. Le transitaire doit transformer chaque opération en occasion d’améliorer la qualité du service.</p></div></div>
+  <div class="grid4">
+    <article class="card"><div class="icon">01</div><h3>Tenir les engagements</h3><p>Ne pas annoncer un délai ou une action sans pouvoir en assurer le suivi.</p></article>
+    <article class="card"><div class="icon">02</div><h3>Anticiper</h3><p>Prévenir le client des pièces, échéances et risques identifiables.</p></article>
+    <article class="card"><div class="icon">03</div><h3>Mesurer</h3><p>Recueillir les retours et repérer les irritants récurrents.</p></article>
+    <article class="card"><div class="icon">04</div><h3>Améliorer</h3><p>Transformer les incidents en actions concrètes d’amélioration du processus.</p></article>
+  </div>
+  <details><summary>Pourquoi la régularité compte-t-elle ?</summary><p>Un client professionnel a besoin d’un mode de suivi prévisible. La qualité perçue dépend autant de la fiabilité des informations que du résultat final de l’opération.</p></details>
+  <details><summary>Que faire après un incident ?</summary><p>Documenter l’incident, expliquer la situation, traiter la cause, convenir d’une action corrective puis vérifier que la solution a réellement répondu au besoin.</p></details>
+</section>
+
+<section id="processus" class="reveal">
+  <div class="section-head"><span class="num">06</span><div><h2>Un système de suivi professionnel</h2><p class="prose">La gestion de la relation client devient plus fiable lorsqu’elle s’appuie sur une routine simple : un dossier identifié, un historique, des échéances et des responsabilités claires.</p></div></div>
+  <div class="client-board">
+    <div class="client-row"><strong>Dossier</strong><span>Référence unique et documents associés</span><span class="status">TRAÇABLE</span></div>
+    <div class="client-row"><strong>Responsable</strong><span>Interlocuteur interne chargé de l’action</span><span class="status">IDENTIFIÉ</span></div>
+    <div class="client-row"><strong>Échéance</strong><span>Date ou événement à surveiller</span><span class="status">VISIBLE</span></div>
+    <div class="client-row"><strong>Client</strong><span>Personne autorisée à recevoir et valider les informations</span><span class="status">CONFIRMÉ</span></div>
+    <div class="client-row"><strong>Historique</strong><span>Échanges, décisions, actions et événements significatifs</span><span class="status">ARCHIVÉ</span></div>
+  </div>
+  <div class="callout"><div class="label">⚖️ Réglementation / texte applicable</div>La relation professionnelle doit rester compatible avec les obligations applicables à l’activité de transit et de représentation : le mandat, les documents et les échanges doivent être gérés avec rigueur et traçabilité.</div>
+</section>
+
+<section id="cas" class="reveal">
+  <div class="section-head"><span class="num">07</span><div><h2>Cas de dossier client</h2><p class="prose">Un dossier d’importation présente un retard parce qu’une information nécessaire au traitement n’est pas encore disponible. Le client souhaite une explication immédiate.</p></div></div>
+  <div class="grid2">
+    <div class="card"><h3>Réponse faible</h3><p>« Le dossier est bloqué. Nous attendons. »</p><p>Cette réponse informe peu : elle ne précise ni le point bloquant, ni l’action attendue, ni la suite.</p></div>
+    <div class="card"><h3>Réponse professionnelle</h3><p>Présenter le statut vérifié, identifier précisément l’élément manquant, expliquer son impact, indiquer l’action attendue du client et annoncer la prochaine étape de suivi.</p></div>
+  </div>
+  <div class="form" style="margin-top:20px">
+    <div class="form-row"><span>STATUT</span><span>Dossier en attente d’une information nécessaire</span></div>
+    <div class="form-row"><span>BLOCAGE</span><span>Élément documentaire / information à compléter</span></div>
+    <div class="form-row"><span>ACTION CLIENT</span><span>Transmettre ou confirmer l’information demandée</span></div>
+    <div class="form-row"><span>ACTION TRANSITAIRE</span><span>Contrôler la pièce reçue puis reprendre le traitement</span></div>
+    <div class="form-row"><span>SUIVI</span><span>Actualiser le dossier et informer le client de l’évolution</span></div>
+  </div>
+</section>
+
+<section id="essentiel" class="reveal">
+  <div class="section-head"><span class="num">08</span><div><h2>Points clés à retenir</h2><p class="prose">La relation client est une composante opérationnelle du métier de transitaire : elle sécurise les échanges et améliore la maîtrise du dossier.</p></div></div>
+  <div class="points">
+    <div class="point"><strong>01</strong><br>Le mandat doit définir clairement la mission et les responsabilités.</div>
+    <div class="point"><strong>02</strong><br>Le reporting doit être factuel, régulier et orienté vers l’action.</div>
+    <div class="point"><strong>03</strong><br>Un litige se traite à partir des faits, des documents et de la traçabilité.</div>
+    <div class="point"><strong>04</strong><br>La satisfaction et la fidélisation reposent sur la fiabilité et l’anticipation.</div>
+  </div>
+  <div class="callout"><div class="label">🔗 Pour aller plus loin</div>Les compétences développées ici prolongent directement le travail sur le contrôle douanier et préparent la négociation et la tarification des prestations de transit.</div>
+</section>
+
+<div class="navlesson">
+  <a class="navbox" href="#" aria-label="Leçon précédente"><small>← LEÇON PRÉCÉDENTE</small><strong>25 · Contrôle douanier, vérification et visite des marchandises</strong></a>
+  <a class="navbox next" href="#" aria-label="Leçon suivante"><small>LEÇON SUIVANTE →</small><strong>27 · Négociation et tarification des prestations de transit</strong></a>
+</div>
+</main>
+
+<footer>
+  <strong>Filière Douane &amp; Transit</strong> · Module 6 · Leçon 26<br>
+  Support pédagogique autonome — Gestion de la relation client et du transitaire
+</footer>
+
+<button class="backtop" id="backTop" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const bar=document.getElementById('progressBar');
+  const top=document.getElementById('backTop');
+  function progress(){
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+    top.style.opacity=window.scrollY>500?'1':'0';
+    top.style.pointerEvents=window.scrollY>500?'auto':'none';
+  }
+  window.addEventListener('scroll',progress,{passive:true});
+  progress();
+  top.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=group.querySelectorAll('[data-tab]');
+    const panels=group.querySelectorAll('.tab-panel');
+    buttons.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        buttons.forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false')});
+        panels.forEach(p=>p.classList.remove('active'));
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected','true');
+        const panel=group.querySelector('#'+btn.dataset.tab);
+        if(panel) panel.classList.add('active');
+      });
+    });
+  });
+
+  const items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})
+    },{threshold:.08});
+    items.forEach(i=>io.observe(i));
+  }else items.forEach(i=>i.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 26 — Gestion de la e-réputation">
+<title>Leçon 26 — Gestion de la e-réputation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--color-bg:#F6F5F2;--color-text:#1B1F2E;--color-accent:#FF5A36;--color-neutral:#9AA3B2;
+--soft:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg));
+--soft2:color-mix(in srgb,var(--color-accent) 12%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 62%,var(--color-bg));
+--line:color-mix(in srgb,var(--color-neutral) 48%,var(--color-bg));
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.7}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:999}
+header{position:sticky;top:4px;z-index:100;background:rgba(246,245,242,.96);border-bottom:1px solid var(--line)}
+.nav{max-width:1120px;margin:auto;padding:15px 22px;display:flex;justify-content:space-between;align-items:center}
+.brand{font:700 1rem "Space Grotesk",sans-serif}.brand span{color:var(--color-accent)}
+.nav a{text-decoration:none;font-weight:600;font-size:.9rem}
+.container{max-width:1120px;margin:auto;padding:0 22px}
+.hero{padding:72px 0 48px}
+.eyebrow,.kicker{font:600 .76rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12;letter-spacing:-.03em}
+h1{font-size:clamp(2.4rem,6vw,5rem);max-width:940px;margin:14px 0 20px}
+h2{font-size:clamp(1.9rem,3.4vw,2.8rem);margin:0 0 17px}
+h3{font-size:1.2rem;margin:0 0 8px}
+.lead{max-width:760px;font-size:1.12rem;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+.badge{padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--soft);font:500 .74rem "IBM Plex Mono",monospace}
+.objective{max-width:760px;margin-top:28px;padding:18px 20px;border-left:5px solid var(--color-accent);background:var(--soft2)}
+.objective strong{display:block;font-family:"Space Grotesk";margin-bottom:3px}
+.toc{padding:22px;margin:8px 0 50px;border:1px solid var(--line);border-radius:18px;background:var(--soft)}
+.toc strong{font-family:"Space Grotesk";font-size:1.05rem}.toc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 28px;margin-top:12px}
+.toc a{text-decoration:none;color:var(--muted)}.toc a:hover{color:var(--color-accent)}
+section{padding:68px 0;scroll-margin-top:72px}
+section.alt{background:var(--soft);box-shadow:0 0 0 100vmax var(--soft);clip-path:inset(0 -100vmax)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--color-bg);border:1px solid var(--line);border-radius:16px;padding:22px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.icon{width:44px;height:44px;border:1px solid var(--color-accent);border-radius:12px;display:grid;place-items:center;color:var(--color-accent);font:600 .72rem "IBM Plex Mono";margin-bottom:14px}
+.note{margin:25px 0;padding:17px 20px;border-left:5px solid var(--color-accent);background:var(--soft)}
+.note b{font-family:"Space Grotesk"}
+.figure{margin:28px 0;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--color-bg);overflow:auto}
+svg{display:block;width:100%;min-width:650px;height:auto}svg text{font-family:Inter,Arial,sans-serif;fill:var(--color-text)}
+.mono{padding:17px;border-left:4px solid var(--color-accent);border-radius:12px;background:var(--soft2);font:500 .88rem/1.6 "IBM Plex Mono";overflow:auto}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+table{width:100%;min-width:720px;border-collapse:collapse;background:var(--color-bg)}
+th,td{padding:14px 15px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .75rem "IBM Plex Mono";text-transform:uppercase;letter-spacing:.05em}tr:last-child td{border-bottom:0}tr:hover td{background:var(--soft)}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:28px 0}
+.step{background:var(--color-bg);border:1px solid var(--line);border-top:4px solid var(--color-accent);border-radius:12px;padding:17px 14px}
+.step .n{color:var(--color-accent);font:600 .78rem "IBM Plex Mono"}
+details{border-top:1px solid var(--line);padding:16px 0}details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font:600 1rem "Space Grotesk"}details p{max-width:720px}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{padding:19px;border:1px solid var(--line);border-radius:14px;background:var(--color-bg)}
+.key strong{display:block;color:var(--color-accent);font:600 .76rem "IBM Plex Mono";margin-bottom:7px}
+.nav-bottom{
+display:grid;
+grid-template-columns:1fr 150px 1fr;
+align-items:center;
+gap:24px;
+padding:58px 0 62px;
+border-top:1px solid var(--line);
+}
+.lesson-link{
+min-height:132px;
+display:flex;
+align-items:center;
+gap:18px;
+padding:22px 24px;
+border:1px solid var(--line);
+border-radius:17px;
+background:var(--color-bg);
+text-decoration:none;
+transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+.lesson-link:hover{
+transform:translateY(-2px);
+border-color:var(--color-accent);
+box-shadow:0 8px 24px color-mix(in srgb,var(--color-text) 7%,transparent);
+}
+.lesson-link.next{justify-content:flex-end;text-align:right}
+.nav-copy{display:flex;flex-direction:column;min-width:0}
+.lesson-link small{
+display:block;
+color:var(--muted);
+margin-bottom:6px;
+font:500 .7rem "IBM Plex Mono",monospace;
+letter-spacing:.04em;
+}
+.lesson-link strong{
+display:block;
+font:700 1.2rem/1.25 "Space Grotesk",sans-serif;
+color:var(--color-text);
+}
+.lesson-link em{
+display:block;
+margin-top:5px;
+font-style:normal;
+color:var(--muted);
+font-size:.9rem;
+line-height:1.4;
+}
+.nav-arrow{
+flex:0 0 56px;
+width:56px;
+height:56px;
+display:grid;
+place-items:center;
+border-radius:50%;
+background:var(--soft2);
+color:var(--color-accent);
+font:400 2rem/1 "Inter",sans-serif;
+}
+.nav-top{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:8px;
+color:var(--muted);
+font-size:.88rem;
+white-space:nowrap;
+}
+.top-inline{
+width:56px;
+height:56px;
+border:0;
+border-radius:50%;
+background:var(--soft2);
+color:var(--color-accent);
+cursor:pointer;
+font:400 2rem/1 "Inter",sans-serif;
+transition:transform .2s;
+}
+.top-inline:hover{transform:translateY(-2px)}
+.lesson-link.previous .nav-copy{text-align:left}
+.lesson-link small{display:block;color:var(--muted);margin-bottom:5px;font:500 .7rem "IBM Plex Mono"}
+footer{border-top:1px solid var(--line);padding:28px 0 42px;color:var(--muted);font-size:.85rem}
+.top{display:none !important;position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);cursor:pointer;font-size:1.2rem}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:820px){.grid,.grid3{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.keys{grid-template-columns:1fr 1fr}.nav-bottom{grid-template-columns:1fr 1fr}.nav-top{grid-column:1 / -1;grid-row:2}.nav-top{order:3}.lesson-link.next{order:2}}
+@media(max-width:520px){.container{padding:0 16px}.nav{padding:13px 16px}.nav a{display:none}.hero{padding-top:52px}h1{font-size:2.5rem}.toc-grid{grid-template-columns:1fr}.steps,.keys{grid-template-columns:1fr}.nav-bottom{grid-template-columns:1fr;gap:14px}.nav-top{grid-column:auto;grid-row:auto;order:2}.lesson-link.next{order:3}.lesson-link{min-height:110px}.lesson-link.next{text-align:left;justify-content:flex-start}.lesson-link.next .nav-copy{text-align:left}.nav-arrow{width:48px;height:48px;flex-basis:48px}section{padding:52px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><div class="nav"><div class="brand">Communication d’Entreprise</div><a href="#sommaire">Sommaire</a></div></header><main><div class="container">
+<section class="hero" id="accueil">
+<div class="eyebrow">Module 5 · Communication de crise et gestion de la réputation</div>
+<h1>Prise de parole en situation sensible</h1>
+<p class="lead">Communiquer efficacement face à une situation délicate.</p>
+<div class="badges"><span class="badge">LEÇON 23</span><span class="badge">AVANCÉ</span><span class="badge">20 MIN</span><span class="badge">PRISE DE PAROLE</span></div>
+<div class="objective"><strong>Objectif pédagogique</strong>Communiquer efficacement face à une situation délicate.</div>
+</section>
+
+<nav class="toc" id="sommaire">
+<strong>Sommaire de la leçon</strong>
+<div class="toc-grid">
+<a href="#preparation">01 — Préparation du porte-parole</a>
+<a href="#langage">02 — Éléments de langage</a>
+<a href="#questions">03 — Questions difficiles</a>
+<a href="#empathie">04 — Communication empathique et factuelle</a>
+<a href="#synthese">05 — Résumé visuel</a>
+</div>
+</nav>
+
+<section id="preparation">
+<div class="kicker">01 / Préparation</div>
+<h2>Préparer le porte-parole</h2>
+<p>En situation sensible, la qualité de la prise de parole dépend largement de la préparation. Le porte-parole doit connaître les faits, les enjeux, les publics concernés, les limites de ce qui peut être communiqué et les messages prioritaires.</p>
+<div class="visual">
+<svg viewBox="0 0 900 350" role="img" aria-label="Préparation du porte-parole en quatre dimensions">
+<circle cx="450" cy="175" r="82" fill="var(--soft2)" stroke="var(--accent)" stroke-width="4"/>
+<text x="450" y="168" text-anchor="middle" fill="var(--text)" font-size="23" font-weight="700">PORTE-</text>
+<text x="450" y="194" text-anchor="middle" fill="var(--text)" font-size="23" font-weight="700">PAROLE</text>
+<line x1="390" y1="115" x2="190" y2="55" stroke="var(--neutral)" stroke-width="3"/>
+<line x1="510" y1="115" x2="710" y2="55" stroke="var(--neutral)" stroke-width="3"/>
+<line x1="390" y1="235" x2="190" y2="295" stroke="var(--neutral)" stroke-width="3"/>
+<line x1="510" y1="235" x2="710" y2="295" stroke="var(--neutral)" stroke-width="3"/>
+<rect x="80" y="25" width="220" height="65" rx="14" fill="var(--soft)" stroke="var(--neutral)" stroke-width="2"/>
+<rect x="600" y="25" width="220" height="65" rx="14" fill="var(--soft)" stroke="var(--neutral)" stroke-width="2"/>
+<rect x="80" y="260" width="220" height="65" rx="14" fill="var(--soft)" stroke="var(--neutral)" stroke-width="2"/>
+<rect x="600" y="260" width="220" height="65" rx="14" fill="var(--soft2)" stroke="var(--accent)" stroke-width="3"/>
+<text x="190" y="54" text-anchor="middle" fill="var(--text)" font-weight="700">FAITS</text>
+<text x="190" y="74" text-anchor="middle" fill="var(--neutral)" font-size="13">ce qui est vérifié</text>
+<text x="710" y="54" text-anchor="middle" fill="var(--text)" font-weight="700">PUBLICS</text>
+<text x="710" y="74" text-anchor="middle" fill="var(--neutral)" font-size="13">qui doit comprendre</text>
+<text x="190" y="289" text-anchor="middle" fill="var(--text)" font-weight="700">RISQUES</text>
+<text x="190" y="309" text-anchor="middle" fill="var(--neutral)" font-size="13">ce qui peut évoluer</text>
+<text x="710" y="289" text-anchor="middle" fill="var(--accent)" font-weight="700">MESSAGES</text>
+<text x="710" y="309" text-anchor="middle" fill="var(--neutral)" font-size="13">ce qui doit être retenu</text>
+</svg>
+</div>
+<div class="cards">
+<article class="card"><div class="card-icon">01</div><h3>Maîtriser le dossier</h3><p>Connaître les faits disponibles, leur origine et leur niveau de vérification.</p></article>
+<article class="card"><div class="card-icon">02</div><h3>Anticiper les réactions</h3><p>Identifier les inquiétudes, objections et questions probables des différents publics.</p></article>
+<article class="card"><div class="card-icon">03</div><h3>Répéter les messages</h3><p>S'entraîner à répondre avec clarté sans donner l'impression d'un discours mécanique.</p></article>
+</div>
+</section>
+
+<section id="langage">
+<div class="kicker">02 / Messages</div>
+<h2>Construire des éléments de langage</h2>
+<p>Les éléments de langage constituent une base commune pour garantir la cohérence de la parole. Ils ne sont pas destinés à empêcher le dialogue : ils servent à maintenir les priorités et les faits essentiels.</p>
+<div class="stepper">
+<div><b>01</b><strong>Constater</strong><span>Reconnaître la situation.</span></div>
+<div><b>02</b><strong>Expliquer</strong><span>Donner le contexte utile.</span></div>
+<div><b>03</b><strong>Agir</strong><span>Présenter les mesures prises.</span></div>
+<div><b>04</b><strong>Orienter</strong><span>Indiquer la prochaine étape.</span></div>
+</div>
+<div class="mono">FAITS → CONTEXTE → ACTIONS → PROCHAINE ÉTAPE</div>
+<div class="callout"><strong>Bonnes pratiques professionnelles</strong>Un bon élément de langage doit être court, compréhensible, vérifiable et suffisamment souple pour être adapté à la question posée.</div>
+</section>
+
+<section id="questions">
+<div class="kicker">03 / Questions difficiles</div>
+<h2>Gérer les questions difficiles</h2>
+<p>Face à une question agressive, imprécise ou déstabilisante, l'objectif n'est pas de gagner un débat. Il faut conserver la maîtrise du sujet, répondre au besoin d'information et éviter la spéculation.</p>
+<table>
+<thead><tr><th>Type de question</th><th>Risque</th><th>Réflexe professionnel</th></tr></thead>
+<tbody>
+<tr><td>Question accusatrice</td><td>Réagir sur le ton émotionnel</td><td>Revenir aux faits vérifiés</td></tr>
+<tr><td>Question spéculative</td><td>Inventer ou anticiper sans preuve</td><td>Dire ce qui est connu et ce qui ne l'est pas</td></tr>
+<tr><td>Question répétée</td><td>Se contredire sous pression</td><td>Réaffirmer le message central</td></tr>
+<tr><td>Question hors sujet</td><td>Perdre le contrôle du cadre</td><td>Recadrer avec courtoisie</td></tr>
+<tr><td>Question sur une responsabilité</td><td>Accuser trop vite</td><td>Éviter les conclusions non établies</td></tr>
+</tbody>
+</table>
+<div class="tabs">
+<div class="tab-buttons">
+<button class="active" data-tab="reformuler">Reformuler</button>
+<button data-tab="recentrer">Recentrer</button>
+<button data-tab="limite">Poser une limite</button>
+</div>
+<div class="tab-panel active" id="reformuler"><h3>Reformuler la question</h3><p>Vérifier que la question a bien été comprise avant de répondre, surtout lorsqu'elle contient plusieurs affirmations.</p></div>
+<div class="tab-panel" id="recentrer"><h3>Recentrer sur le message</h3><p>Répondre directement puis revenir au fait ou à l'action que le public doit retenir.</p></div>
+<div class="tab-panel" id="limite"><h3>Poser une limite</h3><p>Lorsque l'information n'est pas disponible ou ne peut pas être communiquée, l'indiquer clairement sans inventer de réponse.</p></div>
+</div>
+<div class="callout"><strong>Attention / erreur fréquente</strong>Dire « je ne sais pas » peut être préférable à une réponse approximative. La crédibilité se construit aussi par la maîtrise de ses limites.</div>
+</section>
+
+<section id="empathie">
+<div class="kicker">04 / Posture</div>
+<h2>Communiquer avec empathie et précision</h2>
+<p>Une communication efficace en situation sensible doit associer deux dimensions : l'empathie envers les personnes concernées et la rigueur dans les faits communiqués. L'une ne remplace pas l'autre.</p>
+<div class="visual">
+<svg viewBox="0 0 900 330" role="img" aria-label="Équilibre entre empathie et communication factuelle">
+<line x1="450" y1="60" x2="450" y2="280" stroke="var(--neutral)" stroke-width="4"/>
+<path d="M170 115 L730 115" stroke="var(--text)" stroke-width="5"/>
+<path d="M170 115 L105 220 L235 220 Z" fill="var(--soft)" stroke="var(--neutral)" stroke-width="3"/>
+<path d="M730 115 L665 220 L795 220 Z" fill="var(--soft2)" stroke="var(--accent)" stroke-width="3"/>
+<circle cx="450" cy="115" r="18" fill="var(--accent)"/>
+<text x="170" y="250" text-anchor="middle" fill="var(--text)" font-weight="700">EMPATHIE</text>
+<text x="170" y="272" text-anchor="middle" fill="var(--neutral)" font-size="13">reconnaître l'impact humain</text>
+<text x="730" y="250" text-anchor="middle" fill="var(--text)" font-weight="700">FAITS</text>
+<text x="730" y="272" text-anchor="middle" fill="var(--neutral)" font-size="13">rester précis et vérifiable</text>
+<text x="450" y="75" text-anchor="middle" fill="var(--text)" font-size="18" font-weight="700">CRÉDIBILITÉ</text>
+</svg>
+</div>
+<div class="cards">
+<article class="card"><div class="card-icon">E</div><h3>Reconnaître</h3><p>Montrer que la situation et ses conséquences pour les personnes sont prises au sérieux.</p></article>
+<article class="card"><div class="card-icon">F</div><h3>Factuel</h3><p>S'appuyer sur des informations vérifiées, précises et compréhensibles.</p></article>
+<article class="card"><div class="card-icon">C</div><h3>Cohérent</h3><p>Conserver une même ligne de communication sur les différents canaux.</p></article>
+</div>
+<details><summary>Pourquoi éviter la communication trop froide ?</summary><p>Une réponse exclusivement technique peut être perçue comme distante ou indifférente. Reconnaître les préoccupations des personnes permet de créer un climat plus propice à la compréhension, sans abandonner la rigueur factuelle.</p></details>
+</section>
+
+<section id="synthese">
+<div class="kicker">05 / Résumé visuel</div>
+<h2>La prise de parole en situation sensible</h2>
+<div class="summary">
+<div class="summary-grid">
+<div><b>01</b><strong>Préparer</strong><p>Maîtriser les faits, les publics et les risques.</p></div>
+<div><b>02</b><strong>Structurer</strong><p>Construire des éléments de langage simples et cohérents.</p></div>
+<div><b>03</b><strong>Répondre</strong><p>Gérer les questions difficiles sans spéculer.</p></div>
+<div><b>04</b><strong>Humaniser</strong><p>Associer empathie, précision et responsabilité.</p></div>
+</div>
+</div>
+<div class="callout"><strong>Principe directeur</strong>En situation sensible, la crédibilité repose sur une parole préparée, humaine, factuelle et cohérente.</div>
+</section>
+<div class="nav-bottom">
+  <a class="lesson-link previous" href="#" aria-label="Aller à la leçon précédente">
+    <span class="nav-arrow" aria-hidden="true">←</span>
+    <span class="nav-copy">
+      <small>LEÇON PRÉCÉDENTE</small>
+      <strong>Leçon 22</strong>
+      <em>Élaboration d'un plan de communication de crise</em>
+    </span>
+  </a>
+
+  <div class="nav-top">
+    <button class="top-inline" type="button" aria-label="Retour en haut">↑</button>
+    <span>Retour en haut</span>
+  </div>
+
+  <a class="lesson-link next" href="#" aria-label="Aller à la leçon suivante">
+    <span class="nav-copy">
+      <small>LEÇON SUIVANTE</small>
+      <strong>Leçon 24</strong>
+      <em>Gestion de la e-réputation</em>
+    </span>
+    <span class="nav-arrow" aria-hidden="true">→</span>
+  </a>
+</div>
+</div></main><footer><div class="container">Communication d’Entreprise · Module 5 · Leçon 26 · Support pédagogique</div></footer>
+<button class="top" id="top" type="button" aria-label="Retour en haut">↑</button>
+<script>
+(function(){
+const bar=document.getElementById("progress"),top=document.getElementById("top");
+function update(){const d=document.documentElement,m=d.scrollHeight-d.clientHeight;bar.style.width=(m?d.scrollTop/m*100:0)+"%";top.style.display=d.scrollTop>500?"grid":"none"}
+window.addEventListener("scroll",update,{passive:true});top.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));update();
+})();
+</script>
+</body>
+</html>

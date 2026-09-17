@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 07 — Analyse concurrentielle. Filière Marketing, Commerce et Vente.">
+<title>Leçon 07 — Analyse concurrentielle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--color-bg:#F6F4EF;--color-text:#1C2B42;--color-accent:#C08A34;--color-neutral:#6E7580;
+--bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+--text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+--border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+--accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--max:1120px;--reading:760px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+button{font:inherit}
+.progress{position:fixed;top:0;left:0;right:0;height:4px;z-index:1000}.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(8px)}
+.nav{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-weight:700;letter-spacing:.02em}.brand small{display:block;color:var(--text-muted);font:400 .7rem "IBM Plex Mono",monospace;margin-top:2px}
+.menu{display:flex;gap:18px}.menu a{font-size:.86rem;color:var(--color-text)}
+main{max-width:var(--max);margin:auto;padding:0 24px 70px}
+.hero{padding:76px 0 48px;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(240px,.55fr);gap:48px;align-items:end}
+.kicker{font:600 .76rem "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;line-height:1.15}
+h1{font-size:clamp(2.5rem,6vw,5rem);margin:12px 0 20px}
+.hero p{font-size:1.1rem;max-width:var(--reading);color:var(--text-muted);margin:0}
+.meta{border-left:3px solid var(--color-accent);padding:12px 0 12px 22px}.meta div{display:flex;justify-content:space-between;gap:15px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.88rem}.meta div:last-child{border:0}.meta strong{font:600 .76rem "IBM Plex Mono",monospace}
+.toc{background:var(--bg-alt);padding:28px;margin-bottom:65px;border-block:1px solid var(--border)}.toc h2{font-size:1.4rem;margin:0 0 12px}.toc ol{columns:2;margin:0;padding-left:22px}.toc li{padding:4px 0}
+section{max-width:var(--reading);margin:0 auto 76px}section.wide{max-width:var(--max)}
+h2{font-size:2rem;margin:0 0 18px}h3{font-size:1.35rem;margin:28px 0 10px}.lead{font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:26px 0}.card{border:1px solid var(--border);padding:21px;background:var(--color-bg);transition:.2s}.card:hover{transform:translateY(-2px);border-color:var(--color-accent)}.card .icon{font-size:1.2rem;color:var(--color-accent)}.card h3{font-size:1.15rem;margin:8px 0 5px}.card p{margin:0;color:var(--text-muted);font-size:.9rem}
+.callout{border-left:4px solid var(--color-accent);background:var(--accent-soft);padding:19px 22px;margin:27px 0}.callout strong{display:block;margin-bottom:5px}
+.diagram{border:1px solid var(--border);padding:20px;margin:28px 0}.diagram figcaption{text-align:center;color:var(--text-muted);font-size:.8rem;margin-top:10px}
+svg{width:100%;height:auto;display:block}svg text{font-family:Inter,system-ui,sans-serif;fill:var(--color-text)}
+.svg-line{stroke:var(--color-neutral);stroke-width:2;fill:none}.svg-accent{stroke:var(--color-accent);stroke-width:2.5;fill:none}.svg-fill{fill:var(--accent-soft);stroke:var(--color-accent);stroke-width:2}.svg-neutral{fill:var(--bg-alt);stroke:var(--border);stroke-width:1.5}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);margin:25px 0}table{border-collapse:collapse;width:100%;min-width:680px;font-size:.88rem}th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--border)}th{background:var(--bg-alt);font:600 .72rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.03em}tr:hover td{background:var(--accent-soft)}
+.tabs{margin:27px 0}.tab-buttons{display:flex;border-bottom:1px solid var(--border);flex-wrap:wrap}.tab-buttons button{background:none;border:0;border-bottom:3px solid transparent;padding:11px 16px;color:var(--color-text);cursor:pointer}.tab-buttons button[aria-selected=true]{border-bottom-color:var(--color-accent);color:var(--color-accent);font-weight:700}.tab-panel{display:none;padding:19px 0}.tab-panel.active{display:block}
+details{border-top:1px solid var(--border);padding:15px 0}details:last-child{border-bottom:1px solid var(--border)}summary{cursor:pointer;font-weight:600}summary::marker{color:var(--color-accent)}
+.porter{position:relative;max-width:720px;margin:30px auto;height:470px}.force{position:absolute;border:2px solid var(--color-accent);background:var(--accent-soft);padding:15px;text-align:center;width:210px}.force h3{font-size:1.05rem;margin:0 0 5px}.force p{font-size:.8rem;margin:0;color:var(--text-muted);line-height:1.4}.center-force{left:255px;top:175px;width:210px;border-width:3px}.top-force{left:255px;top:5px}.bottom-force{left:255px;bottom:5px}.left-force{left:10px;top:175px}.right-force{right:10px;top:175px}
+.arrow{position:absolute;color:var(--color-accent);font-size:1.5rem;font-weight:700}.a1{left:350px;top:115px}.a2{left:350px;bottom:108px}.a3{left:215px;top:210px}.a4{right:215px;top:210px}
+.key-points{background:var(--bg-alt);padding:28px;border-top:2px solid var(--color-accent)}.key-points ul{margin:0}
+.exercise{border:1px solid var(--color-accent);padding:24px;margin-top:26px}.exercise button,.nav-btn{border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);padding:10px 15px;cursor:pointer;font-weight:600}.exercise button:hover,.nav-btn:hover{background:var(--accent-soft)}.answer{display:none;border-top:1px solid var(--border);margin-top:15px;padding-top:15px}.answer.show{display:block}
+.lesson-nav{max-width:var(--max);margin:auto;padding:0 24px 58px;display:flex;justify-content:space-between;gap:20px}.nav-btn{display:flex;flex-direction:column;max-width:45%;text-decoration:none}.nav-btn small{font-size:.7rem;color:var(--text-muted)}.next{text-align:right}
+footer{border-top:1px solid var(--border);padding:27px 24px;text-align:center;color:var(--text-muted);font-size:.8rem}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);cursor:pointer;opacity:0;pointer-events:none;transition:.2s}.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(15px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:55px}.grid{grid-template-columns:1fr}.toc ol{columns:1}.menu{display:none}}
+@media(max-width:600px){main{padding-inline:18px}.lesson-nav{padding-inline:18px}.porter{height:620px}.force{width:190px}.center-force{left:calc(50% - 95px);top:220px}.top-force{left:calc(50% - 95px);top:5px}.bottom-force{left:calc(50% - 95px);bottom:5px}.left-force{left:calc(50% - 95px);top:110px}.right-force{right:calc(50% - 95px);top:380px}.a1,.a2,.a3,.a4{display:none}.nav-btn{font-size:.8rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+<header><nav class="nav" aria-label="Navigation principale">
+<div class="brand">MARKETING · COMMERCE · VENTE<small>FILIÈRE DE FORMATION</small></div>
+<div class="menu"><a href="#sommaire">Sommaire</a><a href="#points-cles">Points clés</a></div>
+</nav></header>
+
+<main>
+<section class="hero reveal">
+<div><div class="kicker">Module 2 · Étude de marché et stratégie marketing</div>
+<h1>Analyse concurrentielle</h1>
+<p>Évaluer la position de l’entreprise face à la concurrence grâce au benchmark, aux forces de Porter, à la veille et au positionnement relatif.</p></div>
+<aside class="meta" aria-label="Informations">
+<div><span>Niveau</span><strong>INTERMÉDIAIRE</strong></div>
+<div><span>Durée</span><strong>25 MIN</strong></div>
+<div><span>Leçon</span><strong>07</strong></div>
+<div><span>Objectif</span><strong>POSITION</strong></div>
+</aside>
+</section>
+
+<section class="toc reveal" id="sommaire"><h2>Sommaire</h2><ol>
+<li><a href="#benchmark">Le benchmark</a></li><li><a href="#porter">Les 5 forces de Porter</a></li>
+<li><a href="#avantages">Avantages concurrentiels</a></li><li><a href="#veille">Veille concurrentielle</a></li>
+<li><a href="#positionnement">Positionnement relatif</a></li><li><a href="#points-cles">Points clés</a></li><li><a href="#exercice">Mini-exercice</a></li>
+</ol></section>
+
+<section id="benchmark" class="reveal">
+<div class="kicker">01 · Comparer pour décider</div><h2>Le benchmark concurrentiel</h2>
+<p class="lead">Le <strong>benchmark</strong> consiste à comparer de manière structurée une entreprise avec des concurrents ou des références du marché. Il permet d’identifier les écarts, les bonnes pratiques et les pistes d’amélioration.</p>
+<div class="grid">
+<article class="card"><div class="icon">01</div><h3>Choisir</h3><p>Définir les concurrents et les critères réellement utiles à la comparaison.</p></article>
+<article class="card"><div class="icon">02</div><h3>Mesurer</h3><p>Collecter des informations comparables : prix, offre, service, visibilité, distribution.</p></article>
+<article class="card"><div class="icon">03</div><h3>Agir</h3><p>Transformer les écarts observés en décisions de différenciation ou d’amélioration.</p></article>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Critère</th><th scope="col">Entreprise Alpha</th><th scope="col">Entreprise Beta</th><th scope="col">Entreprise Gamma</th></tr></thead>
+<tbody>
+<tr><th scope="row">Prix</th><td>Accessible</td><td>Élevé</td><td>Intermédiaire</td></tr>
+<tr><th scope="row">Largeur de l’offre</th><td>Intermédiaire</td><td>Large</td><td>Spécialisée</td></tr>
+<tr><th scope="row">Service client</th><td>Rapide</td><td>Personnalisé</td><td>Standardisé</td></tr>
+<tr><th scope="row">Présence digitale</th><td>Forte</td><td>Intermédiaire</td><td>Faible</td></tr>
+<tr><th scope="row">Position perçue</th><td>Rapport qualité-prix</td><td>Premium</td><td>Spécialiste</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>💡 À retenir</strong>Un benchmark utile ne cherche pas simplement à dire « qui est meilleur ». Il cherche à comprendre <strong>sur quels critères</strong> les entreprises se différencient.</div>
+</section>
+
+<section id="porter" class="wide reveal">
+<div class="kicker">02 · Lire la structure du secteur</div><h2>Les 5 forces de Porter</h2>
+<p>Le modèle des cinq forces aide à analyser la pression concurrentielle d’un secteur. Il examine les concurrents existants, les nouveaux entrants, les produits de substitution, le pouvoir des clients et celui des fournisseurs.</p>
+<figure class="diagram">
+<div class="porter" role="img" aria-label="Diagramme des cinq forces de Porter">
+<div class="force top-force"><h3>Nouveaux entrants</h3><p>Facilité d’accès au marché et barrières à l’entrée.</p></div>
+<div class="force bottom-force"><h3>Produits de substitution</h3><p>Solutions différentes pouvant satisfaire le même besoin.</p></div>
+<div class="force left-force"><h3>Pouvoir des fournisseurs</h3><p>Capacité des fournisseurs à influencer les conditions.</p></div>
+<div class="force right-force"><h3>Pouvoir des clients</h3><p>Capacité des clients à négocier ou à changer d’offre.</p></div>
+<div class="force center-force"><h3>Rivalité concurrentielle</h3><p>Intensité de la concurrence entre les acteurs présents.</p></div>
+<div class="arrow a1">↓</div><div class="arrow a2">↑</div><div class="arrow a3">→</div><div class="arrow a4">←</div>
+</div>
+<figcaption>Les cinq forces se combinent pour donner une lecture de la pression concurrentielle d’un secteur.</figcaption>
+</figure>
+<div class="callout"><strong>📌 Rappel méthodologique</strong>Les cinq forces ne donnent pas automatiquement une stratégie. Elles servent à structurer le diagnostic avant de choisir une orientation.</div>
+</section>
+
+<section id="avantages" class="reveal">
+<div class="kicker">03 · Créer une différence</div><h2>Les avantages concurrentiels</h2>
+<p>Un avantage concurrentiel correspond à un élément permettant à une entreprise de créer une position favorable et difficile à reproduire rapidement par ses concurrents.</p>
+<div class="grid">
+<article class="card"><div class="icon">◆</div><h3>Coût</h3><p>Être capable de proposer une offre compétitive grâce à une structure de coûts maîtrisée.</p></article>
+<article class="card"><div class="icon">◆</div><h3>Différenciation</h3><p>Proposer une valeur perçue comme distincte : qualité, expérience, service, marque ou innovation.</p></article>
+<article class="card"><div class="icon">◆</div><h3>Spécialisation</h3><p>Concentrer les efforts sur une cible ou un besoin précis mieux que les offres généralistes.</p></article>
+</div>
+<div class="callout"><strong>👨‍💼 Conseil professionnel</strong>Un avantage n’est réellement intéressant que s’il compte pour le client et peut être défendu dans la durée.</div>
+</section>
+
+<section id="veille" class="reveal">
+<div class="kicker">04 · Observer en continu</div><h2>La veille concurrentielle</h2>
+<p>La veille consiste à surveiller régulièrement les informations susceptibles d’affecter la position de l’entreprise : nouvelles offres, prix, campagnes, innovations, changements de distribution ou réactions du marché.</p>
+<div class="tabs" aria-label="Cycle de veille">
+<div class="tab-buttons" role="tablist">
+<button role="tab" aria-selected="true" aria-controls="v1" id="b1">Observer</button>
+<button role="tab" aria-selected="false" aria-controls="v2" id="b2">Analyser</button>
+<button role="tab" aria-selected="false" aria-controls="v3" id="b3">Décider</button>
+</div>
+<div class="tab-panel active" id="v1" role="tabpanel" aria-labelledby="b1"><h3>Observer</h3><p>Repérer les signaux utiles et sélectionner les informations fiables.</p></div>
+<div class="tab-panel" id="v2" role="tabpanel" aria-labelledby="b2"><h3>Analyser</h3><p>Comparer les évolutions, rechercher leur signification et évaluer leur impact potentiel.</p></div>
+<div class="tab-panel" id="v3" role="tabpanel" aria-labelledby="b3"><h3>Décider</h3><p>Prioriser les actions : adaptation de l’offre, communication, prix, distribution ou différenciation.</p></div>
+</div>
+<details><summary>Quelle différence entre veille et benchmark ?</summary><p>Le benchmark est une comparaison structurée, souvent réalisée sur des critères définis. La veille est un processus continu de surveillance et d’interprétation des évolutions.</p></details>
+</section>
+
+<section id="positionnement" class="reveal">
+<div class="kicker">05 · Situer l’entreprise</div><h2>Le positionnement relatif</h2>
+<p>Le positionnement relatif consiste à comprendre la place occupée par une entreprise par rapport aux autres acteurs, notamment selon les critères qui comptent pour la cible.</p>
+<figure class="diagram">
+<svg viewBox="0 0 760 410" role="img" aria-labelledby="pos-title pos-desc">
+<title id="pos-title">Carte simplifiée de positionnement concurrentiel</title>
+<desc id="pos-desc">Deux axes opposent niveau de prix et niveau de spécialisation. Trois entreprises fictives occupent des positions différentes.</desc>
+<line x1="100" y1="350" x2="700" y2="350" class="svg-line"/><line x1="100" y1="350" x2="100" y2="55" class="svg-line"/>
+<text x="620" y="385" font-size="14">Prix élevé →</text><text x="25" y="75" font-size="14" transform="rotate(-90 25 75)">Spécialisation ↑</text>
+<circle cx="250" cy="275" r="9" fill="var(--color-accent)"/><text x="265" y="270" font-weight="700">Alpha</text>
+<circle cx="510" cy="150" r="9" fill="var(--color-accent)"/><text x="525" y="145" font-weight="700">Beta</text>
+<circle cx="570" cy="285" r="9" fill="var(--color-accent)"/><text x="585" y="280" font-weight="700">Gamma</text>
+<line x1="100" y1="200" x2="700" y2="200" class="svg-line" stroke-dasharray="5 5"/>
+<line x1="400" y1="55" x2="400" y2="350" class="svg-line" stroke-dasharray="5 5"/>
+</svg>
+<figcaption>Une carte de positionnement sert à visualiser des perceptions relatives ; elle dépend des critères choisis.</figcaption>
+</figure>
+<div class="callout"><strong>⚠️ Attention — erreur fréquente</strong>Deux entreprises peuvent proposer des produits proches mais occuper des positions très différentes dans l’esprit des clients.</div>
+</section>
+
+<section id="points-cles" class="reveal">
+<div class="kicker">Synthèse</div><h2>Points clés à retenir</h2>
+<div class="key-points"><ul>
+<li>Le <strong>benchmark</strong> compare les acteurs selon des critères définis pour révéler les écarts et les bonnes pratiques.</li>
+<li>Les <strong>5 forces de Porter</strong> permettent de lire la pression concurrentielle d’un secteur.</li>
+<li>Un <strong>avantage concurrentiel</strong> doit apporter une valeur réelle au client et pouvoir être défendu.</li>
+<li>La <strong>veille concurrentielle</strong> observe, analyse et transforme les évolutions du marché en informations utiles à la décision.</li>
+<li>Le <strong>positionnement relatif</strong> situe l’entreprise par rapport aux concurrents selon les critères importants pour la cible.</li>
+</ul></div>
+</section>
+
+<section id="exercice" class="reveal">
+<div class="kicker">Application rapide</div><h2>Mini-exercice interactif</h2>
+<p>Une entreprise constate qu’un concurrent lance une offre moins chère, qu’un nouveau distributeur arrive sur le marché et que les clients deviennent plus sensibles au service après-vente.</p>
+<div class="exercise"><strong>Question :</strong><p>Parmi les situations citées, lesquelles doivent alimenter l’analyse concurrentielle ?</p>
+<button id="answerBtn" type="button" aria-expanded="false">Afficher la correction</button>
+<div class="answer" id="answer"><strong>Correction :</strong> les trois informations sont pertinentes. L’offre moins chère concerne la <em>rivalité</em> et le positionnement ; l’arrivée d’un nouveau distributeur peut modifier la structure du marché ; la sensibilité accrue au service indique un critère important pour le <em>positionnement</em> et la différenciation.</div></div>
+</section>
+
+<section class="reveal"><div class="callout"><strong>🔗 Pour aller plus loin</strong>La prochaine leçon utilise le diagnostic marketing pour transformer l’observation du marché et de la concurrence en une lecture structurée des forces, faiblesses, opportunités et menaces.</div></section>
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre les leçons">
+<a class="nav-btn" href="#"><small>← Leçon précédente</small>LEÇON 06 · Réalisation d'une étude de marché</a>
+<a class="nav-btn next" href="#"><small>Leçon suivante →</small>LEÇON 08 · Diagnostic marketing (SWOT et matrices stratégiques)</a>
+</nav>
+<footer>Filière Marketing, Commerce et Vente · Module 2 — Étude de marché et stratégie marketing · Leçon 07</footer>
+<button class="top" id="topBtn" type="button" aria-label="Retour en haut">↑</button>
+
+<script>
+(()=> {
+const bar=document.getElementById('progressBar'),top=document.getElementById('topBtn');
+function update(){const max=document.documentElement.scrollHeight-innerHeight;bar.style.width=(max?scrollY/max*100:0)+'%';top.classList.toggle('show',scrollY>500)}
+addEventListener('scroll',update,{passive:true});update();
+top.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+const tabs=[...document.querySelectorAll('[role=tab]')];
+tabs.forEach(b=>b.onclick=()=>{tabs.forEach(x=>{x.setAttribute('aria-selected','false');document.getElementById(x.getAttribute('aria-controls')).classList.remove('active')});b.setAttribute('aria-selected','true');document.getElementById(b.getAttribute('aria-controls')).classList.add('active')});
+document.querySelectorAll('[role=tab]').forEach(b=>b.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();let i=tabs.indexOf(b),n=tabs[(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length];n.focus();n.click()}});
+const ab=document.getElementById('answerBtn'),ans=document.getElementById('answer');
+ab.onclick=()=>{let s=!ans.classList.contains('show');ans.classList.toggle('show',s);ab.setAttribute('aria-expanded',s);ab.textContent=s?'Masquer la correction':'Afficher la correction'};
+const els=[...document.querySelectorAll('.reveal')];
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});els.forEach(e=>io.observe(e))}else els.forEach(e=>e.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

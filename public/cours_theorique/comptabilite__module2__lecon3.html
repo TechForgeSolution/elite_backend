@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 9 — Saisie des pièces comptables | Logiciels Comptables</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cpath d='M25 35h50M25 50h50M25 65h30' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F6F8F6;
+    --color-text: #0B0F0D;
+    --color-text-muted: #5A6560;
+    --color-accent: #1F6F54;
+    --color-accent-soft: #E7F2ED;
+    --color-border: #E3E8E5;
+    --color-accent-alt: #B3541E;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --measure: 720px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 0.6em 0;
+    letter-spacing: -0.01em;
+  }
+  h1{ font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; }
+  h2{ font-size: clamp(1.4rem, 2.6vw, 1.85rem); }
+  h3{ font-size: 1.15rem; }
+  p{ margin: 0 0 1.1em 0; color: var(--color-text); }
+  a{ color: var(--color-accent); text-decoration: none; border-bottom: 1px solid var(--color-accent-soft); }
+  a:hover{ border-bottom-color: var(--color-accent); }
+  .mono, .tabular{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  :focus-visible{ outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+  /* Reading progress bar */
+  #progress-bar{
+    position: fixed; top:0; left:0; height:3px; width:0%;
+    background: var(--color-accent); z-index: 1000; transition: width 0.1s linear;
+  }
+
+  /* Sticky header */
+  header.site-header{
+    position: sticky; top:0; z-index: 900;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 14px 24px;
+  }
+  .header-inner{
+    max-width: 1080px; margin: 0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap: 16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family: var(--font-display); font-weight:600; font-size: 1rem; }
+  .brand-mark{ width: 26px; height:26px; border-radius:6px; background: var(--color-accent); display:flex; align-items:center; justify-content:center; }
+  .brand-mark svg{ width:15px; height:15px; }
+  .header-meta{ font-size: 0.85rem; color: var(--color-text-muted); display:flex; gap:14px; }
+  .header-meta a{ color: var(--color-text-muted); border-bottom: none; }
+  .header-meta a:hover{ color: var(--color-accent); }
+
+  main{ max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero{ padding: 56px 0 40px 0; border-bottom: 1px solid var(--color-border); }
+  .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 20px; }
+  .badge{
+    font-size: 0.78rem; padding: 5px 12px; border-radius: 20px;
+    background: var(--color-accent-soft); color: var(--color-accent);
+    border: 1px solid transparent; font-weight: 500;
+  }
+  .badge.outline{ background: transparent; border-color: var(--color-border); color: var(--color-text-muted); }
+  .hero p.lede{ max-width: var(--measure); font-size: 1.08rem; color: var(--color-text-muted); }
+
+  /* Stepper (traitement d'une pièce) */
+  .stepper{ display:flex; gap: 0; margin: 28px 0 8px 0; overflow-x:auto; padding-bottom: 6px; }
+  .step{
+    flex: 1 1 0; min-width: 130px; position:relative; padding: 14px 12px 10px 0;
+    border-top: 3px solid var(--color-border);
+  }
+  .step.is-current{ border-top-color: var(--color-accent); }
+  .step-index{ font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted); display:block; margin-bottom: 4px; }
+  .step.is-current .step-index{ color: var(--color-accent); }
+  .step-label{ font-size: 0.88rem; font-weight: 500; }
+
+  /* TOC */
+  nav.toc{
+    background: var(--color-bg-alt); border: 1px solid var(--color-border);
+    border-radius: 10px; padding: 20px 24px; margin: 32px 0;
+  }
+  nav.toc h2{ font-size: 0.95rem; text-transform: none; margin-bottom: 12px; color: var(--color-text-muted); font-family: var(--font-body); font-weight: 600; }
+  nav.toc ol{ margin:0; padding-left: 0; list-style:none; columns: 2; column-gap: 24px; }
+  nav.toc li{ break-inside: avoid; margin-bottom: 8px; }
+  nav.toc a{ border-bottom: none; color: var(--color-text); font-size: 0.94rem; }
+  nav.toc a:hover{ color: var(--color-accent); }
+  nav.toc li .num{ color: var(--color-accent); font-family: var(--font-mono); font-size: 0.82rem; margin-right: 6px; }
+
+  /* Sections */
+  section.lesson-section{ padding: 48px 0; border-bottom: 1px solid var(--color-border); opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  section.lesson-section.in-view{ opacity: 1; transform: translateY(0); }
+  section.lesson-section:last-of-type{ border-bottom:none; }
+  .section-eyebrow{ font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-accent); margin-bottom: 8px; }
+  section.lesson-section .prose{ max-width: var(--measure); }
+
+  /* Callouts */
+  .callout{ display:flex; gap: 14px; padding: 18px 20px; border-radius: 10px; margin: 24px 0; border: 1px solid var(--color-border); background: var(--color-bg-alt); max-width: var(--measure); }
+  .callout .icon{ font-size: 1.3rem; line-height:1; flex-shrink:0; }
+  .callout .body{ flex:1; }
+  .callout .body strong{ display:block; margin-bottom: 4px; font-family: var(--font-display); font-size: 0.95rem; }
+  .callout.retenir{ border-color: var(--color-accent); background: var(--color-accent-soft); }
+  .callout.attention .body strong{ color: var(--color-accent-alt); }
+  .callout.attention{ border-color: #E8D2C2; }
+  .callout p{ margin:0; font-size: 0.95rem; color: var(--color-text); }
+
+  /* Cards */
+  .card-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+  .card{ border: 1px solid var(--color-border); border-radius: 10px; padding: 20px; background: var(--color-bg); transition: border-color 0.2s ease, transform 0.2s ease; }
+  .card:hover{ border-color: var(--color-accent); transform: translateY(-2px); }
+  .card .card-icon{ width: 34px; height:34px; border-radius: 8px; background: var(--color-accent-soft); display:flex; align-items:center; justify-content:center; margin-bottom: 12px; }
+  .card .card-icon svg{ width:18px; height:18px; }
+  .card h3{ font-size: 1rem; margin-bottom: 6px; }
+  .card p{ font-size: 0.9rem; color: var(--color-text-muted); margin:0; }
+
+  /* Tables */
+  .table-wrap{ overflow-x:auto; margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; }
+  table{ border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
+  thead th{ text-align:left; background: var(--color-bg-alt); font-family: var(--font-display); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--color-border); font-size: 0.85rem; }
+  thead th.num{ text-align:right; }
+  tbody td{ padding: 11px 16px; border-bottom: 1px solid var(--color-border); }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: var(--color-bg-alt); }
+  td.num, th.num{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+  td.negative{ color: var(--color-accent-alt); }
+  tr.total-row td{ font-weight: 600; background: var(--color-accent-soft); color: var(--color-accent); border-top: 1px solid var(--color-accent); }
+  tr.total-row td.num{ font-family: var(--font-mono); }
+  .col-debit{ border-left: 1px solid var(--color-border); }
+
+  /* Tabs */
+  .tabs{ margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; overflow: hidden; }
+  .tab-list{ display:flex; border-bottom: 1px solid var(--color-border); background: var(--color-bg-alt); }
+  .tab-btn{
+    flex:1; padding: 13px 16px; background:none; border:none; cursor:pointer;
+    font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; color: var(--color-text-muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s ease;
+  }
+  .tab-btn.active{ color: var(--color-accent); border-bottom-color: var(--color-accent); background: var(--color-bg); }
+  .tab-btn:hover:not(.active){ color: var(--color-text); }
+  .tab-panel{ display:none; padding: 22px 22px; }
+  .tab-panel.active{ display:block; }
+  .tab-panel p:last-child{ margin-bottom:0; }
+
+  /* Accordion */
+  .accordion{ margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; overflow:hidden; }
+  .accordion-item{ border-bottom: 1px solid var(--color-border); }
+  .accordion-item:last-child{ border-bottom:none; }
+  .accordion-trigger{
+    width:100%; text-align:left; background: var(--color-bg); border:none; cursor:pointer;
+    padding: 16px 20px; display:flex; justify-content:space-between; align-items:center; gap: 12px;
+    font-family: var(--font-body); font-size: 0.96rem; font-weight: 500; color: var(--color-text);
+  }
+  .accordion-trigger:hover{ background: var(--color-bg-alt); }
+  .accordion-trigger .plus{ font-family: var(--font-mono); color: var(--color-accent); transition: transform 0.2s ease; flex-shrink:0; }
+  .accordion-trigger[aria-expanded="true"] .plus{ transform: rotate(45deg); }
+  .accordion-panel{ max-height:0; overflow:hidden; transition: max-height 0.25s ease; background: var(--color-bg-alt); }
+  .accordion-panel .inner{ padding: 4px 20px 18px 20px; font-size: 0.93rem; color: var(--color-text-muted); }
+
+  /* Diagram wrap */
+  .diagram-wrap{ margin: 24px 0; padding: 20px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-bg-alt); overflow-x:auto; }
+  .diagram-wrap svg{ display:block; width:100%; height:auto; }
+  .diagram-caption{ font-size: 0.82rem; color: var(--color-text-muted); text-align:center; margin-top: 10px; }
+
+  /* Key points summary */
+  .keypoints{ background: var(--color-bg-alt); border-radius: 12px; padding: 32px; margin: 24px 0; }
+  .keypoints ul{ margin:0; padding-left: 0; list-style:none; display:grid; gap: 14px; }
+  .keypoints li{ display:flex; gap: 12px; align-items:flex-start; font-size: 0.96rem; }
+  .keypoints li .tick{ color: var(--color-accent); flex-shrink:0; font-family: var(--font-mono); margin-top: 2px; }
+
+  /* Lesson nav */
+  .lesson-nav{ display:flex; justify-content:space-between; gap: 16px; padding: 40px 0; flex-wrap:wrap; }
+  .nav-link{
+    border: 1px solid var(--color-border); border-radius: 10px; padding: 16px 20px; flex:1; min-width: 220px;
+    text-decoration:none; border-bottom: 1px solid var(--color-border); color: var(--color-text);
+    display:block; transition: border-color 0.2s ease;
+  }
+  .nav-link:hover{ border-color: var(--color-accent); }
+  .nav-link .dir{ font-size: 0.78rem; color: var(--color-text-muted); display:block; margin-bottom: 4px; font-family: var(--font-mono); }
+  .nav-link .title{ font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; }
+  .nav-link.next{ text-align:right; }
+
+  /* Back to top */
+  #back-to-top{
+    position: fixed; bottom: 24px; right: 24px; width: 44px; height:44px; border-radius: 50%;
+    background: var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 14px rgba(11,15,13,0.18);
+    opacity:0; pointer-events:none; transition: opacity 0.25s ease, transform 0.15s ease; z-index: 800;
+  }
+  #back-to-top.visible{ opacity:1; pointer-events:auto; }
+  #back-to-top:hover{ transform: translateY(-2px); }
+
+  footer.site-footer{ padding: 32px 0 48px 0; text-align:center; color: var(--color-text-muted); font-size: 0.85rem; }
+  footer.site-footer p{ margin:0; }
+
+  @media (max-width: 640px){
+    nav.toc ol{ columns: 1; }
+    .lesson-nav{ flex-direction:column; }
+    .nav-link.next{ text-align:left; }
+    .header-meta{ display:none; }
+    .stepper{ flex-wrap:nowrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    section.lesson-section{ transition:none; opacity:1; transform:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h9" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      Filière Comptabilité
+    </div>
+    <div class="header-meta">
+      <a href="#sommaire">Sommaire</a>
+      <span>Module : Logiciels comptables</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="badges">
+      <span class="badge">Module : Logiciels comptables (Sage, Ciel)</span>
+      <span class="badge outline">Niveau débutant / intermédiaire</span>
+      <span class="badge outline">⏱ 15 min de lecture</span>
+    </div>
+    <h1>Leçon 9 — Saisie des pièces comptables</h1>
+    <p class="lede">Une fois le dossier créé et paramétré, le cœur du métier commence : transformer chaque pièce reçue — facture, relevé bancaire, ticket de caisse — en écriture comptable fiable, correctement codifiée et retrouvable à tout moment. Cette leçon détaille la saisie des achats, des ventes, de la banque et de la caisse, ainsi que les règles de traçabilité des justificatifs.</p>
+
+    <div class="stepper" aria-label="Étapes de traitement d'une pièce comptable">
+      <div class="step is-current"><span class="step-index">01</span><span class="step-label">Réception</span></div>
+      <div class="step"><span class="step-index">02</span><span class="step-label">Vérification</span></div>
+      <div class="step"><span class="step-index">03</span><span class="step-label">Codification</span></div>
+      <div class="step"><span class="step-index">04</span><span class="step-label">Saisie</span></div>
+      <div class="step"><span class="step-index">05</span><span class="step-label">Archivage</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" id="sommaire" aria-label="Sommaire de la leçon">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><span class="num">01</span><a href="#flux-piece">Du papier à l'écriture : le flux d'une pièce</a></li>
+      <li><span class="num">02</span><a href="#saisie-achats">Saisie des achats</a></li>
+      <li><span class="num">03</span><a href="#saisie-ventes">Saisie des ventes</a></li>
+      <li><span class="num">04</span><a href="#modes-saisie">Modes de saisie</a></li>
+      <li><span class="num">05</span><a href="#banque-caisse">Banque et caisse</a></li>
+      <li><span class="num">06</span><a href="#traçabilite">Justificatifs et traçabilité</a></li>
+      <li><span class="num">07</span><a href="#retenir">Points clés à retenir</a></li>
+      <li><span class="num">08</span><a href="#faq">Questions fréquentes</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. FLUX D'UNE PIECE -->
+  <section class="lesson-section" id="flux-piece">
+    <div class="section-eyebrow">Étape 01–03</div>
+    <h2>Du papier à l'écriture : le flux d'une pièce</h2>
+    <div class="prose">
+      <p>Chaque document reçu — facture papier, PDF, ticket de caisse — suit le même chemin avant de devenir une écriture comptable : il est réceptionné, vérifié (montants, mentions légales, TVA), numérisé si nécessaire, puis codifié : on lui attribue le journal, le compte de tiers et le compte de charge ou de produit concernés. Ce n'est qu'à ce stade que la saisie proprement dite intervient.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 200" role="img" aria-label="Flux d'une facture depuis la réception jusqu'à la saisie et l'archivage, en cinq étapes reliées par des flèches">
+        <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#0B0F0D">
+          <rect x="8" y="60" width="120" height="56" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="68" y="83" text-anchor="middle" font-weight="600">Réception</text>
+          <text x="68" y="99" text-anchor="middle" font-size="10" fill="#5A6560">papier / PDF</text>
+
+          <rect x="152" y="60" width="120" height="56" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="212" y="83" text-anchor="middle" font-weight="600">Numérisation</text>
+          <text x="212" y="99" text-anchor="middle" font-size="10" fill="#5A6560">scan / OCR</text>
+
+          <rect x="296" y="60" width="120" height="56" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+          <text x="356" y="83" text-anchor="middle" font-weight="600" fill="#1F6F54">Codification</text>
+          <text x="356" y="99" text-anchor="middle" font-size="10" fill="#1F6F54">journal + comptes</text>
+
+          <rect x="440" y="60" width="120" height="56" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="500" y="83" text-anchor="middle" font-weight="600">Saisie</text>
+          <text x="500" y="99" text-anchor="middle" font-size="10" fill="#5A6560">écriture équilibrée</text>
+
+          <rect x="584" y="60" width="108" height="56" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="638" y="83" text-anchor="middle" font-weight="600">Archivage</text>
+          <text x="638" y="99" text-anchor="middle" font-size="10" fill="#5A6560">10 ans</text>
+        </g>
+        <g stroke="#B7C7C0" stroke-width="1.6" fill="none" marker-end="url(#arrow)">
+          <path d="M128 88 L 152 88"/>
+          <path d="M272 88 L 296 88"/>
+          <path d="M416 88 L 440 88"/>
+          <path d="M560 88 L 584 88"/>
+        </g>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0 0 L8 4 L0 8 Z" fill="#B7C7C0"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="diagram-caption">La codification est l'étape charnière : elle transforme un document brut en une opération imputable sur un journal et des comptes précis.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 170" role="img" aria-label="Schéma d'archivage d'une pièce avec attribution d'une clé de traçabilité reliant le document scanné à l'écriture comptable">
+        <g font-family="IBM Plex Mono, monospace" font-size="11.5">
+          <rect x="20" y="50" width="150" height="70" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="95" y="80" text-anchor="middle" font-weight="600" fill="#0B0F0D">Pièce scannée</text>
+          <text x="95" y="98" text-anchor="middle" font-size="10" fill="#5A6560">FA-2026-00842.pdf</text>
+
+          <rect x="275" y="30" width="150" height="46" rx="20" fill="#1F6F54"/>
+          <text x="350" y="58" text-anchor="middle" fill="#fff" font-weight="600">Clé : FA-2026-00842</text>
+
+          <rect x="530" y="50" width="150" height="70" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="605" y="80" text-anchor="middle" font-weight="600" fill="#0B0F0D">Écriture AC</text>
+          <text x="605" y="98" text-anchor="middle" font-size="10" fill="#5A6560">n° 0342 · journal AC</text>
+        </g>
+        <g stroke="#1F6F54" stroke-width="1.6" fill="none">
+          <path d="M170 70 C 220 60, 240 55, 275 53" marker-end="url(#arrow2)"/>
+          <path d="M425 53 C 460 55, 490 60, 530 70" marker-end="url(#arrow2)"/>
+        </g>
+        <defs>
+          <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0 0 L8 4 L0 8 Z" fill="#1F6F54"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="diagram-caption">La clé de traçabilité (souvent le numéro de pièce) relie physiquement le document archivé à l'écriture qui le représente en comptabilité.</p>
+    </div>
+  </section>
+
+  <!-- 2. SAISIE ACHATS -->
+  <section class="lesson-section" id="saisie-achats">
+    <div class="section-eyebrow">Étape 04</div>
+    <h2>Saisie des achats</h2>
+    <div class="prose">
+      <p>Une facture d'achat mouvemente généralement trois lignes : le compte de charge concerné (hors taxe), le compte de TVA déductible, et le compte du fournisseur en contrepartie. La grille de saisie du journal AC guide cette répartition, colonne Débit à gauche, colonne Crédit à droite, avec un équilibrage automatique vérifié en temps réel par le logiciel.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Compte</th><th>Libellé</th><th class="num col-debit">Débit</th><th class="num">Crédit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">606400</td><td>Fournitures administratives</td><td class="num col-debit">500,00</td><td class="num">—</td></tr>
+          <tr><td class="mono">445660</td><td>TVA déductible 20 %</td><td class="num col-debit">100,00</td><td class="num">—</td></tr>
+          <tr><td class="mono">401000</td><td>Fournisseur — Papeterie Dupuis</td><td class="num col-debit">—</td><td class="num">600,00</td></tr>
+          <tr class="total-row"><td colspan="2">Total équilibré</td><td class="num col-debit">600,00</td><td class="num">600,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 130" role="img" aria-label="Mécanisme d'équilibrage d'une grille de saisie : la somme des débits doit être égale à la somme des crédits">
+        <g font-family="IBM Plex Mono, monospace" font-size="13">
+          <rect x="60" y="30" width="220" height="60" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="170" y="55" text-anchor="middle" font-weight="600">Σ Débit = 600,00</text>
+          <text x="170" y="75" text-anchor="middle" font-size="10.5" fill="#5A6560">606400 + 445660</text>
+
+          <rect x="420" y="30" width="220" height="60" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="530" y="55" text-anchor="middle" font-weight="600">Σ Crédit = 600,00</text>
+          <text x="530" y="75" text-anchor="middle" font-size="10.5" fill="#5A6560">401000</text>
+
+          <circle cx="350" cy="60" r="22" fill="#1F6F54"/>
+          <text x="350" y="65" text-anchor="middle" fill="#fff" font-weight="700" font-size="16">=</text>
+        </g>
+      </svg>
+      <p class="diagram-caption">Tant que les deux sommes ne sont pas égales, le logiciel signale l'écriture comme déséquilibrée et empêche sa validation.</p>
+    </div>
+
+    <div class="callout attention">
+      <span class="icon">⚠️</span>
+      <div class="body">
+        <strong>Attention / erreur fréquente</strong>
+        <p>Oublier la référence de la pièce ou saisir un libellé trop vague ("facture divers") complique fortement les recherches et le lettrage ultérieur. Le libellé doit permettre, à lui seul, d'identifier le tiers et l'objet de l'opération.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. SAISIE VENTES -->
+  <section class="lesson-section" id="saisie-ventes">
+    <div class="section-eyebrow">Étape 04 (suite)</div>
+    <h2>Saisie des ventes</h2>
+    <div class="prose">
+      <p>La logique s'inverse pour une facture de vente : le compte client est débité du montant TTC, tandis que le compte de produit et le compte de TVA collectée sont crédités. C'est le journal VE qui reçoit ces écritures, avec le même principe d'équilibrage automatique.</p>
+    </div>
+
+    <div class="callout">
+      <span class="icon">🧮</span>
+      <div class="body">
+        <strong>Cas pratique</strong>
+        <p>Une facture de vente de 1 000 € HT est émise au taux de TVA de 20 %, soit 200 € de TVA collectée et 1 200 € TTC. La saisie complète comporte trois lignes : le client débité de 1 200 €, la vente créditée de 1 000 € et la TVA collectée créditée de 200 €.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Compte</th><th>Libellé</th><th class="num col-debit">Débit</th><th class="num">Crédit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">411000</td><td>Client — SARL Meridia</td><td class="num col-debit">1 200,00</td><td class="num">—</td></tr>
+          <tr><td class="mono">707000</td><td>Ventes de marchandises</td><td class="num col-debit">—</td><td class="num">1 000,00</td></tr>
+          <tr><td class="mono">445710</td><td>TVA collectée 20 %</td><td class="num col-debit">—</td><td class="num">200,00</td></tr>
+          <tr class="total-row"><td colspan="2">Total équilibré</td><td class="num col-debit">1 200,00</td><td class="num">1 200,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. MODES DE SAISIE -->
+  <section class="lesson-section" id="modes-saisie">
+    <div class="section-eyebrow">Méthodes</div>
+    <h2>Modes de saisie</h2>
+    <div class="prose">
+      <p>Les logiciels comme Sage ou Ciel proposent plusieurs façons de saisir une même pièce, à choisir selon le volume d'écritures et l'habitude de l'utilisateur.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Modes de saisie comptable">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-guidee" id="tab-guidee">Saisie guidée</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-kilometre" id="tab-kilometre">Saisie au kilomètre</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-ocr" id="tab-ocr">Saisie par OCR</button>
+      </div>
+      <div class="tab-panel active" id="panel-guidee" role="tabpanel" aria-labelledby="tab-guidee">
+        <p>Un masque de saisie pose les questions dans l'ordre : tiers, montant HT, taux de TVA, compte de charge ou de produit. Le logiciel calcule et ventile lui-même les lignes de l'écriture.</p>
+        <p>Recommandée pour un utilisateur débutant : elle limite le risque d'oubli de ligne et d'erreur d'équilibrage.</p>
+      </div>
+      <div class="tab-panel" id="panel-kilometre" role="tabpanel" aria-labelledby="tab-kilometre">
+        <p>Chaque ligne (compte, libellé, débit ou crédit) est saisie directement dans une grille continue, sans masque intermédiaire. Plus rapide à l'usage pour un volume important de pièces similaires.</p>
+        <p>Demande une bonne maîtrise du plan comptable, car aucune question guidée ne vient rappeler quel compte utiliser.</p>
+      </div>
+      <div class="tab-panel" id="panel-ocr" role="tabpanel" aria-labelledby="tab-ocr">
+        <p>Le document est scanné ou importé en PDF ; une reconnaissance optique de caractères extrait automatiquement le tiers, le montant et la TVA, puis pré-remplit l'écriture pour validation.</p>
+        <p>Un contrôle humain reste nécessaire avant validation : l'OCR peut mal lire un montant ou confondre deux tiers au nom proche.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. BANQUE ET CAISSE -->
+  <section class="lesson-section" id="banque-caisse">
+    <div class="section-eyebrow">Étape 04 (suite)</div>
+    <h2>Banque et caisse</h2>
+    <div class="prose">
+      <p>Le journal de banque reprend les mouvements du relevé bancaire (virements, prélèvements, remises de chèques), tandis que le journal de caisse enregistre les encaissements et décaissements en espèces. Dans les deux cas, chaque ligne doit pouvoir être rapprochée d'un justificatif : relevé, bordereau de remise, ticket.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Libellé</th><th class="num col-debit">Débit (512)</th><th class="num">Crédit (512)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">03/09</td><td>Virement client Meridia</td><td class="num col-debit">1 200,00</td><td class="num">—</td></tr>
+          <tr><td class="mono">05/09</td><td>Prélèvement loyer</td><td class="num col-debit">—</td><td class="num">850,00</td></tr>
+          <tr><td class="mono">08/09</td><td>Remise chèque caisse</td><td class="num col-debit">340,00</td><td class="num">—</td></tr>
+          <tr class="total-row"><td colspan="2">Solde du mois</td><td class="num col-debit">1 540,00</td><td class="num">850,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout retenir">
+      <span class="icon">💡</span>
+      <div class="body">
+        <strong>À retenir</strong>
+        <p>Le solde du journal de banque doit, à terme, correspondre au solde du relevé bancaire réel — c'est tout l'objet du rapprochement bancaire, abordé dans la leçon suivante.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TRAÇABILITÉ -->
+  <section class="lesson-section" id="traçabilite">
+    <div class="section-eyebrow">Bonnes pratiques</div>
+    <h2>Justificatifs et traçabilité</h2>
+    <div class="prose">
+      <p>Une écriture comptable sans pièce justificative n'a pas de valeur probante. Chaque type de pièce répond à des règles de conservation et de classement qui facilitent les contrôles ultérieurs, qu'ils soient internes ou fiscaux.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 21V5a2 2 0 0 1 2-2h6l6 4v14" stroke="#1F6F54" stroke-width="1.8"/><path d="M12 3v6h6" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Factures</h3>
+        <p>Achats et ventes, classées par journal et par numéro chronologique.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#1F6F54" stroke-width="1.8"/><path d="M3 9h18M8 4v16" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Relevés bancaires</h3>
+        <p>Un relevé par compte et par mois, support du rapprochement.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2Z" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Tickets de caisse</h3>
+        <p>Petites dépenses réglées en espèces, souvent agrafées à un bordereau.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="#1F6F54" stroke-width="1.8"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Numéro de pièce</h3>
+        <p>La clé qui relie chaque écriture à son justificatif archivé.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="icon">📌</span>
+      <div class="body">
+        <strong>Rappel normatif / légal</strong>
+        <p>Les pièces justificatives comptables doivent être conservées pendant dix ans, qu'elles soient au format papier ou numérique. Cette obligation s'applique aussi bien aux factures qu'aux relevés bancaires et pièces de caisse.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY POINTS -->
+  <section class="lesson-section" id="retenir">
+    <div class="section-eyebrow">Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <div class="keypoints">
+      <ul>
+        <li><span class="tick">→</span>Toute pièce suit le même flux : réception, vérification, codification, saisie, archivage.</li>
+        <li><span class="tick">→</span>Une écriture n'est validée que si la somme des débits égale la somme des crédits.</li>
+        <li><span class="tick">→</span>La saisie guidée convient aux débutants ; la saisie au kilomètre et l'OCR accélèrent les gros volumes.</li>
+        <li><span class="tick">→</span>Le libellé et la référence de pièce doivent permettre d'identifier l'opération sans ouvrir le justificatif.</li>
+        <li><span class="tick">→</span>Les justificatifs se conservent dix ans et doivent rester reliés à leur écriture par un numéro de pièce.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="lesson-section" id="faq">
+    <div class="section-eyebrow">Pour aller plus loin</div>
+    <h2>Questions fréquentes</h2>
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-1">
+          <span>Que faire si une écriture reste déséquilibrée ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-1">
+          <div class="inner">Le logiciel refuse généralement la validation tant que le total débit ne correspond pas au total crédit. Il faut alors relire chaque ligne pour identifier le montant ou le compte mal saisi.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-2">
+          <span>Un ticket de caisse sans TVA détaillée peut-il être saisi ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-2">
+          <div class="inner">Oui, il peut être saisi en TTC sur le compte de charge concerné, mais sans possibilité de récupérer une TVA qui n'est pas mentionnée distinctement sur le justificatif.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-3">
+          <span>Faut-il saisir les pièces dans l'ordre chronologique strict ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-3">
+          <div class="inner">C'est fortement recommandé et souvent imposé par la numérotation automatique des écritures, qui suit l'ordre de saisie au sein d'un même journal.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-4">
+          <span>La saisie par OCR remplace-t-elle le contrôle humain ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-4">
+          <div class="inner">Non, elle accélère la pré-saisie mais une vérification reste nécessaire avant validation, notamment sur les montants et l'identification du tiers.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lesson-nav">
+    <a class="nav-link prev" href="lecon-8-creation-dossier-et-parametrage.html">
+      <span class="dir">← Leçon précédente</span>
+      <span class="title">Leçon 8 — Création du dossier et paramétrage</span>
+    </a>
+    <a class="nav-link next" href="lecon-10-lettrage-et-rapprochement-bancaire.html">
+      <span class="dir">Leçon suivante →</span>
+      <span class="title">Leçon 10 — Lettrage et rapprochement bancaire</span>
+    </a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Filière Comptabilité — Module Logiciels comptables (Sage, Ciel)</p>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  // Reading progress bar
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Back to top
+  var backBtn = document.getElementById('back-to-top');
+  function toggleBackBtn(){
+    if((window.scrollY || document.documentElement.scrollTop) > 500){
+      backBtn.classList.add('visible');
+    } else {
+      backBtn.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', toggleBackBtn, { passive: true });
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  toggleBackBtn();
+
+  // Section reveal on scroll
+  var sections = document.querySelectorAll('.lesson-section');
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function(s){ observer.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  }
+
+  // Tabs
+  document.querySelectorAll('[data-tabs]').forEach(function(tabGroup){
+    var buttons = tabGroup.querySelectorAll('.tab-btn');
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var panelId = btn.getAttribute('aria-controls');
+        var panel = document.getElementById(panelId);
+        buttons.forEach(function(b){
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        tabGroup.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        panel.classList.add('active');
+      });
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      if(!expanded){
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      } else {
+        panel.style.maxHeight = 0;
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

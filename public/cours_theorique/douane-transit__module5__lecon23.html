@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 23 — Montage d'un dossier de dédouanement à l'import. Filière Douane et Transit.">
+<title>Leçon 23 — Montage d'un dossier de dédouanement à l'import</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F7F3E8;
+  --color-text:#1C2B3A;
+  --color-accent:#B8863B;
+  --color-neutral:#98A2AD;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-text)}
+a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+.reading-progress{position:fixed;z-index:100;top:0;left:0;width:100%;height:4px;background:rgba(152,162,173,.28)}
+.reading-progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:rgba(247,243,232,.96);border-bottom:1px solid var(--color-neutral);backdrop-filter:blur(8px)}
+.header-inner{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{text-decoration:none;font-family:"Fraunces",serif;font-weight:700;letter-spacing:.02em}
+.brand-mark{display:inline-grid;place-items:center;width:36px;height:36px;margin-right:8px;border:2px solid var(--color-accent);border-radius:50%;font:600 10px "IBM Plex Mono";color:var(--color-accent)}
+.header-link{font:500 12px "IBM Plex Mono";text-transform:uppercase;text-decoration:none}
+.hero{padding:86px 0 70px;border-bottom:1px solid var(--color-neutral)}
+.hero-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:55px;align-items:center}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.badge{border:1px solid var(--color-neutral);padding:4px 10px;font:500 11px "IBM Plex Mono";text-transform:uppercase}
+.badge.accent{border-color:var(--color-accent);color:var(--color-accent)}
+h1,h2,h3{margin:0 0 18px;line-height:1.13}
+h1,h2{font-family:"Fraunces",serif}
+h1{font-size:clamp(3rem,7vw,6.4rem);letter-spacing:-.055em}
+h2{font-size:clamp(2rem,4.5vw,4.2rem);letter-spacing:-.035em}
+h3{font-size:1.25rem;font-weight:700}
+.lead{font-size:1.2rem;max-width:700px}
+.goal{margin-top:28px;padding:18px 20px;border-left:5px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.visual{border:1px solid var(--color-neutral);padding:16px}
+.visual svg{display:block;width:100%;height:auto}
+.caption{margin-top:8px;font-size:.78rem;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+.toc{padding:30px 0;border-bottom:1px solid var(--color-neutral)}
+.toc-head{font:600 11px "IBM Plex Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent)}
+.toc ol{columns:2;margin:15px 0 0;padding-left:25px}
+.toc li{margin:4px 0}
+section{padding:80px 0}
+section.alt{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.section-head{display:grid;grid-template-columns:110px 1fr;gap:25px;margin-bottom:38px}
+.section-no{font:600 12px "IBM Plex Mono";color:var(--color-accent);padding-top:9px}
+.prose{max-width:720px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border:1px solid var(--color-neutral);padding:22px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card-icon{font-size:1.8rem;color:var(--color-accent);margin-bottom:8px}
+.callout{margin:26px 0;padding:18px 20px;border-left:5px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.callout b{display:block;margin-bottom:4px}
+.callout p{margin:0}
+.form-extract{padding:22px;border:1px solid var(--color-neutral);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));font:13px/1.65 "IBM Plex Mono";overflow:auto}
+.form-title{font-weight:600;letter-spacing:.1em;color:var(--color-accent);margin-bottom:12px}
+.form-row{display:grid;grid-template-columns:190px 1fr;gap:12px;border-bottom:1px dashed var(--color-neutral);padding:7px 0;min-width:550px}
+.form-row span:first-child{opacity:.65}
+.diagram{border:1px solid var(--color-neutral);padding:14px;margin-top:28px}
+.diagram svg{width:100%;height:auto;display:block}
+.table-scroll{overflow:auto;border:1px solid var(--color-neutral)}
+table{width:100%;min-width:720px;border-collapse:collapse;font:13px/1.5 "IBM Plex Mono"}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--color-neutral)}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+tbody tr:hover td{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.tabs{margin-top:32px}
+.tabbar{display:flex;border-bottom:1px solid var(--color-neutral);overflow:auto}
+.tabbar button{border:1px solid transparent;border-bottom:0;background:none;padding:11px 18px;cursor:pointer;white-space:nowrap}
+.tabbar button[aria-selected="true"]{border-color:var(--color-neutral);border-bottom:1px solid var(--color-bg);margin-bottom:-1px;color:var(--color-accent)}
+.tab-panel{padding:22px 0}
+.tab-panel[hidden]{display:none}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--color-neutral)}
+.step{padding:22px;border-right:1px solid var(--color-neutral)}
+.step:last-child{border-right:0}
+.step-no{font:600 11px "IBM Plex Mono";color:var(--color-accent)}
+.step p{margin:0}
+details{border-top:1px solid var(--color-neutral);padding:17px 0}
+details:last-child{border-bottom:1px solid var(--color-neutral)}
+summary{cursor:pointer;font-weight:600}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--color-neutral);border:1px solid var(--color-neutral)}
+.key{background:var(--color-bg);padding:21px}
+.key strong{display:block;font-family:"Fraunces",serif;font-size:1.15rem;margin-bottom:6px}
+.module-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;padding:40px 0}
+.module-nav a{border:1px solid var(--color-neutral);padding:17px;text-decoration:none}
+.module-nav a:hover{border-color:var(--color-accent)}
+.module-nav .next{text-align:right}
+footer{border-top:1px solid var(--color-neutral);padding:25px 0;text-align:center;font:10px "IBM Plex Mono";letter-spacing:.04em}
+.to-top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;background:var(--color-bg);border:1px solid var(--color-text);cursor:pointer}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:850px){
+ .hero-grid,.grid2{grid-template-columns:1fr}
+ .grid3{grid-template-columns:1fr 1fr}
+ .steps{grid-template-columns:1fr 1fr}
+ .step:nth-child(2){border-right:0}
+ .step:nth-child(-n+2){border-bottom:1px solid var(--color-neutral)}
+ .key-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+ .wrap{width:min(100% - 28px,1180px)}
+ .header-inner{min-height:58px}
+ .brand{font-size:.9rem}
+ .header-link{font-size:10px}
+ .hero{padding:55px 0}
+ .toc ol{columns:1}
+ .section-head{grid-template-columns:1fr;gap:4px}
+ .grid3,.steps,.key-grid{grid-template-columns:1fr}
+ .step{border-right:0;border-bottom:1px solid var(--color-neutral)!important}
+ .step:last-child{border-bottom:0!important}
+ .module-nav{grid-template-columns:1fr}
+ .module-nav .next{text-align:left}
+ .form-row{grid-template-columns:150px 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .reveal{opacity:1;transform:none;transition:none}
+ *{transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="reading-progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header>
+  <div class="wrap header-inner">
+    <a class="brand" href="#top"><span class="brand-mark">D&T</span>Douane &amp; Transit</a>
+    <a class="header-link" href="#sommaire">☰ Sommaire</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">
+        <span class="badge accent">Leçon 23</span>
+        <span class="badge">Module 5</span>
+        <span class="badge">Avancé</span>
+        <span class="badge">15 min</span>
+      </div>
+      <h1>Montage d'un dossier de dédouanement à l'import</h1>
+      <p class="lead">Constituer un dossier d'importation complet et conforme, depuis la chronologie documentaire jusqu'au dépôt et à l'enregistrement.</p>
+      <div class="goal"><b>Objectif pédagogique</b><br>Constituer un dossier d'importation complet et conforme.</div>
+    </div>
+    <figure class="visual">
+      <svg viewBox="0 0 680 460" role="img" aria-labelledby="heroTitle heroDesc">
+        <title id="heroTitle">Parcours d'un dossier de dédouanement à l'import</title>
+        <desc id="heroDesc">Une chaîne documentaire en quatre étapes : constitution, vérification, liquidation, dépôt et enregistrement.</desc>
+        <rect x="35" y="35" width="610" height="390" fill="none" stroke="#1C2B3A" stroke-width="2"/>
+        <text x="62" y="75" font-family="IBM Plex Mono" font-size="11" fill="#B8863B">DOSSIER IMPORT · PARCOURS DOCUMENTAIRE</text>
+        <g fill="none" stroke="#98A2AD" stroke-width="2">
+          <rect x="70" y="115" width="125" height="95"/><rect x="220" y="115" width="125" height="95"/>
+          <rect x="370" y="115" width="125" height="95"/><rect x="520" y="115" width="90" height="95"/>
+        </g>
+        <g stroke="#B8863B" stroke-width="3"><path d="M195 162h25"/><path d="M345 162h25"/><path d="M495 162h25"/></g>
+        <g font-family="Fraunces" font-size="18" fill="#1C2B3A">
+          <text x="95" y="150">1. MONTER</text><text x="245" y="150">2. VÉRIFIER</text>
+          <text x="393" y="150">3. LIQUIDER</text><text x="535" y="150">4. DÉPOSER</text>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="9" fill="#1C2B3A">
+          <text x="82" y="178">pièces + données</text><text x="235" y="178">cohérence</text>
+          <text x="387" y="178">droits + taxes</text><text x="534" y="178">enregistrement</text>
+        </g>
+        <path d="M115 275h450" stroke="#1C2B3A" stroke-width="2"/>
+        <g fill="#B8863B">
+          <circle cx="115" cy="275" r="8"/><circle cx="265" cy="275" r="8"/><circle cx="415" cy="275" r="8"/><circle cx="565" cy="275" r="8"/>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="10" fill="#1C2B3A">
+          <text x="78" y="307">FACTURE</text><text x="232" y="307">DAU</text><text x="377" y="307">LIQUIDATION</text><text x="533" y="307">DÉPÔT</text>
+        </g>
+        <rect x="170" y="345" width="340" height="48" fill="none" stroke="#B8863B" stroke-width="3"/>
+        <text x="236" y="374" font-family="IBM Plex Mono" font-size="12" fill="#B8863B">DOSSIER COMPLET &amp; COHÉRENT</text>
+      </svg>
+      <figcaption class="caption">Vue d'ensemble : le dossier est traité comme une chaîne où chaque étape prépare la suivante.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<nav id="sommaire" class="wrap toc" aria-label="Sommaire">
+  <div class="toc-head">Sommaire de la leçon</div>
+  <ol>
+    <li><a href="#chronologie">Chronologie du dossier import</a></li>
+    <li><a href="#constitution">Constitution des pièces</a></li>
+    <li><a href="#verification">Vérification documentaire</a></li>
+    <li><a href="#liquidation">Calcul de la liquidation</a></li>
+    <li><a href="#depot">Dépôt et enregistrement</a></li>
+    <li><a href="#synthese">Points clés à retenir</a></li>
+  </ol>
+</nav>
+
+<section id="chronologie" class="reveal">
+  <div class="wrap">
+    <div class="section-head"><span class="section-no">01 / CHRONOLOGIE</span><h2>Le dossier suit une logique de traitement</h2></div>
+    <div class="prose">
+      <p>Le montage d'un dossier de dédouanement à l'import commence par la réunion des documents et informations nécessaires. La vérification documentaire intervient ensuite avant le calcul de la liquidation, puis le dépôt et l'enregistrement de la déclaration.</p>
+    </div>
+    <div class="steps" aria-label="Chronologie du dossier">
+      <article class="step"><span class="step-no">ÉTAPE 01</span><h3>Monter</h3><p>Réunir les pièces et organiser le dossier.</p></article>
+      <article class="step"><span class="step-no">ÉTAPE 02</span><h3>Vérifier</h3><p>Comparer les informations et détecter les écarts.</p></article>
+      <article class="step"><span class="step-no">ÉTAPE 03</span><h3>Liquider</h3><p>Déterminer les droits et taxes dus.</p></article>
+      <article class="step"><span class="step-no">ÉTAPE 04</span><h3>Déposer</h3><p>Procéder au dépôt et à l'enregistrement.</p></article>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 1000 280" role="img" aria-label="Frise chronologique du dossier import">
+        <line x1="100" y1="130" x2="900" y2="130" stroke="#98A2AD" stroke-width="3"/>
+        <g fill="#B8863B">
+          <circle cx="100" cy="130" r="12"/><circle cx="365" cy="130" r="12"/><circle cx="630" cy="130" r="12"/><circle cx="900" cy="130" r="12"/>
+        </g>
+        <g font-family="Fraunces" font-size="22" fill="#1C2B3A">
+          <text x="62" y="85">MONTER</text><text x="315" y="85">VÉRIFIER</text><text x="584" y="85">LIQUIDER</text><text x="857" y="85">DÉPOSER</text>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="11" fill="#1C2B3A">
+          <text x="45" y="170">pièces</text><text x="45" y="188">et données</text>
+          <text x="312" y="170">contrôle</text><text x="312" y="188">croisé</text>
+          <text x="584" y="170">droits</text><text x="584" y="188">et taxes</text>
+          <text x="852" y="170">dépôt</text><text x="852" y="188">enregistrement</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="constitution" class="alt reveal">
+  <div class="wrap">
+    <div class="section-head"><span class="section-no">02 / CONSTITUTION</span><h2>Constituer un dossier complet</h2></div>
+    <div class="grid2">
+      <div>
+        <p>La première phase consiste à réunir les documents nécessaires à l'opération d'importation et à structurer les informations utiles à la déclaration.</p>
+        <div class="grid3">
+          <article class="card"><div class="card-icon">▤</div><h3>Facture</h3><p>Base commerciale pour identifier la transaction et ses valeurs.</p></article>
+          <article class="card"><div class="card-icon">▦</div><h3>Colisage</h3><p>Informations relatives aux colis, quantités et poids.</p></article>
+          <article class="card"><div class="card-icon">▣</div><h3>Justificatifs</h3><p>Pièces complémentaires exigées selon l'opération.</p></article>
+        </div>
+        <div class="callout"><b>💡 À retenir</b><p>Un dossier bien monté permet de retrouver rapidement chaque information nécessaire à la déclaration et à son contrôle.</p></div>
+      </div>
+      <div class="form-extract" aria-label="Exemple de fiche de constitution">
+        <div class="form-title">FICHE DE DOSSIER · IMPORT</div>
+        <div class="form-row"><span>OPÉRATION</span><span>IMPORTATION</span></div>
+        <div class="form-row"><span>IMPORTATEUR</span><span>ENTREPRISE CLIENT</span></div>
+        <div class="form-row"><span>FOURNISSEUR</span><span>FOURNISSEUR ÉTRANGER</span></div>
+        <div class="form-row"><span>FACTURE</span><span>FAC-2026-0418</span></div>
+        <div class="form-row"><span>COLISAGE</span><span>PKL-0418</span></div>
+        <div class="form-row"><span>TRANSPORT</span><span>DOCUMENT DE TRANSPORT</span></div>
+        <div class="form-row"><span>DAU</span><span>À PRÉPARER / CONTRÔLER</span></div>
+        <div class="form-row"><span>PIÈCES SPÉCIFIQUES</span><span>SELON MARCHANDISE</span></div>
+      </div>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 1000 360" role="img" aria-label="Architecture documentaire d'un dossier d'importation">
+        <rect x="370" y="110" width="260" height="115" fill="none" stroke="#B8863B" stroke-width="3"/>
+        <text x="445" y="158" font-family="Fraunces" font-size="25" fill="#1C2B3A">DOSSIER</text>
+        <text x="435" y="188" font-family="IBM Plex Mono" font-size="11" fill="#B8863B">DÉDOUANEMENT IMPORT</text>
+        <g fill="none" stroke="#98A2AD" stroke-width="2">
+          <rect x="70" y="45" width="190" height="70"/><rect x="70" y="245" width="190" height="70"/>
+          <rect x="740" y="45" width="190" height="70"/><rect x="740" y="245" width="190" height="70"/>
+        </g>
+        <g stroke="#B8863B" stroke-width="3">
+          <path d="M260 80l110 80"/><path d="M260 280l110-80"/><path d="M740 80l-110 80"/><path d="M740 280l-110-80"/>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="12" fill="#1C2B3A">
+          <text x="118" y="78">FACTURE</text><text x="112" y="278">COLISAGE</text>
+          <text x="783" y="78">TRANSPORT</text><text x="775" y="278">PIÈCES</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="verification" class="reveal">
+  <div class="wrap">
+    <div class="section-head"><span class="section-no">03 / VÉRIFICATION</span><h2>Contrôler la cohérence documentaire</h2></div>
+    <div class="grid2">
+      <div>
+        <p>La vérification documentaire consiste à rapprocher les informations portées sur les différentes pièces. Les données essentielles doivent être compatibles avant de poursuivre le traitement.</p>
+        <div class="callout"><b>⚠️ Attention / erreur fréquente</b><p>Ne pas se limiter à vérifier la présence des pièces : une différence de quantité, de valeur, de désignation ou de poids doit être repérée.</p></div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 620 360" role="img" aria-label="Contrôle croisé des documents">
+          <g fill="none" stroke="#1C2B3A" stroke-width="2">
+            <rect x="30" y="35" width="150" height="90"/><rect x="235" y="35" width="150" height="90"/><rect x="440" y="35" width="150" height="90"/>
+            <rect x="130" y="235" width="360" height="80"/>
+          </g>
+          <g font-family="Fraunces" font-size="19" fill="#1C2B3A">
+            <text x="77" y="77">FACTURE</text><text x="273" y="77">COLISAGE</text><text x="478" y="77">DAU</text>
+            <text x="215" y="280">COHÉRENCE DU DOSSIER</text>
+          </g>
+          <g stroke="#B8863B" stroke-width="3"><path d="M105 125v60l205 50"/><path d="M310 125v110"/><path d="M515 125v60L310 235"/></g>
+          <g font-family="IBM Plex Mono" font-size="10" fill="#1C2B3A">
+            <text x="35" y="148">désignation</text><text x="35" y="164">valeur</text>
+            <text x="240" y="148">colis</text><text x="240" y="164">poids</text>
+            <text x="445" y="148">déclaration</text><text x="445" y="164">données</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Point de contrôle</th><th scope="col">Documents rapprochés</th><th scope="col">Ce qu'on recherche</th></tr></thead>
+        <tbody>
+          <tr><td>Désignation</td><td>Facture / DAU / colisage</td><td>Libellés compatibles</td></tr>
+          <tr><td>Quantité</td><td>Facture / colisage / DAU</td><td>Unités concordantes</td></tr>
+          <tr><td>Poids</td><td>Colisage / déclaration</td><td>Poids cohérents</td></tr>
+          <tr><td>Valeur</td><td>Facture / déclaration</td><td>Montants rapprochés</td></tr>
+          <tr><td>Références</td><td>Ensemble du dossier</td><td>Identifiants compatibles</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tabs" aria-label="Comparaison des contrôles">
+      <div class="tabbar" role="tablist">
+        <button role="tab" aria-selected="true" aria-controls="tab-import">Import</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-points">Points sensibles</button>
+      </div>
+      <div id="tab-import" class="tab-panel" role="tabpanel"><p>À l'import, le déclarant rapproche les informations commerciales, logistiques et déclaratives avant de poursuivre le traitement du dossier.</p></div>
+      <div id="tab-points" class="tab-panel" role="tabpanel" hidden><p>Les écarts de quantité, de valeur, de désignation ou de poids sont des points à examiner et à documenter.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="liquidation" class="alt reveal">
+  <div class="wrap">
+    <div class="section-head"><span class="section-no">04 / LIQUIDATION</span><h2>Calcul de la liquidation</h2></div>
+    <div class="grid2">
+      <div>
+        <p>Après la vérification documentaire, le dossier permet de passer au calcul de la liquidation, c'est-à-dire à la détermination des droits et taxes applicables à l'opération.</p>
+        <div class="callout"><b>⚖️ Réglementation / texte applicable</b><p>Le calcul effectif dépend des règles douanières et fiscales applicables, de la marchandise, de sa valeur, de son origine et du régime concerné.</p></div>
+      </div>
+      <div class="form-extract">
+        <div class="form-title">EXTRAIT PÉDAGOGIQUE · LIQUIDATION</div>
+        <div class="form-row"><span>BASE / VALEUR</span><span>DONNÉE DU DOSSIER</span></div>
+        <div class="form-row"><span>DROIT</span><span>TAUX APPLICABLE × BASE</span></div>
+        <div class="form-row"><span>TAXES</span><span>SELON RÈGLES APPLICABLES</span></div>
+        <div class="form-row"><span>TOTAL</span><span>DROITS + TAXES</span></div>
+      </div>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 1000 330" role="img" aria-label="Schéma pédagogique du calcul de liquidation">
+        <g fill="none" stroke="#1C2B3A" stroke-width="2">
+          <rect x="55" y="105" width="210" height="100"/><rect x="395" y="105" width="210" height="100"/><rect x="735" y="105" width="210" height="100"/>
+        </g>
+        <g stroke="#B8863B" stroke-width="3"><path d="M265 155h130"/><path d="M605 155h130"/></g>
+        <g font-family="Fraunces" font-size="23" fill="#1C2B3A">
+          <text x="100" y="145">DONNÉES</text><text x="94" y="175">DU DOSSIER</text>
+          <text x="445" y="145">CALCUL</text><text x="433" y="175">APPLICABLE</text>
+          <text x="775" y="145">LIQUIDATION</text><text x="800" y="175">TOTALE</text>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="10" fill="#1C2B3A">
+          <text x="105" y="235">valeur · origine · marchandise</text>
+          <text x="435" y="235">droits · taxes · régime</text>
+          <text x="790" y="235">montant dû</text>
+        </g>
+        <path d="M55 270h890" stroke="#98A2AD"/>
+        <text x="405" y="300" font-family="IBM Plex Mono" font-size="11" fill="#B8863B">LES DONNÉES DOIVENT ÊTRE JUSTIFIÉES PAR LE DOSSIER</text>
+      </svg>
+    </div>
+    <div class="callout"><b>📋 Cas pratique</b><p>Un dossier comporte une facture, un colisage et les informations déclaratives. Avant de retenir une base de calcul, les données qui servent à la liquidation doivent être rapprochées des pièces justificatives.</p></div>
+  </div>
+</section>
+
+<section id="depot" class="reveal">
+  <div class="wrap">
+    <div class="section-head"><span class="section-no">05 / DÉPÔT</span><h2>Dépôt et enregistrement</h2></div>
+    <div class="grid2">
+      <div>
+        <p>Une fois le dossier préparé, vérifié et les éléments de liquidation établis, la déclaration est déposée selon la procédure applicable. L'enregistrement marque une étape formelle du traitement de la déclaration.</p>
+        <div class="callout"><b>💡 À retenir</b><p>Le dépôt intervient après la préparation et le contrôle du dossier : l'objectif est de présenter une déclaration cohérente et documentée.</p></div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 620 350" role="img" aria-label="Parcours du dépôt à l'enregistrement">
+          <rect x="50" y="80" width="155" height="95" fill="none" stroke="#1C2B3A" stroke-width="2"/>
+          <rect x="235" y="80" width="155" height="95" fill="none" stroke="#1C2B3A" stroke-width="2"/>
+          <rect x="420" y="80" width="155" height="95" fill="none" stroke="#B8863B" stroke-width="3"/>
+          <path d="M205 128h30M390 128h30" stroke="#B8863B" stroke-width="3"/>
+          <text x="92" y="120" font-family="Fraunces" font-size="20">DOSSIER</text><text x="82" y="145" font-family="IBM Plex Mono" font-size="10">préparé</text>
+          <text x="275" y="120" font-family="Fraunces" font-size="20">DÉPÔT</text><text x="265" y="145" font-family="IBM Plex Mono" font-size="10">déclaration</text>
+          <text x="449" y="120" font-family="Fraunces" font-size="20">ENREGISTRÉ</text><text x="456" y="145" font-family="IBM Plex Mono" font-size="10">étape formelle</text>
+          <line x1="100" y1="245" x2="520" y2="245" stroke="#98A2AD" stroke-width="2"/>
+          <circle cx="100" cy="245" r="8" fill="#B8863B"/><circle cx="310" cy="245" r="8" fill="#B8863B"/><circle cx="520" cy="245" r="8" fill="#B8863B"/>
+          <text x="75" y="275" font-family="IBM Plex Mono" font-size="10">CONTRÔLER</text><text x="283" y="275" font-family="IBM Plex Mono" font-size="10">DÉPOSER</text><text x="484" y="275" font-family="IBM Plex Mono" font-size="10">ENREGISTRER</text>
+        </svg>
+      </div>
+    </div>
+    <details><summary>Pourquoi l'ordre des étapes est-il important ?</summary><p>Parce que le contrôle documentaire et la préparation de la liquidation fournissent les éléments nécessaires à une déclaration correctement établie.</p></details>
+    <details><summary>Que signifie « dossier conforme » dans cette leçon ?</summary><p>Il s'agit d'un dossier dont les pièces et informations nécessaires sont réunies, organisées et cohérentes avec l'opération déclarée.</p></details>
+  </div>
+</section>
+
+<section id="synthese" class="alt reveal">
+  <div class="wrap">
+    <div class="section-head"><span class="section-no">06 / SYNTHÈSE</span><h2>Points clés à retenir</h2></div>
+    <div class="key-grid">
+      <div class="key"><strong>01 · Monter</strong>Réunir et organiser les pièces du dossier import.</div>
+      <div class="key"><strong>02 · Vérifier</strong>Rapprocher les informations entre les documents.</div>
+      <div class="key"><strong>03 · Liquider</strong>Déterminer les droits et taxes selon les règles applicables.</div>
+      <div class="key"><strong>04 · Déposer</strong>Présenter la déclaration et procéder à son enregistrement.</div>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Synthèse du montage du dossier import">
+        <path d="M100 150h800" stroke="#98A2AD" stroke-width="3"/>
+        <g fill="#B8863B"><circle cx="100" cy="150" r="16"/><circle cx="365" cy="150" r="16"/><circle cx="630" cy="150" r="16"/><circle cx="900" cy="150" r="16"/></g>
+        <g font-family="Fraunces" font-size="24" fill="#1C2B3A">
+          <text x="55" y="95">MONTER</text><text x="320" y="95">VÉRIFIER</text><text x="590" y="95">LIQUIDER</text><text x="860" y="95">DÉPOSER</text>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="10" fill="#1C2B3A">
+          <text x="62" y="195">pièces</text><text x="320" y="195">cohérence</text><text x="590" y="195">droits + taxes</text><text x="860" y="195">enregistrement</text>
+        </g>
+        <text x="315" y="250" font-family="IBM Plex Mono" font-size="12" fill="#B8863B">OBJECTIF : DOSSIER D'IMPORTATION COMPLET ET CONFORME</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="wrap module-nav" aria-label="Navigation entre les leçons">
+  <a href="#top">← LEÇON 22<br><b>Système informatique douanier</b></a>
+  <a href="#sommaire">MODULE 5</a>
+  <a class="next" href="#top">LEÇON 24 →<br><b>Montage d'un dossier de dédouanement à l'export</b></a>
+</div>
+</main>
+
+<footer>DOUANE &amp; TRANSIT · MODULE 5 : DÉDOUANEMENT — PRATIQUE DU MÉTIER DE DÉCLARANT · LEÇON 23</footer>
+<button class="to-top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById("progress");
+const topBtn=document.getElementById("topBtn");
+function updateProgress(){
+  const d=document.documentElement;
+  const max=d.scrollHeight-d.clientHeight;
+  progress.style.width=(max>0?(window.scrollY/max)*100:0)+"%";
+}
+window.addEventListener("scroll",updateProgress,{passive:true});
+topBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+
+document.querySelectorAll('[role="tab"]').forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    const group=tab.closest(".tabs");
+    const id=tab.getAttribute("aria-controls");
+    group.querySelectorAll('[role="tab"]').forEach(t=>t.setAttribute("aria-selected","false"));
+    group.querySelectorAll('[role="tabpanel"]').forEach(p=>p.hidden=true);
+    tab.setAttribute("aria-selected","true");
+    document.getElementById(id).hidden=false;
+  });
+});
+
+const revealObserver=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("visible");
+      revealObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:.08});
+document.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+updateProgress();
+</script>
+</body>
+</html>

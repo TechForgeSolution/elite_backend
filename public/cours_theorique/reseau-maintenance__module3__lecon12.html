@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 12 — Câblage et équipements réseau">
+<title>Leçon 12 — Câblage et équipements réseau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+ --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:20;background:color-mix(in srgb,var(--color-bg) 94%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.nav{max-width:1180px;margin:auto;padding:13px 22px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700}.brand span{color:var(--color-accent)}
+.navlinks{display:flex;gap:15px;flex-wrap:wrap;font-size:.9rem}
+.container,.section-inner{max-width:1180px;margin:auto;padding-inline:22px}
+.hero{max-width:1180px;margin:auto;padding:76px 22px 48px;display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
+.eyebrow,.kicker{font:500 .8rem "IBM Plex Mono";color:var(--color-accent);letter-spacing:.08em;text-transform:uppercase}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.15;margin:0 0 18px}h1{font-size:clamp(2.7rem,6vw,5.3rem);letter-spacing:-.05em}
+h2{font-size:clamp(1.9rem,3.2vw,2.8rem);letter-spacing:-.035em}h3{font-size:1.22rem}
+.lead{font-size:1.15rem;max-width:720px;color:var(--muted)}.badges{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0}
+.badge{font:400 .78rem "IBM Plex Mono";border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:var(--soft)}
+.badge strong{color:var(--color-accent)}
+.hero-art,.diagram{border:1px solid var(--line);background:var(--soft);padding:18px;border-radius:16px}
+svg{width:100%;height:auto;display:block}
+.toc{border-block:1px solid var(--line);padding-block:26px;margin-bottom:50px}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}
+.toc a{border:1px solid var(--line);padding:13px 15px;border-radius:10px;background:var(--color-bg);font-weight:600}
+section{padding:72px 0}.section-alt{background:var(--soft)}
+.prose{max-width:720px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.85rem;color:var(--color-accent);margin-bottom:10px}
+.caption{font-size:.84rem;color:var(--muted);margin-top:10px}
+.callout{border:2px solid var(--color-accent);background:var(--soft2);border-radius:12px;padding:19px 21px;margin:26px 0}
+.callout b{color:var(--color-accent)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:28px 0}
+table{border-collapse:collapse;width:100%;min-width:700px;font:400 .88rem "IBM Plex Mono"}
+th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--line)}
+th{background:var(--soft)}tr:last-child td{border-bottom:0}tbody tr:hover{background:var(--soft)}
+.code{font:400 .9rem/1.65 "IBM Plex Mono";white-space:pre;overflow:auto;background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:18px}
+.tabs{margin-top:28px}.tab-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.tab-buttons button{font:600 .9rem "IBM Plex Sans";border:1px solid var(--line);background:var(--color-bg);color:var(--color-text);padding:10px 15px;border-radius:9px;cursor:pointer}
+.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}
+.tab-panel{display:none;border:1px solid var(--line);padding:21px;border-radius:12px;margin-top:10px;background:var(--color-bg)}
+.tab-panel.active{display:block}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:30px 0}
+.step{border-top:3px solid var(--color-neutral);padding:13px 10px}.step.active{border-top-color:var(--color-accent)}
+.step b{font:600 .78rem "IBM Plex Mono";color:var(--color-accent);display:block}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.key{border-left:3px solid var(--color-accent);padding:16px;background:var(--color-bg)}
+details{border-block:1px solid var(--line);padding:17px 0}summary{cursor:pointer;font-weight:700}
+.bottom-nav{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:42px 0}
+.bottom-nav a{border:1px solid var(--line);padding:18px;border-radius:12px;background:var(--soft)}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.9rem}
+.top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer}
+.reveal{opacity:0;transform:translateY(15px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero,.grid2{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.toc-grid{grid-template-columns:1fr 1fr}.key-grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.navlinks{display:none}.hero{padding-top:44px}.cards,.toc-grid,.key-grid,.bottom-nav{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}section{padding:53px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><nav class="nav" aria-label="Navigation principale">
+<div class="brand">MAINTENANCE <span>&</span> RÉSEAU</div>
+<div class="navlinks"><a href="#paires">Paires</a><a href="#fibre">Fibre</a><a href="#normes">Normes</a><a href="#rj45">RJ45</a><a href="#test">Test</a><a href="#equipements">Équipements</a></div>
+</nav></header>
+
+<main>
+<section class="hero">
+<div><div class="eyebrow">Module 3 · Réseaux informatiques — Fondamentaux</div>
+<h1>Câblage et équipements réseau</h1>
+<p class="lead">Choisir, sertir et tester un câblage réseau adapté : paires torsadées, fibre optique, normes, connectique RJ45 et test des liaisons.</p>
+<div class="badges"><span class="badge"><strong>Leçon 12</strong></span><span class="badge">Intermédiaire</span><span class="badge">15 min</span><span class="badge">Câblage réseau</span></div></div>
+<div class="hero-art">
+<svg viewBox="0 0 650 430" role="img" aria-labelledby="heroT heroD">
+<title id="heroT">Baie réseau et liaisons câblées</title><desc id="heroD">Schéma d'une baie reliée à des postes par câbles cuivre et fibre.</desc>
+<rect x="65" y="40" width="190" height="340" rx="14" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+<text x="160" y="75" text-anchor="middle" font-family="Space Grotesk" font-size="20" fill="var(--color-text)">BAIE</text>
+<rect x="92" y="105" width="136" height="48" rx="6" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="3"/><text x="160" y="135" text-anchor="middle" font-family="IBM Plex Mono" font-size="14">SWITCH</text>
+<rect x="92" y="180" width="136" height="48" rx="6" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="160" y="210" text-anchor="middle" font-family="IBM Plex Mono" font-size="14">PANNEAU</text>
+<rect x="92" y="255" width="62" height="48" rx="6" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="123" y="285" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">FIBRE</text>
+<rect x="166" y="255" width="62" height="48" rx="6" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="197" y="285" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">CUIVRE</text>
+<g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2">
+<rect x="425" y="65" width="155" height="80" rx="10"/><rect x="425" y="175" width="155" height="80" rx="10"/><rect x="425" y="285" width="155" height="80" rx="10"/>
+</g>
+<g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="17"><text x="455" y="107">Poste A</text><text x="455" y="217">Poste B</text><text x="455" y="327">Serveur</text></g>
+<path d="M228 129 C310 129 350 105 425 105" fill="none" stroke="var(--color-accent)" stroke-width="5"/>
+<path d="M228 202 C315 202 355 215 425 215" fill="none" stroke="var(--color-accent)" stroke-width="5"/>
+<path d="M228 279 C315 279 355 325 425 325" fill="none" stroke="var(--color-accent)" stroke-width="5"/>
+<text x="327" y="91" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-accent)">liaison cuivre / fibre</text>
+</svg>
+</div>
+</section>
+
+<div class="container toc"><div class="eyebrow">Sommaire</div><div class="toc-grid">
+<a href="#paires">01 · Paires torsadées</a><a href="#fibre">02 · Fibre optique</a><a href="#normes">03 · Normes</a>
+<a href="#rj45">04 · Sertissage RJ45</a><a href="#test">05 · Testeurs de câble</a><a href="#equipements">06 · Équipements réseau</a>
+</div></div>
+
+<section id="paires"><div class="section-inner reveal"><div class="grid2">
+<div class="prose"><div class="kicker">01 · Paires torsadées</div><h2>Le cuivre : quatre paires pour transporter le signal</h2>
+<p>Le câble à paires torsadées regroupe des conducteurs organisés en paires. La torsade contribue à limiter les perturbations entre les conducteurs et permet de transporter des données sur une liaison Ethernet.</p>
+<div class="callout"><b>💡 À retenir</b><br>Le câblage cuivre doit être choisi et installé selon la catégorie, le connecteur et l'environnement de la liaison.</div></div>
+<div class="diagram"><svg viewBox="0 0 620 420" role="img" aria-label="Coupe pédagogique d'un câble à quatre paires torsadées">
+<circle cx="310" cy="210" r="175" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+<g fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="3">
+<circle cx="235" cy="145" r="45"/><circle cx="385" cy="145" r="45"/><circle cx="235" cy="275" r="45"/><circle cx="385" cy="275" r="45"/>
+</g><g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="14" text-anchor="middle">
+<text x="235" y="150">PAIRE 1</text><text x="385" y="150">PAIRE 2</text><text x="235" y="280">PAIRE 3</text><text x="385" y="280">PAIRE 4</text>
+</g>
+<path d="M235 190C260 215 285 205 310 210C335 215 360 205 385 190" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+<text x="310" y="54" text-anchor="middle" font-family="Space Grotesk" font-size="19" fill="var(--color-text)">câble cuivre</text>
+</svg><div class="caption">Représentation simplifiée des quatre paires d'un câble réseau cuivre.</div></div>
+</div>
+<div class="cards"><article class="card"><div class="icon">⌁</div><h3>Torsadage</h3><p>Les conducteurs sont regroupés par paires torsadées pour limiter les perturbations.</p></article>
+<article class="card"><div class="icon">◫</div><h3>Catégorie</h3><p>La catégorie du câble participe au choix de la liaison et de ses performances.</p></article>
+<article class="card"><div class="icon">↔</div><h3>Longueur</h3><p>La distance de la liaison doit être compatible avec le support et le contexte réseau.</p></article></div>
+</div></section>
+
+<section id="fibre" class="section-alt"><div class="section-inner reveal"><div class="kicker">02 · Fibre optique</div><h2>La fibre : transmettre par la lumière</h2>
+<div class="grid2"><div class="prose"><p>Une liaison fibre optique utilise une fibre pour transporter un signal lumineux. Elle est particulièrement adaptée aux liaisons nécessitant de longues distances et/ou une forte capacité de transmission.</p>
+<div class="callout"><b>🔒 Sécurité / bonne pratique</b><br>Manipuler les connecteurs et la fibre avec précaution, protéger les extrémités et éviter les courbures excessives.</div></div>
+<div class="diagram"><svg viewBox="0 0 620 300" role="img" aria-label="Schéma de transmission lumineuse dans une fibre">
+<path d="M55 155 C155 80 245 230 345 155 S535 80 590 155" fill="none" stroke="var(--color-neutral)" stroke-width="38" stroke-linecap="round"/>
+<path d="M55 155 C155 80 245 230 345 155 S535 80 590 155" fill="none" stroke="var(--color-accent)" stroke-width="8" stroke-linecap="round"/>
+<circle cx="55" cy="155" r="24" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="3"/>
+<circle cx="590" cy="155" r="24" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="3"/>
+<text x="55" y="220" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-text)">ÉMISSION</text>
+<text x="590" y="220" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-text)">RÉCEPTION</text>
+<text x="310" y="60" text-anchor="middle" font-family="Space Grotesk" font-size="20" fill="var(--color-text)">signal lumineux</text>
+</svg></div></div></div></section>
+
+<section id="normes"><div class="section-inner reveal"><div class="kicker">03 · Normes</div><h2>Normes et organisation du câblage</h2>
+<p class="prose">Une installation réseau structurée s'appuie sur des règles de câblage et de repérage. Les normes servent notamment à obtenir des connexions cohérentes, reproductibles et faciles à maintenir.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Élément</th><th scope="col">Rôle</th><th scope="col">Point d'attention</th></tr></thead><tbody>
+<tr><td>Catégorie de câble</td><td>Définit les caractéristiques de la liaison cuivre.</td><td>Adapter le câble au besoin.</td></tr>
+<tr><td>Connecteur RJ45</td><td>Permet la terminaison d'une liaison cuivre.</td><td>Respecter l'ordre des conducteurs.</td></tr>
+<tr><td>Repérage</td><td>Facilite l'identification des prises et liaisons.</td><td>Conserver une logique cohérente.</td></tr>
+<tr><td>Baie / panneau</td><td>Centralise et organise les liaisons.</td><td>Documenter les ports.</td></tr>
+</tbody></table></div>
+<div class="diagram"><svg viewBox="0 0 1000 300" role="img" aria-label="Organisation d'une liaison structurée">
+<rect x="40" y="95" width="170" height="90" rx="12" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><text x="125" y="132" text-anchor="middle" font-family="Space Grotesk" font-size="19" fill="var(--color-text)">PRISE</text><text x="125" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">RJ45</text>
+<rect x="350" y="80" width="190" height="120" rx="12" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="3"/><text x="445" y="125" text-anchor="middle" font-family="Space Grotesk" font-size="19" fill="var(--color-text)">PANNEAU</text><text x="445" y="153" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">DE BRASSAGE</text>
+<rect x="680" y="95" width="170" height="90" rx="12" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="3"/><text x="765" y="132" text-anchor="middle" font-family="Space Grotesk" font-size="19" fill="var(--color-text)">SWITCH</text><text x="765" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">PORT</text>
+<path d="M210 140H350M540 140H680" stroke="var(--color-accent)" stroke-width="5"/>
+<text x="500" y="250" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="var(--color-accent)">repérer · connecter · documenter</text>
+</svg></div></div></section>
+
+<section id="rj45" class="section-alt"><div class="section-inner reveal"><div class="kicker">04 · Sertissage RJ45</div><h2>Du câble au connecteur RJ45</h2>
+<p class="prose">Le sertissage consiste à préparer l'extrémité du câble, organiser les conducteurs selon le schéma de câblage retenu, puis fixer l'ensemble dans le connecteur.</p>
+<div class="steps">
+<div class="step active"><b>01</b>Préparer le câble</div><div class="step active"><b>02</b>Dénuder</div><div class="step active"><b>03</b>Organiser les fils</div><div class="step active"><b>04</b>Insérer dans le RJ45</div><div class="step active"><b>05</b>Sertir et contrôler</div>
+</div>
+<div class="grid2">
+<div class="diagram"><svg viewBox="0 0 620 360" role="img" aria-label="Schéma pédagogique du connecteur RJ45">
+<rect x="75" y="85" width="470" height="190" rx="16" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+<path d="M130 140H485" stroke="var(--color-neutral)" stroke-width="4"/>
+<g stroke="var(--color-accent)" stroke-width="6"><path d="M145 155v65M190 155v65M235 155v65M280 155v65M325 155v65M370 155v65M415 155v65M460 155v65"/></g>
+<g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="13" text-anchor="middle"><text x="145" y="135">1</text><text x="190" y="135">2</text><text x="235" y="135">3</text><text x="280" y="135">4</text><text x="325" y="135">5</text><text x="370" y="135">6</text><text x="415" y="135">7</text><text x="460" y="135">8</text></g>
+<text x="310" y="315" text-anchor="middle" font-family="Space Grotesk" font-size="20" fill="var(--color-text)">broches 1 → 8</text>
+</svg><div class="caption">Le connecteur comporte huit positions : l'ordre des conducteurs doit suivre le schéma de câblage retenu.</div></div>
+<div class="prose"><div class="callout"><b>⚠️ Attention / erreur fréquente</b><br>Un conducteur mal ordonné, mal enfoncé ou insuffisamment serti peut provoquer une liaison absente ou dégradée.</div>
+<div class="callout"><b>🛠️ Cas pratique</b><br>La logique de travail reste simple : préparer → ordonner → insérer → sertir → tester.</div></div>
+</div>
+</div></section>
+
+<section id="test"><div class="section-inner reveal"><div class="kicker">05 · Testeurs de câble</div><h2>Vérifier la continuité et le câblage</h2>
+<p class="prose">Un testeur de câble permet de contrôler une liaison et de repérer certaines erreurs de câblage. Le test intervient après la réalisation d'une terminaison et aide à confirmer la continuité des conducteurs.</p>
+<div class="diagram"><svg viewBox="0 0 1000 360" role="img" aria-label="Schéma d'un testeur de câble RJ45">
+<rect x="65" y="95" width="190" height="160" rx="15" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+<text x="160" y="130" text-anchor="middle" font-family="Space Grotesk" font-size="20" fill="var(--color-text)">TESTEUR</text>
+<g fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="2"><rect x="105" y="155" width="110" height="28" rx="5"/><rect x="105" y="198" width="110" height="28" rx="5"/></g>
+<text x="160" y="174" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">RJ45</text><text x="160" y="217" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">STATUT</text>
+<path d="M255 175H520" stroke="var(--color-accent)" stroke-width="6"/>
+<path d="M520 175H625" stroke="var(--color-neutral)" stroke-width="30" stroke-linecap="round"/>
+<rect x="625" y="95" width="220" height="160" rx="15" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+<text x="735" y="130" text-anchor="middle" font-family="Space Grotesk" font-size="20" fill="var(--color-text)">EXTRÉMITÉ</text>
+<rect x="680" y="160" width="110" height="65" rx="8" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/>
+<text x="735" y="200" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="var(--color-text)">RJ45</text>
+<text x="500" y="300" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="var(--color-accent)">continuité · ordre · défaut possible</text>
+</svg></div>
+<div class="table-wrap"><table><thead><tr><th scope="col">Résultat observé</th><th scope="col">Lecture possible</th></tr></thead><tbody>
+<tr><td>Continuité correcte</td><td>Le câblage est cohérent pour les conducteurs testés.</td></tr>
+<tr><td>Conducteur interrompu</td><td>Recherche d'une rupture ou d'un mauvais contact.</td></tr>
+<tr><td>Ordre incohérent</td><td>Vérifier l'organisation des conducteurs aux extrémités.</td></tr>
+</tbody></table></div>
+</div></section>
+
+<section id="equipements" class="section-alt"><div class="section-inner reveal"><div class="kicker">06 · Équipements réseau</div><h2>Le câblage s'inscrit dans une architecture</h2>
+<div class="cards">
+<article class="card"><div class="icon">▦</div><h3>Switch</h3><p>Équipement centralisant les connexions Ethernet d'un réseau local.</p></article>
+<article class="card"><div class="icon">⌁</div><h3>Panneau de brassage</h3><p>Élément d'organisation et de repérage des liaisons dans une installation structurée.</p></article>
+<article class="card"><div class="icon">◎</div><h3>Prise réseau</h3><p>Point de raccordement permettant de relier un équipement à l'infrastructure.</p></article>
+</div>
+<div class="diagram" style="margin-top:35px"><svg viewBox="0 0 1000 390" role="img" aria-label="Topologie en étoile autour d'un switch">
+<circle cx="500" cy="195" r="80" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="4"/>
+<text x="500" y="190" text-anchor="middle" font-family="Space Grotesk" font-size="22" fill="var(--color-text)">SWITCH</text>
+<text x="500" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-text)">cœur de connexion</text>
+<g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"><rect x="70" y="50" width="170" height="75" rx="10"/><rect x="760" y="50" width="170" height="75" rx="10"/><rect x="70" y="270" width="170" height="75" rx="10"/><rect x="760" y="270" width="170" height="75" rx="10"/></g>
+<g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="16" text-anchor="middle"><text x="155" y="94">Poste 1</text><text x="845" y="94">Poste 2</text><text x="155" y="314">Poste 3</text><text x="845" y="314">Poste 4</text></g>
+<path d="M240 88L442 160M760 88L558 160M240 307L442 230M760 307L558 230" stroke="var(--color-accent)" stroke-width="5"/>
+</svg><div class="caption">Exemple visuel d'une architecture en étoile : chaque équipement est relié au point central.</div></div>
+<div class="callout"><b>🔗 Pour aller plus loin</b><br>Un câblage bien réalisé facilite ensuite le repérage, le dépannage, l'évolution de l'installation et la maintenance des équipements.</div>
+</div></section>
+
+<section id="synthese"><div class="section-inner reveal"><div class="kicker">Synthèse</div><h2>Points clés à retenir</h2>
+<div class="key-grid">
+<div class="key"><b>Paires torsadées</b><br>Support cuivre organisé en paires, utilisé pour les liaisons Ethernet.</div>
+<div class="key"><b>Fibre optique</b><br>Transmission par signal lumineux, adaptée à de nombreuses liaisons réseau.</div>
+<div class="key"><b>RJ45</b><br>La terminaison exige un ordre cohérent des conducteurs et un sertissage correct.</div>
+<div class="key"><b>Test</b><br>Le testeur aide à vérifier la continuité et certaines erreurs de câblage.</div>
+</div>
+<details style="margin-top:35px"><summary>Pourquoi tester après un sertissage ?</summary><p>Parce que l'apparence d'un connecteur ne suffit pas à confirmer la qualité de la liaison. Le test apporte une vérification fonctionnelle du câblage.</p></details>
+<details><summary>Pourquoi documenter le câblage ?</summary><p>Le repérage et la documentation réduisent le temps nécessaire pour identifier une liaison et facilitent les interventions futures.</p></details>
+</div></section>
+
+<div class="container"><div class="bottom-nav">
+<a href="#paires">← <strong>Leçon 11</strong><br>Modèle OSI et TCP/IP</a>
+<a href="#synthese" style="text-align:right"><strong>Leçon 13</strong> →<br>Adressage IP et sous-réseaux</a>
+</div></div>
+</main>
+<footer><div class="container">Module 3 · Réseaux informatiques — Fondamentaux · Leçon 12</div></footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+<script>
+const progress=document.getElementById('progress');
+const update=()=>{const h=document.documentElement,max=h.scrollHeight-h.clientHeight;progress.style.width=(max>0?scrollY/max*100:0)+'%'};addEventListener('scroll',update,{passive:true});update();
+document.querySelectorAll('.tab-buttons button').forEach(btn=>btn.addEventListener('click',()=>{}));
+const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+document.getElementById('topBtn').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body></html>

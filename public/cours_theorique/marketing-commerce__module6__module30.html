@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 30 — Projet final : piloter une stratégie marketing et commerciale de A à Z</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F4EF;
+  --color-text:#1C2B42;
+  --color-accent:#C08A34;
+  --color-neutral:#6E7580;
+  --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --accent-faint:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --shadow:0 10px 30px color-mix(in srgb,var(--color-text) 8%,transparent);
+  --radius:16px;
+  --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+#progress{position:fixed;top:0;left:0;width:0;height:4px;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:0;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-weight:700;letter-spacing:.03em}
+.brand span{color:var(--color-accent)}
+.nav a{font-size:.9rem;font-weight:600}
+.container{max-width:var(--max);margin:auto;padding:0 24px}
+.hero{padding:78px 24px 52px;max-width:var(--max);margin:auto}
+.eyebrow{font:600 .78rem "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;line-height:1.15;margin:0 0 18px}
+h1{font-size:clamp(2.4rem,6vw,4.8rem);max-width:980px}
+h2{font-size:clamp(1.8rem,3.5vw,2.7rem)}
+h3{font-size:1.35rem}
+.lead{font-size:1.16rem;max-width:760px;color:var(--text-muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0}
+.badge{border:1px solid var(--border);padding:6px 10px;border-radius:999px;font:500 .78rem "IBM Plex Mono",monospace}
+.badge.accent{border-color:var(--color-accent);background:var(--accent-soft)}
+.toc{border:1px solid var(--border);border-left:4px solid var(--color-accent);padding:22px;margin:8px 0 52px;background:var(--bg-alt);border-radius:var(--radius)}
+.toc strong{display:block;margin-bottom:10px}
+.toc ol{margin:0;padding-left:22px;columns:2}
+main section{padding:76px 0;border-top:1px solid var(--border)}
+.section-inner{max-width:900px}
+.kicker{font:600 .76rem "IBM Plex Mono",monospace;color:var(--color-accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.card{border:1px solid var(--border);border-radius:var(--radius);padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .icon{font-size:1.4rem;color:var(--color-accent)}
+.card p{margin:8px 0 0;color:var(--text-muted)}
+.callout{margin:28px 0;padding:20px 22px;border:1px solid var(--border);border-left:5px solid var(--color-accent);background:var(--accent-soft);border-radius:12px}
+.callout strong{display:block;margin-bottom:5px}
+.stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:30px 0}
+.step{padding:16px 10px;border-top:3px solid var(--color-accent);background:var(--bg-alt);min-height:120px}
+.step b{font:600 .72rem "IBM Plex Mono",monospace;color:var(--color-accent)}
+.step h3{font-family:Inter,sans-serif;font-size:1rem;margin:8px 0}
+.step p{font-size:.88rem;margin:0;color:var(--text-muted)}
+.diagram{border:1px solid var(--border);border-radius:var(--radius);padding:18px;background:var(--color-bg);margin:28px 0;overflow:auto}
+svg{display:block;width:100%;height:auto;min-width:680px}
+svg text{font-family:Inter,sans-serif;fill:var(--color-text)}
+svg .accent{fill:var(--color-accent)}
+svg .line{stroke:var(--color-neutral);stroke-width:2;fill:none}
+svg .box{fill:var(--bg-alt);stroke:var(--border);stroke-width:2}
+table{width:100%;border-collapse:collapse;margin:26px 0;font-size:.95rem}
+th,td{padding:13px 14px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{font:600 .78rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.04em}
+tbody tr:hover{background:var(--accent-faint)}
+.checklist{list-style:none;padding:0;margin:24px 0}
+.checklist li{padding:12px 0 12px 32px;border-bottom:1px solid var(--border);position:relative}
+.checklist li::before{content:"✓";position:absolute;left:4px;color:var(--color-accent);font-weight:700}
+.accordion{border-top:1px solid var(--border)}
+details{border-bottom:1px solid var(--border);padding:15px 0}
+summary{cursor:pointer;font-weight:700}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:50px 0}
+.nav-card{border:1px solid var(--border);padding:22px;border-radius:var(--radius);background:var(--bg-alt)}
+.nav-card.next{text-align:right}
+footer{border-top:1px solid var(--border);padding:35px 0;color:var(--text-muted);font-size:.9rem}
+#top{position:fixed;right:22px;bottom:22px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);border-radius:50%;width:44px;height:44px;cursor:pointer;display:none;box-shadow:var(--shadow)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+  .hero{padding-top:52px}
+  .grid,.summary-grid{grid-template-columns:1fr}
+  .stepper{grid-template-columns:repeat(2,1fr)}
+  .toc ol{columns:1}
+}
+@media(max-width:520px){
+  .container,.hero,.nav{padding-left:16px;padding-right:16px}
+  h1{font-size:2.45rem}
+  .stepper{grid-template-columns:1fr}
+  .nav-lessons{grid-template-columns:1fr}
+  .nav-card.next{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .card{transition:none}
+}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">Marketing <span>×</span> Commerce <span>×</span> Vente</div>
+    <a href="#sommaire">Sommaire</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Module 6 · Management commercial, performance et stratégie</div>
+  <h1>Projet final : piloter une stratégie marketing et commerciale de A à Z</h1>
+  <p class="lead">Mobiliser l'ensemble des compétences marketing, commerce et vente acquises pour construire, déployer et piloter une stratégie cohérente.</p>
+  <div class="badges">
+    <span class="badge accent">LEÇON 30</span>
+    <span class="badge">AVANCÉ / PROFESSIONNEL</span>
+    <span class="badge">30 MIN</span>
+    <span class="badge">PROJET FINAL</span>
+  </div>
+
+  <nav class="toc" id="sommaire" aria-label="Sommaire de la leçon">
+    <strong>Sommaire</strong>
+    <ol>
+      <li><a href="#fil-rouge">Le fil rouge : une stratégie de A à Z</a></li>
+      <li><a href="#marche">1. Étudier le marché</a></li>
+      <li><a href="#strategie">2. Définir la stratégie marketing</a></li>
+      <li><a href="#mix">3. Construire le mix marketing</a></li>
+      <li><a href="#vente">4. Transformer la stratégie en action commerciale</a></li>
+      <li><a href="#digital">5. Activer le marketing digital</a></li>
+      <li><a href="#performance">6. Piloter la performance</a></li>
+      <li><a href="#checklist">Checklist finale</a></li>
+      <li><a href="#synthese">Synthèse globale de la filière</a></li>
+      <li><a href="#restitution">Mini-exercice de restitution</a></li>
+    </ol>
+  </nav>
+</section>
+
+<main class="container">
+<section id="fil-rouge" class="reveal">
+<div class="section-inner">
+<div class="kicker">Fil rouge</div>
+<h2>Une entreprise fictive pour relier toutes les compétences</h2>
+<p>Pour ce projet final, imaginons <strong>NovaCafé</strong>, une jeune entreprise qui commercialise des cafés locaux premium et des coffrets découverte. Son ambition est de développer ses ventes sans perdre son positionnement qualitatif.</p>
+<div class="grid">
+<article class="card"><div class="icon">◎</div><h3>Situation</h3><p>Une offre appréciée, mais une notoriété encore limitée et une croissance commerciale irrégulière.</p></article>
+<article class="card"><div class="icon">◇</div><h3>Défi</h3><p>Identifier les opportunités, choisir une cible prioritaire et transformer cette orientation en plan d'action.</p></article>
+<article class="card"><div class="icon">↗</div><h3>Finalité</h3><p>Relier marketing, vente, digital et pilotage autour d'objectifs mesurables.</p></article>
+</div>
+<div class="callout"><strong>💡 À retenir</strong>Une stratégie performante n'est pas une succession d'actions isolées : chaque décision doit découler d'un diagnostic, servir un objectif et pouvoir être pilotée.</div>
+</div>
+</section>
+
+<section id="marche" class="reveal">
+<div class="section-inner">
+<div class="kicker">Temps 1</div><h2>Étudier le marché</h2>
+<p>Le point de départ consiste à comprendre l'environnement dans lequel l'entreprise évolue. L'étude de marché permet de réduire l'incertitude avant de décider.</p>
+<table>
+<thead><tr><th scope="col">Analyse</th><th scope="col">Question directrice</th><th scope="col">Décision attendue</th></tr></thead>
+<tbody>
+<tr><td>Demande</td><td>Qui achète, pourquoi et dans quelles situations ?</td><td>Identifier les besoins prioritaires.</td></tr>
+<tr><td>Concurrence</td><td>Qui répond déjà à ces besoins et avec quelle proposition de valeur ?</td><td>Repérer les espaces de différenciation.</td></tr>
+<tr><td>Environnement</td><td>Quelles tendances, contraintes et opportunités influencent le marché ?</td><td>Anticiper les évolutions.</td></tr>
+<tr><td>Entreprise</td><td>Quels sont nos moyens, forces et limites ?</td><td>Vérifier la faisabilité.</td></tr>
+</tbody>
+</table>
+<div class="callout"><strong>📌 Rappel méthodologique</strong>Le diagnostic doit déboucher sur des constats exploitables : opportunités, menaces, forces et faiblesses ne prennent de valeur que lorsqu'ils éclairent une décision.</div>
+</div>
+</section>
+
+<section id="strategie" class="reveal">
+<div class="section-inner">
+<div class="kicker">Temps 2</div><h2>Définir la stratégie marketing</h2>
+<p>À partir du diagnostic, l'entreprise choisit où jouer et comment créer de la valeur. La segmentation, le ciblage et le positionnement permettent de passer du marché global à une priorité claire.</p>
+<div class="diagram" aria-label="Schéma STP : segmentation, ciblage, positionnement">
+<svg viewBox="0 0 900 240" role="img">
+<rect class="box" x="30" y="55" width="240" height="120" rx="14"/>
+<rect class="box" x="330" y="55" width="240" height="120" rx="14"/>
+<rect class="box" x="630" y="55" width="240" height="120" rx="14"/>
+<text x="150" y="92" text-anchor="middle" font-size="18" font-weight="700">SEGMENTATION</text>
+<text x="150" y="122" text-anchor="middle" font-size="14">Découper le marché</text>
+<text x="150" y="147" text-anchor="middle" font-size="14">en groupes cohérents</text>
+<text x="450" y="92" text-anchor="middle" font-size="18" font-weight="700">CIBLAGE</text>
+<text x="450" y="122" text-anchor="middle" font-size="14">Choisir les segments</text>
+<text x="450" y="147" text-anchor="middle" font-size="14">à prioriser</text>
+<text x="750" y="92" text-anchor="middle" font-size="18" font-weight="700">POSITIONNEMENT</text>
+<text x="750" y="122" text-anchor="middle" font-size="14">Installer une place</text>
+<text x="750" y="147" text-anchor="middle" font-size="14">distinctive</text>
+<path class="line" d="M270 115 H330"/><path class="line" d="M570 115 H630"/>
+<circle class="accent" cx="300" cy="115" r="6"/><circle class="accent" cx="600" cy="115" r="6"/>
+</svg>
+</div>
+<div class="callout"><strong>👨‍💼 Conseil professionnel</strong>Un bon positionnement doit être compréhensible par la cible, crédible pour l'entreprise et suffisamment distinctif pour éviter la comparaison uniquement par le prix.</div>
+</div>
+</section>
+
+<section id="mix" class="reveal">
+<div class="section-inner">
+<div class="kicker">Temps 3</div><h2>Construire le mix marketing</h2>
+<p>Le mix transforme le choix stratégique en proposition concrète. Pour NovaCafé, chaque levier doit raconter la même promesse de qualité et de découverte.</p>
+<div class="grid">
+<article class="card"><div class="icon">P</div><h3>Produit</h3><p>Gamme de cafés, coffrets, formats, services et expérience associés.</p></article>
+<article class="card"><div class="icon">€</div><h3>Prix</h3><p>Niveau de prix cohérent avec la valeur perçue et le positionnement choisi.</p></article>
+<article class="card"><div class="icon">↔</div><h3>Distribution</h3><p>Canaux adaptés : vente directe, partenaires, boutique en ligne ou points relais.</p></article>
+<article class="card"><div class="icon">✦</div><h3>Communication</h3><p>Messages, contenus et campagnes qui rendent la proposition visible et désirable.</p></article>
+</div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Modifier un seul levier sans vérifier les autres peut créer une incohérence : une promesse premium avec un message banal, une distribution inadaptée ou un prix difficile à justifier.</div>
+</div>
+</section>
+
+<section id="vente" class="reveal">
+<div class="section-inner">
+<div class="kicker">Temps 4</div><h2>Transformer la stratégie en action commerciale</h2>
+<p>La stratégie prend une dimension opérationnelle lorsque les équipes commerciales savent qui prospecter, quoi proposer, comment argumenter et comment négocier.</p>
+<div class="stepper" aria-label="Processus commercial">
+<div class="step"><b>01</b><h3>Prospecter</h3><p>Identifier les opportunités commerciales.</p></div>
+<div class="step"><b>02</b><h3>Qualifier</h3><p>Évaluer besoin, potentiel et priorité.</p></div>
+<div class="step"><b>03</b><h3>Découvrir</h3><p>Questionner et comprendre le client.</p></div>
+<div class="step"><b>04</b><h3>Argumenter</h3><p>Relier bénéfices et besoins.</p></div>
+<div class="step"><b>05</b><h3>Négocier</h3><p>Construire un accord équilibré.</p></div>
+<div class="step"><b>06</b><h3>Fidéliser</h3><p>Suivre et développer la relation.</p></div>
+</div>
+<table>
+<thead><tr><th scope="col">Élément</th><th scope="col">Question de pilotage</th></tr></thead>
+<tbody>
+<tr><td>Objectif commercial</td><td>Quel résultat doit être atteint et sur quelle période ?</td></tr>
+<tr><td>Cible</td><td>Quels clients ou prospects sont prioritaires ?</td></tr>
+<tr><td>Argumentaire</td><td>Quels bénéfices répondent aux besoins identifiés ?</td></tr>
+<tr><td>Suivi</td><td>Quelles actions et quelles relances permettent de faire progresser les opportunités ?</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="digital" class="reveal">
+<div class="section-inner">
+<div class="kicker">Temps 5</div><h2>Activer le marketing digital</h2>
+<p>Le digital prolonge la stratégie sur les canaux où la cible s'informe, compare et achète. Il doit être relié au parcours client plutôt que fonctionner comme un ensemble de publications indépendantes.</p>
+<div class="grid">
+<article class="card"><h3>Attirer</h3><p>Contenus, référencement, campagnes et présence sociale pour générer de la visibilité.</p></article>
+<article class="card"><h3>Convertir</h3><p>Pages d'atterrissage, offres, fiches produits et parcours d'achat réduisant les frictions.</p></article>
+<article class="card"><h3>Fidéliser</h3><p>CRM, contenus relationnels, offres adaptées et suivi de la satisfaction.</p></article>
+</div>
+<div class="callout"><strong>🔗 Pour aller plus loin</strong>Le digital devient particulièrement efficace lorsqu'il est connecté aux données commerciales : une campagne doit pouvoir être rapprochée d'un objectif, d'un comportement ou d'un résultat.</div>
+</div>
+</section>
+
+<section id="performance" class="reveal">
+<div class="section-inner">
+<div class="kicker">Temps 6</div><h2>Piloter la performance commerciale</h2>
+<p>Piloter consiste à comparer les résultats aux objectifs, comprendre les écarts et décider des ajustements. Les indicateurs doivent être peu nombreux, utiles et directement reliés aux décisions.</p>
+<div class="diagram" aria-label="Boucle de pilotage de la performance">
+<svg viewBox="0 0 900 300" role="img">
+<circle class="box" cx="450" cy="150" r="88"/>
+<text x="450" y="142" text-anchor="middle" font-size="20" font-weight="700">DÉCIDER</text>
+<text x="450" y="168" text-anchor="middle" font-size="14">et ajuster</text>
+<path class="line" d="M450 45 V20 H190 V90"/>
+<path class="line" d="M190 90 V210"/>
+<path class="line" d="M190 210 H450 V255"/>
+<path class="line" d="M710 210 V90 H450 V45"/>
+<circle class="accent" cx="450" cy="20" r="6"/><circle class="accent" cx="190" cy="150" r="6"/><circle class="accent" cx="450" cy="255" r="6"/><circle class="accent" cx="710" cy="150" r="6"/>
+<text x="320" y="42" text-anchor="middle" font-size="15">OBJECTIFS</text>
+<text x="118" y="155" text-anchor="middle" font-size="15">ACTIONS</text>
+<text x="320" y="245" text-anchor="middle" font-size="15">MESURE</text>
+<text x="780" y="155" text-anchor="middle" font-size="15">ANALYSE</text>
+</svg>
+</div>
+<table>
+<thead><tr><th scope="col">Famille</th><th scope="col">Exemples d'indicateurs</th><th scope="col">Question</th></tr></thead>
+<tbody>
+<tr><td>Acquisition</td><td>Trafic, prospects, portée</td><td>Sommes-nous visibles auprès de la bonne audience ?</td></tr>
+<tr><td>Conversion</td><td>Taux de conversion, opportunités, ventes</td><td>Transformons-nous l'intérêt en résultat ?</td></tr>
+<tr><td>Valeur</td><td>Panier moyen, chiffre d'affaires, marge</td><td>La croissance crée-t-elle de la valeur ?</td></tr>
+<tr><td>Fidélisation</td><td>Réachat, satisfaction, rétention</td><td>La relation se construit-elle dans la durée ?</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="checklist" class="reveal">
+<div class="section-inner">
+<div class="kicker">Avant de déployer</div><h2>Checklist finale de pilotage</h2>
+<ul class="checklist">
+<li>Le diagnostic marché est-il documenté et relié à des décisions ?</li>
+<li>La cible prioritaire et son besoin principal sont-ils clairement définis ?</li>
+<li>Le positionnement est-il distinctif, crédible et compréhensible ?</li>
+<li>Le mix marketing est-il cohérent avec la promesse ?</li>
+<li>Les objectifs commerciaux sont-ils précis et mesurables ?</li>
+<li>Les canaux digitaux servent-ils réellement le parcours client ?</li>
+<li>Les responsabilités, échéances et ressources sont-elles identifiées ?</li>
+<li>Les indicateurs permettent-ils de détecter rapidement les écarts ?</li>
+<li>Un mécanisme d'ajustement est-il prévu si les résultats ne sont pas au rendez-vous ?</li>
+</ul>
+<div class="callout"><strong>💡 À retenir</strong>Un plan n'est pas terminé lorsqu'il est écrit. Il est terminé lorsqu'il permet d'agir, de mesurer et de corriger.</div>
+</div>
+</section>
+
+<section id="synthese" class="reveal">
+<div class="section-inner">
+<div class="kicker">Vue d'ensemble</div><h2>La synthèse visuelle globale de la filière</h2>
+<div class="stepper">
+<div class="step"><b>01</b><h3>Comprendre</h3><p>Marché, clients, environnement.</p></div>
+<div class="step"><b>02</b><h3>Choisir</h3><p>Segmentation, ciblage, positionnement.</p></div>
+<div class="step"><b>03</b><h3>Construire</h3><p>Mix marketing et proposition de valeur.</p></div>
+<div class="step"><b>04</b><h3>Vendre</h3><p>Prospection, négociation, relation.</p></div>
+<div class="step"><b>05</b><h3>Accélérer</h3><p>Digital, contenus, acquisition.</p></div>
+<div class="step"><b>06</b><h3>Piloter</h3><p>Indicateurs, analyse, amélioration.</p></div>
+</div>
+<details>
+<summary>Pourquoi ces six temps forment-ils une boucle ?</summary>
+<p>Les résultats commerciaux et marketing enrichissent à leur tour la compréhension du marché. Le pilotage ne clôt donc pas la démarche : il alimente le diagnostic suivant et permet de réviser les choix.</p>
+</details>
+</div>
+</section>
+
+<section id="restitution" class="reveal">
+<div class="section-inner">
+<div class="kicker">Restitution</div><h2>Mini-exercice interactif</h2>
+<p>Pour NovaCafé, imaginez que vous êtes responsable marketing et commercial. Élaborez les grandes lignes d'un plan qui relie diagnostic, stratégie, action et mesure.</p>
+<div class="summary-grid">
+<div class="card"><h3>Votre plan en 6 points</h3>
+<ol>
+<li>Une cible prioritaire</li>
+<li>Un besoin à résoudre</li>
+<li>Un positionnement</li>
+<li>Trois actions du mix marketing</li>
+<li>Deux actions commerciales ou digitales</li>
+<li>Trois indicateurs de pilotage</li>
+</ol></div>
+<div class="card"><h3>Critère de qualité</h3>
+<p>Chaque choix doit être justifiable par le précédent : <strong>diagnostic → choix stratégique → action → indicateur</strong>.</p>
+<p>La restitution est solide lorsque les actions ne sont pas seulement nombreuses, mais cohérentes avec la cible et les objectifs.</p></div>
+</div>
+<div class="callout"><strong>👨‍💼 Conseil professionnel</strong>Commencez par l'objectif et la cible, puis remontez vers les actions nécessaires. Cela évite de confondre stratégie et simple liste d'actions.</div>
+</div>
+</section>
+</main>
+
+<div class="container">
+<div class="nav-lessons" aria-label="Navigation entre les leçons">
+<a class="nav-card" href="#" aria-label="Leçon précédente"><small>← Leçon précédente</small><br><strong>Leçon 29 — Stratégie commerciale et développement des ventes</strong></a>
+<a class="nav-card next" href="#" aria-label="Sommaire de la filière"><small>Fin de parcours →</small><br><strong>Sommaire de la filière</strong></a>
+</div>
+</div>
+
+<footer>
+<div class="container">
+<strong>Filière Marketing × Commerce × Vente</strong><br>
+Module 6 · Management commercial, performance et stratégie · Leçon 30
+</div>
+</footer>
+
+<button id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const progress=document.getElementById('progress');
+  const top=document.getElementById('top');
+  function update(){
+    const h=document.documentElement.scrollHeight-window.innerHeight;
+    const p=h>0?(window.scrollY/h)*100:0;
+    progress.style.width=p+'%';
+    top.style.display=window.scrollY>500?'block':'none';
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+  top.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  const items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})
+    },{threshold:.08});
+    items.forEach(x=>io.observe(x));
+  }else{items.forEach(x=>x.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

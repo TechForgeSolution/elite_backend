@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 02 — Assemblage et diagnostic matériel">
+<title>Leçon 02 — Assemblage et diagnostic matériel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F7FA;
+  --color-text:#10161D;
+  --color-accent:#1F6FEB;
+  --color-neutral:#A9B4BE;
+  --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.nav{max-width:1180px;margin:auto;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.02em}
+.brand span{color:var(--color-accent)}
+.navlinks{display:flex;gap:15px;flex-wrap:wrap;font-size:.9rem}
+.container{max-width:1180px;margin:auto;padding:0 22px}
+.hero{padding:76px 0 45px;display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}
+.eyebrow{font-family:"IBM Plex Mono";font-size:.82rem;color:var(--color-accent);letter-spacing:.08em;text-transform:uppercase}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.15;margin:0 0 18px}
+h1{font-size:clamp(2.6rem,6vw,5.5rem);letter-spacing:-.055em}
+h2{font-size:clamp(1.8rem,3vw,2.8rem);letter-spacing:-.035em}
+h3{font-size:1.25rem}
+.lead{font-size:1.15rem;max-width:720px;color:var(--muted)}
+.badges{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0}
+.badge{font-family:"IBM Plex Mono";font-size:.78rem;border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:var(--soft)}
+.badge strong{color:var(--color-accent)}
+.hero-art{border:1px solid var(--line);background:var(--soft);padding:18px;border-radius:18px}
+svg{display:block;width:100%;height:auto}
+.toc{border-block:1px solid var(--line);padding:25px 0;margin-bottom:55px}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.toc a{padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--color-bg);font-weight:600}
+section{padding:72px 0}
+.section-alt{background:var(--soft)}
+.section-inner{max-width:1180px;margin:auto;padding:0 22px}
+.prose{max-width:720px}
+.kicker{font-family:"IBM Plex Mono";font-size:.78rem;color:var(--color-accent);text-transform:uppercase}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.8rem;color:var(--color-accent);margin-bottom:10px}
+.diagram{border:1px solid var(--line);background:var(--color-bg);border-radius:16px;padding:16px;margin-top:24px}
+.caption{font-size:.85rem;color:var(--muted);margin-top:10px}
+.callout{border:2px solid var(--color-accent);padding:20px 22px;border-radius:12px;background:var(--soft2);margin:25px 0}
+.callout b{color:var(--color-accent)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:25px 0}
+table{border-collapse:collapse;width:100%;min-width:650px;font-family:"IBM Plex Mono";font-size:.88rem}
+th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line)}
+th{background:var(--soft);color:var(--color-text)}
+tr:last-child td{border-bottom:0}
+.code{font-family:"IBM Plex Mono";background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:18px;overflow:auto;white-space:pre}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:30px}
+.step{border-top:3px solid var(--color-neutral);padding:13px 9px}
+.step.active{border-color:var(--color-accent)}
+.step b{display:block;font-family:"IBM Plex Mono";color:var(--color-accent);font-size:.8rem}
+.tabs{margin-top:25px}
+.tab-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.tab-buttons button{font:600 .9rem "IBM Plex Sans";border:1px solid var(--line);background:var(--color-bg);padding:10px 15px;border-radius:9px;cursor:pointer;color:var(--color-text)}
+.tab-buttons button[aria-selected="true"]{border-color:var(--color-accent);color:var(--color-accent)}
+.tab-panel{display:none;padding:22px;border:1px solid var(--line);margin-top:10px;border-radius:12px;background:var(--color-bg)}
+.tab-panel.active{display:block}
+details{border-block:1px solid var(--line);padding:17px 0}
+summary{cursor:pointer;font-weight:700}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{border-left:3px solid var(--color-accent);padding:16px;background:var(--color-bg)}
+.bottom-nav{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:45px 0}
+.bottom-nav a{border:1px solid var(--line);padding:18px;border-radius:12px;background:var(--soft)}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.9rem}
+.top{position:fixed;right:18px;bottom:18px;border:1px solid var(--line);background:var(--color-bg);color:var(--color-accent);border-radius:50%;width:44px;height:44px;cursor:pointer}
+.reveal{opacity:0;transform:translateY(15px);transition:.6s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){
+ .hero,.grid2{grid-template-columns:1fr}
+ .cards{grid-template-columns:1fr 1fr}
+ .steps{grid-template-columns:repeat(3,1fr)}
+ .key-grid{grid-template-columns:1fr 1fr}
+ .toc-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+ .navlinks{display:none}.hero{padding-top:45px}h1{font-size:2.8rem}
+ .cards,.key-grid,.toc-grid,.bottom-nav{grid-template-columns:1fr}
+ .steps{grid-template-columns:1fr 1fr}
+ section{padding:52px 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{transition:none;opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">MAINTENANCE <span>&</span> RÉSEAU</div>
+    <div class="navlinks">
+      <a href="#montage">Montage</a><a href="#connectique">Connectique</a><a href="#post">POST</a>
+      <a href="#diagnostic">Diagnostic</a><a href="#outils">Outils</a><a href="#synthese">Synthèse</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div>
+    <div class="eyebrow">Module 1 · Matériel et systèmes</div>
+    <h1>Assemblage et diagnostic matériel</h1>
+    <p class="lead">Monter un poste informatique avec méthode, vérifier ses connexions et comprendre la démarche de diagnostic d'une panne matérielle.</p>
+    <div class="badges">
+      <span class="badge"><strong>Leçon 02</strong></span>
+      <span class="badge">Débutant</span>
+      <span class="badge">15 min</span>
+      <span class="badge">Matériel PC</span>
+    </div>
+  </div>
+  <div class="hero-art" aria-label="Illustration d'un ordinateur assemblé">
+    <svg viewBox="0 0 620 430" role="img" aria-labelledby="pcTitle pcDesc">
+      <title id="pcTitle">Vue simplifiée d'un poste informatique</title>
+      <desc id="pcDesc">Boîtier avec carte mère, processeur, mémoire, stockage et alimentation reliés entre eux.</desc>
+      <rect x="70" y="45" width="330" height="330" rx="16" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+      <rect x="100" y="75" width="270" height="270" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <rect x="130" y="105" width="145" height="125" rx="7" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="202" y="135" text-anchor="middle" fill="var(--color-text)" font-family="IBM Plex Mono" font-size="14">CARTE MÈRE</text>
+      <rect x="155" y="153" width="52" height="48" rx="4" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="181" y="181" text-anchor="middle" fill="var(--color-text)" font-size="11">CPU</text>
+      <rect x="220" y="150" width="30" height="58" rx="3" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <rect x="220" y="215" width="30" height="8" fill="var(--color-accent)"/>
+      <rect x="130" y="250" width="145" height="50" rx="6" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="202" y="280" text-anchor="middle" fill="var(--color-text)" font-family="IBM Plex Mono" font-size="12">STOCKAGE</text>
+      <rect x="300" y="105" width="50" height="80" rx="5" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="325" y="150" text-anchor="middle" fill="var(--color-text)" font-size="11">RAM</text>
+      <rect x="300" y="220" width="50" height="80" rx="5" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="325" y="264" text-anchor="middle" fill="var(--color-text)" font-size="10">GPU</text>
+      <path d="M400 130H500M400 260H500M400 325H500" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="510" y="135" fill="var(--color-text)" font-family="IBM Plex Mono" font-size="13">CPU / RAM</text>
+      <text x="510" y="265" fill="var(--color-text)" font-family="IBM Plex Mono" font-size="13">GPU</text>
+      <text x="510" y="330" fill="var(--color-text)" font-family="IBM Plex Mono" font-size="13">SSD / HDD</text>
+    </svg>
+  </div>
+</section>
+
+<div class="container toc">
+  <div class="eyebrow">Sommaire</div>
+  <div class="toc-grid">
+    <a href="#montage">01 · Montage</a><a href="#connectique">02 · Connectique</a><a href="#post">03 · POST</a>
+    <a href="#bips">04 · Codes bip</a><a href="#diagnostic">05 · Tests de composants</a><a href="#outils">06 · Outils de diagnostic</a>
+  </div>
+</div>
+
+<section id="montage">
+<div class="section-inner reveal">
+  <div class="grid2">
+    <div class="prose">
+      <div class="kicker">01 · Montage</div>
+      <h2>Assembler un poste avec méthode</h2>
+      <p>Le montage consiste à installer les composants dans le boîtier et à établir les connexions nécessaires au fonctionnement du poste. L'ordre et la vérification des éléments évitent les erreurs de branchement.</p>
+      <div class="callout"><b>💡 À retenir</b><br>Un assemblage fiable repose sur trois réflexes : identifier le composant, respecter son emplacement et vérifier la connexion avant la mise sous tension.</div>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 620 390" role="img" aria-label="Schéma des principales étapes d'assemblage">
+        <g fill="none" stroke="var(--color-neutral)" stroke-width="2">
+          <rect x="20" y="130" width="130" height="70" rx="10"/><rect x="175" y="130" width="130" height="70" rx="10"/>
+          <rect x="330" y="130" width="130" height="70" rx="10"/><rect x="485" y="130" width="115" height="70" rx="10"/>
+        </g>
+        <g fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="2">
+          <circle cx="85" cy="110" r="19"/><circle cx="240" cy="110" r="19"/><circle cx="395" cy="110" r="19"/><circle cx="542" cy="110" r="19"/>
+        </g>
+        <g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="15" text-anchor="middle">
+          <text x="85" y="157">Carte mère</text><text x="240" y="157">CPU + refroidissement</text>
+          <text x="395" y="157">RAM + stockage</text><text x="542" y="157">Alimentation</text>
+          <text x="85" y="116" fill="var(--color-accent)">1</text><text x="240" y="116" fill="var(--color-accent)">2</text>
+          <text x="395" y="116" fill="var(--color-accent)">3</text><text x="542" y="116" fill="var(--color-accent)">4</text>
+        </g>
+        <path d="M150 165h25M305 165h25M460 165h25" stroke="var(--color-accent)" stroke-width="4"/>
+        <text x="310" y="250" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">→ vérifier → connecter → démarrer → observer</text>
+      </svg>
+      <div class="caption">Vue pédagogique de l'enchaînement général du montage.</div>
+    </div>
+  </div>
+  <div class="cards" style="margin-top:35px">
+    <article class="card"><div class="icon">▣</div><h3>Carte mère</h3><p>Elle accueille et relie les principaux composants du poste.</p></article>
+    <article class="card"><div class="icon">◈</div><h3>Processeur</h3><p>Il doit être correctement positionné et associé à son refroidissement.</p></article>
+    <article class="card"><div class="icon">▤</div><h3>Mémoire</h3><p>Les modules RAM doivent être correctement insérés dans leurs emplacements.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="connectique" class="section-alt">
+<div class="section-inner reveal">
+  <div class="kicker">02 · Connectique</div><h2>La connectique : relier correctement les éléments</h2>
+  <p class="prose">Une panne apparente peut provenir d'une connexion absente, mal enfichée ou placée au mauvais endroit. La vérification visuelle et mécanique des câbles fait donc partie du diagnostic.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 1000 390" role="img" aria-label="Schéma de connectique d'un ordinateur">
+      <rect x="50" y="65" width="270" height="250" rx="15" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+      <text x="185" y="100" text-anchor="middle" font-family="Space Grotesk" font-size="22" fill="var(--color-text)">CARTE MÈRE</text>
+      <rect x="100" y="140" width="170" height="38" rx="6" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="185" y="165" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">ALIMENTATION</text>
+      <rect x="100" y="205" width="170" height="38" rx="6" fill="var(--soft2)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="185" y="230" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">STOCKAGE</text>
+      <rect x="100" y="270" width="170" height="25" rx="5" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+      <text x="185" y="288" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">PANNEAU AVANT</text>
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2">
+        <rect x="670" y="50" width="260" height="85" rx="12"/><rect x="670" y="165" width="260" height="85" rx="12"/><rect x="670" y="280" width="260" height="60" rx="12"/>
+      </g>
+      <g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="17">
+        <text x="700" y="88">Bloc d'alimentation</text><text x="700" y="203">SSD / HDD</text><text x="700" y="315">Boutons / voyants</text>
+      </g>
+      <path d="M320 159C470 159 520 92 670 92M320 224C470 224 520 207 670 207M320 282C480 282 520 310 670 310" fill="none" stroke="var(--color-accent)" stroke-width="4"/>
+      <circle cx="470" cy="159" r="6" fill="var(--color-accent)"/><circle cx="470" cy="224" r="6" fill="var(--color-accent)"/><circle cx="470" cy="282" r="6" fill="var(--color-accent)"/>
+    </svg>
+    <div class="caption">Les liaisons doivent être identifiées avant la mise sous tension.</div>
+  </div>
+  <div class="tabs" id="connectique-tabs">
+    <div class="tab-buttons" role="tablist" aria-label="Types de connexions">
+      <button role="tab" aria-selected="true" aria-controls="tab-power">Alimentation</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-data">Données</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-front">Panneau avant</button>
+    </div>
+    <div id="tab-power" class="tab-panel active" role="tabpanel"><h3>Alimentation</h3><p>Les composants doivent recevoir les alimentations prévues. Une connexion d'alimentation oubliée peut empêcher le démarrage ou provoquer un fonctionnement incomplet.</p></div>
+    <div id="tab-data" class="tab-panel" role="tabpanel"><h3>Données</h3><p>Les unités de stockage nécessitent une liaison adaptée pour échanger les données avec la carte mère.</p></div>
+    <div id="tab-front" class="tab-panel" role="tabpanel"><h3>Panneau avant</h3><p>Les boutons et voyants du boîtier sont reliés aux broches prévues sur la carte mère.</p></div>
+  </div>
+</div>
+</section>
+
+<section id="post">
+<div class="section-inner reveal">
+  <div class="grid2">
+    <div>
+      <div class="kicker">03 · POST</div><h2>Le POST : premier contrôle au démarrage</h2>
+      <p>Le <strong>POST</strong> (Power-On Self-Test) correspond à une série de vérifications effectuées au démarrage avant le chargement normal du système.</p>
+      <p>Il permet notamment de détecter certains problèmes liés aux composants essentiels. L'observation du comportement de la machine au démarrage constitue donc une première étape importante du diagnostic.</p>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 620 360" role="img" aria-label="Flux simplifié du POST">
+        <rect x="40" y="135" width="110" height="70" rx="12" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/>
+        <rect x="195" y="135" width="110" height="70" rx="12" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/>
+        <rect x="350" y="135" width="110" height="70" rx="12" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/>
+        <rect x="505" y="135" width="75" height="70" rx="12" fill="var(--soft2)" stroke="var(--color-neutral)" stroke-width="3"/>
+        <path d="M150 170h45M305 170h45M460 170h45" stroke="var(--color-accent)" stroke-width="4"/>
+        <g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="14" text-anchor="middle">
+          <text x="95" y="164">Mise sous</text><text x="95" y="184">tension</text>
+          <text x="250" y="164">Vérifications</text><text x="250" y="184">POST</text>
+          <text x="405" y="164">Détection</text><text x="405" y="184">d'anomalies</text>
+          <text x="542" y="164">Suite</text><text x="542" y="184">du boot</text>
+        </g>
+        <text x="310" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="var(--color-accent)">observer les signaux du démarrage</text>
+      </svg>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="bips" class="section-alt">
+<div class="section-inner reveal">
+  <div class="kicker">04 · Codes bip</div><h2>Les signaux sonores</h2>
+  <p class="prose">Selon le matériel et le firmware utilisé, des bips peuvent accompagner le démarrage et signaler une anomalie. Leur interprétation dépend du constructeur et du firmware : il ne faut donc pas attribuer automatiquement une signification universelle à un nombre de bips.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Interprétation pédagogique</th><th scope="col">Réflexe de diagnostic</th></tr></thead>
+      <tbody>
+        <tr><td>Pas de signal sonore</td><td>Observer aussi les voyants et l'affichage.</td><td>Vérifier alimentation et démarrage.</td></tr>
+        <tr><td>Série de bips</td><td>Peut indiquer une anomalie détectée au POST.</td><td>Identifier le firmware / constructeur.</td></tr>
+        <tr><td>Bips + absence d'affichage</td><td>Un composant essentiel peut être concerné.</td><td>Procéder par vérifications successives.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><b>⚠️ Attention</b><br>La signification exacte des codes bip varie selon les fabricants et les modèles. La documentation du matériel reste la référence pour décoder un signal précis.</div>
+</div>
+</section>
+
+<section id="diagnostic">
+<div class="section-inner reveal">
+  <div class="kicker">05 · Tests de composants</div><h2>Diagnostiquer par élimination</h2>
+  <p class="prose">Le diagnostic matériel consiste à partir du symptôme observé, vérifier les éléments les plus simples, puis isoler progressivement la cause probable. L'objectif est de ne pas remplacer des composants au hasard.</p>
+  <div class="steps">
+    <div class="step active"><b>01</b>Observer le symptôme</div>
+    <div class="step active"><b>02</b>Vérifier l'alimentation</div>
+    <div class="step active"><b>03</b>Contrôler les connexions</div>
+    <div class="step active"><b>04</b>Tester un composant</div>
+    <div class="step active"><b>05</b>Comparer le résultat</div>
+    <div class="step active"><b>06</b>Isoler la cause</div>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 1000 450" role="img" aria-label="Arbre de diagnostic matériel">
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2">
+        <rect x="390" y="25" width="220" height="65" rx="12"/>
+        <rect x="90" y="170" width="220" height="65" rx="12"/><rect x="390" y="170" width="220" height="65" rx="12"/><rect x="690" y="170" width="220" height="65" rx="12"/>
+        <rect x="90" y="330" width="220" height="65" rx="12"/><rect x="390" y="330" width="220" height="65" rx="12"/><rect x="690" y="330" width="220" height="65" rx="12"/>
+      </g>
+      <g stroke="var(--color-accent)" stroke-width="3" fill="none">
+        <path d="M500 90v45M500 135H200v35M500 135v35M500 135h300v35"/>
+        <path d="M200 235v55M500 235v55M800 235v55"/>
+      </g>
+      <g fill="var(--color-text)" font-family="IBM Plex Sans" font-size="15" text-anchor="middle">
+        <text x="500" y="64">SYMPTÔME</text>
+        <text x="200" y="210">Alimentation</text><text x="500" y="210">Connectique</text><text x="800" y="210">Composant</text>
+        <text x="200" y="370">Présente ?</text><text x="500" y="370">Correcte ?</text><text x="800" y="370">Testé ?</text>
+      </g>
+      <text x="500" y="430" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="var(--color-accent)">méthode : observer → vérifier → isoler → confirmer</text>
+    </svg>
+  </div>
+  <div class="cards" style="margin-top:35px">
+    <article class="card"><div class="icon">⚡</div><h3>Alimentation</h3><p>Observer si le poste reçoit et distribue correctement l'alimentation nécessaire.</p></article>
+    <article class="card"><div class="icon">⌁</div><h3>Mémoire</h3><p>Une RAM mal insérée peut empêcher un démarrage normal ou produire des signaux d'erreur.</p></article>
+    <article class="card"><div class="icon">▦</div><h3>Stockage</h3><p>Vérifier la présence, les connexions et la détection de l'unité.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="outils" class="section-alt">
+<div class="section-inner reveal">
+  <div class="kicker">06 · Outils</div><h2>Les outils de diagnostic</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Outil</th><th scope="col">Utilité</th><th scope="col">Type d'information</th></tr></thead>
+      <tbody>
+        <tr><td>BIOS / UEFI</td><td>Observer la détection des composants et certains paramètres matériels.</td><td>Détection / configuration</td></tr>
+        <tr><td>Gestionnaire de périphériques</td><td>Observer les périphériques reconnus par le système.</td><td>État des périphériques</td></tr>
+        <tr><td>Outils de diagnostic mémoire</td><td>Rechercher des anomalies liées à la mémoire.</td><td>Tests mémoire</td></tr>
+        <tr><td>Outils SMART</td><td>Consulter les informations de santé disponibles pour certains supports.</td><td>État du stockage</td></tr>
+        <tr><td>Multimètre</td><td>Effectuer des mesures électriques lorsque cela est nécessaire et maîtrisé.</td><td>Mesures électriques</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="code">Diagnostic matériel
+1. Décrire précisément le symptôme
+2. Vérifier l'alimentation
+3. Vérifier les connexions
+4. Observer le POST
+5. Tester les composants concernés
+6. Comparer et isoler la cause</div>
+  <div class="callout"><b>🔒 Sécurité / bonne pratique</b><br>Avant toute intervention interne, mettre le poste hors tension et adopter les précautions adaptées à la manipulation des composants électroniques.</div>
+</div>
+</section>
+
+<section id="synthese">
+<div class="section-inner reveal">
+  <div class="kicker">Synthèse</div><h2>Points clés à retenir</h2>
+  <div class="key-grid">
+    <div class="key"><b>Montage</b><br>Installer les composants avec ordre et vérifier chaque connexion.</div>
+    <div class="key"><b>Connectique</b><br>Un câble mal branché peut produire un symptôme de panne.</div>
+    <div class="key"><b>POST</b><br>Le démarrage fournit des informations utiles avant le chargement du système.</div>
+    <div class="key"><b>Diagnostic</b><br>Procéder progressivement pour isoler la cause au lieu de remplacer au hasard.</div>
+  </div>
+  <details style="margin-top:35px">
+    <summary>Pourquoi commencer par les vérifications simples ?</summary>
+    <p>Parce qu'une connexion, une alimentation ou une insertion incorrecte peut produire un symptôme important sans que le composant soit réellement défectueux. Une démarche structurée réduit les erreurs de diagnostic.</p>
+  </details>
+  <details>
+    <summary>Pourquoi les codes bip doivent-ils être interprétés avec prudence ?</summary>
+    <p>Parce que leur signification dépend du matériel et du firmware. Le constructeur ou la documentation du modèle permet de confirmer l'interprétation.</p>
+  </details>
+</div>
+</section>
+
+<div class="container">
+  <div class="bottom-nav">
+    <a href="#montage">← <strong>Leçon 01</strong><br>Architecture d'un ordinateur</a>
+    <a href="#synthese" style="text-align:right"><strong>Leçon 03</strong> →<br>Installation de systèmes d'exploitation</a>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="container">Module 1 · Maintenance informatique – Matériel et systèmes · Leçon 02</div>
+</footer>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+  const h=document.documentElement;
+  const max=h.scrollHeight-h.clientHeight;
+  progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+updateProgress();
+
+document.querySelectorAll('.tab-buttons button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const group=btn.closest('.tabs');
+    group.querySelectorAll('[role="tab"]').forEach(b=>b.setAttribute('aria-selected','false'));
+    group.querySelectorAll('[role="tabpanel"]').forEach(p=>p.classList.remove('active'));
+    btn.setAttribute('aria-selected','true');
+    document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+  });
+  btn.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+      const tabs=[...btn.parentElement.querySelectorAll('[role="tab"]')];
+      const i=tabs.indexOf(btn);
+      tabs[(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length].focus();
+    }
+  });
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+document.getElementById('topBtn').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

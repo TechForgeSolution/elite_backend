@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 29 — Cinema 4D : créer rapidement des scènes et animations orientées motion.">
+  <title>Leçon 29 — Cinema 4D | Filière Audiovisuel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#FFFFFF;
+      --color-bg-alt:#F6F8F6;
+      --color-text:#0B0F0D;
+      --color-text-muted:#5A6560;
+      --color-accent:#1F6F54;
+      --color-accent-soft:#E7F2ED;
+      --color-border:#E3E8E5;
+      --color-accent-alt:#B3541E;
+      --shadow:0 14px 40px rgba(11,15,13,.07);
+      --radius:18px;
+      --mono:"IBM Plex Mono",monospace;
+      --display:"Space Grotesk",sans-serif;
+      --body:"Inter",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;color:var(--color-text);background:var(--color-bg);
+      font-family:var(--body);line-height:1.7;
+    }
+    a{color:inherit}
+    button{font:inherit}
+    :focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+    .progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+    .progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+    .site-header{
+      position:sticky;top:4px;z-index:100;background:rgba(255,255,255,.94);
+      backdrop-filter:blur(10px);border-bottom:1px solid var(--color-border)
+    }
+    .nav{
+      max-width:1180px;margin:auto;padding:14px 24px;display:flex;
+      align-items:center;justify-content:space-between;gap:24px
+    }
+    .brand{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px}
+    .brand-mark{width:30px;height:30px;border:2px solid var(--color-accent);border-radius:7px;display:grid;place-items:center;color:var(--color-accent);font-family:var(--mono);font-size:12px}
+    .module{font-family:var(--mono);font-size:12px;color:var(--color-text-muted)}
+    .menu-btn{display:none;background:none;border:1px solid var(--color-border);padding:8px 11px;border-radius:10px}
+    main{overflow:hidden}
+    .hero{max-width:1180px;margin:auto;padding:76px 24px 50px}
+    .eyebrow{font-family:var(--mono);font-size:13px;color:var(--color-accent);font-weight:600;letter-spacing:.04em}
+    h1,h2,h3{font-family:var(--display);line-height:1.12;margin:0 0 18px}
+    h1{font-size:clamp(42px,7vw,78px);max-width:850px;letter-spacing:-.045em}
+    h2{font-size:clamp(30px,4vw,46px);letter-spacing:-.03em}
+    h3{font-size:22px}
+    p{max-width:720px;margin:0 0 18px;color:#202823}
+    .lead{font-size:20px;color:var(--color-text-muted);max-width:760px}
+    .badges{display:flex;flex-wrap:wrap;gap:9px;margin:25px 0}
+    .badge{border:1px solid var(--color-border);border-radius:999px;padding:7px 12px;font-size:13px;background:#fff}
+    .badge.accent{background:var(--color-accent-soft);border-color:#cce4d9;color:var(--color-accent);font-weight:600}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:55px;align-items:center}
+    .hero-art{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+    .hero-art svg{display:block;width:100%;height:auto}
+    .toc-wrap{max-width:1180px;margin:0 auto 20px;padding:0 24px}
+    .toc{border:1px solid var(--color-border);border-radius:var(--radius);padding:22px;background:#fff;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+    .toc strong{font-family:var(--display)}
+    .toc-list{display:flex;flex-wrap:wrap;gap:9px 18px}
+    .toc-list a{text-decoration:none;color:var(--color-text-muted);font-size:14px}
+    .toc-list a:hover{color:var(--color-accent)}
+    section{padding:80px 24px}
+    section.alt{background:var(--color-bg-alt)}
+    .section-inner{max-width:1180px;margin:auto}
+    .section-head{margin-bottom:35px}
+    .section-kicker{font-family:var(--mono);font-size:12px;color:var(--color-accent);margin-bottom:10px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+    .visual-card{border:1px solid var(--color-border);background:#fff;border-radius:var(--radius);padding:20px;box-shadow:0 8px 30px rgba(11,15,13,.04)}
+    .visual-card svg{width:100%;height:auto;display:block}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{border:1px solid var(--color-border);border-radius:16px;padding:24px;background:#fff;transition:transform .25s,box-shadow .25s}
+    .card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+    .num{font-family:var(--mono);color:var(--color-accent);font-size:13px;font-weight:600;margin-bottom:16px}
+    .icon{width:44px;height:44px;border-radius:12px;background:var(--color-accent-soft);display:grid;place-items:center;color:var(--color-accent);margin-bottom:16px}
+    .icon svg{width:23px}
+    .stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:35px}
+    .step{position:relative;padding:0 14px 0 0}
+    .step:not(:last-child)::after{content:"";position:absolute;top:17px;left:35px;width:calc(100% - 35px);height:1px;background:var(--color-border)}
+    .step-dot{position:relative;z-index:2;width:35px;height:35px;border:1px solid var(--color-accent);background:#fff;color:var(--color-accent);border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:12px;margin-bottom:14px}
+    .step h3{font-size:16px;margin-bottom:7px}
+    .step p{font-size:13px;color:var(--color-text-muted);line-height:1.55}
+    .callout{border-left:4px solid var(--color-accent);background:var(--color-accent-soft);padding:20px 22px;border-radius:0 14px 14px 0;margin:28px 0}
+    .callout strong{display:block;margin-bottom:5px}
+    .tabs{margin-top:28px}
+    .tab-buttons{display:flex;gap:7px;border-bottom:1px solid var(--color-border);overflow:auto}
+    .tab-buttons button{border:0;background:none;padding:12px 16px;cursor:pointer;color:var(--color-text-muted);white-space:nowrap;border-bottom:2px solid transparent}
+    .tab-buttons button[aria-selected="true"]{color:var(--color-accent);border-bottom-color:var(--color-accent);font-weight:600}
+    .tab-panel{padding:25px 0}
+    .tab-panel[hidden]{display:none}
+    .table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:16px;background:#fff}
+    table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px}
+    th,td{padding:14px 16px;border-bottom:1px solid var(--color-border);text-align:left}
+    th{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-muted);background:var(--color-bg-alt)}
+    td.numcell{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+    tr:last-child td{border-bottom:0}
+    .accordion{border-top:1px solid var(--color-border)}
+    .acc-item{border-bottom:1px solid var(--color-border)}
+    .acc-btn{width:100%;border:0;background:none;text-align:left;padding:20px 0;display:flex;justify-content:space-between;cursor:pointer;font-family:var(--display);font-weight:600}
+    .acc-btn span:last-child{color:var(--color-accent);font-family:var(--mono)}
+    .acc-content{display:none;padding:0 30px 20px 0}
+    .acc-item.open .acc-content{display:block}
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .summary-card{padding:22px;border:1px solid var(--color-border);background:#fff;border-radius:15px}
+    .summary-card b{display:block;font-family:var(--display);font-size:17px;margin-bottom:8px}
+    .summary-card span{font-size:13px;color:var(--color-text-muted)}
+    .nav-lessons{max-width:1180px;margin:auto;padding:45px 24px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .lesson-link{border:1px solid var(--color-border);border-radius:16px;padding:20px;text-decoration:none;background:#fff;transition:border-color .2s,transform .2s}
+    .lesson-link:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+    .lesson-link small{font-family:var(--mono);color:var(--color-text-muted)}
+    .lesson-link strong{display:block;font-family:var(--display);margin-top:7px}
+    footer{border-top:1px solid var(--color-border);padding:30px 24px;text-align:center;color:var(--color-text-muted);font-size:13px}
+    .backtop{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);box-shadow:var(--shadow);cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+    .backtop.show{opacity:1;pointer-events:auto}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .mono{font-family:var(--mono)}
+    @media(max-width:900px){
+      .hero-grid,.two-col{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr 1fr}
+      .stepper{grid-template-columns:1fr 1fr;gap:28px}
+      .step:not(:last-child)::after{display:none}
+      .summary{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:650px){
+      .nav{padding:12px 16px}.module{display:none}.menu-btn{display:block}
+      .hero{padding:55px 18px 35px}.toc-wrap,section{padding-left:18px;padding-right:18px}
+      section{padding-top:55px;padding-bottom:55px}
+      .toc{grid-template-columns:1fr}
+      .cards,.summary,.nav-lessons{grid-template-columns:1fr}
+      .nav-lessons{padding:30px 18px}
+      .stepper{grid-template-columns:1fr}
+      .lead{font-size:17px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+      .reveal{opacity:1;transform:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Navigation principale">
+      <div class="brand"><span class="brand-mark">AV</span> Filière Audiovisuel</div>
+      <div class="module">MODULE 5 · GRAPHISME 2D/3D</div>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="toc">Sommaire</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">LEÇON 29 · CRÉATION & ANIMATION</div>
+          <h1>Cinema 4D</h1>
+          <p class="lead">Créer rapidement des scènes et des animations orientées motion en maîtrisant MoGraph, les cloners, les effectors, les splines, les matériaux, la caméra et le rendu.</p>
+          <div class="badges">
+            <span class="badge accent">Module 5</span>
+            <span class="badge">Débutant → intermédiaire</span>
+            <span class="badge">15 min</span>
+          </div>
+          <div class="callout">
+            <strong>💡 Objectif de la leçon</strong>
+            Comprendre le rôle de chaque outil dans une chaîne de création motion et savoir comment les combiner pour construire rapidement une animation propre.
+          </div>
+        </div>
+
+        <div class="hero-art" role="img" aria-label="Illustration d'une scène Cinema 4D composée d'objets clonés, d'une spline et d'une caméra">
+          <svg viewBox="0 0 650 470" xmlns="http://www.w3.org/2000/svg">
+            <rect x="18" y="18" width="614" height="434" rx="18" fill="#fff" stroke="#E3E8E5"/>
+            <rect x="48" y="48" width="554" height="54" rx="10" fill="#F6F8F6"/>
+            <circle cx="75" cy="75" r="7" fill="#1F6F54"/>
+            <rect x="96" y="68" width="108" height="14" rx="7" fill="#DDE5E0"/>
+            <rect x="475" y="66" width="88" height="18" rx="9" fill="#E7F2ED"/>
+            <path d="M90 345 C170 190, 260 420, 355 220 S505 175, 565 300" fill="none" stroke="#1F6F54" stroke-width="4"/>
+            <g fill="#fff" stroke="#0B0F0D" stroke-width="3">
+              <rect x="145" y="145" width="70" height="70" rx="8"/>
+              <rect x="270" y="125" width="70" height="70" rx="8"/>
+              <rect x="395" y="155" width="70" height="70" rx="8"/>
+              <rect x="208" y="275" width="70" height="70" rx="8"/>
+              <rect x="333" y="295" width="70" height="70" rx="8"/>
+            </g>
+            <g fill="#1F6F54">
+              <circle cx="180" cy="180" r="9"/><circle cx="305" cy="160" r="9"/>
+              <circle cx="430" cy="190" r="9"/><circle cx="243" cy="310" r="9"/>
+              <circle cx="368" cy="330" r="9"/>
+            </g>
+            <path d="M88 382 H562" stroke="#E3E8E5"/>
+            <path d="M125 405 H265 M300 405 H430 M465 405 H545" stroke="#5A6560" stroke-width="5" stroke-linecap="round"/>
+            <path d="M512 116 L570 144 L545 170 L487 142 Z" fill="#E7F2ED" stroke="#1F6F54" stroke-width="3"/>
+            <path d="M528 143 L570 118" stroke="#1F6F54" stroke-width="3"/>
+            <text x="64" y="435" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5A6560">MOGRAPH / CLONER / EFFECTOR / SPLINE / CAMERA</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc-wrap">
+      <nav class="toc" id="toc" aria-label="Sommaire">
+        <strong>Sommaire</strong>
+        <div class="toc-list">
+          <a href="#mograph">01 · MoGraph</a>
+          <a href="#cloners">02 · Cloners</a>
+          <a href="#effectors">03 · Effectors</a>
+          <a href="#splines">04 · Splines</a>
+          <a href="#materials">05 · Matériaux</a>
+          <a href="#camera">06 · Caméra</a>
+          <a href="#render">07 · Rendu</a>
+          <a href="#synthese">08 · Synthèse</a>
+        </div>
+      </nav>
+    </div>
+
+    <section id="mograph">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">01 / FONDATION</div>
+          <h2>MoGraph : penser en système</h2>
+          <p>MoGraph permet de construire des animations à partir de règles plutôt que de manipuler chaque objet un par un. L'idée centrale est de créer une structure, puis de contrôler son comportement.</p>
+        </div>
+        <div class="two-col">
+          <div class="visual-card">
+            <svg viewBox="0 0 650 330" role="img" aria-label="Schéma du principe MoGraph : objet source, règle et animation">
+              <rect x="20" y="25" width="610" height="280" rx="18" fill="#F6F8F6"/>
+              <rect x="50" y="110" width="130" height="95" rx="14" fill="#fff" stroke="#1F6F54" stroke-width="2"/>
+              <text x="115" y="145" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="20" fill="#0B0F0D">OBJET</text>
+              <text x="115" y="172" text-anchor="middle" font-family="Inter" font-size="13" fill="#5A6560">source</text>
+              <path d="M190 158 H280" stroke="#1F6F54" stroke-width="3"/>
+              <path d="M270 150 L282 158 L270 166" fill="none" stroke="#1F6F54" stroke-width="3"/>
+              <rect x="285" y="75" width="145" height="165" rx="14" fill="#fff" stroke="#0B0F0D" stroke-width="2"/>
+              <text x="357" y="115" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="19">RÈGLE</text>
+              <text x="357" y="145" text-anchor="middle" font-family="Inter" font-size="13" fill="#5A6560">clone</text>
+              <text x="357" y="167" text-anchor="middle" font-family="Inter" font-size="13" fill="#5A6560">déplacement</text>
+              <text x="357" y="189" text-anchor="middle" font-family="Inter" font-size="13" fill="#5A6560">variation</text>
+              <path d="M440 158 H520" stroke="#1F6F54" stroke-width="3"/>
+              <path d="M510 150 L522 158 L510 166" fill="none" stroke="#1F6F54" stroke-width="3"/>
+              <g fill="#1F6F54">
+                <rect x="535" y="95" width="25" height="25" rx="5"/><rect x="570" y="125" width="25" height="25" rx="5"/>
+                <rect x="535" y="160" width="25" height="25" rx="5"/><rect x="570" y="195" width="25" height="25" rx="5"/>
+              </g>
+              <text x="565" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#5A6560">ANIMATION</text>
+            </svg>
+          </div>
+          <div>
+            <h3>La logique à retenir</h3>
+            <p>Au lieu de créer dix objets séparés, on peut définir un objet source et demander à Cinema 4D de le répéter, le déplacer ou le modifier selon une règle.</p>
+            <div class="cards" style="grid-template-columns:1fr 1fr">
+              <article class="card"><div class="num">01</div><h3>Structure</h3><p>Construire une base claire avant d'animer.</p></article>
+              <article class="card"><div class="num">02</div><h3>Règle</h3><p>Définir comment les éléments évoluent.</p></article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cloners" class="alt">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">02 / RÉPÉTITION</div>
+          <h2>Cloners : multiplier sans tout recréer</h2>
+          <p>Le Cloner transforme un objet en ensemble contrôlable. Il peut distribuer les copies selon une grille, une ligne, un cercle ou une autre logique.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="icon" aria-hidden="true">▦</div>
+            <h3>Grid</h3>
+            <p>Dispose les copies en lignes et colonnes pour créer des murs, matrices ou compositions géométriques.</p>
+          </article>
+          <article class="card">
+            <div class="icon" aria-hidden="true">↔</div>
+            <h3>Linear</h3>
+            <p>Aligne les copies sur un axe. Idéal pour des séquences, titres ou transitions régulières.</p>
+          </article>
+          <article class="card">
+            <div class="icon" aria-hidden="true">◌</div>
+            <h3>Radial</h3>
+            <p>Organise les éléments autour d'un centre pour obtenir des motifs circulaires et des mouvements orbitaux.</p>
+          </article>
+        </div>
+        <div class="visual-card" style="margin-top:25px">
+          <svg viewBox="0 0 1000 270" role="img" aria-label="Trois distributions de clones : grille, ligne et cercle">
+            <g transform="translate(50,40)">
+              <text x="110" y="-10" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="18">GRID</text>
+              <g fill="#1F6F54">
+                <rect x="25" y="20" width="30" height="30" rx="5"/><rect x="70" y="20" width="30" height="30" rx="5"/><rect x="115" y="20" width="30" height="30" rx="5"/><rect x="160" y="20" width="30" height="30" rx="5"/>
+                <rect x="25" y="65" width="30" height="30" rx="5"/><rect x="70" y="65" width="30" height="30" rx="5"/><rect x="115" y="65" width="30" height="30" rx="5"/><rect x="160" y="65" width="30" height="30" rx="5"/>
+                <rect x="25" y="110" width="30" height="30" rx="5"/><rect x="70" y="110" width="30" height="30" rx="5"/><rect x="115" y="110" width="30" height="30" rx="5"/><rect x="160" y="110" width="30" height="30" rx="5"/>
+              </g>
+            </g>
+            <g transform="translate(390,40)">
+              <text x="110" y="-10" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="18">LINEAR</text>
+              <g fill="#1F6F54">
+                <rect x="10" y="78" width="30" height="30" rx="5"/><rect x="65" y="78" width="30" height="30" rx="5"/><rect x="120" y="78" width="30" height="30" rx="5"/><rect x="175" y="78" width="30" height="30" rx="5"/>
+              </g>
+              <path d="M10 125 H205" stroke="#E3E8E5"/>
+            </g>
+            <g transform="translate(700,30)">
+              <text x="110" y="0" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="18">RADIAL</text>
+              <circle cx="110" cy="100" r="72" fill="none" stroke="#E3E8E5"/>
+              <g fill="#1F6F54">
+                <rect x="95" y="22" width="30" height="30" rx="5"/><rect x="158" y="57" width="30" height="30" rx="5"/><rect x="158" y="118" width="30" height="30" rx="5"/>
+                <rect x="95" y="153" width="30" height="30" rx="5"/><rect x="32" y="118" width="30" height="30" rx="5"/><rect x="32" y="57" width="30" height="30" rx="5"/>
+              </g>
+              <circle cx="110" cy="100" r="7" fill="#0B0F0D"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="effectors">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">03 / COMPORTEMENT</div>
+          <h2>Effectors : donner du mouvement aux clones</h2>
+          <p>Les Effectors contrôlent les transformations appliquées à un ensemble de clones. Ils permettent de créer des variations, des vagues, des décalages et des réactions progressives.</p>
+        </div>
+        <div class="stepper">
+          <div class="step"><div class="step-dot">01</div><h3>Cloner</h3><p>Créer la répétition.</p></div>
+          <div class="step"><div class="step-dot">02</div><h3>Choisir</h3><p>Sélectionner l'Effector.</p></div>
+          <div class="step"><div class="step-dot">03</div><h3>Régler</h3><p>Définir la transformation.</p></div>
+          <div class="step"><div class="step-dot">04</div><h3>Falloff</h3><p>Contrôler la zone d'influence.</p></div>
+          <div class="step"><div class="step-dot">05</div><h3>Animer</h3><p>Faire évoluer le paramètre.</p></div>
+          <div class="step"><div class="step-dot">06</div><h3>Affiner</h3><p>Obtenir un mouvement lisible.</p></div>
+        </div>
+        <div class="tabs">
+          <div class="tab-buttons" role="tablist" aria-label="Types d'effectors">
+            <button role="tab" aria-selected="true" aria-controls="tab-plain" id="btn-plain">Plain</button>
+            <button role="tab" aria-selected="false" aria-controls="tab-step" id="btn-step">Step</button>
+            <button role="tab" aria-selected="false" aria-controls="tab-random" id="btn-random">Random</button>
+          </div>
+          <div class="tab-panel" role="tabpanel" id="tab-plain" aria-labelledby="btn-plain">
+            <h3>Plain Effector</h3><p>Le choix le plus direct : appliquer une transformation uniforme ou contrôlée à l'ensemble des clones. Très utile pour comprendre la relation entre position, rotation et échelle.</p>
+          </div>
+          <div class="tab-panel" role="tabpanel" id="tab-step" aria-labelledby="btn-step" hidden>
+            <h3>Step Effector</h3><p>Permet de créer une progression entre les clones. Il est intéressant pour des compositions où chaque élément doit être légèrement différent du précédent.</p>
+          </div>
+          <div class="tab-panel" role="tabpanel" id="tab-random" aria-labelledby="btn-random" hidden>
+            <h3>Random Effector</h3><p>Introduit une variation contrôlée. L'objectif n'est pas de rendre le résultat chaotique, mais d'éviter une répétition trop mécanique.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="splines" class="alt">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">04 / TRAJECTOIRE</div>
+          <h2>Splines : dessiner le mouvement</h2>
+          <p>Une spline est une courbe qui peut servir de trajectoire, de guide ou de forme de référence. Elle permet de construire des mouvements plus organiques et plus précis.</p>
+        </div>
+        <div class="two-col">
+          <div>
+            <h3>Une courbe devient une instruction</h3>
+            <p>Plutôt que d'animer manuellement une position image par image, une trajectoire peut définir le chemin que l'objet ou les clones doivent suivre.</p>
+            <div class="callout"><strong>📌 À retenir</strong>Une bonne spline ne sert pas seulement à « faire joli » : elle donne une structure temporelle et spatiale au mouvement.</div>
+          </div>
+          <div class="visual-card">
+            <svg viewBox="0 0 600 330" role="img" aria-label="Courbe spline avec objets positionnés le long de la trajectoire">
+              <rect x="18" y="18" width="564" height="294" rx="16" fill="#F6F8F6"/>
+              <path d="M55 250 C125 55, 225 75, 300 210 S475 285, 545 70" fill="none" stroke="#1F6F54" stroke-width="5"/>
+              <g fill="#fff" stroke="#0B0F0D" stroke-width="2">
+                <circle cx="86" cy="177" r="19"/><circle cx="167" cy="98" r="19"/><circle cx="266" cy="173" r="19"/><circle cx="379" cy="246" r="19"/><circle cx="490" cy="186" r="19"/>
+              </g>
+              <g fill="#1F6F54"><circle cx="86" cy="177" r="5"/><circle cx="167" cy="98" r="5"/><circle cx="266" cy="173" r="5"/><circle cx="379" cy="246" r="5"/><circle cx="490" cy="186" r="5"/></g>
+              <text x="300" y="292" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5A6560">TRAJECTOIRE SPLINE</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="materials">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">05 / APPARENCE</div>
+          <h2>Matériaux : contrôler la lecture visuelle</h2>
+          <p>Les matériaux donnent aux objets leur apparence : couleur, réflexion, rugosité et transparence. En motion design, la simplicité est souvent plus efficace qu'une matière trop complexe.</p>
+        </div>
+        <div class="cards">
+          <article class="card"><div class="num">A</div><h3>Couleur</h3><p>Définit rapidement l'identité visuelle et la hiérarchie entre les éléments.</p></article>
+          <article class="card"><div class="num">B</div><h3>Rugosité</h3><p>Contrôle la diffusion de la lumière et la sensation de surface.</p></article>
+          <article class="card"><div class="num">C</div><h3>Réflexion</h3><p>Ajoute de la profondeur, à utiliser avec mesure pour préserver la lisibilité.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="camera" class="alt">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">06 / CADRAGE</div>
+          <h2>Caméra : construire le regard</h2>
+          <p>Une scène peut être excellente et pourtant peu lisible si la caméra est mal placée. Le cadrage doit guider l'œil vers l'information importante.</p>
+        </div>
+        <div class="visual-card">
+          <svg viewBox="0 0 1000 360" role="img" aria-label="Schéma montrant une caméra, une cible et une scène">
+            <rect x="20" y="20" width="960" height="320" rx="18" fill="#fff" stroke="#E3E8E5"/>
+            <path d="M170 180 L430 85 L430 275 Z" fill="#E7F2ED" stroke="#1F6F54" stroke-width="2"/>
+            <path d="M160 180 L105 145 L105 215 Z" fill="#fff" stroke="#0B0F0D" stroke-width="3"/>
+            <circle cx="118" cy="180" r="12" fill="#1F6F54"/>
+            <text x="115" y="260" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="17">CAMÉRA</text>
+            <g fill="#fff" stroke="#0B0F0D" stroke-width="3">
+              <rect x="560" y="105" width="95" height="95" rx="10"/>
+              <rect x="700" y="145" width="95" height="95" rx="10"/>
+            </g>
+            <g fill="#1F6F54"><circle cx="608" cy="153" r="10"/><circle cx="748" cy="193" r="10"/></g>
+            <path d="M430 180 H540" stroke="#1F6F54" stroke-width="3" stroke-dasharray="7 7"/>
+            <text x="680" y="295" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5A6560">SUJET / PROFONDEUR / CADRAGE</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="render">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">07 / SORTIE</div>
+          <h2>Rendu : transformer la scène en résultat final</h2>
+          <p>Le rendu convertit la scène 3D en image ou séquence exploitable. Il faut équilibrer qualité, éclairage, résolution et temps de calcul.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Paramètre</th><th scope="col">Objectif</th><th scope="col">Point d'attention</th></tr></thead>
+            <tbody>
+              <tr><td>Résolution</td><td>Définir la taille finale</td><td>Adapter au support de diffusion</td></tr>
+              <tr><td>Fréquence</td><td>Définir la fluidité</td><td>Conserver une cadence cohérente</td></tr>
+              <tr><td>Éclairage</td><td>Donner volume et lisibilité</td><td>Éviter les contrastes inutiles</td></tr>
+              <tr><td>Qualité</td><td>Obtenir une image propre</td><td>Équilibrer qualité et temps de calcul</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout"><strong>⚠️ Attention</strong>Une qualité de rendu maximale n'est pas toujours la meilleure solution. En production motion, il faut surtout choisir des réglages adaptés au résultat attendu et au temps disponible.</div>
+      </div>
+    </section>
+
+    <section id="synthese" class="alt">
+      <div class="section-inner reveal">
+        <div class="section-head">
+          <div class="section-kicker">08 / SYNTHÈSE</div>
+          <h2>Points clés à retenir</h2>
+          <p>La puissance de Cinema 4D vient surtout de la combinaison des outils.</p>
+        </div>
+        <div class="summary">
+          <div class="summary-card"><b>MoGraph</b><span>Construire une logique d'animation procédurale.</span></div>
+          <div class="summary-card"><b>Cloner</b><span>Multiplier rapidement les éléments.</span></div>
+          <div class="summary-card"><b>Effector</b><span>Contrôler leur transformation.</span></div>
+          <div class="summary-card"><b>Spline</b><span>Créer des trajectoires précises.</span></div>
+          <div class="summary-card"><b>Matériaux</b><span>Définir l'apparence et la lecture.</span></div>
+          <div class="summary-card"><b>Caméra</b><span>Organiser le regard du spectateur.</span></div>
+          <div class="summary-card"><b>Rendu</b><span>Produire la sortie finale.</span></div>
+          <div class="summary-card"><b>Workflow</b><span>Combiner les outils pour gagner du temps.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="nav-lessons">
+      <a class="lesson-link" href="#" aria-label="Leçon précédente">
+        <small>← LEÇON PRÉCÉDENTE</small>
+        <strong>Leçon 28 · Introduction à la 3D</strong>
+      </a>
+      <a class="lesson-link" href="#" aria-label="Leçon suivante">
+        <small>LEÇON SUIVANTE →</small>
+        <strong>Leçon 30 · Projet professionnel</strong>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    Filière Audiovisuel · Module 5 · Leçon 29 — Cinema 4D
+  </footer>
+
+  <button class="backtop" id="backtop" aria-label="Retour en haut">↑</button>
+
+  <script>
+    const progress = document.getElementById('progress');
+    const backtop = document.getElementById('backtop');
+
+    function updateScroll(){
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const value = max > 0 ? (window.scrollY / max) * 100 : 0;
+      progress.style.width = value + '%';
+      backtop.classList.toggle('show', window.scrollY > 500);
+    }
+    window.addEventListener('scroll', updateScroll, {passive:true});
+    updateScroll();
+
+    backtop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+    const tabs = document.querySelectorAll('[role="tab"]');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const container = tab.closest('.tabs');
+        container.querySelectorAll('[role="tab"]').forEach(t => t.setAttribute('aria-selected','false'));
+        container.querySelectorAll('[role="tabpanel"]').forEach(p => p.hidden = true);
+        tab.setAttribute('aria-selected','true');
+        document.getElementById(tab.getAttribute('aria-controls')).hidden = false;
+      });
+      tab.addEventListener('keydown', e => {
+        if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const list = [...tab.parentElement.querySelectorAll('[role="tab"]')];
+        const i = list.indexOf(tab);
+        const next = e.key === 'ArrowRight' ? list[(i+1)%list.length] : list[(i-1+list.length)%list.length];
+        next.focus(); next.click();
+      });
+    });
+
+    document.querySelectorAll('.acc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const open = item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+        btn.querySelector('span:last-child').textContent = open ? '−' : '+';
+      });
+    });
+
+    const revealItems = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.12});
+    revealItems.forEach(el => observer.observe(el));
+
+    const menuBtn = document.getElementById('menuBtn');
+    const toc = document.getElementById('toc');
+    menuBtn.addEventListener('click', () => {
+      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      menuBtn.setAttribute('aria-expanded', String(!expanded));
+      toc.style.display = expanded ? '' : 'grid';
+    });
+  </script>
+</body>
+</html>

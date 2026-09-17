@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 20 — Dépannage réseau avancé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+ --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.68}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:color-mix(in srgb,var(--color-neutral) 25%,var(--color-bg))}
+.progress i{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+.nav{max-width:var(--max);margin:auto;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:.02em}.brand span{color:var(--color-accent)}
+.nav a{font-size:.9rem;font-weight:600}
+main{max-width:var(--max);margin:auto;padding:0 22px}
+.hero{padding:70px 0 42px;display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
+.eyebrow,.kicker{font-family:"IBM Plex Mono";font-size:.78rem;color:var(--color-accent);text-transform:uppercase;letter-spacing:.1em}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12}
+h1{font-size:clamp(2.5rem,6vw,5rem);margin:.25em 0}
+h2{font-size:clamp(1.8rem,3vw,2.7rem);margin:0 0 18px}
+h3{font-size:1.25rem;margin:8px 0}
+.lead{font-size:1.15rem;max-width:720px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.badge{padding:6px 10px;border:1px solid var(--color-neutral);border-radius:999px;font-family:"IBM Plex Mono";font-size:.78rem}
+.badge.accent{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.hero-art,.diagram{border:1px solid var(--color-neutral);border-radius:16px;background:var(--color-bg);overflow:auto}
+.hero-art{padding:12px}.hero-art svg{display:block;width:100%;height:auto}
+.toc{border-top:1px solid var(--color-neutral);border-bottom:1px solid var(--color-neutral);padding:24px 0;margin:10px 0 50px}
+.toc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.toc a{padding:12px;border-left:2px solid var(--color-neutral);font-weight:600;font-size:.9rem}
+.toc a:hover{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));text-decoration:none}
+section{padding:64px 0}
+section:nth-of-type(even){background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));margin-left:calc((var(--max) - 100vw)/2);margin-right:calc((var(--max) - 100vw)/2);padding-left:max(22px,calc((100vw - var(--max))/2 + 22px));padding-right:max(22px,calc((100vw - var(--max))/2 + 22px))}
+.wrap{max-width:920px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.card{border:1px solid color-mix(in srgb,var(--color-neutral) 65%,var(--color-bg));border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.6rem;color:var(--color-accent)}
+.diagram{margin:30px 0;padding:14px}.diagram svg{min-width:700px;width:100%;height:auto;display:block}
+.callout{border-left:5px solid var(--color-accent);padding:16px 18px;margin:25px 0;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.callout strong{font-family:"Space Grotesk"}
+.code{position:relative;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));border:1px solid color-mix(in srgb,var(--color-accent) 30%,var(--color-bg));border-radius:12px;padding:18px;margin:25px 0;overflow:auto}
+pre{margin:0;font:500 .9rem/1.6 "IBM Plex Mono",monospace}
+.copy{position:absolute;right:10px;top:10px;border:1px solid var(--color-neutral);background:var(--color-bg);color:var(--color-text);border-radius:7px;padding:6px 9px;cursor:pointer}
+.copy:hover{border-color:var(--color-accent)}
+table{width:100%;border-collapse:collapse;margin:25px 0;font-family:"IBM Plex Mono";font-size:.88rem}
+th,td{padding:12px;border-bottom:1px solid var(--color-neutral);text-align:left}
+th{color:var(--color-accent)}
+tr:hover td{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.tabs{margin:30px 0}.tab-buttons{display:flex;gap:5px;flex-wrap:wrap;border-bottom:1px solid var(--color-neutral)}
+.tab-buttons button{border:0;background:transparent;padding:12px 15px;color:var(--color-text);font:600 .95rem "IBM Plex Sans";cursor:pointer;border-bottom:3px solid transparent}
+.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}
+.tab-panel{display:none;padding:20px 0}.tab-panel.active{display:block}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:28px 0}
+.step{border-top:3px solid var(--color-accent);padding:15px 8px}.num{font-family:"IBM Plex Mono";color:var(--color-accent);font-weight:600}
+details{border-top:1px solid var(--color-neutral);padding:15px 0}
+summary{cursor:pointer;font-family:"Space Grotesk";font-weight:600}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.key{padding:18px;border:1px solid var(--color-neutral);border-radius:12px}
+.bottom-nav{display:flex;justify-content:space-between;gap:15px;margin:35px 0}
+.btn{display:inline-block;padding:10px 14px;border:1px solid var(--color-neutral);border-radius:9px;font-weight:600}.btn:hover{border-color:var(--color-accent);text-decoration:none}
+footer{border-top:1px solid var(--color-neutral);padding:35px 22px;text-align:center}
+.top{position:fixed;right:20px;bottom:20px;display:none;background:var(--color-text);color:var(--color-bg);border:0;border-radius:9px;padding:11px 13px;cursor:pointer}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.toc-grid{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){main{padding:0 16px}.nav{padding:12px 16px}.hero{padding-top:48px}.toc-grid,.grid,.keys{grid-template-columns:1fr}.steps{grid-template-columns:1fr}section{padding:45px 0}section:nth-of-type(even){margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}h1{font-size:2.65rem}.bottom-nav{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress"><i id="progress"></i></div>
+<header><nav class="nav" aria-label="Navigation principale">
+<div class="brand">Maintenance <span>&amp;</span> Réseau Informatique</div><a href="#sommaire">Sommaire</a>
+</nav></header>
+
+<main>
+<section class="hero">
+<div>
+<div class="eyebrow">Module 4 · Réseaux informatiques – Sécurité et supervision</div>
+<h1>Dépannage réseau avancé</h1>
+<p class="lead">Diagnostiquer et résoudre des incidents réseau complexes en progressant d'une observation structurée vers l'analyse des flux et des trames.</p>
+<div class="badges"><span class="badge accent">LEÇON 20</span><span class="badge">Intermédiaire</span><span class="badge">15 min</span></div>
+</div>
+<div class="hero-art" role="img" aria-label="Illustration d'un diagnostic réseau reliant postes, routeur et serveur">
+<svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="var(--color-text)" stroke-width="3">
+<rect x="18" y="22" width="484" height="296" rx="14"/>
+<rect x="42" y="72" width="105" height="70" rx="8"/><rect x="42" y="200" width="105" height="70" rx="8"/>
+<rect x="205" y="118" width="110" height="100" rx="10"/><rect x="370" y="72" width="105" height="70" rx="8"/><rect x="370" y="200" width="105" height="70" rx="8"/>
+<path d="M147 107h58M147 235h58M315 145h55M315 190h55"/>
+</g>
+<g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="14" text-anchor="middle">
+<text x="94" y="102">CLIENT A</text><text x="94" y="230">CLIENT B</text>
+<text x="260" y="150">ROUTEUR</text><text x="260" y="174">/ SWITCH</text>
+<text x="422" y="102">SERVEUR</text><text x="422" y="230">CAPTURE</text>
+</g>
+<path d="M225 202h70M390 260h65" stroke="var(--color-accent)" stroke-width="7"/>
+</svg></div>
+</section>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire">
+<div class="eyebrow">Sommaire</div>
+<div class="toc-grid">
+<a href="#methode">01 · Méthodologie</a><a href="#outils">02 · Outils</a><a href="#trames">03 · Trames</a><a href="#incidents">04 · Incidents</a><a href="#synthese">05 · Synthèse</a>
+</div>
+</nav>
+
+<section id="methode" class="reveal"><div class="wrap">
+<div class="kicker">01 / MÉTHODOLOGIE</div><h2>Une démarche de diagnostic structurée</h2>
+<p>Face à un incident réseau complexe, il est important de progresser par hypothèses vérifiables plutôt que de modifier plusieurs paramètres à la fois. On part du symptôme observé, on localise progressivement le problème, puis on confirme la cause.</p>
+<div class="diagram">
+<svg viewBox="0 0 850 300" role="img" aria-label="Frise de diagnostic réseau">
+<g fill="none" stroke="var(--color-text)" stroke-width="3">
+<rect x="25" y="105" width="135" height="75" rx="9"/><rect x="195" y="105" width="135" height="75" rx="9"/><rect x="365" y="105" width="135" height="75" rx="9"/><rect x="535" y="105" width="135" height="75" rx="9"/><rect x="705" y="105" width="120" height="75" rx="9"/>
+<path d="M160 142h35M330 142h35M500 142h35M670 142h35"/>
+</g>
+<g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="14" text-anchor="middle">
+<text x="92" y="134">SYMPTÔME</text><text x="92" y="156">OBSERVÉ</text>
+<text x="262" y="134">HYPOTHÈSES</text><text x="262" y="156">CAUSES</text>
+<text x="432" y="134">TESTS</text><text x="432" y="156">CIBLÉS</text>
+<text x="602" y="134">CONFIRMATION</text><text x="602" y="156">CAUSE</text>
+<text x="765" y="134">CORRECTION</text><text x="765" y="156">+ CONTRÔLE</text>
+</g>
+<path d="M50 92h85M220 92h85M390 92h85M560 92h85M735 92h60" stroke="var(--color-accent)" stroke-width="6"/>
+</svg></div>
+<div class="steps">
+<div class="step"><div class="num">01</div><b>Observer</b><br>Décrire précisément le symptôme.</div>
+<div class="step"><div class="num">02</div><b>Localiser</b><br>Déterminer où le flux se rompt.</div>
+<div class="step"><div class="num">03</div><b>Tester</b><br>Choisir un test pertinent.</div>
+<div class="step"><div class="num">04</div><b>Corriger</b><br>Appliquer la modification nécessaire.</div>
+<div class="step"><div class="num">05</div><b>Contrôler</b><br>Vérifier le retour au service.</div>
+</div>
+<div class="callout"><strong>💡 À retenir</strong><br>Un bon diagnostic réduit progressivement l'espace des causes possibles : chaque test doit apporter une information utile.</div>
+</div></section>
+
+<section id="outils" class="reveal"><div class="wrap">
+<div class="kicker">02 / OUTILS</div><h2>Ping, traceroute et Wireshark</h2>
+<p>Trois familles d'outils permettent d'observer différents niveaux du fonctionnement réseau : accessibilité, chemin parcouru et contenu des échanges.</p>
+<div class="grid">
+<article class="card"><div class="icon">↔</div><h3>ping</h3><p>Teste la connectivité IP vers une destination et mesure notamment le temps de réponse lorsque des réponses sont reçues.</p></article>
+<article class="card"><div class="icon">⇢</div><h3>traceroute</h3><p>Permet d'observer les étapes du chemin réseau vers une destination et d'aider à localiser une rupture.</p></article>
+<article class="card"><div class="icon">⌁</div><h3>Wireshark</h3><p>Permet de capturer et d'analyser les paquets afin d'observer les échanges plus finement.</p></article>
+</div>
+<div class="tabs" role="tablist" aria-label="Outils de diagnostic">
+<div class="tab-buttons">
+<button role="tab" aria-selected="true" aria-controls="tab-ping" data-tab="tab-ping">ping</button>
+<button role="tab" aria-selected="false" aria-controls="tab-trace" data-tab="tab-trace">traceroute</button>
+<button role="tab" aria-selected="false" aria-controls="tab-wireshark" data-tab="tab-wireshark">Wireshark</button>
+</div>
+<div id="tab-ping" class="tab-panel active" role="tabpanel"><p><b>Question principale :</b> la destination répond-elle au niveau IP ?</p><div class="code"><button class="copy" data-copy="ping 192.168.1.1">Copier</button><pre>ping 192.168.1.1</pre></div></div>
+<div id="tab-trace" class="tab-panel" role="tabpanel"><p><b>Question principale :</b> à quel endroit le chemin devient-il problématique ?</p><div class="code"><button class="copy" data-copy="tracert 8.8.8.8">Copier</button><pre>tracert 8.8.8.8</pre></div></div>
+<div id="tab-wireshark" class="tab-panel" role="tabpanel"><p><b>Question principale :</b> que se passe-t-il réellement dans les échanges ?</p><div class="code"><pre>Capture → Filtrage → Lecture des paquets → Interprétation</pre></div></div>
+</div>
+<table>
+<thead><tr><th scope="col">Outil</th><th scope="col">Observation</th><th scope="col">Exemple d'usage</th></tr></thead>
+<tbody>
+<tr><td>ping</td><td>Réponse IP / délai</td><td>Tester une destination</td></tr>
+<tr><td>traceroute</td><td>Chemin vers la destination</td><td>Localiser une rupture</td></tr>
+<tr><td>Wireshark</td><td>Paquets et échanges</td><td>Analyser un comportement précis</td></tr>
+</tbody></table>
+<div class="callout"><strong>⚠️ Attention</strong><br>L'absence de réponse à <span style="font-family:'IBM Plex Mono'">ping</span> ne signifie pas automatiquement qu'un équipement est hors service : le trafic ICMP peut être filtré.</div>
+</div></section>
+
+<section id="trames" class="reveal"><div class="wrap">
+<div class="kicker">03 / ANALYSE</div><h2>Lire et analyser une trame</h2>
+<p>L'analyse de trames permet d'aller au-delà du simple constat « ça ne fonctionne pas ». On examine les informations contenues dans les échanges et leur cohérence avec le fonctionnement attendu.</p>
+<div class="diagram">
+<svg viewBox="0 0 850 330" role="img" aria-label="Découpage conceptuel d'une trame réseau">
+<g fill="none" stroke="var(--color-text)" stroke-width="3">
+<rect x="35" y="105" width="180" height="100" rx="9"/><rect x="230" y="105" width="180" height="100" rx="9"/><rect x="425" y="105" width="180" height="100" rx="9"/><rect x="620" y="105" width="190" height="100" rx="9"/>
+</g>
+<g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="16" text-anchor="middle">
+<text x="125" y="145">ETHERNET</text><text x="125" y="172">MAC</text>
+<text x="320" y="145">IP</text><text x="320" y="172">SOURCE / DEST.</text>
+<text x="515" y="145">TCP / UDP</text><text x="515" y="172">PORTS</text>
+<text x="715" y="145">DONNÉES</text><text x="715" y="172">APPLICATION</text>
+</g>
+<path d="M55 82h140M250 82h140M445 82h140M640 82h150" stroke="var(--color-accent)" stroke-width="6"/>
+</svg></div>
+<div class="grid">
+<article class="card"><div class="icon">01</div><h3>Adresses</h3><p>Observer les adresses source et destination afin de vérifier si le trafic est dirigé vers le bon équipement.</p></article>
+<article class="card"><div class="icon">02</div><h3>Protocoles</h3><p>Identifier les protocoles utilisés et vérifier qu'ils correspondent au comportement attendu.</p></article>
+<article class="card"><div class="icon">03</div><h3>Échanges</h3><p>Rechercher les réponses attendues, les retransmissions ou les anomalies visibles dans la séquence.</p></article>
+</div>
+<div class="callout"><strong>🛠️ Cas pratique</strong><br>Pour un service qui ne répond pas, une capture peut aider à distinguer un problème d'émission, de routage, de réponse du serveur ou de transport.</div>
+<details><summary>Que rechercher dans une capture ?</summary><p>Commencer par les adresses, les protocoles et la chronologie des échanges. L'objectif est de relier ce qui est observé dans la capture au symptôme constaté.</p></details>
+<details><summary>Pourquoi filtrer une capture ?</summary><p>Une capture peut contenir beaucoup de trafic. Un filtre permet de concentrer l'analyse sur les paquets pertinents pour l'incident étudié.</p></details>
+</div></section>
+
+<section id="incidents" class="reveal"><div class="wrap">
+<div class="kicker">04 / RÉSOLUTION</div><h2>Résoudre un incident réseau</h2>
+<p>Une résolution efficace associe diagnostic, correction et vérification. Après une modification, il faut contrôler que le symptôme disparaît et que le reste du service n'est pas dégradé.</p>
+<div class="diagram">
+<svg viewBox="0 0 850 310" role="img" aria-label="Flux de résolution d'un incident réseau">
+<g fill="none" stroke="var(--color-text)" stroke-width="3">
+<rect x="35" y="105" width="155" height="80" rx="9"/><rect x="245" y="105" width="155" height="80" rx="9"/><rect x="455" y="105" width="155" height="80" rx="9"/><rect x="665" y="105" width="150" height="80" rx="9"/>
+<path d="M190 145h55M400 145h55M610 145h55"/>
+</g>
+<g fill="var(--color-text)" font-family="IBM Plex Mono" font-size="15" text-anchor="middle">
+<text x="112" y="137">DIAGNOSTIC</text><text x="112" y="160">CAUSE</text>
+<text x="322" y="137">CORRECTION</text><text x="322" y="160">CIBLÉE</text>
+<text x="532" y="137">TEST DE</text><text x="532" y="160">RETOUR</text>
+<text x="740" y="137">DOCUMENTATION</text><text x="740" y="160">DE L'INCIDENT</text>
+</g>
+<path d="M58 92h110M268 92h110M478 92h110M688 92h105" stroke="var(--color-accent)" stroke-width="6"/>
+</svg></div>
+<table>
+<thead><tr><th scope="col">Symptôme</th><th scope="col">Pistes à examiner</th><th scope="col">Approche</th></tr></thead>
+<tbody>
+<tr><td>Destination inaccessible</td><td>Connectivité, routage, filtrage</td><td>Tests progressifs puis localisation</td></tr>
+<tr><td>Chemin interrompu</td><td>Routeur, lien, configuration</td><td>Comparer les étapes du chemin</td></tr>
+<tr><td>Service lent ou instable</td><td>Transport, pertes, retransmissions</td><td>Observer les échanges et la chronologie</td></tr>
+<tr><td>Comportement inattendu</td><td>Protocoles, paramètres, flux</td><td>Analyser les paquets concernés</td></tr>
+</tbody></table>
+<div class="callout"><strong>🔒 Sécurité / bonne pratique</strong><br>Avant toute modification importante, conserver les paramètres actuels et documenter ce qui est changé. Une correction doit rester traçable et réversible autant que possible.</div>
+</div></section>
+
+<section id="synthese" class="reveal"><div class="wrap">
+<div class="kicker">05 / SYNTHÈSE</div><h2>Points clés à retenir</h2>
+<div class="keys">
+<div class="key"><b>01 · Méthode</b><br>Partir du symptôme et avancer par hypothèses vérifiables.</div>
+<div class="key"><b>02 · ping</b><br>Vérifier une connectivité IP et observer le temps de réponse.</div>
+<div class="key"><b>03 · traceroute</b><br>Observer le chemin et aider à localiser une rupture.</div>
+<div class="key"><b>04 · Wireshark</b><br>Analyser les paquets et la chronologie des échanges.</div>
+<div class="key"><b>05 · Trames</b><br>Examiner adresses, protocoles et réponses attendues.</div>
+<div class="key"><b>06 · Résolution</b><br>Corriger, tester le retour au service et documenter l'incident.</div>
+</div>
+<div class="callout"><strong>🔗 Pour aller plus loin</strong><br>La maîtrise du dépannage avancé repose sur l'habitude de relier symptôme, couche réseau, outil de mesure et preuve observable.</div>
+</div></section>
+
+<div class="bottom-nav">
+<a class="btn" href="#sommaire">↑ Retour au sommaire</a>
+<a class="btn" href="#">← Leçon 19 · Supervision et monitoring réseau</a>
+<a class="btn" href="#">Leçon 21 · Administration Windows Server →</a>
+</div>
+</main>
+
+<footer><div class="brand">Maintenance <span>&amp;</span> Réseau Informatique</div><small>Module 4 · Leçon 20 · Dépannage réseau avancé</small></footer>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById("progress"),topBtn=document.getElementById("top");
+function update(){const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=(max>0?scrollY/max*100:0)+"%";topBtn.style.display=scrollY>500?"block":"none"}
+addEventListener("scroll",update,{passive:true});update();
+topBtn.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+
+document.querySelectorAll(".tab-buttons button").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab-buttons button").forEach(b=>b.setAttribute("aria-selected","false"));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  btn.setAttribute("aria-selected","true");
+  document.getElementById(btn.dataset.tab).classList.add("active");
+ });
+ btn.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+   const buttons=[...document.querySelectorAll(".tab-buttons button")],i=buttons.indexOf(btn);
+   buttons[(i+(e.key==="ArrowRight"?1:-1)+buttons.length)%buttons.length].focus();
+  }
+ });
+});
+
+document.querySelectorAll(".copy").forEach(btn=>{
+ btn.addEventListener("click",async()=>{
+  try{await navigator.clipboard.writeText(btn.dataset.copy);btn.textContent="Copié";setTimeout(()=>btn.textContent="Copier",1200)}
+  catch{btn.textContent="Sélectionnez le texte"}
+ });
+});
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

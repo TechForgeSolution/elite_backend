@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 20 — Charges fixes, variables et seuil de rentabilité | Contrôle de gestion</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  td.num.negative{color:var(--color-accent-alt);}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filiere comptabilite
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 4 — Contrôle de gestion</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau débutant / intermédiaire</span>
+    </div>
+    <h1>Leçon 20 — Charges fixes, variables et seuil de rentabilité</h1>
+    <p class="lede">Leçon 20 — distinguer charges fixes et charges variables, construire un compte de résultat différentiel, calculer la marge sur coût variable et déterminer le seuil de rentabilité d'une activité.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Pourquoi distinguer charges fixes et charges variables" data-num="20.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">20.1</span><h2>Pourquoi distinguer charges fixes et charges variables</h2></div>
+      <p>La comptabilité générale classe les charges par nature : achats, salaires, loyers, amortissements. Le contrôle de gestion adopte un autre regard, plus utile pour piloter l'activité : il classe les charges selon leur comportement face au niveau d'activité de l'entreprise.</p>
+      <p>Cette distinction entre charges fixes et charges variables permet de répondre à une question centrale : à partir de quel niveau de chiffre d'affaires l'entreprise cesse-t-elle de perdre de l'argent et commence-t-elle à en gagner ? C'est tout l'objet du seuil de rentabilité.</p>
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Classer une charge selon son comportement — et non selon sa nature — est le point de départ de toute analyse coûts-volume-profit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Charges fixes et charges variables" data-num="20.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">20.2</span><h2>Charges fixes et charges variables</h2></div>
+      <p>Toute charge de l'entreprise se rattache, en première approche, à l'une de ces deux catégories :</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Comportement des charges face à l'activité">
+        <button class="tab-btn" role="tab" id="tab-ch20-1" aria-controls="panel-ch20-1" aria-selected="true">Charges fixes</button>
+        <button class="tab-btn" role="tab" id="tab-ch20-2" aria-controls="panel-ch20-2" aria-selected="false" tabindex="-1">Charges variables</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-ch20-1" role="tabpanel" aria-labelledby="tab-ch20-1" tabindex="0">
+        <div class="prose">
+          <p>Charges dont le montant global reste stable, quel que soit le niveau d'activité, dans une certaine plage de production (le loyer d'un local, les salaires du personnel administratif, les primes d'assurance, les amortissements). Elles doivent être supportées même si l'entreprise ne vend rien.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-ch20-2" role="tabpanel" aria-labelledby="tab-ch20-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Charges dont le montant global évolue proportionnellement au niveau d'activité (achats de matières premières, commissions sur ventes, emballages). Ramenées à l'unité vendue, elles restent en général constantes : c'est leur montant total qui varie avec le volume.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 820 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La charge fixe reste constante quel que soit le volume d'activité, tandis que la charge variable croît proportionnellement au volume">
+        <g font-family="Inter, sans-serif" font-size="12" fill="#0B0F0D">
+          <text x="150" y="20" text-anchor="middle" font-weight="600" font-size="13">Charges fixes</text>
+          <line x1="60" y1="170" x2="60" y2="40" stroke="#5A6560" stroke-width="1"></line>
+          <line x1="60" y1="170" x2="260" y2="170" stroke="#5A6560" stroke-width="1"></line>
+          <line x1="60" y1="90" x2="260" y2="90" stroke="#1F6F54" stroke-width="2.5"></line>
+          <text x="265" y="94" fill="#1F6F54" font-size="11">montant constant</text>
+          <text x="30" y="175" fill="#5A6560" font-size="10" text-anchor="end">0</text>
+          <text x="150" y="190" fill="#5A6560" font-size="11" text-anchor="middle">Volume d'activité</text>
+
+          <text x="620" y="20" text-anchor="middle" font-weight="600" font-size="13">Charges variables</text>
+          <line x1="530" y1="170" x2="530" y2="40" stroke="#5A6560" stroke-width="1"></line>
+          <line x1="530" y1="170" x2="730" y2="170" stroke="#5A6560" stroke-width="1"></line>
+          <line x1="530" y1="170" x2="730" y2="50" stroke="#1F6F54" stroke-width="2.5"></line>
+          <text x="600" y="70" fill="#1F6F54" font-size="11">croît avec le volume</text>
+          <text x="500" y="175" fill="#5A6560" font-size="10" text-anchor="end">0</text>
+          <text x="620" y="190" fill="#5A6560" font-size="11" text-anchor="middle">Volume d'activité</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention</div>
+        <p>Certaines charges sont mixtes ou « semi-variables » (une facture d'électricité avec un abonnement fixe et une part proportionnelle à la consommation). Le contrôle de gestion les décompose en une part fixe et une part variable avant de les intégrer à l'analyse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="La marge sur coût variable" data-num="20.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">20.3</span><h2>La marge sur coût variable</h2></div>
+      <p>La <strong>marge sur coût variable</strong> (MCV) est ce qui reste du chiffre d'affaires une fois les charges variables déduites. Elle sert à couvrir les charges fixes, puis à dégager un résultat. On la présente dans un tableau appelé <strong>compte de résultat différentiel</strong>.</p>
+      <p class="mono">Marge sur coût variable = Chiffre d'affaires − Charges variables</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Compte de résultat différentiel — exemple</caption>
+        <thead>
+          <tr><th scope="col">Élément</th><th scope="col" class="num">Montant</th><th scope="col" class="num">% du CA</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chiffre d'affaires</td><td class="num">200 000</td><td class="num">100 %</td></tr>
+          <tr><td>− Charges variables</td><td class="num">120 000</td><td class="num">60 %</td></tr>
+          <tr class="total"><td>= Marge sur coût variable</td><td class="num">80 000</td><td class="num">40 %</td></tr>
+          <tr><td>− Charges fixes</td><td class="num">52 000</td><td class="num">26 %</td></tr>
+          <tr class="total"><td>= Résultat</td><td class="num">28 000</td><td class="num">14 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">📌 Rappel normatif</div>
+        <p>Le rapport entre la marge sur coût variable et le chiffre d'affaires est appelé <strong>taux de marge sur coût variable</strong> (ici 40 %) : il indique la part de chaque euro de vente qui contribue à couvrir les charges fixes puis à générer du résultat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Le seuil de rentabilité" data-num="20.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">20.4</span><h2>Le seuil de rentabilité</h2></div>
+      <p>Le <strong>seuil de rentabilité</strong> (ou point mort) est le niveau de chiffre d'affaires pour lequel la marge sur coût variable couvre exactement les charges fixes : le résultat est nul. En dessous, l'entreprise est en perte ; au-delà, chaque euro de vente supplémentaire génère du profit.</p>
+      <p class="mono">Seuil de rentabilité = Charges fixes ÷ Taux de marge sur coût variable</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 820 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Graphique du seuil de rentabilité montrant la droite du chiffre d'affaires, la droite des charges totales, les charges fixes et le point mort à leur intersection">
+        <defs>
+          <marker id="arrow20a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#5A6560"></path>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif" font-size="12" fill="#0B0F0D">
+          <line x1="70" y1="270" x2="70" y2="30" stroke="#5A6560" stroke-width="1.2" marker-end="url(#arrow20a)"></line>
+          <line x1="70" y1="270" x2="770" y2="270" stroke="#5A6560" stroke-width="1.2" marker-end="url(#arrow20a)"></line>
+          <text x="70" y="20" text-anchor="middle" fill="#5A6560" font-size="11">Montant (€)</text>
+          <text x="780" y="274" text-anchor="end" fill="#5A6560" font-size="11">Volume / CA</text>
+
+          <line x1="70" y1="220" x2="770" y2="220" stroke="#B3541E" stroke-width="2"></line>
+          <text x="775" y="224" fill="#B3541E" font-size="11">Charges fixes</text>
+
+          <line x1="70" y1="220" x2="770" y2="80" stroke="#0B0F0D" stroke-width="2"></line>
+          <text x="778" y="80" fill="#0B0F0D" font-size="11">Charges totales</text>
+
+          <line x1="70" y1="270" x2="770" y2="55" stroke="#1F6F54" stroke-width="2.5"></line>
+          <text x="778" y="55" fill="#1F6F54" font-size="11">Chiffre d'affaires</text>
+
+          <circle cx="400" cy="164" r="5" fill="#1F6F54"></circle>
+          <line x1="400" y1="164" x2="400" y2="270" stroke="#1F6F54" stroke-width="1" stroke-dasharray="4 4"></line>
+          <line x1="70" y1="164" x2="400" y2="164" stroke="#1F6F54" stroke-width="1" stroke-dasharray="4 4"></line>
+          <text x="400" y="288" text-anchor="middle" fill="#1F6F54" font-size="11" font-weight="600">Point mort</text>
+          <text x="46" y="168" text-anchor="end" fill="#1F6F54" font-size="11">SR</text>
+
+          <text x="230" y="240" fill="#B3541E" font-size="11" font-style="italic">Zone de perte</text>
+          <text x="560" y="130" fill="#1F6F54" font-size="11" font-style="italic">Zone de profit</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Le point mort correspond à l'intersection entre la droite du chiffre d'affaires et la droite des charges totales : avant ce point, les charges totales dépassent le chiffre d'affaires ; après, c'est l'inverse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Cas pratique — calculer le seuil de rentabilité" data-num="20.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">20.5</span><h2>Cas pratique — calculer le seuil de rentabilité</h2></div>
+      <p>Reprenons les données du compte de résultat différentiel : un chiffre d'affaires de <span class="mono">200 000 €</span>, un taux de marge sur coût variable de <span class="mono">40 %</span>, et des charges fixes de <span class="mono">52 000 €</span>.</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Identifier le taux de MCV</h3>
+        <p>Taux de marge sur coût variable = 80 000 ÷ 200 000 = 40 %.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Diviser les charges fixes</h3>
+        <p>Seuil de rentabilité = 52 000 ÷ 0,40 = 130 000 €.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Vérifier le résultat au seuil</h3>
+        <p>À 130 000 € de CA, la MCV (52 000 €) couvre exactement les charges fixes : résultat nul.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Interpréter</h3>
+        <p>Au-delà de 130 000 € de CA, chaque euro supplémentaire dégage 0,40 € de résultat.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Vérification du seuil de rentabilité — CA de 130 000 €</caption>
+        <thead>
+          <tr><th scope="col">Élément</th><th scope="col" class="num">Montant</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chiffre d'affaires au seuil</td><td class="num">130 000</td></tr>
+          <tr><td>− Charges variables (60 % du CA)</td><td class="num">78 000</td></tr>
+          <tr class="total"><td>= Marge sur coût variable</td><td class="num">52 000</td></tr>
+          <tr><td>− Charges fixes</td><td class="num">52 000</td></tr>
+          <tr class="total"><td>= Résultat</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Avec un CA réel de <span class="mono">200 000 €</span>, supérieur au seuil de <span class="mono">130 000 €</span>, l'entreprise dégage un résultat positif de <span class="mono">28 000 €</span>, cohérent avec le compte de résultat différentiel initial : (200 000 − 130 000) × 40 % = 28 000 €.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Aller plus loin : point mort en jours, marge et indice de sécurité" data-num="20.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">20.6</span><h2>Aller plus loin : point mort en jours, marge et indice de sécurité</h2></div>
+      <p>Une fois le seuil de rentabilité connu en euros, trois indicateurs complémentaires affinent l'analyse du risque d'exploitation de l'entreprise.</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Point mort en jours : à quelle date le seuil est-il atteint ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="mono">Point mort (en jours) = (Seuil de rentabilité ÷ Chiffre d'affaires annuel) × 360</p>
+            <p>Avec un seuil de 130 000 € pour un CA annuel de 200 000 €, réparti régulièrement sur l'année : (130 000 ÷ 200 000) × 360 = <span class="mono">234 jours</span>, soit environ le 22 août. L'entreprise ne devient rentable qu'à partir de cette date dans l'année.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Marge de sécurité : quelle baisse d'activité l'entreprise peut-elle absorber ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="mono">Marge de sécurité = Chiffre d'affaires − Seuil de rentabilité</p>
+            <p>Ici : 200 000 − 130 000 = <span class="mono">70 000 €</span>. C'est le montant de chiffre d'affaires que l'entreprise peut perdre avant de basculer en perte.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Indice de sécurité : quel est le poids de cette marge en pourcentage ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="mono">Indice de sécurité = (Marge de sécurité ÷ Chiffre d'affaires) × 100</p>
+            <p>Ici : (70 000 ÷ 200 000) × 100 = <span class="mono">35 %</span>. Plus cet indice est élevé, plus l'entreprise est protégée contre une baisse d'activité — un indice faible signale au contraire une structure de coûts fragile.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention</div>
+        <p>Une entreprise dont les charges fixes sont élevées par rapport aux charges variables (forte automatisation, gros investissements) a un seuil de rentabilité plus haut et un résultat plus sensible aux variations de volume : c'est le principe du levier opérationnel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="20.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">20.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Les charges fixes restent stables quel que soit le volume d'activité ; les charges variables évoluent proportionnellement à ce volume.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>La marge sur coût variable est ce qui reste du chiffre d'affaires après déduction des charges variables : elle sert à couvrir les charges fixes.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Le seuil de rentabilité s'obtient en divisant les charges fixes par le taux de marge sur coût variable.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Au-delà du seuil de rentabilité, chaque euro de chiffre d'affaires supplémentaire génère un résultat positif.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Marge et indice de sécurité mesurent la capacité de l'entreprise à absorber une baisse d'activité sans passer en perte.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Rôle du contrôle de gestion</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante</span>
+        <span class="dest">Centres de coûts et responsabilités</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 4</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 4</span>
+    <span>Leçon 20 — Contrôle de gestion</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

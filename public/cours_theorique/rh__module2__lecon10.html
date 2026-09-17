@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 10 — Intégration et parcours d'onboarding, Module 2 — Recrutement et intégration des collaborateurs.">
+<title>Leçon 10 — Intégration et parcours d'onboarding</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F6B5F'/%3E%3Cpath d='M20 46V22h24v24M16 46h32M26 22v-6h12v6' fill='none' stroke='%23F7F8F6' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Manrope:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F7F8F6;--color-text:#1F2933;--color-accent:#2F6B5F;--color-neutral:#8A9690;
+ --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --accent-faint:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --max:1120px;--reading:720px;--shadow:0 10px 30px rgba(31,41,51,.06)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+h1,h2,h3{font-family:Manrope,Inter,sans-serif;line-height:1.2;margin:0 0 16px}
+h1{font-size:clamp(2.2rem,5vw,4.5rem);letter-spacing:-.045em}h2{font-size:clamp(1.55rem,3vw,2.2rem);letter-spacing:-.025em}h3{font-size:1.05rem}
+p{margin:0 0 16px}a{color:var(--color-accent);text-underline-offset:3px}button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+.site-header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
+.header-inner{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--color-text);font-family:Manrope;font-weight:700}
+.brand-mark{width:34px;height:34px;border:2px solid var(--color-accent);border-radius:9px;display:grid;place-items:center}.brand-mark svg{width:19px;height:19px}
+.brand small{display:block;font:500 .68rem "JetBrains Mono";color:var(--text-muted);letter-spacing:.08em}
+.menu-btn{display:none;border:1px solid var(--border);background:var(--color-bg);border-radius:8px;padding:7px 10px;cursor:pointer}
+.toc-nav{display:flex;gap:18px;align-items:center}.toc-nav a{font-size:.84rem;text-decoration:none;color:var(--text-muted)}.toc-nav a:hover{color:var(--color-accent)}
+main{max-width:var(--max);margin:auto;padding:0 24px}
+.hero{padding:82px 0 70px;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:end}
+.eyebrow{font:600 .72rem "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent);margin-bottom:18px}
+.hero h1{max-width:820px}.subtitle{max-width:680px;font-size:1.12rem;color:var(--text-muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}.badge{border:1px solid var(--border);background:var(--accent-faint);border-radius:999px;padding:7px 11px;font:500 .72rem "JetBrains Mono";color:var(--color-text)}
+.hero-visual{border:1px solid var(--border);border-radius:22px;background:var(--bg-alt);padding:22px;box-shadow:var(--shadow)}.hero-visual svg{display:block;width:100%;height:auto}
+.caption{font-size:.75rem;color:var(--text-muted);margin-top:10px}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 0;margin-bottom:76px}.toc h2{font-size:1rem;margin-bottom:14px}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 28px}.toc a{text-decoration:none;font-size:.9rem;padding:5px 0}
+section{scroll-margin-top:90px;margin-bottom:88px}.section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:28px}
+.section-number{font:600 .72rem "JetBrains Mono";color:var(--color-accent);border:1px solid var(--color-accent);border-radius:7px;padding:7px 8px;min-width:42px;text-align:center}
+.reading{max-width:var(--reading)}.lead{font-size:1.08rem;color:var(--text-muted)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0}.card{border:1px solid var(--border);border-radius:15px;padding:20px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}.icon{width:36px;height:36px;border:1px solid var(--color-accent);border-radius:10px;display:grid;place-items:center;color:var(--color-accent);margin-bottom:15px}.card p{font-size:.88rem;color:var(--text-muted);margin:0}
+.callout{border:2px solid var(--color-accent);border-radius:15px;padding:20px 22px;margin:25px 0;background:var(--accent-faint);display:grid;grid-template-columns:auto 1fr;gap:15px}.callout .callout-icon{font-size:1.2rem;color:var(--color-accent)}.callout strong{font-family:Manrope}.callout p{margin:4px 0 0;font-size:.9rem}
+.section-alt{background:var(--bg-alt);padding:56px 24px;margin-left:-24px;margin-right:-24px}.diagram{border:1px solid var(--border);border-radius:18px;background:var(--color-bg);padding:18px;margin:28px 0;overflow-x:auto}.diagram svg{display:block;width:100%;min-width:620px;height:auto}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:32px 0}.step{position:relative;padding:22px 18px 18px;border-top:2px solid var(--color-neutral)}
+.step:not(:last-child)::after{content:"";position:absolute;right:-7px;top:-7px;width:12px;height:12px;border-top:2px solid var(--color-accent);border-right:2px solid var(--color-accent);transform:rotate(45deg);background:var(--color-bg)}
+.step-num{font:600 .7rem "JetBrains Mono";color:var(--color-accent)}.step p{font-size:.83rem;color:var(--text-muted);margin:5px 0 0}
+.tabs{margin:30px 0}.tab-list{display:flex;gap:6px;border-bottom:1px solid var(--border);overflow-x:auto}.tab-btn{border:0;background:none;padding:12px 15px;cursor:pointer;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}.tab-btn[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+.tab-panel{padding:22px 0}.tab-panel[hidden]{display:none}
+table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:top}th{font:600 .72rem "JetBrains Mono";color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}td strong{font-family:Manrope}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+.accordion{border-top:1px solid var(--border)}.acc-item{border-bottom:1px solid var(--border)}.acc-btn{width:100%;border:0;background:none;text-align:left;padding:17px 4px;display:flex;justify-content:space-between;cursor:pointer;font-family:Manrope;font-weight:600}.acc-btn span:last-child{color:var(--color-accent);transition:.2s}.acc-btn[aria-expanded=true] span:last-child{transform:rotate(45deg)}
+.acc-content{padding:0 4px 18px;color:var(--text-muted);font-size:.9rem}.acc-content[hidden]{display:none}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.key{border:1px solid var(--border);border-left:4px solid var(--color-accent);padding:18px;background:var(--color-bg);border-radius:10px}.key strong{display:block;font-family:Manrope;margin-bottom:5px}.key span{font-size:.86rem;color:var(--text-muted)}
+.example{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}.example-box{border:1px solid var(--border);border-radius:15px;padding:22px;background:var(--color-bg)}.example-box h3{color:var(--color-accent)}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}.kpi{border:1px solid var(--border);padding:20px;border-radius:15px;background:var(--color-bg)}.kpi-value{font:600 1.4rem "JetBrains Mono";color:var(--color-accent)}.kpi-label{font-family:Manrope;font-weight:700;margin-top:7px}.kpi p{font-size:.82rem;color:var(--text-muted);margin:4px 0 0}
+.footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:90px 0 35px}.nav-card{border:1px solid var(--border);border-radius:14px;padding:18px;text-decoration:none;color:var(--color-text);background:var(--color-bg)}.nav-card:hover{border-color:var(--color-accent)}.nav-card.next{text-align:right}.nav-label{font:600 .68rem "JetBrains Mono";color:var(--text-muted);text-transform:uppercase}.nav-title{display:block;font-family:Manrope;font-weight:700;margin-top:5px}
+footer{border-top:1px solid var(--border);padding:28px 0 45px;color:var(--text-muted);font-size:.78rem}.top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer;opacity:0;pointer-events:none;transition:.2s}.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:35px;padding-top:58px}.cards{grid-template-columns:repeat(2,1fr)}.toc-grid{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr 1fr;gap:12px}.step{border-top:0;border-left:2px solid var(--color-neutral)}.step:not(:last-child)::after{right:auto;left:-7px;top:auto;bottom:-7px;transform:rotate(135deg)}.kpi-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){main{padding:0 17px}.header-inner{padding:12px 17px}.menu-btn{display:block}.toc-nav{display:none;position:absolute;left:0;right:0;top:100%;background:var(--color-bg);border-bottom:1px solid var(--border);padding:14px 17px;flex-direction:column;align-items:flex-start}.toc-nav.open{display:flex}.hero{padding:45px 0 50px}.toc{margin-bottom:55px}.section-alt{margin-left:-17px;margin-right:-17px;padding:45px 17px}.cards,.key-grid,.example,.footer-nav,.kpi-grid{grid-template-columns:1fr}.toc-grid{grid-template-columns:1fr}.stepper{grid-template-columns:1fr}.step:not(:last-child)::after{display:none}.step{border-left:0;border-top:2px solid var(--color-neutral)}.footer-nav .next{text-align:left}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card,.top{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="#top" aria-label="Filière Gestion des Ressources Humaines">
+<span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19V8h14v11M3 19h18M9 8V5h6v3M8 12h8M8 15h8"/></svg></span>
+<span>Filière GRH<small>SUPPORT DE COURS</small></span></a>
+<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">Menu</button>
+<nav class="toc-nav" id="mainNav" aria-label="Navigation principale">
+<a href="#processus">Onboarding</a><a href="#accueil">Accueil</a><a href="#essai">Période d'essai</a><a href="#parrainage">Parrainage</a><a href="#suivi">Suivi</a><a href="#essentiel">À retenir</a>
+</nav>
+</div>
+</header>
+
+<main id="top">
+<section class="hero" aria-labelledby="title">
+<div>
+<div class="eyebrow">Module 02 · Recrutement et intégration des collaborateurs</div>
+<h1 id="title">Intégration et parcours d'onboarding</h1>
+<p class="subtitle">Organiser l'accueil et l'intégration d'un nouveau salarié pour faciliter sa prise de poste, son appropriation de l'environnement de travail et son inscription durable dans l'organisation.</p>
+<div class="badges"><span class="badge">LEÇON 10</span><span class="badge">INTERMÉDIAIRE</span><span class="badge">10–15 MIN</span></div>
+</div>
+<figure class="hero-visual reveal">
+<svg viewBox="0 0 520 340" role="img" aria-labelledby="heroTitle heroDesc">
+<title id="heroTitle">Parcours d'onboarding d'un nouveau salarié</title>
+<desc id="heroDesc">Un nouveau salarié progresse à travers cinq étapes : préparer, accueillir, prendre le poste, être accompagné puis suivre l'intégration.</desc>
+<g fill="none" stroke="var(--color-accent)" stroke-width="2"><path d="M72 170H448"/></g>
+<g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+<circle cx="72" cy="170" r="28"/><circle cx="166" cy="170" r="28"/><circle cx="260" cy="170" r="28"/><circle cx="354" cy="170" r="28"/><circle cx="448" cy="170" r="28"/>
+</g>
+<g fill="var(--color-text)" font-family="Inter" font-size="11" text-anchor="middle">
+<text x="72" y="174" font-family="Manrope" font-weight="700">01</text><text x="166" y="174" font-family="Manrope" font-weight="700">02</text><text x="260" y="174" font-family="Manrope" font-weight="700">03</text><text x="354" y="174" font-family="Manrope" font-weight="700">04</text><text x="448" y="174" font-family="Manrope" font-weight="700">05</text>
+<text x="72" y="222" font-family="Manrope" font-weight="700">Préparer</text><text x="72" y="240">l'arrivée</text>
+<text x="166" y="222" font-family="Manrope" font-weight="700">Accueillir</text><text x="166" y="240">le salarié</text>
+<text x="260" y="222" font-family="Manrope" font-weight="700">Prendre</text><text x="260" y="240">le poste</text>
+<text x="354" y="222" font-family="Manrope" font-weight="700">Accompagner</text><text x="354" y="240">au quotidien</text>
+<text x="448" y="222" font-family="Manrope" font-weight="700">Suivre</text><text x="448" y="240">l'intégration</text>
+</g>
+<g fill="var(--color-accent)" font-family="JetBrains Mono" font-size="10" text-anchor="middle"><text x="260" y="55">PARCOURS D'ONBOARDING</text></g>
+<g fill="var(--color-text)" text-anchor="middle"><text x="260" y="85" font-family="Manrope" font-weight="700" font-size="18">Nouveau collaborateur</text><text x="260" y="105" font-family="Inter" font-size="12">de l'accueil à la fidélisation</text></g>
+</svg>
+<figcaption class="caption">L'onboarding est un parcours structuré : l'accueil constitue le point de départ, tandis que l'accompagnement et le suivi favorisent une intégration durable.</figcaption>
+</figure>
+</section>
+
+<nav class="toc" aria-label="Sommaire de la leçon">
+<h2>Sommaire de la leçon</h2>
+<div class="toc-grid">
+<a href="#processus">01 — Le processus d'onboarding</a><a href="#accueil">02 — Livret d'accueil et accueil</a><a href="#essai">03 — Période d'essai</a>
+<a href="#parrainage">04 — Parrainage et accompagnement</a><a href="#suivi">05 — Suivi et fidélisation</a><a href="#essentiel">06 — Points clés à retenir</a>
+</div>
+</nav>
+
+<section id="processus" class="reveal">
+<div class="section-head"><span class="section-number">01</span><div><h2>Le processus d'onboarding</h2></div></div>
+<div class="reading">
+<p class="lead"><strong>L'onboarding</strong> désigne le processus organisé par lequel un nouveau salarié est accueilli, informé, accompagné et progressivement intégré dans son environnement de travail.</p>
+<p>Il ne se limite pas au premier jour. Un parcours d'intégration cohérent commence par la préparation de l'arrivée et se poursuit pendant les premières semaines, avec des points de contact permettant de faciliter la prise de poste et l'appropriation des repères professionnels.</p>
+</div>
+<div class="stepper" aria-label="Étapes du parcours d'onboarding">
+<article class="step"><span class="step-num">ÉTAPE 01</span><h3>Préparer</h3><p>Anticiper les conditions matérielles, administratives et relationnelles de l'arrivée.</p></article>
+<article class="step"><span class="step-num">ÉTAPE 02</span><h3>Accueillir</h3><p>Présenter l'organisation, l'équipe, les règles et les premiers repères.</p></article>
+<article class="step"><span class="step-num">ÉTAPE 03</span><h3>Installer</h3><p>Faciliter la prise de poste et la compréhension des activités attendues.</p></article>
+<article class="step"><span class="step-num">ÉTAPE 04</span><h3>Accompagner</h3><p>Apporter un soutien régulier grâce au manager, aux collègues ou au parrain.</p></article>
+<article class="step"><span class="step-num">ÉTAPE 05</span><h3>Suivre</h3><p>Observer l'intégration, recueillir les besoins et ajuster l'accompagnement.</p></article>
+</div>
+<div class="diagram">
+<svg viewBox="0 0 900 300" role="img" aria-labelledby="flowTitle flowDesc">
+<title id="flowTitle">Chaîne logique du parcours d'onboarding</title>
+<desc id="flowDesc">La préparation mène à l'accueil, puis à la prise de poste, à l'accompagnement et enfin au suivi de l'intégration.</desc>
+<g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+<rect x="30" y="95" width="150" height="95" rx="14"/><rect x="210" y="95" width="150" height="95" rx="14"/><rect x="390" y="95" width="150" height="95" rx="14"/><rect x="570" y="95" width="150" height="95" rx="14"/><rect x="750" y="95" width="120" height="95" rx="14"/>
+</g>
+<g fill="none" stroke="var(--color-accent)" stroke-width="2">
+<path d="M180 142H210"/><path d="M360 142H390"/><path d="M540 142H570"/><path d="M720 142H750"/>
+</g>
+<g fill="var(--color-text)" text-anchor="middle" font-family="Inter">
+<text x="105" y="128" font-family="Manrope" font-weight="700">PRÉPARER</text><text x="105" y="151" font-size="12">Poste • accès</text><text x="105" y="169" font-size="12">documents</text>
+<text x="285" y="128" font-family="Manrope" font-weight="700">ACCUEILLIR</text><text x="285" y="151" font-size="12">Équipe • repères</text><text x="285" y="169" font-size="12">livret</text>
+<text x="465" y="128" font-family="Manrope" font-weight="700">PRENDRE LE POSTE</text><text x="465" y="151" font-size="12">Missions • outils</text><text x="465" y="169" font-size="12">priorités</text>
+<text x="645" y="128" font-family="Manrope" font-weight="700">ACCOMPAGNER</text><text x="645" y="151" font-size="12">Manager • parrain</text><text x="645" y="169" font-size="12">points de contact</text>
+<text x="810" y="128" font-family="Manrope" font-weight="700">SUIVRE</text><text x="810" y="151" font-size="12">Bilan • ajustements</text>
+</g></svg>
+<div class="caption">Un onboarding efficace transforme l'arrivée en parcours progressif, plutôt qu'en événement isolé.</div>
+</div>
+<div class="callout"><div class="callout-icon" aria-hidden="true">💡</div><div><strong>À retenir</strong><p>La qualité de l'intégration dépend de la continuité du parcours : préparer, accueillir, accompagner et suivre sont des dimensions complémentaires.</p></div></div>
+</section>
+
+<section id="accueil" class="section-alt reveal">
+<div class="section-head"><span class="section-number">02</span><div><h2>Livret d'accueil et organisation du premier contact</h2></div></div>
+<div class="reading">
+<p>Le <strong>livret d'accueil</strong> constitue un support de référence remis au nouveau salarié. Il peut présenter les informations utiles pour comprendre l'organisation, ses principaux repères et les règles de fonctionnement applicables au quotidien.</p>
+<p>L'accueil complète ce support par une dimension humaine : présentation des collègues, découverte de l'environnement de travail, clarification des premiers interlocuteurs et explication des pratiques nécessaires à la prise de poste.</p>
+</div>
+<div class="cards">
+<article class="card"><div class="icon" aria-hidden="true">01</div><h3>Organisation</h3><p>Présenter les repères essentiels : structure, équipes, interlocuteurs et fonctionnement.</p></article>
+<article class="card"><div class="icon" aria-hidden="true">02</div><h3>Règles</h3><p>Mettre à disposition les informations utiles sur les règles et pratiques de travail.</p></article>
+<article class="card"><div class="icon" aria-hidden="true">03</div><h3>Repères</h3><p>Aider le salarié à identifier les outils, espaces, contacts et ressources nécessaires.</p></article>
+<article class="card"><div class="icon" aria-hidden="true">04</div><h3>Relation</h3><p>Créer dès l'arrivée des contacts favorisant l'appartenance à l'équipe.</p></article>
+</div>
+<div class="tabs">
+<div class="tab-list" role="tablist" aria-label="Composantes de l'accueil">
+<button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-livret" id="btn-livret">Livret d'accueil</button>
+<button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-premier" id="btn-premier" tabindex="-1">Premier jour</button>
+<button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-reperes" id="btn-reperes" tabindex="-1">Repères</button>
+</div>
+<div id="tab-livret" class="tab-panel" role="tabpanel" aria-labelledby="btn-livret"><h3>Un support de référence</h3><p>Le livret rassemble de manière accessible les informations qui permettent au nouveau salarié de se situer dans l'organisation et de retrouver les repères nécessaires à son intégration.</p></div>
+<div id="tab-premier" class="tab-panel" role="tabpanel" aria-labelledby="btn-premier" hidden><h3>Un premier contact structuré</h3><p>Le premier jour doit permettre de réduire l'incertitude : accueil, présentation de l'équipe, installation et premières explications donnent au salarié des repères concrets.</p></div>
+<div id="tab-reperes" class="tab-panel" role="tabpanel" aria-labelledby="btn-reperes" hidden><h3>Des repères progressivement maîtrisés</h3><p>Les informations ne sont pas toutes assimilées immédiatement. L'intégration consiste donc aussi à rendre les repères disponibles et à les rappeler au moment où ils deviennent utiles.</p></div>
+</div>
+<div class="callout"><div class="callout-icon" aria-hidden="true">📐</div><div><strong>Bonnes pratiques professionnelles</strong><p>Un livret d'accueil est plus utile lorsqu'il est clair, accessible et articulé avec un accompagnement humain. Il ne remplace pas les explications du manager ou de l'équipe.</p></div></div>
+</section>
+
+<section id="essai" class="reveal">
+<div class="section-head"><span class="section-number">03</span><div><h2>La période d'essai dans le parcours d'intégration</h2></div></div>
+<div class="reading">
+<p>La <strong>période d'essai</strong> correspond à une phase située au début de la relation de travail. Dans le parcours d'onboarding, elle constitue un temps d'observation et d'adaptation durant lequel le salarié découvre concrètement son poste et son environnement, tandis que l'organisation apprécie l'adéquation au poste.</p>
+<p>La période d'essai ne doit pas être confondue avec l'intégration : l'onboarding est un processus d'accompagnement, alors que la période d'essai est une période de la relation de travail dont le cadre dépend des règles applicables au contrat et au contexte concernés.</p>
+</div>
+<div class="diagram">
+<svg viewBox="0 0 900 300" role="img" aria-labelledby="trialTitle trialDesc">
+<title id="trialTitle">Articulation entre onboarding et période d'essai</title>
+<desc id="trialDesc">Le parcours d'intégration accompagne le salarié pendant que la période d'essai constitue une phase d'observation et d'adaptation.</desc>
+<g fill="none" stroke="var(--color-neutral)" stroke-width="12" stroke-linecap="round"><path d="M90 95H810"/></g>
+<g fill="var(--color-accent)" stroke="var(--color-accent)"><circle cx="150" cy="95" r="10"/><circle cx="330" cy="95" r="10"/><circle cx="510" cy="95" r="10"/><circle cx="690" cy="95" r="10"/><circle cx="810" cy="95" r="10"/></g>
+<g fill="var(--color-text)" font-family="Inter" text-anchor="middle">
+<text x="150" y="63" font-family="Manrope" font-weight="700">Accueil</text><text x="150" y="122" font-size="12">Découverte</text>
+<text x="330" y="63" font-family="Manrope" font-weight="700">Prise de poste</text><text x="330" y="122" font-size="12">Premières missions</text>
+<text x="510" y="63" font-family="Manrope" font-weight="700">Accompagnement</text><text x="510" y="122" font-size="12">Repères et feedback</text>
+<text x="690" y="63" font-family="Manrope" font-weight="700">Suivi</text><text x="690" y="122" font-size="12">Point d'intégration</text>
+<text x="810" y="63" font-family="Manrope" font-weight="700">Bilan</text><text x="810" y="122" font-size="12">Suite du parcours</text>
+<text x="450" y="205" font-family="Manrope" font-weight="700" font-size="17">PÉRIODE D'ESSAI</text>
+<text x="450" y="228" font-size="12">phase d'adaptation et d'observation au sein de la relation de travail</text>
+</g></svg>
+<div class="caption">L'onboarding accompagne le salarié pendant les premières étapes de sa présence ; la période d'essai constitue un cadre distinct à prendre en compte dans ce parcours.</div>
+</div>
+<div class="callout"><div class="callout-icon" aria-hidden="true">⚠️</div><div><strong>Attention — erreur fréquente</strong><p>Ne pas considérer la période d'essai comme une simple formalité. Un suivi régulier permet d'identifier les besoins d'accompagnement et de clarifier les attentes professionnelles.</p></div></div>
+</section>
+
+<section id="parrainage" class="section-alt reveal">
+<div class="section-head"><span class="section-number">04</span><div><h2>Parrainage et accompagnement de proximité</h2></div></div>
+<div class="reading">
+<p>Le <strong>parrainage</strong> consiste à désigner une personne de référence qui facilite l'arrivée du nouveau salarié. Le parrain peut aider à comprendre les habitudes de travail, identifier les bons interlocuteurs et s'orienter dans l'environnement professionnel.</p>
+<p>Le parrain ne remplace ni le manager ni la fonction RH. Son rôle est complémentaire : il apporte une proximité quotidienne qui peut rendre plus simple l'appropriation des repères informels et la création de liens avec l'équipe.</p>
+</div>
+<div class="diagram">
+<svg viewBox="0 0 900 330" role="img" aria-labelledby="mentorTitle mentorDesc">
+<title id="mentorTitle">Réseau d'accompagnement du nouveau salarié</title>
+<desc id="mentorDesc">Le nouveau salarié est au centre d'un réseau composé du manager, du parrain, de l'équipe et de la fonction RH.</desc>
+<g fill="none" stroke="var(--color-accent)" stroke-width="2">
+<path d="M450 165L185 80M450 165L715 80M450 165L185 250M450 165L715 250"/>
+</g>
+<g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+<circle cx="450" cy="165" r="65"/><rect x="70" y="42" width="230" height="75" rx="14"/><rect x="600" y="42" width="230" height="75" rx="14"/><rect x="70" y="213" width="230" height="75" rx="14"/><rect x="600" y="213" width="230" height="75" rx="14"/>
+</g>
+<g fill="var(--color-text)" text-anchor="middle" font-family="Inter">
+<text x="450" y="161" font-family="Manrope" font-weight="700" font-size="16">NOUVEAU</text><text x="450" y="184">SALARIÉ</text>
+<text x="185" y="72" font-family="Manrope" font-weight="700">MANAGER</text><text x="185" y="95" font-size="12">Attentes • priorités</text>
+<text x="715" y="72" font-family="Manrope" font-weight="700">PARRAIN</text><text x="715" y="95" font-size="12">Repères • proximité</text>
+<text x="185" y="243" font-family="Manrope" font-weight="700">ÉQUIPE</text><text x="185" y="266" font-size="12">Relations • coopération</text>
+<text x="715" y="243" font-family="Manrope" font-weight="700">FONCTION RH</text><text x="715" y="266" font-size="12">Cadre • accompagnement</text>
+</g></svg>
+<div class="caption">L'intégration repose sur plusieurs acteurs : chacun apporte un type d'accompagnement différent autour du nouveau salarié.</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th scope="col">Acteur</th><th scope="col">Contribution à l'intégration</th><th scope="col">Nature de l'accompagnement</th></tr></thead>
+<tbody>
+<tr><td><strong>Manager</strong></td><td>Clarifie les missions, priorités et attentes du poste.</td><td>Organisation du travail et feedback.</td></tr>
+<tr><td><strong>Parrain</strong></td><td>Facilite les repères pratiques et les premiers contacts.</td><td>Proximité et transmission informelle.</td></tr>
+<tr><td><strong>Équipe</strong></td><td>Favorise les relations de coopération et l'intégration collective.</td><td>Accueil et collaboration quotidienne.</td></tr>
+<tr><td><strong>RH</strong></td><td>Structure le parcours et veille à sa cohérence.</td><td>Cadre RH et accompagnement global.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="suivi" class="reveal">
+<div class="section-head"><span class="section-number">05</span><div><h2>Suivi d'intégration et fidélisation dès l'arrivée</h2></div></div>
+<div class="reading">
+<p>Le <strong>suivi d'intégration</strong> permet de vérifier progressivement comment le salarié prend ses repères, comprend ses missions et s'insère dans l'équipe. Il peut s'appuyer sur des échanges réguliers entre le salarié, le manager et, lorsque cela est pertinent, la fonction RH.</p>
+<p>La <strong>fidélisation dès l'arrivée</strong> repose notamment sur une expérience d'intégration cohérente : des attentes claires, un accompagnement disponible, une reconnaissance du travail réalisé et la possibilité d'exprimer les difficultés ou besoins rencontrés.</p>
+</div>
+<div class="kpi-grid" aria-label="Repères de suivi d'intégration">
+<article class="kpi"><div class="kpi-value">01</div><div class="kpi-label">Prise de poste</div><p>Compréhension progressive des missions et des priorités.</p></article>
+<article class="kpi"><div class="kpi-value">02</div><div class="kpi-label">Repères</div><p>Maîtrise croissante des interlocuteurs, outils et règles de travail.</p></article>
+<article class="kpi"><div class="kpi-value">03</div><div class="kpi-label">Appartenance</div><p>Création de relations de travail et inscription dans l'équipe.</p></article>
+</div>
+<div class="example">
+<article class="example-box"><h3>Situation RH — exemple explicatif</h3><p>Un nouveau salarié rejoint une équipe. Son manager organise un accueil, lui présente les priorités de son poste et prévoit des échanges réguliers. Un collègue référent l'aide à comprendre les pratiques quotidiennes. Au fil des semaines, les échanges permettent d'ajuster l'accompagnement lorsque des besoins apparaissent.</p></article>
+<article class="example-box"><h3>Logique de fidélisation</h3><p>Cette démarche ne cherche pas seulement à rendre le salarié opérationnel. Elle contribue aussi à donner une première expérience cohérente de l'organisation, à créer des liens professionnels et à montrer que l'arrivée du collaborateur est préparée et suivie.</p></article>
+</div>
+<div class="accordion" aria-label="Précisions professionnelles">
+<div class="acc-item"><button class="acc-btn" aria-expanded="false" aria-controls="acc1"><span>Pourquoi le suivi doit-il commencer dès l'arrivée ?</span><span aria-hidden="true">+</span></button><div class="acc-content" id="acc1" hidden>Les premières expériences donnent au salarié ses premiers repères sur l'organisation. Un suivi précoce permet de répondre aux incompréhensions et d'ajuster l'accompagnement avant que les difficultés ne s'installent.</div></div>
+<div class="acc-item"><button class="acc-btn" aria-expanded="false" aria-controls="acc2"><span>Quel est le rôle du manager dans l'intégration ?</span><span aria-hidden="true">+</span></button><div class="acc-content" id="acc2" hidden>Le manager traduit les attentes du poste en priorités concrètes, facilite l'accès aux ressources nécessaires et donne des retours permettant au salarié de progresser dans sa prise de poste.</div></div>
+<div class="acc-item"><button class="acc-btn" aria-expanded="false" aria-controls="acc3"><span>Le parrain remplace-t-il le manager ?</span><span aria-hidden="true">+</span></button><div class="acc-content" id="acc3" hidden>Non. Le parrain joue un rôle complémentaire de proximité. Le manager conserve la responsabilité de l'organisation du travail, des attentes liées au poste et du suivi managérial.</div></div>
+</div>
+<div class="callout"><div class="callout-icon" aria-hidden="true">👥</div><div><strong>Situation RH — exemple explicatif</strong><p>Lorsqu'un nouveau salarié hésite à solliciter son manager pour une question pratique, le parrain peut lui indiquer le bon interlocuteur et l'aider à comprendre les usages de l'équipe. Le réseau d'accompagnement réduit ainsi les obstacles liés à la découverte du nouvel environnement.</p></div></div>
+</section>
+
+<section id="essentiel" class="section-alt reveal">
+<div class="section-head"><span class="section-number">06</span><div><h2>Points clés à retenir</h2></div></div>
+<div class="key-grid">
+<div class="key"><strong>Onboarding</strong><span>Processus structuré qui accompagne le nouveau salarié de la préparation de son arrivée jusqu'au suivi de son intégration.</span></div>
+<div class="key"><strong>Livret d'accueil</strong><span>Support de référence qui rassemble des informations utiles pour comprendre l'organisation et retrouver ses premiers repères.</span></div>
+<div class="key"><strong>Période d'essai</strong><span>Phase distincte de la relation de travail qui peut être accompagnée par le dispositif d'intégration et demande un suivi adapté.</span></div>
+<div class="key"><strong>Parrainage</strong><span>Accompagnement de proximité complémentaire au rôle du manager et de la fonction RH.</span></div>
+<div class="key"><strong>Suivi</strong><span>Échanges réguliers permettant d'observer l'intégration et d'ajuster l'accompagnement.</span></div>
+<div class="key"><strong>Fidélisation</strong><span>Une expérience d'arrivée cohérente contribue à créer des repères, des liens et une relation durable avec l'organisation.</span></div>
+</div>
+<div class="callout"><div class="callout-icon" aria-hidden="true">💡</div><div><strong>Idée essentielle</strong><p>Un onboarding réussi ne consiste pas seulement à accueillir un nouveau salarié : il organise un parcours progressif, mobilise plusieurs acteurs et assure un suivi permettant de transformer l'arrivée en véritable intégration.</p></div></div>
+</section>
+
+<div class="footer-nav" aria-label="Navigation entre les leçons">
+<a class="nav-card" href="#" aria-label="Leçon précédente : Conduite de l'entretien de recrutement"><span class="nav-label">Leçon précédente</span><span class="nav-title">← Leçon 09 — Conduite de l'entretien de recrutement</span></a>
+<a class="nav-card next" href="#" aria-label="Leçon suivante : Gestion prévisionnelle des emplois et compétences"><span class="nav-label">Leçon suivante</span><span class="nav-title">Leçon 11 — Gestion prévisionnelle des emplois et compétences →</span></a>
+</div>
+<footer><strong>Filière Gestion des Ressources Humaines</strong> · Module 2 — Recrutement et intégration des collaborateurs · Leçon 10</footer>
+</main>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(()=> {
+ const progress=document.getElementById('progress'),topBtn=document.getElementById('topBtn'),menuBtn=document.getElementById('menuBtn'),mainNav=document.getElementById('mainNav');
+ function updateScrollUI(){const max=document.documentElement.scrollHeight-window.innerHeight;const ratio=max>0?window.scrollY/max:0;progress.style.width=(ratio*100)+'%';topBtn.classList.toggle('show',window.scrollY>500)}
+ window.addEventListener('scroll',updateScrollUI,{passive:true});updateScrollUI();
+ topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+ menuBtn.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open))});
+ mainNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mainNav.classList.remove('open');menuBtn.setAttribute('aria-expanded','false')}));
+ const tabButtons=[...document.querySelectorAll('.tab-btn')];
+ function activateTab(index){tabButtons.forEach((b,i)=>{const selected=i===index;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!selected})}
+ tabButtons.forEach((btn,i)=>{btn.addEventListener('click',()=>activateTab(i));btn.addEventListener('keydown',e=>{let next=i;if(e.key==='ArrowRight')next=(i+1)%tabButtons.length;if(e.key==='ArrowLeft')next=(i-1+tabButtons.length)%tabButtons.length;if(e.key==='Home')next=0;if(e.key==='End')next=tabButtons.length-1;if(next!==i){e.preventDefault();activateTab(next);tabButtons[next].focus()}})});
+ document.querySelectorAll('.acc-btn').forEach(btn=>btn.addEventListener('click',()=>{const expanded=btn.getAttribute('aria-expanded')==='true';btn.setAttribute('aria-expanded',String(!expanded));document.getElementById(btn.getAttribute('aria-controls')).hidden=expanded}));
+ const revealItems=document.querySelectorAll('.reveal');
+ if('IntersectionObserver' in window&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});revealItems.forEach(el=>observer.observe(el))}
+ else revealItems.forEach(el=>el.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

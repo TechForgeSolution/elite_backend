@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 15 — Correction colorimétrique : scopes, balance, exposition, saturation, correspondance et LUT.">
+<title>Leçon 15 — Correction colorimétrique | Montage vidéo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8F6;--color-text:#0B0F0D;
+  --color-text-muted:#5A6560;--color-accent:#1F6F54;--color-accent-soft:#E7F2ED;
+  --color-border:#E3E8E5;--color-accent-alt:#B3541E;
+  --shadow:0 12px 35px rgba(11,15,13,.07);--radius:18px;--max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.7}
+a{color:inherit}
+img,svg{max-width:100%;height:auto}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:#edf1ee;z-index:1000}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:50;background:rgba(255,255,255,.96);border-bottom:1px solid var(--color-border);backdrop-filter:blur(8px)}
+.nav{max-width:var(--max);margin:auto;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 24px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:700}
+.brand-mark{width:36px;height:36px;border:1.5px solid var(--color-accent);display:grid;place-items:center;color:var(--color-accent);font-family:"Roboto Mono",monospace;border-radius:8px}
+.nav-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav-links a{font-size:.86rem;text-decoration:none;color:var(--color-text-muted);padding:8px 10px;border-radius:8px}
+.nav-links a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.hero-inner{max-width:var(--max);margin:auto;padding:80px 24px 74px;display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.eyebrow{font:600 .8rem "Roboto Mono",monospace;letter-spacing:.08em;color:var(--color-accent);text-transform:uppercase}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;line-height:1.15}
+h1{font-size:clamp(2.5rem,5vw,4.8rem);margin:14px 0 20px;letter-spacing:-.045em}
+h2{font-size:clamp(1.9rem,3vw,2.7rem);margin:0 0 18px}
+h3{font-size:1.2rem;margin:0 0 8px}
+.lead{font-size:1.12rem;color:var(--color-text-muted);max-width:680px}
+.badges{display:flex;gap:9px;flex-wrap:wrap;margin-top:26px}
+.badge{border:1px solid var(--color-border);background:#fff;border-radius:999px;padding:7px 12px;font-size:.82rem}
+.badge strong{color:var(--color-accent)}
+.hero-visual{background:#fff;border:1px solid var(--color-border);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
+.hero-visual .caption{text-align:center;font-size:.78rem;color:var(--color-text-muted);margin-top:8px}
+.toc{max-width:var(--max);margin:0 auto;padding:32px 24px}
+.toc-box{border:1px solid var(--color-border);border-radius:16px;padding:24px;background:#fff}
+.toc-title{font:700 1rem "Space Grotesk";margin-bottom:14px}
+.toc ol{margin:0;padding-left:23px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px 28px}
+.toc a{text-decoration:none;color:var(--color-text-muted);font-size:.9rem}
+.toc a:hover{color:var(--color-accent)}
+main section{padding:82px 24px}
+main section.alt{background:var(--color-bg-alt);border-block:1px solid var(--color-border)}
+.section-inner{max-width:var(--max);margin:auto}
+.section-intro{max-width:720px;color:var(--color-text-muted)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:35px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:35px}
+.card{border:1px solid var(--color-border);background:#fff;border-radius:var(--radius);padding:25px;transition:.2s transform,.2s box-shadow}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.icon{width:42px;height:42px;border-radius:10px;background:var(--color-accent-soft);color:var(--color-accent);display:grid;place-items:center;font-size:1.15rem;margin-bottom:17px}
+.callout{border-left:4px solid var(--color-accent);background:var(--color-accent-soft);padding:18px 20px;border-radius:0 13px 13px 0;margin:28px 0}
+.callout b{color:var(--color-accent)}
+.visual{border:1px solid var(--color-border);border-radius:18px;background:#fff;padding:18px;margin-top:30px;overflow:hidden}
+.visual-title{font:600 .86rem "Roboto Mono";color:var(--color-text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
+svg text{font-family:Inter,Arial,sans-serif;fill:var(--color-text)}
+svg .mono{font-family:"Roboto Mono",monospace}
+svg .accent{fill:var(--color-accent)}
+svg .line{stroke:var(--color-border)}
+.tabs{margin-top:32px}
+.tab-buttons{display:flex;gap:5px;border-bottom:1px solid var(--color-border);overflow:auto}
+.tab-buttons button{border:0;background:transparent;padding:13px 16px;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab-buttons button[aria-selected="true"]{color:var(--color-accent);border-bottom-color:var(--color-accent);font-weight:700}
+.tab-panel{display:none;padding:24px 0}
+.tab-panel.active{display:block}
+.table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:14px;margin-top:25px;background:#fff}
+table{width:100%;border-collapse:collapse;min-width:620px;font-size:.9rem}
+th,td{padding:13px 16px;border-bottom:1px solid var(--color-border);text-align:left}
+th{background:var(--color-bg-alt);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+td.num,th.num{text-align:right;font-family:"Roboto Mono",monospace;font-variant-numeric:tabular-nums}
+tr:hover td{background:#fafcfa}
+.stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:36px}
+.step{position:relative;padding:18px 13px;border-top:3px solid var(--color-accent);background:#fff;border:1px solid var(--color-border);border-top-color:var(--color-accent);border-radius:12px}
+.step span{font:600 .75rem "Roboto Mono";color:var(--color-accent)}
+.step p{font-size:.82rem;color:var(--color-text-muted);margin:8px 0 0}
+details{border-bottom:1px solid var(--color-border);padding:17px 0}
+details:first-child{border-top:1px solid var(--color-border)}
+summary{cursor:pointer;font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";float:right;color:var(--color-accent);font-size:1.2rem}
+details[open] summary:after{content:"−"}
+details p{max-width:720px;color:var(--color-text-muted);margin:12px 0 4px}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:34px}
+.key{border-top:3px solid var(--color-accent);padding:20px 4px 0}
+.key strong{display:block;font-family:"Space Grotesk";font-size:1.05rem}
+.key p{font-size:.88rem;color:var(--color-text-muted)}
+.footer-nav{max-width:var(--max);margin:auto;padding:38px 24px;display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:stretch}
+.lesson-nav{border:1px solid var(--color-border);border-radius:14px;padding:17px;text-decoration:none}
+.lesson-nav:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.lesson-nav.next{text-align:right}
+.top-btn{position:fixed;right:20px;bottom:20px;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);width:44px;height:44px;border-radius:50%;cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+.top-btn.show{opacity:1;pointer-events:auto}
+.small{font-size:.8rem;color:var(--color-text-muted)}
+.reveal{opacity:0;transform:translateY(18px);transition:.65s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){
+ .hero-inner,.grid-2{grid-template-columns:1fr}
+ .grid-3{grid-template-columns:1fr 1fr}
+ .stepper{grid-template-columns:repeat(3,1fr)}
+ .keys{grid-template-columns:1fr 1fr}
+ .toc ol{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+ .nav{padding:10px 16px}.nav-links a{display:none}
+ .hero-inner{padding:58px 18px}.toc,main section,.footer-nav{padding-left:18px;padding-right:18px}
+ h1{font-size:2.55rem}.grid-3,.grid-2{grid-template-columns:1fr}
+ .stepper{grid-template-columns:1fr 1fr}.keys{grid-template-columns:1fr}
+ .footer-nav{grid-template-columns:1fr}.lesson-nav.next{text-align:left}
+ main section{padding-top:60px;padding-bottom:60px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}
+}
+</style>
+</head>
+<body id="top">
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top"><span class="brand-mark">AV</span><span>Filière Audiovisuel</span></a>
+    <div class="nav-links">
+      <a href="#notions">Notions</a><a href="#scopes">Scopes</a><a href="#correction">Correction</a><a href="#correspondance">Correspondance</a><a href="#lut">LUT</a>
+    </div>
+  </nav>
+</header>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow">Module 3 · Montage vidéo — Fondamentaux</div>
+      <h1>Correction colorimétrique</h1>
+      <p class="lead">Uniformiser les plans puis créer une intention colorée. La correction colorimétrique commence par une image techniquement cohérente avant d'aller vers un rendu esthétique maîtrisé.</p>
+      <div class="badges">
+        <span class="badge"><strong>Leçon 15</strong></span>
+        <span class="badge">Débutant → intermédiaire</span>
+        <span class="badge">15 min</span>
+        <span class="badge">Production professionnelle</span>
+      </div>
+    </div>
+    <div class="hero-visual" aria-label="Illustration de correction colorimétrique">
+      <svg viewBox="0 0 620 350" role="img" aria-labelledby="heroTitle heroDesc">
+        <title id="heroTitle">Avant et après correction colorimétrique</title>
+        <desc id="heroDesc">Deux vignettes représentent un plan non corrigé puis un plan équilibré, avec des curseurs d'exposition, balance et saturation.</desc>
+        <rect x="15" y="20" width="280" height="220" rx="14" fill="#f6f8f6" stroke="#e3e8e5"/>
+        <rect x="325" y="20" width="280" height="220" rx="14" fill="#e7f2ed" stroke="#e3e8e5"/>
+        <circle cx="155" cy="128" r="54" fill="#cfd7d2"/><rect x="84" y="162" width="142" height="45" rx="8" fill="#aeb9b3"/>
+        <circle cx="465" cy="128" r="54" fill="#dce8e2"/><rect x="394" y="162" width="142" height="45" rx="8" fill="#9dbbae"/>
+        <text x="155" y="272" text-anchor="middle" font-size="14">PLAN SOURCE</text>
+        <text x="465" y="272" text-anchor="middle" font-size="14" class="accent">PLAN CORRIGÉ</text>
+        <line x1="76" y1="306" x2="226" y2="306" stroke="#e3e8e5" stroke-width="5"/>
+        <circle cx="140" cy="306" r="7" fill="#1f6f54"/>
+        <line x1="386" y1="306" x2="536" y2="306" stroke="#e3e8e5" stroke-width="5"/>
+        <circle cx="478" cy="306" r="7" fill="#1f6f54"/>
+      </svg>
+      <div class="caption">La correction vise d'abord la cohérence : exposition, balance et saturation.</div>
+    </div>
+  </div>
+</header>
+
+<div class="toc">
+  <div class="toc-box">
+    <div class="toc-title">Sommaire de la leçon</div>
+    <ol>
+      <li><a href="#notions">1. Correction vs étalonnage</a></li>
+      <li><a href="#scopes">2. Lire les scopes</a></li>
+      <li><a href="#balance">3. Balance des blancs</a></li>
+      <li><a href="#exposition">4. Exposition et contraste</a></li>
+      <li><a href="#saturation">5. Saturation</a></li>
+      <li><a href="#correspondance">6. Correspondance des plans</a></li>
+      <li><a href="#lut">7. LUT et intention colorée</a></li>
+      <li><a href="#keys">8. Points clés à retenir</a></li>
+    </ol>
+  </div>
+</div>
+
+<main>
+<section id="notions" class="reveal">
+  <div class="section-inner">
+    <div class="eyebrow">01 · Fondamentaux</div>
+    <h2>Corriger avant de styliser</h2>
+    <p class="section-intro">La correction colorimétrique remet les images dans un état cohérent et naturel. L'étalonnage vient ensuite pour donner une intention : ambiance, contraste, densité ou identité visuelle.</p>
+    <div class="grid-3">
+      <article class="card"><div class="icon">01</div><h3>Neutraliser</h3><p>Réduire les dominantes indésirables et retrouver des blancs crédibles.</p></article>
+      <article class="card"><div class="icon">02</div><h3>Équilibrer</h3><p>Stabiliser exposition, contraste et saturation entre les différents plans.</p></article>
+      <article class="card"><div class="icon">03</div><h3>Styliser</h3><p>Ajouter une direction artistique sans détruire les informations utiles de l'image.</p></article>
+    </div>
+    <div class="visual">
+      <div class="visual-title">Chaîne de travail recommandée</div>
+      <svg viewBox="0 0 1100 170" role="img" aria-label="Chaîne de correction colorimétrique en cinq étapes">
+        <g>
+          <rect x="20" y="55" width="175" height="60" rx="12" fill="#fff" stroke="#e3e8e5"/><text x="107" y="80" text-anchor="middle" font-weight="700">Plan source</text><text x="107" y="101" text-anchor="middle" font-size="12">image brute</text>
+          <path d="M195 85 H235" stroke="#1f6f54" stroke-width="2"/><path d="M229 79 L237 85 L229 91" fill="none" stroke="#1f6f54" stroke-width="2"/>
+          <rect x="245" y="55" width="175" height="60" rx="12" fill="#fff" stroke="#e3e8e5"/><text x="332" y="80" text-anchor="middle" font-weight="700">Balance</text><text x="332" y="101" text-anchor="middle" font-size="12">température · teinte</text>
+          <path d="M420 85 H460" stroke="#1f6f54" stroke-width="2"/><path d="M454 79 L462 85 L454 91" fill="none" stroke="#1f6f54" stroke-width="2"/>
+          <rect x="470" y="55" width="175" height="60" rx="12" fill="#fff" stroke="#e3e8e5"/><text x="557" y="80" text-anchor="middle" font-weight="700">Exposition</text><text x="557" y="101" text-anchor="middle" font-size="12">noirs · hautes lumières</text>
+          <path d="M645 85 H685" stroke="#1f6f54" stroke-width="2"/><path d="M679 79 L687 85 L679 91" fill="none" stroke="#1f6f54" stroke-width="2"/>
+          <rect x="695" y="55" width="175" height="60" rx="12" fill="#fff" stroke="#e3e8e5"/><text x="782" y="80" text-anchor="middle" font-weight="700">Correspondance</text><text x="782" y="101" text-anchor="middle" font-size="12">plan à plan</text>
+          <path d="M870 85 H910" stroke="#1f6f54" stroke-width="2"/><path d="M904 79 L912 85 L904 91" fill="none" stroke="#1f6f54" stroke-width="2"/>
+          <rect x="920" y="55" width="160" height="60" rx="12" fill="#e7f2ed" stroke="#1f6f54"/><text x="1000" y="80" text-anchor="middle" font-weight="700" class="accent">Look final</text><text x="1000" y="101" text-anchor="middle" font-size="12">intention</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="scopes" class="alt reveal">
+  <div class="section-inner">
+    <div class="eyebrow">02 · Lecture technique</div>
+    <h2>Les scopes : voir ce que l'œil peut manquer</h2>
+    <p class="section-intro">Les scopes transforment l'image en données visuelles. Ils permettent de contrôler les niveaux et de comparer des plans avec davantage de précision qu'un écran seul.</p>
+    <div class="grid-2">
+      <article class="card">
+        <h3>Waveform</h3>
+        <p>Représente la distribution de luminance. Il aide à repérer des noirs trop écrasés, des hautes lumières trop hautes ou un contraste déséquilibré.</p>
+        <svg viewBox="0 0 500 190" role="img" aria-label="Exemple de waveform">
+          <rect x="1" y="1" width="498" height="188" fill="#fff" stroke="#e3e8e5"/>
+          <path d="M30 35H470M30 80H470M30 125H470M30 160H470" stroke="#e3e8e5"/>
+          <path d="M30 145 C90 125 105 65 155 90 S230 145 270 75 S345 55 390 105 S440 135 470 80" fill="none" stroke="#1f6f54" stroke-width="3"/>
+          <text x="35" y="25" font-size="11">100</text><text x="35" y="176" font-size="11">0</text>
+        </svg>
+      </article>
+      <article class="card">
+        <h3>Vectorscope</h3>
+        <p>Montre la répartition des couleurs autour d'un cercle chromatique. Il sert notamment à contrôler la saturation et la cohérence des tons chair.</p>
+        <svg viewBox="0 0 500 190" role="img" aria-label="Exemple de vectorscope">
+          <rect width="500" height="190" fill="#fff"/>
+          <circle cx="250" cy="95" r="70" fill="none" stroke="#e3e8e5"/><circle cx="250" cy="95" r="45" fill="none" stroke="#e3e8e5"/>
+          <path d="M250 95 L300 64 L324 95 L287 132 L240 118 Z" fill="none" stroke="#1f6f54" stroke-width="3"/>
+          <line x1="180" y1="95" x2="320" y2="95" stroke="#e3e8e5"/><line x1="250" y1="25" x2="250" y2="165" stroke="#e3e8e5"/>
+          <text x="250" y="184" text-anchor="middle" font-size="11">saturation →</text>
+        </svg>
+      </article>
+    </div>
+    <div class="callout"><b>À retenir :</b> l'écran sert à juger l'image, les scopes servent à la mesurer. Les deux doivent être utilisés ensemble.</div>
+  </div>
+</section>
+
+<section id="balance" class="reveal">
+  <div class="section-inner">
+    <div class="eyebrow">03 · Balance des blancs</div>
+    <h2>Neutraliser les dominantes</h2>
+    <p class="section-intro">Une balance incorrecte peut rendre toute une séquence trop chaude, trop froide, verdâtre ou magenta. Avant de chercher un style, on rétablit une base neutre.</p>
+    <div class="visual">
+      <div class="visual-title">Température et teinte</div>
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Illustration des deux axes de balance des blancs">
+        <text x="500" y="35" text-anchor="middle" font-size="18" font-weight="700">Balance des blancs</text>
+        <text x="110" y="105" text-anchor="middle" font-size="13">Froid</text><text x="890" y="105" text-anchor="middle" font-size="13">Chaud</text>
+        <line x1="150" y1="105" x2="850" y2="105" stroke="#e3e8e5" stroke-width="7"/><circle cx="515" cy="105" r="12" fill="#1f6f54"/>
+        <text x="110" y="205" text-anchor="middle" font-size="13">Vert</text><text x="890" y="205" text-anchor="middle" font-size="13">Magenta</text>
+        <line x1="150" y1="205" x2="850" y2="205" stroke="#e3e8e5" stroke-width="7"/><circle cx="480" cy="205" r="12" fill="#1f6f54"/>
+        <rect x="400" y="245" width="200" height="32" rx="8" fill="#e7f2ed"/><text x="500" y="266" text-anchor="middle" font-size="12" class="accent">Point de départ neutre</text>
+      </svg>
+    </div>
+    <div class="grid-3">
+      <article class="card"><h3>Température</h3><p>Ajuste l'axe chaud/froid. Un intérieur éclairé au tungstène peut nécessiter une correction vers le froid.</p></article>
+      <article class="card"><h3>Teinte</h3><p>Corrige les dominantes vertes ou magenta, souvent liées aux sources lumineuses ou aux mélanges de lumière.</p></article>
+      <article class="card"><h3>Référence</h3><p>Utiliser un élément neutre connu aide à éviter de corriger « à l'intuition ».</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="exposition" class="alt reveal">
+  <div class="section-inner">
+    <div class="eyebrow">04 · Luminance</div>
+    <h2>Exposition et contraste</h2>
+    <p class="section-intro">L'objectif n'est pas de rendre chaque image très lumineuse. Il faut préserver les détails importants et construire une hiérarchie claire entre ombres, tons moyens et hautes lumières.</p>
+    <div class="visual">
+      <div class="visual-title">Structure de luminance</div>
+      <svg viewBox="0 0 1000 260" role="img" aria-label="Échelle de luminance des noirs aux hautes lumières">
+        <defs><pattern id="grid" width="50" height="30" patternUnits="userSpaceOnUse"><path d="M50 0H0V30" fill="none" stroke="#e3e8e5"/></pattern></defs>
+        <rect x="70" y="50" width="860" height="130" fill="url(#grid)" stroke="#e3e8e5"/>
+        <path d="M70 165 C210 160 280 145 390 125 S560 85 650 95 S800 60 930 55" fill="none" stroke="#1f6f54" stroke-width="5"/>
+        <text x="70" y="215" font-size="13">Noirs</text><text x="500" y="215" text-anchor="middle" font-size="13">Tons moyens</text><text x="930" y="215" text-anchor="end" font-size="13">Hautes lumières</text>
+        <text x="500" y="30" text-anchor="middle" font-size="15" font-weight="700">Une exposition équilibrée conserve l'information utile</text>
+      </svg>
+    </div>
+    <div class="callout"><b>Attention :</b> pousser le contraste trop tôt peut écraser les détails. Corrige d'abord l'exposition globale, puis ajuste la relation entre ombres et lumières.</div>
+  </div>
+</section>
+
+<section id="saturation" class="reveal">
+  <div class="section-inner">
+    <div class="eyebrow">05 · Couleur</div>
+    <h2>La saturation : moins peut être plus</h2>
+    <p class="section-intro">La saturation augmente l'intensité des couleurs. Une correction professionnelle cherche rarement la couleur la plus forte : elle cherche la couleur la plus cohérente avec la scène.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Saturation globale</h3>
+        <p>Modifie l'intensité générale. Utile pour remettre une image trop terne dans une plage naturelle.</p>
+        <svg viewBox="0 0 500 120" role="img" aria-label="Curseur de saturation">
+          <line x1="45" y1="60" x2="455" y2="60" stroke="#e3e8e5" stroke-width="8"/><circle cx="250" cy="60" r="12" fill="#1f6f54"/>
+          <text x="45" y="92" font-size="12">faible</text><text x="455" y="92" text-anchor="end" font-size="12">forte</text>
+        </svg>
+      </div>
+      <div class="card">
+        <h3>Couleur sélective</h3>
+        <p>Permet de traiter une gamme particulière sans pousser toutes les couleurs de l'image au même niveau.</p>
+        <svg viewBox="0 0 500 120" role="img" aria-label="Roue chromatique simplifiée">
+          <circle cx="250" cy="60" r="45" fill="none" stroke="#1f6f54" stroke-width="10" stroke-dasharray="45 18"/>
+          <circle cx="250" cy="60" r="20" fill="#e7f2ed" stroke="#e3e8e5"/>
+          <text x="250" y="109" text-anchor="middle" font-size="12">traitement ciblé</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="correspondance" class="alt reveal">
+  <div class="section-inner">
+    <div class="eyebrow">06 · Cohérence</div>
+    <h2>Faire correspondre les plans</h2>
+    <p class="section-intro">Une séquence professionnelle doit donner l'impression que les plans appartiennent au même univers. On compare les images, on choisit un plan de référence puis on rapproche progressivement les autres.</p>
+    <div class="stepper">
+      <div class="step"><span>01</span><h3>Référence</h3><p>Choisir le plan le plus représentatif.</p></div>
+      <div class="step"><span>02</span><h3>Balance</h3><p>Neutraliser les dominantes.</p></div>
+      <div class="step"><span>03</span><h3>Luminance</h3><p>Rapprocher les niveaux.</p></div>
+      <div class="step"><span>04</span><h3>Couleur</h3><p>Rapprocher la saturation.</p></div>
+      <div class="step"><span>05</span><h3>Contrôle</h3><p>Comparer côte à côte.</p></div>
+      <div class="step"><span>06</span><h3>Look</h3><p>Appliquer l'intention finale.</p></div>
+    </div>
+    <div class="tabs" id="tabs">
+      <div class="tab-buttons" role="tablist" aria-label="Méthodes de correspondance">
+        <button role="tab" aria-selected="true" aria-controls="tab-eye" id="tab-eye-btn">Comparaison visuelle</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-scope" id="tab-scope-btn">Comparaison aux scopes</button>
+      </div>
+      <div id="tab-eye" class="tab-panel active" role="tabpanel" aria-labelledby="tab-eye-btn">
+        <p>Affichez le plan de référence et le plan à corriger à proximité. Vérifiez d'abord les grandes masses : luminosité du visage, ciel, arrière-plan, puis les détails.</p>
+      </div>
+      <div id="tab-scope" class="tab-panel" role="tabpanel" aria-labelledby="tab-scope-btn">
+        <p>Les scopes permettent de confirmer la comparaison : distribution de luminance, niveau de saturation et cohérence des dominantes. Ils sont particulièrement utiles lorsque deux écrans rendent les couleurs différemment.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <caption class="small" style="caption-side:top;text-align:left;padding:12px 16px">Grille de contrôle visuel d'une séquence</caption>
+        <thead><tr><th scope="col">Critère</th><th scope="col">Plan référence</th><th scope="col">Plan à corriger</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Balance</th><td>Neutre</td><td>Plus froide</td><td>Réchauffer légèrement</td></tr>
+          <tr><th scope="row">Exposition</th><td>Visage lisible</td><td>Visage sombre</td><td>Remonter les tons moyens</td></tr>
+          <tr><th scope="row">Saturation</th><td>Modérée</td><td>Élevée</td><td>Réduire globalement</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="lut" class="reveal">
+  <div class="section-inner">
+    <div class="eyebrow">07 · LUT</div>
+    <h2>Comprendre le rôle d'une LUT</h2>
+    <p class="section-intro">Une LUT est une transformation prédéfinie qui peut convertir ou styliser une image. Elle accélère le travail, mais ne remplace pas une correction adaptée au plan.</p>
+    <div class="grid-2">
+      <article class="card">
+        <h3>LUT technique</h3>
+        <p>Utilisée pour transformer une image issue d'un espace ou d'un profil donné vers une représentation attendue. Elle intervient dans une logique de gestion colorimétrique.</p>
+        <div class="visual" style="margin-top:18px">
+          <svg viewBox="0 0 480 160" role="img" aria-label="Flux d'une LUT technique">
+            <rect x="20" y="55" width="125" height="50" rx="10" fill="#fff" stroke="#e3e8e5"/><text x="82" y="85" text-anchor="middle">Profil source</text>
+            <path d="M145 80H175" stroke="#1f6f54" stroke-width="2"/><path d="M169 74L177 80L169 86" fill="none" stroke="#1f6f54" stroke-width="2"/>
+            <rect x="180" y="45" width="120" height="70" rx="10" fill="#e7f2ed" stroke="#1f6f54"/><text x="240" y="76" text-anchor="middle" class="accent" font-weight="700">LUT</text><text x="240" y="96" text-anchor="middle" font-size="11">transformation</text>
+            <path d="M300 80H330" stroke="#1f6f54" stroke-width="2"/><path d="M324 74L332 80L324 86" fill="none" stroke="#1f6f54" stroke-width="2"/>
+            <rect x="335" y="55" width="125" height="50" rx="10" fill="#fff" stroke="#e3e8e5"/><text x="397" y="85" text-anchor="middle">Espace cible</text>
+          </svg>
+        </div>
+      </article>
+      <article class="card">
+        <h3>LUT créative</h3>
+        <p>Ajoute un rendu esthétique. Elle doit être considérée comme un point de départ et dosée selon la scène, le projet et l'intention.</p>
+        <div class="visual" style="margin-top:18px">
+          <svg viewBox="0 0 480 160" role="img" aria-label="Flux d'une LUT créative">
+            <rect x="20" y="55" width="125" height="50" rx="10" fill="#fff" stroke="#e3e8e5"/><text x="82" y="85" text-anchor="middle">Image corrigée</text>
+            <path d="M145 80H175" stroke="#1f6f54" stroke-width="2"/><path d="M169 74L177 80L169 86" fill="none" stroke="#1f6f54" stroke-width="2"/>
+            <rect x="180" y="45" width="120" height="70" rx="10" fill="#e7f2ed" stroke="#1f6f54"/><text x="240" y="76" text-anchor="middle" class="accent" font-weight="700">LUT</text><text x="240" y="96" text-anchor="middle" font-size="11">look créatif</text>
+            <path d="M300 80H330" stroke="#1f6f54" stroke-width="2"/><path d="M324 74L332 80L324 86" fill="none" stroke="#1f6f54" stroke-width="2"/>
+            <rect x="335" y="55" width="125" height="50" rx="10" fill="#fff" stroke="#e3e8e5"/><text x="397" y="85" text-anchor="middle">Intention</text>
+          </svg>
+        </div>
+      </article>
+    </div>
+    <div class="callout"><b>Bon réflexe :</b> corriger d'abord, appliquer ensuite le look. Une LUT posée sur une image mal équilibrée peut amplifier les défauts plutôt que les résoudre.</div>
+    <details>
+      <summary>Pourquoi une LUT n'est-elle pas une correction automatique ?</summary>
+      <p>Parce que deux plans filmés dans des conditions différentes ne réagiront pas forcément de la même manière à une transformation identique. La correction préalable rend le résultat plus prévisible.</p>
+    </details>
+    <details>
+      <summary>Faut-il toujours utiliser une LUT ?</summary>
+      <p>Non. Elle peut être utile pour certains workflows, mais une correction manuelle ou un système colorimétrique adapté peut être plus précis selon le projet.</p>
+    </details>
+  </div>
+</section>
+
+<section id="keys" class="alt reveal">
+  <div class="section-inner">
+    <div class="eyebrow">08 · Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <div class="keys">
+      <div class="key"><strong>Mesurer</strong><p>Les scopes complètent l'observation à l'écran.</p></div>
+      <div class="key"><strong>Neutraliser</strong><p>La balance des blancs constitue une base cohérente.</p></div>
+      <div class="key"><strong>Uniformiser</strong><p>Les plans doivent fonctionner ensemble avant le look.</p></div>
+      <div class="key"><strong>Styliser</strong><p>Une LUT ou un grade créatif intervient après la correction.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="footer-nav">
+  <a class="lesson-nav" href="#" aria-label="Leçon précédente">
+    <span class="small">← Leçon précédente</span><br><strong>LEÇON 14 — Effets visuels</strong>
+  </a>
+  <a class="lesson-nav" href="#top" style="text-align:center"><span class="small">↑</span><br><strong>Sommaire du module</strong></a>
+  <a class="lesson-nav next" href="#" aria-label="Leçon suivante">
+    <span class="small">Leçon suivante →</span><br><strong>LEÇON 16 — Sound design</strong>
+  </a>
+</div>
+
+<footer style="border-top:1px solid var(--color-border);padding:28px 24px;text-align:center;color:var(--color-text-muted);font-size:.82rem">
+  Filière Audiovisuel · Module 3 · Leçon 15 · Support pédagogique
+</footer>
+
+<button class="top-btn" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const bar=document.getElementById('progressBar');
+  const topBtn=document.getElementById('topBtn');
+  function update(){
+    const doc=document.documentElement;
+    const max=doc.scrollHeight-doc.clientHeight;
+    const pct=max>0?(window.scrollY/max)*100:0;
+    bar.style.width=pct+'%';
+    topBtn.classList.toggle('show',window.scrollY>500);
+  }
+  window.addEventListener('scroll',update,{passive:true}); update();
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  const tabs=document.querySelectorAll('[role="tab"]');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabs.forEach(t=>{
+        t.setAttribute('aria-selected','false');
+        document.getElementById(t.getAttribute('aria-controls')).classList.remove('active');
+      });
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+    });
+    tab.addEventListener('keydown',e=>{
+      const i=[...tabs].indexOf(tab);
+      let next=i;
+      if(e.key==='ArrowRight') next=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft') next=(i-1+tabs.length)%tabs.length;
+      if(next!==i){e.preventDefault();tabs[next].focus();tabs[next].click();}
+    });
+  });
+
+  const reveals=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');io.unobserve(entry.target);}});
+    },{threshold:.08});
+    reveals.forEach(el=>io.observe(el));
+  }else reveals.forEach(el=>el.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

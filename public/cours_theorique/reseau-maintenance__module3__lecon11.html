@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Leçon 11 — Modèle OSI et TCP/IP">
+<title>Leçon 11 — Modèle OSI et TCP/IP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+ --section:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 "IBM Plex Sans",sans-serif}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+button{font:inherit;color:inherit}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav,.wrap{max-width:1120px;margin:auto;padding-inline:24px}
+.nav{height:62px;display:flex;align-items:center;justify-content:space-between}
+.brand,h1,h2,h3{font-family:"Space Grotesk",sans-serif}.brand{font-weight:700}.brand b,.eyebrow{color:var(--color-accent)}
+.hero{max-width:1120px;margin:auto;padding:68px 24px 52px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.eyebrow{font:600 .76rem "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(2.5rem,6vw,4.8rem);line-height:1.04;letter-spacing:-.045em;margin:12px 0 20px}
+h2{font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.15;letter-spacing:-.03em;margin:0 0 18px}
+h3{margin:0 0 8px}
+.lead{max-width:720px;font-size:1.12rem;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badge{border:1px solid var(--border);background:var(--soft);padding:6px 11px;border-radius:999px;font-size:.82rem}
+.art,.visual{border:1px solid var(--border);border-radius:16px;background:var(--section);padding:16px;overflow:auto}.art svg,.visual svg{display:block;width:100%;height:auto}
+.toc{border-block:1px solid var(--border);padding:24px 0}.tocgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.toc a{display:block;border:1px solid var(--border);border-radius:9px;padding:11px 13px;background:var(--color-bg)}.toc a:hover{border-color:var(--color-accent);text-decoration:none}
+.lesson{padding:70px 0}.lesson:nth-child(even){background:var(--section)}.text{max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}.card,.key,.navcard{border:1px solid var(--border);border-radius:13px;background:var(--color-bg);padding:20px;transition:.2s}.card:hover,.navcard:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--color-accent);border-radius:9px;color:var(--color-accent);font:600 .75rem "IBM Plex Mono";margin-bottom:15px}
+.callout{margin:26px 0;padding:16px 18px;border-left:4px solid var(--color-accent);background:var(--soft);border-radius:0 10px 10px 0}.callout strong{display:block;margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin-top:25px;background:var(--color-bg);border:1px solid var(--border)}th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left}th{font:600 .77rem "IBM Plex Mono";text-transform:uppercase;letter-spacing:.04em}tr:hover td{background:var(--soft)}.mono{font-family:"IBM Plex Mono"}
+.tabs{margin-top:28px}.tabbtns{display:flex;gap:8px;flex-wrap:wrap}.tabbtn{cursor:pointer;padding:9px 13px;border:1px solid var(--border);border-radius:8px;background:var(--color-bg);font-weight:600}.tabbtn[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}.panel{display:none;border:1px solid var(--border);padding:18px;border-radius:0 0 10px 10px}.panel.active{display:block}
+details{border-bottom:1px solid var(--border);padding:15px 0}summary{cursor:pointer;font-weight:700}
+.steps{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:28px 0}.step{border:1px solid var(--border);background:var(--color-bg);border-radius:10px;padding:13px}.step b{display:block;color:var(--color-accent);font:600 .8rem "IBM Plex Mono";margin-bottom:5px}
+.layer-list{display:grid;gap:9px;margin-top:25px}.layer{display:grid;grid-template-columns:70px 1fr 210px;gap:15px;align-items:center;border:1px solid var(--border);padding:13px 15px;border-radius:10px;background:var(--color-bg)}.layer .num{font:600 .85rem "IBM Plex Mono";color:var(--color-accent)}.layer .proto{font-family:"IBM Plex Mono";font-size:.84rem}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:25px}.key{padding:15px}
+.navbottom{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:38px}.next{text-align:right}
+.back{position:fixed;right:18px;bottom:18px;width:45px;height:45px;border:1px solid var(--color-accent);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer;opacity:0;pointer-events:none;z-index:40}.back.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);text-align:center;color:var(--muted);padding:26px}
+.reveal{opacity:0;transform:translateY(15px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(4,1fr)}.layer{grid-template-columns:55px 1fr}}
+@media(max-width:560px){.nav,.wrap{padding-inline:16px}.hero{padding:42px 16px}.grid,.keys,.navbottom,.tocgrid{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.layer{grid-template-columns:45px 1fr}.layer .proto{grid-column:2}.lesson{padding:52px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><div class="nav"><div class="brand">Maintenance <b>&</b> Réseau Informatique</div><a href="#sommaire">Sommaire</a></div></header>
+
+<div class="hero">
+<div>
+<div class="eyebrow">Module 3 · Réseaux informatiques — Fondamentaux</div>
+<h1>Modèle OSI et TCP/IP</h1>
+<p class="lead">Comprendre les couches réseau et le principe d'encapsulation.</p>
+<div class="badges"><span class="badge">Leçon <b>11</b></span><span class="badge">Intermédiaire</span><span class="badge">15 min</span></div>
+</div>
+<div class="art">
+<svg viewBox="0 0 620 500" role="img" aria-labelledby="heroTitle heroDesc">
+<title id="heroTitle">Modèle OSI et TCP/IP</title>
+<desc id="heroDesc">Sept couches OSI représentées comme une pile de traitement traversée par les données.</desc>
+<g font-family="IBM Plex Sans" font-weight="600" fill="#10161D">
+<rect x="70" y="28" width="480" height="55" rx="10" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="310" y="63" text-anchor="middle">7 · APPLICATION</text>
+<rect x="70" y="92" width="480" height="55" rx="10" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="310" y="127" text-anchor="middle">6 · PRÉSENTATION</text>
+<rect x="70" y="156" width="480" height="55" rx="10" fill="none" stroke="#1F6FEB" stroke-width="3"/><text x="310" y="191" text-anchor="middle">5 · SESSION</text>
+<rect x="70" y="220" width="480" height="55" rx="10" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="310" y="255" text-anchor="middle">4 · TRANSPORT</text>
+<rect x="70" y="284" width="480" height="55" rx="10" fill="none" stroke="#1F6FEB" stroke-width="3"/><text x="310" y="319" text-anchor="middle">3 · RÉSEAU</text>
+<rect x="70" y="348" width="480" height="55" rx="10" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="310" y="383" text-anchor="middle">2 · LIAISON</text>
+<rect x="70" y="412" width="480" height="55" rx="10" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="310" y="447" text-anchor="middle">1 · PHYSIQUE</text>
+</g>
+<path d="M42 470V28" stroke="#1F6FEB" stroke-width="3"/><path d="M42 28l-7 10h14zM42 470l-7-10h14z" fill="#1F6FEB"/>
+</svg>
+</div>
+</div>
+
+<div class="wrap"><div class="toc" id="sommaire"><div class="eyebrow">Navigation</div><div class="tocgrid">
+<a href="#modele">01 · Pourquoi des couches ?</a><a href="#osi">02 · Les 7 couches OSI</a><a href="#tcpip">03 · TCP/IP</a><a href="#encapsulation">04 · Encapsulation</a><a href="#adressage">05 · Adressage & ports</a><a href="#synthese">06 · Synthèse</a>
+</div></div></div>
+
+<main>
+<section class="lesson" id="modele"><div class="wrap reveal">
+<div class="text"><div class="eyebrow">01 · Principe</div><h2>Pourquoi découper le réseau en couches ?</h2>
+<p>Un modèle en couches divise les fonctions de communication en niveaux spécialisés. Cette organisation facilite la conception, l'interopérabilité et le diagnostic : chaque couche possède un rôle et échange des informations avec les couches voisines.</p></div>
+<div class="grid">
+<article class="card"><div class="icon">MOD</div><h3>Standardiser</h3><p>Les fonctions sont décrites de façon structurée pour faciliter la compréhension des échanges.</p></article>
+<article class="card"><div class="icon">DIAG</div><h3>Diagnostiquer</h3><p>Une panne peut être recherchée couche par couche : câble, IP, transport, application, etc.</p></article>
+<article class="card"><div class="icon">INT</div><h3>Interconnecter</h3><p>Des technologies différentes peuvent coopérer grâce à des interfaces et protocoles bien définis.</p></article>
+</div>
+<div class="visual"><svg viewBox="0 0 1000 300" role="img" aria-label="Communication entre deux ordinateurs par couches">
+<g fill="none" stroke="#A9B4BE" stroke-width="2"><rect x="70" y="60" width="210" height="180" rx="15"/><rect x="720" y="60" width="210" height="180" rx="15"/><rect x="360" y="100" width="280" height="100" rx="14"/></g>
+<g fill="#10161D" text-anchor="middle" font-family="Space Grotesk" font-weight="700"><text x="175" y="125" font-size="22">HÔTE A</text><text x="175" y="160">Couches</text><text x="825" y="125" font-size="22">HÔTE B</text><text x="825" y="160">Couches</text><text x="500" y="140" font-size="20">RÉSEAU</text><text x="500" y="170" font-family="IBM Plex Mono" font-size="13">protocoles + supports</text></g>
+<g stroke="#1F6FEB" stroke-width="3" fill="none"><path d="M280 135H360"/><path d="M640 135H720"/></g><path d="M280 175H360M640 175H720" stroke="#A9B4BE" stroke-width="2"/>
+</svg></div>
+<div class="callout"><strong>💡 À retenir</strong>Le modèle en couches ne signifie pas que les données sont physiquement « empilées » : il décrit des fonctions qui coopèrent pour réaliser une communication complète.</div>
+</div></section>
+
+<section class="lesson" id="osi"><div class="wrap reveal">
+<div class="text"><div class="eyebrow">02 · OSI</div><h2>Les sept couches du modèle OSI</h2><p>Le modèle OSI comporte sept couches, de la transmission physique jusqu'aux services destinés aux applications. Chaque couche possède une responsabilité pédagogique précise.</p></div>
+<div class="layer-list">
+<div class="layer"><div class="num">07</div><div><strong>Application</strong><br><small>Services réseau accessibles aux applications.</small></div><div class="proto">HTTP · DNS · SMTP</div></div>
+<div class="layer"><div class="num">06</div><div><strong>Présentation</strong><br><small>Format, représentation et transformation des données.</small></div><div class="proto">encodage · chiffrement</div></div>
+<div class="layer"><div class="num">05</div><div><strong>Session</strong><br><small>Gestion du dialogue entre applications.</small></div><div class="proto">sessions</div></div>
+<div class="layer"><div class="num">04</div><div><strong>Transport</strong><br><small>Communication de bout en bout et contrôle du transport.</small></div><div class="proto">TCP · UDP · ports</div></div>
+<div class="layer"><div class="num">03</div><div><strong>Réseau</strong><br><small>Adressage logique et acheminement des paquets.</small></div><div class="proto">IP · routage</div></div>
+<div class="layer"><div class="num">02</div><div><strong>Liaison de données</strong><br><small>Trames et communication sur le lien local.</small></div><div class="proto">Ethernet · MAC</div></div>
+<div class="layer"><div class="num">01</div><div><strong>Physique</strong><br><small>Transmission des bits sur le support.</small></div><div class="proto">cuivre · fibre · radio</div></div>
+</div>
+<div class="visual"><svg viewBox="0 0 1000 320" role="img" aria-label="Correspondance entre couches OSI et unités de données">
+<g fill="none" stroke="#A9B4BE" stroke-width="2"><rect x="55" y="70" width="180" height="65" rx="10"/><rect x="290" y="70" width="180" height="65" rx="10"/><rect x="525" y="70" width="180" height="65" rx="10"/><rect x="760" y="70" width="180" height="65" rx="10"/></g>
+<g fill="#10161D" text-anchor="middle" font-family="Space Grotesk" font-weight="700"><text x="145" y="108">APPLICATION</text><text x="380" y="108">TRANSPORT</text><text x="615" y="108">RÉSEAU</text><text x="850" y="108">LIAISON</text></g>
+<g fill="#1F6FEB" font-family="IBM Plex Mono" font-size="14" text-anchor="middle"><text x="145" y="180">DONNÉES</text><text x="380" y="180">SEGMENT</text><text x="615" y="180">PAQUET</text><text x="850" y="180">TRAME</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M145 135V165"/><path d="M380 135V165"/><path d="M615 135V165"/><path d="M850 135V165"/></g>
+<path d="M100 235H900" stroke="#A9B4BE" stroke-width="2"/><text x="500" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">PHYSIQUE → BITS SUR LE SUPPORT</text>
+</svg></div>
+</div></section>
+
+<section class="lesson" id="tcpip"><div class="wrap reveal">
+<div class="text"><div class="eyebrow">03 · Suite de protocoles</div><h2>Le modèle TCP/IP</h2><p>TCP/IP est le modèle pratique associé à la suite de protocoles utilisée sur Internet et dans de nombreux réseaux. Sa représentation courante regroupe les fonctions en quatre couches.</p></div>
+<div class="grid">
+<article class="card"><div class="icon">APP</div><h3>Application</h3><p>Services utilisés par les applications : Web, résolution de noms, courrier, etc.</p></article>
+<article class="card"><div class="icon">TCP</div><h3>Transport</h3><p>TCP et UDP assurent des modes différents de communication entre applications.</p></article>
+<article class="card"><div class="icon">IP</div><h3>Internet</h3><p>IP fournit l'adressage logique et participe à l'acheminement des paquets.</p></article>
+</div>
+<div class="visual"><svg viewBox="0 0 1000 360" role="img" aria-label="Comparaison OSI et TCP IP">
+<g fill="none" stroke="#A9B4BE" stroke-width="2">
+<rect x="100" y="30" width="330" height="55" rx="9"/><rect x="100" y="92" width="330" height="55" rx="9"/><rect x="100" y="154" width="330" height="55" rx="9"/><rect x="100" y="216" width="330" height="55" rx="9"/><rect x="100" y="278" width="330" height="55" rx="9"/>
+<rect x="570" y="30" width="330" height="82" rx="9"/><rect x="570" y="122" width="330" height="82" rx="9"/><rect x="570" y="214" width="330" height="55" rx="9"/><rect x="570" y="279" width="330" height="54" rx="9"/>
+</g>
+<g fill="#10161D" text-anchor="middle" font-family="Space Grotesk" font-weight="700"><text x="265" y="65">APPLICATION</text><text x="265" y="127">PRÉSENTATION</text><text x="265" y="189">SESSION</text><text x="265" y="251">TRANSPORT</text><text x="265" y="313">RÉSEAU / LIAISON / PHYSIQUE</text>
+<text x="735" y="65">APPLICATION</text><text x="735" y="157">TRANSPORT</text><text x="735" y="248">INTERNET</text><text x="735" y="312">ACCÈS RÉSEAU</text></g>
+<path d="M430 127H570M430 189H570M430 251H570M430 313H570" stroke="#1F6FEB" stroke-width="3"/>
+</svg></div>
+<div class="tabs">
+<div class="tabbtns" role="tablist" aria-label="Comparaison des modèles"><button class="tabbtn" role="tab" aria-selected="true" aria-controls="osi-panel">OSI</button><button class="tabbtn" role="tab" aria-selected="false" aria-controls="tcp-panel">TCP/IP</button></div>
+<div class="panel active" id="osi-panel" role="tabpanel">Modèle de référence en <strong>7 couches</strong>, très utile pour apprendre, expliquer et localiser les fonctions réseau.</div>
+<div class="panel" id="tcp-panel" role="tabpanel">Modèle pratique en <strong>4 couches</strong>, directement lié à la suite de protocoles TCP/IP.</div>
+</div>
+</div></section>
+
+<section class="lesson" id="encapsulation"><div class="wrap reveal">
+<div class="text"><div class="eyebrow">04 · Encapsulation</div><h2>Comment une donnée traverse les couches</h2><p>L'encapsulation consiste à ajouter, à différentes étapes, les informations nécessaires au transport de la donnée. À la réception, le processus inverse est appelé décapsulation.</p></div>
+<div class="steps">
+<div class="step"><b>01 · Application</b>Donnée produite par l'application.</div>
+<div class="step"><b>02 · Transport</b>Ajout des informations TCP/UDP.</div>
+<div class="step"><b>03 · Réseau</b>Ajout de l'en-tête IP.</div>
+<div class="step"><b>04 · Liaison</b>Création de la trame.</div>
+<div class="step"><b>05 · Physique</b>Transmission des bits.</div>
+<div class="step"><b>06 · Réception</b>Bits reçus par l'hôte distant.</div>
+<div class="step"><b>07 · Décapsulation</b>Les en-têtes sont traités couche par couche.</div>
+</div>
+<div class="visual"><svg viewBox="0 0 1000 390" role="img" aria-label="Encapsulation d'une donnée en trame">
+<g font-family="IBM Plex Mono" font-size="15">
+<rect x="70" y="35" width="860" height="55" rx="8" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="500" y="69" text-anchor="middle" fill="#10161D">DONNÉE APPLICATION</text>
+<rect x="70" y="115" width="150" height="55" rx="8" fill="none" stroke="#1F6FEB" stroke-width="2"/><rect x="220" y="115" width="710" height="55" rx="8" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="145" y="149" text-anchor="middle" fill="#10161D">TCP/UDP</text><text x="575" y="149" text-anchor="middle" fill="#10161D">DONNÉE</text>
+<rect x="70" y="195" width="150" height="55" rx="8" fill="none" stroke="#1F6FEB" stroke-width="2"/><rect x="220" y="195" width="180" height="55" rx="8" fill="none" stroke="#1F6FEB" stroke-width="2"/><rect x="400" y="195" width="530" height="55" rx="8" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="145" y="229" text-anchor="middle" fill="#10161D">TCP/UDP</text><text x="310" y="229" text-anchor="middle" fill="#10161D">IP</text><text x="665" y="229" text-anchor="middle" fill="#10161D">DONNÉE</text>
+<rect x="70" y="275" width="120" height="55" rx="8" fill="none" stroke="#1F6FEB" stroke-width="2"/><rect x="190" y="275" width="180" height="55" rx="8" fill="none" stroke="#1F6FEB" stroke-width="2"/><rect x="370" y="275" width="180" height="55" rx="8" fill="none" stroke="#1F6FEB" stroke-width="2"/><rect x="550" y="275" width="380" height="55" rx="8" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+<text x="130" y="309" text-anchor="middle" fill="#10161D">MAC</text><text x="280" y="309" text-anchor="middle" fill="#10161D">IP</text><text x="460" y="309" text-anchor="middle" fill="#10161D">TCP/UDP</text><text x="740" y="309" text-anchor="middle" fill="#10161D">DONNÉE</text>
+</g>
+<g stroke="#A9B4BE" stroke-width="2"><path d="M500 90V112M500 170V192M500 250V272"/></g>
+</svg></div>
+<div class="callout"><strong>🛠️ Cas pratique</strong>Pour comprendre un paquet capturé sur un réseau, on peut partir de l'extérieur vers l'intérieur : trame Ethernet → paquet IP → segment TCP/UDP → données applicatives.</div>
+</div></section>
+
+<section class="lesson" id="adressage"><div class="wrap reveal">
+<div class="text"><div class="eyebrow">05 · Adressage</div><h2>Adresses IP, MAC et ports</h2><p>Les couches utilisent des identifiants différents. L'adresse MAC concerne l'interface sur le réseau local, l'adresse IP identifie logiquement une interface dans l'interconnexion, et le port identifie un service ou une communication au niveau transport.</p></div>
+<table>
+<thead><tr><th>Élément</th><th>Couche associée</th><th>Rôle</th><th>Exemple</th></tr></thead>
+<tbody>
+<tr><td class="mono">MAC</td><td>Liaison</td><td>Identifier une interface sur le réseau local</td><td class="mono">AA:BB:CC:11:22:33</td></tr>
+<tr><td class="mono">IP</td><td>Réseau / Internet</td><td>Adressage logique et acheminement</td><td class="mono">192.168.1.20</td></tr>
+<tr><td class="mono">Port</td><td>Transport</td><td>Identifier le service ou flux applicatif</td><td class="mono">443</td></tr>
+</tbody>
+</table>
+<div class="visual"><svg viewBox="0 0 1000 310" role="img" aria-label="Association MAC IP port">
+<rect x="60" y="55" width="880" height="200" rx="16" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+<g fill="#10161D" font-family="IBM Plex Mono" text-anchor="middle"><text x="200" y="105" font-size="18">MAC</text><text x="200" y="135">interface locale</text><text x="500" y="105" font-size="18">IP</text><text x="500" y="135">destination logique</text><text x="800" y="105" font-size="18">PORT</text><text x="800" y="135">service</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M200 160V220"/><path d="M500 160V220"/><path d="M800 160V220"/></g>
+<g fill="#1F6FEB" font-family="IBM Plex Mono" text-anchor="middle"><text x="200" y="245">Ethernet</text><text x="500" y="245">IP</text><text x="800" y="245">TCP / UDP</text></g>
+</svg></div>
+<details><summary>Pourquoi les ports sont-ils nécessaires ?</summary><p>Une même machine peut exécuter plusieurs services réseau. Le numéro de port permet au transport d'associer les données reçues au bon service ou à la bonne communication.</p></details>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Une adresse IP et un port ne désignent pas la même chose : l'IP sert à identifier une destination logique, tandis que le port sert à distinguer les communications ou services au niveau transport.</div>
+</div></section>
+
+<section class="lesson" id="synthese"><div class="wrap reveal">
+<div class="text"><div class="eyebrow">06 · Synthèse</div><h2>Points clés à retenir</h2><p>OSI aide à structurer la compréhension des communications ; TCP/IP décrit la suite de protocoles largement utilisée en pratique.</p></div>
+<div class="keys">
+<div class="key"><strong>OSI</strong> — 7 couches de référence pour organiser les fonctions réseau.</div>
+<div class="key"><strong>TCP/IP</strong> — modèle pratique couramment représenté en 4 couches.</div>
+<div class="key"><strong>Encapsulation</strong> — ajout progressif d'informations au cours de la descente des couches.</div>
+<div class="key"><strong>Décapsulation</strong> — traitement inverse à la réception.</div>
+<div class="key"><strong>IP</strong> — adressage logique et acheminement.</div>
+<div class="key"><strong>Ports</strong> — identification des services/communications au transport.</div>
+</div>
+<div class="callout"><strong>💡 À retenir</strong>Pour raisonner sur un échange réseau, demandez-vous successivement : quelle application communique ? quel transport ? quelle adresse IP ? quel réseau local ? quel support physique ?</div>
+<div class="navbottom">
+<div class="navcard"><div class="eyebrow">← Précédente</div><a href="#"><strong>Leçon 10 — Support technique et helpdesk</strong></a></div>
+<div class="navcard next"><div class="eyebrow">Suivante →</div><a href="#"><strong>Leçon 12 — Câblage et équipements réseau</strong></a></div>
+</div>
+</div></section>
+</main>
+
+<button class="back" id="back" aria-label="Retour en haut">↑</button>
+<footer>Maintenance et Réseau Informatique · Module 3 · Leçon 11</footer>
+<script>
+const progress=document.getElementById('progress'),back=document.getElementById('back');
+function ui(){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h?scrollY/h*100:0)+'%';back.classList.toggle('show',scrollY>500)}
+addEventListener('scroll',ui,{passive:true});ui();back.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+document.querySelectorAll('.tabs').forEach(t=>{
+ const bs=t.querySelectorAll('[role=tab]'),ps=t.querySelectorAll('[role=tabpanel]');
+ bs.forEach((b,i)=>{b.onclick=()=>{bs.forEach(x=>x.setAttribute('aria-selected','false'));ps.forEach(x=>x.classList.remove('active'));b.setAttribute('aria-selected','true');document.getElementById(b.getAttribute('aria-controls')).classList.add('active')};
+ b.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();bs[(i+(e.key==='ArrowRight'?1:-1)+bs.length)%bs.length].focus()}}});
+});
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});els.forEach(e=>io.observe(e))}else els.forEach(e=>e.classList.add('visible'));
+</script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 09 — Communication de changement en interne">
+<title>Leçon 09 — Communication de changement en interne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--color-bg:#F6F5F2;--color-text:#1B1F2E;--color-accent:#FF5A36;--color-neutral:#9AA3B2;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 Inter,Arial,sans-serif}
+a{color:var(--color-text);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;width:0;height:4px;background:var(--color-accent);z-index:9999}
+.header{position:sticky;top:4px;z-index:100;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg))}
+.header-inner{max-width:1180px;margin:auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font:700 16px "Space Grotesk"}
+.mark{width:36px;height:36px;border:2px solid var(--color-text);display:grid;place-items:center;font:600 11px "JetBrains Mono"}
+.header-actions{display:flex;gap:8px}
+.btn{border:1px solid var(--color-neutral);background:transparent;border-radius:8px;padding:8px 12px;cursor:pointer}
+.btn:hover{border-color:var(--color-accent);color:var(--color-accent)}
+main{max-width:1180px;margin:auto;padding:0 24px 80px}
+.hero{padding:76px 0 52px;display:grid;grid-template-columns:1.45fr .55fr;gap:50px;align-items:end}
+.eyebrow{font:600 12px "JetBrains Mono";letter-spacing:.09em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.12;letter-spacing:-.025em}
+h1{font-size:clamp(42px,6vw,76px);margin:14px 0 20px}
+h2{font-size:clamp(30px,4vw,44px);margin:0 0 18px}
+h3{font-size:21px;margin:0 0 10px}
+.lead{font-size:20px;max-width:720px;color:color-mix(in srgb,var(--color-text) 75%,var(--color-bg))}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.badge{border:1px solid var(--color-neutral);border-radius:999px;padding:5px 10px;font:500 11px "JetBrains Mono"}
+.badge.accent{border-color:var(--color-accent);color:var(--color-accent)}
+.hero-card{border:1px solid var(--color-neutral);padding:22px;background:color-mix(in srgb,var(--color-accent) 6%,var(--color-bg))}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.meta div{padding:12px 0;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg))}
+.meta span{display:block;font-size:11px;text-transform:uppercase;color:var(--color-neutral)}
+.meta strong{font:600 13px "JetBrains Mono"}
+.toc{margin:0 0 52px;padding:24px;border-top:2px solid var(--color-accent);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg))}
+.toc strong{font-family:"Space Grotesk"}
+.toc ol{columns:2;margin:10px 0 0;padding-left:22px}
+.toc li{padding:3px 0}
+.section{padding:72px 0;border-top:1px solid color-mix(in srgb,var(--color-neutral) 30%,var(--color-bg))}
+.alt{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));padding-left:24px;padding-right:24px}
+.intro{max-width:740px;margin-bottom:30px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{border:1px solid color-mix(in srgb,var(--color-neutral) 55%,var(--color-bg));padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{width:45px;height:45px;border:1px solid var(--color-accent);display:grid;place-items:center;color:var(--color-accent);font:600 13px "JetBrains Mono";margin-bottom:16px}
+.visual{margin:30px 0;border:1px solid var(--color-neutral);background:var(--color-bg);padding:18px;overflow-x:auto}
+.visual svg{display:block;width:100%;min-width:650px;height:auto}
+figcaption{font-size:12px;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));margin-top:9px}
+.callout{margin:27px 0;padding:19px 21px;border-left:5px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.callout .label{font:600 12px "JetBrains Mono";color:var(--color-accent);text-transform:uppercase;margin-bottom:6px}
+.callout p:last-child{margin-bottom:0}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:30px 0}
+.step{position:relative;border:1px solid var(--color-neutral);padding:17px;background:var(--color-bg)}
+.step:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);background:var(--color-bg);color:var(--color-accent);z-index:2}
+.step i{font:600 11px "JetBrains Mono";color:var(--color-accent);font-style:normal}
+.step strong{display:block;font-family:"Space Grotesk";margin:5px 0}
+.tabs{margin:30px 0}
+.tabbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tab{border:1px solid var(--color-neutral);background:transparent;border-radius:7px;padding:9px 13px;cursor:pointer}
+.tab[aria-selected="true"]{border-color:var(--color-accent);color:var(--color-accent)}
+.panel{display:none;border:1px solid var(--color-neutral);padding:23px}
+.panel.active{display:block}
+.quote{font:500 14px/1.7 "JetBrains Mono";padding:19px;border:1px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg));margin:18px 0}
+.quote small{display:block;font:400 12px/1.5 Inter;margin-top:9px;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+.table-wrap{overflow-x:auto;border:1px solid var(--color-neutral);margin:28px 0}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg))}
+th{font:600 11px "JetBrains Mono";text-transform:uppercase}
+tbody tr:hover{background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{border:1px solid var(--color-neutral);padding:17px;background:var(--color-bg)}
+.kpi strong{display:block;color:var(--color-accent);font:600 27px "JetBrains Mono"}
+.kpi span{font-size:12px}
+.accordion{border-top:1px solid var(--color-neutral);margin-top:30px}
+.acc{border-bottom:1px solid var(--color-neutral)}
+.acc button{width:100%;padding:17px 0;background:transparent;border:0;text-align:left;display:flex;justify-content:space-between;cursor:pointer;font:600 17px "Space Grotesk"}
+.acc-content{display:none;max-width:740px;padding:0 0 17px}
+.acc.open .acc-content{display:block}
+.acc.open button{color:var(--color-accent)}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:50px}
+.nav a{display:block;text-decoration:none;border:1px solid var(--color-neutral);padding:21px}
+.nav a:hover{border-color:var(--color-accent)}
+.nav small{display:block;font:500 11px "JetBrains Mono";color:var(--color-neutral);margin-bottom:7px}
+.nav strong{font:600 18px "Space Grotesk"}
+footer{max-width:1180px;margin:auto;border-top:1px solid var(--color-neutral);padding:27px 24px;font-size:13px;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+.top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-neutral);background:var(--color-bg);cursor:pointer;display:none;z-index:50}
+.top.show{display:block}
+.reveal{opacity:0;transform:translateY(16px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){
+.hero{grid-template-columns:1fr}
+.grid3{grid-template-columns:1fr}
+.steps{grid-template-columns:1fr}
+.step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-16px;transform:translateX(-50%)}
+.kpis,.summary{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:650px){
+main{padding:0 16px 55px}.header-inner{padding:11px 16px}.brand span{display:none}
+.hero{padding-top:52px}h1{font-size:43px}.lead{font-size:17px}
+.grid2,.nav{grid-template-columns:1fr}.toc ol{columns:1}.alt{padding-left:16px;padding-right:16px}
+.section{padding:53px 0}.kpis,.summary{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="header">
+<div class="header-inner">
+<a href="#top" class="brand"><span class="mark">CE</span><span>Communication d'Entreprise</span></a>
+<div class="header-actions">
+<button class="btn" id="tocToggle" aria-expanded="true" aria-controls="toc">Sommaire</button>
+<button class="btn" id="headerTop">↑ Haut</button>
+</div>
+</div>
+</header>
+
+<main id="top">
+<section class="hero reveal">
+<div>
+<div class="eyebrow">Module 2 · Communication interne</div>
+<h1>Communication de changement en interne</h1>
+<p class="lead">Accompagner les transformations internes par une communication claire, progressive et cohérente, capable de réduire l'incertitude et d'aider les équipes à comprendre leur rôle dans le changement.</p>
+<div class="badges">
+<span class="badge accent">LEÇON 09</span><span class="badge">INTERMÉDIAIRE</span><span class="badge">18 MIN</span><span class="badge">COMMUNICATION INTERNE</span>
+</div>
+</div>
+<aside class="hero-card">
+<div class="meta">
+<div><span>Objectif</span><strong>ACCOMPAGNER</strong></div>
+<div><span>Notions</span><strong>05 BLOCS</strong></div>
+<div><span>Format</span><strong>COURS VISUEL</strong></div>
+<div><span>Module</span><strong>M2</strong></div>
+</div>
+</aside>
+</section>
+
+<nav class="toc" id="toc" aria-label="Sommaire">
+<strong>Sommaire de la leçon</strong>
+<ol>
+<li><a href="#changement">Comprendre la conduite du changement</a></li>
+<li><a href="#resistances">Comprendre les résistances</a></li>
+<li><a href="#plan">Construire le plan de communication</a></li>
+<li><a href="#messages">Construire les messages clés</a></li>
+<li><a href="#supports">Choisir les supports d'accompagnement</a></li>
+<li><a href="#synthese">Points clés à retenir</a></li>
+</ol>
+</nav>
+
+<section class="section reveal" id="changement">
+<div class="intro">
+<div class="eyebrow">01 · Conduite du changement</div>
+<h2>Communiquer pour rendre le changement compréhensible</h2>
+<p>Une transformation interne peut concerner une organisation, un outil, une procédure, une équipe, un métier ou une culture de travail. La communication ne remplace pas la conduite du changement : elle crée les conditions pour comprendre ce qui évolue, pourquoi cela évolue et comment chacun peut avancer.</p>
+</div>
+
+<div class="grid3">
+<article class="card"><div class="icon">01</div><h3>Donner du sens</h3><p>Expliquer la raison de la transformation et la situation recherchée, sans se limiter à annoncer une décision.</p></article>
+<article class="card"><div class="icon">02</div><h3>Réduire l'incertitude</h3><p>Clarifier ce qui est connu, ce qui change, ce qui ne change pas et les prochaines étapes.</p></article>
+<article class="card"><div class="icon">03</div><h3>Faire agir</h3><p>Indiquer les comportements, ressources, formations ou décisions nécessaires pour accompagner la transition.</p></article>
+</div>
+
+<figure class="visual">
+<svg viewBox="0 0 1000 390" role="img" aria-labelledby="c1t c1d">
+<title id="c1t">Cycle de communication du changement</title>
+<desc id="c1d">Le changement part d'une décision, puis est expliqué, approprié, expérimenté et stabilisé.</desc>
+<path d="M160 195 C160 90 300 55 390 100 C475 142 500 220 580 250 C680 288 835 260 840 170 C845 80 715 52 620 95" fill="none" stroke="#9AA3B2" stroke-width="3"/>
+<g font-family="Space Grotesk" font-weight="700" font-size="17" text-anchor="middle">
+<circle cx="160" cy="195" r="55" fill="#F6F5F2" stroke="#1B1F2E" stroke-width="2"/><text x="160" y="191">DÉCISION</text><text x="160" y="213" font-family="Inter" font-weight="400" font-size="11">pourquoi ?</text>
+<circle cx="390" cy="100" r="55" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2"/><text x="390" y="96">EXPLICATION</text><text x="390" y="118" font-family="Inter" font-weight="400" font-size="11">quoi ?</text>
+<circle cx="580" cy="250" r="55" fill="#FF5A36"/><text x="580" y="246" fill="#F6F5F2">APPROPRIATION</text><text x="580" y="268" fill="#F6F5F2" font-family="Inter" font-weight="400" font-size="11">pour qui ?</text>
+<circle cx="840" cy="170" r="55" fill="#F6F5F2" stroke="#FF5A36" stroke-width="3"/><text x="840" y="166">ACTION</text><text x="840" y="188" font-family="Inter" font-weight="400" font-size="11">comment ?</text>
+</g>
+<text x="500" y="355" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#1B1F2E">LE CHANGEMENT DEVIENT PLUS LISIBLE LORSQUE LE « POURQUOI », LE « QUOI » ET LE « COMMENT » SONT RELIÉS</text>
+</svg>
+<figcaption>Le rôle de la communication évolue avec le projet : expliquer, accompagner, écouter puis stabiliser.</figcaption>
+</figure>
+
+<div class="callout"><div class="label">💡 À retenir</div><p>Une communication de changement efficace ne se résume pas à « annoncer ». Elle accompagne le passage entre une situation actuelle et une situation future.</p></div>
+</section>
+
+<section class="section alt reveal" id="resistances">
+<div class="intro">
+<div class="eyebrow">02 · Résistances</div>
+<h2>Les résistances : écouter avant de répondre</h2>
+<p>Une résistance peut prendre des formes très différentes : questionnement, inquiétude, attente, désaccord, ralentissement ou retrait. Elle ne signifie pas automatiquement un refus définitif du changement. La communication doit chercher à comprendre ce qui se trouve derrière la réaction.</p>
+</div>
+
+<figure class="visual">
+<svg viewBox="0 0 1000 420" role="img" aria-labelledby="r1t r1d">
+<title id="r1t">Cartographie des causes possibles de résistance</title>
+<desc id="r1d">Plusieurs causes convergent vers une réaction observable : manque d'information, perte perçue, manque de confiance, surcharge et absence de participation.</desc>
+<circle cx="500" cy="210" r="78" fill="#FF5A36"/>
+<text x="500" y="204" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="20" fill="#F6F5F2">RÉACTION</text>
+<text x="500" y="228" text-anchor="middle" font-family="Inter" font-size="12" fill="#F6F5F2">observable</text>
+<g fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2">
+<rect x="45" y="55" width="205" height="72" rx="9"/><rect x="285" y="25" width="205" height="72" rx="9"/>
+<rect x="715" y="55" width="205" height="72" rx="9"/><rect x="715" y="292" width="205" height="72" rx="9"/>
+<rect x="285" y="323" width="205" height="72" rx="9"/>
+</g>
+<g font-family="Space Grotesk" font-weight="700" font-size="15" text-anchor="middle" fill="#1B1F2E">
+<text x="148" y="84">INFORMATION</text><text x="148" y="106" font-family="Inter" font-weight="400" font-size="11">« Je ne comprends pas »</text>
+<text x="388" y="54">PERTE PERÇUE</text><text x="388" y="76" font-family="Inter" font-weight="400" font-size="11">repères, habitudes</text>
+<text x="818" y="84">CONFIANCE</text><text x="818" y="106" font-family="Inter" font-weight="400" font-size="11">crédibilité, transparence</text>
+<text x="818" y="321">SURCHARGE</text><text x="818" y="343" font-family="Inter" font-weight="400" font-size="11">temps, compétences</text>
+<text x="388" y="352">PARTICIPATION</text><text x="388" y="374" font-family="Inter" font-weight="400" font-size="11">sentiment de ne pas être associé</text>
+</g>
+<path d="M250 95 L440 180 M490 85 L485 145 M715 95 L560 180 M715 328 L570 245 M490 350 L485 275" stroke="#9AA3B2" stroke-width="3"/>
+<text x="500" y="410" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#1B1F2E">IDENTIFIER LA CAUSE AVANT DE CHOISIR LE MESSAGE OU LE SUPPORT</text>
+</svg>
+<figcaption>Une même réaction peut avoir plusieurs causes. La communication doit donc commencer par l'écoute et le diagnostic.</figcaption>
+</figure>
+
+<div class="tabs" data-tabs>
+<div class="tabbar" role="tablist" aria-label="Réponse aux résistances">
+<button class="tab" role="tab" aria-selected="true">Informer</button>
+<button class="tab" role="tab" aria-selected="false">Écouter</button>
+<button class="tab" role="tab" aria-selected="false">Accompagner</button>
+</div>
+<div class="panel active" role="tabpanel"><h3>Informer</h3><p>Donner les informations fiables qui manquent : objectifs, calendrier, impacts connus, personnes ressources et prochaines étapes.</p><div class="quote">MESSAGE // « Voici ce qui change, ce qui ne change pas et où trouver les informations à jour. »</div></div>
+<div class="panel" role="tabpanel"><h3>Écouter</h3><p>Créer des espaces où les collaborateurs peuvent poser leurs questions et exprimer leurs préoccupations. L'écoute ne signifie pas promettre que chaque demande sera retenue.</p><div class="quote">MESSAGE // « Vos questions permettent d'identifier les points qui nécessitent encore des explications. »</div></div>
+<div class="panel" role="tabpanel"><h3>Accompagner</h3><p>Relier la communication à des ressources concrètes : démonstrations, formations, guides, référents ou temps d'échange.</p><div class="quote">MESSAGE // « Vous disposez d'un guide et d'un référent pour vous aider pendant la transition. »</div></div>
+</div>
+
+<div class="callout"><div class="label">⚠️ Attention / erreur fréquente</div><p>Répondre à toutes les inquiétudes par davantage de communication descendante. Une quantité d'informations supplémentaire ne corrige pas nécessairement un problème de confiance, de charge ou de participation.</p></div>
+</section>
+
+<section class="section reveal" id="plan">
+<div class="intro">
+<div class="eyebrow">03 · Plan de communication</div>
+<h2>Construire un plan de communication de changement</h2>
+<p>Le plan organise les publics, les messages, les canaux, les responsables et le calendrier. Il doit accompagner le rythme réel du projet, plutôt que publier uniquement au moment de l'annonce.</p>
+</div>
+
+<div class="steps">
+<div class="step"><i>01</i><strong>Diagnostiquer</strong><span>Situation, impacts et attentes.</span></div>
+<div class="step"><i>02</i><strong>Cibler</strong><span>Groupes concernés et besoins.</span></div>
+<div class="step"><i>03</i><strong>Construire</strong><span>Messages et supports.</span></div>
+<div class="step"><i>04</i><strong>Déployer</strong><span>Rythme et relais.</span></div>
+<div class="step"><i>05</i><strong>Ajuster</strong><span>Questions et signaux.</span></div>
+</div>
+
+<figure class="visual">
+<svg viewBox="0 0 1000 350" role="img" aria-labelledby="p1t p1d">
+<title id="p1t">Architecture d'un plan de communication de changement</title>
+<desc id="p1d">Diagnostic, publics, messages, canaux et calendrier alimentent un plan pilotable.</desc>
+<g fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2">
+<rect x="45" y="90" width="155" height="80" rx="9"/><rect x="230" y="90" width="155" height="80" rx="9"/>
+<rect x="415" y="90" width="155" height="80" rx="9"/><rect x="600" y="90" width="155" height="80" rx="9"/>
+<rect x="785" y="90" width="155" height="80" rx="9"/>
+</g>
+<g font-family="Space Grotesk" font-weight="700" font-size="16" text-anchor="middle" fill="#1B1F2E">
+<text x="122" y="125">DIAGNOSTIC</text><text x="122" y="148" font-family="Inter" font-weight="400" font-size="11">où en sommes-nous ?</text>
+<text x="307" y="125">PUBLICS</text><text x="307" y="148" font-family="Inter" font-weight="400" font-size="11">qui est concerné ?</text>
+<text x="492" y="125">MESSAGES</text><text x="492" y="148" font-family="Inter" font-weight="400" font-size="11">que faut-il retenir ?</text>
+<text x="677" y="125">CANAUX</text><text x="677" y="148" font-family="Inter" font-weight="400" font-size="11">où parler ?</text>
+<text x="862" y="125">CALENDRIER</text><text x="862" y="148" font-family="Inter" font-weight="400" font-size="11">quand et par qui ?</text>
+</g>
+<path d="M200 130 H230 M385 130 H415 M570 130 H600 M755 130 H785" stroke="#FF5A36" stroke-width="3"/>
+<path d="M122 170 V235 H862 V170" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+<rect x="310" y="235" width="380" height="70" rx="10" fill="#FF5A36"/>
+<text x="500" y="264" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="20" fill="#F6F5F2">PLAN PILOTABLE</text>
+<text x="500" y="287" text-anchor="middle" font-family="Inter" font-size="12" fill="#F6F5F2">actions + responsables + échéances + points d'écoute</text>
+</svg>
+<figcaption>Un plan de communication relie la stratégie du changement à des actions concrètes et planifiées.</figcaption>
+</figure>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th scope="col">Public interne</th><th scope="col">Besoin prioritaire</th><th scope="col">Message</th><th scope="col">Relais</th><th scope="col">Moment</th></tr></thead>
+<tbody>
+<tr><td>Direction</td><td>Alignement</td><td>Pourquoi et résultats attendus</td><td>Réunion de pilotage</td><td class="mono">T0</td></tr>
+<tr><td>Managers</td><td>Comprendre / relayer</td><td>Impacts et réponses aux questions</td><td>Kit manager</td><td class="mono">T0 + 1</td></tr>
+<tr><td>Équipes</td><td>Se projeter</td><td>Ce qui change concrètement</td><td>Réunion + intranet</td><td class="mono">T0 + 2</td></tr>
+<tr><td>Fonctions support</td><td>Accompagner</td><td>Procédures et ressources</td><td>Guide + référents</td><td class="mono">T0 + 2</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout"><div class="label">📐 Bonnes pratiques professionnelles</div><p>Préparer les managers avant une communication générale lorsqu'ils jouent un rôle de relais. Ils doivent disposer des faits, du calendrier, des réponses validées et des limites de ce qu'ils peuvent annoncer.</p></div>
+</section>
+
+<section class="section alt reveal" id="messages">
+<div class="intro">
+<div class="eyebrow">04 · Messages clés</div>
+<h2>Construire des messages qui accompagnent réellement</h2>
+<p>Un message de changement doit être précis, honnête et orienté vers les besoins du public. Il doit distinguer les faits établis des éléments encore en construction.</p>
+</div>
+
+<div class="grid3">
+<article class="card"><div class="icon">WHY</div><h3>Pourquoi ?</h3><p>Présenter la raison du changement et le problème ou l'opportunité auxquels il répond.</p></article>
+<article class="card"><div class="icon">WHAT</div><h3>Quoi ?</h3><p>Décrire ce qui évolue et ce qui reste stable, avec un vocabulaire compréhensible.</p></article>
+<article class="card"><div class="icon">HOW</div><h3>Comment ?</h3><p>Donner les prochaines étapes, les ressources disponibles et les interlocuteurs.</p></article>
+</div>
+
+<figure class="visual">
+<svg viewBox="0 0 1000 380" role="img" aria-labelledby="m1t m1d">
+<title id="m1t">Triangle des messages de changement</title>
+<desc id="m1d">Pourquoi, quoi et comment forment trois piliers d'un message de changement complet.</desc>
+<polygon points="500,45 160,310 840,310" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="3"/>
+<circle cx="500" cy="45" r="57" fill="#FF5A36"/>
+<circle cx="160" cy="310" r="57" fill="#F6F5F2" stroke="#1B1F2E" stroke-width="2"/>
+<circle cx="840" cy="310" r="57" fill="#F6F5F2" stroke="#FF5A36" stroke-width="3"/>
+<text x="500" y="40" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="19" fill="#F6F5F2">POURQUOI ?</text>
+<text x="500" y="62" text-anchor="middle" font-family="Inter" font-size="11" fill="#F6F5F2">sens</text>
+<text x="160" y="305" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="19" fill="#1B1F2E">QUOI ?</text>
+<text x="160" y="327" text-anchor="middle" font-family="Inter" font-size="11" fill="#1B1F2E">impacts</text>
+<text x="840" y="305" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="19" fill="#1B1F2E">COMMENT ?</text>
+<text x="840" y="327" text-anchor="middle" font-family="Inter" font-size="11" fill="#1B1F2E">action</text>
+<text x="500" y="190" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#1B1F2E">MESSAGE DE CHANGEMENT</text>
+<text x="500" y="215" text-anchor="middle" font-family="Inter" font-size="12" fill="#1B1F2E">sens + impacts + accompagnement</text>
+</svg>
+<figcaption>Un message complet répond aux trois questions fondamentales : pourquoi, quoi et comment.</figcaption>
+</figure>
+
+<div class="quote">MESSAGE-CLÉ // « Nous faisons évoluer cet outil pour réduire les tâches répétitives. À partir du mois prochain, les équipes utiliseront la nouvelle interface. Une formation courte et un référent seront disponibles avant le déploiement. »<small>Exemple pédagogique : le message relie la raison, l'impact et l'accompagnement.</small></div>
+
+<div class="callout"><div class="label">⚠️ Attention / erreur fréquente</div><p>Promettre une certitude là où le projet est encore en décision. Une communication crédible distingue clairement les éléments confirmés, les options étudiées et les dates encore susceptibles d'évoluer.</p></div>
+</section>
+
+<section class="section reveal" id="supports">
+<div class="intro">
+<div class="eyebrow">05 · Supports</div>
+<h2>Les supports d'accompagnement</h2>
+<p>Le bon support dépend du besoin. Une annonce, une explication, une formation et une réponse à une question ne nécessitent pas nécessairement le même format.</p>
+</div>
+
+<figure class="visual">
+<svg viewBox="0 0 1000 420" role="img" aria-labelledby="s1t s1d">
+<title id="s1t">Écosystème des supports de changement</title>
+<desc id="s1d">Une communication centrale est relayée par réunion, intranet, FAQ, guide, formation et kit manager.</desc>
+<circle cx="500" cy="210" r="78" fill="#FF5A36"/>
+<text x="500" y="204" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="19" fill="#F6F5F2">PROJET</text>
+<text x="500" y="227" text-anchor="middle" font-family="Inter" font-size="11" fill="#F6F5F2">de changement</text>
+<g fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2">
+<rect x="50" y="55" width="185" height="70" rx="9"/><rect x="280" y="25" width="185" height="70" rx="9"/>
+<rect x="765" y="55" width="185" height="70" rx="9"/><rect x="765" y="295" width="185" height="70" rx="9"/>
+<rect x="280" y="325" width="185" height="70" rx="9"/><rect x="50" y="295" width="185" height="70" rx="9"/>
+</g>
+<g font-family="Space Grotesk" font-weight="700" font-size="15" text-anchor="middle" fill="#1B1F2E">
+<text x="142" y="86">RÉUNION</text><text x="142" y="108" font-family="Inter" font-weight="400" font-size="11">expliquer + échanger</text>
+<text x="372" y="56">INTRANET</text><text x="372" y="78" font-family="Inter" font-weight="400" font-size="11">information de référence</text>
+<text x="857" y="86">FAQ</text><text x="857" y="108" font-family="Inter" font-weight="400" font-size="11">répondre aux questions</text>
+<text x="857" y="326">GUIDE</text><text x="857" y="348" font-family="Inter" font-weight="400" font-size="11">faire étape par étape</text>
+<text x="372" y="356">FORMATION</text><text x="372" y="378" font-family="Inter" font-weight="400" font-size="11">développer les compétences</text>
+<text x="142" y="326">KIT MANAGER</text><text x="142" y="348" font-family="Inter" font-weight="400" font-size="11">relayer + répondre</text>
+</g>
+<path d="M235 90 L435 175 M465 90 L470 145 M765 90 L565 175 M765 330 L565 245 M465 330 L470 275 M235 330 L435 245" stroke="#9AA3B2" stroke-width="2"/>
+</svg>
+<figcaption>Les supports sont complémentaires : certains donnent une vue d'ensemble, d'autres accompagnent une action précise.</figcaption>
+</figure>
+
+<div class="grid3">
+<article class="card"><div class="icon">01</div><h3>Annonce</h3><p>Pour poser le cadre, donner le sens et annoncer les premières étapes.</p></article>
+<article class="card"><div class="icon">02</div><h3>Référence</h3><p>Pour conserver les informations à jour : intranet, FAQ ou page dédiée.</p></article>
+<article class="card"><div class="icon">03</div><h3>Action</h3><p>Pour permettre de faire : guide, démonstration, formation et accompagnement.</p></article>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th scope="col">Support</th><th scope="col">Fonction</th><th scope="col">Force</th><th scope="col">Limite à anticiper</th></tr></thead>
+<tbody>
+<tr><td>Réunion</td><td>Expliquer / échanger</td><td>Interaction immédiate</td><td>Information difficile à retrouver ensuite</td></tr>
+<tr><td>Intranet</td><td>Référence</td><td>Accessible à tout moment</td><td>Doit être actualisé</td></tr>
+<tr><td>FAQ</td><td>Répondre</td><td>Réduit les questions répétitives</td><td>Doit partir des vraies questions</td></tr>
+<tr><td>Guide</td><td>Accompagner l'action</td><td>Pas à pas</td><td>Doit être simple et opérationnel</td></tr>
+<tr><td>Formation</td><td>Développer les compétences</td><td>Apprentissage guidé</td><td>Demande du temps et des ressources</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="kpis">
+<div class="kpi"><strong>01</strong><span>support adapté au besoin</span></div>
+<div class="kpi"><strong>02</strong><span>information à jour</span></div>
+<div class="kpi"><strong>03</strong><span>relais identifiés</span></div>
+<div class="kpi"><strong>04</strong><span>questions prises en compte</span></div>
+</div>
+
+<div class="accordion" aria-label="Précisions professionnelles">
+<div class="acc"><button aria-expanded="false">Pourquoi multiplier les supports ? <span>+</span></button><div class="acc-content"><p>Parce que les besoins diffèrent : une personne peut avoir besoin d'une vision stratégique, une autre d'une procédure précise, et une autre encore d'un échange avec son manager. La complémentarité est plus utile qu'une simple accumulation de formats.</p></div></div>
+<div class="acc"><button aria-expanded="false">Quel rôle pour les managers ? <span>+</span></button><div class="acc-content"><p>Le manager peut traduire le changement dans le quotidien de son équipe, contextualiser les impacts et faire remonter les questions. Il doit toutefois s'appuyer sur des informations validées pour éviter les interprétations contradictoires.</p></div></div>
+<div class="acc"><button aria-expanded="false">Quand communiquer ? <span>+</span></button><div class="acc-content"><p>Le calendrier dépend du projet. Une logique utile consiste à communiquer suffisamment tôt pour préparer, suffisamment près de l'action pour faciliter l'adoption, puis régulièrement pour stabiliser les nouveaux repères.</p></div></div>
+</div>
+</section>
+
+<section class="section alt reveal" id="synthese">
+<div class="intro">
+<div class="eyebrow">Synthèse</div>
+<h2>Points clés à retenir</h2>
+<p>La communication de changement accompagne une transformation dans la durée. Elle donne du sens, réduit l'incertitude, écoute les réactions et fournit des ressources concrètes.</p>
+</div>
+
+<div class="summary">
+<article class="card"><div class="icon">01</div><h3>Sens</h3><p>Expliquer pourquoi la transformation est nécessaire et ce qu'elle cherche à produire.</p></article>
+<article class="card"><div class="icon">02</div><h3>Écoute</h3><p>Identifier les préoccupations au lieu de considérer toute résistance comme un refus.</p></article>
+<article class="card"><div class="icon">03</div><h3>Messages</h3><p>Structurer les prises de parole autour du pourquoi, du quoi et du comment.</p></article>
+<article class="card"><div class="icon">04</div><h3>Supports</h3><p>Associer annonce, référence, accompagnement et relais selon les besoins.</p></article>
+</div>
+
+<figure class="visual">
+<svg viewBox="0 0 1000 300" role="img" aria-labelledby="sumt sumd">
+<title id="sumt">Résumé visuel de la communication de changement</title>
+<desc id="sumd">Sens, écoute, planification et accompagnement conduisent à une appropriation progressive.</desc>
+<rect x="55" y="82" width="175" height="75" rx="9" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2"/>
+<rect x="275" y="82" width="175" height="75" rx="9" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2"/>
+<rect x="495" y="82" width="175" height="75" rx="9" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2"/>
+<rect x="715" y="82" width="230" height="75" rx="9" fill="#FF5A36"/>
+<g font-family="Space Grotesk" font-weight="700" font-size="17" text-anchor="middle">
+<text x="142" y="113" fill="#1B1F2E">DONNER DU SENS</text><text x="362" y="113" fill="#1B1F2E">ÉCOUTER</text><text x="582" y="113" fill="#1B1F2E">ORGANISER</text><text x="830" y="113" fill="#F6F5F2">ACCOMPAGNER</text>
+</g>
+<g font-family="Inter" font-size="11" text-anchor="middle">
+<text x="142" y="135" fill="#1B1F2E">pourquoi ?</text><text x="362" y="135" fill="#1B1F2E">quelles préoccupations ?</text><text x="582" y="135" fill="#1B1F2E">qui / quoi / quand ?</text><text x="830" y="135" fill="#F6F5F2">supports + relais</text>
+</g>
+<path d="M230 120 H275 M450 120 H495 M670 120 H715" stroke="#FF5A36" stroke-width="3"/>
+<polygon points="267,114 275,120 267,126" fill="#FF5A36"/><polygon points="487,114 495,120 487,126" fill="#FF5A36"/><polygon points="707,114 715,120 707,126" fill="#FF5A36"/>
+<text x="500" y="225" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#1B1F2E">OBJECTIF FINAL : DES REPÈRES COMPRIS ET UNE TRANSITION PLUS LISIBLE</text>
+</svg>
+<figcaption>Résumé : une transformation est mieux accompagnée lorsque la communication est reliée à l'écoute et à des dispositifs concrets.</figcaption>
+</figure>
+
+<div class="callout"><div class="label">📐 Bonnes pratiques professionnelles</div><p>Une communication de changement solide répond systématiquement à cinq questions : <strong>Pourquoi change-t-on ? Que change-t-on ? Qui est concerné ? Que doit-on faire ? Où trouver de l'aide ?</strong></p></div>
+
+<div class="callout"><div class="label">🔗 Pour aller plus loin</div><p>La prochaine leçon porte sur la mesure de la communication interne : elle permettra de passer de la diffusion des messages à l'analyse de leur portée et de leur efficacité.</p></div>
+
+<div class="nav">
+<a href="#"><small>← LEÇON 08</small><strong>Communication managériale</strong></a>
+<a href="#"><small>LEÇON 10 →</small><strong>Mesure de la communication interne</strong></a>
+</div>
+</section>
+</main>
+
+<footer><strong>Communication d'Entreprise</strong> · Module 2 · Leçon 09 — Communication de changement en interne</footer>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+const progress=document.getElementById('progress'),top=document.getElementById('top'),toc=document.getElementById('toc'),tocToggle=document.getElementById('tocToggle');
+function scrollUpdate(){
+const max=document.documentElement.scrollHeight-innerHeight;
+progress.style.width=(max?scrollY/max*100:0)+'%';
+top.classList.toggle('show',scrollY>500);
+}
+addEventListener('scroll',scrollUpdate,{passive:true});scrollUpdate();
+document.getElementById('headerTop').onclick=()=>scrollTo({top:0,behavior:'smooth'});
+top.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+tocToggle.onclick=()=>{
+const expanded=tocToggle.getAttribute('aria-expanded')==='true';
+tocToggle.setAttribute('aria-expanded',String(!expanded));
+toc.style.display=expanded?'none':'block';
+};
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+const tabs=group.querySelectorAll('[role="tab"]'),panels=group.querySelectorAll('[role="tabpanel"]');
+tabs.forEach((tab,i)=>{
+tab.onclick=()=>{
+tabs.forEach(t=>t.setAttribute('aria-selected','false'));
+panels.forEach(p=>p.classList.remove('active'));
+tab.setAttribute('aria-selected','true');panels[i].classList.add('active');
+};
+tab.onkeydown=e=>{
+if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+e.preventDefault();const n=(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+tabs[n].focus();tabs[n].click();
+}}
+});
+});
+document.querySelectorAll('.acc button').forEach(btn=>{
+btn.onclick=()=>{
+const item=btn.parentElement,open=item.classList.toggle('open');
+btn.setAttribute('aria-expanded',String(open));
+btn.querySelector('span').textContent=open?'−':'+';
+};
+});
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+const io=new IntersectionObserver(entries=>{
+entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})
+},{threshold:.08});els.forEach(e=>io.observe(e));
+}else els.forEach(e=>e.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 28 — Communication événementielle — Filière Communication d'Entreprise">
+<title>Leçon 28 — Communication événementielle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F5F2;
+  --color-text:#1B1F2E;
+  --color-accent:#FF5A36;
+  --color-neutral:#9AA3B2;
+  --soft-bg:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft-accent:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.68}
+a{color:inherit}
+::selection{background:var(--soft-accent);color:var(--color-text)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:var(--max);margin:auto;padding:15px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.02em}
+.brand small{display:block;font:500 11px "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.sommaire{font:600 13px "IBM Plex Mono",monospace;text-decoration:none;padding:9px 13px;border:1px solid var(--border);border-radius:999px}
+.sommaire:hover{border-color:var(--color-accent);background:var(--soft-accent)}
+main{max-width:var(--max);margin:auto;padding:0 24px 80px}
+.hero{padding:74px 0 54px;display:grid;grid-template-columns:1.3fr .7fr;gap:48px;align-items:end}
+.eyebrow,.kicker{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12;letter-spacing:-.035em}
+h1{font-size:clamp(42px,6vw,76px);margin:12px 0 20px}
+h2{font-size:clamp(30px,4vw,46px);margin:8px 0 18px}
+h3{font-size:20px;margin:0 0 10px}
+.lead{font-size:19px;max-width:720px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:25px}
+.badge{border:1px solid var(--border);padding:7px 10px;border-radius:999px;font:500 12px "IBM Plex Mono",monospace;background:var(--soft-bg)}
+.badge.accent{border-color:var(--color-accent);background:var(--soft-accent)}
+.hero-visual{border:1px solid var(--border);background:var(--soft-bg);border-radius:24px;padding:18px}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:25px 0;margin-bottom:60px}
+.toc-title{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted);margin-bottom:13px}
+.toc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 30px}
+.toc a{text-decoration:none;padding:8px 0;border-bottom:1px dashed var(--border)}
+.toc a:hover{color:var(--color-accent)}
+section{padding:68px 0;border-bottom:1px solid var(--border)}
+.section-head{max-width:760px}
+.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;margin-top:30px}
+.prose{max-width:720px}
+.prose p{margin:0 0 16px}
+.visual{background:var(--soft-bg);border:1px solid var(--border);border-radius:20px;padding:14px;margin-top:26px;overflow:auto}
+svg{display:block;width:100%;height:auto;min-width:520px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.card{border:1px solid var(--border);border-radius:18px;padding:22px;background:var(--color-bg);transition:.2s transform,.2s border-color}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.icon{font:600 22px "IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:14px}
+.table-wrap{overflow-x:auto;margin-top:28px;border:1px solid var(--border);border-radius:16px}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--border)}
+th{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em;background:var(--soft-bg)}
+tr:hover td{background:var(--soft-bg)}
+.mono{margin:25px 0;padding:18px;border-left:4px solid var(--color-accent);background:var(--soft-accent);border-radius:12px;font:500 13px/1.7 "IBM Plex Mono",monospace;white-space:pre-wrap}
+.callout{margin:28px 0;padding:20px 22px;border:1px solid var(--border);border-left:5px solid var(--color-accent);border-radius:15px;background:var(--soft-bg)}
+.callout strong{font-family:"Space Grotesk",sans-serif}
+.tabs{margin-top:30px}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.tab-buttons button{font:600 13px "IBM Plex Mono",monospace;border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);padding:10px 14px;border-radius:10px;cursor:pointer}
+.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);background:var(--soft-accent)}
+.tab-panel{display:none;padding:22px;border:1px solid var(--border);border-radius:15px;background:var(--soft-bg)}
+.tab-panel.active{display:block}
+.accordion{margin-top:24px}
+details{border-top:1px solid var(--border);padding:17px 0}
+summary{cursor:pointer;font-family:"Space Grotesk",sans-serif;font-weight:600}
+.stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:30px}
+.step{padding:16px 12px;border:1px solid var(--border);border-radius:14px;background:var(--soft-bg);min-height:130px}
+.step b{display:block;font:600 12px "IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:10px}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px}
+.key{padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--soft-bg)}
+.nav-bottom{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px;margin-top:55px}
+.nav-card{padding:20px;border:1px solid var(--border);border-radius:16px;text-decoration:none}
+.nav-card:hover{border-color:var(--color-accent);background:var(--soft-accent)}
+.nav-card.center{text-align:center}
+.nav-card.right{text-align:right}
+.nav-label{display:block;font:600 11px "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.top{position:fixed;right:22px;bottom:22px;border:1px solid var(--color-accent);background:var(--soft-accent);color:var(--color-text);width:44px;height:44px;border-radius:50%;cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;color:var(--muted);font-size:13px}
+.reveal{opacity:0;transform:translateY(18px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){
+ .hero,.section-grid{grid-template-columns:1fr}
+ .cards{grid-template-columns:1fr 1fr}
+ .stepper{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+ main{padding:0 17px 55px}
+ .header-inner{padding:13px 17px}
+ .hero{padding-top:52px}
+ .toc-grid,.key-grid,.nav-bottom{grid-template-columns:1fr}
+ .cards{grid-template-columns:1fr}
+ .nav-card.right,.nav-card.center{text-align:left}
+ h1{font-size:43px}
+ .lead{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{transition:none!important;animation:none!important}
+ .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">Communication d’Entreprise<small>Leçon 28 · Module 6</small></div>
+    <a class="sommaire" href="#sommaire">Sommaire</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero reveal" id="top">
+    <div>
+      <div class="eyebrow">Module 6 · Stratégie de communication, marque et événementiel</div>
+      <h1>Communication événementielle</h1>
+      <p class="lead">Organiser un événement de communication en transformant un objectif stratégique en expérience cohérente, maîtrisée et mesurable.</p>
+      <div class="meta">
+        <span class="badge accent">LEÇON 28</span>
+        <span class="badge">22 MIN</span>
+        <span class="badge">AVANCÉ / PROFESSIONNEL</span>
+        <span class="badge">OBJECTIF · ORGANISER UN ÉVÉNEMENT</span>
+      </div>
+    </div>
+    <div class="hero-visual" aria-label="Schéma du cycle d'un événement de communication">
+      <svg viewBox="0 0 520 330" role="img" aria-labelledby="heroTitle">
+        <title id="heroTitle">Cycle d'un événement de communication</title>
+        <circle cx="260" cy="165" r="72" fill="none" stroke="#FF5A36" stroke-width="5"/>
+        <circle cx="260" cy="165" r="28" fill="#FF5A36" opacity=".12"/>
+        <text x="260" y="160" text-anchor="middle" fill="#1B1F2E" font-family="Space Grotesk" font-size="18" font-weight="700">ÉVÉNEMENT</text>
+        <text x="260" y="182" text-anchor="middle" fill="#9AA3B2" font-family="IBM Plex Mono" font-size="11">EXPÉRIENCE</text>
+        <g fill="#1B1F2E" font-family="IBM Plex Mono" font-size="11">
+          <text x="260" y="40" text-anchor="middle">OBJECTIFS</text>
+          <text x="454" y="171">LOGISTIQUE</text>
+          <text x="260" y="306" text-anchor="middle">BILAN</text>
+          <text x="25" y="171">RELATIONS</text>
+          <text x="25" y="188">PRESSE</text>
+        </g>
+        <g stroke="#9AA3B2" stroke-width="1.5" stroke-dasharray="5 5">
+          <line x1="260" y1="48" x2="260" y2="92"/><line x1="428" y1="165" x2="332" y2="165"/>
+          <line x1="260" y1="282" x2="260" y2="238"/><line x1="92" y1="165" x2="188" y2="165"/>
+        </g>
+        <path d="M260 85 A80 80 0 0 1 338 145" fill="none" stroke="#FF5A36" stroke-width="3"/>
+        <path d="M335 185 A80 80 0 0 1 260 245" fill="none" stroke="#FF5A36" stroke-width="3"/>
+      </svg>
+    </div>
+  </section>
+
+  <nav class="toc reveal" id="sommaire" aria-label="Sommaire de la leçon">
+    <div class="toc-title">Sommaire</div>
+    <div class="toc-grid">
+      <a href="#objectifs">01 · Objectifs événementiels</a>
+      <a href="#typologie">02 · Typologie d’événements</a>
+      <a href="#logistique">03 · Logistique</a>
+      <a href="#budget">04 · Budget</a>
+      <a href="#retroplanning">05 · Rétroplanning</a>
+      <a href="#invitations">06 · Invitations & relations presse</a>
+      <a href="#synthese">07 · Points clés à retenir</a>
+    </div>
+  </nav>
+
+  <section id="objectifs" class="reveal">
+    <div class="section-head">
+      <div class="kicker">01 · Finalité stratégique</div>
+      <h2>Objectifs événementiels</h2>
+      <p class="lead">Un événement de communication n’est pas seulement une rencontre : c’est un dispositif au service d’un objectif précis.</p>
+    </div>
+    <div class="section-grid">
+      <div class="prose">
+        <p><strong>Définition.</strong> La communication événementielle regroupe les actions de communication construites autour d’un événement afin de créer une rencontre, une expérience et des prises de parole cohérentes avec la stratégie de l’organisation.</p>
+        <p>Avant de choisir un lieu, un format ou une animation, le responsable communication doit définir ce que l’événement doit produire : visibilité, lancement, mobilisation, fidélisation, relation avec les parties prenantes ou valorisation de l’image de marque.</p>
+        <div class="mono">OBJECTIF → PUBLIC → MESSAGE → EXPÉRIENCE → INDICATEURS</div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 620 290" role="img" aria-label="Chaîne de conception d'un objectif événementiel">
+          <g fill="none" stroke="#9AA3B2" stroke-width="2">
+            <path d="M135 145H180M285 145H330M435 145H480"/>
+          </g>
+          <g font-family="Space Grotesk" font-weight="700" font-size="16" fill="#1B1F2E">
+            <rect x="25" y="105" width="110" height="80" rx="15" fill="#F6F5F2" stroke="#FF5A36" stroke-width="3"/><text x="80" y="137" text-anchor="middle">OBJECTIF</text><text x="80" y="160" text-anchor="middle" font-size="11">Pourquoi ?</text>
+            <rect x="180" y="105" width="105" height="80" rx="15" fill="#F6F5F2" stroke="#9AA3B2"/><text x="232" y="137" text-anchor="middle">PUBLIC</text><text x="232" y="160" text-anchor="middle" font-size="11">Pour qui ?</text>
+            <rect x="330" y="105" width="105" height="80" rx="15" fill="#F6F5F2" stroke="#9AA3B2"/><text x="382" y="137" text-anchor="middle">MESSAGE</text><text x="382" y="160" text-anchor="middle" font-size="11">Que dire ?</text>
+            <rect x="480" y="105" width="115" height="80" rx="15" fill="#FF5A36" fill-opacity=".1" stroke="#FF5A36"/><text x="537" y="137" text-anchor="middle">MESURE</text><text x="537" y="160" text-anchor="middle" font-size="11">Quel résultat ?</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="cards">
+      <article class="card"><div class="icon">01</div><h3>Visibilité</h3><p>Faire connaître une initiative, un produit, une marque ou une prise de position.</p></article>
+      <article class="card"><div class="icon">02</div><h3>Engagement</h3><p>Créer une interaction directe avec les publics et favoriser leur participation.</p></article>
+      <article class="card"><div class="icon">03</div><h3>Relation</h3><p>Renforcer les liens avec clients, partenaires, collaborateurs, médias ou institutions.</p></article>
+    </div>
+    <div class="callout"><strong>💡 À retenir.</strong> Un objectif événementiel doit être formulé avant le dispositif. Le format est une réponse au besoin, jamais le point de départ.</div>
+  </section>
+
+  <section id="typologie" class="reveal">
+    <div class="section-head">
+      <div class="kicker">02 · Choisir le bon format</div>
+      <h2>Typologie d’événements</h2>
+      <p class="lead">Le choix du format dépend du public, du message, du niveau d’interaction recherché, du budget et du contexte.</p>
+    </div>
+    <div class="tabs" data-tabs>
+      <div class="tab-buttons" role="tablist" aria-label="Types d'événements">
+        <button role="tab" aria-selected="true" aria-controls="tab-interne" data-tab="tab-interne">Interne</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-externe" data-tab="tab-externe">Externe</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-presse" data-tab="tab-presse">Presse</button>
+      </div>
+      <div id="tab-interne" class="tab-panel active" role="tabpanel">
+        <h3>Événements internes</h3>
+        <p>Convention, séminaire, cérémonie, réunion élargie ou événement de cohésion. La priorité est souvent donnée à l’adhésion, à l’information et à la mobilisation des collaborateurs.</p>
+      </div>
+      <div id="tab-externe" class="tab-panel" role="tabpanel">
+        <h3>Événements externes</h3>
+        <p>Lancement, conférence, inauguration, exposition, salon ou rencontre clients. L’expérience doit traduire le positionnement de l’organisation et faciliter la relation avec les publics.</p>
+      </div>
+      <div id="tab-presse" class="tab-panel" role="tabpanel">
+        <h3>Événements à dimension média</h3>
+        <p>Conférence de presse, point presse ou lancement accompagné d’un dispositif média. L’organisation doit faciliter l’accès à une information fiable, exploitable et cohérente.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Format</th><th scope="col">Finalité dominante</th><th scope="col">Public</th><th scope="col">Point d’attention</th></tr></thead>
+        <tbody>
+          <tr><td>Convention</td><td>Alignement / mobilisation</td><td>Collaborateurs / réseau</td><td>Contenu + rythme</td></tr>
+          <tr><td>Lancement</td><td>Visibilité / appropriation</td><td>Clients / partenaires / médias</td><td>Message central</td></tr>
+          <tr><td>Salon</td><td>Prospection / relation</td><td>Professionnels</td><td>Flux de visiteurs</td></tr>
+          <tr><td>Conférence</td><td>Expertise / influence</td><td>Public ciblé</td><td>Qualité des intervenants</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="logistique" class="reveal">
+    <div class="section-head">
+      <div class="kicker">03 · Exécution</div>
+      <h2>Logistique</h2>
+      <p class="lead">La qualité perçue d’un événement repose sur une chaîne de détails : lieu, flux, technique, accueil, sécurité, signalétique et coordination.</p>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 850 300" role="img" aria-label="Cartographie logistique d'un événement">
+        <g stroke="#9AA3B2" stroke-width="2" fill="none">
+          <path d="M425 150H175M425 150H675M425 150V55M425 150V245"/>
+        </g>
+        <circle cx="425" cy="150" r="64" fill="#FF5A36" fill-opacity=".1" stroke="#FF5A36" stroke-width="4"/>
+        <text x="425" y="146" text-anchor="middle" font-family="Space Grotesk" font-weight="700" fill="#1B1F2E">EXPÉRIENCE</text>
+        <text x="425" y="166" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#9AA3B2">PARTICIPANT</text>
+        <g font-family="Space Grotesk" font-size="16" font-weight="700" fill="#1B1F2E">
+          <rect x="55" y="120" width="120" height="60" rx="13" fill="#F6F5F2" stroke="#9AA3B2"/><text x="115" y="156" text-anchor="middle">ACCUEIL</text>
+          <rect x="675" y="120" width="120" height="60" rx="13" fill="#F6F5F2" stroke="#9AA3B2"/><text x="735" y="156" text-anchor="middle">TECHNIQUE</text>
+          <rect x="360" y="25" width="130" height="60" rx="13" fill="#F6F5F2" stroke="#9AA3B2"/><text x="425" y="61" text-anchor="middle">ESPACE</text>
+          <rect x="360" y="215" width="130" height="60" rx="13" fill="#F6F5F2" stroke="#FF5A36"/><text x="425" y="251" text-anchor="middle">SÉCURITÉ</text>
+        </g>
+      </svg>
+    </div>
+    <div class="cards">
+      <article class="card"><div class="icon">A</div><h3>Lieu & flux</h3><p>Capacité, accessibilité, circulation, espaces d’attente, scène et zones réservées.</p></article>
+      <article class="card"><div class="icon">B</div><h3>Technique</h3><p>Son, lumière, projection, connexion, alimentation électrique et solutions de secours.</p></article>
+      <article class="card"><div class="icon">C</div><h3>Accueil</h3><p>Invitations, émargement, orientation, badges, protocole et accompagnement des invités.</p></article>
+    </div>
+    <div class="callout"><strong>⚠️ Attention / erreur fréquente.</strong> Prévoir uniquement le scénario idéal. Un événement professionnel doit aussi prévoir des solutions de repli pour les incidents techniques, les retards, les changements d’intervenants ou les variations de fréquentation.</div>
+  </section>
+
+  <section id="budget" class="reveal">
+    <div class="section-head">
+      <div class="kicker">04 · Ressources</div>
+      <h2>Budget</h2>
+      <p class="lead">Le budget traduit les choix de conception en ressources financières et permet de piloter les arbitrages.</p>
+    </div>
+    <div class="section-grid">
+      <div class="prose">
+        <p>Un budget événementiel doit distinguer les postes indispensables, les postes variables et les réserves nécessaires à la maîtrise des imprévus.</p>
+        <p>Le responsable communication rapproche ensuite le budget prévisionnel des dépenses engagées et analyse les écarts. L’objectif n’est pas seulement de dépenser moins, mais de préserver la valeur de l’événement par rapport aux objectifs fixés.</p>
+        <div class="mono">BUDGET TOTAL
+= LIEU + TECHNIQUE + PRESTATAIRES + ACCUEIL
++ CONTENU + PROMOTION + PRESSE + RÉSERVE</div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 600 330" role="img" aria-label="Structure indicative d'un budget événementiel">
+          <g font-family="IBM Plex Mono" font-size="12" fill="#1B1F2E">
+            <text x="25" y="40">POSTE</text><text x="410" y="40">PILOTAGE</text>
+          </g>
+          <g font-family="Inter" font-size="14" fill="#1B1F2E">
+            <text x="25" y="82">Lieu</text><rect x="160" y="67" width="220" height="24" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="160" y="67" width="145" height="24" rx="8" fill="#FF5A36" fill-opacity=".28"/>
+            <text x="25" y="130">Technique</text><rect x="160" y="115" width="220" height="24" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="160" y="115" width="180" height="24" rx="8" fill="#FF5A36" fill-opacity=".28"/>
+            <text x="25" y="178">Accueil</text><rect x="160" y="163" width="220" height="24" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="160" y="163" width="95" height="24" rx="8" fill="#FF5A36" fill-opacity=".28"/>
+            <text x="25" y="226">Promotion</text><rect x="160" y="211" width="220" height="24" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="160" y="211" width="125" height="24" rx="8" fill="#FF5A36" fill-opacity=".28"/>
+            <text x="25" y="274">Réserve</text><rect x="160" y="259" width="220" height="24" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="160" y="259" width="60" height="24" rx="8" fill="#FF5A36" fill-opacity=".28"/>
+          </g>
+          <g font-family="IBM Plex Mono" font-size="11" fill="#9AA3B2">
+            <text x="410" y="82">contrat / devis</text><text x="410" y="130">prestataire</text><text x="410" y="178">effectif</text><text x="410" y="226">campagne</text><text x="410" y="274">imprévus</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="callout"><strong>📐 Bonnes pratiques professionnelles.</strong> Chaque poste important doit être relié à un besoin, à un devis ou à une hypothèse identifiable. Conserver une réserve permet d’absorber les imprévus sans désorganiser l’ensemble du dispositif.</div>
+  </section>
+
+  <section id="retroplanning" class="reveal">
+    <div class="section-head">
+      <div class="kicker">05 · Pilotage du temps</div>
+      <h2>Rétroplanning</h2>
+      <p class="lead">Le rétroplanning part de la date de l’événement et remonte vers les échéances nécessaires à sa réalisation.</p>
+    </div>
+    <div class="stepper" aria-label="Étapes d'un rétroplanning événementiel">
+      <div class="step"><b>J-90</b><strong>Cadrage</strong><p>Objectifs, public, format, budget.</p></div>
+      <div class="step"><b>J-60</b><strong>Prestataires</strong><p>Lieu, technique, contrats.</p></div>
+      <div class="step"><b>J-45</b><strong>Contenus</strong><p>Programme, intervenants, supports.</p></div>
+      <div class="step"><b>J-30</b><strong>Promotion</strong><p>Invitations, médias, réseaux.</p></div>
+      <div class="step"><b>J-7</b><strong>Contrôle</strong><p>Brief, tests, confirmations.</p></div>
+      <div class="step"><b>J</b><strong>Coordination</strong><p>Accueil, déroulé, gestion.</p></div>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 850 180" role="img" aria-label="Ligne temporelle du rétroplanning">
+        <line x1="60" y1="90" x2="790" y2="90" stroke="#9AA3B2" stroke-width="3"/>
+        <g fill="#FF5A36">
+          <circle cx="100" cy="90" r="9"/><circle cx="245" cy="90" r="9"/><circle cx="390" cy="90" r="9"/><circle cx="535" cy="90" r="9"/><circle cx="680" cy="90" r="9"/><circle cx="780" cy="90" r="12"/>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="12" fill="#1B1F2E" text-anchor="middle">
+          <text x="100" y="55">J-90</text><text x="245" y="55">J-60</text><text x="390" y="55">J-45</text><text x="535" y="55">J-30</text><text x="680" y="55">J-7</text><text x="780" y="55">J</text>
+          <text x="100" y="125">CADRAGE</text><text x="245" y="125">FOURNISSEURS</text><text x="390" y="125">CONTENUS</text><text x="535" y="125">PROMOTION</text><text x="680" y="125">TESTS</text><text x="780" y="125">ÉVÉNEMENT</text>
+        </g>
+      </svg>
+    </div>
+    <div class="accordion">
+      <details><summary>Pourquoi travailler à rebours ?</summary><p>Parce que la date de l’événement est fixe alors que de nombreuses actions préparatoires dépendent les unes des autres. Le rétroplanning rend visibles les échéances critiques et les dépendances.</p></details>
+      <details><summary>Que faut-il identifier comme jalons ?</summary><p>Les décisions structurantes, signatures de prestataires, validations de contenus, lancement des invitations, confirmations des intervenants, tests techniques et briefing final.</p></details>
+    </div>
+  </section>
+
+  <section id="invitations" class="reveal">
+    <div class="section-head">
+      <div class="kicker">06 · Rayonnement</div>
+      <h2>Invitations & relations presse</h2>
+      <p class="lead">L’invitation et la relation avec les médias prolongent l’événement au-delà du lieu : elles construisent l’audience et la visibilité avant, pendant et après la rencontre.</p>
+    </div>
+    <div class="section-grid">
+      <div class="prose">
+        <h3>Invitations</h3>
+        <p>Une invitation efficace indique clairement le contexte, la promesse, la date, le lieu ou le format, les modalités pratiques et l’action attendue du destinataire.</p>
+        <div class="mono">OBJET : Invitation — [ÉVÉNEMENT]
+PROMESSE : [POURQUOI VENIR]
+DATE / HEURE : [REPÈRE]
+LIEU / ACCÈS : [INFORMATION]
+RSVP : [ACTION ATTENDUE]</div>
+      </div>
+      <div class="prose">
+        <h3>Relations presse</h3>
+        <p>La relation presse doit fournir aux journalistes une information claire et exploitable : angle, faits essentiels, porte-parole, éléments de contexte et modalités d’accès.</p>
+        <p>Après l’événement, un communiqué, des visuels autorisés et des informations vérifiées peuvent faciliter la couverture médiatique et prolonger la portée du dispositif.</p>
+      </div>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 850 270" role="img" aria-label="Parcours de diffusion d'un événement">
+        <g fill="none" stroke="#9AA3B2" stroke-width="2">
+          <path d="M145 135H245M345 135H445M545 135H645"/>
+        </g>
+        <g font-family="Space Grotesk" font-size="16" font-weight="700" fill="#1B1F2E" text-anchor="middle">
+          <rect x="35" y="100" width="110" height="70" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/><text x="90" y="142">INVITATION</text>
+          <rect x="245" y="100" width="100" height="70" rx="14" fill="#F6F5F2" stroke="#FF5A36"/><text x="295" y="142">ACCUEIL</text>
+          <rect x="445" y="100" width="100" height="70" rx="14" fill="#FF5A36" fill-opacity=".1" stroke="#FF5A36"/><text x="495" y="142">CONTENU</text>
+          <rect x="645" y="100" width="100" height="70" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/><text x="695" y="142">RELANCE</text>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="11" fill="#9AA3B2" text-anchor="middle">
+          <text x="90" y="195">AVANT</text><text x="295" y="195">JOUR J</text><text x="495" y="195">MESSAGE</text><text x="695" y="195">APRÈS</text>
+        </g>
+      </svg>
+    </div>
+    <div class="callout"><strong>🔗 Pour aller plus loin.</strong> La communication événementielle doit être pensée comme une séquence complète : teasing et invitations avant l’événement, expérience et production de contenus pendant, puis relations presse, publication et bilan après.</div>
+  </section>
+
+  <section id="synthese" class="reveal">
+    <div class="section-head">
+      <div class="kicker">07 · Synthèse visuelle</div>
+      <h2>Points clés à retenir</h2>
+      <p class="lead">Un événement réussi aligne stratégie, expérience, ressources, calendrier et rayonnement.</p>
+    </div>
+    <div class="key-grid">
+      <div class="key"><strong>01 · Objectif</strong><p>Définir le résultat attendu avant de choisir le format.</p></div>
+      <div class="key"><strong>02 · Public</strong><p>Adapter l’expérience aux attentes et aux contraintes des participants.</p></div>
+      <div class="key"><strong>03 · Logistique</strong><p>Sécuriser les flux, la technique, l’accueil et les solutions de repli.</p></div>
+      <div class="key"><strong>04 · Budget</strong><p>Relier chaque dépense à un besoin et suivre les écarts.</p></div>
+      <div class="key"><strong>05 · Temps</strong><p>Construire un rétroplanning avec des jalons et des responsables.</p></div>
+      <div class="key"><strong>06 · Rayonnement</strong><p>Orchestrer invitations, contenus, médias et relance pour prolonger l’impact.</p></div>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 850 250" role="img" aria-label="Résumé visuel de la communication événementielle">
+        <g stroke="#9AA3B2" stroke-width="2">
+          <line x1="125" y1="125" x2="255" y2="125"/><line x1="335" y1="125" x2="465" y2="125"/><line x1="545" y1="125" x2="675" y2="125"/>
+        </g>
+        <g font-family="Space Grotesk" font-weight="700" font-size="16" text-anchor="middle" fill="#1B1F2E">
+          <rect x="35" y="90" width="90" height="70" rx="14" fill="#F6F5F2" stroke="#FF5A36"/><text x="80" y="130">STRATÉGIE</text>
+          <rect x="255" y="90" width="80" height="70" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/><text x="295" y="130">FORMAT</text>
+          <rect x="465" y="90" width="80" height="70" rx="14" fill="#FF5A36" fill-opacity=".1" stroke="#FF5A36"/><text x="505" y="130">EXPÉRIENCE</text>
+          <rect x="675" y="90" width="120" height="70" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/><text x="735" y="130">IMPACT</text>
+        </g>
+        <text x="425" y="210" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#9AA3B2">OBJECTIFS → PUBLICS → DISPOSITIF → PILOTAGE → BILAN</text>
+      </svg>
+    </div>
+    <div class="callout"><strong>💡 À retenir.</strong> Organiser un événement de communication consiste à concevoir une expérience cohérente avec un objectif, puis à en maîtriser les moyens, le calendrier, les publics et la diffusion.</div>
+  </section>
+
+  <nav class="nav-bottom" aria-label="Navigation entre les leçons">
+    <a class="nav-card" href="#">
+      <span class="nav-label">← Leçon précédente</span>
+      <strong>Leçon 27 · Stratégie de marque et positionnement</strong>
+    </a>
+    <a class="nav-card center" href="#sommaire">
+      <span class="nav-label">Module 6</span>
+      <strong>Retour au sommaire de la leçon</strong>
+    </a>
+    <a class="nav-card right" href="#">
+      <span class="nav-label">Leçon suivante →</span>
+      <strong>Leçon 29 · Budget et pilotage de la fonction communication</strong>
+    </a>
+  </nav>
+</main>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+<footer>Communication d’Entreprise · Module 6 · Leçon 28</footer>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('topBtn');
+function updateScroll(){
+  const h=document.documentElement;
+  const max=h.scrollHeight-h.clientHeight;
+  progress.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+  topBtn.classList.toggle('show',h.scrollTop>500);
+}
+window.addEventListener('scroll',updateScroll,{passive:true});
+updateScroll();
+
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  const buttons=group.querySelectorAll('[role=tab]');
+  const panels=group.querySelectorAll('[role=tabpanel]');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+});
+
+const reveals=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}
+    });
+  },{threshold:.08});
+  reveals.forEach(el=>observer.observe(el));
+}else reveals.forEach(el=>el.classList.add('visible'));
+</script>
+</body>
+</html>

@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 23 — User Stories et backlog, filière Gestion de Projet.">
+<title>Leçon 23 — User Stories et backlog | Gestion de Projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+  --shadow:0 14px 35px rgba(20,33,61,.08);
+  --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg));
+  --soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 62%,var(--color-bg));
+  --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-text);text-decoration:none}
+a:hover{color:var(--color-accent)}
+button{font:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:rgba(141,153,174,.18)}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+.site-header{position:sticky;top:4px;z-index:900;background:rgba(244,246,248,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.nav{max-width:var(--max);margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font:800 15px Manrope,sans-serif;letter-spacing:.04em}
+.brand small{display:block;font:500 10px "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.menu-btn{display:none;border:1px solid var(--line);background:var(--color-bg);color:var(--color-text);padding:8px 11px;border-radius:8px;cursor:pointer}
+.toc{display:flex;gap:16px;flex-wrap:wrap;justify-content:flex-end}
+.toc a{font-size:13px;font-weight:600;color:var(--muted)}
+.toc a:hover,.toc a:focus{color:var(--color-accent)}
+main{max-width:var(--max);margin:auto;padding:48px 22px 70px}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:end;padding:34px 0 42px;border-bottom:1px solid var(--line)}
+.eyebrow{font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:Manrope,sans-serif;line-height:1.15;margin:0}
+h1{font-size:clamp(38px,6vw,68px);letter-spacing:-.045em;margin:10px 0 18px}
+.hero p{max-width:720px;margin:0;color:var(--muted);font-size:18px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.meta-card{padding:15px;border:1px solid var(--line);background:rgba(255,159,28,.05);border-radius:10px}
+.meta-card b{display:block;font:600 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:5px}
+.meta-card span{font-weight:700}
+.section{padding:60px 0;border-bottom:1px solid var(--line)}
+.section.alt{background:var(--soft);margin:0 -22px;padding-left:22px;padding-right:22px}
+.section-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:28px}
+.num{font:600 12px "IBM Plex Mono",monospace;color:var(--color-accent);padding-top:6px;min-width:34px}
+h2{font-size:clamp(28px,4vw,42px)}
+h3{font-size:21px;margin:25px 0 9px}
+.lead{max-width:720px;color:var(--muted);font-size:17px}
+.content{max-width:920px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:25px 0}
+.card{background:var(--color-bg);border:1px solid var(--line);border-radius:12px;padding:21px;transition:.2s ease;box-shadow:0 3px 0 rgba(141,153,174,.08)}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card .icon{font-size:25px;margin-bottom:8px}
+.card h3{margin:0 0 7px;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.callout{margin:25px 0;padding:19px 20px;border-left:4px solid var(--color-accent);background:var(--soft2);border-radius:0 10px 10px 0}
+.callout strong{display:block;font-family:Manrope,sans-serif;margin-bottom:4px}
+.callout p{margin:0;color:var(--muted)}
+svg.diagram{display:block;width:100%;height:auto;margin:28px 0;border:1px solid var(--line);border-radius:12px;background:var(--color-bg)}
+.svgtext{font-family:Inter,Arial,sans-serif;fill:var(--color-text)}
+.svgmono{font-family:"IBM Plex Mono",monospace;fill:var(--color-text)}
+table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--color-bg);border:1px solid var(--line);font-size:14px}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font:600 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.07em}
+td:first-child{font-weight:600}
+tr:hover td{background:rgba(255,159,28,.05)}
+.table-wrap{overflow-x:auto}
+.story{border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--soft);margin:25px 0}
+.story code,.pilot code,.chip{font-family:"IBM Plex Mono",monospace;background:var(--soft2);padding:3px 6px;border-radius:5px}
+.story .template{font:600 15px "IBM Plex Mono",monospace;line-height:1.8}
+.pilot{background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:20px;margin:25px 0}
+.pilot-head{font:600 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--color-accent);margin-bottom:10px}
+.pilot pre{margin:0;white-space:pre-wrap;font:500 13px/1.7 "IBM Plex Mono",monospace;color:var(--color-text)}
+.copy{margin-top:13px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);padding:8px 12px;border-radius:7px;cursor:pointer;font-size:12px}
+.copy:hover{background:var(--soft2)}
+.tabs{margin:28px 0}
+.tablist{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.tablist button{border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);padding:11px 14px;cursor:pointer;font-weight:700}
+.tablist button[aria-selected="true"]{color:var(--color-text);border-bottom-color:var(--color-accent)}
+.tabpanel{display:none;padding:20px 2px}
+.tabpanel.active{display:block}
+details{border-top:1px solid var(--line);padding:15px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:700}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:30px 0}
+.step{position:relative;padding:18px 12px;border:1px solid var(--line);border-radius:10px;background:var(--color-bg)}
+.step b{display:block;font:600 12px "IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:8px}
+.step strong{display:block;font-family:Manrope,sans-serif;font-size:15px;margin-bottom:4px}
+.step span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:22px}
+.key{border-left:3px solid var(--color-accent);padding:15px 16px;background:var(--color-bg);border-radius:0 8px 8px 0}
+.key strong{display:block;font-family:Manrope,sans-serif}
+.key span{font-size:13px;color:var(--muted)}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:34px 0}
+.lesson-link{border:1px solid var(--line);border-radius:10px;padding:17px;background:var(--color-bg)}
+.lesson-link.next{text-align:right}
+.lesson-link small{display:block;color:var(--muted);font:500 10px "IBM Plex Mono",monospace;text-transform:uppercase;margin-bottom:6px}
+.lesson-link strong{font-family:Manrope,sans-serif}
+.top{position:fixed;right:18px;bottom:18px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);width:42px;height:42px;border-radius:50%;cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--line);padding:24px 22px;text-align:center;color:var(--muted);font-size:12px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid rgba(255,159,28,.5);outline-offset:3px}
+@media(max-width:820px){
+  .menu-btn{display:block}
+  .toc{display:none;position:absolute;left:15px;right:15px;top:62px;padding:14px;background:var(--color-bg);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+  .toc.open{display:flex}
+  .hero{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr 1fr}
+  .stepper{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  main{padding-left:16px;padding-right:16px}
+  .section.alt{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  .grid,.key-grid,.nav-lessons{grid-template-columns:1fr}
+  .meta{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr}
+  .hero{padding-top:22px}
+  h1{font-size:40px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*:before,*:after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header class="site-header">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top">GESTION DE PROJET<small>Studio Blueprint & Ambre Jalon</small></a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="toc">Sommaire</button>
+    <div class="toc" id="toc">
+      <a href="#besoin">Besoin</a>
+      <a href="#story">User Story</a>
+      <a href="#criteres">Critères</a>
+      <a href="#backlog">Backlog</a>
+      <a href="#priorisation">Priorisation</a>
+      <a href="#estimation">Estimation</a>
+      <a href="#synthese">Points clés</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero reveal">
+  <div>
+    <div class="eyebrow">Module 5 · Méthodes Agile et outils de gestion</div>
+    <h1>User Stories<br>et backlog</h1>
+    <p>Transformer les besoins en tâches exploitables en passant d’un besoin utilisateur à des éléments clairs, acceptables, priorisés et estimables.</p>
+  </div>
+  <div class="meta" aria-label="Informations sur la leçon">
+    <div class="meta-card"><b>Leçon</b><span>23</span></div>
+    <div class="meta-card"><b>Niveau</b><span>Avancé</span></div>
+    <div class="meta-card"><b>Durée</b><span>18 min</span></div>
+    <div class="meta-card"><b>Objectif</b><span>Besoin → tâche exploitable</span></div>
+  </div>
+</section>
+
+<section class="section reveal" id="besoin">
+  <div class="section-head"><div class="num">01</div><div><h2>Du besoin utilisateur à l’élément exploitable</h2></div></div>
+  <div class="content">
+    <p class="lead">En gestion Agile, le besoin ne doit pas rester une formulation vague. Il doit être suffisamment explicite pour être compris par l’équipe, discuté, accepté et placé dans le flux de travail.</p>
+    <div class="grid">
+      <article class="card"><div class="icon">01</div><h3>Besoin utilisateur</h3><p>Exprime le résultat recherché ou la valeur attendue par l’utilisateur.</p></article>
+      <article class="card"><div class="icon">02</div><h3>Formalisation</h3><p>La User Story transforme le besoin en une formulation centrée sur l’utilisateur.</p></article>
+      <article class="card"><div class="icon">03</div><h3>Exploitation</h3><p>Les critères, la priorité et l’estimation rendent l’élément exploitable par l’équipe.</p></article>
+    </div>
+
+    <svg class="diagram" viewBox="0 0 960 250" role="img" aria-label="Schéma de transformation d'un besoin utilisateur en élément exploitable du backlog">
+      <title>Du besoin au backlog exploitable</title>
+      <rect x="35" y="75" width="190" height="95" rx="12" fill="rgba(141,153,174,.14)" stroke="#8D99AE"/>
+      <text x="130" y="112" text-anchor="middle" class="svgmono" font-size="12">POINT DE DÉPART</text>
+      <text x="130" y="142" text-anchor="middle" class="svgtext" font-size="18" font-weight="700">Besoin</text>
+      <path d="M225 122 H310" stroke="#FF9F1C" stroke-width="3"/>
+      <path d="M300 114 L312 122 L300 130" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+      <rect x="315" y="75" width="190" height="95" rx="12" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/>
+      <text x="410" y="112" text-anchor="middle" class="svgmono" font-size="12">FORMULATION</text>
+      <text x="410" y="142" text-anchor="middle" class="svgtext" font-size="18" font-weight="700">User Story</text>
+      <path d="M505 122 H590" stroke="#FF9F1C" stroke-width="3"/>
+      <path d="M580 114 L592 122 L580 130" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+      <rect x="595" y="75" width="150" height="95" rx="12" fill="rgba(141,153,174,.14)" stroke="#8D99AE"/>
+      <text x="670" y="112" text-anchor="middle" class="svgmono" font-size="12">CLARTÉ</text>
+      <text x="670" y="142" text-anchor="middle" class="svgtext" font-size="17" font-weight="700">Critères</text>
+      <path d="M745 122 H830" stroke="#FF9F1C" stroke-width="3"/>
+      <path d="M820 114 L832 122 L820 130" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+      <rect x="835" y="75" width="90" height="95" rx="12" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/>
+      <text x="880" y="112" text-anchor="middle" class="svgmono" font-size="11">FLUX</text>
+      <text x="880" y="142" text-anchor="middle" class="svgtext" font-size="16" font-weight="700">Backlog</text>
+    </svg>
+
+    <div class="callout"><strong>💡 À retenir</strong><p>La User Story décrit le besoin du point de vue de l’utilisateur. Elle n’est pas, à elle seule, la solution technique : elle sert à cadrer la valeur attendue.</p></div>
+  </div>
+</section>
+
+<section class="section alt reveal" id="story">
+  <div class="section-head"><div class="num">02</div><div><h2>User Story</h2></div></div>
+  <div class="content">
+    <p class="lead">Une User Story est une formulation courte du besoin, orientée vers le rôle de l’utilisateur et la valeur recherchée.</p>
+    <div class="story">
+      <div class="eyebrow">Structure de référence</div>
+      <p class="template">En tant que <strong>[type d’utilisateur]</strong>,<br>je veux <strong>[besoin / action]</strong>,<br>afin de <strong>[valeur / résultat attendu]</strong>.</p>
+    </div>
+    <div class="grid">
+      <article class="card"><h3>En tant que</h3><p>Identifie le rôle ou le profil concerné par le besoin.</p></article>
+      <article class="card"><h3>Je veux</h3><p>Décrit ce que l’utilisateur souhaite pouvoir faire ou obtenir.</p></article>
+      <article class="card"><h3>Afin de</h3><p>Met en évidence la valeur ou la finalité recherchée.</p></article>
+    </div>
+    <h3>Exemple concret</h3>
+    <p>Pour une application de gestion de projet : <strong>En tant que chef de projet, je veux visualiser l’état des tâches, afin de suivre l’avancement du projet.</strong></p>
+
+    <svg class="diagram" viewBox="0 0 900 285" role="img" aria-label="Illustration des trois parties d'une User Story">
+      <title>Les trois parties d'une User Story</title>
+      <rect x="40" y="60" width="240" height="145" rx="14" fill="rgba(141,153,174,.13)" stroke="#8D99AE"/>
+      <rect x="330" y="60" width="240" height="145" rx="14" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/>
+      <rect x="620" y="60" width="240" height="145" rx="14" fill="rgba(141,153,174,.13)" stroke="#8D99AE"/>
+      <text x="160" y="95" text-anchor="middle" class="svgmono" font-size="12">RÔLE</text>
+      <text x="160" y="133" text-anchor="middle" class="svgtext" font-size="20" font-weight="700">En tant que…</text>
+      <text x="160" y="170" text-anchor="middle" class="svgtext" font-size="13">Qui est concerné ?</text>
+      <text x="450" y="95" text-anchor="middle" class="svgmono" font-size="12">BESOIN</text>
+      <text x="450" y="133" text-anchor="middle" class="svgtext" font-size="20" font-weight="700">Je veux…</text>
+      <text x="450" y="170" text-anchor="middle" class="svgtext" font-size="13">Que veut-il faire ?</text>
+      <text x="740" y="95" text-anchor="middle" class="svgmono" font-size="12">VALEUR</text>
+      <text x="740" y="133" text-anchor="middle" class="svgtext" font-size="20" font-weight="700">Afin de…</text>
+      <text x="740" y="170" text-anchor="middle" class="svgtext" font-size="13">Pourquoi est-ce utile ?</text>
+      <path d="M280 132 H330 M570 132 H620" stroke="#FF9F1C" stroke-width="3"/>
+      <text x="450" y="246" text-anchor="middle" class="svgmono" font-size="12">UNE FORMULATION COURTE, CENTRÉE SUR LA VALEUR</text>
+    </svg>
+
+    <details><summary>Pourquoi éviter une formulation purement technique ?</summary><p>Une formulation centrée uniquement sur la solution risque de masquer le besoin réel. La User Story maintient le point de vue de l’utilisateur et facilite la discussion sur la valeur attendue.</p></details>
+  </div>
+</section>
+
+<section class="section reveal" id="criteres">
+  <div class="section-head"><div class="num">03</div><div><h2>Critères d’acceptation</h2></div></div>
+  <div class="content">
+    <p class="lead">Les critères d’acceptation précisent les conditions qui permettent de déterminer si la User Story répond au besoin formulé.</p>
+    <div class="grid">
+      <article class="card"><div class="icon">✓</div><h3>Clairs</h3><p>Ils doivent être compréhensibles par les personnes concernées.</p></article>
+      <article class="card"><div class="icon">✓</div><h3>Observables</h3><p>Ils décrivent un résultat que l’on peut constater.</p></article>
+      <article class="card"><div class="icon">✓</div><h3>Liés au besoin</h3><p>Ils vérifient la valeur attendue, sans dériver vers des exigences inutiles.</p></article>
+    </div>
+    <div class="pilot">
+      <div class="pilot-head">Fiche de pilotage · exemple de formulation</div>
+      <pre id="pilotText">USER STORY
+En tant que chef de projet,
+je veux visualiser l’état des tâches,
+afin de suivre l’avancement.
+
+CRITÈRES D’ACCEPTATION
+1. L’état de chaque tâche est identifiable.
+2. Les tâches terminées sont distinguables des tâches en cours.
+3. L’information affichée permet de suivre l’avancement.</pre>
+      <button class="copy" data-copy="pilotText">Copier la fiche</button>
+    </div>
+    <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong><p>Un critère d’acceptation ne doit pas être confondu avec une simple idée de réalisation technique. Il sert d’abord à décrire la condition observable qui permettra d’accepter le besoin.</p></div>
+  </div>
+</section>
+
+<section class="section alt reveal" id="backlog">
+  <div class="section-head"><div class="num">04</div><div><h2>Backlog</h2></div></div>
+  <div class="content">
+    <p class="lead">Le backlog regroupe les éléments de travail à considérer pour faire évoluer le produit ou le projet. Les User Stories peuvent y être enregistrées puis affinées, priorisées et estimées.</p>
+    <div class="stepper" aria-label="Cycle de traitement d'un élément du backlog">
+      <div class="step"><b>01</b><strong>Identifier</strong><span>Faire émerger le besoin.</span></div>
+      <div class="step"><b>02</b><strong>Formuler</strong><span>Créer une User Story claire.</span></div>
+      <div class="step"><b>03</b><strong>Clarifier</strong><span>Ajouter les critères d’acceptation.</span></div>
+      <div class="step"><b>04</b><strong>Prioriser</strong><span>Ordonner selon la valeur.</span></div>
+      <div class="step"><b>05</b><strong>Estimer</strong><span>Évaluer l’effort nécessaire.</span></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <caption style="caption-side:top;text-align:left;padding:10px 0;font-weight:700">Exemple de structure de backlog</caption>
+        <thead><tr><th scope="col">ID</th><th scope="col">User Story</th><th scope="col">Priorité</th><th scope="col">Critères</th><th scope="col">Estimation</th></tr></thead>
+        <tbody>
+          <tr><td class="chip">US-01</td><td>Consulter l’état des tâches</td><td>Haute</td><td>3</td><td>5 pts</td></tr>
+          <tr><td class="chip">US-02</td><td>Filtrer les tâches par état</td><td>Moyenne</td><td>2</td><td>3 pts</td></tr>
+          <tr><td class="chip">US-03</td><td>Consulter un historique</td><td>Basse</td><td>2</td><td>5 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <svg class="diagram" viewBox="0 0 960 330" role="img" aria-label="Tableau visuel représentant un backlog organisé en éléments à affiner, prioriser et estimer">
+      <title>Backlog organisé</title>
+      <rect x="25" y="35" width="280" height="260" rx="12" fill="rgba(141,153,174,.10)" stroke="#8D99AE"/>
+      <rect x="340" y="35" width="280" height="260" rx="12" fill="rgba(255,159,28,.07)" stroke="#FF9F1C"/>
+      <rect x="655" y="35" width="280" height="260" rx="12" fill="rgba(141,153,174,.10)" stroke="#8D99AE"/>
+      <text x="165" y="70" text-anchor="middle" class="svgmono" font-size="12">À AFFINER</text>
+      <text x="480" y="70" text-anchor="middle" class="svgmono" font-size="12">PRIORISÉ</text>
+      <text x="795" y="70" text-anchor="middle" class="svgmono" font-size="12">PRÊT À ESTIMER</text>
+      <g class="svgtext" font-size="14">
+        <rect x="50" y="95" width="230" height="50" rx="8" fill="rgba(255,159,28,.10)" stroke="#8D99AE"/><text x="65" y="125">US-04 · besoin à clarifier</text>
+        <rect x="50" y="160" width="230" height="50" rx="8" fill="rgba(255,159,28,.10)" stroke="#8D99AE"/><text x="65" y="190">US-05 · critères à préciser</text>
+        <rect x="365" y="95" width="230" height="50" rx="8" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/><text x="380" y="125">US-01 · priorité haute</text>
+        <rect x="365" y="160" width="230" height="50" rx="8" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/><text x="380" y="190">US-02 · priorité moyenne</text>
+        <rect x="680" y="95" width="230" height="50" rx="8" fill="rgba(255,159,28,.10)" stroke="#8D99AE"/><text x="695" y="125">US-01 · critères définis</text>
+        <rect x="680" y="160" width="230" height="50" rx="8" fill="rgba(255,159,28,.10)" stroke="#8D99AE"/><text x="695" y="190">US-02 · périmètre clair</text>
+      </g>
+      <path d="M305 165 H335 M620 165 H650" stroke="#FF9F1C" stroke-width="3"/>
+    </svg>
+
+    <div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong><p>Un backlog évolue : les éléments peuvent être précisés, réordonnés et estimés au fil de la compréhension du produit et des besoins.</p></div>
+  </div>
+</section>
+
+<section class="section reveal" id="priorisation">
+  <div class="section-head"><div class="num">05</div><div><h2>Priorisation</h2></div></div>
+  <div class="content">
+    <p class="lead">Prioriser consiste à ordonner les éléments du backlog afin de rendre visibles ceux qui apportent le plus de valeur ou répondent aux besoins les plus importants.</p>
+    <div class="tabs">
+      <div class="tablist" role="tablist" aria-label="Approches de priorisation">
+        <button role="tab" aria-selected="true" aria-controls="tab-valeur" id="tabbtn-valeur">Valeur</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-urgence" id="tabbtn-urgence">Urgence</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-dependance" id="tabbtn-dependance">Dépendances</button>
+      </div>
+      <div class="tabpanel active" id="tab-valeur" role="tabpanel" aria-labelledby="tabbtn-valeur">
+        <h3>Valeur attendue</h3><p>Un élément peut être placé plus haut lorsqu’il répond à une valeur importante pour l’utilisateur ou pour le produit.</p>
+      </div>
+      <div class="tabpanel" id="tab-urgence" role="tabpanel" aria-labelledby="tabbtn-urgence">
+        <h3>Urgence</h3><p>Une échéance ou une contrainte temporelle peut influencer l’ordre de traitement du backlog.</p>
+      </div>
+      <div class="tabpanel" id="tab-dependance" role="tabpanel" aria-labelledby="tabbtn-dependance">
+        <h3>Dépendances</h3><p>Un élément peut devoir précéder un autre. Les dépendances techniques ou fonctionnelles influencent alors l’ordre logique.</p>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th scope="col">Élément</th><th scope="col">Valeur</th><th scope="col">Urgence</th><th scope="col">Dépendance</th><th scope="col">Ordre indicatif</th></tr></thead>
+      <tbody>
+        <tr><td>Suivre l’avancement</td><td>Forte</td><td>Forte</td><td>Faible</td><td class="chip">1</td></tr>
+        <tr><td>Filtrer les tâches</td><td>Moyenne</td><td>Moyenne</td><td>Après suivi</td><td class="chip">2</td></tr>
+        <tr><td>Historique</td><td>Moyenne</td><td>Faible</td><td>Après suivi</td><td class="chip">3</td></tr>
+      </tbody>
+    </table>
+
+    <details><summary>Pourquoi l’ordre du backlog est-il important ?</summary><p>Il donne à l’équipe une vision structurée de ce qui doit être considéré en premier. Il facilite également les discussions sur la valeur, les contraintes et les dépendances.</p></details>
+  </div>
+</section>
+
+<section class="section alt reveal" id="estimation">
+  <div class="section-head"><div class="num">06</div><div><h2>Estimation</h2></div></div>
+  <div class="content">
+    <p class="lead">L’estimation vise à évaluer l’effort relatif nécessaire pour traiter un élément. Elle aide à comparer les User Stories et à organiser le travail.</p>
+    <div class="grid">
+      <article class="card"><h3>Effort</h3><p>Prendre en compte la quantité de travail à réaliser.</p></article>
+      <article class="card"><h3>Complexité</h3><p>Identifier les difficultés ou incertitudes liées à l’élément.</p></article>
+      <article class="card"><h3>Comparaison</h3><p>Utiliser une référence commune pour distinguer les éléments plus ou moins importants en effort.</p></article>
+    </div>
+
+    <svg class="diagram" viewBox="0 0 920 280" role="img" aria-label="Échelle illustrative d'estimation relative de User Stories">
+      <title>Estimation relative</title>
+      <line x1="80" y1="150" x2="840" y2="150" stroke="#8D99AE" stroke-width="3"/>
+      <g stroke="#FF9F1C" stroke-width="3" fill="rgba(255,159,28,.10)">
+        <circle cx="120" cy="150" r="22"/><circle cx="280" cy="150" r="22"/><circle cx="460" cy="150" r="22"/><circle cx="700" cy="150" r="22"/><circle cx="825" cy="150" r="22"/>
+      </g>
+      <g class="svgmono" font-size="13" text-anchor="middle">
+        <text x="120" y="155">1</text><text x="280" y="155">2</text><text x="460" y="155">3</text><text x="700" y="155">5</text><text x="825" y="155">8</text>
+      </g>
+      <g class="svgtext" font-size="13" text-anchor="middle">
+        <text x="120" y="105">très faible</text><text x="280" y="105">faible</text><text x="460" y="105">modéré</text><text x="700" y="105">important</text><text x="825" y="105">très important</text>
+      </g>
+      <text x="460" y="220" text-anchor="middle" class="svgmono" font-size="12">ÉCHELLE RELATIVE D’EFFORT · EXEMPLE</text>
+    </svg>
+
+    <div class="callout"><strong>💡 À retenir</strong><p>L’estimation ne remplace pas l’analyse. Une User Story trop grande, ambiguë ou insuffisamment définie peut nécessiter un affinage avant qu’une estimation soit pertinente.</p></div>
+  </div>
+</section>
+
+<section class="section reveal" id="synthese">
+  <div class="section-head"><div class="num">07</div><div><h2>Points clés à retenir</h2></div></div>
+  <div class="content">
+    <p class="lead">Une bonne chaîne de traitement transforme progressivement un besoin en élément de backlog compréhensible, priorisé et estimable.</p>
+    <div class="key-grid">
+      <div class="key"><strong>01 · User Story</strong><span>Décrire le besoin du point de vue de l’utilisateur et de la valeur recherchée.</span></div>
+      <div class="key"><strong>02 · Critères</strong><span>Préciser les conditions observables permettant d’accepter le besoin.</span></div>
+      <div class="key"><strong>03 · Backlog</strong><span>Regrouper et organiser les éléments de travail à considérer.</span></div>
+      <div class="key"><strong>04 · Priorisation</strong><span>Ordonner selon la valeur, l’urgence et les dépendances.</span></div>
+      <div class="key"><strong>05 · Estimation</strong><span>Évaluer l’effort relatif nécessaire pour comparer et organiser les éléments.</span></div>
+      <div class="key"><strong>06 · Affinage</strong><span>Améliorer progressivement la compréhension avant la prise en charge.</span></div>
+    </div>
+
+    <svg class="diagram" viewBox="0 0 960 250" role="img" aria-label="Résumé visuel User Story vers backlog priorisé et estimé">
+      <title>Résumé visuel de la leçon</title>
+      <text x="480" y="34" text-anchor="middle" class="svgmono" font-size="12">BESOIN → USER STORY → CRITÈRES → BACKLOG → PRIORITÉ → ESTIMATION</text>
+      <g class="svgtext" font-size="14" font-weight="700" text-anchor="middle">
+        <rect x="35" y="85" width="125" height="65" rx="10" fill="rgba(141,153,174,.13)" stroke="#8D99AE"/><text x="97" y="123">Besoin</text>
+        <rect x="175" y="85" width="125" height="65" rx="10" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/><text x="237" y="123">User Story</text>
+        <rect x="315" y="85" width="125" height="65" rx="10" fill="rgba(141,153,174,.13)" stroke="#8D99AE"/><text x="377" y="123">Critères</text>
+        <rect x="455" y="85" width="125" height="65" rx="10" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/><text x="517" y="123">Backlog</text>
+        <rect x="595" y="85" width="125" height="65" rx="10" fill="rgba(141,153,174,.13)" stroke="#8D99AE"/><text x="657" y="123">Priorité</text>
+        <rect x="735" y="85" width="190" height="65" rx="10" fill="rgba(255,159,28,.10)" stroke="#FF9F1C"/><text x="830" y="123">Estimation</text>
+      </g>
+      <g stroke="#FF9F1C" stroke-width="2">
+        <path d="M160 117 H174 M300 117 H314 M440 117 H454 M580 117 H594 M720 117 H734"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<div class="nav-lessons" aria-label="Navigation entre les leçons">
+  <a class="lesson-link" href="#top"><small>Leçon précédente</small><strong>LEÇON 22 — Scrum et rôles de l'équipe</strong></a>
+  <a class="lesson-link next" href="#top"><small>Leçon suivante</small><strong>LEÇON 24 — Outils numériques de gestion de projet</strong></a>
+</div>
+</main>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+<footer>Gestion de Projet · Module 5 · Leçon 23 · Support pédagogique autonome</footer>
+
+<script>
+(function(){
+  const progress=document.getElementById('progress');
+  const topBtn=document.getElementById('topBtn');
+  const menuBtn=document.getElementById('menuBtn');
+  const toc=document.getElementById('toc');
+
+  function update(){
+    const d=document.documentElement;
+    const max=d.scrollHeight-d.clientHeight;
+    progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+    topBtn.classList.toggle('show',window.scrollY>500);
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  menuBtn.addEventListener('click',()=>{
+    const open=toc.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded',String(open));
+  });
+  toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    toc.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false');
+  }));
+
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const text=document.getElementById(btn.dataset.copy).innerText;
+      try{
+        await navigator.clipboard.writeText(text);
+        const old=btn.textContent; btn.textContent='Copié';
+        setTimeout(()=>btn.textContent=old,1200);
+      }catch(e){}
+    });
+  });
+
+  const tabs=document.querySelectorAll('[role="tab"]');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabs.forEach(t=>t.setAttribute('aria-selected','false'));
+      document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+    });
+    tab.addEventListener('keydown',e=>{
+      if(e.key!=='ArrowRight' && e.key!=='ArrowLeft') return;
+      const arr=[...tabs], i=arr.indexOf(tab);
+      const next=arr[(i+(e.key==='ArrowRight'?1:-1)+arr.length)%arr.length];
+      next.focus(); next.click();
+    });
+  });
+
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced && 'IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}});
+    },{threshold:.08});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }else{
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
+  }
+})();
+</script>
+</body>
+</html>

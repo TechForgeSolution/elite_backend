@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 28 — Préparation d'une mission d'audit | Audit interne</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  td.num.negative{color:var(--color-accent-alt);}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+  .status-pill{display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:600; border-radius:100px; padding:3px 10px;}
+  .status-pill.done{color:var(--color-accent); background:var(--color-accent-soft);}
+  .status-pill.progress{color:#8A6D1F; background:#FBF3DC;}
+  .status-pill.late{color:var(--color-accent-alt); background:#FBEEE6;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+  .quiz-cta{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    margin-top:24px; padding:20px 24px; border-radius:12px;
+    background:var(--color-accent-soft); border:1px solid var(--color-accent);
+  }
+  .quiz-cta .quiz-text{max-width:520px;}
+  .quiz-cta .quiz-label{font-size:0.78rem; font-weight:600; color:var(--color-accent); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px;}
+  .quiz-cta h3{margin-bottom:4px;}
+  .quiz-cta p{margin:0; font-size:0.9rem; color:var(--color-text-muted);}
+  .quiz-btn{
+    flex-shrink:0; font-family:var(--font-body); font-weight:600; font-size:0.92rem; color:#fff;
+    background:var(--color-accent); border:none; border-radius:8px; padding:12px 22px; cursor:pointer;
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+  }
+  .quiz-btn:hover{background:#175840;}
+  .quiz-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+    .quiz-cta{flex-direction:column; align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filiere comptabilite
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 5 — Audit interne</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau intermédiaire</span>
+    </div>
+    <h1>Leçon 28 — Préparation d'une mission d'audit</h1>
+    <p class="lede">Cadrer les objectifs et le périmètre d'une mission, formaliser la lettre de mission, prendre connaissance du processus audité, et construire le programme de travail : les fondations d'une mission d'audit interne réussie.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Objectifs et périmètre de la mission" data-num="28.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">28.1</span><h2>Objectifs et périmètre de la mission</h2></div>
+      <p>Avant tout travail de terrain, une mission d'audit interne doit répondre à trois questions simples : pourquoi cette mission est-elle déclenchée, sur quel périmètre porte-t-elle exactement, et à quelle date les conclusions sont-elles attendues ? Ce cadrage conditionne toute la suite des travaux.</p>
+      <p>La mission peut naître du plan d'audit annuel (couverture cyclique des processus selon leur niveau de risque, voir la cartographie des risques), d'une demande ponctuelle de la direction, ou d'un signalement interne. Le périmètre précise le ou les processus concernés, les sites ou entités inclus, et la période couverte par les tests.</p>
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention à ne pas confondre périmètre et objectif</div>
+        <p>Le périmètre délimite le champ d'investigation (« le processus achats du site de Lyon, exercice N »). L'objectif précise ce que l'audit cherche à démontrer (« s'assurer que la séparation des tâches entre engagement et paiement des dépenses est effective »). Une mission sans objectif clair produit un rapport descriptif, pas une opinion d'audit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="La lettre de mission" data-num="28.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">28.2</span><h2>La lettre de mission</h2></div>
+      <p>La lettre de mission (ou ordre de mission) est le document qui officialise le déclenchement de l'audit. Signée par la direction générale ou le comité d'audit, elle donne à l'équipe d'audit la légitimité et l'accès nécessaires pour intervenir auprès des équipes auditées.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <h3>Objet et périmètre</h3>
+        <p>Le processus ou l'entité audité, la période couverte, et les objectifs poursuivis par la mission.</p>
+      </div>
+      <div class="card">
+        <h3>Équipe et durée</h3>
+        <p>Les auditeurs affectés, le chef de mission désigné, et le calendrier prévisionnel des travaux.</p>
+      </div>
+      <div class="card">
+        <h3>Droits d'accès</h3>
+        <p>L'autorisation de consulter les documents, systèmes et personnes nécessaires à la réalisation de la mission.</p>
+      </div>
+      <div class="card">
+        <h3>Destinataires du rapport</h3>
+        <p>Les responsables qui recevront les conclusions et devront répondre aux recommandations formulées.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Une lettre de mission diffusée avant le démarrage des travaux évite tout malentendu sur la légitimité de l'auditeur et facilite considérablement l'accès aux informations lors de la phase de terrain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Les phases préparatoires de la mission" data-num="28.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">28.3</span><h2>Les phases préparatoires de la mission</h2></div>
+      <p>Avant que les tests eux-mêmes ne commencent, la préparation d'une mission d'audit suit toujours la même séquence, chaque étape s'appuyant sur la précédente :</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Ordre de mission</h3>
+        <p>Signature de la lettre de mission qui officialise le déclenchement et le périmètre de l'audit.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Prise de connaissance</h3>
+        <p>Collecte de la documentation existante et entretiens initiaux pour comprendre le processus audité.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Tableau des risques</h3>
+        <p>Identification et cotation des risques spécifiques au processus, pour cibler les zones à auditer en priorité.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Programme de travail</h3>
+        <p>Formalisation des tests à réaliser pour chaque risque retenu, avec échantillon et référence de papier de travail.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">5</div>
+        <h3>Réunion d'ouverture</h3>
+        <p>Présentation de la démarche et du calendrier aux équipes auditées avant le début des travaux de terrain.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">📌 Rappel méthodologique</div>
+        <p>Le tableau des risques établi en phase préparatoire n'est pas la cartographie globale des risques de l'entreprise (leçon 26) : c'est une déclinaison ciblée, propre au processus audité, qui sert directement à construire le programme de travail.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="La prise de connaissance du processus" data-num="28.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">28.4</span><h2>La prise de connaissance du processus</h2></div>
+      <p>Cette phase vise à comprendre en détail le fonctionnement réel du processus audité, avant de porter un quelconque jugement. Elle combine plusieurs sources d'information :</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Quels documents collecter en amont ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Organigrammes, procédures et modes opératoires en vigueur, précédents rapports d'audit sur le même processus, indicateurs de performance disponibles, et cartographie des risques du processus si elle existe déjà.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Pourquoi formaliser un diagramme de flux (flowchart) ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Représenter le processus étape par étape, avec les acteurs et les points de contrôle existants, permet de repérer visuellement les ruptures de séparation des tâches et les zones sans contrôle — bien avant de réaliser le moindre test.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Faut-il se fier uniquement aux procédures écrites ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Non : la prise de connaissance doit confronter le processus « tel que décrit » (procédures) au processus « tel que pratiqué » (entretiens et observation). L'écart entre les deux est souvent la première zone de risque identifiée.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>La prise de connaissance conditionne la pertinence de tout le programme de travail : un auditeur qui comprend mal le processus construira des tests hors sujet, même techniquement bien exécutés.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Élaborer le programme de travail" data-num="28.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">28.5</span><h2>Élaborer le programme de travail</h2></div>
+      <p>Le programme de travail traduit chaque risque retenu en un ou plusieurs tests concrets. Il précise, pour chaque test, ce qui est vérifié, comment, sur quel échantillon, et où sera archivée la preuve du travail réalisé.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Programme de travail d'audit — processus achats</caption>
+        <thead>
+          <tr><th scope="col">Objectif</th><th scope="col">Test</th><th scope="col">Échantillon</th><th scope="col" class="center">Réf. papier de travail</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>S'assurer de la séparation entre engagement et paiement de la dépense</td>
+            <td>Vérifier que le créateur du bon de commande diffère du valideur du paiement</td>
+            <td>25 transactions sur l'exercice</td>
+            <td class="center"><span class="letter-code">PT-01</span></td>
+          </tr>
+          <tr>
+            <td>Vérifier l'existence d'une autorisation préalable à l'engagement de dépense</td>
+            <td>Rapprocher chaque bon de commande de sa validation hiérarchique</td>
+            <td>25 transactions sur l'exercice</td>
+            <td class="center"><span class="letter-code">PT-02</span></td>
+          </tr>
+          <tr>
+            <td>S'assurer de la conformité des factures aux commandes et livraisons</td>
+            <td>Contrôler la concordance commande / bon de réception / facture (3-way match)</td>
+            <td>15 factures fournisseurs</td>
+            <td class="center"><span class="letter-code">PT-03</span></td>
+          </tr>
+          <tr>
+            <td>Détecter les risques de fraude sur les fournisseurs</td>
+            <td>Rapprocher le fichier fournisseurs de celui des employés (coordonnées bancaires)</td>
+            <td>Fichier fournisseurs complet</td>
+            <td class="center"><span class="letter-code">PT-04</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Pour l'objectif « séparation entre engagement et paiement » (PT-01), l'auditeur extrait la liste complète des transactions d'achat de l'exercice, tire un échantillon aléatoire de 25 dossiers, et vérifie pour chacun que la personne ayant créé le bon de commande n'est pas celle ayant validé le paiement correspondant dans le système. Tout dossier en anomalie est documenté avec capture d'écran et référencé dans le papier de travail PT-01.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Stratégie de collecte des preuves" data-num="28.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">28.6</span><h2>Stratégie de collecte des preuves</h2></div>
+      <p>Chaque test du programme de travail s'appuie sur une ou plusieurs techniques de collecte de preuves. Le choix de la technique dépend de la nature du risque testé et du niveau de fiabilité recherché.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Techniques de collecte de preuves">
+        <button class="tab-btn" role="tab" id="tab-preuve28-1" aria-controls="panel-preuve28-1" aria-selected="true">Entretiens</button>
+        <button class="tab-btn" role="tab" id="tab-preuve28-2" aria-controls="panel-preuve28-2" aria-selected="false" tabindex="-1">Analyse documentaire</button>
+        <button class="tab-btn" role="tab" id="tab-preuve28-3" aria-controls="panel-preuve28-3" aria-selected="false" tabindex="-1">Observation</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-preuve28-1" role="tabpanel" aria-labelledby="tab-preuve28-1" tabindex="0">
+        <div class="prose">
+          <p>Échanges structurés avec les acteurs du processus pour comprendre leurs pratiques réelles et recueillir leur perception des difficultés rencontrées. Preuve utile pour comprendre le « pourquoi », mais de fiabilité limitée si elle n'est pas recoupée : les propos recueillis doivent toujours être confirmés par un document ou une observation.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-preuve28-2" role="tabpanel" aria-labelledby="tab-preuve28-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Examen des procédures, contrats, factures, extractions système et rapprochements de données. Technique la plus fiable lorsque les documents proviennent d'une source indépendante de l'audité (tiers externe, système informatique non modifiable), car elle repose sur des traces vérifiables et datées.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-preuve28-3" role="tabpanel" aria-labelledby="tab-preuve28-3" tabindex="0" hidden>
+        <div class="prose">
+          <p>Constatation directe, sur le terrain, de l'exécution réelle d'une tâche ou d'un contrôle (inventaire physique, poste de travail, accès à une zone sécurisée). Très fiable au moment de l'observation, mais limitée dans le temps : elle ne garantit pas que la pratique observée est systématique.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Une preuve d'audit solide résulte le plus souvent du croisement de plusieurs techniques : un entretien oriente la recherche, l'analyse documentaire l'objective, et l'observation la confirme sur le terrain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="28.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">28.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Une mission d'audit se cadre toujours par des objectifs précis et un périmètre délimité avant tout travail de terrain.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>La lettre de mission officialise la légitimité de l'auditeur et ses droits d'accès auprès des équipes auditées.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>La préparation suit cinq étapes : ordre de mission, prise de connaissance, tableau des risques, programme de travail, réunion d'ouverture.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Le programme de travail traduit chaque risque en tests précis, avec échantillon et référence de papier de travail.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Entretiens, analyse documentaire et observation se combinent pour produire des preuves d'audit fiables et recoupées.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente · Module 5</span>
+        <span class="dest">Contrôle interne et séparation des tâches</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante · Module 5</span>
+        <span class="dest">Tests, constats et recommandations</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 5</a>
+    <div class="quiz-cta">
+      <div class="quiz-text">
+        <div class="quiz-label">Leçon 28 terminée</div>
+        <h3>Prêt·e pour le quiz de la leçon 28 ?</h3>
+        <p>Objectifs et périmètre, lettre de mission, phases préparatoires, programme de travail et stratégies de collecte des preuves.</p>
+      </div>
+      <a class="quiz-btn" href="#">Commencer le quiz →</a>
+    </div>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 5</span>
+    <span>Leçon 28 — Audit interne</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

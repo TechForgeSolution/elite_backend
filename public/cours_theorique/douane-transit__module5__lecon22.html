@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 22 — Système informatique douanier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F7F3E8;--color-text:#1C2B3A;--color-accent:#B8863B;--color-neutral:#98A2AD;
+--soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));--soft5:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));--border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 "IBM Plex Sans",sans-serif}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+#progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;background:var(--color-accent)}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 95%,var(--color-text));border-bottom:1px solid var(--border);backdrop-filter:blur(7px)}
+.nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;justify-content:space-between;align-items:center}.brand{font:700 16px "Libre Franklin";letter-spacing:.06em}.brand small{display:block;font:500 10px "IBM Plex Mono";color:var(--muted);letter-spacing:.12em}
+.wrap{max-width:1180px;margin:auto;padding:0 22px}.hero{padding:76px 0 54px;border-bottom:1px solid var(--border)}.kicker{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.12em;color:var(--color-accent)}
+h1,h2,h3{font-family:"Libre Franklin",sans-serif;line-height:1.2}h1{font-size:clamp(2.2rem,5vw,4rem);max-width:900px;margin:12px 0 18px}h2{font-size:clamp(1.6rem,3vw,2.3rem);margin:0 0 20px}h3{font-size:1.2rem}
+.hero p{max-width:760px;font-size:1.12rem;color:var(--muted)}.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.badge{padding:6px 11px;border:1px solid var(--border);background:var(--soft);font:500 12px "IBM Plex Mono";border-radius:4px}
+.toc{margin:35px 0;padding:25px;background:var(--soft5);border:1px solid var(--border)}.toc h2{font-size:1.1rem}.toc ol{columns:2;margin:0;padding-left:22px}.toc li{margin:5px 0}
+main section{padding:56px 0;border-bottom:1px solid var(--border)}main section:nth-child(even){background:var(--soft5)}.inside{max-width:1000px;margin:auto;padding:0 22px}
+p,li{max-width:760px}.lead{font-size:1.07rem}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:28px 0}.card{padding:21px;background:var(--color-bg);border:1px solid var(--border);transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.6rem}.card h3{margin:7px 0}.callout{margin:26px 0;padding:19px 21px;border-left:5px solid var(--color-accent);background:var(--soft)}.callout strong{display:block;margin-bottom:4px}
+.diagram{margin:30px 0;padding:18px;border:1px solid var(--border);background:var(--color-bg);overflow:auto}.diagram svg{display:block;width:100%;min-width:650px;height:auto}
+.tablewrap{overflow-x:auto;border:1px solid var(--border);margin:28px 0}table{border-collapse:collapse;width:100%;min-width:760px}th,td{padding:13px 15px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{background:var(--soft);font:600 12px "IBM Plex Mono";text-transform:uppercase}tr:hover td{background:var(--soft5)}
+.mono{font-family:"IBM Plex Mono";background:var(--soft);padding:2px 6px;border-radius:3px}.form{font-family:"IBM Plex Mono";background:var(--soft);border:1px solid var(--border);padding:18px;margin:25px 0;overflow:auto;white-space:pre-wrap}
+.tabs{margin:28px 0}.tabbar{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border)}.tabbar button{border:0;border-bottom:3px solid transparent;background:transparent;color:var(--color-text);padding:12px 16px;font-weight:600;cursor:pointer}.tabbar button.active{border-color:var(--color-accent)}.panel{display:none;padding:20px;border:1px solid var(--border);border-top:0}.panel.active{display:block}
+.stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:28px 0}.step{padding:18px 14px;background:var(--soft);border-top:4px solid var(--color-accent)}.step b{font:600 12px "IBM Plex Mono"}
+details{border:1px solid var(--border);margin:10px 0;background:var(--color-bg)}summary{cursor:pointer;padding:14px 17px;font-weight:600}details div{padding:0 17px 17px}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.key{padding:18px;border:1px solid var(--border);background:var(--color-bg)}
+.navlessons{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}.navlessons a{padding:17px;border:1px solid var(--border);background:var(--soft5)}.navlessons span{display:block;color:var(--muted);font-size:.82rem;margin-bottom:4px}
+footer{text-align:center;padding:34px 22px;border-top:1px solid var(--border);color:var(--muted);font-size:.9rem}#top{display:none;position:fixed;right:18px;bottom:18px;padding:10px 13px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-accent);cursor:pointer}
+.reveal{opacity:0;transform:translateY(14px);transition:.5s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:700px){.wrap{padding:0 16px}.hero{padding:52px 0 38px}.toc ol{columns:1}.grid,.keys,.navlessons{grid-template-columns:1fr}.stepper{grid-template-columns:1fr 1fr}.inside{padding:0 16px}main section{padding:42px 0}}
+@media(max-width:430px){.stepper{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<header><nav class="nav"><div class="brand">DOUANE &amp; TRANSIT<small>FORMATION PROFESSIONNELLE</small></div><a href="#sommaire">Sommaire</a></nav></header>
+
+<div class="wrap">
+<section class="hero">
+<div class="kicker">Module 5 · Dédouanement — Pratique du métier de déclarant</div>
+<h1>Leçon 22 — Système informatique douanier</h1>
+<p>Saisir et transmettre une déclaration via un système dématérialisé.</p>
+<div class="badges"><span class="badge">MODULE 5</span><span class="badge">AVANCÉ</span><span class="badge">15 MIN</span></div>
+</section>
+
+<nav class="toc" id="sommaire"><h2>Sommaire</h2><ol>
+<li><a href="#env">Environnement SYDONIA / ASYCUDA World</a></li>
+<li><a href="#saisie">Saisie de la déclaration</a></li>
+<li><a href="#pieces">Pièces jointes électroniques</a></li>
+<li><a href="#statut">Suivi du statut</a></li>
+<li><a href="#processus">Parcours dématérialisé</a></li>
+<li><a href="#cles">Points clés à retenir</a></li>
+</ol></nav>
+</div>
+
+<main>
+<section id="env" class="reveal"><div class="inside">
+<h2>1. Environnement SYDONIA / ASYCUDA World</h2>
+<p class="lead">Les systèmes informatiques douaniers permettent de dématérialiser une partie du traitement des opérations : saisie, transmission, contrôle des données, échanges documentaires et suivi de l’état du dossier.</p>
+<div class="grid">
+<article class="card"><div class="icon">▣</div><h3>Déclaration</h3><p>Les informations nécessaires à l’opération sont saisies dans un environnement informatique structuré.</p></article>
+<article class="card"><div class="icon">⇢</div><h3>Transmission</h3><p>La déclaration est transmise au système pour traitement conformément à la procédure applicable.</p></article>
+<article class="card"><div class="icon">⌁</div><h3>Échanges</h3><p>Le système facilite les échanges électroniques entre les différents intervenants autorisés.</p></article>
+<article class="card"><div class="icon">✓</div><h3>Traçabilité</h3><p>Les changements d’état et les références de traitement permettent de suivre l’avancement du dossier.</p></article>
+</div>
+<div class="diagram" aria-label="Architecture simplifiée du traitement informatique douanier">
+<svg viewBox="0 0 920 330" role="img">
+<title>Déclarant vers système douanier puis traitement</title>
+<rect x="25" y="105" width="190" height="100" rx="6" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/>
+<text x="120" y="140" text-anchor="middle" fill="var(--color-text)" font-weight="700">DÉCLARANT</text><text x="120" y="170" text-anchor="middle" fill="var(--color-text)">Saisie du dossier</text>
+<path d="M220 155H345" stroke="var(--color-accent)" stroke-width="3"/><polygon points="345,155 330,146 330,164" fill="var(--color-accent)"/>
+<rect x="355" y="70" width="210" height="170" rx="6" fill="var(--soft5)" stroke="var(--color-neutral)" stroke-width="2"/>
+<text x="460" y="108" text-anchor="middle" fill="var(--color-text)" font-weight="700">SYSTÈME DOUANIER</text>
+<text x="460" y="142" text-anchor="middle" fill="var(--muted)">Validation technique</text><text x="460" y="169" text-anchor="middle" fill="var(--muted)">Enregistrement</text><text x="460" y="196" text-anchor="middle" fill="var(--muted)">Suivi du statut</text>
+<path d="M570 155H695" stroke="var(--color-accent)" stroke-width="3"/><polygon points="695,155 680,146 680,164" fill="var(--color-accent)"/>
+<rect x="705" y="105" width="190" height="100" rx="6" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/>
+<text x="800" y="140" text-anchor="middle" fill="var(--color-text)" font-weight="700">TRAITEMENT</text><text x="800" y="170" text-anchor="middle" fill="var(--color-text)">Contrôle / suite</text>
+<text x="460" y="285" text-anchor="middle" fill="var(--muted)" font-family="IBM Plex Mono">DONNÉES → DOCUMENTS → STATUT</text>
+</svg></div>
+<div class="callout"><strong>⚖️ Réglementation / texte applicable</strong>L’utilisation d’un système douanier dématérialisé doit respecter les procédures, habilitations et règles nationales applicables au traitement des déclarations.</div>
+</div></section>
+
+<section id="saisie" class="reveal"><div class="inside">
+<h2>2. Saisie de la déclaration</h2>
+<p class="lead">La saisie consiste à renseigner les différentes données requises par le système. La qualité du dossier dépend de l’exactitude et de la cohérence des informations introduites.</p>
+<div class="stepper">
+<div class="step"><b>01 · Préparer</b><br>Réunir les informations nécessaires au dossier.</div>
+<div class="step"><b>02 · Saisir</b><br>Introduire les données dans les rubriques prévues.</div>
+<div class="step"><b>03 · Contrôler</b><br>Vérifier les données avant transmission.</div>
+<div class="step"><b>04 · Transmettre</b><br>Envoyer la déclaration selon la procédure.</div>
+</div>
+<div class="form" aria-label="Extrait visuel de formulaire électronique">RÉFÉRENCE DOSSIER : DOUANE-________
+TYPE D’OPÉRATION   : _____________
+IMPORTATEUR        : _____________
+EXPORTATEUR        : _____________
+MARCHANDISE        : _____________
+QUANTITÉ / POIDS   : _____________
+DOCUMENTS JOINTS   : _____________
+STATUT              : BROUILLON</div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Une donnée saisie de manière incohérente peut affecter le traitement du dossier. Avant transmission, effectuer un contrôle croisé avec les documents disponibles.</div>
+</div></section>
+
+<section id="pieces" class="reveal"><div class="inside">
+<h2>3. Pièces jointes électroniques</h2>
+<p>La dématérialisation permet d’associer au dossier les pièces électroniques requises ou acceptées par la procédure.</p>
+<div class="grid">
+<article class="card"><div class="icon">▤</div><h3>Facture</h3><p>Document commercial servant de référence pour les informations de la transaction.</p></article>
+<article class="card"><div class="icon">▤</div><h3>Transport</h3><p>Document permettant de rattacher l’acheminement aux données déclarées.</p></article>
+<article class="card"><div class="icon">▤</div><h3>Origine</h3><p>Pièces relatives à l’origine lorsque la procédure l’exige.</p></article>
+<article class="card"><div class="icon">▤</div><h3>Autorisations</h3><p>Documents ou justificatifs requis selon la nature de la marchandise et du régime.</p></article>
+</div>
+<div class="diagram" aria-label="Association des pièces au dossier électronique">
+<svg viewBox="0 0 900 300" role="img">
+<title>Dossier électronique et pièces jointes</title>
+<rect x="315" y="70" width="270" height="155" rx="7" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/>
+<text x="450" y="108" text-anchor="middle" fill="var(--color-text)" font-weight="700">DOSSIER ÉLECTRONIQUE</text>
+<text x="450" y="142" text-anchor="middle" fill="var(--muted)">Déclaration</text><text x="450" y="169" text-anchor="middle" fill="var(--muted)">+ pièces jointes</text><text x="450" y="196" text-anchor="middle" fill="var(--muted)">+ références</text>
+<g fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2">
+<rect x="40" y="25" width="190" height="60" rx="5"/><rect x="40" y="215" width="190" height="60" rx="5"/>
+<rect x="670" y="25" width="190" height="60" rx="5"/><rect x="670" y="215" width="190" height="60" rx="5"/>
+</g>
+<g fill="var(--color-text)" text-anchor="middle"><text x="135" y="61">Facture</text><text x="135" y="251">Transport</text><text x="765" y="61">Origine</text><text x="765" y="251">Autorisations</text></g>
+<g stroke="var(--color-accent)" stroke-width="2"><path d="M230 55L315 110"/><path d="M230 245L315 185"/><path d="M670 55L585 110"/><path d="M670 245L585 185"/></g>
+</svg></div>
+</div></section>
+
+<section id="statut" class="reveal"><div class="inside">
+<h2>4. Suivi du statut</h2>
+<p class="lead">Après transmission, le professionnel suit l’état du dossier dans le système. Les libellés exacts peuvent dépendre du système et de la procédure utilisée.</p>
+<div class="tabs">
+<div class="tabbar" role="tablist">
+<button class="active" data-tab="saisie" aria-selected="true">Saisie</button>
+<button data-tab="transmis" aria-selected="false">Transmis</button>
+<button data-tab="traitement" aria-selected="false">Traitement</button>
+<button data-tab="suite" aria-selected="false">Suite</button>
+</div>
+<div id="saisie" class="panel active"><strong>Brouillon / saisie</strong><p>Les données sont en cours de préparation ou de vérification avant transmission.</p></div>
+<div id="transmis" class="panel"><strong>Transmission</strong><p>La déclaration a été envoyée au système pour traitement selon la procédure.</p></div>
+<div id="traitement" class="panel"><strong>Traitement</strong><p>Le dossier évolue selon les contrôles et opérations prévus par le système et l’administration.</p></div>
+<div id="suite" class="panel"><strong>Suite du dossier</strong><p>Le professionnel consulte les informations disponibles afin de poursuivre les formalités appropriées.</p></div>
+</div>
+<details><summary>Pourquoi surveiller le statut ?</summary><div><p>Le suivi permet de savoir où se situe le dossier et d’identifier les actions qui peuvent être nécessaires à l’étape suivante.</p></div></details>
+<details><summary>Que vérifier lors du suivi ?</summary><div><p>La référence du dossier, l’état affiché, les éventuelles observations et les informations relatives à la suite du traitement.</p></div></details>
+</div></section>
+
+<section id="processus" class="reveal"><div class="inside">
+<h2>5. Parcours dématérialisé</h2>
+<p>La logique générale peut être représentée comme une chaîne : préparation des données → saisie → pièces jointes → transmission → suivi.</p>
+<div class="diagram" aria-label="Parcours complet d'une déclaration dématérialisée">
+<svg viewBox="0 0 950 250" role="img">
+<title>Parcours d'une déclaration douanière dématérialisée</title>
+<g fill="var(--soft)" stroke="var(--color-accent)" stroke-width="2">
+<rect x="15" y="80" width="160" height="90" rx="5"/><rect x="205" y="80" width="160" height="90" rx="5"/>
+<rect x="395" y="80" width="160" height="90" rx="5"/><rect x="585" y="80" width="160" height="90" rx="5"/>
+<rect x="775" y="80" width="160" height="90" rx="5"/>
+</g>
+<g fill="var(--color-text)" text-anchor="middle" font-weight="600">
+<text x="95" y="116">Préparer</text><text x="95" y="143">les données</text>
+<text x="285" y="116">Saisir</text><text x="285" y="143">la déclaration</text>
+<text x="475" y="116">Joindre</text><text x="475" y="143">les pièces</text>
+<text x="665" y="116">Transmettre</text><text x="665" y="143">le dossier</text>
+<text x="855" y="116">Suivre</text><text x="855" y="143">le statut</text>
+</g>
+<g stroke="var(--color-accent)" stroke-width="3">
+<path d="M175 125h30"/><path d="M365 125h30"/><path d="M555 125h30"/><path d="M745 125h30"/>
+</g>
+<g fill="var(--color-accent)"><polygon points="205,125 194,119 194,131"/><polygon points="395,125 384,119 384,131"/><polygon points="585,125 574,119 574,131"/><polygon points="775,125 764,119 764,131"/></g>
+</svg></div>
+<div class="callout"><strong>📋 Cas pratique</strong>Pour un dossier d’importation, le déclarant prépare les informations à partir des pièces disponibles, saisit la déclaration, associe les documents électroniques requis, transmet le dossier puis consulte son évolution.</div>
+<div class="callout"><strong>💡 À retenir</strong>La dématérialisation ne supprime pas le contrôle documentaire : elle déplace une grande partie du traitement vers un environnement informatique où la précision des données reste essentielle.</div>
+</div></section>
+
+<section id="cles" class="reveal"><div class="inside">
+<h2>6. Points clés à retenir</h2>
+<div class="keys">
+<div class="key"><strong>1 · Système</strong><br>SYDONIA / ASYCUDA World constitue l’environnement informatique présenté pour le traitement dématérialisé.</div>
+<div class="key"><strong>2 · Saisie</strong><br>Les données de la déclaration doivent être renseignées avec rigueur et cohérence.</div>
+<div class="key"><strong>3 · Documents</strong><br>Les pièces électroniques sont associées au dossier selon les exigences de la procédure.</div>
+<div class="key"><strong>4 · Suivi</strong><br>Le statut permet de suivre l’évolution du dossier après transmission.</div>
+</div>
+<div class="navlessons">
+<a href="#"><span>← Leçon précédente</span>Leçon 21 — Le métier de commissionnaire en douane agréé</a>
+<a href="#sommaire"><span>↑ Module 5</span>Retour au sommaire</a>
+<a href="#"><span>Leçon suivante →</span>Leçon 23 — Montage d’un dossier de dédouanement à l’import</a>
+</div>
+</div></section>
+</main>
+<footer>Douane &amp; Transit · Module 5 · Leçon 22 — Système informatique douanier</footer>
+<button id="top" aria-label="Retour en haut">↑</button>
+<script>
+const progress=document.querySelector('#progress'),topBtn=document.querySelector('#top');
+function scrollUI(){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h?scrollY/h*100:0)+'%';topBtn.style.display=scrollY>500?'block':'none'}
+addEventListener('scroll',scrollUI,{passive:true});scrollUI();topBtn.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>{
+document.querySelectorAll('.tabbar button').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});
+document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');b.setAttribute('aria-selected','true');document.getElementById(b.dataset.tab).classList.add('active')
+});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(x=>io.observe(x));
+</script>
+</body>
+</html>

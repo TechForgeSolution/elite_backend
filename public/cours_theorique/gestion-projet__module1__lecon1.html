@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 01 — Introduction à la gestion de projet | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314213D'/%3E%3Cpath d='M6 22 L14 13 L19 18 L26 9' stroke='%23FF9F1C' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='26' cy='9' r='2.2' fill='%23FF9F1C'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --color-bg: #F4F6F8;
+    --color-text: #14213D;
+    --color-accent: #FF9F1C;
+    --color-neutral: #8D99AE;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --text-faint: color-mix(in srgb, var(--color-text) 40%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --border-hair: color-mix(in srgb, var(--color-neutral) 30%, var(--color-bg));
+    --badge-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-wash: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg));
+    --accent-line: color-mix(in srgb, var(--color-accent) 35%, var(--color-bg));
+
+    --font-display: "Manrope", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    color: var(--color-text);
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  a { color: inherit; }
+
+  p { margin: 0 0 1em 0; }
+
+  .mono {
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- Scroll progress ---------- */
+  #scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--color-accent);
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ---------- Header ---------- */
+  header.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-hair);
+  }
+
+  .header-inner {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.98rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .brand-mark {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--color-text);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .brand-mark svg { width: 15px; height: 15px; }
+
+  nav.toc-menu {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav.toc-menu::-webkit-scrollbar { display: none; }
+
+  nav.toc-menu a {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  nav.toc-menu a:hover,
+  nav.toc-menu a:focus-visible {
+    background: var(--badge-bg);
+    color: var(--color-text);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 56px 24px 40px;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-soft);
+    color: var(--text-muted);
+  }
+
+  .badge.accent {
+    border-color: var(--accent-line);
+    color: var(--color-text);
+    background: var(--badge-bg);
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 4.2vw, 2.9rem);
+    font-weight: 800;
+    max-width: 15ch;
+    letter-spacing: -0.015em;
+  }
+
+  .hero .subtitle {
+    margin-top: 16px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 60ch;
+  }
+
+  .hero-meta {
+    margin-top: 28px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .hero-meta span strong {
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  /* ---------- Layout ---------- */
+  .page-body {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: 210px minmax(0,1fr);
+    gap: 48px;
+  }
+
+  @media (max-width: 860px) {
+    .page-body { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- TOC sidebar ---------- */
+  .toc-sidebar {
+    position: sticky;
+    top: 76px;
+    align-self: start;
+    padding-top: 8px;
+  }
+
+  .toc-sidebar .toc-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .toc-sidebar ol {
+    list-style: none;
+    margin: 0; padding: 0;
+    counter-reset: toc;
+    border-left: 1px solid var(--border-hair);
+  }
+
+  .toc-sidebar li {
+    counter-increment: toc;
+  }
+
+  .toc-sidebar a {
+    display: block;
+    position: relative;
+    padding: 7px 0 7px 18px;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .toc-sidebar a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    margin-right: 8px;
+  }
+
+  .toc-sidebar a:hover,
+  .toc-sidebar a:focus-visible,
+  .toc-sidebar a.active {
+    color: var(--color-text);
+    border-left-color: var(--color-accent);
+  }
+
+  @media (max-width: 860px) {
+    .toc-sidebar {
+      position: static;
+      border-bottom: 1px solid var(--border-hair);
+      padding-bottom: 20px;
+      margin-bottom: 8px;
+    }
+    .toc-sidebar ol {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      border-left: none;
+    }
+    .toc-sidebar li a {
+      border-left: none;
+      border: 1px solid var(--border-hair);
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+    .toc-sidebar li a::before { margin-right: 6px; }
+  }
+
+  /* ---------- Content sections ---------- */
+  main.content section {
+    padding: 44px 0;
+    border-bottom: 1px solid var(--border-hair);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  main.content section.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  main.content section:first-of-type { padding-top: 0; }
+  main.content section:last-of-type { border-bottom: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    main.content section {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  main.content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+  }
+
+  main.content h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin: 28px 0 12px;
+  }
+
+  main.content .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  main.content > section > p,
+  main.content > section > ul {
+    max-width: 720px;
+  }
+
+  main.content ul, main.content ol.styled-list {
+    padding-left: 1.2em;
+    margin: 0 0 1em 0;
+  }
+  main.content li { margin-bottom: 6px; }
+
+  /* ---------- Callout boxes ---------- */
+  .callout {
+    border-left: 3px solid var(--color-accent);
+    background: var(--accent-wash);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 22px 0;
+    max-width: 720px;
+    display: flex;
+    gap: 14px;
+  }
+  .callout .icon { font-size: 1.15rem; line-height: 1.5; flex-shrink: 0; }
+  .callout .callout-title {
+    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    margin-bottom: 4px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- Pilot card (fiche de pilotage) ---------- */
+  .pilot-card {
+    background: var(--accent-wash);
+    border: 1px solid var(--accent-line);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 22px 0;
+    max-width: 720px;
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    position: relative;
+  }
+  .pilot-card .pilot-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    display: block;
+  }
+  .pilot-card .pilot-line { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+  .pilot-card .pilot-line + .pilot-line { border-top: 1px dashed var(--border-soft); }
+  .pilot-card .pilot-key { color: var(--text-muted); }
+  .pilot-card .pilot-val { color: var(--color-text); font-weight: 600; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 22px 0;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    min-width: 480px;
+  }
+  table.data-table th, table.data-table td {
+    text-align: left;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border-hair);
+  }
+  table.data-table th {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    background: var(--bg-alt);
+    color: var(--text-muted);
+  }
+  table.data-table td.num, table.data-table td.mono-cell {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  table.data-table tr:last-child td { border-bottom: none; }
+  table.data-table tr.highlight td:first-child {
+    box-shadow: inset 3px 0 0 var(--color-accent);
+  }
+  table.data-table tr.highlight { background: var(--accent-wash); }
+
+  /* ---------- Cards grid ---------- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 22px 0;
+  }
+  .info-card {
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    padding: 18px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .info-card:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .info-card .info-icon {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .info-card h4 {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+  }
+  .info-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs { margin: 26px 0; max-width: 720px; }
+  .tab-list {
+    display: flex;
+    border-bottom: 1px solid var(--border-soft);
+    gap: 4px;
+  }
+  .tab-btn {
+    font-family: var(--font-display);
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .tab-btn:hover { color: var(--color-text); }
+  .tab-btn[aria-selected="true"] {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent);
+  }
+  .tab-panel {
+    padding: 20px 0 4px;
+    font-size: 0.94rem;
+  }
+  .tab-panel[hidden] { display: none; }
+  .tab-panel ul { margin-bottom: 0; }
+
+  /* ---------- Accordion ---------- */
+  .accordion { max-width: 720px; margin: 22px 0; }
+  .accordion-item {
+    border: 1px solid var(--border-hair);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .accordion-trigger {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 14px 18px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .accordion-trigger .plus {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .accordion-trigger[aria-expanded="true"] .plus { transform: rotate(45deg); }
+  .accordion-panel {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .accordion-panel.open {
+    padding: 0 18px 16px;
+  }
+
+  /* ---------- Stepper / frise ---------- */
+  .stepper {
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    margin: 26px 0 10px;
+    padding-bottom: 8px;
+  }
+  .step {
+    flex: 1 0 150px;
+    position: relative;
+    padding: 0 14px 0 0;
+  }
+  .step .step-dot-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .step .step-dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+  .step .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border-soft);
+    margin-left: 6px;
+  }
+  .step:last-child .step-line { display: none; }
+  .step .step-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .step h4 {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+  }
+  .step p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* ---------- SVG diagram wrapper ---------- */
+  .diagram-wrap {
+    margin: 24px 0;
+    padding: 22px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border-hair);
+    border-radius: 10px;
+  }
+  .diagram-wrap svg { width: 100%; height: auto; display: block; }
+  .diagram-caption {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* ---------- Key takeaways ---------- */
+  .takeaways {
+    background: var(--color-text);
+    color: var(--color-bg);
+    border-radius: 12px;
+    padding: 36px;
+    margin-top: 8px;
+  }
+  .takeaways h2 { color: var(--color-bg); }
+  .takeaways .card-grid { margin-top: 22px; }
+  .takeaways-list {
+    list-style: none;
+    padding: 0; margin: 22px 0 0;
+    display: grid;
+    gap: 12px;
+  }
+  .takeaways-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.95rem;
+  }
+  .takeaways-list .tick {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ---------- Footer nav ---------- */
+  .lesson-nav {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .nav-card {
+    flex: 1 1 240px;
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .nav-card:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .nav-card .nav-dir {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .nav-card.next { text-align: right; }
+  .nav-card.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .back-to-top-wrap {
+    text-align: center;
+    padding: 0 24px 8px;
+  }
+  .back-to-top {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .back-to-top:hover { border-color: var(--accent-line); color: var(--color-text); }
+
+  footer.site-footer {
+    border-top: 1px solid var(--border-hair);
+    padding: 28px 24px 40px;
+    text-align: center;
+  }
+  footer.site-footer p {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 22 L14 13 L19 18 L26 9" stroke="#FF9F1C" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="26" cy="9" r="2.2" fill="#FF9F1C"/>
+        </svg>
+      </span>
+      Gestion de Projet
+    </a>
+    <nav class="toc-menu" aria-label="Sommaire rapide">
+      <a href="#definitions">Définitions</a>
+      <a href="#caracteristiques">Caractéristiques</a>
+      <a href="#contraintes">Contraintes</a>
+      <a href="#objectifs">Objectifs</a>
+      <a href="#exemples">Exemples</a>
+      <a href="#retenir">À retenir</a>
+    </nav>
+  </div>
+</header>
+
+<div id="top"></div>
+<div class="hero">
+  <div class="badges">
+    <span class="badge accent">MODULE 1 — Fondamentaux</span>
+    <span class="badge">Niveau : Débutant</span>
+    <span class="badge">⏱ 15 min de lecture</span>
+  </div>
+  <h1>Introduction à la gestion de projet</h1>
+  <p class="subtitle">Leçon 01 — Poser les bases : ce qui distingue un projet d'une activité courante, et pourquoi le temps, le coût et la qualité se pilotent ensemble plutôt que séparément.</p>
+  <div class="hero-meta">
+    <span>Module <strong>01 / 06</strong></span>
+    <span>Leçon <strong>01 / 30</strong></span>
+    <span>Prochaine échéance <strong>Leçon 02 — Cycle de vie</strong></span>
+  </div>
+</div>
+
+<div class="page-body">
+
+  <aside class="toc-sidebar">
+    <span class="toc-label">SOMMAIRE</span>
+    <ol id="toc-list">
+      <li><a href="#definitions">Qu'est-ce qu'un projet</a></li>
+      <li><a href="#caracteristiques">Caractéristiques d'un projet</a></li>
+      <li><a href="#contraintes">Le triangle coût / délai / qualité</a></li>
+      <li><a href="#objectifs">Des objectifs, pas juste une idée</a></li>
+      <li><a href="#exemples">Exemples professionnels</a></li>
+      <li><a href="#retenir">Points clés à retenir</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <section id="definitions">
+      <span class="eyebrow">01 — Définitions</span>
+      <h2>Qu'est-ce qu'un projet ?</h2>
+      <p>Un <strong>projet</strong> est un ensemble d'actions organisées, entreprises pour atteindre un objectif précis, dans un délai donné, avec des ressources limitées. Il a un début et une fin — contrairement à une activité courante, qui se répète sans date de clôture prévue.</p>
+      <p>Une <strong>activité courante</strong> (ou activité récurrente) fait tourner l'organisation au quotidien : produire, facturer, livrer, assurer le support client. Elle continue tant que l'entreprise existe. Un projet, lui, vise un changement ponctuel : lancer un nouveau produit, déménager un site, refondre un système d'information.</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Critère</th>
+              <th scope="col">Projet</th>
+              <th scope="col">Activité courante</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Durée</td>
+              <td>Limitée dans le temps, avec une fin définie</td>
+              <td>Continue, sans fin planifiée</td>
+            </tr>
+            <tr>
+              <td>Résultat</td>
+              <td>Livrable unique ou changement précis</td>
+              <td>Production répétitive</td>
+            </tr>
+            <tr>
+              <td>Ressources</td>
+              <td>Allouées spécifiquement, souvent temporaires</td>
+              <td>Structurelles, permanentes</td>
+            </tr>
+            <tr>
+              <td>Exemple</td>
+              <td>Ouvrir une nouvelle agence</td>
+              <td>Gérer les commandes clients chaque jour</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="caracteristiques">
+      <span class="eyebrow">02 — Traits distinctifs</span>
+      <h2>Les caractéristiques d'un projet</h2>
+      <p>Quatre traits reviennent systématiquement, quel que soit le secteur ou la taille du projet :</p>
+
+      <div class="card-grid">
+        <div class="info-card">
+          <span class="info-icon">🎯</span>
+          <h4>Un objectif unique</h4>
+          <p>Chaque projet vise un résultat précis, non reproductible à l'identique ailleurs.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">📅</span>
+          <h4>Un début et une fin</h4>
+          <p>Le projet se termine à la livraison de son résultat — il n'est pas conçu pour durer indéfiniment.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">👥</span>
+          <h4>Une équipe temporaire</h4>
+          <p>Les personnes mobilisées se regroupent pour le projet, puis reviennent à leurs missions habituelles.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">📐</span>
+          <h4>Des ressources limitées</h4>
+          <p>Budget, temps et moyens sont fixés à l'avance et ne s'étendent pas indéfiniment.</p>
+        </div>
+      </div>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frise illustrant un projet borné entre un début et une fin, distinct d'une activité courante représentée par une ligne continue">
+          <line x1="20" y1="150" x2="620" y2="150" stroke="#8D99AE" stroke-width="1.5" stroke-dasharray="4 5"/>
+          <text x="20" y="140" font-family="JetBrains Mono, monospace" font-size="10" fill="#8D99AE">Activité courante (continue)</text>
+
+          <rect x="90" y="55" width="380" height="46" rx="6" fill="none" stroke="#14213D" stroke-width="1.5"/>
+          <text x="110" y="83" font-family="Inter, sans-serif" font-size="13" fill="#14213D">Projet : début → fin</text>
+
+          <circle cx="90" cy="78" r="6" fill="#FF9F1C"/>
+          <text x="80" y="105" font-family="JetBrains Mono, monospace" font-size="10" fill="#14213D" text-anchor="middle">Début</text>
+
+          <circle cx="470" cy="78" r="6" fill="#FF9F1C"/>
+          <text x="480" y="105" font-family="JetBrains Mono, monospace" font-size="10" fill="#14213D" text-anchor="middle">Fin</text>
+
+          <line x1="90" y1="101" x2="90" y2="150" stroke="#8D99AE" stroke-width="1"/>
+          <line x1="470" y1="101" x2="470" y2="150" stroke="#8D99AE" stroke-width="1"/>
+        </svg>
+        <p class="diagram-caption">Un projet est borné dans le temps ; une activité courante ne l'est pas.</p>
+      </div>
+    </section>
+
+    <section id="contraintes">
+      <span class="eyebrow">03 — Arbitrages</span>
+      <h2>Le triangle coût / délai / qualité</h2>
+      <p>Tout projet est soumis à trois contraintes qui s'équilibrent entre elles : le <strong>coût</strong> (budget disponible), le <strong>délai</strong> (temps imparti) et la <strong>qualité</strong> (niveau d'exigence du résultat attendu). Agir sur l'une déplace nécessairement les deux autres.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Triangle représentant les trois contraintes coût, délai et qualité, reliées entre elles au centre par le périmètre du projet">
+          <polygon points="200,30 360,290 40,290" fill="none" stroke="#8D99AE" stroke-width="1.5"/>
+
+          <circle cx="200" cy="30" r="7" fill="#FF9F1C"/>
+          <text x="200" y="16" font-family="Manrope, sans-serif" font-weight="700" font-size="14" fill="#14213D" text-anchor="middle">Délai</text>
+
+          <circle cx="360" cy="290" r="7" fill="#FF9F1C"/>
+          <text x="360" y="315" font-family="Manrope, sans-serif" font-weight="700" font-size="14" fill="#14213D" text-anchor="middle">Qualité</text>
+
+          <circle cx="40" cy="290" r="7" fill="#FF9F1C"/>
+          <text x="40" y="315" font-family="Manrope, sans-serif" font-weight="700" font-size="14" fill="#14213D" text-anchor="middle">Coût</text>
+
+          <circle cx="200" cy="203" r="42" fill="#F4F6F8" stroke="#14213D" stroke-width="1.5"/>
+          <text x="200" y="199" font-family="Inter, sans-serif" font-size="11" fill="#14213D" text-anchor="middle">Périmètre</text>
+          <text x="200" y="213" font-family="Inter, sans-serif" font-size="11" fill="#14213D" text-anchor="middle">du projet</text>
+        </svg>
+        <p class="diagram-caption">Réduire le délai sans toucher au périmètre pèse sur le coût ou sur la qualité — jamais sur rien.</p>
+      </div>
+
+      <div class="callout">
+        <span class="icon">⚠️</span>
+        <div>
+          <div class="callout-title">Attention / erreur fréquente</div>
+          <p>Promettre de tenir le délai, le budget <em>et</em> le niveau de qualité initial après un ajout de périmètre en cours de route est l'une des causes les plus fréquentes d'échec de projet. Un changement quelque part impose toujours un ajustement ailleurs.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="objectifs">
+      <span class="eyebrow">04 — Cadrage</span>
+      <h2>Des objectifs, pas juste une idée</h2>
+      <p>Une idée de projet reste une intention tant qu'elle n'est pas traduite en objectif vérifiable. Fixer un objectif clair, c'est répondre par avance à la question : « comment saura-t-on que le projet a réussi ? »</p>
+
+      <div class="tabs">
+        <div class="tab-list" role="tablist" aria-label="Comparer une idée et un objectif de projet">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-idee" id="tab-idee">Simple idée</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-objectif" id="tab-objectif">Objectif de projet</button>
+        </div>
+        <div class="tab-panel" role="tabpanel" id="panel-idee" aria-labelledby="tab-idee">
+          <p><span class="mono">« Améliorer notre site web »</span></p>
+          <ul>
+            <li>Aucune limite de temps</li>
+            <li>Aucun critère de réussite mesurable</li>
+            <li>Impossible à confier clairement à une équipe</li>
+          </ul>
+        </div>
+        <div class="tab-panel" role="tabpanel" id="panel-objectif" hidden aria-labelledby="tab-objectif">
+          <p><span class="mono">« Réduire le temps de chargement du site de 40 % d'ici la fin du trimestre »</span></p>
+          <ul>
+            <li>Délai fixé (fin de trimestre)</li>
+            <li>Résultat mesurable (40 %)</li>
+            <li>Peut être découpé en tâches et confié à une équipe</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="icon">💡</span>
+        <div>
+          <div class="callout-title">À retenir</div>
+          <p>Le passage de l'idée à l'objectif est ce qui transforme une intention en projet pilotable. Sans ce cadrage, aucune planification fiable n'est possible.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="exemples">
+      <span class="eyebrow">05 — Illustration</span>
+      <h2>Exemples professionnels</h2>
+      <p>Ces situations, très différentes en apparence, partagent toutes la structure d'un projet : un objectif défini, un délai, des ressources allouées et une équipe dédiée.</p>
+
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false">
+            Lancement d'un nouveau produit
+            <span class="plus">+</span>
+          </button>
+          <div class="accordion-panel">
+            <p>Concevoir, produire et mettre sur le marché un nouveau produit à une date de lancement fixée, avec un budget marketing défini à l'avance.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false">
+            Migration d'un système d'information
+            <span class="plus">+</span>
+          </button>
+          <div class="accordion-panel">
+            <p>Remplacer un outil de gestion existant par un nouveau système, en migrant les données et en formant les équipes, sur une période de transition encadrée.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false">
+            Organisation d'un événement d'entreprise
+            <span class="plus">+</span>
+          </button>
+          <div class="accordion-panel">
+            <p>Réserver un lieu, coordonner des prestataires et accueillir des participants à une date précise, avec un budget fixé en amont.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false">
+            Déménagement d'un site de production
+            <span class="plus">+</span>
+          </button>
+          <div class="accordion-panel">
+            <p>Transférer des équipements et des équipes vers un nouveau site, en maintenant la continuité de l'activité pendant la transition.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pilot-card">
+        <span class="pilot-label">FICHE DE PILOTAGE — EXTRAIT</span>
+        <div class="pilot-line"><span class="pilot-key">Nom du projet</span><span class="pilot-val">Refonte-Site-V2</span></div>
+        <div class="pilot-line"><span class="pilot-key">Objectif</span><span class="pilot-val">-40% temps de chargement</span></div>
+        <div class="pilot-line"><span class="pilot-key">Échéance</span><span class="pilot-val">2026-12-15</span></div>
+        <div class="pilot-line"><span class="pilot-key">Statut</span><span class="pilot-val">En cadrage</span></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div style="max-width: 1040px; margin: 0 auto; padding: 0 24px 60px;">
+  <div class="takeaways" id="retenir">
+    <span class="eyebrow" style="color: var(--color-accent);">Résumé visuel</span>
+    <h2>Points clés à retenir</h2>
+    <ul class="takeaways-list">
+      <li><span class="tick">→</span> Un projet a un début et une fin ; une activité courante n'en a pas.</li>
+      <li><span class="tick">→</span> Quatre traits le définissent : objectif unique, durée bornée, équipe temporaire, ressources limitées.</li>
+      <li><span class="tick">→</span> Coût, délai et qualité s'équilibrent : toucher à l'un déplace les deux autres.</li>
+      <li><span class="tick">→</span> Une idée ne devient un projet qu'une fois traduite en objectif mesurable et daté.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="back-to-top-wrap">
+  <button class="back-to-top" id="back-to-top">↑ Retour en haut</button>
+</div>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="nav-card disabled">
+    <span class="nav-dir">← Leçon précédente</span>
+    Aucune (première leçon du parcours)
+  </div>
+  <div class="nav-card next">
+    <span class="nav-dir">Leçon suivante →</span>
+    Leçon 02 — Cycle de vie d'un projet
+  </div>
+</nav>
+
+<footer class="site-footer">
+  <p>Filière Gestion de Projet — Module 1 : Fondamentaux de la gestion de projet — Leçon 01 / 30</p>
+</footer>
+
+<script>
+(function () {
+  // Scroll progress
+  var progressBar = document.getElementById('scroll-progress');
+  function updateProgress() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Back to top
+  document.getElementById('back-to-top').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // TOC active link highlighting
+  var tocLinks = document.querySelectorAll('.toc-sidebar a, nav.toc-menu a');
+  var sections = document.querySelectorAll('main.content section');
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      }
+      if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+        var id = entry.target.getAttribute('id');
+        tocLinks.forEach(function (link) {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, { threshold: [0, 0.3, 0.6] });
+
+  sections.forEach(function (s) { observer.observe(s); });
+
+  // Tabs
+  var tabButtons = document.querySelectorAll('.tab-btn');
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var list = btn.closest('.tab-list');
+      var tabs = list.parentElement;
+      list.querySelectorAll('.tab-btn').forEach(function (b) {
+        b.setAttribute('aria-selected', 'false');
+      });
+      tabs.querySelectorAll('.tab-panel').forEach(function (p) {
+        p.setAttribute('hidden', '');
+      });
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(btn.getAttribute('aria-controls')).removeAttribute('hidden');
+    });
+    btn.addEventListener('keydown', function (e) {
+      var list = Array.from(btn.closest('.tab-list').querySelectorAll('.tab-btn'));
+      var idx = list.indexOf(btn);
+      if (e.key === 'ArrowRight') { list[(idx + 1) % list.length].focus(); list[(idx + 1) % list.length].click(); }
+      if (e.key === 'ArrowLeft') { list[(idx - 1 + list.length) % list.length].focus(); list[(idx - 1 + list.length) % list.length].click(); }
+    });
+  });
+
+  // Accordions
+  document.querySelectorAll('.accordion-trigger').forEach(function (trigger) {
+    trigger.addEventListener('click', function () {
+      var panel = trigger.nextElementSibling;
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      if (expanded) {
+        panel.classList.remove('open');
+        panel.style.maxHeight = null;
+      } else {
+        panel.classList.add('open');
+        panel.style.maxHeight = panel.scrollHeight + 40 + 'px';
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

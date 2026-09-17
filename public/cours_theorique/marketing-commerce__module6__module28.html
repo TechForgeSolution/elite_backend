@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 28 — Gestion du portefeuille clients et CRM.">
+<title>Leçon 28 — Gestion du portefeuille clients et CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F6F4EF;--color-text:#1C2B42;--color-accent:#C08A34;--color-neutral:#6E7580;
+ --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --soft5:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+#progress{position:fixed;top:0;left:0;width:0;height:4px;background:var(--color-accent);z-index:999}
+header{position:sticky;top:0;z-index:20;background:rgba(246,244,239,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font:600 .85rem "IBM Plex Mono",monospace;letter-spacing:.05em}
+.menu-btn{border:1px solid var(--line);background:transparent;color:var(--color-text);padding:8px 13px;border-radius:6px;cursor:pointer}
+.toc{display:none;max-width:1180px;margin:auto;padding:0 24px 16px}.toc.open{display:block}.toc a{display:inline-block;margin:5px 14px 5px 0;font-size:.9rem}
+main{max-width:1180px;margin:auto}.hero{padding:82px 24px 58px;display:grid;grid-template-columns:1.5fr .8fr;gap:55px;align-items:end}
+.kicker,.section-label{font:600 .8rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--color-accent)}
+h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.15;margin:0 0 18px}h1{font-size:clamp(2.5rem,6vw,5rem);max-width:850px}h2{font-size:clamp(1.9rem,3vw,2.8rem)}h3{font-size:1.35rem}
+.lead{font-size:1.15rem;max-width:720px;color:var(--muted)}
+.meta{border-left:3px solid var(--color-accent);padding:18px 22px;background:var(--soft5)}
+.meta div{display:flex;justify-content:space-between;gap:20px;padding:9px 0;border-bottom:1px solid var(--line)}.meta div:last-child{border-bottom:0}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+section{padding:70px 24px}section:nth-of-type(even){background:var(--soft5)}
+.content{max-width:760px}.section-label{margin-bottom:10px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}.card{border:1px solid var(--line);padding:24px;background:var(--color-bg);transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.5rem;color:var(--color-accent);margin-bottom:8px}
+.callout{margin:28px 0;padding:22px 24px;border-left:5px solid var(--color-accent);background:var(--soft)}.callout strong{display:block;margin-bottom:5px}
+.crm{border:1px solid var(--line);background:var(--color-bg);display:grid;grid-template-columns:230px 1fr;min-height:430px;margin-top:30px}
+.crm-side{border-right:1px solid var(--line);padding:20px}.crm-side h3{font-size:1.1rem}.crm-nav{display:grid;gap:8px;margin-top:20px}.crm-nav span{padding:10px;border:1px solid transparent}.crm-nav span.active{border-color:var(--color-accent);background:var(--soft)}
+.crm-main{padding:25px}.crm-head{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);padding-bottom:18px}.badge{font:600 .75rem "IBM Plex Mono",monospace;border:1px solid var(--color-accent);padding:5px 9px}
+.crm-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:20px}.crm-box{border:1px solid var(--line);padding:18px}.crm-box dl{margin:0}.crm-box dt{font:600 .72rem "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted);margin-top:12px}.crm-box dd{margin:2px 0 0}
+.table-wrap{overflow-x:auto;margin:28px 0}table{border-collapse:collapse;width:100%;min-width:760px;background:var(--color-bg)}th,td{border-bottom:1px solid var(--line);padding:14px 15px;text-align:left;vertical-align:top}th{font:600 .78rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.04em}tbody tr:hover{background:var(--soft5)}
+.stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:30px 0}.step{border-top:3px solid var(--color-accent);padding:14px 8px}.step b{font:600 .8rem "IBM Plex Mono",monospace}
+.tabs{margin-top:28px}.tab-buttons{display:flex;flex-wrap:wrap;gap:8px}.tab-buttons button{background:transparent;color:var(--color-text);border:1px solid var(--line);padding:10px 14px;cursor:pointer}.tab-buttons button.active{border-color:var(--color-accent);box-shadow:inset 0 -3px 0 var(--color-accent)}
+.tab-panel{display:none;padding:24px;border:1px solid var(--line);border-top:0}.tab-panel.active{display:block}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.key{padding:20px;border:1px solid var(--line);text-align:center;background:var(--color-bg)}.key b{display:block;font:700 1.8rem "Playfair Display",serif;color:var(--color-accent)}
+.exercise{border:2px solid var(--color-accent);padding:28px;background:var(--soft)}.exercise button{background:var(--color-text);color:var(--color-bg);border:0;padding:11px 16px;cursor:pointer}.answer{display:none;margin-top:15px;padding-top:15px;border-top:1px solid var(--line)}.answer.show{display:block}
+details{border-bottom:1px solid var(--line);padding:16px 0}summary{cursor:pointer;font-weight:700}
+.bottom-nav{display:flex;justify-content:space-between;gap:15px;margin-top:50px}.nav-card{flex:1;border:1px solid var(--line);padding:18px;background:var(--color-bg)}
+footer{border-top:1px solid var(--line);padding:35px 24px;text-align:center;color:var(--muted);font-size:.9rem}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);cursor:pointer;border-radius:50%;display:none}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr 1fr 1fr}.crm{grid-template-columns:1fr}.crm-side{border-right:0;border-bottom:1px solid var(--line)}}
+@media(max-width:600px){h1{font-size:2.45rem}.cards,.keys,.stepper,.crm-grid{grid-template-columns:1fr}section{padding:52px 18px}.nav{padding:12px 18px}.bottom-nav{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+<header>
+<nav class="nav" aria-label="Navigation principale">
+<div class="brand">MARKETING · COMMERCE · VENTE</div>
+<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="toc">Sommaire</button>
+</nav>
+<div class="toc" id="toc">
+<a href="#objectifs">Objectifs</a><a href="#crm">CRM</a><a href="#segmentation">Segmentation</a><a href="#priorisation">Priorisation</a><a href="#historique">Historique client</a><a href="#parametrage">Suivi client</a><a href="#essentiel">Points clés</a><a href="#exercice">Mini-exercice</a>
+</div>
+</header>
+
+<main>
+<section class="hero">
+<div>
+<div class="kicker">Module 6 · Management commercial, performance et stratégie</div>
+<h1>Gestion du portefeuille clients et CRM</h1>
+<p class="lead">Organiser le suivi et la gestion des clients grâce au CRM, à la segmentation, à la priorisation et à un historique client exploitable.</p>
+</div>
+<aside class="meta" aria-label="Informations sur la leçon">
+<div><span>Niveau</span><strong>Avancé / Professionnel</strong></div>
+<div><span>Durée</span><strong class="mono">25 min</strong></div>
+<div><span>Leçon</span><strong class="mono">28</strong></div>
+<div><span>Module</span><strong>6</strong></div>
+</aside>
+</section>
+
+<section id="objectifs" class="reveal">
+<div class="content"><div class="section-label">01 · Objectifs</div><h2>Piloter la relation client avec méthode</h2>
+<p>La gestion d'un portefeuille clients consiste à connaître les clients, organiser les informations utiles, hiérarchiser les priorités et planifier les actions de suivi. Le CRM sert de support pour centraliser ces informations et faciliter la continuité de la relation commerciale.</p></div>
+<div class="cards">
+<article class="card"><div class="icon">▦</div><h3>Centraliser</h3><p>Regrouper les informations et interactions utiles dans une fiche client structurée.</p></article>
+<article class="card"><div class="icon">◇</div><h3>Segmenter</h3><p>Regrouper les clients selon des critères pertinents pour adapter le suivi.</p></article>
+<article class="card"><div class="icon">↗</div><h3>Prioriser</h3><p>Concentrer les efforts commerciaux sur les clients et actions les plus importants.</p></article>
+</div>
+<div class="callout"><strong>💡 À retenir</strong>Un CRM n'est pas seulement une base de contacts : sa valeur dépend de la qualité des informations saisies et de la régularité du suivi.</div>
+</section>
+
+<section id="crm" class="reveal">
+<div class="content"><div class="section-label">02 · CRM</div><h2>Comprendre le rôle du CRM</h2>
+<p>Un outil de gestion de la relation client permet de conserver une vision structurée du portefeuille : identité et coordonnées, historique des échanges, opportunités, actions prévues et informations nécessaires au suivi.</p></div>
+<div class="crm" role="img" aria-label="Maquette illustrative d'une interface CRM simplifiée">
+<aside class="crm-side">
+<h3>Mon portefeuille</h3>
+<div class="crm-nav"><span class="active">Clients</span><span>Opportunités</span><span>Activités</span><span>Tableau de bord</span></div>
+</aside>
+<div class="crm-main">
+<div class="crm-head"><div><strong>Fiche client</strong><br><span class="mono">CL-0284</span></div><span class="badge">À SUIVRE</span></div>
+<div class="crm-grid">
+<div class="crm-box"><h3>Client</h3><dl><dt>Nom</dt><dd>Entreprise Exemple</dd><dt>Segment</dt><dd>Client stratégique</dd><dt>Dernier contact</dt><dd class="mono">12/09/2026</dd><dt>Prochaine action</dt><dd>Relance commerciale</dd></dl></div>
+<div class="crm-box"><h3>Historique</h3><dl><dt>Contact 01</dt><dd>Échange commercial</dd><dt>Contact 02</dt><dd>Envoi d'une proposition</dd><dt>Contact 03</dt><dd>Demande d'informations</dd></dl></div>
+</div>
+</div>
+</div>
+<div class="callout"><strong>📌 Bonne pratique</strong>Une fiche CRM doit contenir des informations utiles à l'action commerciale. Évitez les données inutiles ou les commentaires vagues qui ne permettent pas au prochain interlocuteur de comprendre la situation.</div>
+</section>
+
+<section id="segmentation" class="reveal">
+<div class="content"><div class="section-label">03 · Portefeuille</div><h2>Segmenter les clients pour mieux agir</h2>
+<p>La segmentation consiste à répartir le portefeuille en groupes présentant des caractéristiques ou des enjeux communs. Elle facilite l'adaptation du niveau de suivi et des actions commerciales.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Segment</th><th scope="col">Caractéristique</th><th scope="col">Approche de suivi</th><th scope="col">Priorité</th></tr></thead>
+<tbody>
+<tr><th scope="row">Stratégique</th><td>Forte importance commerciale ou relationnelle.</td><td>Suivi personnalisé et régulier.</td><td>Élevée</td></tr>
+<tr><th scope="row">Développement</th><td>Potentiel de croissance à exploiter.</td><td>Actions ciblées et opportunités de développement.</td><td>Élevée</td></tr>
+<tr><th scope="row">Fidélisation</th><td>Client actif à maintenir dans la durée.</td><td>Suivi de satisfaction et actions de fidélisation.</td><td>Moyenne à élevée</td></tr>
+<tr><th scope="row">À surveiller</th><td>Activité faible, irrégulière ou risque de perte.</td><td>Identifier la cause et définir une action de relance.</td><td>Selon risque</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Une segmentation n'est utile que si elle conduit à des actions différentes. Si tous les segments reçoivent exactement le même traitement, la classification apporte peu de valeur opérationnelle.</div>
+</section>
+
+<section id="priorisation" class="reveal">
+<div class="content"><div class="section-label">04 · Priorisation</div><h2>Choisir où concentrer l'effort commercial</h2>
+<p>Le portefeuille peut contenir de nombreux clients. La priorisation aide le commercial à déterminer quelles actions méritent une attention immédiate, lesquelles doivent être planifiées et lesquelles peuvent être suivies à un rythme plus léger.</p></div>
+<div class="stepper" aria-label="Processus de priorisation du portefeuille">
+<div class="step"><b>01</b><br>Analyser la valeur</div>
+<div class="step"><b>02</b><br>Évaluer le potentiel</div>
+<div class="step"><b>03</b><br>Identifier le risque</div>
+<div class="step"><b>04</b><br>Définir la priorité</div>
+<div class="step"><b>05</b><br>Planifier l'action</div>
+<div class="step"><b>06</b><br>Réévaluer</div>
+</div>
+<div class="tabs">
+<div class="tab-buttons" role="tablist">
+<button class="active" role="tab" aria-selected="true" data-tab="p1">Priorité haute</button>
+<button role="tab" aria-selected="false" data-tab="p2">Priorité intermédiaire</button>
+<button role="tab" aria-selected="false" data-tab="p3">Priorité faible</button>
+</div>
+<div class="tab-panel active" id="p1" role="tabpanel"><strong>Action :</strong> planifier rapidement un contact et préciser l'objectif de l'échange. Exemple : opportunité importante, échéance proche ou risque commercial significatif.</div>
+<div class="tab-panel" id="p2" role="tabpanel"><strong>Action :</strong> programmer le suivi dans le calendrier et surveiller les évolutions du compte.</div>
+<div class="tab-panel" id="p3" role="tabpanel"><strong>Action :</strong> maintenir un suivi régulier et automatiser, lorsque cela est pertinent, certaines tâches répétitives.</div>
+</div>
+</section>
+
+<section id="historique" class="reveal">
+<div class="content"><div class="section-label">05 · Historique</div><h2>Conserver un historique client exploitable</h2>
+<p>L'historique permet de retrouver les échanges et de comprendre le contexte d'une relation. Il facilite la continuité du suivi, notamment lorsqu'un autre membre de l'équipe reprend le dossier.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Élément</th><th scope="col">À renseigner</th><th scope="col">Utilité commerciale</th></tr></thead>
+<tbody>
+<tr><th scope="row">Contact</th><td>Date, canal, interlocuteur.</td><td>Savoir quand et avec qui la relation a été entretenue.</td></tr>
+<tr><th scope="row">Besoin</th><td>Besoin exprimé ou problème identifié.</td><td>Adapter les prochaines propositions.</td></tr>
+<tr><th scope="row">Proposition</th><td>Offre, devis ou solution présentée.</td><td>Éviter les répétitions et suivre l'opportunité.</td></tr>
+<tr><th scope="row">Objection</th><td>Frein ou point de vigilance.</td><td>Préparer une réponse pertinente.</td></tr>
+<tr><th scope="row">Prochaine action</th><td>Action, responsable, échéance.</td><td>Transformer l'information en suivi concret.</td></tr>
+</tbody></table></div>
+<details><summary>Que doit permettre une bonne note CRM ?</summary><p>Elle doit permettre à un collègue de comprendre rapidement ce qui s'est passé, ce qui est attendu et quelle est la prochaine étape. Une note concise, factuelle et orientée action est préférable à un commentaire trop général.</p></details>
+</section>
+
+<section id="parametrage" class="reveal">
+<div class="content"><div class="section-label">06 · Procédure</div><h2>Paramétrer un suivi client pas à pas</h2>
+<p>Le suivi devient plus fiable lorsqu'il repose sur une procédure simple et répétable.</p></div>
+<div class="stepper" aria-label="Procédure de paramétrage du suivi client">
+<div class="step"><b>01</b><br>Créer la fiche</div>
+<div class="step"><b>02</b><br>Qualifier le client</div>
+<div class="step"><b>03</b><br>Enregistrer l'historique</div>
+<div class="step"><b>04</b><br>Définir la priorité</div>
+<div class="step"><b>05</b><br>Planifier la prochaine action</div>
+<div class="step"><b>06</b><br>Actualiser après chaque contact</div>
+</div>
+<div class="cards">
+<article class="card"><h3>Créer</h3><p>Renseigner les informations essentielles et éviter les doublons.</p></article>
+<article class="card"><h3>Qualifier</h3><p>Attribuer le segment et la priorité selon les critères retenus.</p></article>
+<article class="card"><h3>Planifier</h3><p>Associer chaque dossier actif à une prochaine action identifiable.</p></article>
+</div>
+<div class="callout"><strong>🔗 Pour aller plus loin</strong>La qualité du CRM dépend aussi des règles communes de l'équipe : conventions de saisie, critères de segmentation, fréquence de mise à jour et responsabilités de suivi.</div>
+</section>
+
+<section id="essentiel" class="reveal">
+<div class="content"><div class="section-label">07 · Synthèse</div><h2>Points clés à retenir</h2></div>
+<div class="keys"><div class="key"><b>CRM</b>Centraliser</div><div class="key"><b>01</b>Segmenter</div><div class="key"><b>02</b>Prioriser</div><div class="key"><b>03</b>Suivre</div></div>
+<div class="cards">
+<article class="card"><h3>Centraliser</h3><p>Le CRM rassemble les informations nécessaires à la continuité de la relation client.</p></article>
+<article class="card"><h3>Hiérarchiser</h3><p>La segmentation et la priorisation permettent de concentrer les efforts.</p></article>
+<article class="card"><h3>Actualiser</h3><p>Chaque interaction importante doit enrichir l'historique et préparer la prochaine action.</p></article>
+</div>
+</section>
+
+<section id="exercice" class="reveal">
+<div class="content"><div class="section-label">08 · Mini-exercice</div><h2>Mettre le CRM en pratique</h2></div>
+<div class="exercise">
+<p><strong>Situation :</strong> un commercial possède 80 clients dans son portefeuille. Plusieurs fiches sont incomplètes et certaines n'indiquent aucune prochaine action.</p>
+<p><strong>Consigne :</strong> proposez une démarche en trois priorités pour remettre le portefeuille sous contrôle.</p>
+<button id="answerBtn" type="button" aria-expanded="false">Afficher une piste de réponse</button>
+<div class="answer" id="answer"><strong>Piste :</strong> 1) nettoyer et compléter les fiches essentielles ; 2) segmenter puis prioriser les clients selon leur importance, potentiel et risque ; 3) enregistrer une prochaine action et une échéance pour les dossiers actifs, puis instaurer une routine de mise à jour.</div>
+</div>
+<div class="bottom-nav">
+<a class="nav-card" href="#"><small>LEÇON PRÉCÉDENTE</small><br><strong>27 · Pilotage de la performance commerciale</strong></a>
+<a class="nav-card" href="#"><small>LEÇON SUIVANTE</small><br><strong>29 · Stratégie commerciale et développement des ventes</strong></a>
+</div>
+</section>
+</main>
+
+<footer>Filière Marketing, Commerce et Vente · Module 6 · Leçon 28<br><a href="#objectifs">Retour au sommaire</a></footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const menuBtn=document.getElementById('menuBtn'),toc=document.getElementById('toc');
+menuBtn.addEventListener('click',()=>{const open=toc.classList.toggle('open');menuBtn.setAttribute('aria-expanded',open)});
+toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toc.classList.remove('open')));
+const progress=document.getElementById('progress'),topBtn=document.getElementById('topBtn');
+function scrollUI(){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h>0?scrollY/h*100:0)+'%';topBtn.style.display=scrollY>500?'block':'none'}
+addEventListener('scroll',scrollUI,{passive:true});scrollUI();
+topBtn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+document.querySelectorAll('.tab-buttons button').forEach(btn=>btn.addEventListener('click',()=>{
+document.querySelectorAll('.tab-buttons button').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false')});
+document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+btn.classList.add('active');btn.setAttribute('aria-selected','true');document.getElementById(btn.dataset.tab).classList.add('active');
+}));
+const answerBtn=document.getElementById('answerBtn'),answer=document.getElementById('answer');
+answerBtn.addEventListener('click',()=>{const show=answer.classList.toggle('show');answerBtn.setAttribute('aria-expanded',show);answerBtn.textContent=show?'Masquer la piste de réponse':'Afficher une piste de réponse'});
+</script>
+</body>
+</html>

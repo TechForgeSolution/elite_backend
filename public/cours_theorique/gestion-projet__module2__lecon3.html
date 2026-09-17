@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 08 — Estimation des délais et des charges, filière Gestion de Projet.">
+  <title>Leçon 08 — Estimation des délais et des charges | Gestion de Projet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#F4F6F8;
+      --color-text:#14213D;
+      --color-accent:#FF9F1C;
+      --color-neutral:#8D99AE;
+      --shadow:0 14px 40px rgba(20,33,61,.08);
+      --radius:18px;
+      --max:1180px;
+      --reading:720px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--color-bg);
+      color:var(--color-text);
+      font-family:"Inter",sans-serif;
+      line-height:1.7;
+    }
+    a{color:var(--color-text);text-decoration:none}
+    a:hover{color:var(--color-accent)}
+    :focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+    .progress{position:fixed;top:0;left:0;width:100%;height:4px;background:transparent;z-index:1000}
+    .progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+    .site-header{
+      position:sticky;top:4px;z-index:900;
+      background:color-mix(in srgb,var(--color-bg) 94%,transparent);
+      border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));
+      backdrop-filter:blur(12px);
+    }
+    .nav{
+      max-width:var(--max);margin:auto;padding:15px 24px;
+      display:flex;align-items:center;justify-content:space-between;gap:18px
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-family:"Manrope";font-weight:800;letter-spacing:-.02em}
+    .brand-mark{
+      width:34px;height:34px;border:2px solid var(--color-text);
+      display:grid;place-items:center;border-radius:9px;font-family:"IBM Plex Mono";
+      position:relative
+    }
+    .brand-mark:after{content:"";position:absolute;right:-5px;bottom:-5px;width:9px;height:9px;border-radius:50%;background:var(--color-accent)}
+    .nav-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .nav-links a{padding:7px 10px;border-radius:8px;font-size:.88rem}
+    .nav-links a:hover{background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+    main{max-width:var(--max);margin:auto;padding:56px 24px 30px}
+    .hero{
+      display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);
+      gap:34px;align-items:end;padding:20px 0 42px
+    }
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      color:var(--color-accent);font-family:"IBM Plex Mono";font-size:.78rem;
+      font-weight:600;text-transform:uppercase;letter-spacing:.08em
+    }
+    .eyebrow:before{content:"";width:28px;height:2px;background:var(--color-accent)}
+    h1,h2,h3{font-family:"Manrope",sans-serif;line-height:1.15;letter-spacing:-.035em}
+    h1{font-size:clamp(2.3rem,5vw,4.7rem);margin:15px 0 18px;max-width:900px}
+    h2{font-size:clamp(1.65rem,3vw,2.45rem);margin:0 0 16px}
+    h3{font-size:1.18rem;margin:0 0 9px}
+    p{margin:0 0 15px}
+    .subtitle{font-size:1.12rem;max-width:var(--reading);color:color-mix(in srgb,var(--color-text) 72%,var(--color-bg))}
+    .hero-meta{display:grid;gap:10px}
+    .meta-card{
+      padding:14px 16px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));
+      border-radius:14px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))
+    }
+    .meta-label{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+    .meta-value{font-family:"IBM Plex Mono";font-weight:600;margin-top:3px}
+    .toc{
+      margin:0 0 48px;padding:22px;border:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));
+      border-radius:var(--radius);background:var(--color-bg);box-shadow:var(--shadow)
+    }
+    .toc-title{font-family:"Manrope";font-weight:800;margin-bottom:12px}
+    .toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .toc a{
+      padding:10px 12px;border-left:2px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+      font-size:.9rem
+    }
+    .toc a:hover{border-left-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+    section{scroll-margin-top:95px;margin:0 0 64px}
+    .section-head{margin-bottom:24px}
+    .section-number{font-family:"IBM Plex Mono";font-size:.78rem;color:var(--color-accent);font-weight:600}
+    .reading{max-width:var(--reading)}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .card{
+      padding:22px;border:1px solid color-mix(in srgb,var(--color-neutral) 38%,var(--color-bg));
+      border-radius:var(--radius);background:var(--color-bg);transition:.2s ease
+    }
+    .card:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+    .icon{
+      width:38px;height:38px;border-radius:10px;
+      border:1px solid var(--color-accent);display:grid;place-items:center;
+      font-family:"IBM Plex Mono";font-weight:600;margin-bottom:14px
+    }
+    .term{font-family:"IBM Plex Mono";font-weight:600;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));padding:2px 7px;border-radius:6px}
+    .callout{
+      margin:22px 0;padding:18px 20px;border:1px solid var(--color-accent);
+      border-left-width:5px;border-radius:12px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))
+    }
+    .callout-title{font-family:"Manrope";font-weight:800;margin-bottom:6px}
+    .callout-icon{margin-right:7px}
+    .pilot{
+      margin:24px 0;padding:20px;border-radius:14px;
+      background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+      border:1px solid color-mix(in srgb,var(--color-accent) 35%,var(--color-bg))
+    }
+    .pilot-title{font-family:"IBM Plex Mono";font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+    .pilot code{font-family:"IBM Plex Mono";font-size:.88rem}
+    .formula{
+      font-family:"IBM Plex Mono";font-size:1rem;font-weight:600;
+      padding:13px 15px;border-radius:10px;
+      background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+      display:inline-block;margin:8px 0
+    }
+    .table-wrap{overflow-x:auto;margin:22px 0;border:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));border-radius:14px}
+    table{width:100%;border-collapse:collapse;min-width:650px}
+    th,td{padding:12px 14px;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));vertical-align:top}
+    th{font-family:"Manrope";font-size:.82rem;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+    tr:hover td{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+    .mono{font-family:"IBM Plex Mono";font-variant-numeric:tabular-nums}
+    .highlight td:first-child{border-left:4px solid var(--color-accent)}
+    .svg-box{
+      margin:25px 0;padding:16px;border:1px solid color-mix(in srgb,var(--color-neutral) 38%,var(--color-bg));
+      border-radius:var(--radius);overflow-x:auto;background:var(--color-bg)
+    }
+    svg{display:block;width:100%;min-width:680px;height:auto}
+    .tabs{margin-top:22px}
+    .tab-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .tab-button{
+      border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));
+      background:var(--color-bg);color:var(--color-text);padding:10px 14px;border-radius:9px;
+      font:600 .86rem "Inter";cursor:pointer
+    }
+    .tab-button[aria-selected="true"]{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+    .tab-panel{display:none;padding:20px;border:1px solid color-mix(in srgb,var(--color-neutral) 38%,var(--color-bg));border-radius:14px}
+    .tab-panel.active{display:block}
+    details{border-top:1px solid color-mix(in srgb,var(--color-neutral) 38%,var(--color-bg));padding:15px 0}
+    summary{cursor:pointer;font-family:"Manrope";font-weight:700}
+    .key-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;list-style:none;padding:0;margin:20px 0}
+    .key-list li{padding:17px 18px;border-left:3px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+    .stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:28px 0}
+    .step{position:relative;padding:16px 10px 8px;text-align:center}
+    .step:not(:last-child):after{content:"";position:absolute;top:15px;left:60%;width:80%;height:1px;background:var(--color-neutral)}
+    .dot{position:relative;z-index:2;margin:auto;width:30px;height:30px;border-radius:50%;border:2px solid var(--color-text);background:var(--color-bg);display:grid;place-items:center;font:600 .75rem "IBM Plex Mono"}
+    .step:last-child .dot{border-color:var(--color-accent)}
+    .step strong{display:block;margin-top:9px;font-size:.85rem}
+    .step small{display:block;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));line-height:1.4}
+    .nav-bottom{
+      display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch;margin:70px 0 25px
+    }
+    .nav-card{padding:16px;border:1px solid color-mix(in srgb,var(--color-neutral) 42%,var(--color-bg));border-radius:14px}
+    .nav-card.next{text-align:right}
+    .nav-label{font:600 .72rem "IBM Plex Mono";color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));text-transform:uppercase}
+    .nav-title{font-family:"Manrope";font-weight:700;margin-top:5px}
+    .module-link{display:grid;place-items:center;padding:0 15px;border:1px solid var(--color-accent);border-radius:14px}
+    footer{border-top:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));padding:28px 24px 40px;text-align:center;font-size:.84rem;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+    .top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);border-radius:50%;cursor:pointer;opacity:0;pointer-events:none;transition:.2s;z-index:800}
+    .top.visible{opacity:1;pointer-events:auto}
+    .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .small{font-size:.9rem;color:color-mix(in srgb,var(--color-text) 68%,var(--color-bg))}
+    @media(max-width:850px){
+      .hero{grid-template-columns:1fr}
+      .grid-3{grid-template-columns:1fr 1fr}
+      .toc-grid{grid-template-columns:1fr 1fr}
+      .stepper{grid-template-columns:1fr;gap:8px}
+      .step{text-align:left;display:grid;grid-template-columns:42px 1fr;align-items:center;column-gap:10px}
+      .step .dot{margin:0;grid-row:span 2}
+      .step:not(:last-child):after{display:none}
+      .step strong{margin:0}
+      .nav-bottom{grid-template-columns:1fr}
+      .module-link{padding:14px}
+      .nav-card.next{text-align:left}
+    }
+    @media(max-width:600px){
+      main{padding:36px 16px 20px}
+      .nav{padding:12px 16px}
+      .nav-links{display:none}
+      h1{font-size:2.35rem}
+      .grid-2,.grid-3,.key-list,.toc-grid{grid-template-columns:1fr}
+      .hero{padding-top:8px}
+      section{margin-bottom:48px}
+      .card,.toc{padding:17px}
+      .svg-box{margin-left:-1px;margin-right:-1px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+      .reveal{opacity:1;transform:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="brand" href="#top" aria-label="Gestion de Projet — retour au début">
+        <span class="brand-mark">GP</span>
+        <span>Gestion de Projet</span>
+      </a>
+      <div class="nav-links">
+        <a href="#definitions">Définitions</a>
+        <a href="#duree">Durée</a>
+        <a href="#charge">Charge</a>
+        <a href="#ressources">Ressources</a>
+        <a href="#dependances">Dépendances</a>
+        <a href="#marges">Marges</a>
+        <a href="#estimation">Estimations</a>
+        <a href="#synthese">Synthèse</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero reveal">
+      <div>
+        <div class="eyebrow">Module 2 · Planification et organisation du projet</div>
+        <h1>Estimation des délais et des charges</h1>
+        <p class="subtitle">Estimer le temps nécessaire aux activités en distinguant durée, charge de travail, ressources, dépendances et marges, puis en construisant des estimations réalistes à partir de scénarios optimiste, probable et pessimiste.</p>
+      </div>
+      <div class="hero-meta" aria-label="Informations sur la leçon">
+        <div class="meta-card"><div class="meta-label">Leçon</div><div class="meta-value">08 / 30</div></div>
+        <div class="meta-card"><div class="meta-label">Niveau</div><div class="meta-value">INTERMÉDIAIRE</div></div>
+        <div class="meta-card"><div class="meta-label">Lecture</div><div class="meta-value">18 MIN</div></div>
+      </div>
+    </section>
+
+    <nav class="toc reveal" aria-label="Sommaire de la leçon">
+      <div class="toc-title">Sommaire</div>
+      <div class="toc-grid">
+        <a href="#definitions">01 — Les notions fondamentales</a>
+        <a href="#duree">02 — La durée</a>
+        <a href="#charge">03 — La charge de travail</a>
+        <a href="#ressources">04 — Les ressources</a>
+        <a href="#dependances">05 — Les dépendances</a>
+        <a href="#marges">06 — Les marges</a>
+        <a href="#estimation">07 — Trois scénarios d'estimation</a>
+        <a href="#synthese">08 — Points clés à retenir</a>
+      </div>
+    </nav>
+
+    <section id="definitions" class="reveal">
+      <div class="section-head">
+        <div class="section-number">01 / NOTIONS FONDAMENTALES</div>
+        <h2>Estimer, c’est rendre le planning crédible</h2>
+      </div>
+      <div class="reading">
+        <p>Une activité de projet doit être associée à une estimation avant d’être intégrée de manière fiable dans le planning. L’objectif n’est pas de prédire l’avenir avec une précision absolue, mais de déterminer une durée et une charge suffisamment réalistes pour organiser le travail, affecter les ressources et suivre les écarts.</p>
+        <p>Une estimation complète répond à plusieurs questions : <span class="term">combien de temps ?</span> <span class="term">combien de travail ?</span> <span class="term">avec quelles ressources ?</span> et <span class="term">dans quelles conditions ?</span></p>
+      </div>
+
+      <div class="svg-box" role="img" aria-label="Schéma montrant les facteurs qui construisent une estimation de projet">
+        <svg viewBox="0 0 980 310" xmlns="http://www.w3.org/2000/svg">
+          <rect x="24" y="104" width="190" height="102" rx="16" fill="none" stroke="#14213D" stroke-width="2"/>
+          <text x="119" y="139" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="19">Activité</text>
+          <text x="119" y="169" text-anchor="middle" fill="#8D99AE" font-family="Inter" font-size="14">travail à réaliser</text>
+          <line x1="214" y1="155" x2="305" y2="155" stroke="#8D99AE" stroke-width="2"/>
+          <polygon points="305,155 291,148 291,162" fill="#8D99AE"/>
+
+          <rect x="305" y="32" width="190" height="70" rx="13" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="400" y="61" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">Durée</text>
+          <text x="400" y="83" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="13">jours / heures</text>
+
+          <rect x="305" y="120" width="190" height="70" rx="13" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+          <text x="400" y="149" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">Charge</text>
+          <text x="400" y="171" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="13">heures-homme</text>
+
+          <rect x="305" y="208" width="190" height="70" rx="13" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+          <text x="400" y="237" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">Ressources</text>
+          <text x="400" y="259" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="13">personnes / moyens</text>
+
+          <line x1="495" y1="155" x2="585" y2="155" stroke="#8D99AE" stroke-width="2"/>
+          <polygon points="585,155 571,148 571,162" fill="#8D99AE"/>
+          <rect x="585" y="104" width="175" height="102" rx="16" fill="none" stroke="#14213D" stroke-width="2"/>
+          <text x="672" y="139" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="18">Contexte</text>
+          <text x="672" y="164" text-anchor="middle" fill="#8D99AE" font-family="Inter" font-size="13">dépendances</text>
+          <text x="672" y="185" text-anchor="middle" fill="#8D99AE" font-family="Inter" font-size="13">contraintes / marges</text>
+
+          <line x1="760" y1="155" x2="855" y2="155" stroke="#FF9F1C" stroke-width="2"/>
+          <polygon points="855,155 841,148 841,162" fill="#FF9F1C"/>
+          <circle cx="915" cy="155" r="43" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+          <text x="915" y="151" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="15">Estimation</text>
+          <text x="915" y="171" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">réaliste</text>
+        </svg>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title"><span class="callout-icon">💡</span>À retenir</div>
+        <p>La durée et la charge ne sont pas synonymes. Une activité peut demander une faible charge totale mais s'étaler sur plusieurs jours si les ressources sont disponibles seulement par intermittence.</p>
+      </div>
+    </section>
+
+    <section id="duree" class="reveal">
+      <div class="section-head">
+        <div class="section-number">02 / DURÉE</div>
+        <h2>La durée : combien de temps l’activité occupe le calendrier ?</h2>
+      </div>
+      <div class="reading">
+        <p>La <span class="term">durée</span> correspond au temps calendaire nécessaire pour qu’une activité commence et se termine. Elle s’exprime généralement en heures, jours ou semaines.</p>
+        <p>La durée dépend notamment de la quantité de travail, du nombre de ressources disponibles, de leur capacité réelle, des contraintes de calendrier et des dépendances avec d’autres activités.</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="icon">01</div>
+          <h3>Temps calendaire</h3>
+          <p>Intervalle entre le début et la fin d’une activité. Il situe l’activité dans le planning.</p>
+        </article>
+        <article class="card">
+          <div class="icon">02</div>
+          <h3>Disponibilité</h3>
+          <p>Une ressource n’est pas nécessairement disponible à 100 % pendant toute la période.</p>
+        </article>
+        <article class="card">
+          <div class="icon">03</div>
+          <h3>Contraintes</h3>
+          <p>Jours non travaillés, délais fournisseurs, validations ou dépendances peuvent allonger la durée.</p>
+        </article>
+      </div>
+
+      <div class="pilot">
+        <div class="pilot-title">Fiche de pilotage · exemple</div>
+        <code>Activité : conception de la maquette<br>Charge estimée : 24 h<br>Ressource : 1 designer<br>Disponibilité : 6 h/jour<br>Durée calendaire indicative : 4 jours</code>
+      </div>
+    </section>
+
+    <section id="charge" class="reveal">
+      <div class="section-head">
+        <div class="section-number">03 / CHARGE DE TRAVAIL</div>
+        <h2>La charge : combien de travail faut-il réellement fournir ?</h2>
+      </div>
+      <div class="reading">
+        <p>La <span class="term">charge de travail</span> mesure la quantité de travail nécessaire pour réaliser une activité. Elle est souvent exprimée en heures-homme ou en jours-homme.</p>
+        <p>La charge concerne le travail à produire, tandis que la durée concerne l’occupation du calendrier. Avec plusieurs ressources travaillant simultanément, une même charge peut être répartie sur une durée plus courte, à condition que le travail soit parallélisable.</p>
+      </div>
+
+      <div class="formula">Charge = quantité de travail nécessaire</div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Situation</th>
+              <th scope="col">Charge</th>
+              <th scope="col">Ressources</th>
+              <th scope="col">Durée indicative</th>
+              <th scope="col">Lecture</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Une personne à temps plein</td>
+              <td class="mono">40 h</td>
+              <td class="mono">1</td>
+              <td class="mono">5 j</td>
+              <td>La charge et la durée sont proches en volume calendaire.</td>
+            </tr>
+            <tr>
+              <td>Deux personnes en parallèle</td>
+              <td class="mono">40 h</td>
+              <td class="mono">2</td>
+              <td class="mono">≈ 2,5 j</td>
+              <td>Possible seulement si le travail peut être partagé efficacement.</td>
+            </tr>
+            <tr>
+              <td>Une personne à mi-temps</td>
+              <td class="mono">40 h</td>
+              <td class="mono">1 × 50 %</td>
+              <td class="mono">≈ 10 j</td>
+              <td>La charge reste identique mais la disponibilité quotidienne diminue.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title"><span class="callout-icon">⚠️</span>Attention / erreur fréquente</div>
+        <p>Diviser automatiquement une charge par le nombre de personnes ne garantit pas une réduction proportionnelle de la durée. Certaines tâches sont séquentielles, nécessitent une expertise unique ou génèrent un effort de coordination supplémentaire.</p>
+      </div>
+    </section>
+
+    <section id="ressources" class="reveal">
+      <div class="section-head">
+        <div class="section-number">04 / RESSOURCES</div>
+        <h2>Les ressources influencent directement l’estimation</h2>
+      </div>
+      <div class="reading">
+        <p>Les ressources sont les moyens nécessaires à la réalisation des activités. Dans une estimation de délais et de charges, il faut surtout considérer leur quantité, leur compétence et leur disponibilité.</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card"><div class="icon">P</div><h3>Personnes</h3><p>Compétences, disponibilité, capacité quotidienne et niveau d’expérience.</p></article>
+        <article class="card"><div class="icon">M</div><h3>Moyens</h3><p>Équipements, logiciels, infrastructures ou autres moyens indispensables à l’activité.</p></article>
+        <article class="card"><div class="icon">T</div><h3>Temps disponible</h3><p>Fenêtre réelle durant laquelle une ressource peut contribuer au projet.</p></article>
+      </div>
+
+      <div class="svg-box" role="img" aria-label="Schéma montrant le lien entre charge, capacité et durée">
+        <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+          <rect x="35" y="80" width="180" height="90" rx="15" fill="none" stroke="#14213D" stroke-width="2"/>
+          <text x="125" y="115" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="18">Charge</text>
+          <text x="125" y="141" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="13">40 h</text>
+
+          <line x1="215" y1="125" x2="330" y2="125" stroke="#8D99AE" stroke-width="2"/>
+          <polygon points="330,125 316,118 316,132" fill="#8D99AE"/>
+
+          <rect x="330" y="45" width="210" height="65" rx="12" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="435" y="73" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">Capacité quotidienne</text>
+          <text x="435" y="95" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">8 h / jour</text>
+
+          <rect x="330" y="140" width="210" height="65" rx="12" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+          <text x="435" y="168" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">Disponibilité</text>
+          <text x="435" y="190" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">1 ressource</text>
+
+          <line x1="540" y1="125" x2="655" y2="125" stroke="#FF9F1C" stroke-width="2"/>
+          <polygon points="655,125 641,118 641,132" fill="#FF9F1C"/>
+
+          <rect x="655" y="80" width="210" height="90" rx="15" fill="none" stroke="#14213D" stroke-width="2"/>
+          <text x="760" y="115" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="18">Durée</text>
+          <text x="760" y="141" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="13">≈ 5 jours</text>
+        </svg>
+      </div>
+    </section>
+
+    <section id="dependances" class="reveal">
+      <div class="section-head">
+        <div class="section-number">05 / DÉPENDANCES</div>
+        <h2>Les dépendances : une activité peut attendre une autre</h2>
+      </div>
+      <div class="reading">
+        <p>Une <span class="term">dépendance</span> décrit la relation qui conditionne l’ordre ou le moment d’exécution de plusieurs activités. Une estimation réaliste ne considère donc pas uniquement l’effort interne d’une tâche : elle tient aussi compte des activités dont elle dépend.</p>
+      </div>
+
+      <div class="stepper" aria-label="Exemple de séquence d'activités">
+        <div class="step"><div class="dot">01</div><strong>Spécification</strong><small>Définir le besoin</small></div>
+        <div class="step"><div class="dot">02</div><strong>Conception</strong><small>Préparer la solution</small></div>
+        <div class="step"><div class="dot">03</div><strong>Production</strong><small>Réaliser le livrable</small></div>
+        <div class="step"><div class="dot">04</div><strong>Contrôle</strong><small>Vérifier le résultat</small></div>
+        <div class="step"><div class="dot">05</div><strong>Validation</strong><small>Autoriser la suite</small></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Dépendance interne</h3>
+          <p>Une activité doit attendre une autre activité du même projet. Exemple : la production attend la fin de la conception.</p>
+        </div>
+        <div class="card">
+          <h3>Dépendance externe</h3>
+          <p>Le projet dépend d’un élément extérieur : fournisseur, client, organisme ou autre acteur qui doit intervenir avant la suite.</p>
+        </div>
+      </div>
+
+      <details>
+        <summary>Pourquoi les dépendances modifient-elles la durée du projet ?</summary>
+        <p>Parce qu’une activité peut posséder une faible charge mais ne pas pouvoir démarrer immédiatement. Le temps d’attente entre deux activités devient alors une contrainte du calendrier.</p>
+      </details>
+    </section>
+
+    <section id="marges" class="reveal">
+      <div class="section-head">
+        <div class="section-number">06 / MARGES</div>
+        <h2>Les marges absorbent une partie de l’incertitude</h2>
+      </div>
+      <div class="reading">
+        <p>Une <span class="term">marge</span> est un temps disponible permettant d’absorber un retard ou une variation sans provoquer immédiatement un retard sur une échéance importante.</p>
+        <p>La marge ne doit pas être utilisée pour gonfler arbitrairement les estimations. Elle doit correspondre à une incertitude identifiée : dépendance externe, disponibilité variable, validation, difficulté technique ou autre facteur reconnu.</p>
+      </div>
+
+      <div class="svg-box" role="img" aria-label="Frise montrant durée estimée, marge et échéance">
+        <svg viewBox="0 0 960 240" xmlns="http://www.w3.org/2000/svg">
+          <line x1="70" y1="135" x2="890" y2="135" stroke="#8D99AE" stroke-width="3"/>
+          <circle cx="90" cy="135" r="9" fill="#14213D"/>
+          <circle cx="580" cy="135" r="9" fill="#14213D"/>
+          <circle cx="790" cy="135" r="10" fill="#FF9F1C"/>
+          <circle cx="880" cy="135" r="9" fill="#14213D"/>
+
+          <line x1="90" y1="105" x2="580" y2="105" stroke="#14213D" stroke-width="8" stroke-linecap="round"/>
+          <line x1="580" y1="105" x2="790" y2="105" stroke="#FF9F1C" stroke-width="8" stroke-linecap="round"/>
+          <text x="335" y="76" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">Durée estimée</text>
+          <text x="685" y="76" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">Marge</text>
+
+          <text x="90" y="169" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">Début</text>
+          <text x="580" y="169" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">Fin prévue</text>
+          <text x="790" y="169" text-anchor="middle" fill="#14213D" font-family="IBM Plex Mono" font-size="12">Jalon</text>
+          <text x="880" y="169" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">Échéance</text>
+        </svg>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title"><span class="callout-icon">📐</span>Bonnes pratiques professionnelles</div>
+        <p>Documenter la raison d’une marge rend le planning plus transparent. Une marge visible et justifiée est plus utile qu’un délai artificiellement gonflé.</p>
+      </div>
+    </section>
+
+    <section id="estimation" class="reveal">
+      <div class="section-head">
+        <div class="section-number">07 / ESTIMATION À TROIS SCÉNARIOS</div>
+        <h2>Optimiste, probable et pessimiste</h2>
+      </div>
+      <div class="reading">
+        <p>Lorsqu’une activité comporte de l’incertitude, une seule valeur peut donner une impression de précision excessive. L’estimation à trois scénarios consiste à envisager trois durées : <span class="term">optimiste</span>, <span class="term">probable</span> et <span class="term">pessimiste</span>.</p>
+      </div>
+
+      <div class="tabs" data-tabs>
+        <div class="tab-buttons" role="tablist" aria-label="Scénarios d'estimation">
+          <button class="tab-button" role="tab" aria-selected="true" aria-controls="tab-opt" id="btn-opt">Optimiste</button>
+          <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-prob" id="btn-prob">Probable</button>
+          <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-pess" id="btn-pess">Pessimiste</button>
+        </div>
+        <div id="tab-opt" class="tab-panel active" role="tabpanel" aria-labelledby="btn-opt">
+          <h3>Scénario optimiste</h3>
+          <p>Conditions favorables : peu d’interruptions, ressources disponibles, dépendances maîtrisées et difficultés limitées.</p>
+        </div>
+        <div id="tab-prob" class="tab-panel" role="tabpanel" aria-labelledby="btn-prob">
+          <h3>Scénario probable</h3>
+          <p>Conditions normales attendues : rythme habituel, disponibilité réaliste et difficultés ordinaires du projet.</p>
+        </div>
+        <div id="tab-pess" class="tab-panel" role="tabpanel" aria-labelledby="btn-pess">
+          <h3>Scénario pessimiste</h3>
+          <p>Conditions défavorables raisonnables : retards, difficultés ou interruptions plausibles, sans supposer un événement exceptionnel.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Scénario</th>
+              <th scope="col">Durée</th>
+              <th scope="col">Hypothèse</th>
+              <th scope="col">Utilité</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Optimiste</td>
+              <td class="mono">4 j</td>
+              <td>Conditions favorables</td>
+              <td>Délimiter le meilleur scénario raisonnable.</td>
+            </tr>
+            <tr class="highlight">
+              <td>Probable</td>
+              <td class="mono">6 j</td>
+              <td>Conditions normales</td>
+              <td>Repère principal pour la planification.</td>
+            </tr>
+            <tr>
+              <td>Pessimiste</td>
+              <td class="mono">10 j</td>
+              <td>Difficultés plausibles</td>
+              <td>Mesurer l’exposition à l’incertitude.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Estimation pondérée</h3>
+      <div class="reading">
+        <p>Une méthode courante consiste à pondérer davantage le scénario probable :</p>
+        <div class="formula">Estimation = (O + 4P + M) / 6</div>
+        <p class="small">O = durée optimiste · P = durée probable · M = durée pessimiste.</p>
+        <p>Avec <span class="mono">O = 4 j</span>, <span class="mono">P = 6 j</span> et <span class="mono">M = 10 j</span> :</p>
+        <div class="formula">(4 + 4×6 + 10) / 6 = 6,33 j</div>
+        <p>Cette valeur fournit une estimation pondérée ; elle ne supprime pas l’incertitude. Elle sert à construire une prévision plus équilibrée qu’un choix arbitraire d’une seule durée.</p>
+      </div>
+
+      <details>
+        <summary>Quand utiliser cette approche ?</summary>
+        <p>Elle est particulièrement utile lorsqu’une activité est difficile à estimer précisément, lorsque l’expérience historique est limitée ou lorsque plusieurs facteurs peuvent faire varier la durée.</p>
+      </details>
+
+      <div class="callout">
+        <div class="callout-title"><span class="callout-icon">⚠️</span>Attention / erreur fréquente</div>
+        <p>Le scénario pessimiste n’est pas nécessairement le pire événement imaginable. Il représente une durée défavorable mais plausible dans les conditions connues du projet.</p>
+      </div>
+    </section>
+
+    <section id="synthese" class="reveal">
+      <div class="section-head">
+        <div class="section-number">08 / SYNTHÈSE VISUELLE</div>
+        <h2>Points clés à retenir</h2>
+      </div>
+
+      <ul class="key-list">
+        <li><strong>Durée :</strong> temps calendaire nécessaire pour réaliser une activité.</li>
+        <li><strong>Charge :</strong> quantité de travail à fournir, souvent exprimée en heures-homme.</li>
+        <li><strong>Ressources :</strong> personnes et moyens disponibles pour réaliser le travail.</li>
+        <li><strong>Dépendances :</strong> relations qui conditionnent le démarrage ou la poursuite des activités.</li>
+        <li><strong>Marges :</strong> temps destiné à absorber une partie des incertitudes et retards.</li>
+        <li><strong>Trois scénarios :</strong> optimiste, probable et pessimiste permettent de mieux représenter l’incertitude.</li>
+      </ul>
+
+      <div class="svg-box" role="img" aria-label="Résumé visuel des étapes pour produire une estimation de délai et de charge">
+        <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+          <text x="500" y="30" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="800" font-size="20">Chaîne d’estimation</text>
+
+          <g>
+            <rect x="30" y="75" width="150" height="90" rx="14" fill="none" stroke="#14213D" stroke-width="2"/>
+            <text x="105" y="110" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">1. Activité</text>
+            <text x="105" y="135" text-anchor="middle" fill="#8D99AE" font-family="Inter" font-size="12">travail à réaliser</text>
+          </g>
+          <line x1="180" y1="120" x2="220" y2="120" stroke="#8D99AE" stroke-width="2"/>
+          <polygon points="220,120 208,114 208,126" fill="#8D99AE"/>
+
+          <g>
+            <rect x="220" y="75" width="150" height="90" rx="14" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2"/>
+            <text x="295" y="110" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">2. Charge</text>
+            <text x="295" y="135" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">effort total</text>
+          </g>
+          <line x1="370" y1="120" x2="410" y2="120" stroke="#8D99AE" stroke-width="2"/>
+          <polygon points="410,120 398,114 398,126" fill="#8D99AE"/>
+
+          <g>
+            <rect x="410" y="75" width="150" height="90" rx="14" fill="none" stroke="#14213D" stroke-width="2"/>
+            <text x="485" y="110" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">3. Ressources</text>
+            <text x="485" y="135" text-anchor="middle" fill="#8D99AE" font-family="Inter" font-size="12">capacité réelle</text>
+          </g>
+          <line x1="560" y1="120" x2="600" y2="120" stroke="#8D99AE" stroke-width="2"/>
+          <polygon points="600,120 588,114 588,126" fill="#8D99AE"/>
+
+          <g>
+            <rect x="600" y="75" width="150" height="90" rx="14" fill="none" stroke="#14213D" stroke-width="2"/>
+            <text x="675" y="110" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="700" font-size="16">4. Contraintes</text>
+            <text x="675" y="135" text-anchor="middle" fill="#8D99AE" font-family="Inter" font-size="12">dépendances + marges</text>
+          </g>
+          <line x1="750" y1="120" x2="790" y2="120" stroke="#FF9F1C" stroke-width="2"/>
+          <polygon points="790,120 778,114 778,126" fill="#FF9F1C"/>
+
+          <g>
+            <rect x="790" y="65" width="180" height="110" rx="16" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+            <text x="880" y="105" text-anchor="middle" fill="#14213D" font-family="Manrope" font-weight="800" font-size="17">5. Estimation</text>
+            <text x="880" y="132" text-anchor="middle" fill="#8D99AE" font-family="IBM Plex Mono" font-size="12">réaliste et justifiée</text>
+          </g>
+
+          <text x="500" y="225" text-anchor="middle" fill="#8D99AE" font-family="Inter" font-size="14">O → P → M : représenter l’incertitude avant de figer le planning.</text>
+        </svg>
+      </div>
+
+      <div class="pilot">
+        <div class="pilot-title">Fiche de pilotage · repère final</div>
+        <code>ACTIVITÉ → CHARGE → RESSOURCES → DÉPENDANCES → MARGES → ESTIMATION</code>
+      </div>
+    </section>
+
+    <div class="nav-bottom">
+      <a class="nav-card" href="#top">
+        <div class="nav-label">Leçon précédente</div>
+        <div class="nav-title">07 — Planning et diagramme de Gantt</div>
+      </a>
+      <a class="module-link" href="#top" aria-label="Retour au sommet de la leçon">Sommaire</a>
+      <a class="nav-card next" href="#top">
+        <div class="nav-label">Leçon suivante</div>
+        <div class="nav-title">09 — Plan de communication du projet</div>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    Gestion de Projet · Module 2 — Planification et organisation du projet · Leçon 08
+  </footer>
+
+  <button class="top" id="backTop" type="button" aria-label="Retour en haut">↑</button>
+
+  <script>
+    (function(){
+      const progress = document.getElementById("progressBar");
+      const backTop = document.getElementById("backTop");
+
+      function updateScroll(){
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - doc.clientHeight;
+        const ratio = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+        progress.style.width = ratio + "%";
+        backTop.classList.toggle("visible", doc.scrollTop > 500);
+      }
+      window.addEventListener("scroll", updateScroll, {passive:true});
+      updateScroll();
+
+      backTop.addEventListener("click", function(){
+        window.scrollTo({top:0,behavior:"smooth"});
+      });
+
+      document.querySelectorAll("[data-tabs]").forEach(function(group){
+        const buttons = group.querySelectorAll(".tab-button");
+        const panels = group.querySelectorAll(".tab-panel");
+        buttons.forEach(function(button){
+          button.addEventListener("click", function(){
+            buttons.forEach(b => b.setAttribute("aria-selected","false"));
+            panels.forEach(p => p.classList.remove("active"));
+            button.setAttribute("aria-selected","true");
+            const panel = document.getElementById(button.getAttribute("aria-controls"));
+            if(panel) panel.classList.add("active");
+          });
+        });
+      });
+
+      const reveals = document.querySelectorAll(".reveal");
+      if("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+        const observer = new IntersectionObserver(function(entries, obs){
+          entries.forEach(function(entry){
+            if(entry.isIntersecting){
+              entry.target.classList.add("visible");
+              obs.unobserve(entry.target);
+            }
+          });
+        }, {threshold:.08});
+        reveals.forEach(el => observer.observe(el));
+      }else{
+        reveals.forEach(el => el.classList.add("visible"));
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 29 — Budget et pilotage de la fonction communication">
+<title>Leçon 29 — Budget et pilotage de la fonction communication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F6F5F2;--color-text:#1B1F2E;--color-accent:#FF5A36;--color-neutral:#9AA3B2;
+ --soft-bg:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft-accent:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --max:1120px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.68}
+a{color:inherit}::selection{background:var(--soft-accent);color:var(--color-text)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px}.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:var(--max);margin:auto;padding:15px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Space Grotesk",sans-serif;font-weight:700}.brand small{display:block;font:500 11px "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.sommaire{font:600 13px "IBM Plex Mono",monospace;text-decoration:none;padding:9px 13px;border:1px solid var(--border);border-radius:999px}.sommaire:hover{border-color:var(--color-accent);background:var(--soft-accent)}
+main{max-width:var(--max);margin:auto;padding:0 24px 80px}
+.hero{padding:74px 0 54px;display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:end}
+.eyebrow,.kicker{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12;letter-spacing:-.035em}h1{font-size:clamp(42px,6vw,76px);margin:12px 0 20px}h2{font-size:clamp(30px,4vw,46px);margin:8px 0 18px}h3{font-size:20px;margin:0 0 10px}
+.lead{font-size:19px;max-width:720px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:25px}.badge{border:1px solid var(--border);padding:7px 10px;border-radius:999px;font:500 12px "IBM Plex Mono",monospace;background:var(--soft-bg)}.badge.accent{border-color:var(--color-accent);background:var(--soft-accent)}
+.hero-visual{border:1px solid var(--border);background:var(--soft-bg);border-radius:24px;padding:18px}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:25px 0;margin-bottom:60px}.toc-title{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted);margin-bottom:13px}.toc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 30px}.toc a{text-decoration:none;padding:8px 0;border-bottom:1px dashed var(--border)}.toc a:hover{color:var(--color-accent)}
+section{padding:68px 0;border-bottom:1px solid var(--border)}.section-head{max-width:760px}.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;margin-top:30px}.prose{max-width:720px}.prose p{margin:0 0 16px}
+.visual{background:var(--soft-bg);border:1px solid var(--border);border-radius:20px;padding:14px;margin-top:26px;overflow:auto}svg{display:block;width:100%;height:auto;min-width:520px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}.card{border:1px solid var(--border);border-radius:18px;padding:22px;background:var(--color-bg);transition:.2s transform,.2s border-color}.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}.icon{font:600 22px "IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:14px}
+.table-wrap{overflow-x:auto;margin-top:28px;border:1px solid var(--border);border-radius:16px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--border)}th{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em;background:var(--soft-bg)}tr:hover td{background:var(--soft-bg)}
+.mono{margin:25px 0;padding:18px;border-left:4px solid var(--color-accent);background:var(--soft-accent);border-radius:12px;font:500 13px/1.7 "IBM Plex Mono",monospace;white-space:pre-wrap}
+.callout{margin:28px 0;padding:20px 22px;border:1px solid var(--border);border-left:5px solid var(--color-accent);border-radius:15px;background:var(--soft-bg)}
+.tabs{margin-top:30px}.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.tab-buttons button{font:600 13px "IBM Plex Mono",monospace;border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);padding:10px 14px;border-radius:10px;cursor:pointer}.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);background:var(--soft-accent)}.tab-panel{display:none;padding:22px;border:1px solid var(--border);border-radius:15px;background:var(--soft-bg)}.tab-panel.active{display:block}
+.accordion{margin-top:24px}details{border-top:1px solid var(--border);padding:17px 0}summary{cursor:pointer;font-family:"Space Grotesk",sans-serif;font-weight:600}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:30px}.step{padding:16px 12px;border:1px solid var(--border);border-radius:14px;background:var(--soft-bg);min-height:145px}.step b{display:block;font:600 12px "IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:10px}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px}.key{padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--soft-bg)}
+.nav-bottom{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px;margin-top:55px}.nav-card{padding:20px;border:1px solid var(--border);border-radius:16px;text-decoration:none}.nav-card:hover{border-color:var(--color-accent);background:var(--soft-accent)}.nav-card.center{text-align:center}.nav-card.right{text-align:right}.nav-label{display:block;font:600 11px "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.top{position:fixed;right:22px;bottom:22px;border:1px solid var(--color-accent);background:var(--soft-accent);color:var(--color-text);width:44px;height:44px;border-radius:50%;cursor:pointer;opacity:0;pointer-events:none;transition:.2s}.top.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;color:var(--muted);font-size:13px}.reveal{opacity:0;transform:translateY(18px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero,.section-grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){main{padding:0 17px 55px}.header-inner{padding:13px 17px}.hero{padding-top:52px}.toc-grid,.key-grid,.nav-bottom{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.nav-card.right,.nav-card.center{text-align:left}h1{font-size:43px}.lead{font-size:17px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+<header class="header"><div class="header-inner"><div class="brand">Communication d’Entreprise<small>Leçon 29 · Module 6</small></div><a class="sommaire" href="#sommaire">Sommaire</a></div></header>
+
+<main>
+<section class="hero reveal" id="top">
+<div>
+<div class="eyebrow">Module 6 · Stratégie de communication, marque et événementiel</div>
+<h1>Budget et pilotage de la fonction communication</h1>
+<p class="lead">Gérer les ressources et le budget communication en reliant les moyens engagés aux actions, aux résultats attendus et aux arbitrages stratégiques.</p>
+<div class="meta"><span class="badge accent">LEÇON 29</span><span class="badge">22 MIN</span><span class="badge">AVANCÉ / PROFESSIONNEL</span><span class="badge">OBJECTIF · GÉRER LES RESSOURCES</span></div>
+</div>
+<div class="hero-visual" aria-label="Schéma du cycle de pilotage budgétaire">
+<svg viewBox="0 0 520 330" role="img" aria-labelledby="heroTitle"><title id="heroTitle">Cycle budget, actions, résultats et arbitrages</title>
+<circle cx="260" cy="165" r="72" fill="none" stroke="#FF5A36" stroke-width="5"/><circle cx="260" cy="165" r="28" fill="#FF5A36" opacity=".12"/>
+<text x="260" y="160" text-anchor="middle" fill="#1B1F2E" font-family="Space Grotesk" font-size="18" font-weight="700">PILOTAGE</text><text x="260" y="181" text-anchor="middle" fill="#9AA3B2" font-family="IBM Plex Mono" font-size="11">COMMUNICATION</text>
+<g fill="#1B1F2E" font-family="IBM Plex Mono" font-size="11"><text x="260" y="40" text-anchor="middle">BUDGET</text><text x="454" y="171">ACTIONS</text><text x="260" y="306" text-anchor="middle">ROI</text><text x="25" y="171">ARBITRAGES</text></g>
+<g stroke="#9AA3B2" stroke-width="1.5" stroke-dasharray="5 5"><line x1="260" y1="48" x2="260" y2="92"/><line x1="428" y1="165" x2="332" y2="165"/><line x1="260" y1="282" x2="260" y2="238"/><line x1="92" y1="165" x2="188" y2="165"/></g>
+<path d="M260 85 A80 80 0 0 1 338 145" fill="none" stroke="#FF5A36" stroke-width="3"/><path d="M335 185 A80 80 0 0 1 260 245" fill="none" stroke="#FF5A36" stroke-width="3"/>
+</svg>
+</div>
+</section>
+
+<nav class="toc reveal" id="sommaire" aria-label="Sommaire de la leçon">
+<div class="toc-title">Sommaire</div><div class="toc-grid">
+<a href="#elaboration">01 · Élaboration budgétaire</a><a href="#repartition">02 · Répartition par action</a>
+<a href="#suivi">03 · Suivi des dépenses</a><a href="#roi">04 · Retour sur investissement</a>
+<a href="#arbitrages">05 · Arbitrages</a><a href="#synthese">06 · Points clés à retenir</a>
+</div></nav>
+
+<section id="elaboration" class="reveal">
+<div class="section-head"><div class="kicker">01 · Construire le cadre</div><h2>Élaboration budgétaire</h2><p class="lead">Le budget de communication transforme les orientations stratégiques en ressources planifiées.</p></div>
+<div class="section-grid"><div class="prose">
+<p><strong>Définition.</strong> L’élaboration budgétaire consiste à estimer, organiser et affecter les ressources financières nécessaires à la réalisation du plan de communication sur une période donnée.</p>
+<p>Le budget doit partir des objectifs et des actions prévues. Il permet ensuite de vérifier la faisabilité du plan, d’anticiper les besoins et de disposer d’un référentiel pour le suivi.</p>
+<div class="mono">OBJECTIFS → ACTIONS → RESSOURCES → BUDGET PRÉVISIONNEL → SUIVI</div>
+</div>
+<div class="visual"><svg viewBox="0 0 620 300" role="img" aria-label="Construction d'un budget de communication">
+<g stroke="#9AA3B2" stroke-width="2" fill="none"><path d="M135 150H180M285 150H330M435 150H480"/></g>
+<g font-family="Space Grotesk" font-weight="700" font-size="15" fill="#1B1F2E">
+<rect x="20" y="108" width="115" height="84" rx="15" fill="#F6F5F2" stroke="#FF5A36" stroke-width="3"/><text x="77" y="143" text-anchor="middle">OBJECTIFS</text><text x="77" y="166" text-anchor="middle" font-size="11">Résultats visés</text>
+<rect x="180" y="108" width="105" height="84" rx="15" fill="#F6F5F2" stroke="#9AA3B2"/><text x="232" y="143" text-anchor="middle">ACTIONS</text><text x="232" y="166" text-anchor="middle" font-size="11">Dispositifs</text>
+<rect x="330" y="108" width="105" height="84" rx="15" fill="#F6F5F2" stroke="#9AA3B2"/><text x="382" y="143" text-anchor="middle">COÛTS</text><text x="382" y="166" text-anchor="middle" font-size="11">Ressources</text>
+<rect x="480" y="108" width="120" height="84" rx="15" fill="#FF5A36" fill-opacity=".1" stroke="#FF5A36"/><text x="540" y="143" text-anchor="middle">BUDGET</text><text x="540" y="166" text-anchor="middle" font-size="11">Arbitrage initial</text>
+</g></svg></div></div>
+<div class="cards">
+<article class="card"><div class="icon">01</div><h3>Prévoir</h3><p>Identifier les dépenses nécessaires avant le lancement des actions.</p></article>
+<article class="card"><div class="icon">02</div><h3>Structurer</h3><p>Regrouper les coûts par nature, action, campagne ou période.</p></article>
+<article class="card"><div class="icon">03</div><h3>Aligner</h3><p>Vérifier que les ressources correspondent aux priorités stratégiques.</p></article>
+</div>
+<div class="callout"><strong>💡 À retenir.</strong> Un budget n’est pas seulement une liste de dépenses : c’est un outil de traduction financière de la stratégie de communication.</div>
+</section>
+
+<section id="repartition" class="reveal">
+<div class="section-head"><div class="kicker">02 · Affectation</div><h2>Répartition par action</h2><p class="lead">Une répartition lisible permet de savoir quelles actions consomment les ressources et quelles priorités elles servent.</p></div>
+<div class="table-wrap"><table><thead><tr><th scope="col">Action</th><th scope="col">Ressources principales</th><th scope="col">Indicateur de suivi</th><th scope="col">Décision</th></tr></thead>
+<tbody><tr><td>Campagne digitale</td><td>Média, création, diffusion</td><td class="mono-cell">COÛT / LEAD</td><td>Maintenir / ajuster</td></tr><tr><td>Événement</td><td>Lieu, technique, accueil</td><td class="mono-cell">COÛT / PARTICIPANT</td><td>Optimiser</td></tr><tr><td>Relations presse</td><td>Contenus, coordination</td><td class="mono-cell">RETOMBÉES</td><td>Renforcer</td></tr><tr><td>Communication interne</td><td>Supports, animation</td><td class="mono-cell">PARTICIPATION</td><td>Adapter</td></tr></tbody></table></div>
+<div class="section-grid"><div class="prose"><p>La répartition peut être organisée par campagne, canal, cible, période ou projet. L’important est de conserver une logique stable permettant de comparer le prévisionnel et le réalisé.</p><p>Dans une organisation disposant de plusieurs actions simultanées, cette lecture facilite aussi la priorisation lorsque les ressources deviennent contraintes.</p></div>
+<div class="visual"><svg viewBox="0 0 600 320" role="img" aria-label="Répartition illustrative du budget par action">
+<g font-family="IBM Plex Mono" font-size="12" fill="#1B1F2E"><text x="25" y="35">ACTION</text><text x="500" y="35">POIDS</text></g>
+<g font-family="Inter" font-size="14" fill="#1B1F2E">
+<text x="25" y="80">Digital</text><rect x="130" y="62" width="310" height="28" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="130" y="62" width="220" height="28" rx="8" fill="#FF5A36" fill-opacity=".3"/><text x="500" y="81">40%</text>
+<text x="25" y="135">Événement</text><rect x="130" y="117" width="310" height="28" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="130" y="117" width="165" height="28" rx="8" fill="#FF5A36" fill-opacity=".3"/><text x="500" y="136">30%</text>
+<text x="25" y="190">Presse</text><rect x="130" y="172" width="310" height="28" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="130" y="172" width="110" height="28" rx="8" fill="#FF5A36" fill-opacity=".3"/><text x="500" y="191">20%</text>
+<text x="25" y="245">Interne</text><rect x="130" y="227" width="310" height="28" rx="8" fill="#9AA3B2" fill-opacity=".25"/><rect x="130" y="227" width="55" height="28" rx="8" fill="#FF5A36" fill-opacity=".3"/><text x="500" y="246">10%</text>
+</g></svg></div></div>
+</section>
+
+<section id="suivi" class="reveal">
+<div class="section-head"><div class="kicker">03 · Contrôle</div><h2>Suivi des dépenses</h2><p class="lead">Le pilotage budgétaire compare régulièrement ce qui était prévu à ce qui est réellement engagé ou dépensé.</p></div>
+<div class="stepper">
+<div class="step"><b>01 · PRÉVISION</b><strong>Budget initial</strong><p>Montants autorisés par action et par période.</p></div>
+<div class="step"><b>02 · ENGAGEMENT</b><strong>Commandes</strong><p>Devis, contrats et dépenses engagées.</p></div>
+<div class="step"><b>03 · RÉALISÉ</b><strong>Dépenses</strong><p>Factures et montants effectivement consommés.</p></div>
+<div class="step"><b>04 · ÉCART</b><strong>Analyse</strong><p>Comparer prévisionnel et réalisé.</p></div>
+<div class="step"><b>05 · ACTION</b><strong>Correction</strong><p>Ajuster les ressources ou le dispositif.</p></div>
+</div>
+<div class="visual"><svg viewBox="0 0 850 250" role="img" aria-label="Suivi prévisionnel versus réalisé">
+<line x1="100" y1="195" x2="760" y2="195" stroke="#9AA3B2" stroke-width="2"/>
+<g font-family="IBM Plex Mono" font-size="11" fill="#1B1F2E"><text x="100" y="220" text-anchor="middle">JAN</text><text x="265" y="220" text-anchor="middle">FÉV</text><text x="430" y="220" text-anchor="middle">MAR</text><text x="595" y="220" text-anchor="middle">AVR</text><text x="760" y="220" text-anchor="middle">MAI</text></g>
+<polyline points="100,110 265,100 430,90 595,75 760,65" fill="none" stroke="#9AA3B2" stroke-width="4"/>
+<polyline points="100,120 265,108 430,115 595,88 760,80" fill="none" stroke="#FF5A36" stroke-width="4"/>
+<g font-family="IBM Plex Mono" font-size="11" fill="#1B1F2E"><text x="110" y="95">PRÉVISIONNEL</text><text x="110" y="145">RÉALISÉ</text></g>
+</svg></div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente.</strong> Attendre la fin de l’année pour constater les dépassements réduit fortement la capacité d’action. Le suivi doit être périodique et relié à des décisions.</div>
+</section>
+
+<section id="roi" class="reveal">
+<div class="section-head"><div class="kicker">04 · Performance</div><h2>Retour sur investissement</h2><p class="lead">Le ROI cherche à mettre en relation les ressources engagées et la valeur obtenue. Il ne se limite pas à un seul indicateur.</p></div>
+<div class="tabs" data-tabs>
+<div class="tab-buttons" role="tablist" aria-label="Lectures du retour sur investissement">
+<button role="tab" aria-selected="true" aria-controls="tab-fin" data-tab="tab-fin">Lecture financière</button>
+<button role="tab" aria-selected="false" aria-controls="tab-com" data-tab="tab-com">Lecture communication</button>
+<button role="tab" aria-selected="false" aria-controls="tab-strat" data-tab="tab-strat">Lecture stratégique</button>
+</div>
+<div id="tab-fin" class="tab-panel active" role="tabpanel"><h3>Lecture financière</h3><p>Comparer les gains ou revenus attribuables à l’action avec les coûts engagés lorsque cette attribution est possible.</p><div class="mono">ROI = (GAINS - COÛT) / COÛT</div></div>
+<div id="tab-com" class="tab-panel" role="tabpanel"><h3>Lecture communication</h3><p>Observer portée, engagement, leads, participation, retombées médiatiques ou évolution d’indicateurs de notoriété selon l’objectif de l’action.</p></div>
+<div id="tab-strat" class="tab-panel" role="tabpanel"><h3>Lecture stratégique</h3><p>Évaluer la contribution de l’action aux priorités de l’organisation : image, relation, influence, mobilisation ou positionnement.</p></div>
+</div>
+<div class="cards">
+<article class="card"><div class="icon">KPI</div><h3>Quantitatif</h3><p>Portée, coût, volume de contacts, participation, leads ou conversions selon le dispositif.</p></article>
+<article class="card"><div class="icon">QUAL</div><h3>Qualitatif</h3><p>Perception, qualité des retombées, satisfaction ou cohérence avec le positionnement.</p></article>
+<article class="card"><div class="icon">STRAT</div><h3>Contribution</h3><p>Capacité de l’action à soutenir les objectifs stratégiques définis en amont.</p></article>
+</div>
+<div class="callout"><strong>📐 Bonnes pratiques professionnelles.</strong> Définir les indicateurs avant l’action. Un indicateur choisi après coup risque de mesurer ce qui est facile à compter plutôt que ce qui était réellement important.</div>
+</section>
+
+<section id="arbitrages" class="reveal">
+<div class="section-head"><div class="kicker">05 · Décider</div><h2>Arbitrages</h2><p class="lead">Lorsque les ressources sont limitées, le pilotage consiste à décider ce qui doit être maintenu, renforcé, ajusté, reporté ou arrêté.</p></div>
+<div class="visual"><svg viewBox="0 0 850 320" role="img" aria-label="Matrice d'arbitrage entre impact et effort">
+<rect x="125" y="45" width="600" height="220" fill="none" stroke="#9AA3B2"/>
+<line x1="425" y1="45" x2="425" y2="265" stroke="#9AA3B2"/><line x1="125" y1="155" x2="725" y2="155" stroke="#9AA3B2"/>
+<text x="425" y="300" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1B1F2E">EFFORT / RESSOURCES →</text>
+<text x="45" y="160" transform="rotate(-90 45 160)" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1B1F2E">IMPACT →</text>
+<g font-family="Space Grotesk" font-weight="700" font-size="14" fill="#1B1F2E">
+<text x="275" y="105" text-anchor="middle">PRIORITÉ</text><text x="575" y="105" text-anchor="middle">INVESTIR AVEC MESURE</text>
+<text x="275" y="215" text-anchor="middle">SIMPLIFIER</text><text x="575" y="215" text-anchor="middle">RÉÉVALUER</text>
+</g>
+<circle cx="235" cy="92" r="12" fill="#FF5A36"/><circle cx="325" cy="112" r="12" fill="#FF5A36"/><circle cx="585" cy="90" r="12" fill="#FF5A36"/><circle cx="620" cy="210" r="12" fill="#9AA3B2"/>
+</svg></div>
+<div class="section-grid"><div class="prose"><p>Un arbitrage pertinent combine au minimum trois lectures : la contribution aux objectifs, les ressources nécessaires et les résultats déjà observés.</p><p>Il peut conduire à réallouer un budget vers une action plus performante, à réduire le périmètre d’une action ou à revoir le calendrier.</p></div>
+<div class="prose"><h3>Exemple de décision</h3><p>Une campagne consomme davantage que prévu mais produit une forte contribution à un objectif prioritaire. La réponse n’est pas automatiquement de l’arrêter : il faut analyser l’écart, identifier son origine et comparer son efficacité à celle des alternatives.</p></div></div>
+</section>
+
+<section id="synthese" class="reveal">
+<div class="section-head"><div class="kicker">06 · Synthèse visuelle</div><h2>Points clés à retenir</h2><p class="lead">Le pilotage budgétaire transforme le budget en outil de décision et non en simple document comptable.</p></div>
+<div class="key-grid">
+<div class="key"><strong>01 · Prévoir</strong><p>Construire le budget à partir des objectifs et des actions.</p></div>
+<div class="key"><strong>02 · Répartir</strong><p>Affecter les ressources aux priorités et conserver une structure lisible.</p></div>
+<div class="key"><strong>03 · Suivre</strong><p>Comparer prévisionnel, engagé et réalisé à intervalles réguliers.</p></div>
+<div class="key"><strong>04 · Mesurer</strong><p>Relier coûts et résultats avec des indicateurs adaptés à chaque objectif.</p></div>
+<div class="key"><strong>05 · Arbitrer</strong><p>Réallouer les ressources selon l’impact, l’effort et les priorités.</p></div>
+<div class="key"><strong>06 · Piloter</strong><p>Faire du budget un instrument permanent de décision stratégique.</p></div>
+</div>
+<div class="visual"><svg viewBox="0 0 850 230" role="img" aria-label="Résumé du pilotage budgétaire">
+<g stroke="#9AA3B2" stroke-width="2"><line x1="130" y1="115" x2="250" y2="115"/><line x1="350" y1="115" x2="470" y2="115"/><line x1="570" y1="115" x2="690" y2="115"/></g>
+<g font-family="Space Grotesk" font-weight="700" font-size="15" text-anchor="middle" fill="#1B1F2E">
+<rect x="35" y="80" width="95" height="70" rx="14" fill="#F6F5F2" stroke="#FF5A36"/><text x="82" y="121">PRÉVOIR</text>
+<rect x="250" y="80" width="100" height="70" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/><text x="300" y="121">RÉPARTIR</text>
+<rect x="470" y="80" width="100" height="70" rx="14" fill="#FF5A36" fill-opacity=".1" stroke="#FF5A36"/><text x="520" y="121">MESURER</text>
+<rect x="690" y="80" width="125" height="70" rx="14" fill="#F6F5F2" stroke="#9AA3B2"/><text x="752" y="121">ARBITRER</text>
+</g>
+<text x="425" y="195" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#9AA3B2">RESSOURCES → ACTIONS → DÉPENSES → RÉSULTATS → DÉCISIONS</text>
+</svg></div>
+<div class="callout"><strong>💡 À retenir.</strong> Le responsable communication pilote les ressources en continu : il prévoit, répartit, suit, mesure et arbitre afin de maintenir la cohérence entre budget et stratégie.</div>
+</section>
+
+<nav class="nav-bottom" aria-label="Navigation entre les leçons">
+<a class="nav-card" href="#"><span class="nav-label">← Leçon précédente</span><strong>Leçon 28 · Communication événementielle</strong></a>
+<a class="nav-card center" href="#sommaire"><span class="nav-label">Module 6</span><strong>Retour au sommaire de la leçon</strong></a>
+<a class="nav-card right" href="#"><span class="nav-label">Leçon suivante →</span><strong>Leçon 30 · Projet final : piloter la communication d'entreprise de A à Z</strong></a>
+</nav>
+</main>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+<footer>Communication d’Entreprise · Module 6 · Leçon 29</footer>
+<script>
+const progress=document.getElementById('progress'),topBtn=document.getElementById('topBtn');
+function updateScroll(){const h=document.documentElement,max=h.scrollHeight-h.clientHeight;progress.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';topBtn.classList.toggle('show',h.scrollTop>500)}
+window.addEventListener('scroll',updateScroll,{passive:true});updateScroll();
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+document.querySelectorAll('[data-tabs]').forEach(group=>{const buttons=group.querySelectorAll('[role=tab]'),panels=group.querySelectorAll('[role=tabpanel]');
+buttons.forEach(btn=>btn.addEventListener('click',()=>{buttons.forEach(b=>b.setAttribute('aria-selected','false'));panels.forEach(p=>p.classList.remove('active'));btn.setAttribute('aria-selected','true');document.getElementById(btn.dataset.tab).classList.add('active')}))});
+const reveals=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.08});reveals.forEach(el=>observer.observe(el))}else reveals.forEach(el=>el.classList.add('visible'));
+</script>
+</body>
+</html>

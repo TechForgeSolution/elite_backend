@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 10 — Plan de projet complet | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2314213D'/%3E%3Cpath d='M20 65 L40 45 L55 58 L80 30' stroke='%23FF9F1C' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='80' cy='30' r='6' fill='%23FF9F1C'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg: #F4F6F8;
+    --color-text: #14213D;
+    --color-accent: #FF9F1C;
+    --color-neutral: #8D99AE;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --text-faint: color-mix(in srgb, var(--color-text) 40%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --border-strong: color-mix(in srgb, var(--color-neutral) 80%, var(--color-bg));
+    --accent-bg-light: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-bg-lighter: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+    --accent-border: color-mix(in srgb, var(--color-accent) 55%, var(--color-bg));
+    --card-bg: color-mix(in srgb, var(--color-text) 3%, var(--color-bg));
+
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+
+    --maxw-text: 720px;
+    --maxw-page: 1180px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+
+  body{
+    margin:0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3{
+    font-family: var(--font-display);
+    color: var(--color-text);
+    line-height: 1.25;
+    margin: 0 0 0.5em 0;
+  }
+  h1{ font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 800; letter-spacing: -0.01em; }
+  h2{ font-size: clamp(1.5rem, 3vw, 1.9rem); font-weight: 700; }
+  h3{ font-size: 1.2rem; font-weight: 600; }
+  p{ margin: 0 0 1.1em 0; }
+  a{ color: var(--color-text); }
+
+  .mono{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  #reading-progress{
+    position: fixed; top:0; left:0; height: 3px; width: 0%;
+    background: var(--color-accent);
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  header.site-header{
+    position: sticky; top:0; z-index: 900;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .header-inner{
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 14px 24px;
+    display:flex; align-items:center; justify-content: space-between;
+    gap: 16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family: var(--font-display); font-weight:700; font-size: 1rem; color: var(--color-text); text-decoration:none; }
+  .brand-mark{ width: 26px; height:26px; border-radius:7px; background: var(--color-text); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .brand-mark svg{ width:16px; height:16px; }
+  nav.top-menu{ display:flex; align-items:center; gap: 20px; }
+  nav.top-menu a{
+    font-size: 0.9rem; color: var(--text-muted); text-decoration:none; font-weight:500;
+    border-bottom: 1px solid transparent; padding-bottom: 2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  nav.top-menu a:hover, nav.top-menu a:focus-visible{ color: var(--color-text); border-color: var(--color-accent); }
+
+  .menu-toggle{ display:none; background:none; border:1px solid var(--border-soft); border-radius:8px; padding:8px 10px; cursor:pointer; }
+  .menu-toggle svg{ display:block; }
+
+  main{ max-width: var(--maxw-page); margin: 0 auto; padding: 0 24px; }
+  .prose{ max-width: var(--maxw-text); }
+
+  .hero{ padding: 56px 0 40px 0; }
+  .badge-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 22px; }
+  .badge{
+    font-family: var(--font-mono); font-size: 0.78rem; padding: 5px 12px;
+    border-radius: 999px; border: 1px solid var(--border-soft);
+    color: var(--text-muted); background: var(--card-bg);
+  }
+  .badge.badge-accent{ border-color: var(--accent-border); color: var(--color-text); background: var(--accent-bg-light); }
+  .hero-eyebrow{ font-size: 0.85rem; color: var(--color-accent); font-weight: 600; margin-bottom: 10px; }
+  .hero h1{ max-width: 850px; }
+  .hero-sub{ font-size: 1.15rem; color: var(--text-muted); max-width: 640px; margin-top: 14px; }
+
+  .hero-thread{ margin-top: 34px; }
+  .hero-thread svg{ width:100%; height:auto; display:block; }
+
+  .toc{
+    background: var(--card-bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin: 8px 0 48px 0;
+  }
+  .toc h2{ font-size: 1rem; margin-bottom: 14px; color: var(--text-muted); font-weight:600; letter-spacing: 0.01em;}
+  .toc ol{ margin:0; padding-left: 0; list-style: none; display:grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; counter-reset: toc-counter; }
+  .toc li{ counter-increment: toc-counter; }
+  .toc a{
+    display:flex; gap:10px; align-items:baseline; text-decoration:none; color: var(--color-text);
+    font-size: 0.95rem; padding: 6px 0; border-bottom: 1px solid transparent;
+  }
+  .toc a::before{
+    content: counter(toc-counter, decimal-leading-zero);
+    font-family: var(--font-mono); color: var(--color-accent); font-size: 0.82rem; flex-shrink:0;
+  }
+  .toc a:hover, .toc a:focus-visible{ color: var(--color-accent); }
+
+  section.lesson-section{
+    padding: 46px 0;
+    border-top: 1px solid var(--border-soft);
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  section.lesson-section.in-view{ opacity: 1; transform: translateY(0); }
+  section.lesson-section:first-of-type{ border-top: none; }
+  section.lesson-section.alt-bg{ background: var(--bg-alt); margin: 0 -24px; padding-left:24px; padding-right:24px; border-radius: 18px; }
+
+  .section-kicker{ display:flex; align-items:center; gap:10px; margin-bottom: 6px; }
+  .section-index{ font-family: var(--font-mono); color: var(--color-accent); font-size:0.85rem; }
+
+  .callout{
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 26px 0;
+    background: var(--card-bg);
+    max-width: var(--maxw-text);
+  }
+  .callout-head{ display:flex; align-items:center; gap:10px; font-family: var(--font-display); font-weight:700; font-size: 0.98rem; margin-bottom: 8px; }
+  .callout-head .icon{ font-size: 1.15rem; }
+  .callout p:last-child{ margin-bottom:0; }
+
+  .pilot-card{
+    background: var(--accent-bg-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 24px 0;
+    max-width: var(--maxw-text);
+    position: relative;
+  }
+  .pilot-card .pilot-label{
+    font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-muted); display:block; margin-bottom: 10px;
+  }
+  .pilot-card pre{
+    font-family: var(--font-mono); font-size: 0.88rem; white-space: pre-wrap; margin:0;
+    color: var(--color-text); line-height: 1.6;
+  }
+  .copy-btn{
+    position:absolute; top: 14px; right: 14px;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    background: var(--color-bg); border: 1px solid var(--accent-border);
+    color: var(--color-text); border-radius: 7px; padding: 5px 10px; cursor:pointer;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover{ background: var(--accent-bg-lighter); }
+
+  .table-wrap{ overflow-x:auto; margin: 26px 0; border: 1px solid var(--border-soft); border-radius: 12px; }
+  table{ border-collapse: collapse; width:100%; min-width: 560px; font-size: 0.92rem; }
+  thead th{
+    text-align:left; font-family: var(--font-display); font-weight:700; font-size: 0.82rem;
+    background: color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+    color: var(--color-text); padding: 12px 16px; border-bottom: 1px solid var(--border-soft);
+    white-space: nowrap;
+  }
+  tbody td{ padding: 12px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom: none; }
+  td.num, th.num{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  tr.row-highlight td{ background: var(--accent-bg-lighter); border-left: 3px solid var(--color-accent); }
+  tr.row-highlight td:first-child{ padding-left: 13px; }
+  tbody tr{ transition: background 0.15s; }
+  tbody tr:hover td{ background: var(--accent-bg-lighter); }
+
+  .card-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 26px 0; }
+  .visual-card{
+    background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 14px;
+    padding: 20px; transition: border-color 0.15s;
+  }
+  .visual-card:hover{ border-color: var(--accent-border); }
+  .visual-card .vc-icon{
+    width: 38px; height:38px; border-radius: 9px; background: var(--accent-bg-light);
+    display:flex; align-items:center; justify-content:center; margin-bottom: 12px; font-size: 1.2rem;
+    border: 1px solid var(--accent-border);
+  }
+  .visual-card h3{ font-size: 1rem; margin-bottom: 6px; }
+  .visual-card p{ font-size: 0.9rem; color: var(--text-muted); margin:0; }
+
+  .tabs{ margin: 26px 0; max-width: var(--maxw-text); }
+  .tab-list{ display:flex; gap: 4px; border-bottom: 1px solid var(--border-soft); }
+  .tab-btn{
+    font-family: var(--font-body); font-weight:600; font-size: 0.92rem;
+    background:none; border:none; padding: 11px 18px; cursor:pointer;
+    color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom:-1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn:hover{ color: var(--color-text); }
+  .tab-btn[aria-selected="true"]{ color: var(--color-text); border-bottom-color: var(--color-accent); }
+  .tab-panel{ padding: 20px 2px; display:none; }
+  .tab-panel.active{ display:block; }
+
+  .accordion{ margin: 26px 0; max-width: var(--maxw-text); border-top: 1px solid var(--border-soft); }
+  .accordion-item{ border-bottom: 1px solid var(--border-soft); }
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap: 12px;
+    padding: 16px 4px; font-family: var(--font-display); font-weight:600; font-size: 0.98rem; color: var(--color-text);
+  }
+  .accordion-trigger .chevron{ flex-shrink:0; transition: transform 0.2s; color: var(--color-accent); }
+  .accordion-trigger[aria-expanded="true"] .chevron{ transform: rotate(45deg); }
+  .accordion-panel{ max-height:0; overflow:hidden; transition: max-height 0.25s ease; }
+  .accordion-panel-inner{ padding: 0 4px 18px 4px; color: var(--text-muted); font-size: 0.95rem; }
+
+  .stepper{ margin: 30px 0; }
+  .stepper-track{ display:flex; overflow-x:auto; gap: 0; padding-bottom: 6px; }
+  .step{ flex: 1 1 190px; min-width: 175px; position: relative; padding: 0 16px 0 0; }
+  .step-marker{ display:flex; align-items:center; gap:8px; margin-bottom: 12px; }
+  .step-dot{
+    width: 30px; height:30px; border-radius:50%; background: var(--color-bg); border: 2px solid var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family: var(--font-mono); font-size: 0.8rem; font-weight:600;
+    color: var(--color-accent); flex-shrink:0;
+  }
+  .step-line{ height:2px; flex:1; background: var(--border-soft); }
+  .step:last-child .step-line{ display:none; }
+  .step h3{ font-size: 0.92rem; margin-bottom: 6px; }
+  .step p{ font-size: 0.85rem; color: var(--text-muted); margin:0; }
+
+  .diagram{ margin: 30px 0; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+  .diagram-caption{ font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; text-align:center; }
+
+  .summary-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 16px; margin-top: 24px; }
+  .summary-item{
+    background: var(--color-text); color: var(--color-bg); border-radius: 14px; padding: 22px;
+  }
+  .summary-item .si-num{ font-family: var(--font-mono); color: var(--color-accent); font-size: 0.8rem; margin-bottom:8px; display:block; }
+  .summary-item h3{ color: var(--color-bg); font-size: 1rem; margin-bottom: 8px; }
+  .summary-item p{ color: color-mix(in srgb, var(--color-bg) 78%, transparent); font-size: 0.88rem; margin:0; }
+
+  #back-to-top{
+    position: fixed; bottom: 26px; right: 26px; z-index: 800;
+    width: 46px; height:46px; border-radius: 50%;
+    background: var(--color-text); color: var(--color-bg); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transform: translateY(10px);
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-text) 25%, transparent);
+  }
+  #back-to-top.visible{ opacity:1; pointer-events:auto; transform: translateY(0); }
+
+  .lesson-nav{
+    display:flex; justify-content:space-between; gap: 16px; margin: 56px 0 20px 0;
+    border-top: 1px solid var(--border-soft); padding-top: 32px; flex-wrap:wrap;
+  }
+  .nav-link{
+    flex: 1 1 260px; text-decoration:none; color: var(--color-text);
+    border: 1px solid var(--border-soft); border-radius: 12px; padding: 16px 20px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-link:hover, .nav-link:focus-visible{ border-color: var(--accent-border); background: var(--accent-bg-lighter); }
+  .nav-link .nav-dir{ font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); display:block; margin-bottom:4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .nav-link.next{ text-align:right; }
+  .module-link{
+    display:inline-block; margin: 8px 0 28px 0; font-size: 0.9rem; color: var(--text-muted); text-decoration:none;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .module-link:hover{ color: var(--color-accent); border-color: var(--color-accent); }
+
+  footer.site-footer{
+    border-top: 1px solid var(--border-soft); margin-top: 40px; padding: 28px 0 40px 0;
+    text-align:center; color: var(--text-faint); font-size: 0.85rem;
+  }
+
+  :focus-visible{ outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  @media (max-width: 860px){
+    .toc ol{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px){
+    nav.top-menu{
+      position: fixed; top: 58px; left:0; right:0; background: var(--color-bg);
+      border-bottom: 1px solid var(--border-soft); flex-direction:column; align-items:flex-start;
+      padding: 16px 24px; gap: 14px; display:none;
+    }
+    nav.top-menu.open{ display:flex; }
+    .menu-toggle{ display:flex; }
+    .hero{ padding-top: 36px; }
+    section.lesson-section.alt-bg{ margin: 0 -16px; padding-left:16px; padding-right:16px; }
+    main{ padding: 0 16px; }
+    .header-inner{ padding: 12px 16px; }
+    #back-to-top{ right: 16px; bottom: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="reading-progress" role="progressbar" aria-label="Progression de lecture" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 15 L9 10 L13 13 L20 6" stroke="#FF9F1C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Gestion de Projet
+    </a>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="top-menu" aria-label="Ouvrir le menu du sommaire">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#14213D" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <nav class="top-menu" id="top-menu">
+      <a href="#objectifs">Objectifs &amp; périmètre</a>
+      <a href="#wbs">WBS</a>
+      <a href="#planning">Planning</a>
+      <a href="#ressources">Ressources</a>
+      <a href="#budget">Budget</a>
+      <a href="#risques">Risques</a>
+      <a href="#communication">Communication</a>
+      <a href="#retenir">Points clés</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="badge-row">
+      <span class="badge badge-accent">Module 2 — Planification et organisation du projet</span>
+      <span class="badge mono">Leçon 10</span>
+      <span class="badge mono">18 min</span>
+      <span class="badge mono">Niveau intermédiaire</span>
+    </div>
+    <div class="hero-eyebrow">Planification et organisation du projet</div>
+    <h1>Plan de projet complet</h1>
+    <p class="hero-sub">Assembler dans un document unique tout ce qui a été défini jusqu'ici — objectifs, périmètre, WBS, planning, ressources, budget, risques et communication — pour piloter le projet d'un seul coup d'œil.</p>
+
+    <div class="hero-thread" aria-hidden="true">
+      <svg viewBox="0 0 900 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frise : les huit composantes du plan de projet, de l'objectif à la communication">
+        <line x1="20" y1="45" x2="880" y2="45" stroke="#8D99AE" stroke-width="1.5" stroke-dasharray="2 6"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#14213D">
+          <circle cx="55" cy="45" r="6" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.2"/>
+          <text x="55" y="70" text-anchor="middle">Objectifs</text>
+          <circle cx="170" cy="45" r="6" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.2"/>
+          <text x="170" y="70" text-anchor="middle">Périmètre</text>
+          <circle cx="290" cy="45" r="6" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.2"/>
+          <text x="290" y="70" text-anchor="middle">WBS</text>
+          <circle cx="400" cy="45" r="6" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.2"/>
+          <text x="400" y="70" text-anchor="middle">Planning</text>
+          <circle cx="520" cy="45" r="6" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.2"/>
+          <text x="520" y="70" text-anchor="middle">Ressources</text>
+          <circle cx="630" cy="45" r="6" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.2"/>
+          <text x="630" y="70" text-anchor="middle">Budget</text>
+          <circle cx="730" cy="45" r="6" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2.2"/>
+          <text x="730" y="70" text-anchor="middle">Risques</text>
+          <circle cx="845" cy="45" r="7" fill="#FF9F1C"/>
+          <text x="845" y="70" text-anchor="middle" font-weight="600">Communication</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><a href="#objectifs">Objectifs et périmètre : la fondation</a></li>
+      <li><a href="#wbs">Le WBS, colonne vertébrale du plan</a></li>
+      <li><a href="#planning">Le planning et le chemin critique</a></li>
+      <li><a href="#ressources">L'allocation des ressources</a></li>
+      <li><a href="#budget">Le budget prévisionnel</a></li>
+      <li><a href="#risques">La matrice des risques</a></li>
+      <li><a href="#communication">Le plan de communication</a></li>
+      <li><a href="#retenir">Points clés à retenir</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. Objectifs et périmètre -->
+  <section class="lesson-section" id="objectifs">
+    <div class="section-kicker"><span class="section-index mono">01</span></div>
+    <h2>Objectifs et périmètre : la fondation</h2>
+    <div class="prose">
+      <p>Le plan de projet n'est pas un document de plus : c'est la synthèse cohérente de tout ce qui a été défini dans les leçons précédentes. Il commence donc par rappeler l'objectif général, les objectifs spécifiques SMART et le périmètre validé, car chaque décision de planification qui suit — découpage, planning, budget — doit pouvoir s'y rattacher.</p>
+      <p>Un plan de projet qui ne reprend pas explicitement ces éléments de cadrage risque de dériver au fil des arbitrages successifs, chaque décision locale semblant raisonnable prise isolément.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">💡</span> À retenir</div>
+      <p>Le plan de projet est un document vivant : il rassemble des éléments stables (objectifs, périmètre) et des éléments mis à jour régulièrement (planning, budget, risques) au fil de l'avancement.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">🎯</div>
+        <h3>Objectifs</h3>
+        <p>Rappel de l'objectif général et des objectifs spécifiques mesurables.</p>
+      </div>
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">🗺️</div>
+        <h3>Périmètre</h3>
+        <p>Ce qui est inclus, ce qui est explicitement exclu du projet.</p>
+      </div>
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">📦</div>
+        <h3>Livrables clés</h3>
+        <p>Les résultats attendus, rattachés à chaque objectif spécifique.</p>
+      </div>
+      <div class="visual-card">
+        <div class="vc-icon" aria-hidden="true">🧭</div>
+        <h3>Contraintes</h3>
+        <p>Délai imposé, budget plafonné, contraintes réglementaires ou techniques.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. WBS -->
+  <section class="lesson-section alt-bg" id="wbs">
+    <div class="section-kicker"><span class="section-index mono">02</span></div>
+    <h2>Le WBS, colonne vertébrale du plan</h2>
+    <div class="prose">
+      <p>Le WBS (<em>Work Breakdown Structure</em>, ou structure de découpage du projet) décompose le projet en lots de travail de plus en plus détaillés, jusqu'à obtenir des tâches suffisamment précises pour être planifiées, estimées et affectées à un responsable.</p>
+      <p>Chaque niveau du WBS reçoit généralement un code — un identifiant de type <span class="mono">1.2.3</span> — qui permet de retrouver instantanément la place d'une tâche dans l'ensemble du projet, et qui sera repris dans le planning et le budget.</p>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Arborescence WBS : le projet se décompose en trois lots principaux, eux-mêmes décomposés en tâches">
+        <rect x="310" y="10" width="140" height="46" rx="8" fill="#14213D"/>
+        <text x="380" y="38" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="13" fill="#F4F6F8">Projet</text>
+
+        <line x1="380" y1="56" x2="380" y2="80" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="130" y1="80" x2="630" y2="80" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="130" y1="80" x2="130" y2="100" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="380" y1="80" x2="380" y2="100" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="630" y1="80" x2="630" y2="100" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#14213D">
+          <rect x="60" y="100" width="140" height="42" rx="8" fill="none" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="130" y="126" text-anchor="middle" font-weight="600">1. Conception</text>
+
+          <rect x="310" y="100" width="140" height="42" rx="8" fill="none" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="380" y="126" text-anchor="middle" font-weight="600">2. Réalisation</text>
+
+          <rect x="560" y="100" width="140" height="42" rx="8" fill="none" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="630" y="126" text-anchor="middle" font-weight="600">3. Déploiement</text>
+        </g>
+
+        <line x1="130" y1="142" x2="130" y2="160" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="60" y1="160" x2="200" y2="160" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="60" y1="160" x2="60" y2="180" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="200" y1="160" x2="200" y2="180" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <g font-family="Inter, sans-serif" font-size="10.5" fill="#14213D">
+          <rect x="15" y="180" width="90" height="60" rx="7" fill="#F4F6F8" stroke="#8D99AE" stroke-width="1.2"/>
+          <text x="60" y="203" text-anchor="middle" class="mono" font-family="IBM Plex Mono, monospace" fill="#8D99AE" font-size="9">1.1</text>
+          <text x="60" y="220" text-anchor="middle">Étude des</text>
+          <text x="60" y="233" text-anchor="middle">besoins</text>
+
+          <rect x="155" y="180" width="90" height="60" rx="7" fill="#F4F6F8" stroke="#8D99AE" stroke-width="1.2"/>
+          <text x="200" y="203" text-anchor="middle" font-family="IBM Plex Mono, monospace" fill="#8D99AE" font-size="9">1.2</text>
+          <text x="200" y="220" text-anchor="middle">Maquettes</text>
+          <text x="200" y="233" text-anchor="middle">validées</text>
+        </g>
+
+        <line x1="380" y1="142" x2="380" y2="160" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="310" y1="160" x2="450" y2="160" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="310" y1="160" x2="310" y2="180" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="450" y1="160" x2="450" y2="180" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <g font-family="Inter, sans-serif" font-size="10.5" fill="#14213D">
+          <rect x="265" y="180" width="90" height="60" rx="7" fill="#F4F6F8" stroke="#8D99AE" stroke-width="1.2"/>
+          <text x="310" y="203" text-anchor="middle" font-family="IBM Plex Mono, monospace" fill="#8D99AE" font-size="9">2.1</text>
+          <text x="310" y="220" text-anchor="middle">Développement</text>
+          <text x="310" y="233" text-anchor="middle">des modules</text>
+
+          <rect x="405" y="180" width="90" height="60" rx="7" fill="#F4F6F8" stroke="#8D99AE" stroke-width="1.2"/>
+          <text x="450" y="203" text-anchor="middle" font-family="IBM Plex Mono, monospace" fill="#8D99AE" font-size="9">2.2</text>
+          <text x="450" y="220" text-anchor="middle">Tests et</text>
+          <text x="450" y="233" text-anchor="middle">recette</text>
+        </g>
+
+        <line x1="630" y1="142" x2="630" y2="160" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="565" y1="160" x2="695" y2="160" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="565" y1="160" x2="565" y2="180" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="695" y1="160" x2="695" y2="180" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <g font-family="Inter, sans-serif" font-size="10.5" fill="#14213D">
+          <rect x="520" y="180" width="90" height="60" rx="7" fill="#F4F6F8" stroke="#8D99AE" stroke-width="1.2"/>
+          <text x="565" y="203" text-anchor="middle" font-family="IBM Plex Mono, monospace" fill="#8D99AE" font-size="9">3.1</text>
+          <text x="565" y="220" text-anchor="middle">Mise en</text>
+          <text x="565" y="233" text-anchor="middle">production</text>
+
+          <rect x="650" y="180" width="90" height="60" rx="7" fill="#F4F6F8" stroke="#8D99AE" stroke-width="1.2"/>
+          <text x="695" y="203" text-anchor="middle" font-family="IBM Plex Mono, monospace" fill="#8D99AE" font-size="9">3.2</text>
+          <text x="695" y="220" text-anchor="middle">Formation</text>
+          <text x="695" y="233" text-anchor="middle">utilisateurs</text>
+        </g>
+
+        <text x="380" y="280" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">Chaque niveau supplémentaire affine le détail jusqu'à la tâche planifiable</text>
+      </svg>
+      <p class="diagram-caption">WBS simplifié à trois niveaux : projet → lots de travail → tâches.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">📐</span> Bonnes pratiques professionnelles</div>
+      <p>Arrêtez la décomposition dès qu'une tâche est estimable en charge et affectable à une seule personne responsable — inutile de descendre plus bas, un WBS trop fin devient ingérable.</p>
+    </div>
+  </section>
+
+  <!-- 3. Planning -->
+  <section class="lesson-section" id="planning">
+    <div class="section-kicker"><span class="section-index mono">03</span></div>
+    <h2>Le planning et le chemin critique</h2>
+    <div class="prose">
+      <p>Une fois le WBS établi, chaque tâche est positionnée dans le temps : durée estimée, dépendances avec les autres tâches, jalons de validation. Le diagramme de Gantt reste l'outil de visualisation le plus répandu pour représenter ce planning.</p>
+      <p>Le chemin critique est la succession de tâches qui détermine la durée totale du projet : tout retard sur une tâche du chemin critique retarde mécaniquement la date de fin du projet, alors qu'une tâche hors chemin critique dispose d'une marge.</p>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramme de Gantt simplifié sur cinq semaines montrant cinq tâches, dont un chemin critique en ambre">
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#8D99AE">
+          <text x="150" y="18">S1</text><text x="270" y="18">S2</text><text x="390" y="18">S3</text><text x="510" y="18">S4</text><text x="630" y="18">S5</text>
+        </g>
+        <line x1="140" y1="26" x2="140" y2="200" stroke="#8D99AE" stroke-width="1" stroke-dasharray="2 4"/>
+        <line x1="260" y1="26" x2="260" y2="200" stroke="#8D99AE" stroke-width="1" stroke-dasharray="2 4"/>
+        <line x1="380" y1="26" x2="380" y2="200" stroke="#8D99AE" stroke-width="1" stroke-dasharray="2 4"/>
+        <line x1="500" y1="26" x2="500" y2="200" stroke="#8D99AE" stroke-width="1" stroke-dasharray="2 4"/>
+        <line x1="620" y1="26" x2="620" y2="200" stroke="#8D99AE" stroke-width="1" stroke-dasharray="2 4"/>
+
+        <g font-family="Inter, sans-serif" font-size="11" fill="#14213D">
+          <text x="10" y="46">Cadrage</text>
+          <rect x="140" y="34" width="100" height="18" rx="4" fill="#FF9F1C"/>
+
+          <text x="10" y="80">Conception</text>
+          <rect x="240" y="68" width="120" height="18" rx="4" fill="#FF9F1C"/>
+
+          <text x="10" y="114">Développement</text>
+          <rect x="360" y="102" width="180" height="18" rx="4" fill="#FF9F1C"/>
+
+          <text x="10" y="148">Contenu graphique</text>
+          <rect x="260" y="136" width="140" height="18" rx="4" fill="none" stroke="#8D99AE" stroke-width="1.5"/>
+
+          <text x="10" y="182">Tests &amp; recette</text>
+          <rect x="540" y="170" width="90" height="18" rx="4" fill="#FF9F1C"/>
+        </g>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8D99AE">
+          <text x="405" y="146">marge disponible</text>
+        </g>
+
+        <circle cx="630" cy="188" r="6" fill="#FF9F1C"/>
+        <text x="645" y="192" font-family="Inter, sans-serif" font-size="10.5" fill="#14213D">Jalon de livraison</text>
+      </svg>
+      <p class="diagram-caption">Les tâches en ambre forment le chemin critique ; le contenu graphique dispose d'une marge et peut glisser sans impacter la fin du projet.</p>
+    </div>
+
+    <div class="pilot-card">
+      <span class="pilot-label">Fiche de pilotage — extrait de planning</span>
+      <button class="copy-btn" type="button" data-copy-target="planning-extrait">Copier</button>
+      <pre id="planning-extrait" class="mono">TÂCHE                DÉBUT       FIN         DURÉE   CHEMIN CRITIQUE
+2.1 Développement    2026-10-05  2026-10-30  18j     Oui
+2.2 Tests et recette  2026-11-02  2026-11-13  8j      Oui
+1.2 Maquettes         2026-09-21  2026-10-02  10j     Non (marge 4j)</pre>
+    </div>
+  </section>
+
+  <!-- 4. Ressources -->
+  <section class="lesson-section alt-bg" id="ressources">
+    <div class="section-kicker"><span class="section-index mono">04</span></div>
+    <h2>L'allocation des ressources</h2>
+    <div class="prose">
+      <p>Le plan de projet précise qui fait quoi : personnes mobilisées, taux d'affectation, compétences requises, mais aussi ressources matérielles ou budgétaires nécessaires à chaque lot de travail. La matrice RACI est l'outil de référence pour clarifier les rôles sur chaque tâche ou livrable.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <caption style="text-align:left; padding:12px 16px; font-size:0.85rem; color: var(--text-muted);">Matrice RACI — extrait pour les lots Conception et Réalisation</caption>
+        <thead>
+          <tr>
+            <th scope="col">Tâche</th>
+            <th scope="col">Chef de projet</th>
+            <th scope="col">Équipe technique</th>
+            <th scope="col">Commanditaire</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Maquettes validées</td>
+            <td class="mono">A</td>
+            <td class="mono">R</td>
+            <td class="mono">C</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Développement des modules</td>
+            <td class="mono">A</td>
+            <td class="mono">R</td>
+            <td class="mono">I</td>
+          </tr>
+          <tr>
+            <td>Tests et recette</td>
+            <td class="mono">R</td>
+            <td class="mono">R</td>
+            <td class="mono">A</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose" style="max-width:var(--maxw-text); font-size:0.88rem; color: var(--text-muted);"><span class="mono">R</span> Réalise · <span class="mono">A</span> Approuve · <span class="mono">C</span> Consulté · <span class="mono">I</span> Informé.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Ressource</th>
+            <th scope="col">Rôle</th>
+            <th scope="col">Taux d'affectation</th>
+            <th scope="col">Période</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chef de projet</td>
+            <td>Pilotage global</td>
+            <td class="num">50 %</td>
+            <td class="mono">S1 → S5</td>
+          </tr>
+          <tr>
+            <td>Développeurs (x3)</td>
+            <td>Réalisation technique</td>
+            <td class="num">100 %</td>
+            <td class="mono">S2 → S4</td>
+          </tr>
+          <tr>
+            <td>Designer</td>
+            <td>Maquettes et charte</td>
+            <td class="num">60 %</td>
+            <td class="mono">S1 → S2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 5. Budget -->
+  <section class="lesson-section" id="budget">
+    <div class="section-kicker"><span class="section-index mono">05</span></div>
+    <h2>Le budget prévisionnel</h2>
+    <div class="prose">
+      <p>Le budget prévisionnel valorise chaque lot de travail du WBS : coûts de ressources humaines, coûts matériels, prestations externes, et une réserve pour aléas. Il se construit généralement en s'appuyant directement sur la structure du WBS, ce qui permet de suivre les écarts lot par lot en cours de réalisation.</p>
+    </div>
+
+    <div class="tabs" id="tabs-couts">
+      <div class="tab-list" role="tablist" aria-label="Comparer coûts directs et coûts indirects">
+        <button class="tab-btn" role="tab" id="tab-directs" aria-controls="panel-directs" aria-selected="true">Coûts directs</button>
+        <button class="tab-btn" role="tab" id="tab-indirects" aria-controls="panel-indirects" aria-selected="false" tabindex="-1">Coûts indirects</button>
+      </div>
+      <div class="tab-panel active" id="panel-directs" role="tabpanel" aria-labelledby="tab-directs">
+        <p>Dépenses directement imputables à une tâche ou un livrable du projet : temps passé par l'équipe, achats de matériel spécifique, prestations de sous-traitance dédiées à un lot précis.</p>
+      </div>
+      <div class="tab-panel" id="panel-indirects" role="tabpanel" aria-labelledby="tab-indirects" hidden>
+        <p>Dépenses partagées entre plusieurs projets ou activités, difficiles à rattacher à une seule tâche : quote-part de frais de structure, licences logicielles mutualisées, coûts de gouvernance générale.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Poste</th>
+            <th scope="col">Lot WBS</th>
+            <th scope="col" class="num">Budget prévu</th>
+            <th scope="col" class="num">Réalisé</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Conception</td>
+            <td class="mono">1.x</td>
+            <td class="mono num">8 400 €</td>
+            <td class="mono num">8 100 €</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Réalisation</td>
+            <td class="mono">2.x</td>
+            <td class="mono num">21 000 €</td>
+            <td class="mono num">22 600 €</td>
+          </tr>
+          <tr>
+            <td>Déploiement</td>
+            <td class="mono">3.x</td>
+            <td class="mono num">6 200 €</td>
+            <td class="mono num">—</td>
+          </tr>
+          <tr>
+            <td>Réserve pour aléas</td>
+            <td class="mono">—</td>
+            <td class="mono num">3 500 €</td>
+            <td class="mono num">1 200 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">⚠️</span> Attention / erreur fréquente</div>
+      <p>Un budget sans réserve pour aléas donne l'illusion d'un pilotage serré, mais rend le projet fragile au premier imprévu. Une réserve de 5 à 10 % du budget total est une pratique courante.</p>
+    </div>
+  </section>
+
+  <!-- 6. Risques -->
+  <section class="lesson-section alt-bg" id="risques">
+    <div class="section-kicker"><span class="section-index mono">06</span></div>
+    <h2>La matrice des risques</h2>
+    <div class="prose">
+      <p>Chaque risque identifié est positionné selon deux axes : sa probabilité de survenue et son impact sur le projet s'il se réalise. Cette matrice permet de concentrer l'attention sur les risques prioritaires plutôt que de traiter tous les risques de la même façon.</p>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Matrice des risques probabilité / impact avec trois risques positionnés selon leur niveau de priorité">
+        <rect x="90" y="20" width="380" height="300" fill="none" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="90" y1="120" x2="470" y2="120" stroke="#8D99AE" stroke-width="1" stroke-dasharray="3 5"/>
+        <line x1="90" y1="220" x2="470" y2="220" stroke="#8D99AE" stroke-width="1" stroke-dasharray="3 5"/>
+        <line x1="216" y1="20" x2="216" y2="320" stroke="#8D99AE" stroke-width="1" stroke-dasharray="3 5"/>
+        <line x1="343" y1="20" x2="343" y2="320" stroke="#8D99AE" stroke-width="1" stroke-dasharray="3 5"/>
+
+        <text x="280" y="355" text-anchor="middle" font-family="Sora, sans-serif" font-weight="600" font-size="13" fill="#14213D">Impact →</text>
+        <text x="45" y="170" text-anchor="middle" font-family="Sora, sans-serif" font-weight="600" font-size="13" fill="#14213D" transform="rotate(-90 45 170)">Probabilité →</text>
+
+        <circle cx="400" cy="60" r="12" fill="#FF9F1C"/>
+        <text x="400" y="45" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#14213D">Indispo. ressource clé</text>
+
+        <circle cx="260" cy="160" r="10" fill="none" stroke="#FF9F1C" stroke-width="2.5"/>
+        <text x="260" y="145" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#14213D">Retard fournisseur</text>
+
+        <circle cx="150" cy="270" r="8" fill="#8D99AE"/>
+        <text x="150" y="255" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#14213D">Panne matériel mineure</text>
+      </svg>
+      <p class="diagram-caption">Plus un risque est proche du coin supérieur droit, plus il est prioritaire dans le plan de traitement.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Risque</th>
+            <th scope="col">Probabilité</th>
+            <th scope="col">Impact</th>
+            <th scope="col">Action de traitement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-highlight">
+            <td>Indisponibilité d'une ressource clé</td>
+            <td>Élevée</td>
+            <td>Élevé</td>
+            <td>Identifier un remplaçant en amont</td>
+          </tr>
+          <tr>
+            <td>Retard d'un fournisseur externe</td>
+            <td>Moyenne</td>
+            <td>Moyen</td>
+            <td>Clause de pénalité contractuelle</td>
+          </tr>
+          <tr>
+            <td>Panne matérielle mineure</td>
+            <td>Faible</td>
+            <td>Faible</td>
+            <td>Suivi simple, pas d'action immédiate</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 7. Communication -->
+  <section class="lesson-section" id="communication">
+    <div class="section-kicker"><span class="section-index mono">07</span></div>
+    <h2>Le plan de communication</h2>
+    <div class="prose">
+      <p>Le plan de projet intègre enfin les modalités de communication déjà définies : quelles informations sont partagées, à quelle fréquence, avec quelles parties prenantes et sous quel format. C'est ce qui garantit que le pilotage reste visible et partagé tout au long du projet, et pas seulement au moment du lancement.</p>
+    </div>
+
+    <div class="accordion" id="accordion-comm">
+      <div class="accordion-item">
+        <h3>
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-1" id="acc-trigger-1">
+            Comité de pilotage
+          </button>
+        </h3>
+        <div class="accordion-panel" id="acc-panel-1" role="region" aria-labelledby="acc-trigger-1">
+          <div class="accordion-panel-inner">
+            <p>Réunion mensuelle avec le commanditaire et les sponsors : avancement global, arbitrages budgétaires, risques majeurs. Support : tableau de bord synthétique.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3>
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-2" id="acc-trigger-2">
+            Point d'équipe hebdomadaire
+          </button>
+        </h3>
+        <div class="accordion-panel" id="acc-panel-2" role="region" aria-labelledby="acc-trigger-2">
+          <div class="accordion-panel-inner">
+            <p>Réunion courte avec l'équipe opérationnelle : avancement des tâches en cours, blocages, priorités de la semaine.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3>
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-3" id="acc-trigger-3">
+            Rapport d'avancement
+          </button>
+        </h3>
+        <div class="accordion-panel" id="acc-panel-3" role="region" aria-labelledby="acc-trigger-3">
+          <div class="accordion-panel-inner">
+            <p>Document écrit diffusé à l'ensemble des parties prenantes après chaque jalon majeur : état du périmètre, du planning, du budget et des risques.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-head"><span class="icon">🔗</span> Pour aller plus loin</div>
+      <p>La leçon suivante détaille la gestion des ressources du projet : comment affiner l'allocation présentée ici et arbitrer les conflits de disponibilité entre plusieurs projets.</p>
+    </div>
+  </section>
+
+  <!-- Stepper : construction du plan -->
+  <section class="lesson-section alt-bg" id="etapes">
+    <div class="section-kicker"><span class="section-index mono">08</span></div>
+    <h2>Les étapes d'assemblage du plan de projet</h2>
+    <div class="stepper">
+      <div class="stepper-track">
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">1</span><span class="step-line"></span></div>
+          <h3>Rappeler le cadrage</h3>
+          <p>Objectifs, périmètre et livrables issus du cahier des charges.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">2</span><span class="step-line"></span></div>
+          <h3>Construire le WBS</h3>
+          <p>Décomposer le projet en lots puis en tâches planifiables.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">3</span><span class="step-line"></span></div>
+          <h3>Planifier</h3>
+          <p>Séquencer les tâches, identifier le chemin critique.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">4</span><span class="step-line"></span></div>
+          <h3>Allouer &amp; budgéter</h3>
+          <p>Affecter les ressources et valoriser chaque lot de travail.</p>
+        </div>
+        <div class="step">
+          <div class="step-marker"><span class="step-dot mono">5</span></div>
+          <h3>Anticiper &amp; communiquer</h3>
+          <p>Cartographier les risques et fixer le rythme de communication.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Points clés -->
+  <section class="lesson-section" id="retenir">
+    <div class="section-kicker"><span class="section-index mono">09</span></div>
+    <h2>Points clés à retenir</h2>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span class="si-num mono">01</span>
+        <h3>Le plan est une synthèse</h3>
+        <p>Il rassemble objectifs, périmètre, WBS, planning, ressources, budget, risques et communication en un document cohérent.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">02</span>
+        <h3>Le WBS structure tout le reste</h3>
+        <p>Planning et budget s'appuient directement sur les lots de travail identifiés dans le WBS.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">03</span>
+        <h3>Le chemin critique guide les priorités</h3>
+        <p>Toute tâche du chemin critique mérite une attention renforcée du chef de projet.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">04</span>
+        <h3>Le budget inclut une réserve</h3>
+        <p>Une réserve pour aléas rend le plan plus robuste face aux imprévus.</p>
+      </div>
+      <div class="summary-item">
+        <span class="si-num mono">05</span>
+        <h3>Le plan reste vivant</h3>
+        <p>Certains éléments (planning, budget, risques) sont mis à jour tout au long du projet.</p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Navigation entre leçons">
+    <a class="nav-link prev" href="#" onclick="return false;">
+      <span class="nav-dir">← Leçon précédente</span>
+      Leçon 09 — Plan de communication du projet
+    </a>
+    <a class="nav-link next" href="#" onclick="return false;">
+      <span class="nav-dir">Leçon suivante →</span>
+      Leçon 11 — Gestion des ressources du projet
+    </a>
+  </nav>
+  <a class="module-link" href="#" onclick="return false;">↩ Retour au sommaire du module</a>
+
+</main>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="#F4F6F8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<footer class="site-footer">
+  <p>Filière Gestion de Projet — Module 2 : Planification et organisation du projet.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('reading-progress');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+    progressBar.setAttribute('aria-valuenow', Math.round(pct));
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  var menuToggle = document.getElementById('menu-toggle');
+  var topMenu = document.getElementById('top-menu');
+  menuToggle.addEventListener('click', function(){
+    var open = topMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  topMenu.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      topMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  var backToTop = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY || document.documentElement.scrollTop) > 500){
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  }, { passive: true });
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function activate(tab){
+      tabs.forEach(function(t){
+        var isActive = t === tab;
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        t.tabIndex = isActive ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, i){
+      tab.addEventListener('click', function(){ activate(tab); });
+      tab.addEventListener('keydown', function(e){
+        var idx = i;
+        if(e.key === 'ArrowRight'){ idx = (i + 1) % tabs.length; tabs[idx].focus(); activate(tabs[idx]); e.preventDefault(); }
+        if(e.key === 'ArrowLeft'){ idx = (i - 1 + tabs.length) % tabs.length; tabs[idx].focus(); activate(tabs[idx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      if(expanded){
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }
+    });
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var targetId = btn.getAttribute('data-copy-target');
+      var el = document.getElementById(targetId);
+      if(!el) return;
+      var text = el.innerText;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){
+          var original = btn.textContent;
+          btn.textContent = 'Copié !';
+          setTimeout(function(){ btn.textContent = original; }, 1500);
+        });
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = document.querySelectorAll('.lesson-section');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  } else {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    sections.forEach(function(s){ observer.observe(s); });
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 27 — Négociation et tarification des prestations de transit</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F7F3E8;--color-text:#1C2B3A;--color-accent:#B8863B;--color-neutral:#98A2AD}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 "IBM Plex Sans",sans-serif}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+#progress{position:fixed;z-index:100;top:0;left:0;width:0;height:4px;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:rgba(247,243,232,.96);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));backdrop-filter:blur(7px)}
+nav,.wrap{max-width:1200px;margin:auto}.nav{padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+.brand,h1,h2,h3{font-family:"Libre Franklin","IBM Plex Sans",sans-serif}.brand{font-weight:700;font-size:14px;letter-spacing:.05em}.brand b{color:var(--color-accent)}
+main{max-width:1200px;margin:auto;padding:28px 24px 70px}.hero{display:grid;grid-template-columns:1.03fr .97fr;gap:48px;align-items:center;padding:55px 0}
+.eyebrow{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.1em;color:var(--color-accent)}
+h1{font-size:clamp(40px,6vw,72px);line-height:1.04;letter-spacing:-.045em;margin:14px 0 22px}h2{font-size:36px;line-height:1.1;margin:0 0 18px}h3{font-size:21px;line-height:1.15}
+.subtitle{font-size:20px;max-width:720px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.badge{border:1px solid var(--color-neutral);border-radius:999px;padding:5px 10px;font:500 11px "IBM Plex Mono"}
+.visual{border:1px solid var(--color-neutral);padding:16px;background:color-mix(in srgb,var(--color-accent) 3%,var(--color-bg))}.visual svg{display:block;width:100%;height:auto}
+.toc{border-block:1px solid var(--color-neutral);padding:20px 0}.toc ul{list-style:none;display:flex;flex-wrap:wrap;gap:9px 25px;padding:0;margin:12px 0}.toc a{font-weight:600;font-size:14px}
+section{padding:60px 0;border-top:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}.grid{display:grid;grid-template-columns:1fr .88fr;gap:44px;align-items:start}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:25px}.card,.key{border:1px solid var(--color-neutral);padding:19px;transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon,.key b{color:var(--color-accent);font:700 27px "Libre Franklin"}.callout{border-left:5px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));padding:15px 18px;margin:24px 0}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;margin-top:24px;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--color-neutral);vertical-align:top}th{color:var(--color-accent);font:600 11px "IBM Plex Mono";text-transform:uppercase}.mono{font-family:"IBM Plex Mono";background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));padding:2px 5px;border-radius:4px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-top:22px}.tab{background:var(--color-bg);border:1px solid var(--color-neutral);padding:9px 14px;cursor:pointer;font-weight:600}.tab[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}.panel{border:1px solid var(--color-neutral);border-top:0;padding:18px}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);margin:28px 0}.step{border-top:3px solid var(--color-neutral);padding:15px}.step:first-child{border-color:var(--color-accent)}.num{font:600 11px "IBM Plex Mono";color:var(--color-accent)}
+.quote{font:600 24px/1.35 "Libre Franklin";border-top:1px solid var(--color-neutral);border-bottom:1px solid var(--color-neutral);padding:25px 0;margin:30px 0}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.form{border:1px solid var(--color-neutral);padding:18px;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));font:500 13px/1.8 "IBM Plex Mono"}.line{border-bottom:1px solid var(--color-neutral);padding:7px 0}.label{color:var(--color-accent)}
+details{border-top:1px solid var(--color-neutral);padding:15px 0}summary{cursor:pointer;font-family:"Libre Franklin";font-weight:600}
+.bottom{display:flex;justify-content:space-between;gap:10px;margin-top:48px}.btn{border:1px solid var(--color-neutral);padding:11px 14px;font-weight:600}.top{position:fixed;right:22px;bottom:22px;border:1px solid var(--color-neutral);background:var(--color-bg);padding:10px 13px;cursor:pointer;z-index:40}
+footer{border-top:1px solid var(--color-neutral);padding:25px 24px;max-width:1200px;margin:auto}.reveal{opacity:0;transform:translateY(15px);transition:.5s}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero,.grid{grid-template-columns:1fr}.visual{order:-1}.cards,.keys{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){main{padding-inline:16px}.cards,.keys,.stepper{grid-template-columns:1fr}.bottom{flex-direction:column}.toc ul{display:block}.toc li{margin:8px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<header><nav class="nav"><div class="brand">DOUANE & TRANSIT <b>/</b> REGISTRE PÉDAGOGIQUE</div><a href="#sommaire">Sommaire</a></nav></header>
+<main>
+<section class="hero reveal" style="border-top:0">
+<div>
+<div class="eyebrow">Module 6 · Leçon 27 · Avancé</div>
+<h1>Négociation et tarification des prestations de transit</h1>
+<p class="subtitle">Établir une offre tarifaire cohérente pour une prestation de transit.</p>
+<div class="meta"><span class="badge">MODULE 6 · PROJET PROFESSIONNEL & RELATION CLIENT</span><span class="badge">15 MIN</span><span class="badge">AVANCÉ</span></div>
+</div>
+<div class="visual">
+<svg viewBox="0 0 620 420" role="img" aria-label="Schéma de construction d'une offre tarifaire de transit">
+<rect x="25" y="25" width="570" height="370" fill="none" stroke="#98A2AD"/>
+<text x="310" y="60" text-anchor="middle" font-family="Libre Franklin" font-size="22" font-weight="700">OFFRE TARIFAIRE</text>
+<line x1="310" y1="78" x2="310" y2="110" stroke="#B8863B" stroke-width="3"/>
+<rect x="55" y="125" width="150" height="75" fill="none" stroke="#98A2AD"/><rect x="235" y="125" width="150" height="75" fill="none" stroke="#B8863B" stroke-width="3"/><rect x="415" y="125" width="150" height="75" fill="none" stroke="#98A2AD"/>
+<text x="130" y="157" text-anchor="middle" font-family="Libre Franklin" font-size="16" font-weight="700">COÛTS</text><text x="130" y="179" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">logistique</text>
+<text x="310" y="157" text-anchor="middle" font-family="Libre Franklin" font-size="16" font-weight="700">HONORAIRES</text><text x="310" y="179" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">prestation</text>
+<text x="490" y="157" text-anchor="middle" font-family="Libre Franklin" font-size="16" font-weight="700">CONDITIONS</text><text x="490" y="179" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">devis · facturation</text>
+<path d="M205 162H235M385 162H415" stroke="#1C2B3A" stroke-width="2"/>
+<rect x="135" y="240" width="350" height="100" fill="none" stroke="#B8863B" stroke-width="3"/>
+<text x="310" y="272" text-anchor="middle" font-family="Libre Franklin" font-size="20" font-weight="700">NÉGOCIATION</text>
+<text x="310" y="298" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">valeur · marge · périmètre</text>
+<text x="310" y="322" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">proposition claire et cohérente</text>
+</svg>
+</div>
+</section>
+
+<nav class="toc reveal" id="sommaire"><b>Sommaire</b><ul>
+<li><a href="#cout">01 · Coût logistique</a></li><li><a href="#honoraires">02 · Honoraires du transitaire</a></li>
+<li><a href="#devis">03 · Devis et facturation</a></li><li><a href="#negociation">04 · Négociation commerciale</a></li><li><a href="#synthese">05 · Points clés</a></li>
+</ul></nav>
+
+<section id="cout" class="reveal">
+<div class="eyebrow">01 / Construction du prix</div><h2>Les composantes du coût logistique</h2>
+<p>Une prestation de transit doit être chiffrée à partir de l'ensemble des charges nécessaires à la réalisation de l'opération. L'objectif est de distinguer les coûts engagés, les prestations réalisées et la rémunération du transitaire.</p>
+<div class="cards">
+<div class="card"><div class="icon">01</div><h3>Transport</h3><p>Frais liés à l'acheminement de la marchandise selon le parcours retenu.</p></div>
+<div class="card"><div class="icon">02</div><h3>Manutention</h3><p>Charges associées aux opérations de prise en charge, transfert ou manipulation.</p></div>
+<div class="card"><div class="icon">03</div><h3>Formalités</h3><p>Coûts liés aux démarches et opérations nécessaires au traitement du dossier.</p></div>
+<div class="card"><div class="icon">04</div><h3>Frais annexes</h3><p>Autres charges directement liées à l'opération et à identifier clairement.</p></div>
+</div>
+<div class="callout"><strong>💡 À retenir</strong><br>Une offre professionnelle doit permettre au client de comprendre ce qu'il paie et ce qui est inclus dans la prestation.</div>
+</section>
+
+<section id="honoraires" class="reveal">
+<div class="grid"><div>
+<div class="eyebrow">02 / Rémunération</div><h2>Les honoraires du transitaire</h2>
+<p>Les honoraires correspondent à la rémunération de la prestation fournie par le transitaire. Ils doivent être distingués des débours et autres frais engagés pour le compte de l'opération.</p>
+<div class="quote">Une tarification lisible sépare les coûts de l'opération de la rémunération de la prestation.</div>
+</div>
+<div class="visual"><svg viewBox="0 0 500 420" role="img" aria-label="Décomposition pédagogique d'une facture de transit">
+<rect x="50" y="40" width="400" height="340" fill="none" stroke="#98A2AD"/>
+<text x="250" y="75" text-anchor="middle" font-family="Libre Franklin" font-size="21" font-weight="700">FACTURE</text>
+<rect x="90" y="100" width="320" height="55" fill="none" stroke="#98A2AD"/><text x="250" y="134" text-anchor="middle" font-family="Libre Franklin" font-size="16" font-weight="700">DÉBOURS / FRAIS</text>
+<rect x="90" y="180" width="320" height="55" fill="none" stroke="#B8863B" stroke-width="3"/><text x="250" y="214" text-anchor="middle" font-family="Libre Franklin" font-size="16" font-weight="700">HONORAIRES</text>
+<rect x="90" y="260" width="320" height="55" fill="none" stroke="#98A2AD"/><text x="250" y="294" text-anchor="middle" font-family="Libre Franklin" font-size="16" font-weight="700">TOTAL</text>
+<path d="M250 155V180M250 235V260" stroke="#B8863B" stroke-width="3"/>
+<text x="250" y="350" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">présentation claire des composantes</text>
+</svg></div></div>
+</section>
+
+<section id="devis" class="reveal">
+<div class="eyebrow">03 / Document commercial</div><h2>Devis et facturation</h2>
+<p>Le devis formalise la proposition tarifaire avant l'exécution de la prestation. La facturation intervient ensuite selon les conditions convenues et les prestations effectivement réalisées.</p>
+<div class="grid">
+<div class="form">
+<div class="line"><span class="label">DEVIS</span> : référence / date</div>
+<div class="line"><span class="label">CLIENT</span> : identification</div>
+<div class="line"><span class="label">PRESTATION</span> : périmètre de mission</div>
+<div class="line"><span class="label">FRAIS</span> : coûts identifiés</div>
+<div class="line"><span class="label">HONORAIRES</span> : rémunération</div>
+<div class="line"><span class="label">CONDITIONS</span> : paiement / validité</div>
+</div>
+<div>
+<div class="tabs" role="tablist">
+<button class="tab" role="tab" aria-selected="true" data-tab="devisp">Devis</button>
+<button class="tab" role="tab" aria-selected="false" data-tab="factp">Facturation</button>
+</div>
+<div class="panel" id="devisp"><h3>Le devis</h3><p>Il présente le périmètre de la prestation, les éléments tarifaires et les conditions proposées au client.</p></div>
+<div class="panel" id="factp" hidden><h3>La facturation</h3><p>Elle traduit la réalisation de la prestation et les montants dus conformément aux conditions convenues.</p></div>
+</div>
+</div>
+<div class="table-wrap"><table><thead><tr><th>Élément</th><th>Fonction</th><th>Bonne pratique</th></tr></thead><tbody>
+<tr><td>Prestation</td><td>Définir ce qui est vendu</td><td>Décrire précisément le périmètre</td></tr>
+<tr><td>Frais</td><td>Identifier les charges</td><td>Éviter les postes trop vagues</td></tr>
+<tr><td>Honoraires</td><td>Rémunérer le transitaire</td><td>Présenter clairement le montant ou la méthode</td></tr>
+<tr><td>Conditions</td><td>Encadrer la relation commerciale</td><td>Préciser les modalités applicables</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong><br>Un devis ambigu ou trop global peut créer un désaccord sur les frais réellement inclus. La transparence du périmètre et des postes tarifaires protège la relation commerciale.</div>
+</section>
+
+<section id="negociation" class="reveal">
+<div class="eyebrow">04 / Relation commerciale</div><h2>Négociation commerciale</h2>
+<p>Négocier une prestation de transit ne consiste pas seulement à réduire un prix. Il s'agit de rechercher un équilibre entre la valeur de la prestation, les coûts supportés, la marge nécessaire et les attentes du client.</p>
+<div class="stepper">
+<div class="step"><span class="num">01</span><h3>Écouter</h3><p>Comprendre le besoin et les priorités du client.</p></div>
+<div class="step"><span class="num">02</span><h3>Chiffrer</h3><p>Construire une offre cohérente avec le périmètre.</p></div>
+<div class="step"><span class="num">03</span><h3>Argumenter</h3><p>Expliquer la valeur et les composantes du prix.</p></div>
+<div class="step"><span class="num">04</span><h3>Ajuster</h3><p>Négocier les conditions sans perdre la cohérence économique.</p></div>
+<div class="step"><span class="num">05</span><h3>Formaliser</h3><p>Confirmer les conditions convenues.</p></div>
+</div>
+<div class="visual"><svg viewBox="0 0 900 240" role="img" aria-label="Processus de négociation commerciale">
+<line x1="95" y1="115" x2="805" y2="115" stroke="#1C2B3A" stroke-width="2"/>
+<g font-family="IBM Plex Mono" font-size="10" text-anchor="middle">
+<circle cx="95" cy="115" r="35" fill="none" stroke="#98A2AD" stroke-width="2"/><text x="95" y="119">BESOIN</text>
+<circle cx="270" cy="115" r="35" fill="none" stroke="#B8863B" stroke-width="3"/><text x="270" y="119">OFFRE</text>
+<circle cx="450" cy="115" r="35" fill="none" stroke="#98A2AD" stroke-width="2"/><text x="450" y="119">VALEUR</text>
+<circle cx="630" cy="115" r="35" fill="none" stroke="#B8863B" stroke-width="3"/><text x="630" y="119">ACCORD</text>
+<circle cx="805" cy="115" r="35" fill="none" stroke="#1C2B3A" stroke-width="2"/><text x="805" y="119">FORMALISATION</text>
+</g>
+</svg></div>
+<div class="callout"><strong>📋 Cas pratique</strong><br>Un client demande une baisse du prix. Avant d'accepter, le transitaire vérifie le périmètre de la mission, distingue les frais incompressibles des honoraires et peut proposer un ajustement portant sur les conditions ou le niveau de service plutôt qu'une baisse non maîtrisée du prix.</div>
+<details><summary>Que peut-on négocier ?</summary><p>Le périmètre de la prestation, les conditions commerciales, certaines modalités de service et, selon le dossier, la structure tarifaire. Toute modification doit rester cohérente avec les coûts et les engagements pris.</p></details>
+<details><summary>Pourquoi éviter une remise non justifiée ?</summary><p>Parce qu'une réduction qui ne tient pas compte des coûts ou du temps de travail peut rendre la prestation économiquement incohérente et dégrader la qualité du service.</p></details>
+</section>
+
+<section id="synthese" class="reveal">
+<div class="eyebrow">05 / Synthèse</div><h2>Points clés à retenir</h2>
+<div class="keys">
+<div class="key"><b>01</b><strong>Identifier les coûts</strong><br>Recenser les composantes nécessaires à l'opération de transit.</div>
+<div class="key"><b>02</b><strong>Valoriser la prestation</strong><br>Distinguer clairement les honoraires du transitaire et les frais.</div>
+<div class="key"><b>03</b><strong>Formaliser le devis</strong><br>Définir le périmètre, les montants et les conditions.</div>
+<div class="key"><b>04</b><strong>Négocier avec cohérence</strong><br>Rechercher un accord qui préserve la valeur et l'équilibre économique.</div>
+</div>
+<div class="callout"><strong>⚖️ Réglementation / texte applicable</strong><br>La tarification commerciale doit être présentée conformément aux règles contractuelles, fiscales et professionnelles applicables à l'opération. Les montants et modalités précis dépendent du dossier et du cadre réglementaire concerné.</div>
+<div class="callout"><strong>💡 Résumé</strong><br>Une offre tarifaire de transit solide repose sur une identification claire des coûts logistiques, une rémunération cohérente du transitaire, un devis transparent et une négociation commerciale maîtrisée. La clarté du périmètre et des conditions constitue un élément essentiel de la relation client.</div>
+</section>
+
+<div class="bottom">
+<a class="btn" href="#">← Leçon 26 · Gestion de la relation client et du transitaire</a>
+<a class="btn" href="#sommaire">↑ Sommaire du module</a>
+<a class="btn" href="#">Leçon 28 · Veille réglementaire et mise à jour des connaissances →</a>
+</div>
+</main>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+<footer><div class="brand">DOUANE & TRANSIT <b>/</b> MODULE 6</div><small>Leçon 27 — Négociation et tarification des prestations de transit · 15 min · Niveau avancé</small></footer>
+<script>
+const progress=document.getElementById("progress");
+addEventListener("scroll",()=>{const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h?scrollY/h*100:0)+"%"});
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(e=>obs.observe(e));
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
+document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected","false"));
+document.querySelectorAll(".panel").forEach(x=>x.hidden=true);
+b.setAttribute("aria-selected","true");document.getElementById(b.dataset.tab).hidden=false;
+}));
+document.getElementById("top").onclick=()=>scrollTo({top:0,behavior:"smooth"});
+</script>
+</body>
+</html>

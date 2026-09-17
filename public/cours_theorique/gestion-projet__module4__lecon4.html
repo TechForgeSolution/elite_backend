@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 19 — Gestion des changements, filière Gestion de Projet.">
+<title>Leçon 19 — Gestion des changements | Gestion de Projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F4F6F8;--color-text:#14213D;--color-accent:#FF9F1C;--color-neutral:#8D99AE;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-text)}
+button{font:inherit;color:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;background:var(--color-accent)}
+header{position:sticky;top:0;z-index:900;background:rgba(244,246,248,.94);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));backdrop-filter:blur(8px)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font:800 14px Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.brand span{font:500 12px "IBM Plex Mono",monospace;color:var(--color-neutral);margin-left:10px}
+.nav a{text-decoration:none;font-size:13px;font-weight:600}
+.container{max-width:980px;margin:auto;padding:0 24px}
+.hero{padding:76px 0 46px;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg))}
+.eyebrow,.section-kicker{font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:Manrope,sans-serif;line-height:1.18}
+h1{font-size:clamp(36px,6vw,64px);margin:14px 0 18px;max-width:850px}
+h2{font-size:clamp(27px,4vw,38px);margin:7px 0 22px}
+h3{font-size:19px;margin:8px 0 8px}
+.hero p{max-width:720px;font-size:18px;color:color-mix(in srgb,var(--color-text) 72%,var(--color-bg))}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}
+.badge{border:1px solid color-mix(in srgb,var(--color-neutral) 55%,var(--color-bg));padding:7px 11px;border-radius:999px;font:500 12px "IBM Plex Mono",monospace;background:var(--color-bg)}
+.badge.accent{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.toc{margin:30px 0 8px;padding:20px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));background:rgba(255,255,255,.22)}
+.toc strong{font-family:Manrope,sans-serif}
+.toc ul{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 28px;margin:12px 0 0;padding-left:18px}
+.toc a{text-decoration:none;font-size:14px}
+.toc a:hover,.nav a:hover{text-decoration:underline;text-decoration-color:var(--color-accent);text-decoration-thickness:2px}
+main section{padding:76px 0;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 30%,var(--color-bg))}
+main section:nth-child(even){background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));padding-left:24px;padding-right:24px;margin-left:-24px;margin-right:-24px}
+main section p{max-width:720px}
+.callout{display:flex;gap:14px;max-width:820px;margin:26px 0;padding:18px 20px;border:1px solid var(--color-accent);border-left-width:5px;background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+.callout p{margin:5px 0 0}
+.icon{font-size:20px;line-height:1.4}
+.flow{display:flex;align-items:stretch;gap:10px;margin:34px 0;overflow-x:auto;padding:5px 0 12px}
+.node{min-width:180px;padding:17px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));background:var(--color-bg)}
+.node b,.card-num{font:600 12px "IBM Plex Mono",monospace;color:var(--color-accent)}
+.node span{display:block;font-family:Manrope,sans-serif;font-weight:800;margin:5px 0}
+.node small{color:var(--color-neutral)}
+.arrow{display:flex;align-items:center;color:var(--color-accent);font-size:24px}
+.impact-grid,.key-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
+.card,.key-grid>div{padding:20px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));background:var(--color-bg)}
+.card p{margin:0;color:color-mix(in srgb,var(--color-text) 72%,var(--color-bg))}
+.svg-wrap{margin:30px 0;padding:18px;border:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));overflow:auto;background:var(--color-bg)}
+.svg-wrap svg{display:block;min-width:720px;width:100%;height:auto}
+table{width:100%;border-collapse:collapse;margin:28px 0;background:var(--color-bg);font-size:14px}
+caption{text-align:left;padding:0 0 10px;font:700 14px Manrope,sans-serif}
+th,td{padding:13px 14px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));text-align:left}
+thead th{font-family:Manrope,sans-serif;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+tbody tr:hover{outline:1px solid var(--color-accent);outline-offset:-1px}
+.pilot{padding:18px 20px;margin:28px 0;border:1px solid color-mix(in srgb,var(--color-accent) 65%,var(--color-neutral));background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));overflow:auto}
+.pilot-label{font:600 11px "IBM Plex Mono",monospace;letter-spacing:.1em;margin-bottom:8px}
+code{font-family:"IBM Plex Mono",monospace;font-size:13px;white-space:nowrap}
+.timeline{display:grid;grid-template-columns:1fr 70px 1fr 70px 1fr;align-items:center;margin:34px 0}
+.t-item{padding:16px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));background:var(--color-bg)}
+.t-item.active{border-color:var(--color-accent);box-shadow:inset 4px 0 var(--color-accent)}
+.t-item b{display:block;font-family:Manrope,sans-serif}
+.t-item span{font-size:13px;color:var(--color-neutral)}
+.t-line{height:2px;background:var(--color-neutral);position:relative}
+.t-line:after{content:"";position:absolute;right:0;top:-5px;border-left:10px solid var(--color-accent);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.tabs{display:flex;gap:6px;margin:28px 0 0;flex-wrap:wrap}
+.tab{border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));background:var(--color-bg);padding:10px 15px;cursor:pointer;font-weight:600}
+.tab:hover,.tab:focus-visible,.tab.active{border-color:var(--color-accent)}
+.tab.active{box-shadow:inset 0 -3px var(--color-accent)}
+.tabpanel{padding:20px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));border-top:0;background:var(--color-bg)}
+.steps{display:grid;gap:12px;margin:28px 0}
+.step{display:flex;gap:16px;padding:17px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));background:var(--color-bg)}
+.step>span{width:34px;height:34px;display:grid;place-items:center;flex:none;border:1px solid var(--color-accent);font:600 13px "IBM Plex Mono",monospace}
+.step p{margin:3px 0 0}
+details{border-top:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));padding:17px 0}
+summary{cursor:pointer;font-weight:700;font-family:Manrope,sans-serif}
+.key-grid{grid-template-columns:repeat(5,1fr)}
+.key-grid b{display:block;font-family:Manrope,sans-serif}
+.key-grid span{display:block;margin-top:7px;font-size:13px;color:color-mix(in srgb,var(--color-text) 70%,var(--color-bg))}
+.final-note{font-size:20px;padding:22px;border-left:5px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 7%,var(--color-bg))}
+.bottom-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;padding:34px 0 50px}
+.bottom-nav a{padding:15px;border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));text-decoration:none;background:var(--color-bg);font-size:13px}
+.bottom-nav a:hover{border-color:var(--color-accent)}
+.bottom-nav a:last-child{text-align:right}
+.top{position:fixed;right:20px;bottom:20px;display:none;width:42px;height:42px;border:1px solid var(--color-accent);background:var(--color-bg);cursor:pointer}
+footer{padding:25px;text-align:center;border-top:1px solid color-mix(in srgb,var(--color-neutral) 30%,var(--color-bg));font-size:12px;color:var(--color-neutral)}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:768px){
+ .nav{padding:12px 16px} .nav a{display:none} .container{padding:0 18px} .hero{padding-top:52px}
+ .toc ul{grid-template-columns:1fr} .impact-grid,.key-grid{grid-template-columns:1fr}
+ main section:nth-child(even){padding-left:18px;padding-right:18px;margin-left:-18px;margin-right:-18px}
+ .timeline{grid-template-columns:1fr;gap:8px} .t-line{height:28px;width:2px;margin-left:20px} .t-line:after{right:auto;left:-5px;top:auto;bottom:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid var(--color-accent);border-bottom:0}
+ .bottom-nav{grid-template-columns:1fr} .bottom-nav a:last-child{text-align:left} h1{font-size:38px}
+}
+@media(max-width:480px){.container{padding:0 14px} .flow{margin-right:-14px} .hero p{font-size:16px} table{font-size:13px} th,td{padding:10px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto} .reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">Gestion de Projet <span>MODULE 04 · EXÉCUTION / SUIVI / CONTRÔLE</span></div>
+    <a href="#sommaire">Sommaire</a>
+  </nav>
+</header>
+
+<div class="container">
+<section class="hero">
+  <div class="eyebrow">Module 4 · Exécution, suivi et contrôle</div>
+  <h1>Leçon 19 — Gestion des changements</h1>
+  <p>Contrôler les modifications du projet en analysant leurs impacts, en organisant leur validation et en assurant leur traçabilité.</p>
+  <div class="meta">
+    <span class="badge accent">Niveau · Avancé</span>
+    <span class="badge">Durée · 18 min</span>
+    <span class="badge">Gestion des changements</span>
+  </div>
+</section>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire de la leçon">
+  <strong>Sommaire</strong>
+  <ul>
+    <li><a href="#demande">Demande de changement</a></li>
+    <li><a href="#impact">Analyse d'impact</a></li>
+    <li><a href="#cout">Coût</a></li>
+    <li><a href="#delai">Délai</a></li>
+    <li><a href="#perimetre">Périmètre</a></li>
+    <li><a href="#validation">Validation</a></li>
+    <li><a href="#tracabilite">Traçabilité</a></li>
+    <li><a href="#synthese">Points clés</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="demande">
+  <div class="section-kicker">01 · Demande</div>
+  <h2>La demande de changement</h2>
+  <p>Une demande de changement est une proposition formalisée visant à modifier un élément approuvé du projet : livrable, exigence, activité, ressource, coût, délai ou périmètre.</p>
+  <div class="callout"><span class="icon">💡</span><div><strong>À retenir</strong><p>Un changement ne doit pas être traité comme une simple modification informelle. Il doit être identifié, décrit, analysé puis soumis au processus de décision prévu par le projet.</p></div></div>
+  <div class="flow" aria-label="Circuit d'une demande de changement">
+    <div class="node"><b>01</b><span>Demande</span><small>Motif et description</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>02</b><span>Analyse</span><small>Impacts du changement</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>03</b><span>Décision</span><small>Validation ou refus</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>04</b><span>Traçabilité</span><small>Mise à jour du projet</small></div>
+  </div>
+  <p>La demande doit être suffisamment précise pour permettre une analyse objective. Elle peut préciser l'origine du changement, sa justification, les éléments concernés, l'urgence éventuelle et le résultat attendu.</p>
+</section>
+
+<section id="impact">
+  <div class="section-kicker">02 · Analyse</div>
+  <h2>Analyser l'impact du changement</h2>
+  <p>Avant toute décision, le chef de projet évalue les conséquences de la modification sur les dimensions essentielles du projet. L'objectif est de rendre visibles les effets directs et indirects du changement.</p>
+  <div class="impact-grid">
+    <article class="card"><span class="card-num">01</span><h3>Coût</h3><p>Évaluer les dépenses supplémentaires, les économies possibles et les effets sur le budget approuvé.</p></article>
+    <article class="card"><span class="card-num">02</span><h3>Délai</h3><p>Identifier les tâches déplacées, les dépendances affectées et l'éventuelle évolution de la date de fin.</p></article>
+    <article class="card"><span class="card-num">03</span><h3>Périmètre</h3><p>Déterminer ce qui entre, sort ou évolue dans les objectifs et livrables du projet.</p></article>
+  </div>
+  <div class="svg-wrap">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Schéma d'analyse d'impact : changement vers coût, délai et périmètre">
+      <title>Analyse d'impact d'une demande de changement</title>
+      <rect x="35" y="105" width="210" height="90" rx="12" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2"/>
+      <text x="140" y="142" text-anchor="middle" fill="var(--color-text)" font-size="18" font-weight="700">CHANGEMENT</text>
+      <text x="140" y="168" text-anchor="middle" fill="var(--color-neutral)" font-size="13">demande à analyser</text>
+      <line x1="245" y1="150" x2="345" y2="150" stroke="var(--color-neutral)" stroke-width="2"/>
+      <polygon points="345,150 332,143 332,157" fill="var(--color-accent)"/>
+      <line x1="345" y1="150" x2="420" y2="70" stroke="var(--color-neutral)" stroke-width="2"/>
+      <line x1="345" y1="150" x2="420" y2="150" stroke="var(--color-neutral)" stroke-width="2"/>
+      <line x1="345" y1="150" x2="420" y2="230" stroke="var(--color-neutral)" stroke-width="2"/>
+      <rect x="430" y="25" width="205" height="65" rx="10" fill="color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))" stroke="var(--color-accent)" stroke-width="2"/>
+      <rect x="430" y="118" width="205" height="65" rx="10" fill="color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))" stroke="var(--color-accent)" stroke-width="2"/>
+      <rect x="430" y="211" width="205" height="65" rx="10" fill="color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="532" y="54" text-anchor="middle" fill="var(--color-text)" font-size="17" font-weight="700">COÛT</text>
+      <text x="532" y="147" text-anchor="middle" fill="var(--color-text)" font-size="17" font-weight="700">DÉLAI</text>
+      <text x="532" y="240" text-anchor="middle" fill="var(--color-text)" font-size="17" font-weight="700">PÉRIMÈTRE</text>
+      <text x="745" y="125" fill="var(--color-neutral)" font-size="14">→ comparer</text>
+      <text x="745" y="151" fill="var(--color-neutral)" font-size="14">→ décider</text>
+      <text x="745" y="177" fill="var(--color-neutral)" font-size="14">→ tracer</text>
+    </svg>
+  </div>
+</section>
+
+<section id="cout">
+  <div class="section-kicker">03 · Coût</div>
+  <h2>Évaluer l'effet sur le coût</h2>
+  <p>L'analyse financière vérifie si la modification reste compatible avec le budget du projet. Il faut considérer les coûts immédiats mais aussi les conséquences induites par les nouvelles activités, ressources ou achats.</p>
+  <table>
+    <caption>Lecture synthétique de l'impact financier</caption>
+    <thead><tr><th scope="col">Élément</th><th scope="col">Question de pilotage</th><th scope="col">Effet à tracer</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Ressources</th><td>Faut-il mobiliser davantage de personnes ou de moyens ?</td><td>Variation du budget</td></tr>
+      <tr><th scope="row">Activités</th><td>De nouvelles tâches sont-elles nécessaires ?</td><td>Coût additionnel</td></tr>
+      <tr><th scope="row">Achats</th><td>Un équipement ou service supplémentaire est-il requis ?</td><td>Dépense nouvelle</td></tr>
+      <tr><th scope="row">Arbitrage</th><td>Le budget disponible permet-il le changement ?</td><td>Décision documentée</td></tr>
+    </tbody>
+  </table>
+  <div class="pilot"><div class="pilot-label">FICHE DE PILOTAGE · COÛT</div><code>IMPACT_COÛT = dépenses nouvelles + effets induits − économies éventuelles</code></div>
+</section>
+
+<section id="delai">
+  <div class="section-kicker">04 · Délai</div>
+  <h2>Évaluer l'effet sur le délai</h2>
+  <p>Un changement peut déplacer une activité, créer une nouvelle dépendance ou modifier une séquence de travail. L'analyse doit donc vérifier les dates et les conséquences sur les échéances du projet.</p>
+  <div class="timeline">
+    <div class="t-item"><b>État initial</b><span>planning approuvé</span></div>
+    <div class="t-line"></div>
+    <div class="t-item active"><b>Changement</b><span>activité modifiée</span></div>
+    <div class="t-line"></div>
+    <div class="t-item"><b>Nouvel état</b><span>échéances réévaluées</span></div>
+  </div>
+  <div class="callout"><span class="icon">⚠️</span><div><strong>Attention / erreur fréquente</strong><p>Valider une modification sans vérifier ses dépendances peut provoquer un décalage en chaîne. L'impact sur le calendrier doit être apprécié avant la décision.</p></div></div>
+</section>
+
+<section id="perimetre">
+  <div class="section-kicker">05 · Périmètre</div>
+  <h2>Évaluer l'effet sur le périmètre</h2>
+  <p>Le périmètre définit ce que le projet doit produire et ce qui relève de ses objectifs. Un changement peut ajouter un livrable, modifier une exigence ou retirer un élément initialement prévu.</p>
+  <div class="tabs" role="tablist" aria-label="Lecture du périmètre">
+    <button class="tab active" role="tab" aria-selected="true" aria-controls="scope-add" id="tab-add">Ajouter</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="scope-mod" id="tab-mod">Modifier</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="scope-remove" id="tab-remove">Retirer</button>
+  </div>
+  <div id="scope-add" class="tabpanel active" role="tabpanel" aria-labelledby="tab-add"><strong>Ajouter :</strong> intégrer un nouveau besoin ou livrable et mesurer les ressources nécessaires.</div>
+  <div id="scope-mod" class="tabpanel" role="tabpanel" aria-labelledby="tab-mod" hidden><strong>Modifier :</strong> faire évoluer une exigence ou un résultat sans perdre la trace de la version précédente.</div>
+  <div id="scope-remove" class="tabpanel" role="tabpanel" aria-labelledby="tab-remove" hidden><strong>Retirer :</strong> supprimer un élément prévu en vérifiant les conséquences sur les objectifs et dépendances.</div>
+</section>
+
+<section id="validation">
+  <div class="section-kicker">06 · Validation</div>
+  <h2>Décider et valider le changement</h2>
+  <p>Après l'analyse, la demande est soumise au niveau de décision approprié. La validation porte sur les effets du changement et sur son acceptation au regard des contraintes du projet.</p>
+  <div class="steps">
+    <div class="step"><span>1</span><div><b>Documenter</b><p>Présenter la demande et son analyse d'impact.</p></div></div>
+    <div class="step"><span>2</span><div><b>Arbitrer</b><p>Comparer les effets sur coût, délai et périmètre.</p></div></div>
+    <div class="step"><span>3</span><div><b>Décider</b><p>Accepter, refuser ou demander une révision de la demande.</p></div></div>
+    <div class="step"><span>4</span><div><b>Actualiser</b><p>Mettre à jour les références du projet après décision.</p></div></div>
+  </div>
+  <details><summary>Pourquoi formaliser la décision ?</summary><p>La formalisation évite les interprétations contradictoires et permet à l'équipe de savoir quelle version du projet constitue désormais la référence.</p></details>
+</section>
+
+<section id="tracabilite">
+  <div class="section-kicker">07 · Traçabilité</div>
+  <h2>Assurer la traçabilité</h2>
+  <p>La traçabilité permet de conserver l'historique des demandes, de leurs analyses et de leurs décisions. Elle rend le processus de changement vérifiable et facilite le suivi de l'évolution du projet.</p>
+  <table>
+    <caption>Informations à conserver dans le suivi d'un changement</caption>
+    <thead><tr><th scope="col">Information</th><th scope="col">Rôle</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Identifiant</th><td>Repérer la demande sans ambiguïté.</td></tr>
+      <tr><th scope="row">Description</th><td>Comprendre précisément la modification demandée.</td></tr>
+      <tr><th scope="row">Analyse d'impact</th><td>Conserver les effets évalués sur le projet.</td></tr>
+      <tr><th scope="row">Décision</th><td>Connaître le résultat de l'arbitrage.</td></tr>
+      <tr><th scope="row">Référence mise à jour</th><td>Relier la décision aux documents du projet.</td></tr>
+    </tbody>
+  </table>
+  <div class="pilot"><div class="pilot-label">FICHE DE PILOTAGE · REGISTRE</div><code>CHG-019 · statut: validé · coût: analysé · délai: analysé · périmètre: analysé · décision: enregistrée</code></div>
+</section>
+
+<section id="synthese">
+  <div class="section-kicker">08 · Synthèse</div>
+  <h2>Points clés à retenir</h2>
+  <div class="key-grid">
+    <div><b>Demander</b><span>Formaliser la modification.</span></div>
+    <div><b>Analyser</b><span>Mesurer ses impacts.</span></div>
+    <div><b>Évaluer</b><span>Examiner coût, délai et périmètre.</span></div>
+    <div><b>Valider</b><span>Décider au niveau approprié.</span></div>
+    <div><b>Tracer</b><span>Conserver l'historique et actualiser les références.</span></div>
+  </div>
+  <p class="final-note">Un changement maîtrisé est un changement <strong>formalisé, analysé, décidé et traçable</strong>.</p>
+</section>
+
+</main>
+
+<nav class="bottom-nav" aria-label="Navigation entre les leçons">
+  <a href="#" aria-label="Leçon précédente">← LEÇON 18<br><strong>Gestion des délais et des écarts</strong></a>
+  <a href="#sommaire">↑ Sommaire du module</a>
+  <a href="#" aria-label="Leçon suivante">LEÇON 20 →<br><strong>Reporting et tableau de bord projet</strong></a>
+</nav>
+</div>
+
+<footer>Filière Gestion de Projet · Leçon 19 · Support pédagogique</footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('topBtn');
+function updateProgress(){
+  const d=document.documentElement;
+  const max=d.scrollHeight-d.clientHeight;
+  progress.style.width=(max>0?(d.scrollTop/max)*100:0)+'%';
+  topBtn.style.display=d.scrollY>500?'block':'none';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+document.querySelectorAll('.tab').forEach((tab,index,all)=>{
+  tab.addEventListener('click',()=>{
+    all.forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false')});
+    document.querySelectorAll('.tabpanel').forEach(p=>{p.classList.remove('active');p.hidden=true});
+    tab.classList.add('active');tab.setAttribute('aria-selected','true');
+    const panel=document.getElementById(tab.getAttribute('aria-controls'));
+    panel.hidden=false;panel.classList.add('active');
+  });
+  tab.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+      e.preventDefault();
+      const next=e.key==='ArrowRight'?(index+1)%all.length:(index-1+all.length)%all.length;
+      all[next].focus();all[next].click();
+    }
+  });
+});
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(e.isIntersecting)e.target.classList.add('visible');
+}),{threshold:.08});
+document.querySelectorAll('main section').forEach(s=>{s.classList.add('reveal');observer.observe(s)});
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 55 - Pilotage et amélioration continue - Module 10 Gestion budgétaire">
+  <title>Leçon 55 — Pilotage et amélioration continue | Comptabilité</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-alt: #f6f8f6;
+      --color-text: #0b0f0d;
+      --color-text-muted: #5a6560;
+      --color-accent: #1f6f54;
+      --color-accent-soft: #e7f2ed;
+      --color-border: #e3e8e5;
+      --color-accent-alt: #b3541e;
+      --max-width: 1180px;
+      --reading-width: 760px;
+      --shadow: 0 12px 35px rgba(11, 15, 13, .07);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.7;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--color-accent);
+      outline-offset: 4px;
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+    }
+
+    .progress-value {
+      width: 0;
+      height: 100%;
+      background: var(--color-accent);
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--color-border);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-inner {
+      max-width: var(--max-width);
+      margin: auto;
+      min-height: 72px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      color: var(--color-accent);
+      background: var(--color-bg-alt);
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 600;
+    }
+
+    .brand-text small {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: .9rem;
+    }
+
+    .header-menu {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-menu a {
+      color: var(--color-text-muted);
+      font-size: .88rem;
+      font-weight: 500;
+    }
+
+    .header-menu a:hover {
+      color: var(--color-accent);
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+    }
+
+    .hero-inner {
+      max-width: var(--max-width);
+      margin: auto;
+      padding: 72px 24px 76px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 460px;
+      gap: 55px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid #cfdad4;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--color-accent);
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-accent);
+    }
+
+    h1 {
+      margin-top: 20px;
+      max-width: 750px;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2.35rem, 5vw, 4.6rem);
+      line-height: 1.05;
+      letter-spacing: -.045em;
+    }
+
+    .hero-subtitle {
+      max-width: 700px;
+      margin-top: 22px;
+      color: var(--color-text-muted);
+      font-size: 1.08rem;
+    }
+
+    .lesson-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--color-text-muted);
+      font-size: .8rem;
+    }
+
+    .meta-item strong {
+      color: var(--color-text);
+    }
+
+    /* HERO ILLUSTRATION */
+    .hero-visual {
+      position: relative;
+      min-height: 350px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-dashboard {
+      width: 100%;
+      filter: drop-shadow(0 20px 25px rgba(11,15,13,.1));
+    }
+
+    .hero-dashboard .panel {
+      fill: #fff;
+      stroke: var(--color-border);
+      stroke-width: 2;
+    }
+
+    .hero-dashboard .line {
+      fill: none;
+      stroke: var(--color-accent);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .hero-dashboard .soft {
+      fill: var(--color-accent-soft);
+    }
+
+    .hero-dashboard .dark {
+      fill: var(--color-text);
+    }
+
+    .hero-dashboard .muted {
+      fill: #a2ada7;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: var(--max-width);
+      margin: auto;
+      padding: 55px 24px 80px;
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
+      gap: 55px;
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: 98px;
+    }
+
+    .toc-title {
+      margin-bottom: 14px;
+      font-family: "Sora", sans-serif;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .toc nav {
+      border-left: 1px solid var(--color-border);
+    }
+
+    .toc a {
+      display: block;
+      padding: 7px 0 7px 15px;
+      color: var(--color-text-muted);
+      font-size: .82rem;
+      line-height: 1.4;
+      border-left: 2px solid transparent;
+      margin-left: -1px;
+      transition: .2s;
+    }
+
+    .toc a:hover,
+    .toc a.active {
+      color: var(--color-accent);
+      border-left-color: var(--color-accent);
+      background: linear-gradient(to right, var(--color-accent-soft), transparent);
+    }
+
+    .content {
+      min-width: 0;
+    }
+
+    .content section {
+      max-width: var(--reading-width);
+      margin-bottom: 70px;
+    }
+
+    .section-number {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--color-accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    h2 {
+      font-family: "Sora", sans-serif;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      line-height: 1.2;
+      letter-spacing: -.03em;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      font-size: 1.12rem;
+      line-height: 1.3;
+      margin: 28px 0 12px;
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    .lead {
+      font-size: 1.05rem;
+      color: #35413b;
+    }
+
+    ul,
+    ol {
+      padding-left: 22px;
+      margin: 15px 0 20px;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    /* CALLOUTS */
+    .callout {
+      margin: 25px 0;
+      padding: 19px 20px;
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--color-accent);
+      border-radius: 10px;
+      background: var(--color-bg-alt);
+    }
+
+    .callout.warning {
+      border-left-color: var(--color-accent-alt);
+    }
+
+    .callout-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 7px;
+      font-weight: 700;
+    }
+
+    .callout p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* OBJECTIVES */
+    .objectives {
+      display: grid;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .objective {
+      display: grid;
+      grid-template-columns: 35px 1fr;
+      gap: 13px;
+      align-items: start;
+      padding: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 11px;
+      background: #fff;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .objective:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .objective-number {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+
+    /* SVG ILLUSTRATIONS */
+    .visual-card {
+      margin: 30px 0;
+      padding: 22px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .visual-caption {
+      margin-top: 12px;
+      color: var(--color-text-muted);
+      font-size: .78rem;
+      text-align: center;
+    }
+
+    .flow-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* KPI CARDS */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 25px 0;
+    }
+
+    .kpi {
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: #fff;
+      transition: transform .2s;
+    }
+
+    .kpi:hover {
+      transform: translateY(-3px);
+    }
+
+    .kpi-label {
+      color: var(--color-text-muted);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .kpi-value {
+      margin-top: 5px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .kpi-note {
+      margin-top: 5px;
+      color: var(--color-accent);
+      font-size: .72rem;
+    }
+
+    .kpi-note.negative {
+      color: var(--color-accent-alt);
+    }
+
+    /* TABLES */
+    .table-wrap {
+      margin: 25px 0;
+      overflow-x: auto;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th {
+      padding: 13px 14px;
+      background: var(--color-bg-alt);
+      border-bottom: 1px solid var(--color-border);
+      text-align: left;
+      font-size: .74rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: .84rem;
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .number {
+      font-family: "IBM Plex Mono", monospace;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .positive {
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    .negative {
+      color: var(--color-accent-alt);
+      font-weight: 600;
+    }
+
+    /* TABS */
+    .tabs {
+      margin: 25px 0;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .tab-buttons {
+      display: flex;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 13px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      font-size: .8rem;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-button:hover,
+    .tab-button[aria-selected="true"] {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+      background: #fff;
+    }
+
+    .tab-panel {
+      padding: 22px;
+    }
+
+    .tab-panel[hidden] {
+      display: none;
+    }
+
+    /* STEPPER */
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      margin: 30px 0;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .step {
+      position: relative;
+      padding: 20px 15px;
+      background: #fff;
+      border-right: 1px solid var(--color-border);
+    }
+
+    .step:last-child {
+      border-right: 0;
+    }
+
+    .step-number {
+      display: inline-grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .7rem;
+      font-weight: 600;
+    }
+
+    .step strong {
+      display: block;
+      margin-top: 11px;
+      font-size: .82rem;
+    }
+
+    .step p {
+      margin-top: 5px;
+      color: var(--color-text-muted);
+      font-size: .73rem;
+      line-height: 1.5;
+    }
+
+    /* FORMULA */
+    .formula {
+      margin: 25px 0;
+      padding: 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: var(--color-bg-alt);
+      text-align: center;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 1rem;
+    }
+
+    .formula strong {
+      color: var(--color-accent);
+    }
+
+    /* ACTION PLAN */
+    .action-plan {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 25px 0;
+    }
+
+    .action-box {
+      padding: 18px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .action-box h4 {
+      margin-bottom: 8px;
+      font-size: .86rem;
+    }
+
+    .action-box p {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: .8rem;
+    }
+
+    /* ACCORDION */
+    .accordion {
+      margin: 25px 0;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .accordion-item + .accordion-item {
+      border-top: 1px solid var(--color-border);
+    }
+
+    .accordion-button {
+      width: 100%;
+      padding: 17px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .accordion-button:hover {
+      background: var(--color-bg-alt);
+    }
+
+    .accordion-icon {
+      color: var(--color-accent);
+      font-size: 1.2rem;
+      transition: transform .2s;
+    }
+
+    .accordion-button[aria-expanded="true"] .accordion-icon {
+      transform: rotate(45deg);
+    }
+
+    .accordion-content {
+      display: none;
+      padding: 0 17px 17px;
+      color: var(--color-text-muted);
+      font-size: .88rem;
+    }
+
+    .accordion-content.open {
+      display: block;
+    }
+
+    /* DASHBOARD MOCKUP */
+    .dashboard {
+      border: 1px solid var(--color-border);
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+      margin: 30px 0;
+    }
+
+    .dashboard-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+    }
+
+    .dashboard-title {
+      font-weight: 700;
+      font-size: .85rem;
+    }
+
+    .dashboard-date {
+      color: var(--color-text-muted);
+      font-size: .72rem;
+    }
+
+    .dashboard-body {
+      padding: 18px;
+    }
+
+    .dashboard-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+
+    .mini-kpi {
+      padding: 13px;
+      border: 1px solid var(--color-border);
+      border-radius: 9px;
+    }
+
+    .mini-kpi small {
+      color: var(--color-text-muted);
+      display: block;
+      font-size: .65rem;
+    }
+
+    .mini-kpi strong {
+      display: block;
+      margin-top: 5px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .95rem;
+    }
+
+    .chart {
+      margin-top: 16px;
+      padding: 15px;
+      border: 1px solid var(--color-border);
+      border-radius: 9px;
+    }
+
+    .chart-title {
+      font-size: .73rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    /* KEY TAKEAWAYS */
+    .key-points {
+      max-width: var(--reading-width);
+      padding: 28px;
+      border: 1px solid #cbd9d2;
+      border-radius: 16px;
+      background: var(--color-accent-soft);
+    }
+
+    .key-points h2 {
+      font-size: 1.45rem;
+      margin-bottom: 15px;
+    }
+
+    .key-points ul {
+      margin-bottom: 0;
+    }
+
+    /* NAVIGATION */
+    .lesson-navigation {
+      max-width: var(--reading-width);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 70px;
+    }
+
+    .nav-card {
+      padding: 18px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-2px);
+      border-color: #b7c8bf;
+    }
+
+    .nav-card.next {
+      text-align: right;
+    }
+
+    .nav-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--color-text-muted);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .nav-title {
+      font-weight: 700;
+      font-size: .88rem;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: auto;
+      padding: 35px 24px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--color-text-muted);
+      font-size: .78rem;
+    }
+
+    .back-top {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--color-accent);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: .25s;
+      z-index: 900;
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1000px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        max-width: 600px;
+        margin: auto;
+      }
+
+      .page-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: relative;
+        top: auto;
+      }
+
+      .toc nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        border-left: 0;
+        border-top: 1px solid var(--color-border);
+      }
+
+      .toc a {
+        border-left: 0;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .kpi-grid,
+      .dashboard-kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .header-menu a {
+        display: none;
+      }
+
+      .hero-inner {
+        padding: 50px 18px 55px;
+      }
+
+      .page-layout {
+        padding: 40px 18px 60px;
+      }
+
+      .hero-visual {
+        min-height: 250px;
+      }
+
+      .toc nav {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid,
+      .dashboard-kpis {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stepper {
+        grid-template-columns: 1fr;
+      }
+
+      .step {
+        border-right: 0;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .step:last-child {
+        border-bottom: 0;
+      }
+
+      .action-plan,
+      .lesson-navigation {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-card.next {
+        text-align: left;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 430px) {
+      h1 {
+        font-size: 2.25rem;
+      }
+
+      .kpi-grid,
+      .dashboard-kpis {
+        grid-template-columns: 1fr;
+      }
+
+      .lesson-meta {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .meta-item {
+        justify-content: center;
+      }
+
+      .visual-card {
+        padding: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="progress-bar" aria-hidden="true">
+    <div class="progress-value" id="progressValue"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="brand" aria-label="Accueil formation comptabilité">
+        <span class="brand-mark">∑</span>
+        <span class="brand-text">
+          <small>Formation</small>
+          <strong>Comptabilité</strong>
+        </span>
+      </a>
+
+      <nav class="header-menu" aria-label="Navigation principale">
+        <a href="#objectifs">Objectifs</a>
+        <a href="#contenu">Cours</a>
+        <a href="#essentiel">À retenir</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+
+        <div>
+          <span class="eyebrow">Module 10 · Gestion budgétaire</span>
+
+          <h1>Pilotage et amélioration continue</h1>
+
+          <p class="hero-subtitle">
+            Transformer le suivi budgétaire en véritable outil de décision,
+            corriger les écarts et installer une démarche durable d'amélioration
+            de la performance.
+          </p>
+
+          <div class="lesson-meta">
+            <span class="meta-item">Leçon <strong>55</strong></span>
+            <span class="meta-item">Niveau <strong>Intermédiaire</strong></span>
+            <span class="meta-item">Lecture <strong>15 min</strong></span>
+            <span class="meta-item">Gestion budgétaire</span>
+          </div>
+        </div>
+
+        <!-- Illustration principale -->
+        <div class="hero-visual" aria-label="Illustration d'un tableau de pilotage budgétaire">
+          <svg class="hero-dashboard" viewBox="0 0 520 390" role="img"
+               aria-label="Tableau de bord présentant des indicateurs budgétaires et une tendance">
+            <title>Tableau de pilotage budgétaire</title>
+
+            <rect x="18" y="25" width="484" height="340" rx="18" class="panel"/>
+
+            <rect x="45" y="52" width="190" height="18" rx="5" class="dark"/>
+            <rect x="45" y="78" width="105" height="9" rx="4" class="muted"/>
+
+            <rect x="45" y="108" width="98" height="80" rx="10" class="soft"/>
+            <rect x="157" y="108" width="98" height="80" rx="10" class="soft"/>
+            <rect x="269" y="108" width="98" height="80" rx="10" class="soft"/>
+            <rect x="381" y="108" width="94" height="80" rx="10" class="soft"/>
+
+            <rect x="58" y="122" width="46" height="7" rx="3" class="muted"/>
+            <rect x="58" y="141" width="65" height="13" rx="4" class="dark"/>
+
+            <rect x="170" y="122" width="52" height="7" rx="3" class="muted"/>
+            <rect x="170" y="141" width="55" height="13" rx="4" class="dark"/>
+
+            <rect x="282" y="122" width="44" height="7" rx="3" class="muted"/>
+            <rect x="282" y="141" width="60" height="13" rx="4" class="dark"/>
+
+            <rect x="394" y="122" width="46" height="7" rx="3" class="muted"/>
+            <rect x="394" y="141" width="54" height="13" rx="4" class="dark"/>
+
+            <rect x="45" y="210" width="430" height="125" rx="12" class="panel"/>
+
+            <line x1="72" y1="302" x2="445" y2="302" stroke="#E3E8E5" stroke-width="2"/>
+            <line x1="72" y1="260" x2="445" y2="260" stroke="#E3E8E5" stroke-width="2"/>
+            <line x1="72" y1="218" x2="445" y2="218" stroke="#E3E8E5" stroke-width="2"/>
+
+            <polyline points="75,292 130,280 180,286 230,250 280,264 330,235 380,247 442,218"
+                      class="line"/>
+
+            <circle cx="75" cy="292" r="5" fill="#1F6F54"/>
+            <circle cx="180" cy="286" r="5" fill="#1F6F54"/>
+            <circle cx="280" cy="264" r="5" fill="#1F6F54"/>
+            <circle cx="380" cy="247" r="5" fill="#1F6F54"/>
+            <circle cx="442" cy="218" r="5" fill="#1F6F54"/>
+
+            <rect x="72" y="222" width="90" height="7" rx="3" class="dark"/>
+          </svg>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="page-layout">
+
+      <!-- SOMMAIRE -->
+      <aside class="toc" aria-label="Sommaire de la leçon">
+        <div class="toc-title">Sommaire</div>
+        <nav>
+          <a href="#introduction">Introduction</a>
+          <a href="#objectifs">Objectifs</a>
+          <a href="#pilotage">1. Le pilotage budgétaire</a>
+          <a href="#indicateurs">2. Les indicateurs</a>
+          <a href="#ecarts">3. Analyse des écarts</a>
+          <a href="#cycle">4. Amélioration continue</a>
+          <a href="#actions">5. Plan d'action</a>
+          <a href="#cas">6. Cas de gestion</a>
+          <a href="#gouvernance">7. Gouvernance</a>
+          <a href="#essentiel">Points clés</a>
+        </nav>
+      </aside>
+
+      <!-- CONTENU -->
+      <article class="content" id="contenu">
+
+        <!-- INTRODUCTION -->
+        <section id="introduction" class="reveal">
+          <span class="section-number">INTRODUCTION</span>
+          <h2>Du contrôle budgétaire au pilotage</h2>
+
+          <p class="lead">
+            Un budget ne doit pas être considéré comme un document établi une fois
+            pour toutes. Il constitue une référence permettant de comparer les
+            prévisions aux réalisations, de comprendre les écarts et d'orienter
+            les décisions.
+          </p>
+
+          <p>
+            Le <strong>pilotage budgétaire</strong> consiste précisément à utiliser
+            les informations financières et opérationnelles pour suivre la
+            performance de l'organisation et agir lorsque les résultats
+            s'écartent des objectifs.
+          </p>
+
+          <p>
+            L'amélioration continue va plus loin : elle consiste à apprendre des
+            écarts observés, à mettre en œuvre des actions correctives, puis à
+            mesurer leur efficacité afin d'améliorer progressivement les
+            processus et les résultats.
+          </p>
+
+          <div class="callout">
+            <div class="callout-title">💡 À retenir</div>
+            <p>
+              Le budget sert de référence. Le tableau de suivi permet de mesurer
+              les résultats. L'analyse transforme les chiffres en informations,
+              et l'action transforme ces informations en amélioration.
+            </p>
+          </div>
+        </section>
+
+        <!-- OBJECTIFS -->
+        <section id="objectifs" class="reveal">
+          <span class="section-number">OBJECTIFS PÉDAGOGIQUES</span>
+          <h2>Ce que vous devez savoir faire</h2>
+
+          <div class="objectives">
+            <div class="objective">
+              <span class="objective-number">01</span>
+              <p>
+                Comprendre le rôle du pilotage dans le processus budgétaire.
+              </p>
+            </div>
+
+            <div class="objective">
+              <span class="objective-number">02</span>
+              <p>
+                Identifier des indicateurs pertinents pour suivre la performance.
+              </p>
+            </div>
+
+            <div class="objective">
+              <span class="objective-number">03</span>
+              <p>
+                Calculer et interpréter les principaux écarts budgétaires.
+              </p>
+            </div>
+
+            <div class="objective">
+              <span class="objective-number">04</span>
+              <p>
+                Construire une démarche d'amélioration continue à partir des
+                résultats observés.
+              </p>
+            </div>
+
+            <div class="objective">
+              <span class="objective-number">05</span>
+              <p>
+                Suivre un plan d'action et vérifier son efficacité.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- PILOTAGE -->
+        <section id="pilotage" class="reveal">
+          <span class="section-number">01 · PILOTAGE</span>
+          <h2>Comprendre le pilotage budgétaire</h2>
+
+          <p>
+            Le pilotage budgétaire est un processus continu. Il ne consiste pas
+            uniquement à constater si les dépenses ont dépassé ou non le budget.
+            Il cherche surtout à répondre à une question :
+            <strong>que faut-il faire à partir de l'information disponible ?</strong>
+          </p>
+
+          <div class="visual-card">
+            <svg class="flow-svg" viewBox="0 0 760 210" role="img"
+                 aria-label="Chaîne de pilotage allant des données à l'amélioration">
+              <title>Chaîne de pilotage budgétaire</title>
+
+              <rect x="18" y="70" width="105" height="65" rx="10"
+                    fill="#F6F8F6" stroke="#E3E8E5"/>
+              <text x="70" y="97" text-anchor="middle" font-family="Inter"
+                    font-size="13" font-weight="700">DONNÉES</text>
+              <text x="70" y="117" text-anchor="middle" font-family="Inter"
+                    font-size="10" fill="#5A6560">Réalisations</text>
+
+              <path d="M123 102 H155" stroke="#1F6F54" stroke-width="2"/>
+              <path d="M149 96 L157 102 L149 108" fill="none"
+                    stroke="#1F6F54" stroke-width="2"/>
+
+              <rect x="157" y="70" width="105" height="65" rx="10"
+                    fill="#E7F2ED" stroke="#C9DDD3"/>
+              <text x="209" y="97" text-anchor="middle" font-family="Inter"
+                    font-size="13" font-weight="700">MESURE</text>
+              <text x="209" y="117" text-anchor="middle" font-family="Inter"
+                    font-size="10" fill="#5A6560">Indicateurs</text>
+
+              <path d="M262 102 H294" stroke="#1F6F54" stroke-width="2"/>
+              <path d="M288 96 L296 102 L288 108" fill="none"
+                    stroke="#1F6F54" stroke-width="2"/>
+
+              <rect x="296" y="70" width="105" height="65" rx="10"
+                    fill="#F6F8F6" stroke="#E3E8E5"/>
+              <text x="348" y="97" text-anchor="middle" font-family="Inter"
+                    font-size="13" font-weight="700">ANALYSE</text>
+              <text x="348" y="117" text-anchor="middle" font-family="Inter"
+                    font-size="10" fill="#5A6560">Écarts</text>
+
+              <path d="M401 102 H433" stroke="#1F6F54" stroke-width="2"/>
+              <path d="M427 96 L435 102 L427 108" fill="none"
+                    stroke="#1F6F54" stroke-width="2"/>
+
+              <rect x="435" y="70" width="105" height="65" rx="10"
+                    fill="#F6F8F6" stroke="#E3E8E5"/>
+              <text x="487" y="97" text-anchor="middle" font-family="Inter"
+                    font-size="13" font-weight="700">DÉCISION</text>
+              <text x="487" y="117" text-anchor="middle" font-family="Inter"
+                    font-size="10" fill="#5A6560">Priorités</text>
+
+              <path d="M540 102 H572" stroke="#1F6F54" stroke-width="2"/>
+              <path d="M566 96 L574 102 L566 108" fill="none"
+                    stroke="#1F6F54" stroke-width="2"/>
+
+              <rect x="574" y="70" width="105" height="65" rx="10"
+                    fill="#E7F2ED" stroke="#C9DDD3"/>
+              <text x="626" y="97" text-anchor="middle" font-family="Inter"
+                    font-size="13" font-weight="700">ACTION</text>
+              <text x="626" y="117" text-anchor="middle" font-family="Inter"
+                    font-size="10" fill="#5A6560">Amélioration</text>
+
+              <path d="M626 135 C626 175 70 175 70 135"
+                    fill="none" stroke="#B7C8BF" stroke-width="2"
+                    stroke-dasharray="6 5"/>
+            </svg>
+            <div class="visual-caption">
+              Le pilotage fonctionne comme une boucle : mesurer, comprendre,
+              décider, agir puis mesurer à nouveau.
+            </div>
+          </div>
+
+          <h3>Les trois dimensions du pilotage</h3>
+
+          <ul>
+            <li>
+              <strong>Dimension financière :</strong> chiffre d'affaires,
+              charges, marge, trésorerie, investissements.
+            </li>
+            <li>
+              <strong>Dimension opérationnelle :</strong> volumes, délais,
+              productivité, stocks, qualité.
+            </li>
+            <li>
+              <strong>Dimension managériale :</strong> responsabilités,
+              décisions, plans d'action et suivi des engagements.
+            </li>
+          </ul>
+        </section>
+
+        <!-- INDICATEURS -->
+        <section id="indicateurs" class="reveal">
+          <span class="section-number">02 · INDICATEURS</span>
+          <h2>Choisir les bons indicateurs</h2>
+
+          <p>
+            Un indicateur est une information sélectionnée pour mesurer une
+            situation ou une évolution. Dans une démarche budgétaire, tous les
+            chiffres disponibles ne doivent pas nécessairement apparaître dans
+            le tableau de pilotage.
+          </p>
+
+          <p>
+            Un bon indicateur doit être <strong>utile à la décision</strong>,
+            compréhensible, régulièrement disponible et associé à une cible ou
+            à une référence.
+          </p>
+
+          <div class="kpi-grid">
+            <div class="kpi">
+              <div class="kpi-label">Chiffre d'affaires</div>
+              <div class="kpi-value">11 400 $</div>
+              <div class="kpi-note negative">−5 % vs budget</div>
+            </div>
+
+            <div class="kpi">
+              <div class="kpi-label">Marge</div>
+              <div class="kpi-value">3 192 $</div>
+              <div class="kpi-note negative">−11,3 % vs budget</div>
+            </div>
+
+            <div class="kpi">
+              <div class="kpi-label">Créances</div>
+              <div class="kpi-value">9 200 $</div>
+              <div class="kpi-note negative">+1 200 $</div>
+            </div>
+
+            <div class="kpi">
+              <div class="kpi-label">Encaissement</div>
+              <div class="kpi-value">82 %</div>
+              <div class="kpi-note negative">Cible : 90 %</div>
+            </div>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-title">⚠️ Attention</div>
+            <p>
+              Un écart favorable sur un indicateur ne signifie pas toujours que
+              la situation est meilleure. Par exemple, une baisse des dépenses
+              peut être favorable, mais elle peut aussi traduire un
+              sous-investissement ou un retard d'activité.
+            </p>
+          </div>
+
+          <h3>Un indicateur doit conduire à une question</h3>
+
+          <p>
+            L'objectif n'est donc pas de remplir un tableau avec un maximum de
+            données. Il faut sélectionner les informations permettant de
+            détecter rapidement les situations nécessitant une analyse ou une
+            décision.
+          </p>
+        </section>
+
+        <!-- ECARTS -->
+        <section id="ecarts" class="reveal">
+          <span class="section-number">03 · ANALYSE</span>
+          <h2>Analyser les écarts budgétaires</h2>
+
+          <p>
+            L'écart correspond à la différence entre une valeur réalisée et la
+            valeur budgétée. Il constitue un signal qui doit ensuite être
+            interprété.
+          </p>
+
+          <div class="formula">
+            <strong>Écart</strong> = Réalisé − Budget
+          </div>
+
+          <p>
+            Pour apprécier l'importance relative d'un écart, on peut également
+            calculer son pourcentage :
+          </p>
+
+          <div class="formula">
+            <strong>Écart %</strong> =
+            <span>(Réalisé − Budget) / Budget</span> × 100
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Indicateur</th>
+                  <th scope="col">Budget</th>
+                  <th scope="col">Réalisé</th>
+                  <th scope="col">Écart</th>
+                  <th scope="col">Lecture</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Chiffre d'affaires</td>
+                  <td class="number">12 000 $</td>
+                  <td class="number">11 400 $</td>
+                  <td class="number negative">−600 $</td>
+                  <td>Activité inférieure à la prévision</td>
+                </tr>
+
+                <tr>
+                  <td>Marge</td>
+                  <td class="number">3 600 $</td>
+                  <td class="number">3 192 $</td>
+                  <td class="number negative">−408 $</td>
+                  <td>Dégradation de la marge</td>
+                </tr>
+
+                <tr>
+                  <td>Charges d'exploitation</td>
+                  <td class="number">2 400 $</td>
+                  <td class="number">2 280 $</td>
+                  <td class="number positive">−120 $</td>
+                  <td>Dépenses inférieures au budget</td>
+                </tr>
+
+                <tr>
+                  <td>Créances clients</td>
+                  <td class="number">8 000 $</td>
+                  <td class="number">9 200 $</td>
+                  <td class="number negative">+1 200 $</td>
+                  <td>Besoin de suivi des encaissements</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout">
+            <div class="callout-title">🧮 Cas pratique</div>
+            <p>
+              Le chiffre d'affaires prévu était de 12 000 $. Le montant réalisé
+              est de 11 400 $. L'écart est donc de 11 400 − 12 000 =
+              <strong>−600 $</strong>, soit un écart relatif de
+              <strong>−5 %</strong>.
+            </p>
+            <p>
+              Le responsable ne doit toutefois pas s'arrêter au calcul. Il doit
+              rechercher la cause : baisse des volumes, diminution des prix,
+              retard de facturation, perte d'un client ou autre facteur.
+            </p>
+          </div>
+        </section>
+
+        <!-- COMPARAISON -->
+        <section class="reveal">
+          <span class="section-number">APPROCHE</span>
+          <h2>Réagir ou anticiper ?</h2>
+
+          <div class="tabs" data-tabs>
+            <div class="tab-buttons" role="tablist" aria-label="Approches de pilotage">
+              <button class="tab-button" role="tab" aria-selected="true"
+                      aria-controls="tab-reactif" id="tab-btn-reactif">
+                Pilotage réactif
+              </button>
+              <button class="tab-button" role="tab" aria-selected="false"
+                      aria-controls="tab-preventif" id="tab-btn-preventif">
+                Pilotage préventif
+              </button>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-reactif"
+                 aria-labelledby="tab-btn-reactif">
+              <h3>Agir après l'apparition du problème</h3>
+              <p>
+                Le responsable constate un dépassement ou une dégradation,
+                recherche la cause puis met en place une action corrective.
+              </p>
+              <ul>
+                <li>Constat d'un écart important.</li>
+                <li>Recherche des causes.</li>
+                <li>Action corrective.</li>
+                <li>Contrôle du résultat.</li>
+              </ul>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-preventif"
+                 aria-labelledby="tab-btn-preventif" hidden>
+              <h3>Détecter les signaux avant le problème</h3>
+              <p>
+                Le responsable surveille les tendances, les seuils d'alerte et
+                les indicateurs avancés afin d'intervenir avant que l'écart ne
+                devienne significatif.
+              </p>
+              <ul>
+                <li>Observation des tendances.</li>
+                <li>Identification des signaux faibles.</li>
+                <li>Action anticipée.</li>
+                <li>Vérification de l'effet obtenu.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- CYCLE -->
+        <section id="cycle" class="reveal">
+          <span class="section-number">04 · AMÉLIORATION</span>
+          <h2>Installer une démarche d'amélioration continue</h2>
+
+          <p>
+            L'amélioration continue repose sur une logique cyclique. Une
+            organisation mesure ses résultats, identifie les causes des écarts,
+            expérimente des solutions et vérifie ensuite si les résultats se
+            sont améliorés.
+          </p>
+
+          <div class="stepper" aria-label="Cycle d'amélioration continue">
+            <div class="step">
+              <span class="step-number">1</span>
+              <strong>Mesurer</strong>
+              <p>Collecter les réalisations et les indicateurs.</p>
+            </div>
+
+            <div class="step">
+              <span class="step-number">2</span>
+              <strong>Analyser</strong>
+              <p>Comparer avec les objectifs et rechercher les causes.</p>
+            </div>
+
+            <div class="step">
+              <span class="step-number">3</span>
+              <strong>Décider</strong>
+              <p>Choisir les actions prioritaires.</p>
+            </div>
+
+            <div class="step">
+              <span class="step-number">4</span>
+              <strong>Agir</strong>
+              <p>Mettre en œuvre les mesures retenues.</p>
+            </div>
+
+            <div class="step">
+              <span class="step-number">5</span>
+              <strong>Revoir</strong>
+              <p>Mesurer l'effet et ajuster si nécessaire.</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <div class="callout-title">💡 À retenir</div>
+            <p>
+              Une action corrective n'est réellement efficace que si son résultat
+              est mesuré après sa mise en œuvre.
+            </p>
+          </div>
+        </section>
+
+        <!-- ACTIONS -->
+        <section id="actions" class="reveal">
+          <span class="section-number">05 · ACTIONS</span>
+          <h2>Construire un plan d'action</h2>
+
+          <p>
+            Lorsqu'un écart significatif est détecté, il faut passer du constat
+            à l'action. Le plan d'action permet de préciser ce qui doit être
+            fait, par qui, dans quel délai et selon quel indicateur le résultat
+            sera évalué.
+          </p>
+
+          <div class="action-plan">
+            <div class="action-box">
+              <h4>01 · Problème</h4>
+              <p>
+                Décrire précisément l'écart observé sans se limiter à une
+                impression générale.
+              </p>
+            </div>
+
+            <div class="action-box">
+              <h4>02 · Cause</h4>
+              <p>
+                Identifier les facteurs à l'origine de la situation.
+              </p>
+            </div>
+
+            <div class="action-box">
+              <h4>03 · Action</h4>
+              <p>
+                Définir une mesure concrète, réaliste et directement liée à la
+                cause identifiée.
+              </p>
+            </div>
+
+            <div class="action-box">
+              <h4>04 · Responsable</h4>
+              <p>
+                Attribuer clairement la responsabilité de la mise en œuvre.
+              </p>
+            </div>
+
+            <div class="action-box">
+              <h4>05 · Échéance</h4>
+              <p>
+                Fixer une date de réalisation ou une période de suivi.
+              </p>
+            </div>
+
+            <div class="action-box">
+              <h4>06 · Indicateur</h4>
+              <p>
+                Choisir une mesure permettant de vérifier si l'action produit
+                l'effet attendu.
+              </p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Problème</th>
+                  <th scope="col">Cause probable</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Indicateur de suivi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Encaissement inférieur à la cible</td>
+                  <td>Retards de règlement</td>
+                  <td>Renforcer le suivi des créances</td>
+                  <td>Taux d'encaissement</td>
+                </tr>
+                <tr>
+                  <td>Marge inférieure au budget</td>
+                  <td>Prix de vente ou coûts défavorables</td>
+                  <td>Analyser la marge par produit</td>
+                  <td>Marge moyenne</td>
+                </tr>
+                <tr>
+                  <td>Charges supérieures à la cible</td>
+                  <td>Consommation excessive</td>
+                  <td>Revoir les postes concernés</td>
+                  <td>Écart de charges</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- CAS -->
+        <section id="cas" class="reveal">
+          <span class="section-number">06 · CAS DE GESTION</span>
+          <h2>Lecture d'un tableau de pilotage</h2>
+
+          <p>
+            Prenons l'exemple d'une entreprise qui clôture son suivi budgétaire
+            mensuel. Le responsable financier dispose de quatre indicateurs
+            principaux.
+          </p>
+
+          <div class="dashboard">
+            <div class="dashboard-top">
+              <span class="dashboard-title">SUIVI BUDGÉTAIRE — MOIS M</span>
+              <span class="dashboard-date">Synthèse mensuelle</span>
+            </div>
+
+            <div class="dashboard-body">
+              <div class="dashboard-kpis">
+                <div class="mini-kpi">
+                  <small>CA réalisé</small>
+                  <strong>11 400 $</strong>
+                </div>
+
+                <div class="mini-kpi">
+                  <small>Marge</small>
+                  <strong>3 192 $</strong>
+                </div>
+
+                <div class="mini-kpi">
+                  <small>Créances</small>
+                  <strong>9 200 $</strong>
+                </div>
+
+                <div class="mini-kpi">
+                  <small>Encaissement</small>
+                  <strong>82 %</strong>
+                </div>
+              </div>
+
+              <div class="chart">
+                <div class="chart-title">Évolution indicative du chiffre d'affaires</div>
+
+                <svg viewBox="0 0 680 180" width="100%" role="img"
+                     aria-label="Courbe d'évolution du chiffre d'affaires">
+                  <title>Évolution du chiffre d'affaires</title>
+
+                  <line x1="55" y1="145" x2="650" y2="145"
+                        stroke="#E3E8E5" stroke-width="2"/>
+                  <line x1="55" y1="105" x2="650" y2="105"
+                        stroke="#E3E8E5" stroke-width="2"/>
+                  <line x1="55" y1="65" x2="650" y2="65"
+                        stroke="#E3E8E5" stroke-width="2"/>
+
+                  <polyline
+                    points="65,125 145,112 225,118 305,95 385,102 465,80 545,91 630,60"
+                    fill="none"
+                    stroke="#1F6F54"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+                  <circle cx="65" cy="125" r="5" fill="#1F6F54"/>
+                  <circle cx="145" cy="112" r="5" fill="#1F6F54"/>
+                  <circle cx="225" cy="118" r="5" fill="#1F6F54"/>
+                  <circle cx="305" cy="95" r="5" fill="#1F6F54"/>
+                  <circle cx="385" cy="102" r="5" fill="#1F6F54"/>
+                  <circle cx="465" cy="80" r="5" fill="#1F6F54"/>
+                  <circle cx="545" cy="91" r="5" fill="#1F6F54"/>
+                  <circle cx="630" cy="60" r="5" fill="#1F6F54"/>
+
+                  <text x="65" y="165" font-family="Inter" font-size="9"
+                        text-anchor="middle" fill="#5A6560">S1</text>
+                  <text x="225" y="165" font-family="Inter" font-size="9"
+                        text-anchor="middle" fill="#5A6560">S3</text>
+                  <text x="385" y="165" font-family="Inter" font-size="9"
+                        text-anchor="middle" fill="#5A6560">S5</text>
+                  <text x="545" y="165" font-family="Inter" font-size="9"
+                        text-anchor="middle" fill="#5A6560">S7</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <h3>Interprétation</h3>
+
+          <p>
+            Le premier signal concerne le chiffre d'affaires : il est inférieur
+            de 600 $ à la prévision. Le deuxième signal est plus préoccupant :
+            la marge recule davantage proportionnellement que le chiffre
+            d'affaires.
+          </p>
+
+          <p>
+            En parallèle, les créances sont supérieures à la référence et le
+            taux d'encaissement est inférieur à la cible de 90 %. Le responsable
+            doit donc examiner à la fois la <strong>performance commerciale</strong>
+            et la <strong>gestion du crédit client</strong>.
+          </p>
+
+          <div class="callout">
+            <div class="callout-title">🧮 Cas pratique — décision</div>
+            <p>
+              Une réponse pertinente serait de décomposer la baisse du chiffre
+              d'affaires par client, produit ou activité, puis de rapprocher
+              cette analyse de l'évolution de la marge et des encaissements.
+            </p>
+            <p>
+              L'objectif n'est pas simplement de constater « −600 $ », mais de
+              déterminer <strong>pourquoi</strong> l'écart existe et
+              <strong>quelle action</strong> peut améliorer la situation.
+            </p>
+          </div>
+        </section>
+
+        <!-- GOUVERNANCE -->
+        <section id="gouvernance" class="reveal">
+          <span class="section-number">07 · GOUVERNANCE</span>
+          <h2>Organiser le suivi dans le temps</h2>
+
+          <p>
+            Pour être efficace, le pilotage doit être intégré au fonctionnement
+            régulier de l'organisation. Une analyse réalisée uniquement en fin
+            d'exercice limite fortement la capacité à corriger les dérives.
+          </p>
+
+          <div class="visual-card">
+            <svg class="flow-svg" viewBox="0 0 760 245" role="img"
+                 aria-label="Organisation temporelle du suivi budgétaire">
+              <title>Cycle temporel de suivi budgétaire</title>
+
+              <line x1="85" y1="120" x2="675" y2="120"
+                    stroke="#B7C8BF" stroke-width="3"/>
+
+              <circle cx="95" cy="120" r="24" fill="#E7F2ED"
+                      stroke="#1F6F54" stroke-width="2"/>
+              <text x="95" y="125" text-anchor="middle"
+                    font-family="IBM Plex Mono" font-size="11"
+                    fill="#1F6F54">J</text>
+
+              <circle cx="260" cy="120" r="24" fill="#E7F2ED"
+                      stroke="#1F6F54" stroke-width="2"/>
+              <text x="260" y="125" text-anchor="middle"
+                    font-family="IBM Plex Mono" font-size="11"
+                    fill="#1F6F54">S</text>
+
+              <circle cx="425" cy="120" r="24" fill="#E7F2ED"
+                      stroke="#1F6F54" stroke-width="2"/>
+              <text x="425" y="125" text-anchor="middle"
+                    font-family="IBM Plex Mono" font-size="11"
+                    fill="#1F6F54">M</text>
+
+              <circle cx="590" cy="120" r="24" fill="#E7F2ED"
+                      stroke="#1F6F54" stroke-width="2"/>
+              <text x="590" y="125" text-anchor="middle"
+                    font-family="IBM Plex Mono" font-size="11"
+                    fill="#1F6F54">T</text>
+
+              <circle cx="675" cy="120" r="24" fill="#0B0F0D"/>
+              <text x="675" y="125" text-anchor="middle"
+                    font-family="IBM Plex Mono" font-size="11"
+                    fill="#FFFFFF">A</text>
+
+              <text x="95" y="72" text-anchor="middle"
+                    font-family="Inter" font-size="11" font-weight="700">Jour</text>
+              <text x="260" y="72" text-anchor="middle"
+                    font-family="Inter" font-size="11" font-weight="700">Semaine</text>
+              <text x="425" y="72" text-anchor="middle"
+                    font-family="Inter" font-size="11" font-weight="700">Mois</text>
+              <text x="590" y="72" text-anchor="middle"
+                    font-family="Inter" font-size="11" font-weight="700">Trimestre</text>
+              <text x="675" y="72" text-anchor="middle"
+                    font-family="Inter" font-size="11" font-weight="700">Année</text>
+
+              <text x="95" y="168" text-anchor="middle"
+                    font-family="Inter" font-size="9" fill="#5A6560">Données</text>
+              <text x="260" y="168" text-anchor="middle"
+                    font-family="Inter" font-size="9" fill="#5A6560">Alertes</text>
+              <text x="425" y="168" text-anchor="middle"
+                    font-family="Inter" font-size="9" fill="#5A6560">Analyse</text>
+              <text x="590" y="168" text-anchor="middle"
+                    font-family="Inter" font-size="9" fill="#5A6560">Revue</text>
+              <text x="675" y="168" text-anchor="middle"
+                    font-family="Inter" font-size="9" fill="#5A6560">Bilan</text>
+            </svg>
+
+            <div class="visual-caption">
+              La fréquence du suivi dépend de la nature des indicateurs et de la
+              vitesse à laquelle les écarts peuvent apparaître.
+            </div>
+          </div>
+
+          <h3>La réunion de pilotage</h3>
+
+          <p>
+            Une réunion de pilotage efficace doit rester centrée sur les
+            informations utiles à la décision. Elle peut suivre une structure
+            simple :
+          </p>
+
+          <ol>
+            <li>Présenter les principaux résultats.</li>
+            <li>Identifier les écarts significatifs.</li>
+            <li>Expliquer les causes principales.</li>
+            <li>Décider des actions prioritaires.</li>
+            <li>Attribuer les responsabilités et les échéances.</li>
+            <li>Revenir sur les actions précédentes et leurs résultats.</li>
+          </ol>
+
+          <div class="callout">
+            <div class="callout-title">📌 Rappel méthodologique</div>
+            <p>
+              La qualité d'un système de pilotage dépend moins du nombre
+              d'indicateurs que de la capacité de l'organisation à les utiliser
+              régulièrement pour prendre des décisions.
+            </p>
+          </div>
+        </section>
+
+        <!-- ACCORDION -->
+        <section class="reveal">
+          <span class="section-number">QUESTIONS FRÉQUENTES</span>
+          <h2>À clarifier</h2>
+
+          <div class="accordion">
+
+            <div class="accordion-item">
+              <button class="accordion-button"
+                      aria-expanded="false"
+                      aria-controls="faq1"
+                      id="faqbtn1">
+                Quelle différence entre contrôle et pilotage ?
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-content" id="faq1"
+                   role="region" aria-labelledby="faqbtn1">
+                <p>
+                  Le contrôle consiste notamment à comparer les résultats aux
+                  références prévues et à identifier les écarts. Le pilotage
+                  ajoute une dimension décisionnelle : il utilise ces informations
+                  pour orienter les actions et améliorer les résultats.
+                </p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-button"
+                      aria-expanded="false"
+                      aria-controls="faq2"
+                      id="faqbtn2">
+                Faut-il analyser tous les écarts ?
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-content" id="faq2"
+                   role="region" aria-labelledby="faqbtn2">
+                <p>
+                  Non. L'analyse doit être proportionnée à l'importance de
+                  l'écart, à son caractère récurrent et à ses conséquences.
+                  Les écarts significatifs ou inhabituels méritent généralement
+                  une attention prioritaire.
+                </p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-button"
+                      aria-expanded="false"
+                      aria-controls="faq3"
+                      id="faqbtn3">
+                Qu'est-ce qu'une amélioration continue ?
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-content" id="faq3"
+                   role="region" aria-labelledby="faqbtn3">
+                <p>
+                  C'est une démarche consistant à rechercher régulièrement des
+                  améliorations à partir de l'observation des résultats, de
+                  l'analyse des causes, de la mise en œuvre d'actions et de la
+                  mesure de leurs effets.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ESSENTIEL -->
+        <section id="essentiel" class="reveal">
+          <div class="key-points">
+            <h2>Points clés à retenir</h2>
+
+            <ul>
+              <li>
+                Le budget constitue une <strong>référence</strong> pour le
+                pilotage de la performance.
+              </li>
+
+              <li>
+                Un écart budgétaire est un <strong>signal à analyser</strong>,
+                pas simplement un chiffre à constater.
+              </li>
+
+              <li>
+                Les indicateurs doivent être sélectionnés en fonction de leur
+                <strong>utilité pour la décision</strong>.
+              </li>
+
+              <li>
+                L'analyse doit rechercher les <strong>causes</strong> avant de
+                proposer des actions.
+              </li>
+
+              <li>
+                Un plan d'action efficace précise le problème, la cause,
+                l'action, le responsable, l'échéance et l'indicateur de suivi.
+              </li>
+
+              <li>
+                L'amélioration continue repose sur une boucle :
+                <strong>mesurer → analyser → décider → agir → revoir</strong>.
+              </li>
+
+              <li>
+                Le suivi régulier permet d'anticiper les dérives et d'améliorer
+                progressivement la performance budgétaire.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- NAVIGATION -->
+        <nav class="lesson-navigation" aria-label="Navigation entre les leçons">
+
+          <a class="nav-card" href="lecon-54.html">
+            <span class="nav-label">← Leçon précédente</span>
+            <span class="nav-title">Leçon 54</span>
+          </a>
+
+          <a class="nav-card next" href="lecon-56.html">
+            <span class="nav-label">Leçon suivante →</span>
+            <span class="nav-title">Leçon 56</span>
+          </a>
+
+        </nav>
+
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <strong>Filière Comptabilité</strong><br>
+        Module 10 — Gestion budgétaire
+      </div>
+
+      <div>
+        Leçon 55 · Pilotage et amélioration continue
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-top" id="backTop"
+          aria-label="Revenir en haut de la page"
+          title="Revenir en haut">
+    ↑
+  </button>
+
+  <script>
+    /* ================================
+       PROGRESSION DE LECTURE
+    ================================= */
+    const progressValue = document.getElementById("progressValue");
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const documentHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress = documentHeight > 0
+        ? (scrollTop / documentHeight) * 100
+        : 0;
+
+      progressValue.style.width = Math.min(progress, 100) + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+
+    /* ================================
+       BOUTON RETOUR EN HAUT
+    ================================= */
+    const backTop = document.getElementById("backTop");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 500) {
+        backTop.classList.add("visible");
+      } else {
+        backTop.classList.remove("visible");
+      }
+    }, { passive: true });
+
+    backTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+
+
+    /* ================================
+       ANIMATION AU SCROLL
+    ================================= */
+    const revealElements = document.querySelectorAll(".reveal");
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.08,
+          rootMargin: "0px 0px -40px 0px"
+        }
+      );
+
+      revealElements.forEach((element) => observer.observe(element));
+    } else {
+      revealElements.forEach((element) => {
+        element.classList.add("visible");
+      });
+    }
+
+
+    /* ================================
+       SOMMAIRE ACTIF
+    ================================= */
+    const tocLinks = [...document.querySelectorAll(".toc a")];
+    const sections = tocLinks
+      .map(link => document.querySelector(link.getAttribute("href")))
+      .filter(Boolean);
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            tocLinks.forEach(link => link.classList.remove("active"));
+
+            const activeLink = document.querySelector(
+              `.toc a[href="#${entry.target.id}"]`
+            );
+
+            if (activeLink) {
+              activeLink.classList.add("active");
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "-15% 0px -70% 0px"
+      }
+    );
+
+    sections.forEach(section => sectionObserver.observe(section));
+
+
+    /* ================================
+       TABS ACCESSIBLES
+    ================================= */
+    const tabGroups = document.querySelectorAll("[data-tabs]");
+
+    tabGroups.forEach((group) => {
+      const buttons = [...group.querySelectorAll('[role="tab"]')];
+      const panels = [...group.querySelectorAll('[role="tabpanel"]')];
+
+      function activateTab(index) {
+        buttons.forEach((button, i) => {
+          const active = i === index;
+
+          button.setAttribute("aria-selected", active ? "true" : "false");
+          button.tabIndex = active ? 0 : -1;
+
+          const panelId = button.getAttribute("aria-controls");
+          const panel = document.getElementById(panelId);
+
+          if (panel) {
+            panel.hidden = !active;
+          }
+        });
+      }
+
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          activateTab(index);
+        });
+
+        button.addEventListener("keydown", (event) => {
+          let nextIndex = null;
+
+          if (event.key === "ArrowRight") {
+            nextIndex = (index + 1) % buttons.length;
+          }
+
+          if (event.key === "ArrowLeft") {
+            nextIndex = (index - 1 + buttons.length) % buttons.length;
+          }
+
+          if (event.key === "Home") {
+            nextIndex = 0;
+          }
+
+          if (event.key === "End") {
+            nextIndex = buttons.length - 1;
+          }
+
+          if (nextIndex !== null) {
+            event.preventDefault();
+            activateTab(nextIndex);
+            buttons[nextIndex].focus();
+          }
+        });
+      });
+
+      activateTab(0);
+    });
+
+
+    /* ================================
+       ACCORDÉONS
+    ================================= */
+    const accordionButtons =
+      document.querySelectorAll(".accordion-button");
+
+    accordionButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const expanded =
+          button.getAttribute("aria-expanded") === "true";
+
+        const contentId = button.getAttribute("aria-controls");
+        const content = document.getElementById(contentId);
+
+        button.setAttribute("aria-expanded", String(!expanded));
+
+        if (content) {
+          content.classList.toggle("open", !expanded);
+        }
+      });
+
+      button.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          button.click();
+        }
+      });
+    });
+
+
+    /* ================================
+       LIENS D'ANCRAGE
+    ================================= */
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const targetId = link.getAttribute("href");
+
+        if (!targetId || targetId === "#") return;
+
+        const target = document.querySelector(targetId);
+
+        if (target) {
+          event.preventDefault();
+
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

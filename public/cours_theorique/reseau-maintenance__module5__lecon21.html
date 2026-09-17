@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 21 — Administration Windows Server">
+<title>Leçon 21 — Administration Windows Server</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F7FA;
+  --color-text:#10161D;
+  --color-accent:#1F6FEB;
+  --color-neutral:#A9B4BE;
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --shadow:0 10px 35px rgba(16,22,29,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.68}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:100;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:.02em}
+.brand small{display:block;color:var(--muted);font:500 11px "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase}
+.menu{display:flex;gap:8px;flex-wrap:wrap}
+.menu a{padding:7px 10px;border:1px solid transparent;font-size:13px}
+.menu a:hover{border-color:var(--color-accent);text-decoration:none}
+main{max-width:1180px;margin:auto;padding:0 22px 70px}
+.hero{padding:68px 0 38px;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+.eyebrow{font:600 12px "IBM Plex Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12}
+h1{font-size:clamp(38px,6vw,70px);margin:12px 0 18px;letter-spacing:-.045em}
+h2{font-size:30px;margin:0 0 18px}
+h3{font-size:19px;margin:0 0 8px}
+.lead{font-size:19px;max-width:720px;color:var(--muted)}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.badge{border:1px solid var(--border);padding:7px 10px;border-radius:999px;font:500 12px "IBM Plex Mono";background:var(--soft)}
+.hero-art{border:1px solid var(--border);background:var(--soft);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.hero-art svg{width:100%;height:auto;display:block}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px 0;margin:12px 0 46px}
+.toc-title{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.toc-list{display:flex;gap:9px;flex-wrap:wrap}
+.toc-list a{border:1px solid var(--border);padding:8px 12px;font-size:13px;background:var(--color-bg)}
+section{padding:54px 0;scroll-margin-top:80px}
+section.alt{background:var(--soft);margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:max(22px,calc(50vw - 568px));padding-right:max(22px,calc(50vw - 568px))}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:25px}
+.kicker{font:500 12px "IBM Plex Mono";color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card{border:1px solid var(--border);background:var(--color-bg);padding:20px;border-radius:14px;transition:.2s transform,.2s border-color}
+.card:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.icon{width:38px;height:38px;border:1px solid var(--color-accent);display:grid;place-items:center;margin-bottom:15px;color:var(--color-accent);font:600 18px "IBM Plex Mono"}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.callout{border-left:4px solid var(--color-accent);padding:16px 18px;background:var(--soft10);margin:22px 0}
+.callout strong{display:block;margin-bottom:5px}
+.console{margin:22px 0;border:1px solid var(--border);background:var(--soft10);border-radius:12px;overflow:auto}
+.console-head{padding:9px 13px;border-bottom:1px solid var(--border);font:600 11px "IBM Plex Mono";color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+pre{margin:0;padding:18px;font:500 13px/1.7 "IBM Plex Mono";white-space:pre;min-width:max-content}
+code,.mono{font-family:"IBM Plex Mono";background:var(--soft10);padding:.1em .35em;border-radius:5px}
+.diagram{border:1px solid var(--border);background:var(--color-bg);border-radius:16px;padding:15px;margin:24px 0}
+.diagram svg{display:block;width:100%;height:auto}
+.caption{font-size:12px;color:var(--muted);margin:9px 3px 0}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:650px;background:var(--color-bg)}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-size:14px}
+th{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+tbody tr:hover{background:var(--soft)}
+.tabs{margin-top:20px}
+.tab-buttons{display:flex;gap:5px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tab-buttons button{border:0;background:transparent;padding:10px 13px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent}
+.tab-buttons button.active{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+.tab-panel{display:none;padding:20px 0}
+.tab-panel.active{display:block}
+details{border-bottom:1px solid var(--border);padding:15px 0}
+summary{cursor:pointer;font-weight:600}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:28px 0}
+.step{position:relative;padding:17px 12px;border-top:2px solid var(--color-accent)}
+.step b{font:600 11px "IBM Plex Mono";color:var(--color-accent)}
+.step span{display:block;font-weight:600;margin-top:7px;font-size:14px}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.key{border:1px solid var(--border);padding:16px;border-radius:12px;background:var(--color-bg)}
+.key b{display:block;margin-bottom:4px}
+.key span{color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--border);padding:25px 0;color:var(--muted);font-size:13px}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:35px}
+.nav-card{border:1px solid var(--border);padding:17px;background:var(--color-bg);border-radius:12px}
+.nav-card small{display:block;font:500 11px "IBM Plex Mono";color:var(--muted);margin-bottom:5px}
+.nav-card.next{text-align:right}
+.top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);border-radius:50%;cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(12px);transition:.5s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:850px){
+ .hero{grid-template-columns:1fr;padding-top:45px}
+ .grid{grid-template-columns:1fr 1fr}
+ .stepper{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+ .nav{align-items:flex-start}.menu{display:none}
+ main{padding:0 16px 45px}
+ .hero{padding:35px 0 25px}
+ h1{font-size:42px}
+ .grid,.keys,.nav-lessons{grid-template-columns:1fr}
+ section{padding:40px 0}
+ section.alt{padding-left:16px;padding-right:16px}
+ .section-head{display:block}
+ .lead{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">MAINTENANCE & RÉSEAU <small>Filière professionnelle</small></div>
+    <div class="menu">
+      <a href="#roles">Rôles</a><a href="#services">Services</a><a href="#policies">Stratégies</a><a href="#updates">Mises à jour</a><a href="#backup">Sauvegarde</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="reveal">
+    <div class="eyebrow">Module 5 · Administration systèmes & cybersécurité — Serveurs</div>
+    <h1>Administration Windows Server</h1>
+    <p class="lead">Installer et administrer un serveur Windows en maîtrisant ses rôles, ses services, ses stratégies locales, ses mises à jour et sa sauvegarde.</p>
+    <div class="badges">
+      <span class="badge">LEÇON 21</span>
+      <span class="badge">NIVEAU AVANCÉ</span>
+      <span class="badge">15 MIN</span>
+      <span class="badge">SERVEURS</span>
+    </div>
+  </div>
+  <div class="hero-art reveal" aria-label="Schéma d'un serveur Windows administré">
+    <svg viewBox="0 0 560 420" role="img">
+      <title>Architecture simplifiée d'un serveur Windows</title>
+      <desc>Un serveur Windows centralise des rôles et services, applique des stratégies, reçoit des mises à jour et protège les données par sauvegarde.</desc>
+      <rect x="25" y="25" width="510" height="370" rx="18" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+      <rect x="55" y="65" width="190" height="290" rx="12" fill="#F4F7FA" stroke="#10161D"/>
+      <rect x="75" y="90" width="150" height="52" rx="8" fill="color-mix(in srgb,#1F6FEB 10%,#F4F7FA)" stroke="#1F6FEB"/>
+      <text x="150" y="122" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="14">WINDOWS SERVER</text>
+      <g fill="#F4F7FA" stroke="#A9B4BE">
+        <rect x="75" y="162" width="150" height="38" rx="7"/><rect x="75" y="210" width="150" height="38" rx="7"/>
+        <rect x="75" y="258" width="150" height="38" rx="7"/><rect x="75" y="306" width="150" height="38" rx="7"/>
+      </g>
+      <g fill="#10161D" font-family="IBM Plex Sans" font-size="12" text-anchor="middle">
+        <text x="150" y="186">Rôles serveur</text><text x="150" y="234">Services</text>
+        <text x="150" y="282">Stratégies locales</text><text x="150" y="330">Mises à jour</text>
+      </g>
+      <line x1="245" y1="210" x2="315" y2="210" stroke="#1F6FEB" stroke-width="3"/>
+      <polygon points="315,210 302,203 302,217" fill="#1F6FEB"/>
+      <rect x="315" y="120" width="185" height="180" rx="12" fill="#F4F7FA" stroke="#1F6FEB" stroke-width="2"/>
+      <text x="407" y="151" text-anchor="middle" fill="#10161D" font-family="Space Grotesk" font-size="17" font-weight="700">ADMINISTRATION</text>
+      <text x="407" y="184" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="12">PowerShell</text>
+      <text x="407" y="212" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="12">Server Manager</text>
+      <text x="407" y="240" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="12">Windows Update</text>
+      <text x="407" y="268" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="12">Windows Server Backup</text>
+      <circle cx="505" cy="345" r="10" fill="#1F6FEB"/>
+      <text x="484" y="350" text-anchor="end" fill="#10161D" font-family="IBM Plex Mono" font-size="11">STATUS</text>
+    </svg>
+  </div>
+</section>
+
+<div class="toc reveal" id="sommaire">
+  <div class="toc-title">Sommaire de la leçon</div>
+  <div class="toc-list">
+    <a href="#overview">01 · Vue d'ensemble</a><a href="#roles">02 · Rôles serveur</a><a href="#services">03 · Services</a>
+    <a href="#policies">04 · Stratégies locales</a><a href="#updates">05 · Mises à jour</a><a href="#backup">06 · Sauvegarde</a><a href="#keys">07 · À retenir</a>
+  </div>
+</div>
+
+<section id="overview" class="reveal">
+  <div class="section-head"><div><div class="kicker">01 / FONDAMENTAUX</div><h2>Un serveur Windows se pilote par rôles, services et politiques</h2></div></div>
+  <p>Administrer Windows Server consiste à préparer le système, lui attribuer les fonctions nécessaires, contrôler les services qui les exécutent, appliquer des règles de sécurité et maintenir la disponibilité du serveur.</p>
+  <div class="grid">
+    <article class="card"><div class="icon">01</div><h3>Installer</h3><p>Installer une édition adaptée, configurer le réseau, le nom du serveur et les paramètres de base.</p></article>
+    <article class="card"><div class="icon">02</div><h3>Configurer</h3><p>Ajouter les rôles nécessaires puis régler les services et les paramètres de fonctionnement.</p></article>
+    <article class="card"><div class="icon">03</div><h3>Maintenir</h3><p>Mettre à jour, surveiller et sauvegarder afin de réduire les interruptions et les pertes de données.</p></article>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong>Un rôle apporte une fonction serveur ; un service est un composant logiciel qui peut exécuter cette fonction en arrière-plan.</div>
+</section>
+
+<section id="roles" class="alt reveal">
+  <div class="section-head"><div><div class="kicker">02 / RÔLES SERVEUR</div><h2>Installer les rôles nécessaires</h2></div></div>
+  <p>Un rôle serveur définit une capacité principale du serveur. L'administrateur installe uniquement les rôles utiles au besoin métier, puis vérifie leur état et leur configuration.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 900 310" role="img">
+      <title>Chaîne d'installation d'un rôle Windows Server</title>
+      <desc>Sélection du rôle, installation, configuration et vérification.</desc>
+      <g stroke="#A9B4BE" stroke-width="2" fill="#F4F7FA">
+        <rect x="35" y="85" width="180" height="130" rx="12"/><rect x="255" y="85" width="180" height="130" rx="12"/>
+        <rect x="475" y="85" width="180" height="130" rx="12"/><rect x="695" y="85" width="170" height="130" rx="12"/>
+      </g>
+      <g stroke="#1F6FEB" stroke-width="3">
+        <line x1="215" y1="150" x2="255" y2="150"/><line x1="435" y1="150" x2="475" y2="150"/><line x1="655" y1="150" x2="695" y2="150"/>
+      </g>
+      <g fill="#10161D" font-family="Space Grotesk" font-size="16" font-weight="700" text-anchor="middle">
+        <text x="125" y="132">1. Sélection</text><text x="345" y="132">2. Installation</text><text x="565" y="132">3. Configuration</text><text x="780" y="132">4. Vérification</text>
+      </g>
+      <g fill="#10161D" font-family="IBM Plex Sans" font-size="12" text-anchor="middle">
+        <text x="125" y="162">Choisir le rôle utile</text><text x="345" y="162">Ajouter les composants</text>
+        <text x="565" y="162">Adapter aux besoins</text><text x="780" y="162">Contrôler l'état</text>
+      </g>
+    </svg>
+    <div class="caption">Processus logique : ne pas installer un rôle sans besoin identifié.</div>
+  </div>
+  <div class="grid">
+    <article class="card"><div class="icon">AD</div><h3>Services de domaine</h3><p>Centraliser l'identité, les comptes et les ressources d'un domaine lorsque l'architecture l'exige.</p></article>
+    <article class="card"><div class="icon">DH</div><h3>DHCP</h3><p>Distribuer automatiquement les paramètres IP aux clients du réseau.</p></article>
+    <article class="card"><div class="icon">DS</div><h3>DNS</h3><p>Assurer la résolution de noms nécessaire au fonctionnement de nombreux services réseau.</p></article>
+  </div>
+</section>
+
+<section id="services" class="reveal">
+  <div class="section-head"><div><div class="kicker">03 / SERVICES</div><h2>Gérer les services Windows</h2></div></div>
+  <p>Les services fonctionnent en arrière-plan. Leur état, leur type de démarrage et leurs dépendances doivent être contrôlés avant de les modifier.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 900 270" role="img">
+      <title>Cycle de vie d'un service</title>
+      <desc>Un service peut être arrêté, démarré ou redémarré selon son état et sa configuration.</desc>
+      <circle cx="450" cy="135" r="55" fill="#F4F7FA" stroke="#1F6FEB" stroke-width="3"/>
+      <text x="450" y="130" text-anchor="middle" fill="#10161D" font-family="Space Grotesk" font-size="17" font-weight="700">SERVICE</text>
+      <text x="450" y="151" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="11">état</text>
+      <g fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2">
+        <rect x="55" y="105" width="160" height="60" rx="10"/><rect x="685" y="105" width="160" height="60" rx="10"/>
+        <rect x="365" y="25" width="170" height="52" rx="10"/><rect x="365" y="193" width="170" height="52" rx="10"/>
+      </g>
+      <g fill="#10161D" font-family="IBM Plex Sans" font-size="13" text-anchor="middle">
+        <text x="135" y="140">Arrêté</text><text x="765" y="140">Démarré</text>
+        <text x="450" y="56">Démarrage automatique</text><text x="450" y="224">Démarrage manuel</text>
+      </g>
+      <g stroke="#1F6FEB" stroke-width="2" fill="none">
+        <path d="M215 135H395"/><path d="M505 135H685"/><path d="M450 80V80"/><path d="M450 190V190"/>
+      </g>
+    </svg>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Gestion des services">
+    <div class="tab-buttons">
+      <button class="active" role="tab" aria-selected="true" data-tab="gui">Interface graphique</button>
+      <button role="tab" aria-selected="false" data-tab="ps">PowerShell</button>
+    </div>
+    <div id="gui" class="tab-panel active" role="tabpanel">
+      <p>La console <code>services.msc</code> permet d'afficher les services, leur état et leur type de démarrage. Avant un changement, vérifier les dépendances et l'impact sur les rôles installés.</p>
+    </div>
+    <div id="ps" class="tab-panel" role="tabpanel">
+      <div class="console"><div class="console-head">PowerShell · diagnostic et contrôle</div><pre>Get-Service
+Get-Service -Name Spooler
+Start-Service -Name Spooler
+Stop-Service -Name Spooler
+Restart-Service -Name Spooler</pre></div>
+    </div>
+  </div>
+  <div class="callout"><strong>⚠️ Attention</strong>Arrêter un service critique peut rendre un rôle indisponible. Toujours identifier le service, ses dépendances et son rôle avant modification.</div>
+</section>
+
+<section id="policies" class="alt reveal">
+  <div class="section-head"><div><div class="kicker">04 / STRATÉGIES LOCALES</div><h2>Appliquer des règles au poste serveur</h2></div></div>
+  <p>Les stratégies locales permettent de contrôler certains comportements du système : authentification, mots de passe, verrouillage de compte, audit et droits attribués aux utilisateurs.</p>
+  <div class="grid">
+    <article class="card"><div class="icon">PW</div><h3>Mot de passe</h3><p>Définir des exigences adaptées : longueur, complexité, historique et durée de validité.</p></article>
+    <article class="card"><div class="icon">AC</div><h3>Comptes</h3><p>Limiter les tentatives et encadrer le verrouillage afin de réduire les risques liés aux accès.</p></article>
+    <article class="card"><div class="icon">AU</div><h3>Audit</h3><p>Activer les événements utiles pour suivre les activités importantes du système.</p></article>
+  </div>
+  <div class="console"><div class="console-head">Console locale</div><pre>secpol.msc</pre></div>
+  <div class="callout"><strong>🔒 Sécurité / bonne pratique</strong>Appliquer une politique cohérente avec le contexte d'exploitation et conserver une trace des changements d'administration.</div>
+</section>
+
+<section id="updates" class="reveal">
+  <div class="section-head"><div><div class="kicker">05 / MAINTENANCE</div><h2>Maintenir Windows Server à jour</h2></div></div>
+  <p>Les mises à jour corrigent des défauts, améliorent la stabilité et peuvent traiter des vulnérabilités. Elles doivent être planifiées afin de limiter l'impact sur les services.</p>
+  <div class="stepper">
+    <div class="step"><b>01</b><span>Inventorier</span></div>
+    <div class="step"><b>02</b><span>Évaluer</span></div>
+    <div class="step"><b>03</b><span>Sauvegarder</span></div>
+    <div class="step"><b>04</b><span>Installer</span></div>
+    <div class="step"><b>05</b><span>Vérifier</span></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Phase</th><th scope="col">Action</th><th scope="col">Objectif</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">Avant</td><td>Vérifier les services et la sauvegarde</td><td>Réduire le risque</td></tr>
+        <tr><td class="mono">Pendant</td><td>Installer selon la fenêtre prévue</td><td>Maîtriser l'interruption</td></tr>
+        <tr><td class="mono">Après</td><td>Contrôler démarrage, réseau et rôles</td><td>Valider le fonctionnement</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><strong>🛠️ Cas pratique</strong>Après un redémarrage, vérifier en priorité la connectivité réseau, les services essentiels, les rôles installés et les journaux système.</div>
+</section>
+
+<section id="backup" class="alt reveal">
+  <div class="section-head"><div><div class="kicker">06 / PROTECTION DES DONNÉES</div><h2>Sauvegarder le serveur</h2></div></div>
+  <p>Une sauvegarde permet de restaurer les données ou l'état du serveur après une panne, une erreur de manipulation ou un incident. Elle doit être planifiée et testée, pas simplement configurée.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 900 300" role="img">
+      <title>Chaîne de sauvegarde serveur</title>
+      <desc>Le serveur produit une sauvegarde vers un stockage distinct, puis la sauvegarde est vérifiée et conservée selon une politique.</desc>
+      <rect x="55" y="90" width="200" height="120" rx="14" fill="#F4F7FA" stroke="#10161D" stroke-width="2"/>
+      <rect x="350" y="70" width="200" height="160" rx="14" fill="#F4F7FA" stroke="#1F6FEB" stroke-width="3"/>
+      <rect x="645" y="90" width="200" height="120" rx="14" fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2"/>
+      <g fill="#10161D" text-anchor="middle">
+        <text x="155" y="130" font-family="Space Grotesk" font-size="17" font-weight="700">SERVEUR</text>
+        <text x="155" y="158" font-family="IBM Plex Mono" font-size="11">données + configuration</text>
+        <text x="450" y="120" font-family="Space Grotesk" font-size="17" font-weight="700">SAUVEGARDE</text>
+        <text x="450" y="151" font-family="IBM Plex Mono" font-size="11">copie protégée</text>
+        <text x="450" y="179" font-family="IBM Plex Mono" font-size="11">+ vérification</text>
+        <text x="745" y="130" font-family="Space Grotesk" font-size="17" font-weight="700">STOCKAGE</text>
+        <text x="745" y="158" font-family="IBM Plex Mono" font-size="11">destination distincte</text>
+      </g>
+      <g stroke="#1F6FEB" stroke-width="3" fill="none">
+        <path d="M255 150H350"/><path d="M550 150H645"/>
+      </g>
+      <g fill="#1F6FEB">
+        <polygon points="350,150 338,143 338,157"/><polygon points="645,150 633,143 633,157"/>
+      </g>
+    </svg>
+    <div class="caption">Une sauvegarde utile doit pouvoir être retrouvée et restaurée.</div>
+  </div>
+  <div class="console"><div class="console-head">Windows Server Backup · PowerShell</div><pre>Install-WindowsFeature Windows-Server-Backup
+Get-WindowsFeature Windows-Server-Backup</pre></div>
+  <div class="callout"><strong>🔒 Sécurité / bonne pratique</strong>Conserver les sauvegardes sur une destination distincte du serveur source et vérifier périodiquement qu'une restauration est réellement possible.</div>
+  <details>
+    <summary>Quelle différence entre sauvegarder et restaurer ?</summary>
+    <p>La sauvegarde crée une copie exploitable des données ou de l'état ciblé. La restauration utilise cette copie pour revenir à un état antérieur après un incident.</p>
+  </details>
+</section>
+
+<section id="keys" class="reveal">
+  <div class="section-head"><div><div class="kicker">07 / SYNTHÈSE</div><h2>Points clés à retenir</h2></div></div>
+  <div class="keys">
+    <div class="key"><b>Rôles</b><span>Installer uniquement les fonctions serveur nécessaires et vérifier leur configuration.</span></div>
+    <div class="key"><b>Services</b><span>Contrôler l'état, le démarrage et les dépendances avant toute modification.</span></div>
+    <div class="key"><b>Stratégies</b><span>Renforcer les comptes, l'authentification et l'audit avec des politiques adaptées.</span></div>
+    <div class="key"><b>Mises à jour</b><span>Planifier, sauvegarder, appliquer puis vérifier le fonctionnement du serveur.</span></div>
+    <div class="key"><b>Sauvegarde</b><span>Protéger les données avec une destination distincte et tester la restauration.</span></div>
+    <div class="key"><b>Administration</b><span>Documenter les changements et privilégier une configuration minimale et maîtrisée.</span></div>
+  </div>
+
+  <div class="nav-lessons">
+    <a class="nav-card" href="#" aria-label="Leçon précédente"><small>← LEÇON PRÉCÉDENTE</small><b>Leçon 20 — Dépannage réseau avancé</b></a>
+    <a class="nav-card next" href="#" aria-label="Leçon suivante"><small>LEÇON SUIVANTE →</small><b>Leçon 22 — Administration Linux Server</b></a>
+  </div>
+</section>
+
+<footer>
+  <strong>Maintenance et Réseau Informatique</strong> · Module 5 · Leçon 21<br>
+  Support pédagogique — Administration Windows Server
+</footer>
+</main>
+
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('top');
+function update(){
+  const h=document.documentElement.scrollHeight-innerHeight;
+  const p=h>0?(scrollY/h)*100:0;
+  progress.style.width=p+'%';
+  topBtn.classList.toggle('show',scrollY>500);
+}
+addEventListener('scroll',update,{passive:true}); update();
+topBtn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+document.querySelectorAll('.tab-buttons button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent=btn.closest('.tabs');
+    parent.querySelectorAll('.tab-buttons button').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false')});
+    parent.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');btn.setAttribute('aria-selected','true');
+    parent.querySelector('#'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+document.querySelectorAll('.toc-list a').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const el=document.querySelector(a.getAttribute('href'));
+    if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>

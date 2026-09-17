@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 26 — Texturing : UV, PBR, albedo, roughness, normal, procédural et baking.">
+<title>LEÇON 26 — Texturing | Module 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8F6;--color-text:#0B0F0D;
+  --color-text-muted:#5A6560;--color-accent:#1F6F54;--color-accent-soft:#E7F2ED;
+  --color-border:#E3E8E5;--color-accent-alt:#B3541E;
+  --shadow:0 16px 45px rgba(11,15,13,.07);
+  --radius:18px;--max:1180px;--reading:720px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.72}
+a{color:inherit}button{font:inherit}svg{max-width:100%;height:auto}::selection{background:var(--color-accent-soft);color:var(--color-accent)}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--color-accent);width:0;z-index:1000}
+.site-header{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--color-border);z-index:100;padding:14px 0}
+.header-inner{max-width:var(--max);margin:auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:700}.mark{width:35px;height:35px;border:2px solid var(--color-accent);display:grid;place-items:center;color:var(--color-accent);font-family:"IBM Plex Mono";font-size:14px;border-radius:9px}
+.header-link{text-decoration:none;color:var(--color-text-muted);font-size:.92rem}.header-link:hover{color:var(--color-accent)}
+.hero{max-width:var(--max);margin:auto;padding:82px 28px 52px;display:grid;grid-template-columns:1.05fr .95fr;gap:55px;align-items:center}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font-family:"IBM Plex Mono";font-size:.76rem;color:var(--color-accent);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:18px}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;line-height:1.12;margin:0 0 18px;letter-spacing:-.035em}h1{font-size:clamp(3rem,6vw,5.8rem);max-width:760px}h2{font-size:clamp(2rem,4vw,3.35rem)}h3{font-size:1.25rem}
+.hero p{font-size:1.12rem;color:var(--color-text-muted);max-width:650px;margin:0 0 25px}.badges{display:flex;flex-wrap:wrap;gap:10px}.badge{border:1px solid var(--color-border);padding:8px 12px;border-radius:999px;font-size:.82rem;background:#fff}.badge.accent{border-color:transparent;background:var(--color-accent-soft);color:var(--color-accent);font-weight:600}
+.visual-card{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:26px;padding:24px;box-shadow:var(--shadow);overflow:hidden}
+.visual-card svg{display:block;width:100%}.caption{font-size:.8rem;color:var(--color-text-muted);margin-top:10px}
+.toc-wrap{max-width:var(--max);margin:0 auto 55px;padding:0 28px}.toc{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius);padding:25px}.toc-title{font-family:"Space Grotesk";font-weight:700;margin-bottom:14px}.toc ol{columns:2;gap:45px;margin:0;padding-left:22px}.toc li{margin:8px 0}.toc a{text-decoration:none;color:var(--color-text-muted)}.toc a:hover{color:var(--color-accent)}
+section{scroll-margin-top:85px}.section{padding:82px 28px}.section.alt{background:var(--color-bg-alt)}.section-inner{max-width:var(--max);margin:auto}.reading{max-width:var(--reading)}.section-kicker{font-family:"IBM Plex Mono";font-size:.78rem;color:var(--color-accent);margin-bottom:13px}.lead{font-size:1.08rem;color:var(--color-text-muted);max-width:var(--reading);margin-bottom:30px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:24px;transition:transform .25s ease,box-shadow .25s ease}.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}.card-icon{font-family:"IBM Plex Mono";color:var(--color-accent);font-weight:600;font-size:.78rem;margin-bottom:15px}
+.info{border-left:3px solid var(--color-accent);background:var(--color-accent-soft);padding:18px 20px;border-radius:0 12px 12px 0;margin:30px 0;max-width:var(--reading)}.info strong{display:block;margin-bottom:4px}
+.warning{border-left-color:var(--color-accent-alt);background:#FBF3EE}.warning strong{color:#7a3b18}
+.figure{background:#fff;border:1px solid var(--color-border);border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(11,15,13,.04)}.figure figcaption{font-size:.84rem;color:var(--color-text-muted);margin-top:13px}
+.steps{display:grid;grid-template-columns:repeat(7,1fr);gap:0;margin-top:28px}.step{position:relative;padding:18px 14px 15px;border-top:2px solid var(--color-border)}.step:first-child{border-color:var(--color-accent)}.step-num{font-family:"IBM Plex Mono";font-size:.75rem;color:var(--color-accent);font-weight:600}.step strong{display:block;font-size:.92rem;margin-top:7px}
+.tabs{margin-top:28px}.tab-list{display:flex;gap:8px;border-bottom:1px solid var(--color-border);overflow-x:auto}.tab-btn{border:0;background:none;padding:13px 17px;color:var(--color-text-muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}.tab-btn[aria-selected="true"]{color:var(--color-accent);border-color:var(--color-accent);font-weight:600}.tab-panel{padding:26px 0}.tab-panel[hidden]{display:none}
+.table-wrap{overflow:auto;border:1px solid var(--color-border);border-radius:14px;background:#fff}.data-table{width:100%;border-collapse:collapse;min-width:680px;font-family:"IBM Plex Mono";font-size:.82rem}.data-table th{text-align:left;background:var(--color-bg-alt);font-family:Inter;padding:14px;border-bottom:1px solid var(--color-border)}.data-table td{padding:14px;border-bottom:1px solid var(--color-border);vertical-align:top}.data-table tr:last-child td{border-bottom:0}.data-table tr:hover td{background:#fbfcfb}.data-table td:last-child{text-align:right;color:var(--color-accent);font-weight:600}
+.accordion{max-width:850px;margin-top:25px}.acc-item{border-bottom:1px solid var(--color-border)}.acc-btn{width:100%;display:flex;justify-content:space-between;gap:20px;text-align:left;background:none;border:0;padding:20px 0;cursor:pointer;font-weight:600}.acc-icon{color:var(--color-accent);font-size:1.25rem}.acc-panel{color:var(--color-text-muted);padding:0 0 20px;max-width:720px}.acc-panel[hidden]{display:none}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.key{border:1px solid var(--color-border);padding:21px;border-radius:15px;background:#fff}.key span{display:block;font-family:"IBM Plex Mono";color:var(--color-accent);font-size:.78rem;margin-bottom:8px}.nav-lessons{max-width:var(--max);margin:auto;padding:55px 28px;display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center}.lesson-link{border:1px solid var(--color-border);padding:20px;border-radius:15px;text-decoration:none}.lesson-link:hover{border-color:var(--color-accent);box-shadow:var(--shadow)}.lesson-link.next{text-align:right}.small{font-size:.78rem;color:var(--color-text-muted);display:block;margin-bottom:4px}.back{border:0;background:var(--color-accent);color:#fff;padding:13px 18px;border-radius:10px;cursor:pointer}.back:hover{filter:brightness(.94)}
+footer{border-top:1px solid var(--color-border);padding:30px 28px;color:var(--color-text-muted);font-size:.85rem;text-align:center}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid rgba(31,111,84,.35);outline-offset:3px}
+@media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:55px;gap:35px}.grid2,.grid3{grid-template-columns:1fr}.keys{grid-template-columns:1fr 1fr}.toc ol{columns:1}.steps{grid-template-columns:1fr 1fr}.nav-lessons{grid-template-columns:1fr}.lesson-link.next{text-align:left}.back{width:fit-content}.header-inner{padding:0 18px}.section,.hero,.toc-wrap,.nav-lessons{padding-left:18px;padding-right:18px}}
+@media(max-width:520px){h1{font-size:3rem}.keys{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.section{padding-top:60px;padding-bottom:60px}.visual-card{padding:14px}.brand span{font-size:.85rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#top"><span class="mark">M5</span><span>Graphisme 2D/3D</span></a>
+    <a class="header-link" href="#sommaire">Sommaire ↓</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div>
+    <div class="eyebrow">MODULE 5 · CRÉATION ET ANIMATION</div>
+    <h1>Texturing.</h1>
+    <p>Créer des surfaces crédibles et cohérentes en comprenant la relation entre la géométrie, les coordonnées UV et les propriétés physiques d'un matériau.</p>
+    <div class="badges">
+      <span class="badge accent">LEÇON 26</span>
+      <span class="badge">15 min</span>
+      <span class="badge">Débutant → Intermédiaire</span>
+    </div>
+  </div>
+  <div class="visual-card reveal" aria-label="Illustration d'une sphère texturée avec ses différentes cartes PBR">
+    <svg viewBox="0 0 620 440" role="img" aria-label="Sphère 3D reliée aux cartes Albedo, Roughness et Normal">
+      <defs>
+        <radialGradient id="sphere" cx="35%" cy="28%" r="72%"><stop offset="0" stop-color="#ffffff"/><stop offset=".38" stop-color="#e7f2ed"/><stop offset=".72" stop-color="#7faf99"/><stop offset="1" stop-color="#1f6f54"/></radialGradient>
+        <linearGradient id="cardA" x1="0" x2="1"><stop stop-color="#d8e9e0"/><stop offset="1" stop-color="#1f6f54"/></linearGradient>
+        <pattern id="grid" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#c8d8d0" stroke-width="1"/></pattern>
+      </defs>
+      <rect x="0" y="0" width="620" height="440" rx="18" fill="#fff"/>
+      <circle cx="285" cy="220" r="142" fill="url(#sphere)" stroke="#0b0f0d" stroke-width="2"/>
+      <ellipse cx="285" cy="220" rx="142" ry="54" fill="none" stroke="#1f6f54" stroke-width="1.5" opacity=".7"/>
+      <path d="M285 78c-72 78-72 206 0 284M285 78c72 78 72 206 0 284" fill="none" stroke="#fff" stroke-width="1.5" opacity=".55"/>
+      <rect x="38" y="55" width="132" height="86" rx="12" fill="url(#grid)" stroke="#1f6f54"/>
+      <text x="55" y="86" font-family="IBM Plex Mono" font-size="13" fill="#1f6f54">UV MAP</text>
+      <text x="55" y="113" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#0b0f0d">Dépliage 2D</text>
+      <path d="M170 100H200" stroke="#1f6f54" stroke-width="2"/>
+      <path d="M193 94l8 6-8 6" fill="none" stroke="#1f6f54" stroke-width="2"/>
+      <g transform="translate(442 85)">
+        <rect width="135" height="65" rx="10" fill="url(#cardA)"/><text x="14" y="27" font-family="IBM Plex Mono" font-size="12" fill="#fff">ALBEDO</text><text x="14" y="49" font-family="Inter" font-size="12" fill="#fff">Couleur</text>
+      </g>
+      <g transform="translate(442 178)">
+        <rect width="135" height="65" rx="10" fill="#bcc5c0"/><text x="14" y="27" font-family="IBM Plex Mono" font-size="12" fill="#0b0f0d">ROUGHNESS</text><text x="14" y="49" font-family="Inter" font-size="12" fill="#0b0f0d">Rugosité</text>
+      </g>
+      <g transform="translate(442 271)">
+        <rect width="135" height="65" rx="10" fill="#d5d8ee"/><path d="M10 45q20-30 40 0t40 0t35 0" fill="none" stroke="#5965a8" stroke-width="5"/><text x="14" y="22" font-family="IBM Plex Mono" font-size="12" fill="#343a73">NORMAL</text>
+      </g>
+      <path d="M427 112H442M427 220H442M427 300H442" stroke="#1f6f54" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <text x="285" y="414" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5a6560">GÉOMÉTRIE + UV + CARTES = SURFACE</text>
+    </svg>
+    <div class="caption">Une texture ne remplace pas la géométrie : elle décrit principalement l'apparence de la surface.</div>
+  </div>
+</section>
+
+<div class="toc-wrap" id="sommaire">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <div class="toc-title">Sommaire de la leçon</div>
+    <ol>
+      <li><a href="#comprendre">Comprendre le texturing</a></li>
+      <li><a href="#uv">UV : déplier la surface</a></li>
+      <li><a href="#pbr">Le matériau PBR</a></li>
+      <li><a href="#maps">Les cartes essentielles</a></li>
+      <li><a href="#procedural">Textures procédurales</a></li>
+      <li><a href="#baking">Le baking</a></li>
+      <li><a href="#pipeline">Pipeline de production</a></li>
+      <li><a href="#erreurs">Erreurs fréquentes</a></li>
+      <li><a href="#cles">Points clés à retenir</a></li>
+    </ol>
+  </nav>
+</div>
+
+<section class="section" id="comprendre">
+<div class="section-inner">
+<div class="reading reveal">
+<div class="section-kicker">01 · FONDAMENTAUX</div>
+<h2>Comprendre le texturing.</h2>
+<p class="lead">Le texturing consiste à définir l'apparence d'un objet 3D. Il permet de préciser sa couleur, sa rugosité, ses micro-reliefs et d'autres propriétés sans augmenter inutilement la complexité du modèle.</p>
+<p>Un même objet géométrique peut paraître métallique, peint, rugueux ou parfaitement lisse selon les informations contenues dans son matériau. Le travail de texture cherche donc une <strong>cohérence visuelle</strong> entre la forme, la matière et l'éclairage.</p>
+</div>
+<div class="grid3 reveal">
+  <article class="card"><div class="card-icon">01 / FORME</div><h3>Géométrie</h3><p>Elle définit le volume réel et les grandes silhouettes.</p></article>
+  <article class="card"><div class="card-icon">02 / APPARENCE</div><h3>Matériau</h3><p>Il décrit la manière dont la surface réagit à la lumière.</p></article>
+  <article class="card"><div class="card-icon">03 / DÉTAIL</div><h3>Textures</h3><p>Elles apportent des informations variables sur la surface.</p></article>
+</div>
+<div class="info reveal"><strong>💡 À retenir</strong>Une bonne texture ne signifie pas « ajouter beaucoup de détails ». Elle doit surtout raconter la bonne matière au bon endroit.</div>
+</div>
+</section>
+
+<section class="section alt" id="uv">
+<div class="section-inner">
+<div class="grid2">
+<div class="reveal">
+<div class="section-kicker">02 · COORDONNÉES</div>
+<h2>UV : déplier la surface.</h2>
+<p class="lead">Les coordonnées UV permettent de faire correspondre une surface 3D avec une image ou une texture 2D.</p>
+<p>Imaginez que la surface d'un objet soit découpée puis ouverte à plat. Cette représentation bidimensionnelle devient une <strong>UV Map</strong>. Les îlots UV indiquent quelles zones de l'image seront appliquées sur chaque partie de l'objet.</p>
+<p>Un dépliage propre limite les déformations et facilite la peinture ou l'application de motifs.</p>
+</div>
+<figure class="figure reveal">
+<svg viewBox="0 0 560 310" role="img" aria-label="Transformation d'un cube en dépliage UV">
+<rect width="560" height="310" rx="12" fill="#f6f8f6"/>
+<g transform="translate(55 70)">
+<path d="M80 20l70 35v85l-70 35-70-35V55z" fill="#e7f2ed" stroke="#1f6f54" stroke-width="3"/>
+<path d="M80 20v85l70 35M80 105L10 70M80 105l70-50" fill="none" stroke="#1f6f54" stroke-width="2"/>
+<text x="80" y="215" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5a6560">OBJET 3D</text>
+</g>
+<path d="M225 155h75" stroke="#1f6f54" stroke-width="2"/><path d="M290 147l12 8-12 8" fill="none" stroke="#1f6f54" stroke-width="2"/>
+<g transform="translate(335 38)" fill="#fff" stroke="#1f6f54" stroke-width="2">
+<rect x="58" y="0" width="58" height="58"/><rect x="0" y="58" width="58" height="58"/><rect x="58" y="58" width="58" height="58"/><rect x="116" y="58" width="58" height="58"/><rect x="58" y="116" width="58" height="58"/><rect x="58" y="174" width="58" height="58"/>
+</g>
+<text x="423" y="285" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5a6560">UV MAP 2D</text>
+</svg>
+<figcaption>Le dépliage UV crée une correspondance stable entre l'espace 3D et l'espace 2D.</figcaption>
+</figure>
+</div>
+<div class="warning reveal"><strong>⚠️ Attention</strong>Des UV étirés produisent des textures déformées. Une densité incohérente peut aussi rendre certains détails trop grands ou trop petits selon les zones.</div>
+</div>
+</section>
+
+<section class="section" id="pbr">
+<div class="section-inner">
+<div class="reading reveal">
+<div class="section-kicker">03 · MATIÈRE</div>
+<h2>Le modèle PBR.</h2>
+<p class="lead">PBR signifie <em>Physically Based Rendering</em>. Cette approche décrit les matériaux à partir de propriétés qui produisent un comportement cohérent sous différents éclairages.</p>
+</div>
+<div class="tabs reveal">
+<div class="tab-list" role="tablist" aria-label="Comparaison des propriétés PBR">
+<button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-albedo" id="btn-albedo">Albedo</button>
+<button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-rough" id="btn-rough">Roughness</button>
+<button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-metal" id="btn-metal">Metallic</button>
+</div>
+<div id="tab-albedo" class="tab-panel" role="tabpanel" aria-labelledby="btn-albedo"><div class="grid2"><div><h3>La couleur de base</h3><p>L'albedo représente la couleur intrinsèque de la surface, sans ombres ni reflets peints artificiellement. Elle doit rester une information de matière.</p></div><div class="figure"><svg viewBox="0 0 420 150"><rect width="420" height="150" rx="10" fill="#e7f2ed"/><circle cx="210" cy="75" r="52" fill="#1f6f54"/><text x="210" y="145" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5a6560">COULEUR DE BASE</text></svg></div></div></div>
+<div id="tab-rough" class="tab-panel" role="tabpanel" aria-labelledby="btn-rough" hidden><div class="grid2"><div><h3>La diffusion du reflet</h3><p>Une faible roughness produit un reflet net. Une roughness élevée disperse la lumière et donne un aspect plus mat.</p></div><div class="figure"><svg viewBox="0 0 420 150"><defs><linearGradient id="r" x1="0" x2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#59625d"/></linearGradient></defs><rect width="420" height="150" rx="10" fill="url(#r)"/><text x="210" y="135" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5a6560">LISSE → RUGUEUX</text></svg></div></div></div>
+<div id="tab-metal" class="tab-panel" role="tabpanel" aria-labelledby="btn-metal" hidden><div class="grid2"><div><h3>Métal ou diélectrique</h3><p>La propriété metallic distingue généralement les surfaces métalliques des matériaux non métalliques comme le bois, le plastique ou la pierre.</p></div><div class="figure"><svg viewBox="0 0 420 150"><rect width="420" height="150" rx="10" fill="#f6f8f6"/><circle cx="135" cy="75" r="48" fill="#e7f2ed" stroke="#1f6f54"/><circle cx="285" cy="75" r="48" fill="#77827d"/><text x="135" y="142" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">NON-MÉTAL</text><text x="285" y="142" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">MÉTAL</text></svg></div></div></div>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="maps">
+<div class="section-inner">
+<div class="section-kicker reveal">04 · CARTES</div>
+<h2 class="reveal">Les informations essentielles.</h2>
+<p class="lead reveal">Chaque carte répond à une question différente sur la surface. Elles travaillent ensemble.</p>
+<div class="table-wrap reveal">
+<table class="data-table">
+<thead><tr><th scope="col">Carte</th><th scope="col">Information</th><th scope="col">Effet visuel</th><th scope="col">Usage</th></tr></thead>
+<tbody>
+<tr><td>Albedo</td><td>Couleur de base</td><td>Teinte du matériau</td><td>Presque tous les matériaux</td></tr>
+<tr><td>Roughness</td><td>Rugosité</td><td>Reflet net ou diffus</td><td>Contrôle de la finition</td></tr>
+<tr><td>Normal</td><td>Direction simulée</td><td>Micro-relief apparent</td><td>Détails sans ajouter de polygones</td></tr>
+<tr><td>Metallic</td><td>Nature métallique</td><td>Réponse du matériau à la lumière</td><td>Métaux et matériaux mixtes</td></tr>
+<tr><td>Height</td><td>Hauteur relative</td><td>Relief ou déplacement</td><td>Détails plus marqués</td></tr>
+<tr><td>AO</td><td>Occlusion locale</td><td>Renforcement des contacts</td><td>Détails de proximité</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="section" id="procedural">
+<div class="section-inner">
+<div class="grid2">
+<div class="reveal">
+<div class="section-kicker">05 · GÉNÉRATION</div>
+<h2>Textures procédurales.</h2>
+<p class="lead">Une texture procédurale est générée à partir de règles mathématiques plutôt que stockée uniquement sous la forme d'une image.</p>
+<p>Elle peut créer des motifs, du bruit, des variations de couleur ou des structures répétitives. Son avantage majeur est sa flexibilité : les paramètres peuvent être modifiés à tout moment.</p>
+<div class="info"><strong>💡 À retenir</strong>Les textures procédurales sont particulièrement utiles lorsque la répétition doit rester contrôlée ou lorsqu'une résolution indépendante est recherchée.</div>
+</div>
+<figure class="figure reveal">
+<svg viewBox="0 0 560 350" role="img" aria-label="Exemple de réseau de nœuds pour générer une texture procédurale">
+<rect width="560" height="350" rx="12" fill="#fff"/>
+<path d="M175 95H250M325 95H395M175 250H250M325 250H395M287 125V220" stroke="#1f6f54" stroke-width="2"/>
+<g font-family="IBM Plex Mono" font-size="11">
+<rect x="35" y="55" width="140" height="80" rx="10" fill="#e7f2ed" stroke="#1f6f54"/><text x="55" y="85" fill="#1f6f54">NOISE</text><text x="55" y="110" fill="#0b0f0d">Variation</text>
+<rect x="250" y="55" width="75" height="80" rx="10" fill="#f6f8f6" stroke="#1f6f54"/><text x="266" y="87" fill="#1f6f54">COLOR</text><text x="267" y="111" fill="#0b0f0d">RAMP</text>
+<rect x="395" y="55" width="130" height="80" rx="10" fill="#e7f2ed" stroke="#1f6f54"/><text x="414" y="87" fill="#1f6f54">MATERIAL</text><text x="414" y="111" fill="#0b0f0d">Albedo</text>
+<rect x="35" y="210" width="140" height="80" rx="10" fill="#f6f8f6" stroke="#1f6f54"/><text x="55" y="240" fill="#1f6f54">VORONOI</text><text x="55" y="265" fill="#0b0f0d">Structure</text>
+<rect x="250" y="210" width="75" height="80" rx="10" fill="#f6f8f6" stroke="#1f6f54"/><text x="264" y="241" fill="#1f6f54">MIX</text><text x="263" y="265" fill="#0b0f0d">Blend</text>
+<rect x="395" y="210" width="130" height="80" rx="10" fill="#e7f2ed" stroke="#1f6f54"/><text x="414" y="241" fill="#1f6f54">ROUGHNESS</text><text x="414" y="265" fill="#0b0f0d">Finition</text>
+</g>
+</svg>
+<figcaption>Les nœuds permettent de combiner plusieurs sources pour construire un matériau paramétrique.</figcaption>
+</figure>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="baking">
+<div class="section-inner">
+<div class="reading reveal">
+<div class="section-kicker">06 · TRANSFERT</div>
+<h2>Le baking.</h2>
+<p class="lead">Le baking consiste à calculer certaines informations d'un objet ou d'une scène pour les enregistrer dans une texture.</p>
+<p>Une utilisation classique consiste à transférer les détails d'un modèle <strong>high poly</strong> vers un modèle <strong>low poly</strong> à l'aide d'une normal map. Le modèle final reste léger tout en conservant une grande richesse visuelle.</p>
+</div>
+<div class="steps reveal" aria-label="Étapes du processus de baking">
+<div class="step"><div class="step-num">01</div><strong>High poly</strong><span>Créer les détails.</span></div>
+<div class="step"><div class="step-num">02</div><strong>Low poly</strong><span>Optimiser la géométrie.</span></div>
+<div class="step"><div class="step-num">03</div><strong>UV</strong><span>Déplier le modèle.</span></div>
+<div class="step"><div class="step-num">04</div><strong>Projection</strong><span>Comparer les surfaces.</span></div>
+<div class="step"><div class="step-num">05</div><strong>Calcul</strong><span>Générer la carte.</span></div>
+<div class="step"><div class="step-num">06</div><strong>Texture</strong><span>Enregistrer le résultat.</span></div>
+<div class="step"><div class="step-num">07</div><strong>Matériau</strong><span>Réutiliser l'information.</span></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="pipeline">
+<div class="section-inner">
+<div class="section-kicker reveal">07 · MÉTHODE</div>
+<h2 class="reveal">Un pipeline simple et cohérent.</h2>
+<div class="grid2">
+<figure class="figure reveal">
+<svg viewBox="0 0 600 260" role="img" aria-label="Pipeline de texturing de la référence au rendu">
+<rect width="600" height="260" rx="12" fill="#f6f8f6"/>
+<g font-family="Space Grotesk" font-size="15" font-weight="700">
+<rect x="20" y="90" width="85" height="65" rx="10" fill="#fff" stroke="#1f6f54"/><text x="62" y="128" text-anchor="middle">Références</text>
+<rect x="135" y="90" width="85" height="65" rx="10" fill="#e7f2ed" stroke="#1f6f54"/><text x="177" y="128" text-anchor="middle">UV</text>
+<rect x="250" y="90" width="85" height="65" rx="10" fill="#fff" stroke="#1f6f54"/><text x="292" y="128" text-anchor="middle">Cartes</text>
+<rect x="365" y="90" width="85" height="65" rx="10" fill="#e7f2ed" stroke="#1f6f54"/><text x="407" y="128" text-anchor="middle">PBR</text>
+<rect x="480" y="90" width="95" height="65" rx="10" fill="#fff" stroke="#1f6f54"/><text x="527" y="128" text-anchor="middle">Contrôle</text>
+</g>
+<g stroke="#1f6f54" stroke-width="2" fill="none"><path d="M105 122h30m-9-8 9 8-9 8M220 122h30m-9-8 9 8-9 8M335 122h30m-9-8 9 8-9 8M450 122h30m-9-8 9 8-9 8"/></g>
+<text x="300" y="215" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#5a6560">COHÉRENCE AVANT QUANTITÉ DE DÉTAILS</text>
+</svg>
+<figcaption>Un pipeline organisé évite de corriger trop tard des problèmes de géométrie, d'échelle ou de coordonnées.</figcaption>
+</figure>
+<div class="card reveal"><div class="card-icon">ORDRE RECOMMANDÉ</div><h3>Commencer par la matière.</h3><p>Avant d'ajouter des imperfections, identifiez la nature principale de la surface : métal, plastique, tissu, bois ou pierre.</p><p>Ensuite, construisez les propriétés fondamentales. Les variations, traces et détails secondaires viennent renforcer cette base.</p></div>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="erreurs">
+<div class="section-inner">
+<div class="section-kicker reveal">08 · CONTRÔLE</div>
+<h2 class="reveal">Erreurs fréquentes.</h2>
+<div class="accordion reveal">
+<div class="acc-item"><button class="acc-btn" aria-expanded="true" aria-controls="acc1">Ajouter des ombres directement dans l'albedo <span class="acc-icon">−</span></button><div class="acc-panel" id="acc1">L'albedo doit principalement contenir la couleur de base. Les ombres doivent être produites par l'éclairage et la géométrie, sauf cas stylistique volontaire.</div></div>
+<div class="acc-item"><button class="acc-btn" aria-expanded="false" aria-controls="acc2">Utiliser la même roughness partout <span class="acc-icon">+</span></button><div class="acc-panel" id="acc2" hidden>Les matériaux réels présentent souvent de légères variations. Une surface parfaitement uniforme peut sembler artificielle selon le contexte.</div></div>
+<div class="acc-item"><button class="acc-btn" aria-expanded="false" aria-controls="acc3">Confondre normal map et véritable géométrie <span class="acc-icon">+</span></button><div class="acc-panel" id="acc3" hidden>Une normal map modifie l'apparence de la lumière, mais ne change pas réellement la silhouette de l'objet.</div></div>
+<div class="acc-item"><button class="acc-btn" aria-expanded="false" aria-controls="acc4">Ignorer l'échelle réelle du détail <span class="acc-icon">+</span></button><div class="acc-panel" id="acc4" hidden>Les rayures, pores et fibres doivent conserver une taille cohérente avec l'objet observé.</div></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="cles">
+<div class="section-inner">
+<div class="section-kicker reveal">SYNTHÈSE</div>
+<h2 class="reveal">Points clés à retenir.</h2>
+<div class="keys reveal">
+<div class="key"><span>01</span><strong>Les UV relient la surface 3D à l'espace 2D.</strong></div>
+<div class="key"><span>02</span><strong>Le PBR décrit des propriétés cohérentes de matière.</strong></div>
+<div class="key"><span>03</span><strong>Chaque carte apporte une information spécifique.</strong></div>
+<div class="key"><span>04</span><strong>Le baking transfère efficacement des informations complexes.</strong></div>
+</div>
+</div>
+</section>
+
+<nav class="nav-lessons" aria-label="Navigation entre les leçons">
+<a class="lesson-link" href="lecon-25-rendu-et-eclairage.html"><span class="small">← LEÇON PRÉCÉDENTE</span><strong>25 · Rendu et éclairage</strong></a>
+<button class="back" onclick="document.getElementById('sommaire').scrollIntoView()">Retour au sommaire ↑</button>
+<a class="lesson-link next" href="lecon-27-motion-design.html"><span class="small">LEÇON SUIVANTE →</span><strong>27 · Motion design</strong></a>
+</nav>
+</main>
+
+<footer>MODULE 5 · Graphisme 2D/3D — Création et animation · LEÇON 26</footer>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;progress.style.width=(max?Math.min(100,h.scrollTop/max*100):0)+'%'}window.addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+
+const tabs=[...document.querySelectorAll('.tab-btn')],panels=[...document.querySelectorAll('.tab-panel')];
+tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>{tabs.forEach((t,j)=>{const active=i===j;t.setAttribute('aria-selected',active);panels[j].hidden=!active})});tab.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();let n=(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;tabs[n].focus();tabs[n].click()}})});
+
+document.querySelectorAll('.acc-btn').forEach(btn=>btn.addEventListener('click',()=>{const panel=document.getElementById(btn.getAttribute('aria-controls'));const open=btn.getAttribute('aria-expanded')==='true';btn.setAttribute('aria-expanded',String(!open));panel.hidden=open;btn.querySelector('.acc-icon').textContent=open?'+':'−'}));
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

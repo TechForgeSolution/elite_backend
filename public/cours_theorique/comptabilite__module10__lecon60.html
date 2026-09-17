@@ -1,0 +1,2766 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 60 — Suivi budgétaire et décisions correctives. Comparaison budget/réel, analyse des écarts et décisions correctives.">
+  <meta name="theme-color" content="#1F6F54">
+  <title>Leçon 60 — Suivi budgétaire et décisions correctives | Comptabilité</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-bg: #FFFFFF;
+      --color-bg-alt: #F6F8F6;
+      --color-text: #0B0F0D;
+      --color-text-muted: #5A6560;
+      --color-accent: #1F6F54;
+      --color-accent-soft: #E7F2ED;
+      --color-border: #E3E8E5;
+      --color-accent-alt: #B3541E;
+
+      --shadow-sm: 0 4px 18px rgba(11, 15, 13, 0.05);
+      --shadow-md: 0 12px 35px rgba(11, 15, 13, 0.08);
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+
+      --container: 1180px;
+      --reading: 760px;
+
+      --font-display: "Space Grotesk", Inter, sans-serif;
+      --font-body: "Inter", sans-serif;
+      --font-mono: "Roboto Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      line-height: 1.7;
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    img,
+    svg {
+      max-width: 100%;
+    }
+
+    ::selection {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    /* =========================
+       PROGRESS BAR
+    ========================== */
+
+    .reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+      z-index: 9999;
+    }
+
+    .reading-progress span {
+      display: block;
+      width: 0%;
+      height: 100%;
+      background: var(--color-accent);
+      transition: width 0.1s linear;
+    }
+
+    /* =========================
+       HEADER
+    ========================== */
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--color-border);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: var(--container);
+      margin: auto;
+      min-height: 70px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--color-text-muted);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-button {
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 9px 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .header-button:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      transform: translateY(-1px);
+    }
+
+    /* =========================
+       HERO
+    ========================== */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-border);
+      background:
+        linear-gradient(to right, rgba(31,111,84,.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31,111,84,.045) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -100px;
+      top: 30px;
+      border: 1px solid rgba(31,111,84,.13);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: var(--container);
+      margin: auto;
+      padding: 82px 24px 78px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      border: 1px solid rgba(31,111,84,.14);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      max-width: 850px;
+      margin-top: 22px;
+      font-family: var(--font-display);
+      font-size: clamp(38px, 6vw, 72px);
+      line-height: 1.03;
+      letter-spacing: -0.055em;
+    }
+
+    .hero h1 span {
+      color: var(--color-accent);
+    }
+
+    .hero-description {
+      max-width: 720px;
+      margin-top: 24px;
+      color: var(--color-text-muted);
+      font-size: 18px;
+    }
+
+    .meta-row {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--color-border);
+      background: rgba(255,255,255,.8);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 13px;
+    }
+
+    .meta strong {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    /* =========================
+       LAYOUT
+    ========================== */
+
+    .page-grid {
+      max-width: var(--container);
+      margin: auto;
+      padding: 52px 24px 80px;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 70px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 100px;
+      align-self: start;
+      max-height: calc(100vh - 125px);
+      overflow-y: auto;
+    }
+
+    .toc-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .toc a {
+      display: block;
+      padding: 8px 10px;
+      margin-bottom: 3px;
+      border-left: 2px solid transparent;
+      color: var(--color-text-muted);
+      font-size: 13px;
+      line-height: 1.4;
+      transition: .2s ease;
+    }
+
+    .toc a:hover,
+    .toc a.active {
+      color: var(--color-accent);
+      border-left-color: var(--color-accent);
+      background: var(--color-accent-soft);
+    }
+
+    .lesson-content {
+      min-width: 0;
+    }
+
+    .section {
+      max-width: var(--reading);
+      margin-bottom: 90px;
+      scroll-margin-top: 100px;
+    }
+
+    .section-wide {
+      max-width: 100%;
+    }
+
+    .section-label {
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+      margin-bottom: 22px;
+    }
+
+    .section h3 {
+      font-family: var(--font-display);
+      font-size: 21px;
+      line-height: 1.25;
+      margin: 32px 0 12px;
+    }
+
+    .section p {
+      margin-bottom: 17px;
+    }
+
+    .section ul,
+    .section ol {
+      margin: 15px 0 20px 22px;
+    }
+
+    .section li {
+      margin-bottom: 8px;
+    }
+
+    .lead {
+      font-size: 18px;
+      color: var(--color-text-muted);
+    }
+
+    /* =========================
+       VISUAL BLOCKS
+    ========================== */
+
+    .visual-card {
+      margin: 30px 0;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .visual-card figcaption {
+      margin-top: 15px;
+      color: var(--color-text-muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .visual-card svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .svg-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      fill: var(--color-text);
+    }
+
+    .svg-label {
+      font-family: var(--font-body);
+      font-size: 13px;
+      fill: var(--color-text-muted);
+    }
+
+    .svg-number {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      fill: var(--color-accent);
+    }
+
+    /* =========================
+       CARDS
+    ========================== */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 28px 0;
+    }
+
+    .card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      background: #fff;
+      transition: .25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-sm);
+      border-color: rgba(31,111,84,.35);
+    }
+
+    .card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .card p {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       CALLOUTS
+    ========================== */
+
+    .callout {
+      margin: 26px 0;
+      padding: 19px 21px;
+      border-left: 4px solid var(--color-accent);
+      background: var(--color-accent-soft);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+
+    .callout.warning {
+      border-left-color: var(--color-accent-alt);
+      background: #FBF5F0;
+    }
+
+    .callout-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* =========================
+       STEPPER
+    ========================== */
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin: 35px 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .step {
+      position: relative;
+      padding: 20px 15px;
+      min-height: 140px;
+      border-right: 1px solid var(--color-border);
+    }
+
+    .step:last-child {
+      border-right: none;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 13px;
+    }
+
+    .step strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 14px;
+      line-height: 1.25;
+      margin-bottom: 7px;
+    }
+
+    .step span {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* =========================
+       TABLES
+    ========================== */
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 28px 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+
+    table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    caption {
+      caption-side: top;
+      text-align: left;
+      padding: 15px 16px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      background: var(--color-bg-alt);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 15px;
+      background: #FAFBFA;
+      color: var(--color-text-muted);
+      font-size: 11px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--color-accent-soft);
+    }
+
+    .number {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .positive {
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    .negative {
+      color: var(--color-accent-alt);
+      font-weight: 600;
+    }
+
+    .total-row td {
+      font-weight: 700;
+      border-top: 2px solid var(--color-accent);
+      background: var(--color-accent-soft);
+    }
+
+    /* =========================
+       TABS
+    ========================== */
+
+    .tabs {
+      margin: 30px 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .tab-list {
+      display: flex;
+      overflow-x: auto;
+      background: var(--color-bg-alt);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .tab-button {
+      border: 0;
+      border-right: 1px solid var(--color-border);
+      background: transparent;
+      padding: 13px 18px;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tab-button:hover,
+    .tab-button.active {
+      color: var(--color-accent);
+      background: #fff;
+    }
+
+    .tab-button.active {
+      box-shadow: inset 0 -2px 0 var(--color-accent);
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 23px;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn .25s ease;
+    }
+
+    /* =========================
+       ACCORDIONS
+    ========================== */
+
+    .accordion {
+      margin: 24px 0;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 18px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-weight: 600;
+    }
+
+    .accordion-trigger span:last-child {
+      color: var(--color-accent);
+      font-size: 22px;
+      transition: transform .2s ease;
+    }
+
+    .accordion-item.open .accordion-trigger span:last-child {
+      transform: rotate(45deg);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+
+    .accordion-content-inner {
+      padding: 0 4px 18px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+    }
+
+    /* =========================
+       METRICS
+    ========================== */
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .metric {
+      padding: 18px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: #fff;
+    }
+
+    .metric-label {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 5px;
+      color: var(--color-text-muted);
+      font-size: 11px;
+    }
+
+    /* =========================
+       KEY POINTS
+    ========================== */
+
+    .key-points {
+      max-width: 100%;
+      padding: 45px 0;
+      margin-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .key-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .key {
+      display: flex;
+      gap: 13px;
+      padding: 17px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-alt);
+    }
+
+    .key-check {
+      flex: 0 0 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--color-accent);
+      color: white;
+      font-size: 12px;
+    }
+
+    .key p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================== */
+
+    .lesson-nav {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 35px 24px 65px;
+      border-top: 1px solid var(--color-border);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      transition: .2s ease;
+    }
+
+    .nav-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+
+    .nav-card.next {
+      text-align: right;
+    }
+
+    .nav-label {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 5px;
+    }
+
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .module-link {
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    footer {
+      border-top: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+      padding: 25px 24px;
+    }
+
+    .footer-inner {
+      max-width: var(--container);
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    /* =========================
+       BACK TO TOP
+    ========================== */
+
+    .back-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--color-border);
+      background: white;
+      color: var(--color-accent);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: .25s ease;
+      z-index: 900;
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-top:hover {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================== */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 950px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .toc {
+        position: static;
+        max-height: none;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: 15px;
+      }
+
+      .toc-links {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .toc a {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+      }
+
+      .toc a:hover,
+      .toc a.active {
+        border-left: none;
+        border-bottom-color: var(--color-accent);
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stepper {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .step {
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      body {
+        font-size: 15px;
+      }
+
+      .header-inner {
+        min-height: 62px;
+        padding: 0 15px;
+      }
+
+      .brand-text {
+        display: none;
+      }
+
+      .header-button {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+
+      .hero-inner {
+        padding: 60px 18px;
+      }
+
+      .hero-description {
+        font-size: 16px;
+      }
+
+      .page-grid {
+        padding: 35px 18px 60px;
+      }
+
+      .toc-links {
+        display: block;
+      }
+
+      .section {
+        margin-bottom: 65px;
+      }
+
+      .cards,
+      .key-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .stepper {
+        grid-template-columns: 1fr;
+      }
+
+      .step {
+        border-right: none;
+        min-height: auto;
+      }
+
+      .lesson-nav {
+        grid-template-columns: 1fr;
+        padding: 30px 18px 50px;
+      }
+
+      .nav-card.next {
+        text-align: left;
+      }
+
+      .module-link {
+        justify-self: start;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+
+      .visual-card {
+        padding: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- BARRE DE PROGRESSION -->
+  <div class="reading-progress" aria-hidden="true">
+    <span id="progressBar"></span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#top" class="brand" aria-label="Accueil de la leçon">
+        <span class="brand-mark">Σ</span>
+        <span class="brand-text">
+          COMPTABILITÉ
+          <small>Gestion financière</small>
+        </span>
+      </a>
+
+      <div class="header-actions">
+        <span class="meta">
+          <strong>MODULE 10</strong>
+          Gestion budgétaire
+        </span>
+        <button class="header-button" id="tocToggle" type="button" aria-label="Afficher le sommaire">
+          Sommaire
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <span class="eyebrow">Module 10 · Gestion budgétaire</span>
+
+        <h1>
+          Suivi budgétaire<br>
+          et <span>décisions correctives</span>
+        </h1>
+
+        <p class="hero-description">
+          Comprendre comment comparer les prévisions aux réalisations,
+          analyser les écarts et transformer les résultats du suivi budgétaire
+          en décisions de gestion pertinentes.
+        </p>
+
+        <div class="meta-row">
+          <span class="meta">📘 Leçon 60</span>
+          <span class="meta">⏱ <strong>15–20 min</strong></span>
+          <span class="meta">Niveau : <strong>Intermédiaire</strong></span>
+          <span class="meta">Gestion budgétaire</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="page-grid">
+
+      <!-- SOMMAIRE -->
+      <aside class="toc" id="toc">
+        <div class="toc-title">Sommaire de la leçon</div>
+
+        <nav class="toc-links" aria-label="Sommaire">
+          <a href="#introduction">01. Le rôle du suivi budgétaire</a>
+          <a href="#processus">02. Le processus de suivi</a>
+          <a href="#budget-reel">03. Budget vs réel</a>
+          <a href="#ecarts">04. Analyse des écarts</a>
+          <a href="#decisions">05. Décisions correctives</a>
+          <a href="#indicateurs">06. Indicateurs de pilotage</a>
+          <a href="#tableau-bord">07. Tableau de bord budgétaire</a>
+          <a href="#coherence">08. Contrôles de cohérence</a>
+          <a href="#synthese">09. Points clés</a>
+        </nav>
+      </aside>
+
+      <!-- CONTENU -->
+      <article class="lesson-content">
+
+        <!-- INTRODUCTION -->
+        <section class="section reveal" id="introduction">
+          <div class="section-label">01 · Comprendre</div>
+          <h2>Le rôle du suivi budgétaire</h2>
+
+          <p class="lead">
+            Un budget n'est pas un document figé. Il constitue une référence
+            permettant de mesurer les résultats obtenus, d'identifier les
+            écarts et d'orienter les décisions de gestion.
+          </p>
+
+          <p>
+            Le <strong>suivi budgétaire</strong> consiste à comparer, à intervalles
+            réguliers, les montants prévus dans les budgets avec les montants
+            effectivement réalisés. Cette comparaison permet de répondre à
+            une question essentielle :
+            <strong>« Où en sommes-nous par rapport à ce qui était prévu ? »</strong>
+          </p>
+
+          <p>
+            L'objectif n'est donc pas uniquement de constater qu'un chiffre
+            est différent du budget. Il faut comprendre <strong>pourquoi</strong>
+            cet écart apparaît, déterminer s'il est favorable ou défavorable,
+            puis décider s'il faut maintenir, corriger ou réviser l'action engagée.
+          </p>
+
+          <!-- IMAGE / SVG 1 -->
+          <figure class="visual-card">
+            <svg viewBox="0 0 900 390" role="img" aria-labelledby="svg1-title svg1-desc">
+              <title id="svg1-title">Cycle du suivi budgétaire</title>
+              <desc id="svg1-desc">
+                Le budget sert de référence. Les réalisations sont mesurées,
+                comparées au budget, les écarts sont analysés puis des décisions
+                correctives sont prises avant un nouveau suivi.
+              </desc>
+
+              <defs>
+                <marker id="arrowGreen1" markerWidth="10" markerHeight="10"
+                        refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L9,3 z" fill="#1F6F54"></path>
+                </marker>
+              </defs>
+
+              <rect x="20" y="25" width="860" height="340" rx="24"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+
+              <circle cx="125" cy="195" r="62" fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="125" y="185" text-anchor="middle" class="svg-title">BUDGET</text>
+              <text x="125" y="207" text-anchor="middle" class="svg-label">Référence</text>
+
+              <line x1="187" y1="195" x2="270" y2="195"
+                    stroke="#1F6F54" stroke-width="2"
+                    marker-end="url(#arrowGreen1)"/>
+
+              <circle cx="335" cy="195" r="62" fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="335" y="185" text-anchor="middle" class="svg-title">RÉEL</text>
+              <text x="335" y="207" text-anchor="middle" class="svg-label">Réalisations</text>
+
+              <line x1="397" y1="195" x2="480" y2="195"
+                    stroke="#1F6F54" stroke-width="2"
+                    marker-end="url(#arrowGreen1)"/>
+
+              <circle cx="545" cy="195" r="62" fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="545" y="185" text-anchor="middle" class="svg-title">ÉCARTS</text>
+              <text x="545" y="207" text-anchor="middle" class="svg-label">Mesure + analyse</text>
+
+              <line x1="607" y1="195" x2="690" y2="195"
+                    stroke="#1F6F54" stroke-width="2"
+                    marker-end="url(#arrowGreen1)"/>
+
+              <circle cx="755" cy="195" r="62" fill="#FFFFFF" stroke="#1F6F54"/>
+              <text x="755" y="185" text-anchor="middle" class="svg-title">ACTION</text>
+              <text x="755" y="207" text-anchor="middle" class="svg-label">Décision</text>
+
+              <path d="M755 258 C755 320 125 320 125 258"
+                    fill="none"
+                    stroke="#1F6F54"
+                    stroke-width="1.5"
+                    stroke-dasharray="6 5"
+                    marker-end="url(#arrowGreen1)"/>
+
+              <text x="440" y="345" text-anchor="middle"
+                    class="svg-label">
+                Le pilotage budgétaire fonctionne comme une boucle continue
+              </text>
+            </svg>
+
+            <figcaption>
+              Le suivi budgétaire transforme les données comptables et opérationnelles
+              en informations utiles à la décision.
+            </figcaption>
+          </figure>
+
+          <div class="callout">
+            <div class="callout-title">💡 À retenir</div>
+            <p>
+              Le budget constitue une référence. Le suivi budgétaire mesure la
+              réalité par rapport à cette référence ; l'analyse des écarts permet
+              ensuite de décider.
+            </p>
+          </div>
+        </section>
+
+        <!-- PROCESSUS -->
+        <section class="section reveal" id="processus">
+          <div class="section-label">02 · Méthode</div>
+          <h2>Le processus de suivi budgétaire</h2>
+
+          <p>
+            Pour être efficace, le suivi doit suivre une logique régulière.
+            Chaque période — mois, trimestre ou autre période de gestion —
+            apporte de nouvelles informations.
+          </p>
+
+          <div class="stepper" aria-label="Étapes du suivi budgétaire">
+
+            <div class="step">
+              <div class="step-number">01</div>
+              <strong>Prévoir</strong>
+              <span>Définir les objectifs et les montants budgétés.</span>
+            </div>
+
+            <div class="step">
+              <div class="step-number">02</div>
+              <strong>Mesurer</strong>
+              <span>Collecter les réalisations issues de la comptabilité et des opérations.</span>
+            </div>
+
+            <div class="step">
+              <div class="step-number">03</div>
+              <strong>Comparer</strong>
+              <span>Calculer les écarts entre budget et réel.</span>
+            </div>
+
+            <div class="step">
+              <div class="step-number">04</div>
+              <strong>Expliquer</strong>
+              <span>Identifier les causes opérationnelles ou financières.</span>
+            </div>
+
+            <div class="step">
+              <div class="step-number">05</div>
+              <strong>Agir</strong>
+              <span>Choisir une action et suivre ses effets.</span>
+            </div>
+
+          </div>
+
+          <!-- IMAGE / SVG 2 -->
+          <figure class="visual-card">
+            <svg viewBox="0 0 900 330" role="img" aria-labelledby="svg2-title svg2-desc">
+              <title id="svg2-title">Chaîne de données du suivi budgétaire</title>
+              <desc id="svg2-desc">
+                Les données comptables, commerciales et opérationnelles alimentent
+                un tableau de suivi qui permet l'analyse des écarts et le pilotage.
+              </desc>
+
+              <defs>
+                <marker id="arrowGreen2" markerWidth="9" markerHeight="9"
+                        refX="7" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L8,3 z" fill="#1F6F54"/>
+                </marker>
+              </defs>
+
+              <text x="450" y="34" text-anchor="middle" class="svg-title">
+                LES SOURCES DU SUIVI
+              </text>
+
+              <rect x="35" y="70" width="175" height="90" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="122" y="105" text-anchor="middle" class="svg-title">Comptabilité</text>
+              <text x="122" y="130" text-anchor="middle" class="svg-label">Charges · produits</text>
+              <text x="122" y="149" text-anchor="middle" class="svg-label">trésorerie</text>
+
+              <rect x="35" y="190" width="175" height="90" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="122" y="225" text-anchor="middle" class="svg-title">Opérations</text>
+              <text x="122" y="250" text-anchor="middle" class="svg-label">Ventes · volumes</text>
+              <text x="122" y="269" text-anchor="middle" class="svg-label">production</text>
+
+              <line x1="210" y1="115" x2="320" y2="150"
+                    stroke="#1F6F54" stroke-width="2" marker-end="url(#arrowGreen2)"/>
+              <line x1="210" y1="235" x2="320" y2="185"
+                    stroke="#1F6F54" stroke-width="2" marker-end="url(#arrowGreen2)"/>
+
+              <rect x="320" y="100" width="250" height="150" rx="18"
+                    fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="445" y="140" text-anchor="middle" class="svg-title">
+                TABLEAU DE SUIVI
+              </text>
+              <text x="445" y="168" text-anchor="middle" class="svg-label">
+                Budget
+              </text>
+              <text x="445" y="190" text-anchor="middle" class="svg-label">
+                Réel
+              </text>
+              <text x="445" y="212" text-anchor="middle" class="svg-label">
+                Écart
+              </text>
+
+              <line x1="570" y1="175" x2="680" y2="175"
+                    stroke="#1F6F54" stroke-width="2" marker-end="url(#arrowGreen2)"/>
+
+              <rect x="680" y="100" width="185" height="150" rx="18"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="772" y="140" text-anchor="middle" class="svg-title">
+                PILOTAGE
+              </text>
+              <text x="772" y="168" text-anchor="middle" class="svg-label">
+                Analyse
+              </text>
+              <text x="772" y="190" text-anchor="middle" class="svg-label">
+                Décision
+              </text>
+              <text x="772" y="212" text-anchor="middle" class="svg-label">
+                Action
+              </text>
+
+              <text x="450" y="305" text-anchor="middle" class="svg-label">
+                La qualité de la décision dépend directement de la qualité des données disponibles.
+              </text>
+            </svg>
+            <figcaption>
+              Les données comptables sont enrichies par les données opérationnelles
+              pour expliquer les écarts.
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- BUDGET VS REEL -->
+        <section class="section reveal section-wide" id="budget-reel">
+          <div class="section-label">03 · Comparer</div>
+          <h2>Budget, réalisé et écart</h2>
+
+          <p class="lead">
+            La première étape de l'analyse consiste à mettre les prévisions et
+            les réalisations sur une même base de comparaison.
+          </p>
+
+          <div class="tabs" role="tablist" aria-label="Comprendre les écarts">
+
+            <div class="tab-list">
+              <button class="tab-button active"
+                      role="tab"
+                      aria-selected="true"
+                      aria-controls="tab-budget"
+                      data-tab="tab-budget">
+                Budget
+              </button>
+
+              <button class="tab-button"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="tab-reel"
+                      data-tab="tab-reel">
+                Réel
+              </button>
+
+              <button class="tab-button"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="tab-ecart"
+                      data-tab="tab-ecart">
+                Écart
+              </button>
+            </div>
+
+            <div class="tab-panel active" id="tab-budget" role="tabpanel">
+              <h3>Le budget : la référence</h3>
+              <p>
+                Le budget fixe les niveaux attendus : chiffre d'affaires,
+                achats, salaires, charges externes, investissements,
+                financement ou trésorerie.
+              </p>
+              <p>
+                Pour que la comparaison soit pertinente, il faut comparer des
+                périodes et des périmètres identiques.
+              </p>
+            </div>
+
+            <div class="tab-panel" id="tab-reel" role="tabpanel">
+              <h3>Le réel : ce qui s'est effectivement produit</h3>
+              <p>
+                Le réel provient des transactions effectivement enregistrées
+                et des données opérationnelles disponibles.
+              </p>
+              <p>
+                Les chiffres peuvent être issus de la comptabilité générale,
+                de la comptabilité analytique, du système commercial ou du
+                suivi des achats et de la production.
+              </p>
+            </div>
+
+            <div class="tab-panel" id="tab-ecart" role="tabpanel">
+              <h3>L'écart : la différence à expliquer</h3>
+              <p>
+                L'écart permet d'identifier une différence entre le niveau
+                prévu et le niveau réalisé.
+              </p>
+              <p>
+                Pour une charge, une dépense supérieure au budget est
+                généralement défavorable. Pour un produit ou un chiffre
+                d'affaires, une réalisation supérieure au budget peut être
+                favorable.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <caption>Exemple de tableau budget / réel / écart</caption>
+
+              <thead>
+                <tr>
+                  <th scope="col">Poste</th>
+                  <th scope="col" class="number">Budget</th>
+                  <th scope="col" class="number">Réel</th>
+                  <th scope="col" class="number">Écart</th>
+                  <th scope="col">Lecture</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Chiffre d'affaires</td>
+                  <td class="number">120 000</td>
+                  <td class="number">126 000</td>
+                  <td class="number positive">+6 000</td>
+                  <td>Favorable</td>
+                </tr>
+
+                <tr>
+                  <td>Achats consommés</td>
+                  <td class="number">48 000</td>
+                  <td class="number">51 500</td>
+                  <td class="number negative">+3 500</td>
+                  <td>Défavorable</td>
+                </tr>
+
+                <tr>
+                  <td>Charges externes</td>
+                  <td class="number">18 000</td>
+                  <td class="number">16 500</td>
+                  <td class="number positive">−1 500</td>
+                  <td>Favorable</td>
+                </tr>
+
+                <tr>
+                  <td>Salaires et charges</td>
+                  <td class="number">27 000</td>
+                  <td class="number">28 200</td>
+                  <td class="number negative">+1 200</td>
+                  <td>Défavorable</td>
+                </tr>
+
+                <tr class="total-row">
+                  <td>Lecture globale</td>
+                  <td class="number">213 000</td>
+                  <td class="number">222 200</td>
+                  <td class="number">+9 200</td>
+                  <td>À analyser</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-title">⚠️ Attention</div>
+            <p>
+              Le signe d'un écart ne suffit pas à conclure qu'il est favorable
+              ou défavorable. Il faut toujours tenir compte de la nature du poste :
+              une hausse du chiffre d'affaires et une hausse d'une charge ne se
+              lisent pas de la même manière.
+            </p>
+          </div>
+        </section>
+
+        <!-- ECARTS -->
+        <section class="section reveal" id="ecarts">
+          <div class="section-label">04 · Analyser</div>
+          <h2>Comprendre les causes des écarts</h2>
+
+          <p>
+            Un écart est un <strong>signal</strong>, pas une explication.
+            L'analyse consiste à passer du constat chiffré à la cause économique
+            ou opérationnelle.
+          </p>
+
+          <div class="cards">
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">↕</div>
+              <h3>Écart de volume</h3>
+              <p>
+                Le nombre d'unités vendues, produites ou consommées diffère
+                de l'hypothèse budgétaire.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">€</div>
+              <h3>Écart de prix</h3>
+              <p>
+                Le prix de vente, le prix d'achat ou le coût unitaire diffère
+                du niveau prévu.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">◷</div>
+              <h3>Écart de calendrier</h3>
+              <p>
+                Une opération intervient plus tôt ou plus tard que prévu,
+                modifiant le profil des charges ou des recettes.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">◎</div>
+              <h3>Écart de structure</h3>
+              <p>
+                La composition de l'activité change : produits, clients,
+                canaux ou catégories de dépenses.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">↻</div>
+              <h3>Écart ponctuel</h3>
+              <p>
+                Une opération exceptionnelle provoque une différence qui
+                n'a pas vocation à se répéter.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">!</div>
+              <h3>Écart récurrent</h3>
+              <p>
+                Une tendance répétée révèle éventuellement une hypothèse
+                budgétaire à revoir ou un problème structurel.
+              </p>
+            </article>
+
+          </div>
+
+          <!-- IMAGE / SVG 3 -->
+          <figure class="visual-card">
+            <svg viewBox="0 0 900 430" role="img" aria-labelledby="svg3-title svg3-desc">
+              <title id="svg3-title">Arbre d'analyse d'un écart budgétaire</title>
+              <desc id="svg3-desc">
+                Un écart constaté est successivement analysé selon le volume,
+                le prix, le calendrier, la structure ou le caractère ponctuel
+                et récurrent.
+              </desc>
+
+              <defs>
+                <marker id="arrowGreen3" markerWidth="9" markerHeight="9"
+                        refX="7" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L8,3 z" fill="#1F6F54"/>
+                </marker>
+              </defs>
+
+              <rect x="30" y="145" width="190" height="100" rx="18"
+                    fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="125" y="185" text-anchor="middle" class="svg-title">
+                ÉCART CONSTATÉ
+              </text>
+              <text x="125" y="210" text-anchor="middle" class="svg-label">
+                Budget ≠ Réel
+              </text>
+
+              <line x1="220" y1="195" x2="300" y2="195"
+                    stroke="#1F6F54" stroke-width="2"
+                    marker-end="url(#arrowGreen3)"/>
+
+              <rect x="300" y="140" width="180" height="110" rx="18"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="390" y="178" text-anchor="middle" class="svg-title">
+                POURQUOI ?
+              </text>
+              <text x="390" y="204" text-anchor="middle" class="svg-label">
+                Identifier la cause
+              </text>
+              <text x="390" y="226" text-anchor="middle" class="svg-label">
+                avant d'agir
+              </text>
+
+              <line x1="480" y1="195" x2="550" y2="80"
+                    stroke="#1F6F54" stroke-width="1.6"
+                    marker-end="url(#arrowGreen3)"/>
+              <line x1="480" y1="195" x2="550" y2="145"
+                    stroke="#1F6F54" stroke-width="1.6"
+                    marker-end="url(#arrowGreen3)"/>
+              <line x1="480" y1="195" x2="550" y2="210"
+                    stroke="#1F6F54" stroke-width="1.6"
+                    marker-end="url(#arrowGreen3)"/>
+              <line x1="480" y1="195" x2="550" y2="275"
+                    stroke="#1F6F54" stroke-width="1.6"
+                    marker-end="url(#arrowGreen3)"/>
+              <line x1="480" y1="195" x2="550" y2="340"
+                    stroke="#1F6F54" stroke-width="1.6"
+                    marker-end="url(#arrowGreen3)"/>
+
+              <g>
+                <rect x="550" y="50" width="165" height="48" rx="10"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <text x="632" y="80" text-anchor="middle" class="svg-title">Volume</text>
+              </g>
+
+              <g>
+                <rect x="550" y="116" width="165" height="48" rx="10"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <text x="632" y="146" text-anchor="middle" class="svg-title">Prix</text>
+              </g>
+
+              <g>
+                <rect x="550" y="182" width="165" height="48" rx="10"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <text x="632" y="212" text-anchor="middle" class="svg-title">Calendrier</text>
+              </g>
+
+              <g>
+                <rect x="550" y="248" width="165" height="48" rx="10"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <text x="632" y="278" text-anchor="middle" class="svg-title">Structure</text>
+              </g>
+
+              <g>
+                <rect x="550" y="314" width="165" height="48" rx="10"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <text x="632" y="344" text-anchor="middle" class="svg-title">Ponctuel / récurrent</text>
+              </g>
+
+              <line x1="715" y1="74" x2="790" y2="195"
+                    stroke="#1F6F54" stroke-width="1.4"/>
+              <line x1="715" y1="140" x2="790" y2="195"
+                    stroke="#1F6F54" stroke-width="1.4"/>
+              <line x1="715" y1="206" x2="790" y2="195"
+                    stroke="#1F6F54" stroke-width="1.4"/>
+              <line x1="715" y1="272" x2="790" y2="195"
+                    stroke="#1F6F54" stroke-width="1.4"/>
+              <line x1="715" y1="338" x2="790" y2="195"
+                    stroke="#1F6F54" stroke-width="1.4"/>
+
+              <circle cx="800" cy="195" r="45"
+                      fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="800" y="190" text-anchor="middle" class="svg-title">CAUSE</text>
+              <text x="800" y="210" text-anchor="middle" class="svg-label">→ ACTION</text>
+            </svg>
+
+            <figcaption>
+              Une bonne analyse descend du chiffre vers la cause avant de proposer
+              une mesure corrective.
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- DECISIONS -->
+        <section class="section reveal" id="decisions">
+          <div class="section-label">05 · Décider</div>
+          <h2>Des écarts aux décisions correctives</h2>
+
+          <p>
+            Une décision corrective doit être proportionnée à la cause identifiée.
+            Il ne faut pas automatiquement réduire une dépense ou augmenter une
+            recette dès qu'un écart apparaît.
+          </p>
+
+          <p>
+            Le responsable doit d'abord déterminer si l'écart est maîtrisable,
+            temporaire, structurel, favorable ou défavorable.
+          </p>
+
+          <!-- IMAGE / SVG 4 -->
+          <figure class="visual-card">
+            <svg viewBox="0 0 900 410" role="img" aria-labelledby="svg4-title svg4-desc">
+              <title id="svg4-title">Matrice de décision corrective</title>
+              <desc id="svg4-desc">
+                Les décisions correctives sont choisies en fonction de la cause
+                de l'écart et de sa répétition.
+              </desc>
+
+              <text x="450" y="35" text-anchor="middle" class="svg-title">
+                DE L'ÉCART À LA DÉCISION
+              </text>
+
+              <line x1="450" y1="65" x2="450" y2="110"
+                    stroke="#1F6F54" stroke-width="2"/>
+
+              <rect x="335" y="110" width="230" height="70" rx="14"
+                    fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="450" y="140" text-anchor="middle" class="svg-title">
+                ÉCART SIGNIFICATIF
+              </text>
+              <text x="450" y="162" text-anchor="middle" class="svg-label">
+                Cause à déterminer
+              </text>
+
+              <line x1="450" y1="180" x2="450" y2="220"
+                    stroke="#1F6F54" stroke-width="2"/>
+
+              <rect x="70" y="220" width="230" height="105" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="185" y="250" text-anchor="middle" class="svg-title">
+                PONCTUEL
+              </text>
+              <text x="185" y="276" text-anchor="middle" class="svg-label">
+                Surveiller
+              </text>
+              <text x="185" y="297" text-anchor="middle" class="svg-label">
+                sans modifier immédiatement
+              </text>
+
+              <rect x="335" y="220" width="230" height="105" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="450" y="250" text-anchor="middle" class="svg-title">
+                MAÎTRISABLE
+              </text>
+              <text x="450" y="276" text-anchor="middle" class="svg-label">
+                Réduire / réorganiser
+              </text>
+              <text x="450" y="297" text-anchor="middle" class="svg-label">
+                l'action concernée
+              </text>
+
+              <rect x="600" y="220" width="230" height="105" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="715" y="250" text-anchor="middle" class="svg-title">
+                STRUCTUREL
+              </text>
+              <text x="715" y="276" text-anchor="middle" class="svg-label">
+                Revoir l'hypothèse
+              </text>
+              <text x="715" y="297" text-anchor="middle" class="svg-label">
+                ou le modèle économique
+              </text>
+
+              <line x1="185" y1="325" x2="185" y2="360"
+                    stroke="#1F6F54" stroke-width="1.5"/>
+              <line x1="450" y1="325" x2="450" y2="360"
+                    stroke="#1F6F54" stroke-width="1.5"/>
+              <line x1="715" y1="325" x2="715" y2="360"
+                    stroke="#1F6F54" stroke-width="1.5"/>
+
+              <text x="185" y="385" text-anchor="middle" class="svg-label">
+                Continuer le suivi
+              </text>
+              <text x="450" y="385" text-anchor="middle" class="svg-label">
+                Mesure corrective
+              </text>
+              <text x="715" y="385" text-anchor="middle" class="svg-label">
+                Révision des prévisions
+              </text>
+            </svg>
+
+            <figcaption>
+              Toutes les différences ne nécessitent pas une action immédiate :
+              la décision dépend de la cause, de l'ampleur et de la répétition.
+            </figcaption>
+          </figure>
+
+          <div class="cards">
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">01</div>
+              <h3>Corriger</h3>
+              <p>
+                Modifier une action maîtrisable : dépenses, volumes, planning,
+                achats ou organisation.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">02</div>
+              <h3>Maintenir</h3>
+              <p>
+                Conserver le plan lorsque l'écart est ponctuel, acceptable ou
+                sans conséquence durable.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">03</div>
+              <h3>Réviser</h3>
+              <p>
+                Actualiser les hypothèses lorsqu'une évolution structurelle
+                rend le budget initial moins représentatif.
+              </p>
+            </article>
+
+          </div>
+
+          <div class="callout">
+            <div class="callout-title">💡 À retenir</div>
+            <p>
+              Une bonne décision corrective s'attaque à la <strong>cause</strong>
+              de l'écart et non simplement à son symptôme.
+            </p>
+          </div>
+        </section>
+
+        <!-- INDICATEURS -->
+        <section class="section reveal" id="indicateurs">
+          <div class="section-label">06 · Mesurer</div>
+          <h2>Les principaux indicateurs de pilotage</h2>
+
+          <p>
+            Le suivi budgétaire devient plus lisible lorsqu'il est synthétisé
+            autour de quelques indicateurs pertinents.
+          </p>
+
+          <div class="metrics">
+
+            <div class="metric">
+              <span class="metric-label">Écart absolu</span>
+              <span class="metric-value">+6 000</span>
+              <span class="metric-note">Réel − Budget</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Écart %</span>
+              <span class="metric-value">+5,0 %</span>
+              <span class="metric-note">Écart / Budget</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Taux de réalisation</span>
+              <span class="metric-value">105 %</span>
+              <span class="metric-note">Réel / Budget</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Tendance</span>
+              <span class="metric-value">↗</span>
+              <span class="metric-note">Évolution dans le temps</span>
+            </div>
+
+          </div>
+
+          <h3>1. L'écart absolu</h3>
+
+          <p>
+            L'écart absolu correspond à la différence entre le réalisé et le budget.
+          </p>
+
+          <div class="callout">
+            <div class="callout-title">🧮 Formule</div>
+            <p>
+              <strong>Écart = Réalisé − Budget</strong>
+            </p>
+          </div>
+
+          <h3>2. L'écart en pourcentage</h3>
+
+          <div class="callout">
+            <div class="callout-title">🧮 Formule</div>
+            <p>
+              <strong>Écart % = (Réalisé − Budget) ÷ Budget × 100</strong>
+            </p>
+          </div>
+
+          <h3>3. Le taux de réalisation</h3>
+
+          <div class="callout">
+            <div class="callout-title">🧮 Formule</div>
+            <p>
+              <strong>Taux de réalisation = Réalisé ÷ Budget × 100</strong>
+            </p>
+          </div>
+
+          <!-- IMAGE / SVG 5 -->
+          <figure class="visual-card">
+            <svg viewBox="0 0 900 360" role="img" aria-labelledby="svg5-title svg5-desc">
+              <title id="svg5-title">Lecture visuelle du taux de réalisation</title>
+              <desc id="svg5-desc">
+                Exemple d'un budget de 120 000 et d'un réalisé de 126 000,
+                donnant un taux de réalisation de 105 pour cent.
+              </desc>
+
+              <text x="450" y="35" text-anchor="middle" class="svg-title">
+                EXEMPLE : CHIFFRE D'AFFAIRES
+              </text>
+
+              <text x="80" y="90" class="svg-label">Budget</text>
+              <text x="820" y="90" text-anchor="end" class="svg-number">120 000</text>
+
+              <rect x="80" y="108" width="740" height="38" rx="8"
+                    fill="#F6F8F6" stroke="#E3E8E5"/>
+              <rect x="80" y="108" width="704" height="38" rx="8"
+                    fill="#E7F2ED"/>
+              <line x1="784" y1="99" x2="784" y2="155"
+                    stroke="#1F6F54" stroke-width="2"/>
+              <text x="784" y="82" text-anchor="middle" class="svg-label">
+                Budget
+              </text>
+
+              <text x="80" y="200" class="svg-label">Réalisé</text>
+              <text x="820" y="200" text-anchor="end" class="svg-number">126 000</text>
+
+              <rect x="80" y="218" width="740" height="38" rx="8"
+                    fill="#F6F8F6" stroke="#E3E8E5"/>
+              <rect x="80" y="218" width="740" height="38" rx="8"
+                    fill="#E7F2ED"/>
+
+              <text x="450" y="310" text-anchor="middle" class="svg-title">
+                Taux de réalisation = 126 000 ÷ 120 000 × 100 = 105 %
+              </text>
+
+              <text x="450" y="338" text-anchor="middle" class="svg-label">
+                L'entreprise a réalisé 105 % de son objectif budgétaire de chiffre d'affaires.
+              </text>
+            </svg>
+
+            <figcaption>
+              Le taux de réalisation complète la lecture de l'écart absolu.
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- TABLEAU DE BORD -->
+        <section class="section reveal section-wide" id="tableau-bord">
+          <div class="section-label">07 · Piloter</div>
+          <h2>Construire un tableau de bord budgétaire</h2>
+
+          <p>
+            Un tableau de bord efficace ne doit pas présenter tous les chiffres
+            disponibles. Il doit mettre en évidence les informations nécessaires
+            à la prise de décision.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <caption>Exemple de tableau de bord mensuel</caption>
+
+              <thead>
+                <tr>
+                  <th scope="col">Indicateur</th>
+                  <th scope="col" class="number">Budget</th>
+                  <th scope="col" class="number">Réel</th>
+                  <th scope="col" class="number">Écart</th>
+                  <th scope="col">Situation</th>
+                  <th scope="col">Orientation</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Chiffre d'affaires</td>
+                  <td class="number">120 000</td>
+                  <td class="number">126 000</td>
+                  <td class="number positive">+5,0 %</td>
+                  <td>Favorable</td>
+                  <td>Maintenir la dynamique</td>
+                </tr>
+
+                <tr>
+                  <td>Coût des achats</td>
+                  <td class="number">48 000</td>
+                  <td class="number">51 500</td>
+                  <td class="number negative">+7,3 %</td>
+                  <td>Défavorable</td>
+                  <td>Analyser prix / volume</td>
+                </tr>
+
+                <tr>
+                  <td>Charges externes</td>
+                  <td class="number">18 000</td>
+                  <td class="number">16 500</td>
+                  <td class="number positive">−8,3 %</td>
+                  <td>Favorable</td>
+                  <td>Surveiller la récurrence</td>
+                </tr>
+
+                <tr>
+                  <td>Salaires et charges</td>
+                  <td class="number">27 000</td>
+                  <td class="number">28 200</td>
+                  <td class="number negative">+4,4 %</td>
+                  <td>Défavorable</td>
+                  <td>Analyser les effectifs</td>
+                </tr>
+
+                <tr>
+                  <td>Trésorerie disponible</td>
+                  <td class="number">15 000</td>
+                  <td class="number">12 800</td>
+                  <td class="number negative">−14,7 %</td>
+                  <td>À surveiller</td>
+                  <td>Examiner les encaissements</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- IMAGE / SVG 6 -->
+          <figure class="visual-card">
+            <svg viewBox="0 0 900 390" role="img" aria-labelledby="svg6-title svg6-desc">
+              <title id="svg6-title">Structure d'un tableau de bord budgétaire</title>
+              <desc id="svg6-desc">
+                Le tableau de bord regroupe les indicateurs financiers,
+                commerciaux, opérationnels et de trésorerie afin de faciliter
+                la décision.
+              </desc>
+
+              <rect x="30" y="25" width="840" height="335" rx="22"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+
+              <text x="450" y="58" text-anchor="middle" class="svg-title">
+                TABLEAU DE BORD BUDGÉTAIRE
+              </text>
+
+              <rect x="70" y="95" width="170" height="95" rx="14"
+                    fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="155" y="130" text-anchor="middle" class="svg-title">FINANCE</text>
+              <text x="155" y="154" text-anchor="middle" class="svg-label">CA · marge</text>
+              <text x="155" y="174" text-anchor="middle" class="svg-label">charges · résultat</text>
+
+              <rect x="270" y="95" width="170" height="95" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="355" y="130" text-anchor="middle" class="svg-title">COMMERCIAL</text>
+              <text x="355" y="154" text-anchor="middle" class="svg-label">volumes</text>
+              <text x="355" y="174" text-anchor="middle" class="svg-label">clients · ventes</text>
+
+              <rect x="460" y="95" width="170" height="95" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="545" y="130" text-anchor="middle" class="svg-title">OPÉRATIONS</text>
+              <text x="545" y="154" text-anchor="middle" class="svg-label">production</text>
+              <text x="545" y="174" text-anchor="middle" class="svg-label">achats · stocks</text>
+
+              <rect x="660" y="95" width="170" height="95" rx="14"
+                    fill="#FFFFFF" stroke="#E3E8E5"/>
+              <text x="745" y="130" text-anchor="middle" class="svg-title">TRÉSORERIE</text>
+              <text x="745" y="154" text-anchor="middle" class="svg-label">encaissements</text>
+              <text x="745" y="174" text-anchor="middle" class="svg-label">décaissements</text>
+
+              <line x1="155" y1="190" x2="155" y2="245"
+                    stroke="#1F6F54" stroke-width="1.5"/>
+              <line x1="355" y1="190" x2="355" y2="245"
+                    stroke="#1F6F54" stroke-width="1.5"/>
+              <line x1="545" y1="190" x2="545" y2="245"
+                    stroke="#1F6F54" stroke-width="1.5"/>
+              <line x1="745" y1="190" x2="745" y2="245"
+                    stroke="#1F6F54" stroke-width="1.5"/>
+
+              <rect x="200" y="245" width="500" height="70" rx="16"
+                    fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="450" y="275" text-anchor="middle" class="svg-title">
+                DÉCISION DE GESTION
+              </text>
+              <text x="450" y="297" text-anchor="middle" class="svg-label">
+                Maintenir · Corriger · Réviser
+              </text>
+
+              <text x="450" y="343" text-anchor="middle" class="svg-label">
+                Un tableau de bord rapproche les indicateurs pour donner une vision globale.
+              </text>
+            </svg>
+
+            <figcaption>
+              Les indicateurs financiers gagnent en pertinence lorsqu'ils sont
+              reliés aux causes commerciales et opérationnelles.
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- COHERENCE -->
+        <section class="section reveal" id="coherence">
+          <div class="section-label">08 · Fiabiliser</div>
+          <h2>Les contrôles de cohérence du suivi</h2>
+
+          <p>
+            Avant de tirer une conclusion, plusieurs contrôles simples permettent
+            de vérifier que la comparaison budget/réel est réellement exploitable.
+          </p>
+
+          <div class="accordion">
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button"
+                      aria-expanded="false">
+                <span>Les périodes sont-elles comparables ?</span>
+                <span>+</span>
+              </button>
+              <div class="accordion-content">
+                <div class="accordion-content-inner">
+                  Un budget annuel ne doit pas être comparé directement à un
+                  réalisé mensuel sans tenir compte de la répartition temporelle.
+                  Certaines activités sont saisonnières et les charges peuvent
+                  également être concentrées sur certaines périodes.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button"
+                      aria-expanded="false">
+                <span>Le périmètre est-il identique ?</span>
+                <span>+</span>
+              </button>
+              <div class="accordion-content">
+                <div class="accordion-content-inner">
+                  Les entités, activités, produits ou centres de responsabilité
+                  doivent être comparés sur une base cohérente. Un changement
+                  de périmètre peut créer un écart qui ne provient pas réellement
+                  d'une mauvaise performance.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button"
+                      aria-expanded="false">
+                <span>Les données sont-elles suffisamment à jour ?</span>
+                <span>+</span>
+              </button>
+              <div class="accordion-content">
+                <div class="accordion-content-inner">
+                  Des factures non enregistrées, des produits non facturés,
+                  des charges à rattacher ou des encaissements non rapprochés
+                  peuvent fausser temporairement la comparaison.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button"
+                      aria-expanded="false">
+                <span>L'écart est-il réellement significatif ?</span>
+                <span>+</span>
+              </button>
+              <div class="accordion-content">
+                <div class="accordion-content-inner">
+                  Une petite différence ponctuelle ne nécessite pas toujours
+                  une action. L'analyse doit tenir compte du montant, du pourcentage,
+                  de la tendance et de l'impact potentiel sur le résultat ou la trésorerie.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-title">⚠️ Erreur fréquente</div>
+            <p>
+              Modifier une décision simplement parce qu'un indicateur est en
+              écart peut conduire à une mauvaise décision. Il faut d'abord
+              vérifier la qualité des données et comprendre la cause de l'écart.
+            </p>
+          </div>
+
+          <!-- IMAGE / SVG 7 -->
+          <figure class="visual-card">
+            <svg viewBox="0 0 900 330" role="img" aria-labelledby="svg7-title svg7-desc">
+              <title id="svg7-title">Contrôles de cohérence avant décision</title>
+              <desc id="svg7-desc">
+                Quatre contrôles sont nécessaires avant de prendre une décision :
+                période, périmètre, qualité des données et matérialité de l'écart.
+              </desc>
+
+              <text x="450" y="35" text-anchor="middle" class="svg-title">
+                AVANT DE DÉCIDER
+              </text>
+
+              <g>
+                <rect x="45" y="85" width="185" height="130" rx="16"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <circle cx="82" cy="122" r="17" fill="#E7F2ED"/>
+                <text x="82" y="128" text-anchor="middle" class="svg-number">1</text>
+                <text x="135" y="128" class="svg-title">Période</text>
+                <text x="65" y="164" class="svg-label">Même période ?</text>
+                <text x="65" y="185" class="svg-label">Saisonnalité ?</text>
+              </g>
+
+              <g>
+                <rect x="255" y="85" width="185" height="130" rx="16"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <circle cx="292" cy="122" r="17" fill="#E7F2ED"/>
+                <text x="292" y="128" text-anchor="middle" class="svg-number">2</text>
+                <text x="345" y="128" class="svg-title">Périmètre</text>
+                <text x="275" y="164" class="svg-label">Même activité ?</text>
+                <text x="275" y="185" class="svg-label">Même entité ?</text>
+              </g>
+
+              <g>
+                <rect x="465" y="85" width="185" height="130" rx="16"
+                      fill="#FFFFFF" stroke="#E3E8E5"/>
+                <circle cx="502" cy="122" r="17" fill="#E7F2ED"/>
+                <text x="502" y="128" text-anchor="middle" class="svg-number">3</text>
+                <text x="555" y="128" class="svg-title">Données</text>
+                <text x="485" y="164" class="svg-label">Complètes ?</text>
+                <text x="485" y="185" class="svg-label">À jour ?</text>
+              </g>
+
+              <g>
+                <rect x="675" y="85" width="185" height="130" rx="16"
+                      fill="#E7F2ED" stroke="#1F6F54"/>
+                <circle cx="712" cy="122" r="17" fill="#FFFFFF"/>
+                <text x="712" y="128" text-anchor="middle" class="svg-number">4</text>
+                <text x="765" y="128" class="svg-title">Importance</text>
+                <text x="695" y="164" class="svg-label">Écart significatif ?</text>
+                <text x="695" y="185" class="svg-label">Tendance durable ?</text>
+              </g>
+
+              <line x1="450" y1="215" x2="450" y2="265"
+                    stroke="#1F6F54" stroke-width="2"/>
+
+              <text x="450" y="295" text-anchor="middle" class="svg-title">
+                PUIS : ANALYSER → DÉCIDER → SUIVRE
+              </text>
+            </svg>
+
+            <figcaption>
+              Les contrôles de cohérence sécurisent l'interprétation des écarts.
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- RAPPEL NORMATIF -->
+        <section class="section reveal">
+          <div class="section-label">Repère professionnel</div>
+          <h2>Le suivi budgétaire et la comptabilité</h2>
+
+          <p>
+            Le suivi budgétaire utilise largement les informations produites
+            par la comptabilité, mais les deux démarches ne poursuivent pas
+            exactement le même objectif.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <caption>Comptabilité et contrôle budgétaire</caption>
+
+              <thead>
+                <tr>
+                  <th scope="col">Comptabilité</th>
+                  <th scope="col">Suivi budgétaire</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Enregistre les opérations réalisées.</td>
+                  <td>Compare les réalisations aux prévisions.</td>
+                </tr>
+                <tr>
+                  <td>Produit des états financiers et informations comptables.</td>
+                  <td>Analyse les écarts et leurs causes.</td>
+                </tr>
+                <tr>
+                  <td>Suit des règles comptables et de présentation applicables.</td>
+                  <td>Fournit une information orientée vers le pilotage.</td>
+                </tr>
+                <tr>
+                  <td>Décrit principalement ce qui s'est produit.</td>
+                  <td>Aide à décider ce qu'il convient de faire ensuite.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout">
+            <div class="callout-title">📌 Repère normatif</div>
+            <p>
+              Les règles de présentation comptable, de rattachement des charges,
+              de fiscalité et de reporting dépendent du référentiel applicable
+              à l'organisation. Le suivi budgétaire doit donc être construit
+              sur des données comptables correctement établies et sur des règles
+              internes clairement définies.
+            </p>
+          </div>
+        </section>
+
+        <!-- POUR ALLER PLUS LOIN -->
+        <section class="section reveal">
+          <div class="section-label">Approfondissement</div>
+          <h2>Du suivi périodique au pilotage prévisionnel</h2>
+
+          <p>
+            Lorsque les écarts deviennent récurrents, l'organisation peut aller
+            au-delà du simple constat en mettant à jour ses prévisions.
+            On passe alors d'une logique de comparaison à une logique de
+            <strong>prévision actualisée</strong>.
+          </p>
+
+          <div class="cards">
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">B</div>
+              <h3>Budget initial</h3>
+              <p>
+                Il représente les hypothèses retenues au moment de la construction
+                du budget.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">R</div>
+              <h3>Réalisé cumulé</h3>
+              <p>
+                Il regroupe les résultats effectivement constatés jusqu'à la période
+                étudiée.
+              </p>
+            </article>
+
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">P</div>
+              <h3>Prévision actualisée</h3>
+              <p>
+                Elle tient compte des nouvelles informations et des tendances
+                observées pour la suite de l'exercice.
+              </p>
+            </article>
+
+          </div>
+
+          <div class="callout">
+            <div class="callout-title">🔗 Pour aller plus loin</div>
+            <p>
+              Le suivi budgétaire constitue la base du pilotage financier :
+              il permet progressivement de relier les résultats passés,
+              les décisions présentes et les prévisions futures.
+            </p>
+          </div>
+        </section>
+
+        <!-- SYNTHESE -->
+        <section class="key-points reveal" id="synthese">
+          <div class="section-label">09 · Synthèse</div>
+          <h2>Points clés à retenir</h2>
+
+          <div class="key-grid">
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Le budget constitue une <strong>référence</strong> pour mesurer
+                la performance.
+              </p>
+            </div>
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Le suivi consiste à comparer régulièrement le
+                <strong>budget et le réalisé</strong>.
+              </p>
+            </div>
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Un écart doit être <strong>expliqué avant d'être corrigé</strong>.
+              </p>
+            </div>
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Les écarts peuvent provenir du <strong>volume, du prix,
+                du calendrier ou de la structure</strong>.
+              </p>
+            </div>
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Un écart ponctuel ne nécessite pas forcément une modification
+                du plan d'action.
+              </p>
+            </div>
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Une décision corrective doit s'attaquer à la
+                <strong>cause réelle</strong> de l'écart.
+              </p>
+            </div>
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Le tableau de bord doit privilégier les
+                <strong>indicateurs réellement utiles à la décision</strong>.
+              </p>
+            </div>
+
+            <div class="key">
+              <span class="key-check">✓</span>
+              <p>
+                Les comparaisons doivent être cohérentes en termes de
+                <strong>période, périmètre et qualité des données</strong>.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+      </article>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="lesson-nav" aria-label="Navigation entre les leçons">
+
+      <a class="nav-card" href="#" aria-label="Leçon précédente">
+        <span class="nav-label">← Leçon précédente</span>
+        <span class="nav-title">Leçon 59 · Compte de résultat et bilan prévisionnels</span>
+      </a>
+
+      <a class="module-link" href="#top">
+        Module 10 · Gestion budgétaire
+      </a>
+
+      <a class="nav-card next" href="#" aria-label="Leçon suivante">
+        <span class="nav-label">Leçon suivante →</span>
+        <span class="nav-title">Fin du module</span>
+      </a>
+
+    </nav>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <span>Filière Comptabilité · Module 10</span>
+      <span>Leçon 60 · Suivi budgétaire et décisions correctives</span>
+    </div>
+  </footer>
+
+  <!-- RETOUR EN HAUT -->
+  <button class="back-top" id="backTop" type="button" aria-label="Retour en haut">
+    ↑
+  </button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      /* =========================
+         BARRE DE PROGRESSION
+      ========================== */
+
+      const progressBar = document.getElementById("progressBar");
+
+      function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+        if (docHeight <= 0) {
+          progressBar.style.width = "0%";
+          return;
+        }
+
+        const progress = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+        progressBar.style.width = progress + "%";
+      }
+
+      window.addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+
+
+      /* =========================
+         RETOUR EN HAUT
+      ========================== */
+
+      const backTop = document.getElementById("backTop");
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 500) {
+          backTop.classList.add("visible");
+        } else {
+          backTop.classList.remove("visible");
+        }
+      }, { passive: true });
+
+      backTop.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      });
+
+
+      /* =========================
+         TABS
+      ========================== */
+
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabPanels = document.querySelectorAll(".tab-panel");
+
+      tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+
+          const target = button.dataset.tab;
+
+          tabButtons.forEach(btn => {
+            btn.classList.remove("active");
+            btn.setAttribute("aria-selected", "false");
+          });
+
+          tabPanels.forEach(panel => {
+            panel.classList.remove("active");
+          });
+
+          button.classList.add("active");
+          button.setAttribute("aria-selected", "true");
+
+          const targetPanel = document.getElementById(target);
+
+          if (targetPanel) {
+            targetPanel.classList.add("active");
+          }
+        });
+
+        button.addEventListener("keydown", event => {
+          const buttons = [...tabButtons];
+          const index = buttons.indexOf(button);
+
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            const next = buttons[(index + 1) % buttons.length];
+            next.focus();
+            next.click();
+          }
+
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            const previous = buttons[(index - 1 + buttons.length) % buttons.length];
+            previous.focus();
+            previous.click();
+          }
+        });
+      });
+
+
+      /* =========================
+         ACCORDIONS
+      ========================== */
+
+      const accordionTriggers = document.querySelectorAll(".accordion-trigger");
+
+      accordionTriggers.forEach(trigger => {
+
+        trigger.addEventListener("click", () => {
+
+          const item = trigger.closest(".accordion-item");
+          const content = item.querySelector(".accordion-content");
+          const isOpen = item.classList.contains("open");
+
+          document.querySelectorAll(".accordion-item.open").forEach(openItem => {
+            if (openItem !== item) {
+              openItem.classList.remove("open");
+
+              const openTrigger = openItem.querySelector(".accordion-trigger");
+              const openContent = openItem.querySelector(".accordion-content");
+
+              openTrigger.setAttribute("aria-expanded", "false");
+              openContent.style.maxHeight = null;
+            }
+          });
+
+          if (isOpen) {
+            item.classList.remove("open");
+            trigger.setAttribute("aria-expanded", "false");
+            content.style.maxHeight = null;
+          } else {
+            item.classList.add("open");
+            trigger.setAttribute("aria-expanded", "true");
+            content.style.maxHeight = content.scrollHeight + "px";
+          }
+        });
+
+        trigger.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            trigger.click();
+          }
+        });
+      });
+
+
+      /* =========================
+         ANIMATIONS AU SCROLL
+      ========================== */
+
+      const revealElements = document.querySelectorAll(".reveal");
+
+      if ("IntersectionObserver" in window) {
+
+        const observer = new IntersectionObserver((entries, observer) => {
+
+          entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+
+          });
+
+        }, {
+          threshold: 0.08,
+          rootMargin: "0px 0px -30px 0px"
+        });
+
+        revealElements.forEach(element => observer.observe(element));
+
+      } else {
+        revealElements.forEach(element => {
+          element.classList.add("visible");
+        });
+      }
+
+
+      /* =========================
+         TOC ACTIVE
+      ========================== */
+
+      const tocLinks = [...document.querySelectorAll(".toc a")];
+      const sections = tocLinks
+        .map(link => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+      if ("IntersectionObserver" in window) {
+
+        const sectionObserver = new IntersectionObserver(entries => {
+
+          entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+              tocLinks.forEach(link => {
+                link.classList.remove("active");
+              });
+
+              const active = document.querySelector(
+                `.toc a[href="#${entry.target.id}"]`
+              );
+
+              if (active) {
+                active.classList.add("active");
+              }
+            }
+
+          });
+
+        }, {
+          rootMargin: "-25% 0px -65% 0px",
+          threshold: 0
+        });
+
+        sections.forEach(section => {
+          sectionObserver.observe(section);
+        });
+      }
+
+
+      /* =========================
+         SOMMAIRE MOBILE
+      ========================== */
+
+      const tocToggle = document.getElementById("tocToggle");
+      const toc = document.getElementById("toc");
+
+      tocToggle.addEventListener("click", () => {
+
+        const isHidden = getComputedStyle(toc).display === "none";
+
+        if (window.innerWidth <= 950) {
+          toc.style.display = isHidden ? "block" : "none";
+        } else {
+          const firstLink = toc.querySelector("a");
+
+          if (firstLink) {
+            firstLink.focus();
+          }
+        }
+      });
+
+
+      /* =========================
+         FOCUS CLAVIER
+      ========================== */
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          document.activeElement?.blur();
+        }
+      });
+
+    });
+  </script>
+
+</body>
+</html>

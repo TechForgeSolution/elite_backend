@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 21 — Stratégie marketing digital | Marketing, Commerce et Vente</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231C2B42'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23C08A34' text-anchor='middle' font-family='Georgia'%3E%C2%A7%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #F6F4EF;
+    --color-text: #1C2B42;
+    --color-accent: #C08A34;
+    --color-neutral: #6E7580;
+
+    --section-alt-bg: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --panel-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --panel-bg-strong: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg));
+    --accent-wash: color-mix(in srgb, var(--color-accent) 8%, transparent);
+
+    --font-display: "Playfair Display", Georgia, serif;
+    --font-body: "Inter", -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-text);
+    margin: 0 0 0.6em;
+  }
+
+  h1 { font-size: clamp(2rem, 4vw, 2.9rem); }
+  h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 600; }
+  h3 { font-size: 1.15rem; font-weight: 600; }
+
+  p { margin: 0 0 1.1em; }
+
+  a { color: var(--color-accent); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover, a:focus-visible { border-bottom-color: var(--color-accent); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  .prose { max-width: 720px; }
+
+  /* ---------- Barre de progression ---------- */
+  #reading-progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: var(--color-accent);
+    z-index: 1000;
+    transition: width 80ms linear;
+  }
+
+  /* ---------- Header sticky ---------- */
+  header.site-header {
+    position: sticky; top: 0; z-index: 900;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .site-header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px;
+    max-width: 1040px; margin: 0 auto;
+    gap: 16px;
+  }
+  .filiere-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--color-text);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .filiere-mark {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 1.5px solid var(--color-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); color: var(--color-accent); font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .header-nav a {
+    color: var(--text-muted); font-size: 0.9rem; margin-left: 22px; border-bottom: none;
+  }
+  .header-nav a:hover { color: var(--color-accent); }
+  @media (max-width: 640px) { .header-nav { display: none; } }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+  .badge {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border-soft);
+    padding: 5px 12px; border-radius: 3px;
+    background: var(--color-bg);
+  }
+  .badge.badge-accent { color: var(--color-accent); border-color: var(--color-accent); }
+  .hero-module { font-family: var(--font-mono); color: var(--color-accent); font-size: 0.85rem; margin-bottom: 10px; }
+  .hero p.subtitle { font-size: 1.15rem; color: var(--text-muted); max-width: 640px; }
+
+  /* ---------- Sommaire ---------- */
+  .toc {
+    margin-top: 30px;
+    border: 1px solid var(--border-soft);
+    background: var(--panel-bg);
+    padding: 22px 26px;
+    border-radius: 4px;
+  }
+  .toc h2 { font-size: 1rem; text-transform: none; margin-bottom: 12px; font-family: var(--font-body); font-weight: 600; }
+  .toc ol { margin: 0; padding-left: 1.2em; columns: 2; column-gap: 32px; }
+  .toc li { margin-bottom: 8px; break-inside: avoid; font-size: 0.95rem; }
+  @media (max-width: 640px) { .toc ol { columns: 1; } }
+
+  /* ---------- Sections ---------- */
+  main section {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  main section:last-of-type { border-bottom: none; }
+  section.alt { background: var(--section-alt-bg); }
+  section.alt .wrap { padding-top: 0; padding-bottom: 0; }
+
+  .eyebrow {
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 600ms ease, transform 600ms ease;
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* ---------- Cartes visuelles ---------- */
+  .card-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    margin-top: 28px;
+  }
+  @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .card-grid { grid-template-columns: 1fr; } }
+  .card {
+    border: 1px solid var(--border-soft);
+    background: var(--color-bg);
+    padding: 22px 20px;
+    border-radius: 4px;
+    transition: border-color 160ms ease;
+  }
+  .card:hover, .card:focus-within { border-color: var(--color-accent); }
+  .card .card-icon {
+    width: 38px; height: 38px; margin-bottom: 14px;
+    color: var(--color-accent);
+  }
+  .card h3 { margin-bottom: 6px; font-size: 1.02rem; }
+  .card p { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 0; }
+
+  /* ---------- Encadrés typés ---------- */
+  .callout {
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--color-accent);
+    background: var(--panel-bg);
+    padding: 18px 22px;
+    border-radius: 3px;
+    margin: 28px 0;
+    display: flex; gap: 14px;
+    max-width: 720px;
+  }
+  .callout .icon { font-size: 1.3rem; line-height: 1; flex-shrink: 0; }
+  .callout .callout-label { font-weight: 600; margin-bottom: 4px; display: block; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- Tabs ---------- */
+  .tabs { margin-top: 28px; }
+  .tab-list { display: flex; border-bottom: 1px solid var(--border-soft); gap: 4px; flex-wrap: wrap; }
+  .tab-btn {
+    font-family: var(--font-body); font-size: 0.95rem; font-weight: 500;
+    background: none; border: none; border-bottom: 2px solid transparent;
+    padding: 12px 18px; cursor: pointer; color: var(--text-muted);
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--color-text); }
+  .tab-btn[aria-selected="true"] {
+    color: var(--color-text); border-bottom-color: var(--color-accent); font-weight: 600;
+  }
+  .tab-panel { padding: 24px 2px; }
+  .tab-panel[hidden] { display: none; }
+
+  /* ---------- Accordéon ---------- */
+  .accordion-item { border-bottom: 1px solid var(--border-soft); }
+  .accordion-item:first-child { border-top: 1px solid var(--border-soft); }
+  .accordion-trigger {
+    width: 100%; text-align: left; background: none; border: none;
+    font-family: var(--font-body); font-weight: 600; font-size: 1rem; color: var(--color-text);
+    padding: 18px 4px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  .accordion-trigger .chev { color: var(--color-accent); transition: transform 200ms ease; flex-shrink: 0; }
+  .accordion-trigger[aria-expanded="true"] .chev { transform: rotate(45deg); }
+  .accordion-panel { max-width: 720px; padding: 0 4px 20px; color: var(--text-muted); }
+  .accordion-panel[hidden] { display: none; }
+
+  /* ---------- Frise / stepper ---------- */
+  .stepper {
+    display: flex; gap: 0; margin-top: 32px; overflow-x: auto; padding-bottom: 8px;
+  }
+  .step {
+    flex: 1 1 0; min-width: 140px; position: relative; padding: 0 16px 0 0;
+  }
+  .step:not(:last-child)::after {
+    content: ""; position: absolute; top: 15px; left: 34px; right: -16px; height: 1px;
+    background: var(--border-soft);
+  }
+  .step-num {
+    width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--color-accent);
+    color: var(--color-accent); font-family: var(--font-mono); font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+    background: var(--color-bg); position: relative; z-index: 1;
+  }
+  .step h3 { font-size: 0.95rem; margin-bottom: 4px; }
+  .step p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0; }
+  @media (max-width: 700px) {
+    .stepper { flex-direction: column; }
+    .step:not(:last-child)::after { display: none; }
+  }
+
+  /* ---------- Tableaux de protocoles ---------- */
+  .table-scroll { overflow-x: auto; margin-top: 24px; border: 1px solid var(--border-soft); border-radius: 4px; }
+  table.protocol {
+    border-collapse: collapse; width: 100%; min-width: 640px;
+    font-size: 0.92rem;
+  }
+  table.protocol caption { text-align: left; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); padding: 10px 16px; }
+  table.protocol th, table.protocol td {
+    padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  table.protocol thead th {
+    background: var(--panel-bg-strong);
+    font-family: var(--font-body); font-weight: 600; font-size: 0.82rem;
+    color: var(--color-text);
+  }
+  table.protocol tbody tr:hover { background: var(--accent-wash); }
+  table.protocol td.figure, table.protocol th.figure { font-family: var(--font-mono); }
+  table.protocol td.alert { color: var(--color-accent); font-weight: 600; }
+
+  /* ---------- Étude de cas ---------- */
+  .case-study {
+    border: 1px solid var(--border-soft);
+    background: var(--color-bg);
+    padding: 30px 32px;
+    border-radius: 4px;
+    margin-top: 28px;
+  }
+  .case-study-tag {
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent);
+    text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px; display: inline-block;
+  }
+  .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px; }
+  @media (max-width: 700px) { .case-grid { grid-template-columns: 1fr; } }
+  .case-grid h3 { font-size: 0.9rem; color: var(--color-accent); margin-bottom: 8px; }
+  .case-grid p { font-size: 0.92rem; margin-bottom: 0; }
+
+  /* ---------- Points clés ---------- */
+  .keypoints-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 32px; margin-top: 28px; }
+  @media (max-width: 700px) { .keypoints-grid { grid-template-columns: 1fr; } }
+  .keypoint { display: flex; gap: 12px; align-items: flex-start; }
+  .keypoint .kp-mark { color: var(--color-accent); font-size: 1.1rem; line-height: 1.5; flex-shrink: 0; }
+  .keypoint p { margin-bottom: 0; font-size: 0.95rem; }
+
+  /* ---------- Exercice interactif ---------- */
+  .exercise {
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--color-accent);
+    padding: 26px 28px;
+    border-radius: 3px;
+    margin-top: 26px;
+    background: var(--color-bg);
+  }
+  .exercise-scenario { font-style: italic; color: var(--text-muted); margin-bottom: 18px; }
+  .exercise-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
+  .exercise-option {
+    text-align: left; font-family: var(--font-body); font-size: 0.95rem;
+    background: var(--color-bg); border: 1px solid var(--border-soft);
+    padding: 12px 16px; border-radius: 3px; cursor: pointer; color: var(--color-text);
+  }
+  .exercise-option:hover { border-color: var(--color-accent); }
+  .exercise-option[aria-pressed="true"] { border-color: var(--color-accent); background: var(--panel-bg); font-weight: 600; }
+  .exercise-feedback { margin-top: 16px; padding: 14px 16px; background: var(--panel-bg); border-radius: 3px; font-size: 0.92rem; display: none; }
+  .exercise-feedback.visible { display: block; }
+
+  /* ---------- Navigation bas de page ---------- */
+  .lesson-nav {
+    display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    padding: 48px 0;
+  }
+  .lesson-nav a {
+    border: 1px solid var(--border-soft);
+    padding: 16px 20px; border-radius: 4px; flex: 1 1 260px;
+    color: var(--color-text); border-bottom: 1px solid var(--border-soft);
+    display: block;
+  }
+  .lesson-nav a:hover { border-color: var(--color-accent); }
+  .lesson-nav .dir { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent); display: block; margin-bottom: 6px; }
+  .lesson-nav .next { text-align: right; }
+
+  .module-return { text-align: center; padding-bottom: 12px; }
+  .module-return a { font-size: 0.9rem; color: var(--text-muted); }
+
+  /* ---------- Retour en haut ---------- */
+  #back-to-top {
+    position: fixed; bottom: 26px; right: 26px;
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--color-text); color: var(--color-bg);
+    border: none; cursor: pointer; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 200ms ease;
+    z-index: 800;
+  }
+  #back-to-top.visible { opacity: 1; pointer-events: auto; }
+  #back-to-top:hover { background: var(--color-accent); }
+
+  /* ---------- Footer ---------- */
+  footer.site-footer {
+    border-top: 1px solid var(--border-soft);
+    padding: 28px 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  svg.diagram { width: 100%; height: auto; max-width: 640px; display: block; margin: 28px auto 0; }
+</style>
+</head>
+<body>
+
+<div id="reading-progress"></div>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <span class="filiere-name"><span class="filiere-mark">M</span>Marketing, Commerce et Vente</span>
+    <nav class="header-nav" aria-label="Navigation rapide">
+      <a href="#sommaire">Sommaire</a>
+      <a href="#points-cles">L'essentiel</a>
+      <a href="#exercice">Exercice</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-module">Module 5 — Marketing digital et e-commerce</div>
+      <div class="badges">
+        <span class="badge badge-accent">Leçon 21</span>
+        <span class="badge">Niveau avancé</span>
+        <span class="badge">25 min de lecture</span>
+      </div>
+      <h1>Stratégie marketing digital</h1>
+      <p class="subtitle">Un site, une page sociale et une newsletter ne suffisent pas à faire une stratégie. Cette leçon montre comment relier les canaux digitaux entre eux et choisir les bons, selon l'objectif et la cible visés.</p>
+
+      <div class="toc" id="sommaire">
+        <h2>Dans cette leçon</h2>
+        <ol>
+          <li><a href="#objectif">Objectif de la leçon</a></li>
+          <li><a href="#ecosysteme">L'écosystème digital</a></li>
+          <li><a href="#site-web">Le site web, la base</a></li>
+          <li><a href="#reseaux">Les réseaux sociaux</a></li>
+          <li><a href="#email">L'email marketing</a></li>
+          <li><a href="#choix-canaux">Choisir ses canaux</a></li>
+          <li><a href="#etude-de-cas">Exemple de stratégie digitale</a></li>
+          <li><a href="#points-cles">Points clés à retenir</a></li>
+          <li><a href="#exercice">Mise en situation</a></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="objectif">
+    <div class="wrap prose reveal">
+      <div class="eyebrow">Objectif pédagogique</div>
+      <h2>Construire une stratégie de présence en ligne</h2>
+      <p>Être présent en ligne ne se résume pas à cumuler des comptes et un site. Une stratégie marketing digital consiste à choisir, pour chaque objectif, le ou les canaux les plus pertinents, et à les faire fonctionner ensemble plutôt qu'en silos.</p>
+      <p>Cette leçon parcourt les trois familles de canaux les plus courantes — le site web, les réseaux sociaux et l'email marketing — avant de proposer une méthode pour arbitrer entre eux selon la cible et le résultat recherché.</p>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">📌</span>
+        <div>
+          <span class="callout-label">Rappel stratégique</span>
+          <p>Un canal digital n'est jamais une fin en soi : il sert toujours un objectif marketing plus large (notoriété, acquisition, fidélisation, vente).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="ecosysteme">
+    <div class="wrap reveal">
+      <div class="prose">
+        <div class="eyebrow">Vue d'ensemble</div>
+        <h2>L'écosystème digital de l'entreprise</h2>
+        <p>Le site web joue le rôle de plateforme centrale : c'est l'endroit que l'entreprise maîtrise entièrement, où elle renvoie depuis tous les autres canaux. Autour de lui gravitent les réseaux sociaux, l'email et les moteurs de recherche, qui amènent du trafic vers le site ou entretiennent la relation avec les visiteurs déjà connus.</p>
+      </div>
+
+      <svg class="diagram" viewBox="0 0 640 380" role="img" aria-label="Schéma de l'écosystème digital : le site web au centre, relié aux réseaux sociaux, à l'email marketing et aux moteurs de recherche qui lui amènent du trafic">
+        <g font-family="Inter, sans-serif" font-size="13" fill="var(--color-text)">
+          <line x1="320" y1="190" x2="320" y2="70" stroke="var(--color-neutral)" stroke-opacity="0.5" stroke-width="1"/>
+          <line x1="320" y1="190" x2="130" y2="300" stroke="var(--color-neutral)" stroke-opacity="0.5" stroke-width="1"/>
+          <line x1="320" y1="190" x2="510" y2="300" stroke="var(--color-neutral)" stroke-opacity="0.5" stroke-width="1"/>
+
+          <rect x="220" y="150" width="200" height="80" rx="2" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="1.5"/>
+          <text x="320" y="185" text-anchor="middle" font-weight="600" fill="var(--color-accent)">Site web</text>
+          <text x="320" y="205" text-anchor="middle" font-size="11" fill="var(--text-muted, var(--color-text))">Plateforme centrale</text>
+
+          <rect x="230" y="20" width="180" height="60" rx="2" fill="none" stroke="var(--color-neutral)" stroke-opacity="0.5"/>
+          <text x="320" y="55" text-anchor="middle">Moteurs de recherche</text>
+
+          <rect x="30" y="270" width="180" height="60" rx="2" fill="none" stroke="var(--color-neutral)" stroke-opacity="0.5"/>
+          <text x="120" y="305" text-anchor="middle">Réseaux sociaux</text>
+
+          <rect x="420" y="270" width="180" height="60" rx="2" fill="none" stroke="var(--color-neutral)" stroke-opacity="0.5"/>
+          <text x="510" y="305" text-anchor="middle">Email marketing</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section id="site-web">
+    <div class="wrap reveal">
+      <div class="prose">
+        <div class="eyebrow">Canal 1</div>
+        <h2>Le site web, la base de l'écosystème</h2>
+        <p>Le site web est le seul canal totalement maîtrisé par l'entreprise : elle en contrôle le contenu, le design et les données collectées, sans dépendre des règles changeantes d'une plateforme tierce. C'est vers lui que doivent converger les visiteurs venus des réseaux sociaux, des emails ou des moteurs de recherche.</p>
+        <p>Sa mission varie selon le secteur : vitrine institutionnelle, catalogue produit, boutique en ligne ou prise de rendez-vous. Dans tous les cas, il doit rester rapide, lisible sur mobile et clair sur l'action attendue du visiteur.</p>
+      </div>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">⚠️</span>
+        <div>
+          <span class="callout-label">Erreur fréquente</span>
+          <p>Investir massivement dans les réseaux sociaux tout en négligeant un site lent ou peu clair revient à remplir un seau percé : le trafic généré ne convertit jamais.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="reseaux">
+    <div class="wrap reveal">
+      <div class="prose">
+        <div class="eyebrow">Canal 2</div>
+        <h2>Les réseaux sociaux</h2>
+        <p>Les réseaux sociaux permettent d'aller chercher l'audience là où elle se trouve déjà, de construire une communauté et d'humaniser une marque par un ton plus direct. Chaque plateforme a sa culture propre et ne sert pas les mêmes objectifs ni les mêmes cibles.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-list" role="tablist" aria-label="Comparer deux approches sur les réseaux sociaux">
+          <button class="tab-btn" role="tab" id="tab-organique" aria-selected="true" aria-controls="panel-organique">Publication organique</button>
+          <button class="tab-btn" role="tab" id="tab-payante" aria-selected="false" aria-controls="panel-payante" tabindex="-1">Publicité sociale payante</button>
+        </div>
+        <div class="tab-panel" id="panel-organique" role="tabpanel" aria-labelledby="tab-organique">
+          <p>Publications gratuites diffusées à la communauté existante. Construit une relation durable et une image de marque, mais la portée reste limitée par les algorithmes des plateformes et demande de la régularité.</p>
+        </div>
+        <div class="tab-panel" id="panel-payante" role="tabpanel" aria-labelledby="tab-payante" hidden>
+          <p>Diffusion payante ciblée par centres d'intérêt, âge ou comportement. Portée immédiate et mesurable, adaptée à l'acquisition de nouveaux clients, mais s'arrête dès que le budget s'arrête.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="email">
+    <div class="wrap reveal">
+      <div class="prose">
+        <div class="eyebrow">Canal 3</div>
+        <h2>L'email marketing</h2>
+        <p>L'email reste le canal le plus direct pour entretenir une relation avec des contacts déjà connus : clients, prospects ayant laissé leur adresse, abonnés à une newsletter. Contrairement aux réseaux sociaux, l'entreprise possède sa liste de contacts et n'est pas soumise à un algorithme de diffusion.</p>
+        <p>Il se prête aussi bien à l'information (newsletter, actualités) qu'à la vente directe (offre, relance de panier abandonné) ou à la fidélisation (programme de récompense, contenu exclusif).</p>
+      </div>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">💡</span>
+        <div>
+          <span class="callout-label">À retenir</span>
+          <p>Une liste email plus petite mais engagée vaut mieux qu'une liste large et achetée : le taux d'ouverture et la délivrabilité en dépendent directement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="canaux-cartes">
+    <div class="wrap reveal">
+      <div class="prose">
+        <div class="eyebrow">Vue d'ensemble</div>
+        <h2>Les canaux en un coup d'œil</h2>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 9h18M8 4v5"/></svg>
+          <h3>Site web</h3>
+          <p>Plateforme centrale maîtrisée. Objectif : convertir le trafic venu des autres canaux.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="12" r="3"/><circle cx="17" cy="6" r="2.5"/><circle cx="17" cy="18" r="2.5"/><path d="M10.5 10.7 14.7 7.3M10.5 13.3l4.2 3.4"/></svg>
+          <h3>Réseaux sociaux</h3>
+          <p>Communauté et visibilité là où l'audience se trouve. Objectif : notoriété et engagement.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="1"/><path d="m4 7 8 6 8-6"/></svg>
+          <h3>Email marketing</h3>
+          <p>Relation directe avec des contacts connus. Objectif : fidélisation et vente directe.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m19 19-4.3-4.3"/></svg>
+          <h3>Moteurs de recherche</h3>
+          <p>Réponse à une intention déjà exprimée. Objectif : capter une demande active.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="choix-canaux">
+    <div class="wrap reveal">
+      <div class="prose">
+        <div class="eyebrow">Méthode</div>
+        <h2>Choisir ses canaux selon l'objectif et la cible</h2>
+        <p>Face à la multiplicité des canaux possibles, la question n'est jamais « faut-il être partout ? » mais « quel canal sert le mieux tel objectif, pour telle cible ? ». Le tableau ci-dessous propose des repères pour arbitrer.</p>
+      </div>
+
+      <div class="table-scroll">
+        <table class="protocol">
+          <caption>Tableau d'aide au choix des canaux digitaux</caption>
+          <thead>
+            <tr>
+              <th scope="col">Objectif</th>
+              <th scope="col">Cible</th>
+              <th scope="col">Canal recommandé</th>
+              <th scope="col">Format</th>
+              <th scope="col" class="figure">Fréquence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Notoriété</td>
+              <td>Grand public, nouveaux prospects</td>
+              <td>Réseaux sociaux (organique + payant)</td>
+              <td>Vidéo courte, visuel</td>
+              <td class="figure">3 à 5 / semaine</td>
+            </tr>
+            <tr>
+              <td>Capter une demande active</td>
+              <td>Personnes déjà en recherche</td>
+              <td>Moteurs de recherche (référencement, liens sponsorisés)</td>
+              <td>Page dédiée, annonce</td>
+              <td class="figure">Continu</td>
+            </tr>
+            <tr>
+              <td>Conversion / vente</td>
+              <td>Visiteurs déjà intéressés</td>
+              <td>Site web</td>
+              <td>Fiche produit, tunnel d'achat</td>
+              <td class="figure">Permanent</td>
+            </tr>
+            <tr>
+              <td class="alert">Fidélisation</td>
+              <td>Clients existants</td>
+              <td class="alert">Email marketing</td>
+              <td>Newsletter, offre personnalisée</td>
+              <td class="figure">1 à 2 / mois</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-top:10px;">Les lignes en cuivre signalent le canal le plus rentable à long terme : conserver et faire revenir un client coûte en général moins cher que d'en attirer un nouveau.</p>
+    </div>
+  </section>
+
+  <section class="alt" id="etude-de-cas">
+    <div class="wrap reveal">
+      <div class="prose">
+        <div class="eyebrow">Exemple</div>
+        <h2>Stratégie digitale d'une boutique de vêtements en ligne</h2>
+      </div>
+      <div class="case-study">
+        <span class="case-study-tag">Cas d'application</span>
+        <p>Une boutique de vêtements souhaite développer ses ventes en ligne sur les six prochains mois, avec un budget modeste réparti entre acquisition et fidélisation.</p>
+        <div class="case-grid">
+          <div>
+            <h3>Site web</h3>
+            <p>Refonte des fiches produit avec des photos portées et des avis clients visibles, pour rassurer au moment de l'achat.</p>
+          </div>
+          <div>
+            <h3>Réseaux sociaux</h3>
+            <p>Publications régulières mettant en scène les nouveautés, complétées par de la publicité ciblée sur les 18–35 ans lors des lancements de collection.</p>
+          </div>
+          <div>
+            <h3>Moteurs de recherche</h3>
+            <p>Optimisation des pages catégories pour apparaître sur les recherches de produits précis, sans budget publicitaire additionnel.</p>
+          </div>
+          <div>
+            <h3>Email marketing</h3>
+            <p>Newsletter mensuelle aux clients existants, complétée par un email automatique de relance en cas de panier abandonné.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:32px;">
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-1">
+            Pourquoi ne pas concentrer tout le budget sur la publicité sociale, la plus rapide à mettre en place ?
+            <span class="chev" aria-hidden="true">+</span>
+          </button>
+          <div class="accordion-panel" id="acc-1" hidden>
+            <p>La publicité sociale attire du trafic, mais si le site ne convertit pas ou si les clients acquis ne reviennent jamais, l'investissement doit être répété en continu. Répartir l'effort entre acquisition et fidélisation réduit cette dépendance.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-2">
+            Le référencement naturel a-t-il vraiment sa place face à des canaux plus rapides ?
+            <span class="chev" aria-hidden="true">+</span>
+          </button>
+          <div class="accordion-panel" id="acc-2" hidden>
+            <p>Ses effets sont plus lents à obtenir, mais une fois acquis, un bon positionnement continue à générer du trafic sans coût par clic — un complément utile aux canaux payants, plus rapides mais dépendants du budget.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="points-cles">
+    <div class="wrap reveal">
+      <div class="eyebrow">Synthèse</div>
+      <h2>Points clés à retenir</h2>
+      <div class="keypoints-grid">
+        <div class="keypoint"><span class="kp-mark" aria-hidden="true">—</span><p>Le site web est la plateforme centrale de l'écosystème digital, vers laquelle convergent les autres canaux.</p></div>
+        <div class="keypoint"><span class="kp-mark" aria-hidden="true">—</span><p>Les réseaux sociaux servent surtout la notoriété et l'engagement d'une communauté.</p></div>
+        <div class="keypoint"><span class="kp-mark" aria-hidden="true">—</span><p>Les moteurs de recherche captent une demande déjà exprimée par l'internaute.</p></div>
+        <div class="keypoint"><span class="kp-mark" aria-hidden="true">—</span><p>L'email marketing reste le canal le plus direct pour fidéliser des contacts déjà connus.</p></div>
+        <div class="keypoint"><span class="kp-mark" aria-hidden="true">—</span><p>Le choix d'un canal dépend toujours de l'objectif poursuivi et de la cible visée, jamais des effets de mode.</p></div>
+        <div class="keypoint"><span class="kp-mark" aria-hidden="true">—</span><p>Une stratégie digitale efficace combine plusieurs canaux qui se renvoient du trafic les uns aux autres.</p></div>
+      </div>
+
+      <div class="callout" style="margin-top:32px;">
+        <span class="icon" aria-hidden="true">🔗</span>
+        <div>
+          <span class="callout-label">Pour aller plus loin</span>
+          <p>La prochaine leçon approfondit le référencement et la visibilité en ligne, en particulier le fonctionnement des moteurs de recherche évoqué ici.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="exercice">
+    <div class="wrap reveal">
+      <div class="eyebrow">Mise en situation</div>
+      <h2>À vous de choisir le bon canal</h2>
+      <div class="exercise">
+        <p class="exercise-scenario">Un artisan qui vend des meubles sur mesure a déjà une base de 400 clients satisfaits. Il souhaite les inciter à recommander son atelier et à repasser commande pour une prochaine rénovation, sans budget publicitaire. Quel canal privilégier en priorité ?</p>
+        <div class="exercise-options" role="group" aria-label="Options de réponse">
+          <button class="exercise-option" data-correct="false">Une campagne de publicité sociale ciblant un large public</button>
+          <button class="exercise-option" data-correct="true">Une newsletter email adressée à sa base de clients existants</button>
+          <button class="exercise-option" data-correct="false">Le référencement naturel de son site sur des mots-clés génériques</button>
+        </div>
+        <div class="exercise-feedback" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="lesson-nav wrap">
+  <a href="#" class="prev"><span class="dir">← Leçon précédente</span>Leçon 20 — Fidélisation client et relation commerciale</a>
+  <a href="#" class="next"><span class="dir">Leçon suivante →</span>Leçon 22 — Référencement et visibilité en ligne</a>
+</div>
+<div class="module-return"><a href="#">Retour au sommaire du Module 5</a></div>
+
+<button id="back-to-top" aria-label="Retour en haut de la page">↑</button>
+
+<footer class="site-footer">
+  <div class="wrap">Filière Marketing, Commerce et Vente — Module 5 · Marketing digital et e-commerce</div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // Barre de progression de lecture
+  var progressBar = document.getElementById("reading-progress");
+  function updateProgress() {
+    var doc = document.documentElement;
+    var scrollTop = doc.scrollTop || document.body.scrollTop;
+    var height = doc.scrollHeight - doc.clientHeight;
+    var pct = height > 0 ? (scrollTop / height) * 100 : 0;
+    progressBar.style.width = pct + "%";
+  }
+  document.addEventListener("scroll", updateProgress, { passive: true });
+  updateProgress();
+
+  // Retour en haut
+  var backToTop = document.getElementById("back-to-top");
+  document.addEventListener("scroll", function () {
+    backToTop.classList.toggle("visible", (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  }, { passive: true });
+  backToTop.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Tabs
+  var tabLists = document.querySelectorAll('[role="tablist"]');
+  tabLists.forEach(function (list) {
+    var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () { activateTab(tab); });
+      tab.addEventListener("keydown", function (e) {
+        var idx = tabs.indexOf(tab);
+        if (e.key === "ArrowRight") { activateTab(tabs[(idx + 1) % tabs.length]); tabs[(idx + 1) % tabs.length].focus(); }
+        if (e.key === "ArrowLeft") { activateTab(tabs[(idx - 1 + tabs.length) % tabs.length]); tabs[(idx - 1 + tabs.length) % tabs.length].focus(); }
+      });
+    });
+    function activateTab(tab) {
+      tabs.forEach(function (t) {
+        var selected = t === tab;
+        t.setAttribute("aria-selected", selected ? "true" : "false");
+        t.tabIndex = selected ? 0 : -1;
+        var panel = document.getElementById(t.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !selected;
+      });
+    }
+  });
+
+  // Accordéons
+  document.querySelectorAll(".accordion-trigger").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (panel) panel.hidden = expanded;
+    });
+  });
+
+  // Exercice interactif (mise en situation, sans notation)
+  document.querySelectorAll(".exercise").forEach(function (exercise) {
+    var options = exercise.querySelectorAll(".exercise-option");
+    var feedback = exercise.querySelector(".exercise-feedback");
+    options.forEach(function (opt) {
+      opt.addEventListener("click", function () {
+        options.forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+        opt.setAttribute("aria-pressed", "true");
+        var correct = opt.getAttribute("data-correct") === "true";
+        feedback.textContent = correct
+          ? "C'est le choix le plus pertinent ici : la base de clients existe déjà et l'objectif est la fidélisation, pas l'acquisition. L'email permet une relation directe et gratuite avec des contacts déjà connus."
+          : "Ce canal a sa place dans une stratégie globale, mais ici l'objectif porte sur des clients déjà connus, pas sur un public à conquérir. Regardez l'option qui s'adresse directement à la base existante.";
+        feedback.classList.add("visible");
+      });
+    });
+  });
+
+  // Animations légères au scroll
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(function (el) { observer.observe(el); });
+  } else {
+    document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("is-visible"); });
+  }
+})();
+</script>
+
+</body>
+</html>

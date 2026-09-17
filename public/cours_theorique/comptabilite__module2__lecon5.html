@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 11 — Éditions et contrôles comptables | Logiciels Comptables</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cpath d='M25 35h50M25 50h50M25 65h30' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F6F8F6;
+    --color-text: #0B0F0D;
+    --color-text-muted: #5A6560;
+    --color-accent: #1F6F54;
+    --color-accent-soft: #E7F2ED;
+    --color-border: #E3E8E5;
+    --color-accent-alt: #B3541E;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --measure: 720px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 0.6em 0;
+    letter-spacing: -0.01em;
+  }
+  h1{ font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; }
+  h2{ font-size: clamp(1.4rem, 2.6vw, 1.85rem); }
+  h3{ font-size: 1.15rem; }
+  p{ margin: 0 0 1.1em 0; color: var(--color-text); }
+  a{ color: var(--color-accent); text-decoration: none; border-bottom: 1px solid var(--color-accent-soft); }
+  a:hover{ border-bottom-color: var(--color-accent); }
+  .mono, .tabular{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  :focus-visible{ outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+  /* Reading progress bar */
+  #progress-bar{
+    position: fixed; top:0; left:0; height:3px; width:0%;
+    background: var(--color-accent); z-index: 1000; transition: width 0.1s linear;
+  }
+
+  /* Sticky header */
+  header.site-header{
+    position: sticky; top:0; z-index: 900;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 14px 24px;
+  }
+  .header-inner{
+    max-width: 1080px; margin: 0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap: 16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family: var(--font-display); font-weight:600; font-size: 1rem; }
+  .brand-mark{ width: 26px; height:26px; border-radius:6px; background: var(--color-accent); display:flex; align-items:center; justify-content:center; }
+  .brand-mark svg{ width:15px; height:15px; }
+  .header-meta{ font-size: 0.85rem; color: var(--color-text-muted); display:flex; gap:14px; }
+  .header-meta a{ color: var(--color-text-muted); border-bottom: none; }
+  .header-meta a:hover{ color: var(--color-accent); }
+
+  main{ max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero{ padding: 56px 0 40px 0; border-bottom: 1px solid var(--color-border); }
+  .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 20px; }
+  .badge{
+    font-size: 0.78rem; padding: 5px 12px; border-radius: 20px;
+    background: var(--color-accent-soft); color: var(--color-accent);
+    border: 1px solid transparent; font-weight: 500;
+  }
+  .badge.outline{ background: transparent; border-color: var(--color-border); color: var(--color-text-muted); }
+  .hero p.lede{ max-width: var(--measure); font-size: 1.08rem; color: var(--color-text-muted); }
+
+  /* Stepper (méthodologie de contrôle) */
+  .stepper{ display:flex; gap: 0; margin: 28px 0 8px 0; overflow-x:auto; padding-bottom: 6px; }
+  .step{
+    flex: 1 1 0; min-width: 130px; position:relative; padding: 14px 12px 10px 0;
+    border-top: 3px solid var(--color-border);
+  }
+  .step.is-current{ border-top-color: var(--color-accent); }
+  .step-index{ font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted); display:block; margin-bottom: 4px; }
+  .step.is-current .step-index{ color: var(--color-accent); }
+  .step-label{ font-size: 0.88rem; font-weight: 500; }
+
+  /* TOC */
+  nav.toc{
+    background: var(--color-bg-alt); border: 1px solid var(--color-border);
+    border-radius: 10px; padding: 20px 24px; margin: 32px 0;
+  }
+  nav.toc h2{ font-size: 0.95rem; text-transform: none; margin-bottom: 12px; color: var(--color-text-muted); font-family: var(--font-body); font-weight: 600; }
+  nav.toc ol{ margin:0; padding-left: 0; list-style:none; columns: 2; column-gap: 24px; }
+  nav.toc li{ break-inside: avoid; margin-bottom: 8px; }
+  nav.toc a{ border-bottom: none; color: var(--color-text); font-size: 0.94rem; }
+  nav.toc a:hover{ color: var(--color-accent); }
+  nav.toc li .num{ color: var(--color-accent); font-family: var(--font-mono); font-size: 0.82rem; margin-right: 6px; }
+
+  /* Sections */
+  section.lesson-section{ padding: 48px 0; border-bottom: 1px solid var(--color-border); opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  section.lesson-section.in-view{ opacity: 1; transform: translateY(0); }
+  section.lesson-section:last-of-type{ border-bottom:none; }
+  .section-eyebrow{ font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-accent); margin-bottom: 8px; }
+  section.lesson-section .prose{ max-width: var(--measure); }
+
+  /* Callouts */
+  .callout{ display:flex; gap: 14px; padding: 18px 20px; border-radius: 10px; margin: 24px 0; border: 1px solid var(--color-border); background: var(--color-bg-alt); max-width: var(--measure); }
+  .callout .icon{ font-size: 1.3rem; line-height:1; flex-shrink:0; }
+  .callout .body{ flex:1; }
+  .callout .body strong{ display:block; margin-bottom: 4px; font-family: var(--font-display); font-size: 0.95rem; }
+  .callout.retenir{ border-color: var(--color-accent); background: var(--color-accent-soft); }
+  .callout.attention .body strong{ color: var(--color-accent-alt); }
+  .callout.attention{ border-color: #E8D2C2; }
+  .callout p{ margin:0; font-size: 0.95rem; color: var(--color-text); }
+
+  /* Cards */
+  .card-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+  .card{ border: 1px solid var(--color-border); border-radius: 10px; padding: 20px; background: var(--color-bg); transition: border-color 0.2s ease, transform 0.2s ease; }
+  .card:hover{ border-color: var(--color-accent); transform: translateY(-2px); }
+  .card .card-icon{ width: 34px; height:34px; border-radius: 8px; background: var(--color-accent-soft); display:flex; align-items:center; justify-content:center; margin-bottom: 12px; }
+  .card .card-icon svg{ width:18px; height:18px; }
+  .card h3{ font-size: 1rem; margin-bottom: 6px; }
+  .card p{ font-size: 0.9rem; color: var(--color-text-muted); margin:0; }
+
+  /* Tables */
+  .table-wrap{ overflow-x:auto; margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; }
+  table{ border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.9rem; }
+  thead th{ text-align:left; background: var(--color-bg-alt); font-family: var(--font-display); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--color-border); font-size: 0.83rem; }
+  thead th.num{ text-align:right; }
+  tbody td{ padding: 10px 16px; border-bottom: 1px solid var(--color-border); }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: var(--color-bg-alt); }
+  td.num, th.num{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+  td.negative{ color: var(--color-accent-alt); font-weight: 600; }
+  tr.total-row td{ font-weight: 600; background: var(--color-accent-soft); color: var(--color-accent); border-top: 1px solid var(--color-accent); }
+  tr.flagged{ background: #FBF1EA; }
+  tr.flagged:hover{ background: #F7E8DC; }
+  .col-debit{ border-left: 1px solid var(--color-border); }
+
+  /* Tabs */
+  .tabs{ margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; overflow: hidden; }
+  .tab-list{ display:flex; border-bottom: 1px solid var(--color-border); background: var(--color-bg-alt); }
+  .tab-btn{
+    flex:1; padding: 13px 16px; background:none; border:none; cursor:pointer;
+    font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; color: var(--color-text-muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s ease;
+  }
+  .tab-btn.active{ color: var(--color-accent); border-bottom-color: var(--color-accent); background: var(--color-bg); }
+  .tab-btn:hover:not(.active){ color: var(--color-text); }
+  .tab-panel{ display:none; padding: 22px 22px; }
+  .tab-panel.active{ display:block; }
+  .tab-panel p:last-child{ margin-bottom:0; }
+
+  /* Accordion */
+  .accordion{ margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; overflow:hidden; }
+  .accordion-item{ border-bottom: 1px solid var(--color-border); }
+  .accordion-item:last-child{ border-bottom:none; }
+  .accordion-trigger{
+    width:100%; text-align:left; background: var(--color-bg); border:none; cursor:pointer;
+    padding: 16px 20px; display:flex; justify-content:space-between; align-items:center; gap: 12px;
+    font-family: var(--font-body); font-size: 0.96rem; font-weight: 500; color: var(--color-text);
+  }
+  .accordion-trigger:hover{ background: var(--color-bg-alt); }
+  .accordion-trigger .plus{ font-family: var(--font-mono); color: var(--color-accent); transition: transform 0.2s ease; flex-shrink:0; }
+  .accordion-trigger[aria-expanded="true"] .plus{ transform: rotate(45deg); }
+  .accordion-panel{ max-height:0; overflow:hidden; transition: max-height 0.25s ease; background: var(--color-bg-alt); }
+  .accordion-panel .inner{ padding: 4px 20px 18px 20px; font-size: 0.93rem; color: var(--color-text-muted); }
+
+  /* Diagram wrap */
+  .diagram-wrap{ margin: 24px 0; padding: 20px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-bg-alt); overflow-x:auto; }
+  .diagram-wrap svg{ display:block; width:100%; height:auto; }
+  .diagram-caption{ font-size: 0.82rem; color: var(--color-text-muted); text-align:center; margin-top: 10px; }
+
+  /* Key points summary */
+  .keypoints{ background: var(--color-bg-alt); border-radius: 12px; padding: 32px; margin: 24px 0; }
+  .keypoints ul{ margin:0; padding-left: 0; list-style:none; display:grid; gap: 14px; }
+  .keypoints li{ display:flex; gap: 12px; align-items:flex-start; font-size: 0.96rem; }
+  .keypoints li .tick{ color: var(--color-accent); flex-shrink:0; font-family: var(--font-mono); margin-top: 2px; }
+
+  /* Lesson nav */
+  .lesson-nav{ display:flex; justify-content:space-between; gap: 16px; padding: 40px 0; flex-wrap:wrap; }
+  .nav-link{
+    border: 1px solid var(--color-border); border-radius: 10px; padding: 16px 20px; flex:1; min-width: 220px;
+    text-decoration:none; border-bottom: 1px solid var(--color-border); color: var(--color-text);
+    display:block; transition: border-color 0.2s ease;
+  }
+  .nav-link:hover{ border-color: var(--color-accent); }
+  .nav-link .dir{ font-size: 0.78rem; color: var(--color-text-muted); display:block; margin-bottom: 4px; font-family: var(--font-mono); }
+  .nav-link .title{ font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; }
+  .nav-link.next{ text-align:right; }
+
+  /* Back to top */
+  #back-to-top{
+    position: fixed; bottom: 24px; right: 24px; width: 44px; height:44px; border-radius: 50%;
+    background: var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 14px rgba(11,15,13,0.18);
+    opacity:0; pointer-events:none; transition: opacity 0.25s ease, transform 0.15s ease; z-index: 800;
+  }
+  #back-to-top.visible{ opacity:1; pointer-events:auto; }
+  #back-to-top:hover{ transform: translateY(-2px); }
+
+  footer.site-footer{ padding: 32px 0 48px 0; text-align:center; color: var(--color-text-muted); font-size: 0.85rem; }
+  footer.site-footer p{ margin:0; }
+
+  @media (max-width: 640px){
+    nav.toc ol{ columns: 1; }
+    .lesson-nav{ flex-direction:column; }
+    .nav-link.next{ text-align:left; }
+    .header-meta{ display:none; }
+    .stepper{ flex-wrap:nowrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    section.lesson-section{ transition:none; opacity:1; transform:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h9" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      Filière Comptabilité
+    </div>
+    <div class="header-meta">
+      <a href="#sommaire">Sommaire</a>
+      <span>Module : Logiciels comptables</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="badges">
+      <span class="badge">Module : Logiciels comptables (Sage, Ciel)</span>
+      <span class="badge outline">Niveau débutant / intermédiaire</span>
+      <span class="badge outline">⏱ 15 min de lecture</span>
+    </div>
+    <h1>Leçon 11 — Éditions et contrôles comptables</h1>
+    <p class="lede">Une fois les écritures saisies, le logiciel permet de les restituer sous plusieurs formes : journal, grand livre, balance. Ces éditions ne sont pas de simples impressions — elles sont l'outil principal pour vérifier la cohérence de la comptabilité et repérer une anomalie de saisie avant qu'elle ne se propage jusqu'à la clôture.</p>
+
+    <div class="stepper" aria-label="Méthodologie de contrôle d'une balance">
+      <div class="step is-current"><span class="step-index">01</span><span class="step-label">Édition brute</span></div>
+      <div class="step"><span class="step-index">02</span><span class="step-label">Contrôle d'équilibre</span></div>
+      <div class="step"><span class="step-index">03</span><span class="step-label">Vérif. des comptes</span></div>
+      <div class="step"><span class="step-index">04</span><span class="step-label">Analyse anomalies</span></div>
+      <div class="step"><span class="step-index">05</span><span class="step-label">Validation</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" id="sommaire" aria-label="Sommaire de la leçon">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><span class="num">01</span><a href="#chaine-editions">La chaîne des éditions légales</a></li>
+      <li><span class="num">02</span><a href="#journal-grand-livre">Journal vs Grand Livre</a></li>
+      <li><span class="num">03</span><a href="#balance">La balance</a></li>
+      <li><span class="num">04</span><a href="#anomalies">Détection des anomalies</a></li>
+      <li><span class="num">05</span><a href="#controles">Types de contrôles de cohérence</a></li>
+      <li><span class="num">06</span><a href="#retenir">Points clés à retenir</a></li>
+      <li><span class="num">07</span><a href="#faq">Questions fréquentes</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. CHAINE DES EDITIONS -->
+  <section class="lesson-section" id="chaine-editions">
+    <div class="section-eyebrow">Étape 01</div>
+    <h2>La chaîne des éditions légales</h2>
+    <div class="prose">
+      <p>Les écritures saisies au fil de l'eau sont automatiquement compilées par le logiciel en plusieurs éditions, chacune offrant un angle de lecture différent sur les mêmes données : le journal les présente dans l'ordre chronologique de saisie, le grand livre les reclasse par compte, et la balance en fait la synthèse chiffrée compte par compte.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 190" role="img" aria-label="Chaîne de génération des éditions comptables : les écritures saisies alimentent successivement le journal, le grand livre et la balance">
+        <g font-family="IBM Plex Mono, monospace" font-size="12">
+          <rect x="10" y="65" width="140" height="60" rx="8" fill="#1F6F54"/>
+          <text x="80" y="90" text-anchor="middle" fill="#fff" font-weight="600">Écritures</text>
+          <text x="80" y="107" text-anchor="middle" fill="#E7F2ED" font-size="10">saisies</text>
+
+          <rect x="200" y="20" width="150" height="50" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="275" y="50" text-anchor="middle" font-weight="600" fill="#0B0F0D">Journal</text>
+
+          <rect x="200" y="145" width="150" height="50" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="275" y="175" text-anchor="middle" font-weight="600" fill="#0B0F0D">Grand Livre</text>
+
+          <rect x="410" y="80" width="150" height="50" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="485" y="110" text-anchor="middle" font-weight="600" fill="#0B0F0D">Balance</text>
+
+          <rect x="600" y="80" width="90" height="50" rx="8" fill="#E7F2ED" stroke="#1F6F54"/>
+          <text x="645" y="110" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="11">Contrôle</text>
+        </g>
+        <g stroke="#B7C7C0" stroke-width="1.6" fill="none">
+          <path d="M150 85 C 175 60, 180 50, 200 45"/>
+          <path d="M150 105 C 175 140, 180 155, 200 165"/>
+          <path d="M350 45 C 390 55, 395 75, 410 90"/>
+          <path d="M350 170 C 390 155, 395 130, 410 115"/>
+          <path d="M560 105 L 600 105"/>
+        </g>
+      </svg>
+      <p class="diagram-caption">Un même flux d'écritures alimente trois éditions complémentaires, qui doivent toujours rester cohérentes entre elles.</p>
+    </div>
+
+    <div class="callout">
+      <span class="icon">📌</span>
+      <div class="body">
+        <strong>Rappel normatif / légal</strong>
+        <p>Une édition imprimée ou archivée en PDF, dès lors qu'elle est produite à partir d'une comptabilité tenue de façon régulière, a la même valeur probante qu'un registre papier tenu à la main. Sa conservation suit les mêmes règles de durée que les autres pièces comptables.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. JOURNAL VS GRAND LIVRE -->
+  <section class="lesson-section" id="journal-grand-livre">
+    <div class="section-eyebrow">Éditions</div>
+    <h2>Journal vs Grand Livre</h2>
+    <div class="prose">
+      <p>Le journal et le grand livre présentent les mêmes écritures, mais organisées différemment : l'un suit l'ordre de saisie, l'autre regroupe par compte. Comparer les deux permet de vérifier qu'aucune écriture n'a été omise ou dupliquée lors du classement.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Comparaison Journal et Grand Livre">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-journal" id="tab-journal">Journal</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-gl" id="tab-gl">Grand Livre</button>
+      </div>
+      <div class="tab-panel active" id="panel-journal" role="tabpanel" aria-labelledby="tab-journal">
+        <p>Liste toutes les écritures dans l'ordre chronologique de saisie, journal par journal (AC, VE, BQ...). C'est la vue la plus proche de la saisie quotidienne, utile pour retrouver une opération par sa date ou son numéro de pièce.</p>
+      </div>
+      <div class="tab-panel" id="panel-gl" role="tabpanel" aria-labelledby="tab-gl">
+        <p>Reclasse les mêmes écritures compte par compte : tous les mouvements du compte 411000 apparaissent ensemble, avec un solde progressif. C'est la vue de référence pour analyser l'activité d'un compte donné sur la période.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Compte</th><th>Date</th><th>Libellé</th><th class="num col-debit">Débit</th><th class="num">Crédit</th><th class="num">Solde</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">411000</td><td class="mono">03/09</td><td>Facture Meridia</td><td class="num col-debit">1 200,00</td><td class="num">—</td><td class="num">1 200,00</td></tr>
+          <tr><td class="mono">411000</td><td class="mono">10/09</td><td>Règlement Meridia</td><td class="num col-debit">—</td><td class="num">1 200,00</td><td class="num">0,00</td></tr>
+          <tr><td class="mono">411000</td><td class="mono">18/09</td><td>Facture Lorent SA</td><td class="num col-debit">860,00</td><td class="num">—</td><td class="num">860,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="diagram-caption" style="text-align:left; max-width:var(--measure);">Extrait de grand livre du compte 411000 — chaque ligne recalcule le solde progressif du compte.</p>
+  </section>
+
+  <!-- 3. BALANCE -->
+  <section class="lesson-section" id="balance">
+    <div class="section-eyebrow">Étape 02–03</div>
+    <h2>La balance</h2>
+    <div class="prose">
+      <p>La balance récapitule, pour chaque compte, le solde d'ouverture, les mouvements de la période en débit et en crédit, puis le solde de clôture. Une balance dite "à six colonnes" affiche l'intégralité de ces informations et permet un contrôle rapide de la cohérence globale.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Comparaison des balances avant et après inventaire">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-avant" id="tab-avant">Balance avant inventaire</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-apres" id="tab-apres">Balance après inventaire</button>
+      </div>
+      <div class="tab-panel active" id="panel-avant" role="tabpanel" aria-labelledby="tab-avant">
+        <p>Photographie des comptes tels qu'ils résultent de la seule saisie courante, avant toute écriture de régularisation (amortissements, provisions, stocks). C'est la première balance éditée pour préparer les travaux d'inventaire.</p>
+      </div>
+      <div class="tab-panel" id="panel-apres" role="tabpanel" aria-labelledby="tab-apres">
+        <p>Intègre les écritures d'inventaire passées au journal OD. Elle sert de base directe à l'établissement des comptes annuels et doit rester équilibrée après chaque ajout d'écriture de régularisation.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Compte</th><th class="num">Solde N-1</th><th class="num col-debit">Débit</th><th class="num">Crédit</th><th class="num">Solde débiteur</th><th class="num">Solde créditeur</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">411000</td><td class="num">0,00</td><td class="num col-debit">2 060,00</td><td class="num">1 200,00</td><td class="num">860,00</td><td class="num">—</td></tr>
+          <tr><td class="mono">401000</td><td class="num">0,00</td><td class="num col-debit">600,00</td><td class="num">1 400,00</td><td class="num">—</td><td class="num">800,00</td></tr>
+          <tr><td class="mono">512000</td><td class="num">3 000,00</td><td class="num col-debit">1 540,00</td><td class="num">850,00</td><td class="num">3 690,00</td><td class="num">—</td></tr>
+          <tr class="total-row"><td>Totaux</td><td class="num">3 000,00</td><td class="num col-debit">4 200,00</td><td class="num">3 450,00</td><td class="num">4 550,00</td><td class="num">800,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout retenir">
+      <span class="icon">💡</span>
+      <div class="body">
+        <strong>À retenir</strong>
+        <p>Une balance équilibrée vérifie deux égalités : total des débits = total des crédits, et total des soldes débiteurs = total des soldes créditeurs. Ces deux égalités sont nécessaires, mais ne suffisent pas à garantir l'absence de toute erreur.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. DETECTION DES ANOMALIES -->
+  <section class="lesson-section" id="anomalies">
+    <div class="section-eyebrow">Étape 04</div>
+    <h2>Détection des anomalies</h2>
+    <div class="prose">
+      <p>Une balance peut être parfaitement équilibrée en totaux tout en contenant des erreurs : un compte client au solde créditeur, un compte fournisseur au solde débiteur, ou un compte mouvementé sans libellé exploitable. Ces anomalies ne se voient qu'en examinant chaque ligne, pas seulement les totaux.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 220" role="img" aria-label="Arbre de décision pour contrôler une balance : vérifier d'abord l'équilibre global puis examiner chaque compte pour détecter des soldes inversés ou des libellés manquants">
+        <g font-family="IBM Plex Mono, monospace" font-size="11.5">
+          <rect x="270" y="10" width="160" height="46" rx="8" fill="#1F6F54"/>
+          <text x="350" y="38" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">Balance éditée</text>
+
+          <rect x="270" y="90" width="160" height="46" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="350" y="112" text-anchor="middle" font-weight="600">Total Débit</text>
+          <text x="350" y="127" text-anchor="middle" font-size="10">= Total Crédit ?</text>
+
+          <rect x="50" y="170" width="180" height="46" rx="8" fill="#FBF1EA" stroke="#B3541E"/>
+          <text x="140" y="192" text-anchor="middle" fill="#B3541E" font-weight="600" font-size="11">Non → écriture</text>
+          <text x="140" y="207" text-anchor="middle" fill="#B3541E" font-size="10">déséquilibrée à trouver</text>
+
+          <rect x="480" y="170" width="200" height="46" rx="8" fill="#E7F2ED" stroke="#1F6F54"/>
+          <text x="580" y="192" text-anchor="middle" fill="#1F6F54" font-weight="600" font-size="11">Oui → examen</text>
+          <text x="580" y="207" text-anchor="middle" fill="#1F6F54" font-size="10">compte par compte</text>
+        </g>
+        <g stroke="#B7C7C0" stroke-width="1.6" fill="none">
+          <path d="M350 56 L 350 90"/>
+          <path d="M300 136 C 250 150, 200 158, 155 170"/>
+          <path d="M400 136 C 460 150, 520 158, 570 170"/>
+        </g>
+      </svg>
+      <p class="diagram-caption">Le contrôle d'équilibre global est nécessaire mais insuffisant : il doit toujours être suivi d'un examen ligne par ligne des comptes sensibles.</p>
+    </div>
+
+    <div class="callout attention">
+      <span class="icon">⚠️</span>
+      <div class="body">
+        <strong>Attention / erreur fréquente</strong>
+        <p>Un compte client (411) au solde créditeur ou un compte fournisseur (401) au solde débiteur, bien que rare, n'est pas impossible (avoir client, acompte versé) — mais il doit systématiquement être vérifié : il s'agit souvent d'une inversion de saisie débit/crédit.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Compte</th><th>Intitulé</th><th class="num">Solde</th><th>Anomalie détectée</th></tr>
+        </thead>
+        <tbody>
+          <tr class="flagged"><td class="mono">411000</td><td>Client — SARL Meridia</td><td class="num negative">-340,00</td><td>Solde créditeur inattendu sur un compte client</td></tr>
+          <tr><td class="mono">401000</td><td>Fournisseur — Papeterie Dupuis</td><td class="num">600,00</td><td>—</td></tr>
+          <tr class="flagged"><td class="mono">606400</td><td>(sans libellé de mouvement)</td><td class="num">180,00</td><td>Aucun libellé renseigné sur la ligne</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="icon">🧮</span>
+      <div class="body">
+        <strong>Cas pratique</strong>
+        <p>Sur la balance ci-dessus, le compte 411000 affiche un solde créditeur de 340 €. Après vérification du grand livre du compte, on constate qu'un règlement client a été saisi deux fois : la seconde occurrence doit être extournée pour ramener le compte à un solde débiteur cohérent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TYPES DE CONTROLES -->
+  <section class="lesson-section" id="controles">
+    <div class="section-eyebrow">Méthodologie</div>
+    <h2>Types de contrôles de cohérence</h2>
+    <div class="prose">
+      <p>Au-delà de l'équilibre global, plusieurs contrôles ciblés permettent de fiabiliser une balance avant de la transmettre ou de l'utiliser pour la clôture.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12h16M4 6h16M4 18h10" stroke="#1F6F54" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <h3>Équilibre global</h3>
+        <p>Vérifier que le total des débits égale le total des crédits sur l'ensemble de la balance.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M5 10l7-7 7 7" stroke="#1F6F54" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <h3>Sens des soldes</h3>
+        <p>Repérer les comptes de tiers dont le sens du solde (débiteur/créditeur) semble anormal.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#1F6F54" stroke-width="1.8"/><path d="M3 10h18" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Libellés manquants</h3>
+        <p>Identifier les lignes mouvementées sans libellé exploitable pour l'analyse.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1F6F54" stroke-width="1.8"/><path d="M12 8v4l3 2" stroke="#1F6F54" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <h3>Cohérence temporelle</h3>
+        <p>Contrôler qu'aucune écriture n'est datée hors de la période de l'exercice en cours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY POINTS -->
+  <section class="lesson-section" id="retenir">
+    <div class="section-eyebrow">Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <div class="keypoints">
+      <ul>
+        <li><span class="tick">→</span>Journal, grand livre et balance sont trois lectures complémentaires du même flux d'écritures.</li>
+        <li><span class="tick">→</span>Une balance équilibrée en totaux ne garantit pas l'absence d'anomalies ligne par ligne.</li>
+        <li><span class="tick">→</span>Un solde de sens inattendu sur un compte de tiers doit toujours être vérifié dans le grand livre du compte.</li>
+        <li><span class="tick">→</span>La balance avant inventaire précède les écritures de régularisation ; la balance après inventaire sert de base aux comptes annuels.</li>
+        <li><span class="tick">→</span>Les éditions archivées ont la même valeur probante que des registres papier, sous réserve d'une comptabilité régulière.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="lesson-section" id="faq">
+    <div class="section-eyebrow">Pour aller plus loin</div>
+    <h2>Questions fréquentes</h2>
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-1">
+          <span>Une balance équilibrée signifie-t-elle qu'il n'y a aucune erreur ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-1">
+          <div class="inner">Non. L'équilibre garantit seulement que débits et crédits totaux sont égaux ; une erreur d'imputation sur le mauvais compte peut très bien laisser la balance équilibrée.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-2">
+          <span>À quelle fréquence éditer la balance ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-2">
+          <div class="inner">Un contrôle mensuel est courant pour suivre l'activité, avec au minimum une édition avant et après les travaux d'inventaire de fin d'exercice.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-3">
+          <span>Le grand livre remplace-t-il le journal pour les contrôles ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-3">
+          <div class="inner">Non, les deux sont complémentaires : le journal permet de retrouver une opération par sa date, le grand livre permet d'analyser l'activité d'un compte sur toute la période.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-4">
+          <span>Comment corriger une anomalie détectée dans la balance ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-4">
+          <div class="inner">Une écriture de correction ou d'extourne est saisie, généralement dans le journal des opérations diverses, pour annuler ou rectifier la ligne à l'origine de l'anomalie.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lesson-nav">
+    <a class="nav-link prev" href="lecon-10-lettrage-et-rapprochement-bancaire.html">
+      <span class="dir">← Leçon précédente</span>
+      <span class="title">Leçon 10 — Lettrage et rapprochement bancaire</span>
+    </a>
+    <a class="nav-link next" href="lecon-12-cloture-sauvegarde-et-archivage.html">
+      <span class="dir">Leçon suivante →</span>
+      <span class="title">Leçon 12 — Clôture, sauvegarde et archivage</span>
+    </a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Filière Comptabilité — Module Logiciels comptables (Sage, Ciel)</p>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  // Reading progress bar
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Back to top
+  var backBtn = document.getElementById('back-to-top');
+  function toggleBackBtn(){
+    if((window.scrollY || document.documentElement.scrollTop) > 500){
+      backBtn.classList.add('visible');
+    } else {
+      backBtn.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', toggleBackBtn, { passive: true });
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  toggleBackBtn();
+
+  // Section reveal on scroll
+  var sections = document.querySelectorAll('.lesson-section');
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function(s){ observer.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  }
+
+  // Tabs
+  document.querySelectorAll('[data-tabs]').forEach(function(tabGroup){
+    var buttons = tabGroup.querySelectorAll('.tab-btn');
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var panelId = btn.getAttribute('aria-controls');
+        var panel = document.getElementById(panelId);
+        buttons.forEach(function(b){
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        tabGroup.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        panel.classList.add('active');
+      });
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      if(!expanded){
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      } else {
+        panel.style.maxHeight = 0;
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

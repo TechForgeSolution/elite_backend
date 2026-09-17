@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 22 — Prévisions et contrôle budgétaire | Contrôle de gestion</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  td.num.negative{color:var(--color-accent-alt);}
+  td.num.favorable{color:var(--color-accent);}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+  .tag{display:inline-flex; align-items:center; gap:4px; font-size:0.78rem; font-weight:600; border-radius:6px; padding:2px 8px;}
+  .tag.fav{color:var(--color-accent); background:var(--color-accent-soft);}
+  .tag.unfav{color:var(--color-accent-alt); background:#FBEEE6;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filiere comptabilite
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 4 — Contrôle de gestion</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau intermédiaire</span>
+    </div>
+    <h1>Leçon 22 — Prévisions et contrôle budgétaire</h1>
+    <p class="lede">Leçon 22 — construire des prévisions budgétaires fiables, comparer le réalisé au budget, et décomposer les écarts pour déclencher les bonnes actions correctives.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Pourquoi prévoir et contrôler le budget" data-num="22.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">22.1</span><h2>Pourquoi prévoir et contrôler le budget</h2></div>
+      <p>Le contrôle budgétaire repose sur une idée simple : fixer à l'avance des objectifs chiffrés (le budget), puis comparer régulièrement ce qui a réellement été réalisé à ces objectifs. L'écart observé n'est pas une fin en soi — c'est un signal qui doit déclencher une analyse, puis une décision.</p>
+      <p>Ce cycle donne à l'entreprise une visibilité continue sur sa trajectoire financière, au lieu de découvrir un problème seulement en fin d'exercice, quand il est trop tard pour agir.</p>
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Un budget n'a de valeur que s'il est suivi : prévoir sans contrôler ne sert à rien, et contrôler sans prévoir ne permet pas de juger si le résultat est bon ou mauvais.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="La navette budgétaire annuelle" data-num="22.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">22.2</span><h2>La navette budgétaire annuelle</h2></div>
+      <p>La construction et le suivi du budget s'organisent selon un calendrier récurrent, appelé la navette budgétaire, qui rythme l'année de l'entreprise :</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Cadrage stratégique</h3>
+        <p>La direction fixe les grandes orientations et objectifs de l'exercice à venir.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Élaboration des budgets</h3>
+        <p>Chaque centre de responsabilité chiffre ses prévisions de ventes, de charges et d'investissements.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Consolidation et arbitrage</h3>
+        <p>Les budgets sont agrégés, confrontés aux objectifs globaux, puis ajustés si nécessaire.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Suivi mensuel</h3>
+        <p>Chaque mois, le réalisé est comparé au budget et les écarts sont analysés.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">5</div>
+        <h3>Réajustement</h3>
+        <p>Un budget révisé peut être établi en cours d'année si le contexte change fortement.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention aux biais budgétaires</div>
+        <p>Un centre de responsabilité peut être tenté de sous-estimer ses ventes prévisionnelles ou de surestimer ses charges pour se donner une marge de manœuvre confortable. Ce biais, appelé « slack budgétaire », fausse la pertinence du contrôle et doit être identifié lors de la consolidation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Construire les prévisions" data-num="22.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">22.3</span><h2>Construire les prévisions</h2></div>
+      <p>Établir un budget fiable suppose de s'appuyer sur une méthode d'extrapolation cohérente avec l'activité de l'entreprise, plutôt que sur une simple reconduction du budget précédent.</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Extrapolation historique
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Consiste à projeter les données des exercices précédents en appliquant un taux de croissance moyen constaté. Simple et rapide, cette méthode suppose que les tendances passées se poursuivent — elle est peu adaptée en cas de rupture d'activité ou de nouveau marché.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Méthode des moindres carrés (ajustement linéaire)
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Ajuste une droite de tendance sur une série de données historiques afin de projeter la valeur future la plus probable. Plus rigoureuse statistiquement que la simple extrapolation, elle reste sensible aux valeurs exceptionnelles (aléas ponctuels) présentes dans l'historique.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Budget base zéro (BBZ)
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Rompt avec la logique de reconduction : chaque poste budgétaire doit être justifié en partant de zéro, indépendamment du montant de l'exercice précédent. Plus exigeante en temps, cette méthode limite le risque de reconduire des dépenses devenues inutiles.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Le cycle du contrôle budgétaire" data-num="22.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">22.4</span><h2>Le cycle du contrôle budgétaire</h2></div>
+      <p>Une fois le budget établi, le contrôle budgétaire suit un cycle continu qui se répète à chaque période de suivi, généralement chaque mois :</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 820 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cycle du contrôle budgétaire : Prévision, puis Réalisation, puis Comparaison, puis Analyse des écarts, puis Actions correctives, qui alimentent la prévision suivante">
+        <defs>
+          <marker id="arrow22a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#1F6F54"></path>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif" font-size="12" fill="#0B0F0D">
+          <circle cx="410" cy="130" r="6" fill="none"></circle>
+
+          <rect x="30" y="30" width="150" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="105" y="55" text-anchor="middle" font-weight="600" font-size="12">1. Prévision</text>
+          <text x="105" y="72" text-anchor="middle" fill="#5A6560" font-size="10">élaboration du budget</text>
+
+          <rect x="250" y="30" width="150" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="325" y="55" text-anchor="middle" font-weight="600" font-size="12">2. Réalisation</text>
+          <text x="325" y="72" text-anchor="middle" fill="#5A6560" font-size="10">activité et résultats réels</text>
+
+          <rect x="470" y="30" width="150" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="545" y="55" text-anchor="middle" font-weight="600" font-size="12">3. Comparaison</text>
+          <text x="545" y="72" text-anchor="middle" fill="#5A6560" font-size="10">réel confronté au budget</text>
+
+          <rect x="470" y="170" width="150" height="60" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="545" y="195" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">4. Analyse des écarts</text>
+          <text x="545" y="212" text-anchor="middle" fill="#1F6F54" font-size="10">identification des causes</text>
+
+          <rect x="250" y="170" width="150" height="60" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="325" y="195" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">5. Actions correctives</text>
+          <text x="325" y="212" text-anchor="middle" fill="#1F6F54" font-size="10">décisions et ajustements</text>
+
+          <line x1="180" y1="60" x2="246" y2="60" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow22a)"></line>
+          <line x1="400" y1="60" x2="466" y2="60" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow22a)"></line>
+          <line x1="545" y1="90" x2="545" y2="166" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow22a)"></line>
+          <line x1="466" y1="200" x2="404" y2="200" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow22a)"></line>
+          <path d="M250 200 C 150 200, 105 160, 105 94" fill="none" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow22a)"></path>
+          <text x="150" y="150" fill="#5A6560" font-size="10">alimente la prévision suivante</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Ce cycle est continu : les actions correctives d'une période nourrissent les prévisions de la période suivante, affinant progressivement la fiabilité du budget.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Comparer réel et budget : les écarts" data-num="22.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">22.5</span><h2>Comparer réel et budget : les écarts</h2></div>
+      <p>Un écart se calcule toujours de la même façon : <span class="mono">Écart = Réel − Budget</span>. Son interprétation dépend ensuite de la nature de la ligne concernée : un écart positif sur le chiffre d'affaires est favorable, un écart positif sur une charge est défavorable.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Comparaison Réel / Budget — trimestre 1</caption>
+        <thead>
+          <tr><th scope="col">Poste</th><th scope="col" class="num">Budget</th><th scope="col" class="num">Réel</th><th scope="col" class="num">Écart</th><th scope="col" class="center">Nature</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chiffre d'affaires</td><td class="num">300 000</td><td class="num">318 000</td><td class="num favorable">+ 18 000</td><td class="center"><span class="tag fav">Favorable</span></td></tr>
+          <tr><td>Charges variables</td><td class="num">180 000</td><td class="num">191 000</td><td class="num negative">+ 11 000</td><td class="center"><span class="tag unfav">Défavorable</span></td></tr>
+          <tr><td>Charges fixes</td><td class="num">70 000</td><td class="num">69 200</td><td class="num favorable">− 800</td><td class="center"><span class="tag fav">Favorable</span></td></tr>
+          <tr class="total"><td>Résultat</td><td class="num">50 000</td><td class="num">57 800</td><td class="num">+ 7 800</td><td class="center"><span class="tag fav">Favorable</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention</div>
+        <p>Un écart global favorable peut masquer des écarts défavorables importants sur certaines lignes qui se compensent. Le contrôle budgétaire doit toujours descendre au niveau de détail des postes, pas seulement observer le résultat final.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Décomposer et expliquer un écart" data-num="22.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">22.6</span><h2>Décomposer et expliquer un écart</h2></div>
+      <p>Un écart global se décompose généralement en deux sous-écarts, qui permettent d'en identifier la cause précise :</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Décomposition des écarts">
+        <button class="tab-btn" role="tab" id="tab-ec22-1" aria-controls="panel-ec22-1" aria-selected="true">Écart sur volume</button>
+        <button class="tab-btn" role="tab" id="tab-ec22-2" aria-controls="panel-ec22-2" aria-selected="false" tabindex="-1">Écart sur prix / coût</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-ec22-1" role="tabpanel" aria-labelledby="tab-ec22-1" tabindex="0">
+        <div class="prose">
+          <p>Mesure l'impact d'une quantité vendue ou consommée différente de la prévision, en neutralisant l'effet du prix ou du coût unitaire (on applique le prix ou le coût budgété aux quantités réelles). Il répond à la question : « avons-nous vendu ou consommé plus ou moins que prévu ? »</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-ec22-2" role="tabpanel" aria-labelledby="tab-ec22-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Mesure l'impact d'un prix de vente ou d'un coût unitaire différent de la prévision, en neutralisant l'effet du volume (on applique les quantités réelles aux deux prix/coûts, budgété et réel). Il répond à la question : « avons-nous vendu ou acheté plus cher ou moins cher que prévu ? »</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Le chiffre d'affaires réel dépasse le budget de <span class="mono">18 000 €</span>. L'entreprise a vendu 1 060 unités à 300 € contre 1 000 unités à 300 € prévues au budget. L'écart sur volume s'élève à <span class="mono">(1 060 − 1 000) × 300 = 18 000 €</span>, entièrement favorable, tandis que l'écart sur prix est nul puisque le prix de vente réel est resté identique au prix budgété : <span class="mono">(300 − 300) × 1 060 = 0 €</span>. L'écart favorable global s'explique donc uniquement par un volume de ventes supérieur aux prévisions, et non par une hausse des prix.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="22.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">22.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Un budget n'a de sens que suivi d'un contrôle régulier : prévoir et contrôler sont deux étapes indissociables.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>La navette budgétaire rythme l'année : cadrage, élaboration, consolidation, suivi mensuel et réajustement si nécessaire.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Le choix de la méthode de prévision (extrapolation, moindres carrés, budget base zéro) conditionne la fiabilité du budget.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Un écart se calcule toujours Réel − Budget ; son caractère favorable ou défavorable dépend de la nature de la ligne concernée.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Décomposer un écart en écart sur volume et écart sur prix/coût permet d'en identifier la cause réelle avant d'agir.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Centres de coûts et responsabilités</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante</span>
+        <span class="dest">Indicateurs de performance</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 4</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 4</span>
+    <span>Leçon 22 — Contrôle de gestion</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

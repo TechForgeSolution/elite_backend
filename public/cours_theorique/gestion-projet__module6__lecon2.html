@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 27 — Gestion des conflits et négociation | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2314213D'/%3E%3Ccircle cx='50' cy='50' r='22' fill='none' stroke='%23FF9F1C' stroke-width='8'/%3E%3Ccircle cx='50' cy='28' r='7' fill='%23FF9F1C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#F4F6F8;
+    --color-text:#14213D;
+    --color-accent:#FF9F1C;
+    --color-neutral:#8D99AE;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --badge-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --card-bg: color-mix(in srgb, var(--color-neutral) 8%, var(--color-bg));
+    --accent-10: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-16: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg));
+    --accent-40: color-mix(in srgb, var(--color-accent) 40%, var(--color-bg));
+    --text-08: color-mix(in srgb, var(--color-text) 8%, var(--color-bg));
+    --text-04: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+
+    --font-display:'Sora', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--color-bg);
+    color:var(--color-text);
+    font-family:var(--font-body);
+    font-weight:400;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:700;
+    line-height:1.25;
+    margin:0 0 .5em 0;
+    letter-spacing:-0.01em;
+  }
+  h1{font-size:clamp(1.9rem,4vw,2.75rem);}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem);}
+  h3{font-size:1.15rem;font-weight:600;}
+  p{margin:0 0 1.1em 0;}
+  a{color:var(--color-accent);}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  .prose{max-width:720px;}
+
+  /* Progress bar */
+  #progress-bar{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:var(--color-accent);
+    z-index:1000;
+    transition:width .1s linear;
+  }
+
+  /* Header */
+  header.site-header{
+    position:sticky;top:0;z-index:900;
+    background:color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .header-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;max-width:1040px;margin:0 auto;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--font-display);font-weight:700;font-size:.95rem;
+  }
+  .brand-mark{
+    width:26px;height:26px;border-radius:6px;
+    background:var(--color-text);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:15px;height:15px;}
+  .brand span.sub{color:var(--text-muted);font-weight:500;}
+
+  nav.menu-sommaire{display:flex;gap:20px;}
+  nav.menu-sommaire a{
+    font-size:.85rem;color:var(--text-muted);text-decoration:none;font-weight:500;
+  }
+  nav.menu-sommaire a:hover{color:var(--color-accent);}
+
+  @media (max-width:820px){
+    nav.menu-sommaire{display:none;}
+  }
+
+  /* Hero */
+  .hero{
+    padding:64px 0 40px 0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .badge{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    padding:5px 10px;
+    border-radius:5px;
+    background:var(--badge-bg);
+    border:1px solid var(--accent-40);
+    color:var(--color-text);
+    white-space:nowrap;
+  }
+  .badge.module{background:var(--text-08);border-color:var(--border-soft);color:var(--text-muted);}
+
+  .hero .module-tag{
+    font-family:var(--font-mono);
+    font-size:.8rem;color:var(--color-accent);
+    margin-bottom:10px;display:block;
+  }
+  .hero p.subtitle{
+    font-size:1.1rem;color:var(--text-muted);max-width:640px;
+  }
+
+  /* Sommaire */
+  .sommaire{
+    padding:34px 0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .sommaire h2{font-size:1rem;color:var(--text-muted);font-family:var(--font-body);font-weight:600;margin-bottom:16px;}
+  .sommaire ol{
+    list-style:none;margin:0;padding:0;
+    display:grid;grid-template-columns:repeat(2,1fr);gap:10px 28px;
+  }
+  @media (max-width:640px){.sommaire ol{grid-template-columns:1fr;}}
+  .sommaire li{
+    border-bottom:1px dashed var(--border-soft);
+    padding-bottom:8px;
+  }
+  .sommaire a{
+    display:flex;justify-content:space-between;gap:10px;
+    text-decoration:none;color:var(--color-text);font-size:.92rem;font-weight:500;
+  }
+  .sommaire a .num{font-family:var(--font-mono);color:var(--color-accent);}
+  .sommaire a:hover{color:var(--color-accent);}
+
+  /* Sections */
+  main section{
+    padding:56px 0;
+    border-bottom:1px solid var(--border-soft);
+    opacity:0;transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  main section.in-view{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    main section{opacity:1;transform:none;transition:none;}
+  }
+  main section.alt{background:var(--bg-alt);}
+  .section-eyebrow{
+    font-family:var(--font-mono);font-size:.78rem;color:var(--color-accent);
+    display:block;margin-bottom:8px;
+  }
+
+  /* Boxes / callouts */
+  .box{
+    border:1px solid var(--border-soft);
+    border-left:4px solid var(--color-accent);
+    border-radius:6px;
+    padding:18px 20px;
+    margin:26px 0;
+    background:var(--card-bg);
+    max-width:720px;
+  }
+  .box .box-title{
+    display:flex;align-items:center;gap:8px;
+    font-weight:600;font-family:var(--font-display);margin-bottom:6px;font-size:.98rem;
+  }
+  .box p:last-child{margin-bottom:0;}
+
+  /* Fiche de pilotage */
+  .fiche{
+    background:var(--accent-10);
+    border:1px solid var(--accent-40);
+    border-radius:8px;
+    padding:18px 20px;
+    margin:26px 0;
+    font-family:var(--font-mono);
+    font-size:.87rem;
+    position:relative;
+    max-width:720px;
+  }
+  .fiche-label{
+    display:block;font-size:.7rem;letter-spacing:.02em;color:var(--text-muted);
+    margin-bottom:10px;font-family:var(--font-body);font-weight:600;
+  }
+  .fiche pre{margin:0;white-space:pre-wrap;color:var(--color-text);}
+  .copy-btn{
+    position:absolute;top:14px;right:14px;
+    background:var(--color-bg);border:1px solid var(--border-soft);
+    border-radius:5px;font-family:var(--font-body);font-size:.72rem;
+    padding:5px 9px;cursor:pointer;color:var(--text-muted);
+  }
+  .copy-btn:hover{border-color:var(--color-accent);color:var(--color-accent);}
+
+  /* Tables */
+  .table-scroll{overflow-x:auto;margin:26px 0;border:1px solid var(--border-soft);border-radius:8px;}
+  table{
+    border-collapse:collapse;width:100%;min-width:560px;
+    font-size:.88rem;
+  }
+  thead th{
+    background:var(--text-08);
+    text-align:left;padding:11px 14px;
+    font-family:var(--font-display);font-weight:600;font-size:.8rem;
+    border-bottom:1px solid var(--border-soft);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:11px 14px;border-bottom:1px solid var(--border-soft);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.num, th.num{font-family:var(--font-mono);white-space:nowrap;}
+  tr.key-row td{background:var(--accent-10);}
+  tr.key-row td:first-child{border-left:3px solid var(--color-accent);}
+
+  /* Tabs */
+  .tabs{margin:28px 0;max-width:720px;}
+  .tab-list{display:flex;gap:4px;border-bottom:1px solid var(--border-soft);flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body);font-weight:600;font-size:.88rem;
+    background:none;border:none;padding:10px 16px;cursor:pointer;
+    color:var(--text-muted);border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+  }
+  .tab-btn[aria-selected="true"]{color:var(--color-text);border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible, .accordion-trigger:focus-visible, a:focus-visible, button:focus-visible{
+    outline:2px solid var(--color-accent);outline-offset:2px;
+  }
+  .tab-panel{padding:20px 2px;display:none;}
+  .tab-panel[data-active="true"]{display:block;}
+  .tab-panel p:last-child{margin-bottom:0;}
+
+  /* Accordion */
+  .accordion{margin:26px 0;max-width:720px;border-top:1px solid var(--border-soft);}
+  .accordion-item{border-bottom:1px solid var(--border-soft);}
+  .accordion-trigger{
+    width:100%;text-align:left;background:none;border:none;cursor:pointer;
+    padding:16px 4px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    font-family:var(--font-display);font-weight:600;font-size:.95rem;color:var(--color-text);
+  }
+  .accordion-trigger .chevron{
+    flex-shrink:0;width:18px;height:18px;transition:transform .25s ease;color:var(--color-accent);
+  }
+  .accordion-trigger[aria-expanded="true"] .chevron{transform:rotate(45deg);}
+  .accordion-panel{
+    max-height:0;overflow:hidden;transition:max-height .3s ease;
+  }
+  .accordion-panel .inner{padding:0 4px 18px 4px;color:var(--text-muted);font-size:.93rem;}
+
+  /* Cards */
+  .card-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:16px;margin:28px 0;
+  }
+  .card{
+    border:1px solid var(--border-soft);border-radius:8px;padding:18px;
+    background:var(--color-bg);transition:border-color .2s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{
+    width:34px;height:34px;border-radius:7px;background:var(--accent-10);
+    display:flex;align-items:center;justify-content:center;margin-bottom:12px;
+  }
+  .card .icon svg{width:18px;height:18px;}
+  .card h3{margin-bottom:6px;font-size:.98rem;}
+  .card p{font-size:.87rem;color:var(--text-muted);margin:0;}
+
+  /* Stepper */
+  .stepper{
+    display:flex;overflow-x:auto;gap:0;margin:32px 0;padding-bottom:8px;
+  }
+  .step{
+    flex:1 1 160px;min-width:160px;position:relative;padding:0 18px 0 0;
+  }
+  .step .step-top{display:flex;align-items:center;gap:0;}
+  .step-dot{
+    width:28px;height:28px;border-radius:50%;background:var(--color-text);color:var(--color-bg);
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.75rem;
+    flex-shrink:0;
+  }
+  .step-line{flex:1;height:2px;background:var(--border-soft);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:.92rem;margin:14px 0 6px 0;}
+  .step p{font-size:.83rem;color:var(--text-muted);margin:0;padding-right:10px;}
+
+  /* SVG schema wrapper */
+  figure.schema{
+    margin:30px 0;padding:20px;background:var(--color-bg);
+    border:1px solid var(--border-soft);border-radius:10px;
+  }
+  figure.schema svg{width:100%;height:auto;display:block;}
+  figure.schema figcaption{
+    margin-top:12px;font-size:.82rem;color:var(--text-muted);text-align:center;
+  }
+
+  /* Key points */
+  .keypoints{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;margin-top:30px;
+  }
+  .keypoint{
+    border:1px solid var(--border-soft);border-radius:8px;padding:18px;
+    background:var(--color-bg);border-top:3px solid var(--color-accent);
+  }
+  .keypoint .kp-num{font-family:var(--font-mono);color:var(--color-accent);font-size:.8rem;}
+  .keypoint p{font-size:.9rem;margin:8px 0 0 0;color:var(--text-muted);}
+
+  /* Bottom nav */
+  .lesson-nav{
+    padding:44px 0;
+  }
+  .lesson-nav .row{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .nav-link{
+    flex:1 1 260px;
+    border:1px solid var(--border-soft);border-radius:8px;padding:16px 18px;
+    text-decoration:none;color:var(--color-text);
+    display:block;
+  }
+  .nav-link:hover{border-color:var(--color-accent);}
+  .nav-link .dir{font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono);display:block;margin-bottom:4px;}
+  .nav-link.next{text-align:right;}
+  .back-module{
+    text-align:center;margin-top:20px;font-size:.85rem;
+  }
+
+  footer{
+    padding:30px 0 50px 0;text-align:center;color:var(--text-muted);font-size:.82rem;
+  }
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed;bottom:26px;right:26px;
+    width:44px;height:44px;border-radius:50%;
+    background:var(--color-text);color:var(--color-bg);
+    border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+    z-index:800;
+  }
+  #back-to-top.visible{opacity:1;pointer-events:auto;}
+  #back-to-top svg{width:18px;height:18px;}
+
+  ::selection{background:var(--accent-40);}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="#F4F6F8" stroke-width="2"/><circle cx="12" cy="6" r="2" fill="#FF9F1C"/></svg>
+      </div>
+      <span>Gestion de Projet <span class="sub">— Module 6</span></span>
+    </div>
+    <nav class="menu-sommaire" aria-label="Navigation de la leçon">
+      <a href="#sources">Sources</a>
+      <a href="#ecoute">Écoute active</a>
+      <a href="#communication">Communication</a>
+      <a href="#negociation">Négociation</a>
+      <a href="#mediation">Médiation</a>
+      <a href="#gagnant-gagnant">Gagnant-gagnant</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="module-tag">Module 6 — Management, performance et clôture</span>
+    <h1>Leçon 27 — Gestion des conflits et négociation</h1>
+    <p class="subtitle">Résoudre les conflits avec les équipes et les parties prenantes : comprendre leurs sources, écouter activement, communiquer sous tension, négocier et, si nécessaire, faire appel à une médiation pour construire des solutions gagnant-gagnant.</p>
+    <div class="badges">
+      <span class="badge module">Module 6</span>
+      <span class="badge">Niveau avancé / professionnel</span>
+      <span class="badge">20 min de lecture</span>
+      <span class="badge">Leçon 27 / 30</span>
+    </div>
+  </div>
+</section>
+
+<section class="sommaire">
+  <div class="wrap">
+    <h2>Sommaire de la leçon</h2>
+    <ol>
+      <li><a href="#introduction"><span>Le conflit dans le projet</span><span class="num">01</span></a></li>
+      <li><a href="#sources"><span>Sources de conflit</span><span class="num">02</span></a></li>
+      <li><a href="#ecoute"><span>Écoute active</span><span class="num">03</span></a></li>
+      <li><a href="#communication"><span>Communiquer sous tension</span><span class="num">04</span></a></li>
+      <li><a href="#negociation"><span>Négociation</span><span class="num">05</span></a></li>
+      <li><a href="#mediation"><span>Médiation</span><span class="num">06</span></a></li>
+      <li><a href="#gagnant-gagnant"><span>Solutions gagnant-gagnant</span><span class="num">07</span></a></li>
+      <li><a href="#retenir"><span>Points clés à retenir</span><span class="num">08</span></a></li>
+    </ol>
+  </div>
+</section>
+
+<section id="introduction">
+  <div class="wrap prose">
+    <span class="section-eyebrow">01 — Cadrage</span>
+    <h2>Le conflit, un signal à traiter, pas un accident à éviter</h2>
+    <p>Dès qu'un projet mobilise plusieurs parties prenantes aux intérêts, aux priorités ou aux méthodes différents, le désaccord est <strong>statistiquement normal</strong> — il n'est pas le signe d'un projet mal géré. Ce qui distingue une équipe mature, c'est sa capacité à traiter le désaccord avant qu'il ne se transforme en conflit ouvert, puis en blocage durable de l'avancement.</p>
+    <p>Un chef de projet n'a pas vocation à supprimer les tensions — elles portent souvent une information utile sur une contrainte mal partagée ou un objectif mal aligné — mais à les <strong>canaliser</strong> vers une résolution qui préserve à la fois la relation de travail et l'avancement du projet.</p>
+    <div class="box">
+      <div class="box-title">💡 À retenir</div>
+      <p>Un conflit non traité ne disparaît pas : il se déplace, sous forme de retards silencieux, de qualité dégradée ou de désengagement progressif de l'équipe.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sources" class="alt">
+  <div class="wrap prose">
+    <span class="section-eyebrow">02 — Diagnostic</span>
+    <h2>Identifier les sources de conflit</h2>
+    <p>Avant de chercher une solution, il faut identifier la <strong>nature</strong> du désaccord : un conflit sur les ressources ne se traite pas comme un conflit de valeurs, et une méthode de résolution mal adaptée à la source réelle du problème aggrave souvent la tension plutôt que de l'apaiser.</p>
+
+    <figure class="schema" aria-describedby="fig1-caption">
+      <svg viewBox="0 0 680 320" role="img" aria-label="Schéma des quatre grandes familles de sources de conflit en gestion de projet">
+        <circle cx="340" cy="160" r="54" fill="#14213D"/>
+        <text x="340" y="155" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="13" fill="#F4F6F8">Conflit</text>
+        <text x="340" y="172" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="13" fill="#F4F6F8">de projet</text>
+
+        <g font-family="Inter, sans-serif" font-size="11.5" fill="#14213D">
+          <line x1="340" y1="106" x2="340" y2="55" stroke="#8D99AE" stroke-width="1.5"/>
+          <rect x="240" y="18" width="200" height="46" rx="6" fill="#F3E4CB" stroke="#FF9F1C" stroke-width="1.5"/>
+          <text x="340" y="38" text-anchor="middle" font-weight="600">Ressources</text>
+          <text x="340" y="54" text-anchor="middle" fill="#8D99AE" font-size="10.5">Temps, budget, personnes</text>
+
+          <line x1="286" y1="180" x2="130" y2="220" stroke="#8D99AE" stroke-width="1.5"/>
+          <rect x="16" y="222" width="200" height="46" rx="6" fill="#EEF1F4" stroke="#8D99AE" stroke-width="1.5"/>
+          <text x="116" y="242" text-anchor="middle" font-weight="600">Objectifs</text>
+          <text x="116" y="258" text-anchor="middle" fill="#8D99AE" font-size="10.5">Priorités divergentes</text>
+
+          <line x1="394" y1="180" x2="550" y2="220" stroke="#8D99AE" stroke-width="1.5"/>
+          <rect x="464" y="222" width="200" height="46" rx="6" fill="#EEF1F4" stroke="#8D99AE" stroke-width="1.5"/>
+          <text x="564" y="242" text-anchor="middle" font-weight="600">Méthodes</text>
+          <text x="564" y="258" text-anchor="middle" fill="#8D99AE" font-size="10.5">Façons de travailler</text>
+
+          <line x1="286" y1="140" x2="130" y2="100" stroke="#8D99AE" stroke-width="1.5"/>
+          <rect x="16" y="56" width="200" height="46" rx="6" fill="#F3E4CB" stroke="#FF9F1C" stroke-width="1.5"/>
+          <text x="116" y="76" text-anchor="middle" font-weight="600">Relations</text>
+          <text x="116" y="92" text-anchor="middle" fill="#8D99AE" font-size="10.5">Style, communication</text>
+        </g>
+      </svg>
+      <figcaption id="fig1-caption">Quatre familles de sources : ressources, objectifs, méthodes de travail et relations interpersonnelles. Les deux premières sont souvent les plus fréquentes en contexte projet.</figcaption>
+    </figure>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Source</th>
+            <th scope="col">Exemple typique en projet</th>
+            <th scope="col">Premier réflexe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="key-row">
+            <td>Ressources</td>
+            <td>Deux lots se disputent le même développeur sur la même période</td>
+            <td>Arbitrer avec le sponsor, pas entre les équipes seules</td>
+          </tr>
+          <tr>
+            <td>Objectifs</td>
+            <td>Le service qualité veut ralentir, le commercial veut accélérer</td>
+            <td>Reformuler l'objectif commun avant de discuter du calendrier</td>
+          </tr>
+          <tr>
+            <td>Méthodes</td>
+            <td>Désaccord sur le niveau de documentation nécessaire</td>
+            <td>Se référer au standard convenu en début de projet</td>
+          </tr>
+          <tr class="key-row">
+            <td>Relations</td>
+            <td>Ton perçu comme cassant lors d'une revue de code à distance</td>
+            <td>Traiter en aparté, jamais en réunion collective</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <div class="box-title">⚠️ Attention / erreur fréquente</div>
+      <p>Traiter un conflit de fond (objectifs, ressources) comme s'il s'agissait d'un simple problème relationnel : proposer « de mieux communiquer » ne résout pas un arbitrage de priorités mal tranché en amont.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ecoute">
+  <div class="wrap prose">
+    <span class="section-eyebrow">03 — Posture</span>
+    <h2>L'écoute active comme point de départ</h2>
+    <p>Avant toute recherche de solution, chaque partie doit avoir le sentiment d'avoir été <strong>réellement entendue</strong> — pas seulement laissée parler. L'écoute active est une technique, pas une qualité innée : elle se pratique et se structure en quatre temps qui se répètent en boucle jusqu'à ce que chacun se reconnaisse dans ce qui a été reformulé.</p>
+
+    <figure class="schema" aria-describedby="fig2-caption">
+      <svg viewBox="0 0 680 260" role="img" aria-label="Cycle en quatre étapes de l'écoute active">
+        <g font-family="Inter, sans-serif" font-size="11.5" font-weight="600" fill="#14213D">
+          <circle cx="180" cy="70" r="46" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+          <text x="180" y="66" text-anchor="middle">Écouter</text>
+          <text x="180" y="82" text-anchor="middle" font-weight="400" font-size="10" fill="#8D99AE">sans interrompre</text>
+
+          <circle cx="500" cy="70" r="46" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+          <text x="500" y="66" text-anchor="middle">Reformuler</text>
+          <text x="500" y="82" text-anchor="middle" font-weight="400" font-size="10" fill="#8D99AE">avec ses mots</text>
+
+          <circle cx="500" cy="190" r="46" fill="#F3E4CB" stroke="#FF9F1C" stroke-width="2.5"/>
+          <text x="500" y="186" text-anchor="middle">Valider</text>
+          <text x="500" y="202" text-anchor="middle" font-weight="400" font-size="10" fill="#14213D">« c'est bien cela ? »</text>
+
+          <circle cx="180" cy="190" r="46" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+          <text x="180" y="186" text-anchor="middle">Répondre</text>
+          <text x="180" y="202" text-anchor="middle" font-weight="400" font-size="10" fill="#8D99AE">sur le fond</text>
+        </g>
+        <g fill="none" stroke="#8D99AE" stroke-width="1.5" marker-end="url(#arrow)">
+          <path d="M226 70 H454"/>
+          <path d="M500 116 V144"/>
+          <path d="M454 190 H226"/>
+          <path d="M180 144 V116"/>
+        </g>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#8D99AE"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption id="fig2-caption">Le cycle se répète : une reformulation invalidée relance une nouvelle écoute, plutôt que de forcer une réponse prématurée.</figcaption>
+    </figure>
+
+    <div class="fiche">
+      <span class="fiche-label">Fiche de pilotage — Amorces de reformulation</span>
+      <button class="copy-btn" data-copy>Copier</button>
+      <pre>« Si je comprends bien, ce qui vous préoccupe c'est [reformulation]. »
+« Vous diriez que le point le plus bloquant est [reformulation] ? »
+« Corrigez-moi si je me trompe : votre priorité est [reformulation]. »</pre>
+    </div>
+
+    <div class="box">
+      <div class="box-title">📐 Bonnes pratiques professionnelles</div>
+      <p>Reformuler le fond du message, pas seulement les mots employés : une reformulation qui se contente de répéter la phrase de l'autre est perçue comme mécanique et n'apaise pas la tension.</p>
+    </div>
+  </div>
+</section>
+
+<section id="communication" class="alt">
+  <div class="wrap prose">
+    <span class="section-eyebrow">04 — Expression</span>
+    <h2>Communiquer sous tension sans envenimer</h2>
+    <p>En situation de désaccord, la façon dont un message est formulé compte souvent plus que son contenu. Deux registres s'opposent : le langage qui évalue et juge la personne, et le langage qui décrit un fait et son effet observable.</p>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Registres de communication en situation de tension">
+        <button class="tab-btn" role="tab" aria-selected="true" id="tab-jugement" aria-controls="panel-jugement">Langage de jugement</button>
+        <button class="tab-btn" role="tab" aria-selected="false" id="tab-fait" aria-controls="panel-fait">Langage factuel</button>
+      </div>
+      <div class="tab-panel" data-active="true" role="tabpanel" id="panel-jugement" aria-labelledby="tab-jugement">
+        <p>Attribue une intention ou un trait à la personne : <em>« Tu ne prends jamais mes remarques au sérieux. »</em> Ce registre pousse l'autre à se défendre plutôt qu'à chercher une solution, et déplace le débat du sujet vers la relation.</p>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="panel-fait" aria-labelledby="tab-fait">
+        <p>Décrit un fait observable et son effet, sans interpréter l'intention : <em>« Sur les trois dernières revues, mes commentaires n'ont pas été intégrés, et cela retarde la livraison. »</em> Ce registre ouvre la discussion sur le problème plutôt que sur la personne.</p>
+      </div>
+    </div>
+
+    <div class="fiche">
+      <span class="fiche-label">Fiche de pilotage — Structure d'un message factuel</span>
+      <button class="copy-btn" data-copy>Copier</button>
+      <pre>FAIT      : événement observable, daté, sans interprétation
+EFFET     : conséquence concrète sur le projet ou l'équipe
+BESOIN    : ce qui permettrait de débloquer la situation
+DEMANDE   : action concrète, formulée positivement</pre>
+    </div>
+
+    <div class="box">
+      <div class="box-title">⚠️ Attention / erreur fréquente</div>
+      <p>Utiliser l'e-mail ou la messagerie écrite pour exprimer un désaccord fort : l'absence de ton et de contexte non-verbal amplifie presque toujours la perception d'agressivité. Un désaccord sensible se traite en échange direct, vidéo ou en présentiel.</p>
+    </div>
+  </div>
+</section>
+
+<section id="negociation">
+  <div class="wrap prose">
+    <span class="section-eyebrow">05 — Méthode</span>
+    <h2>Négocier : des positions vers les intérêts</h2>
+    <p>Une négociation bloque souvent parce que les parties s'accrochent à leurs <strong>positions</strong> (ce qu'elles demandent explicitement) plutôt qu'à leurs <strong>intérêts</strong> (ce qu'elles cherchent réellement à obtenir). Deux personnes en désaccord sur une position peuvent avoir des intérêts parfaitement compatibles, une fois ceux-ci mis au jour.</p>
+
+    <figure class="schema" aria-describedby="fig3-caption">
+      <svg viewBox="0 0 680 220" role="img" aria-label="Comparaison entre négociation sur les positions et négociation sur les intérêts">
+        <g font-family="Sora, sans-serif" font-weight="600" font-size="12" fill="#14213D">
+          <rect x="40" y="30" width="270" height="150" rx="8" fill="#EEF1F4" stroke="#8D99AE" stroke-width="1.5"/>
+          <text x="175" y="56" text-anchor="middle">Négociation sur les positions</text>
+        </g>
+        <g font-family="Inter, sans-serif" font-size="11" fill="#14213D">
+          <text x="65" y="82">« Je veux ce budget. »</text>
+          <text x="65" y="104">« Je veux ce délai. »</text>
+          <text x="65" y="134" fill="#8D99AE">→ Chacun campe sur</text>
+          <text x="65" y="150" fill="#8D99AE">  sa demande initiale</text>
+        </g>
+        <g font-family="Sora, sans-serif" font-weight="600" font-size="12" fill="#14213D">
+          <rect x="370" y="30" width="270" height="150" rx="8" fill="#F3E4CB" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="505" y="56" text-anchor="middle">Négociation sur les intérêts</text>
+        </g>
+        <g font-family="Inter, sans-serif" font-size="11" fill="#14213D">
+          <text x="395" y="82">« Pourquoi ce budget ? »</text>
+          <text x="395" y="104">« Qu'est-ce que ce délai</text>
+          <text x="395" y="118">  protège vraiment ? »</text>
+          <text x="395" y="148" fill="#8D99AE">→ Options multiples pour</text>
+          <text x="395" y="164" fill="#8D99AE">  satisfaire le besoin réel</text>
+        </g>
+      </svg>
+      <figcaption id="fig3-caption">Explorer l'intérêt derrière une position ouvre des solutions que la position seule ne laissait pas apparaître.</figcaption>
+    </figure>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="true">Préparer une négociation</button>
+        <div class="accordion-panel" style="max-height:220px;">
+          <div class="inner">Avant d'entrer en négociation, clarifier trois éléments : son propre intérêt réel (au-delà de la position affichée), sa meilleure alternative en cas d'échec de l'accord, et le seuil en dessous duquel un accord n'a plus de sens. Cette préparation évite d'accepter, sous pression, un compromis moins favorable que l'alternative disponible.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">Utiliser des critères objectifs</button>
+        <div class="accordion-panel">
+          <div class="inner">Lorsque les intérêts restent en tension, s'appuyer sur des références externes et vérifiables (barèmes, standards du secteur, précédents du projet) permet de sortir du rapport de force entre personnes et de recentrer la discussion sur des critères partagés.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">Séparer les personnes du problème</button>
+        <div class="accordion-panel">
+          <div class="inner">Traiter le désaccord comme un problème à résoudre ensemble plutôt que comme une opposition entre individus facilite l'émergence d'options que chaque partie peut soutenir sans perdre la face.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mediation" class="alt">
+  <div class="wrap prose">
+    <span class="section-eyebrow">06 — Tiers</span>
+    <h2>La médiation, quand le dialogue direct ne suffit plus</h2>
+    <p>Lorsque les parties ne parviennent plus à échanger de façon constructive, le chef de projet — ou un tiers neutre si le chef de projet est lui-même impliqué — peut endosser un rôle de médiateur. Le médiateur ne tranche pas à la place des parties : il structure l'échange pour qu'elles trouvent elles-mêmes un accord.</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-top"><div class="step-dot">1</div><div class="step-line"></div></div>
+        <h3>Cadrage</h3>
+        <p>Poser les règles de l'échange : temps de parole égal, respect, confidentialité de la démarche.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">2</div><div class="step-line"></div></div>
+        <h3>Exposé des points de vue</h3>
+        <p>Chaque partie présente sa perception, sans être interrompue par l'autre partie.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">3</div><div class="step-line"></div></div>
+        <h3>Identification des intérêts</h3>
+        <p>Le médiateur reformule pour faire émerger les besoins réels derrière les positions exprimées.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">4</div><div class="step-line"></div></div>
+        <h3>Recherche d'options</h3>
+        <p>Les parties proposent ensemble plusieurs pistes de résolution, sans les évaluer immédiatement.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">5</div></div>
+        <h3>Accord et suivi</h3>
+        <p>L'option retenue est formalisée par écrit, avec une date de revue pour vérifier qu'elle tient dans la durée.</p>
+      </div>
+    </div>
+
+    <div class="fiche">
+      <span class="fiche-label">Fiche de pilotage — Accord de médiation</span>
+      <button class="copy-btn" data-copy>Copier</button>
+      <pre>PARTIES     : [Nom A] / [Nom B]
+ACCORD      : [description de l'engagement pris par chacun]
+RESPONSABLE : [porteur du suivi de l'accord]
+REVUE       : [date de vérification de l'application]</pre>
+    </div>
+
+    <div class="box">
+      <div class="box-title">📐 Bonnes pratiques professionnelles</div>
+      <p>Un médiateur qui a un intérêt direct dans l'issue du désaccord perd sa légitimité : si le chef de projet est partie prenante du conflit, faire appel à un tiers extérieur à la situation (manager fonctionnel, PMO) plutôt que de médiatiser soi-même.</p>
+    </div>
+  </div>
+</section>
+
+<section id="gagnant-gagnant">
+  <div class="wrap prose">
+    <span class="section-eyebrow">07 — Issue</span>
+    <h2>Construire des solutions gagnant-gagnant</h2>
+    <p>Une solution gagnant-gagnant n'est pas un compromis où chacun renonce à la moitié de sa demande : c'est une option qui répond aux intérêts réels des deux parties, souvent différente de ce que chacune avait initialement imaginé.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Type d'issue</th>
+            <th scope="col">Ce qui se passe</th>
+            <th scope="col">Effet sur la relation de travail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gagnant / perdant</td>
+            <td>Une partie impose sa solution à l'autre</td>
+            <td>Ressentiment, coopération future fragilisée</td>
+          </tr>
+          <tr>
+            <td>Perdant / perdant</td>
+            <td>Compromis qui ne satisfait pleinement personne</td>
+            <td>Le désaccord de fond ressurgit plus tard</td>
+          </tr>
+          <tr class="key-row">
+            <td>Gagnant / gagnant</td>
+            <td>Option nouvelle qui répond aux intérêts des deux parties</td>
+            <td>Renforce la confiance et la coopération future</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><path d="M4 17l5-5 4 4 7-7"/></svg></div>
+        <h3>Évitement</h3>
+        <p>Reporter le sujet ; utile pour un désaccord mineur, risqué s'il masque un problème structurant.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><circle cx="12" cy="12" r="8"/></svg></div>
+        <h3>Accommodation</h3>
+        <p>Céder pour préserver la relation ; pertinent quand l'enjeu compte moins pour soi que pour l'autre.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+        <h3>Compétition</h3>
+        <p>Imposer sa position ; réservé aux décisions urgentes où l'enjeu prime sur la relation.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg></div>
+        <h3>Compromis</h3>
+        <p>Chacun cède une partie de sa demande ; efficace rapidement, mais parfois provisoire.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/></svg></div>
+        <h3>Collaboration</h3>
+        <p>Rechercher ensemble une option nouvelle ; le style le plus exigeant en temps, mais le plus durable.</p>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-title">🔗 Pour aller plus loin</div>
+      <p>Le style de gestion de conflit le plus adapté dépend de l'urgence de la décision et de l'importance de la relation à préserver : aucun des cinq styles ci-dessus n'est bon ou mauvais en soi, seulement plus ou moins adapté à la situation.</p>
+    </div>
+  </div>
+</section>
+
+<section id="retenir" class="alt">
+  <div class="wrap prose" style="max-width:960px;">
+    <span class="section-eyebrow">08 — Synthèse</span>
+    <h2>Points clés à retenir</h2>
+    <div class="keypoints">
+      <div class="keypoint">
+        <span class="kp-num">01</span>
+        <h3>Le conflit est normal</h3>
+        <p>Il signale souvent un désalignement à traiter, pas un échec de l'équipe à cacher.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">02</span>
+        <h3>Diagnostiquer la source</h3>
+        <p>Ressources, objectifs, méthodes ou relations : chaque source appelle un traitement différent.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">03</span>
+        <h3>Écouter avant de résoudre</h3>
+        <p>La reformulation validée par chaque partie est le préalable à toute recherche de solution.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">04</span>
+        <h3>Décrire, ne pas juger</h3>
+        <p>Un message factuel ouvre la discussion ; un message qui évalue la personne la ferme.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">05</span>
+        <h3>Négocier sur les intérêts</h3>
+        <p>Derrière des positions opposées se cachent souvent des intérêts compatibles.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">06</span>
+        <h3>Viser le gagnant-gagnant</h3>
+        <p>La solution la plus durable répond aux besoins réels des deux parties, pas à un simple partage du différend.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="wrap lesson-nav">
+  <div class="row">
+    <a class="nav-link prev" href="#">
+      <span class="dir">← Leçon précédente</span>
+      Leçon 26 — Leadership et management d'équipe projet
+    </a>
+    <a class="nav-link next" href="#">
+      <span class="dir">Leçon suivante →</span>
+      Leçon 28 — Qualité et performance du projet
+    </a>
+  </div>
+  <p class="back-module"><a href="#">Retour au sommaire du Module 6</a></p>
+</div>
+
+<footer>
+  <div class="wrap">
+    Filière Gestion de Projet — Module 6 : Management, performance et clôture
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* Scroll progress bar */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* Back to top */
+  var backToTop = document.getElementById('back-to-top');
+  document.addEventListener('scroll', function(){
+    backToTop.classList.toggle('visible', window.scrollY > 480);
+  }, {passive:true});
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+
+  /* Section reveal on scroll */
+  var sections = document.querySelectorAll('main section');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12});
+    sections.forEach(function(s){ io.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  }
+
+  /* Tabs */
+  document.querySelectorAll('[data-tabs]').forEach(function(tabsEl){
+    var buttons = tabsEl.querySelectorAll('.tab-btn');
+    var panels = tabsEl.querySelectorAll('.tab-panel');
+    buttons.forEach(function(btn, i){
+      btn.addEventListener('click', function(){
+        buttons.forEach(function(b){ b.setAttribute('aria-selected','false'); });
+        panels.forEach(function(p){ p.removeAttribute('data-active'); });
+        btn.setAttribute('aria-selected','true');
+        panels[i].setAttribute('data-active','true');
+      });
+      btn.addEventListener('keydown', function(e){
+        var idx = Array.prototype.indexOf.call(buttons, btn);
+        if(e.key === 'ArrowRight'){ buttons[(idx+1) % buttons.length].focus(); buttons[(idx+1) % buttons.length].click(); }
+        if(e.key === 'ArrowLeft'){ buttons[(idx-1+buttons.length) % buttons.length].focus(); buttons[(idx-1+buttons.length) % buttons.length].click(); }
+      });
+    });
+  });
+
+  /* Accordions */
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var panel = trigger.nextElementSibling;
+    var expanded = trigger.getAttribute('aria-expanded') === 'true';
+    panel.style.maxHeight = expanded ? panel.scrollHeight + 'px' : '0px';
+    trigger.addEventListener('click', function(){
+      var isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+      panel.style.maxHeight = !isOpen ? panel.scrollHeight + 'px' : '0px';
+    });
+  });
+
+  /* Copy button on "fiche de pilotage" blocks */
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.parentElement.querySelector('pre');
+      var text = pre ? pre.textContent : '';
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(text).then(function(){
+          var original = btn.textContent;
+          btn.textContent = 'Copié';
+          setTimeout(function(){ btn.textContent = original; }, 1600);
+        });
+      }
+    });
+  });
+
+  /* Smooth anchor scroll (respects reduced motion) */
+  var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){
+    link.addEventListener('click', function(e){
+      var id = link.getAttribute('href').slice(1);
+      var target = id ? document.getElementById(id) : null;
+      if(target){
+        e.preventDefault();
+        target.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block:'start'});
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 03 — Parties prenantes et rôles du projet, Module 1 : Fondamentaux de la gestion de projet.">
+  <title>Leçon 03 — Parties prenantes et rôles du projet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #F4F6F8;
+      --color-text: #14213D;
+      --color-accent: #FF9F1C;
+      --color-neutral: #8D99AE;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: "Inter", sans-serif;
+      line-height: 1.7;
+    }
+
+    a { color: var(--color-text); }
+    a:hover { color: var(--color-accent); }
+
+    :focus-visible {
+      outline: 3px solid var(--color-accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .progress {
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: color-mix(in srgb, var(--color-neutral) 18%, var(--color-bg));
+    }
+    .progress__bar {
+      width: 0;
+      height: 100%;
+      background: var(--color-accent);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 4px;
+      z-index: 900;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      background: color-mix(in srgb, var(--color-bg) 94%, var(--color-text));
+      backdrop-filter: blur(8px);
+    }
+
+    .header-inner {
+      width: min(1180px, calc(100% - 32px));
+      margin: auto;
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--color-text);
+      border-radius: 6px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      position: relative;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      right: -4px;
+      top: -4px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      border: 2px solid var(--color-bg);
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 14px;
+    }
+    .header-nav a {
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: auto;
+    }
+
+    .hero {
+      padding: 76px 0 52px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
+      gap: 48px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    .badge--accent {
+      border-color: var(--color-accent);
+      background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    }
+
+    h1, h2, h3 {
+      font-family: "Manrope", sans-serif;
+      line-height: 1.15;
+      letter-spacing: -.025em;
+    }
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(38px, 6vw, 68px);
+      max-width: 850px;
+    }
+    h2 {
+      margin: 0 0 20px;
+      font-size: clamp(28px, 4vw, 42px);
+    }
+    h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
+    p { margin: 0 0 16px; }
+
+    .lead {
+      max-width: 720px;
+      font-size: 19px;
+      color: color-mix(in srgb, var(--color-text) 75%, var(--color-bg));
+    }
+
+    .meta-panel {
+      border-left: 4px solid var(--color-accent);
+      padding: 20px 0 20px 22px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 9px 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-neutral) 40%, var(--color-bg));
+      font-size: 14px;
+    }
+    .meta-row:last-child { border-bottom: 0; }
+    .mono {
+      font-family: "JetBrains Mono", monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .toc {
+      margin: 18px 0 64px;
+      padding: 26px;
+      background: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+      border: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      border-radius: 10px;
+    }
+    .toc-title {
+      font-family: "Manrope", sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 22px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px 30px;
+    }
+    .toc a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+    section {
+      padding: 72px 0;
+      scroll-margin-top: 90px;
+    }
+    section:nth-of-type(even) {
+      background: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      padding-left: max(16px, calc((100vw - 1180px) / 2));
+      padding-right: max(16px, calc((100vw - 1180px) / 2));
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+    .section-kicker {
+      margin-bottom: 10px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .text-column { max-width: 720px; }
+
+    .callout {
+      margin: 28px 0;
+      padding: 20px 22px;
+      border: 2px solid var(--color-accent);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 14px;
+    }
+    .callout__icon {
+      font-size: 23px;
+      line-height: 1.3;
+    }
+    .callout strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      margin-bottom: 5px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 30px;
+    }
+    .card {
+      padding: 22px;
+      border: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      border-radius: 9px;
+      background: var(--color-bg);
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--color-accent);
+    }
+    .card__icon {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 15px;
+      border: 1px solid var(--color-accent);
+      border-radius: 7px;
+      background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+    }
+    .card p { font-size: 14px; margin: 0; }
+
+    .stakeholder-map {
+      margin: 38px auto 10px;
+      max-width: 940px;
+      overflow-x: auto;
+      padding: 10px 0 20px;
+    }
+    .stakeholder-map svg {
+      width: 100%;
+      min-width: 720px;
+      height: auto;
+      display: block;
+    }
+    svg text {
+      font-family: "Inter", sans-serif;
+      fill: var(--color-text);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 30px 0;
+      border: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      border-radius: 9px;
+    }
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      background: var(--color-bg);
+    }
+    th, td {
+      padding: 13px 15px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-neutral) 40%, var(--color-bg));
+    }
+    th {
+      font-family: "Manrope", sans-serif;
+      font-size: 13px;
+      background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    }
+    td { font-size: 14px; }
+    tbody tr:hover { background: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg)); }
+    tbody tr:last-child td { border-bottom: 0; }
+    .key-row td:first-child { border-left: 4px solid var(--color-accent); }
+
+    .pilot-card {
+      margin: 30px 0;
+      padding: 22px;
+      border-radius: 9px;
+      border: 1px solid color-mix(in srgb, var(--color-accent) 45%, var(--color-neutral));
+      background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    }
+    .pilot-card__label {
+      margin-bottom: 12px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .pilot-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-neutral) 40%, var(--color-bg));
+    }
+    .pilot-line:last-child { border-bottom: 0; }
+    .pilot-value {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .tabs {
+      margin: 30px 0;
+    }
+    .tab-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      margin-bottom: 20px;
+    }
+    .tab-button {
+      border: 0;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      color: var(--color-text);
+      padding: 12px 15px;
+      cursor: pointer;
+      font: 600 14px "Inter", sans-serif;
+    }
+    .tab-button[aria-selected="true"] {
+      border-bottom-color: var(--color-accent);
+    }
+    .tab-panel {
+      display: none;
+      max-width: 760px;
+    }
+    .tab-panel.is-active { display: block; }
+
+    .accordion {
+      margin: 14px 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    }
+    .accordion button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--color-text);
+      padding: 18px 0;
+      display: flex;
+      justify-content: space-between;
+      text-align: left;
+      cursor: pointer;
+      font: 700 17px "Manrope", sans-serif;
+    }
+    .accordion button span:last-child {
+      font-family: "JetBrains Mono", monospace;
+      color: var(--color-accent);
+    }
+    .accordion-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+    .accordion-panel > div { padding: 0 0 18px; max-width: 720px; }
+
+    .raci {
+      display: grid;
+      grid-template-columns: minmax(150px, 1.5fr) repeat(5, minmax(90px, 1fr));
+      min-width: 760px;
+      border-top: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      border-left: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      background: var(--color-bg);
+    }
+    .raci > div {
+      padding: 11px;
+      border-right: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      border-bottom: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      font-size: 13px;
+    }
+    .raci .head {
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+      background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    }
+    .raci .mark {
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+    }
+    .raci .active {
+      background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+      border-left: 3px solid var(--color-accent);
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin: 38px 0;
+    }
+    .step {
+      position: relative;
+      padding: 15px 14px 14px 0;
+    }
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 16px;
+      left: 35px;
+      right: 0;
+      height: 1px;
+      background: var(--color-neutral);
+      opacity: .55;
+    }
+    .step__number {
+      position: relative;
+      z-index: 2;
+      width: 33px;
+      height: 33px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid var(--color-text);
+      background: var(--color-bg);
+      font: 600 12px "JetBrains Mono", monospace;
+      margin-bottom: 12px;
+    }
+    .step:first-child .step__number,
+    .step:last-child .step__number { border-color: var(--color-accent); }
+    .step h3 { font-size: 15px; }
+    .step p { font-size: 13px; margin: 0; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .summary-item {
+      padding: 18px;
+      border-top: 3px solid var(--color-accent);
+      background: var(--color-bg);
+      border-radius: 6px;
+    }
+    .summary-item strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      margin-bottom: 7px;
+    }
+    .summary-item span { font-size: 13px; }
+
+    .nav-lessons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 60px 0;
+    }
+    .lesson-link {
+      display: block;
+      padding: 22px;
+      border: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      border-radius: 9px;
+      text-decoration: none;
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .lesson-link:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+    .lesson-link small {
+      display: block;
+      margin-bottom: 7px;
+      font-family: "JetBrains Mono", monospace;
+      color: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    }
+    .lesson-link strong { font-family: "Manrope", sans-serif; }
+    .lesson-link.next { text-align: right; }
+
+    footer {
+      border-top: 1px solid color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+      padding: 30px 0 42px;
+      font-size: 13px;
+      color: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    }
+    .footer-inner {
+      width: min(1180px, calc(100% - 32px));
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 30px; padding-top: 54px; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .stepper { grid-template-columns: 1fr; gap: 8px; }
+      .step { padding-left: 48px; }
+      .step:not(:last-child)::after {
+        left: 16px;
+        top: 44px;
+        bottom: -8px;
+        width: 1px;
+        height: auto;
+        right: auto;
+      }
+      .step__number { position: absolute; left: 0; top: 10px; }
+    }
+
+    @media (max-width: 600px) {
+      main, .header-inner, .footer-inner { width: min(100% - 24px, 1180px); }
+      .header-nav { display: none; }
+      .hero { padding: 42px 0 36px; }
+      h1 { font-size: 38px; }
+      .lead { font-size: 17px; }
+      section { padding: 52px 0; }
+      section:nth-of-type(even) {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+      .toc ol { grid-template-columns: 1fr; }
+      .cards, .summary-grid, .nav-lessons { grid-template-columns: 1fr; }
+      .nav-lessons .next { text-align: left; }
+      .footer-inner { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress" aria-hidden="true"><div class="progress__bar" id="progressBar"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="Retour au début de la leçon">
+        <span class="brand-mark">GP</span>
+        <span>Gestion de Projet</span>
+      </a>
+      <nav class="header-nav" aria-label="Navigation de la leçon">
+        <a href="#sommaire">Sommaire</a>
+        <a href="#raci">RACI</a>
+        <a href="#synthese">Synthèse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="hero reveal">
+      <div>
+        <div class="eyebrow">
+          <span class="badge badge--accent">MODULE 1 · FONDAMENTAUX</span>
+          <span class="badge">LEÇON 03</span>
+          <span class="badge">DÉBUTANT</span>
+        </div>
+        <h1>Parties prenantes et rôles du projet</h1>
+        <p class="lead">
+          Identifier les acteurs d’un projet, comprendre leurs responsabilités et organiser
+          leur contribution grâce à une matrice RACI claire.
+        </p>
+      </div>
+
+      <aside class="meta-panel" aria-label="Informations de la leçon">
+        <div class="meta-row"><span>Durée estimée</span><strong class="mono">15 min</strong></div>
+        <div class="meta-row"><span>Objectif</span><strong>Identifier les acteurs</strong></div>
+        <div class="meta-row"><span>Outil clé</span><strong class="mono">RACI</strong></div>
+      </aside>
+    </div>
+
+    <nav class="toc reveal" id="sommaire" aria-label="Sommaire">
+      <div class="toc-title">Sommaire de la leçon</div>
+      <ol>
+        <li><a href="#definition">Comprendre les parties prenantes</a></li>
+        <li><a href="#roles">Les acteurs et leurs responsabilités</a></li>
+        <li><a href="#interne-externe">Parties prenantes internes et externes</a></li>
+        <li><a href="#raci">La matrice RACI</a></li>
+        <li><a href="#bonnes-pratiques">Bonnes pratiques de pilotage</a></li>
+        <li><a href="#synthese">Points clés à retenir</a></li>
+      </ol>
+    </nav>
+
+    <section id="definition" class="reveal">
+      <div class="section-head">
+        <div class="section-kicker">01 · Fondamentaux</div>
+        <h2>Comprendre les parties prenantes</h2>
+        <p>
+          Une partie prenante est un acteur qui peut influencer le projet, être influencé par
+          celui-ci ou avoir un intérêt dans ses résultats. La réussite d’un projet dépend donc
+          autant de la maîtrise des activités que de la compréhension des acteurs qui les portent,
+          les financent, les utilisent ou les subissent.
+        </p>
+      </div>
+
+      <div class="text-column">
+        <p>
+          Identifier les parties prenantes permet de savoir <strong>qui doit être informé</strong>,
+          <strong>qui décide</strong>, <strong>qui réalise</strong> et <strong>qui doit être consulté</strong>.
+          Cette clarification réduit les zones grises, les doublons et les décisions prises sans
+          les bons interlocuteurs.
+        </p>
+
+        <div class="callout">
+          <div class="callout__icon" aria-hidden="true">💡</div>
+          <div>
+            <strong>À retenir</strong>
+            Une partie prenante n’est pas uniquement une personne qui travaille sur le projet.
+            Elle peut aussi financer, décider, fournir, utiliser ou influencer le projet.
+          </div>
+        </div>
+      </div>
+
+      <div class="stakeholder-map" role="img" aria-label="Schéma des principales parties prenantes autour du projet">
+        <svg viewBox="0 0 940 430" xmlns="http://www.w3.org/2000/svg">
+          <title>Écosystème des parties prenantes d’un projet</title>
+          <desc>Le projet est au centre et est relié au client, au sponsor, au chef de projet, à l’équipe, aux fournisseurs et aux utilisateurs.</desc>
+
+          <line x1="470" y1="215" x2="135" y2="85" stroke="var(--color-neutral)" stroke-width="2"/>
+          <line x1="470" y1="215" x2="470" y2="65" stroke="var(--color-neutral)" stroke-width="2"/>
+          <line x1="470" y1="215" x2="805" y2="85" stroke="var(--color-neutral)" stroke-width="2"/>
+          <line x1="470" y1="215" x2="135" y2="345" stroke="var(--color-neutral)" stroke-width="2"/>
+          <line x1="470" y1="215" x2="470" y2="365" stroke="var(--color-neutral)" stroke-width="2"/>
+          <line x1="470" y1="215" x2="805" y2="345" stroke="var(--color-neutral)" stroke-width="2"/>
+
+          <circle cx="470" cy="215" r="76" fill="var(--color-text)"/>
+          <text x="470" y="207" text-anchor="middle" fill="var(--color-bg)" style="fill:var(--color-bg);font-family:Manrope;font-weight:700;font-size:22px;">PROJET</text>
+          <text x="470" y="234" text-anchor="middle" fill="var(--color-bg)" style="fill:var(--color-bg);font-size:13px;">objectifs · livrables</text>
+
+          <g>
+            <rect x="45" y="48" width="180" height="74" rx="9" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+            <text x="135" y="78" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px;">CLIENT</text>
+            <text x="135" y="100" text-anchor="middle" style="font-size:12px;">besoin · réception</text>
+          </g>
+
+          <g>
+            <rect x="380" y="28" width="180" height="74" rx="9" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+            <text x="470" y="58" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px;">SPONSOR</text>
+            <text x="470" y="80" text-anchor="middle" style="font-size:12px;">soutien · arbitrage</text>
+          </g>
+
+          <g>
+            <rect x="715" y="48" width="180" height="74" rx="9" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+            <text x="805" y="78" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px;">UTILISATEURS</text>
+            <text x="805" y="100" text-anchor="middle" style="font-size:12px;">usage · attentes</text>
+          </g>
+
+          <g>
+            <rect x="45" y="308" width="180" height="74" rx="9" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+            <text x="135" y="338" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px;">FOURNISSEURS</text>
+            <text x="135" y="360" text-anchor="middle" style="font-size:12px;">produits · services</text>
+          </g>
+
+          <g>
+            <rect x="380" y="328" width="180" height="74" rx="9" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+            <text x="470" y="358" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px;">ÉQUIPE</text>
+            <text x="470" y="380" text-anchor="middle" style="font-size:12px;">réalisation · expertise</text>
+          </g>
+
+          <g>
+            <rect x="715" y="308" width="180" height="74" rx="9" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+            <text x="805" y="338" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px;">CHEF DE PROJET</text>
+            <text x="805" y="360" text-anchor="middle" style="font-size:12px;">coordination · pilotage</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section id="roles" class="reveal">
+      <div class="section-head">
+        <div class="section-kicker">02 · Acteurs</div>
+        <h2>Les acteurs et leurs responsabilités</h2>
+        <p>
+          Chaque acteur intervient avec un niveau d’autorité, d’engagement et de responsabilité
+          différent. Les rôles doivent être explicités suffisamment tôt pour éviter qu’une
+          responsabilité importante reste sans titulaire.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">CL</div>
+          <h3>Client</h3>
+          <p>Exprime le besoin, précise les attentes et réceptionne les résultats du projet.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">SP</div>
+          <h3>Sponsor</h3>
+          <p>Apporte un soutien stratégique, facilite les arbitrages et porte le projet au niveau décisionnel.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">CP</div>
+          <h3>Chef de projet</h3>
+          <p>Planifie, coordonne, suit l’avancement et organise la communication entre les acteurs.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">EQ</div>
+          <h3>Équipe projet</h3>
+          <p>Mobilise les compétences nécessaires et réalise les activités qui produisent les livrables.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">FO</div>
+          <h3>Fournisseurs</h3>
+          <p>Apportent des produits, prestations ou expertises nécessaires à la réalisation du projet.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">UT</div>
+          <h3>Utilisateurs</h3>
+          <p>Expriment des besoins d’usage, apportent un retour sur la solution et participent à son adoption.</p>
+        </article>
+      </div>
+
+      <div class="table-wrap" aria-label="Tableau des rôles du projet">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Acteur</th>
+              <th scope="col">Responsabilité principale</th>
+              <th scope="col">Contribution au pilotage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="key-row">
+              <td><strong>Client</strong></td>
+              <td>Définir le besoin et valider les résultats attendus.</td>
+              <td>Clarifier les exigences et accepter les livrables.</td>
+            </tr>
+            <tr>
+              <td><strong>Sponsor</strong></td>
+              <td>Porter le projet au niveau stratégique.</td>
+              <td>Arbitrer les sujets majeurs et soutenir le projet.</td>
+            </tr>
+            <tr class="key-row">
+              <td><strong>Chef de projet</strong></td>
+              <td>Coordonner l’ensemble des travaux.</td>
+              <td>Suivre délais, ressources, risques, décisions et communication.</td>
+            </tr>
+            <tr>
+              <td><strong>Équipe</strong></td>
+              <td>Produire les livrables selon les compétences mobilisées.</td>
+              <td>Signaler l’avancement, les dépendances et les difficultés.</td>
+            </tr>
+            <tr>
+              <td><strong>Fournisseurs</strong></td>
+              <td>Fournir les biens ou services convenus.</td>
+              <td>Respecter les engagements contractuels et signaler les écarts.</td>
+            </tr>
+            <tr>
+              <td><strong>Utilisateurs</strong></td>
+              <td>Apporter le point de vue de l’usage réel.</td>
+              <td>Contribuer à la compréhension des attentes et à l’adoption.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="interne-externe" class="reveal">
+      <div class="section-head">
+        <div class="section-kicker">03 · Écosystème</div>
+        <h2>Parties prenantes internes et externes</h2>
+        <p>
+          La distinction interne/externe aide à organiser la communication et à comprendre les
+          marges d’action du projet. Elle ne suffit toutefois pas à déterminer l’importance d’un
+          acteur : un acteur externe peut avoir une influence très forte, tout comme un acteur interne.
+        </p>
+      </div>
+
+      <div class="tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Comparaison des parties prenantes">
+          <button class="tab-button" role="tab" aria-selected="true" aria-controls="tab-interne" id="tab-btn-interne">Interne</button>
+          <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-externe" id="tab-btn-externe">Externe</button>
+        </div>
+
+        <div class="tab-panel is-active" id="tab-interne" role="tabpanel" aria-labelledby="tab-btn-interne" tabindex="0">
+          <h3>Dans l’organisation porteuse du projet</h3>
+          <p>
+            Les parties prenantes internes peuvent comprendre le sponsor, le chef de projet,
+            l’équipe projet, des responsables métiers, des fonctions support ou des décideurs.
+            Leur proximité facilite généralement l’accès à l’information et aux ressources, mais
+            peut aussi créer des arbitrages entre priorités organisationnelles.
+          </p>
+        </div>
+
+        <div class="tab-panel" id="tab-externe" role="tabpanel" aria-labelledby="tab-btn-externe" tabindex="0">
+          <h3>À l’extérieur de l’organisation</h3>
+          <p>
+            Les parties prenantes externes peuvent comprendre le client, les utilisateurs,
+            les fournisseurs, des partenaires ou d’autres acteurs concernés par les résultats.
+            Le chef de projet doit tenir compte des engagements, contrats, attentes et contraintes
+            propres à ces relations.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout__icon" aria-hidden="true">⚠️</div>
+        <div>
+          <strong>Attention / erreur fréquente</strong>
+          Confondre « acteur du projet » et « partie prenante ». Une personne peut être directement
+          mobilisée dans les activités ou simplement avoir un intérêt, une influence ou une attente
+          vis-à-vis du projet.
+        </div>
+      </div>
+
+      <div class="pilot-card">
+        <div class="pilot-card__label">Fiche de pilotage · lecture des acteurs</div>
+        <div class="pilot-line"><span>Influence</span><span class="pilot-value">QUI PEUT DÉCIDER ?</span></div>
+        <div class="pilot-line"><span>Intérêt</span><span class="pilot-value">QUI EST CONCERNÉ ?</span></div>
+        <div class="pilot-line"><span>Responsabilité</span><span class="pilot-value">QUI AGIT ?</span></div>
+        <div class="pilot-line"><span>Information</span><span class="pilot-value">QUI DOIT SAVOIR ?</span></div>
+      </div>
+    </section>
+
+    <section id="raci" class="reveal">
+      <div class="section-head">
+        <div class="section-kicker">04 · Outil de clarification</div>
+        <h2>La matrice RACI</h2>
+        <p>
+          La matrice RACI associe les activités du projet aux rôles des parties prenantes.
+          Elle sert à rendre explicite la répartition des responsabilités et à repérer rapidement
+          les activités pour lesquelles le rôle de chacun n’est pas clair.
+        </p>
+      </div>
+
+      <div class="text-column">
+        <p><strong>R — Responsible :</strong> réalise l’activité.</p>
+        <p><strong>A — Accountable :</strong> porte la responsabilité finale et valide le résultat.</p>
+        <p><strong>C — Consulted :</strong> est consulté avant ou pendant la réalisation.</p>
+        <p><strong>I — Informed :</strong> est informé de l’avancement ou du résultat.</p>
+      </div>
+
+      <div class="callout">
+        <div class="callout__icon" aria-hidden="true">📐</div>
+        <div>
+          <strong>Bonnes pratiques professionnelles</strong>
+          Pour une activité donnée, il est utile d’avoir un responsable clairement identifié et
+          une responsabilité finale non ambiguë. La matrice doit rester lisible : trop de personnes
+          dans chaque case peut masquer la véritable responsabilité.
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="raci" role="table" aria-label="Exemple théorique de matrice RACI">
+          <div class="head" role="columnheader">Activité</div>
+          <div class="head" role="columnheader">Client</div>
+          <div class="head" role="columnheader">Sponsor</div>
+          <div class="head" role="columnheader">Chef de projet</div>
+          <div class="head" role="columnheader">Équipe</div>
+          <div class="head" role="columnheader">Fournisseur</div>
+
+          <div role="cell"><strong>Définir le besoin</strong></div>
+          <div class="mark active" role="cell">A</div>
+          <div class="mark" role="cell">C</div>
+          <div class="mark" role="cell">R</div>
+          <div class="mark" role="cell">C</div>
+          <div class="mark" role="cell">I</div>
+
+          <div role="cell"><strong>Planifier les travaux</strong></div>
+          <div class="mark" role="cell">C</div>
+          <div class="mark" role="cell">I</div>
+          <div class="mark active" role="cell">A/R</div>
+          <div class="mark" role="cell">C</div>
+          <div class="mark" role="cell">I</div>
+
+          <div role="cell"><strong>Produire un livrable</strong></div>
+          <div class="mark" role="cell">I</div>
+          <div class="mark" role="cell">I</div>
+          <div class="mark active" role="cell">A</div>
+          <div class="mark" role="cell">R</div>
+          <div class="mark" role="cell">C</div>
+
+          <div role="cell"><strong>Fournir une prestation</strong></div>
+          <div class="mark" role="cell">I</div>
+          <div class="mark" role="cell">I</div>
+          <div class="mark active" role="cell">A</div>
+          <div class="mark" role="cell">C</div>
+          <div class="mark" role="cell">R</div>
+
+          <div role="cell"><strong>Valider le résultat</strong></div>
+          <div class="mark active" role="cell">A</div>
+          <div class="mark" role="cell">I</div>
+          <div class="mark" role="cell">R</div>
+          <div class="mark" role="cell">C</div>
+          <div class="mark" role="cell">I</div>
+        </div>
+      </div>
+
+      <div class="stepper" aria-label="Logique de construction d’une matrice RACI">
+        <div class="step">
+          <div class="step__number">01</div>
+          <h3>Lister</h3>
+          <p>Identifier les activités ou livrables importants.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">02</div>
+          <h3>Associer</h3>
+          <p>Placer les rôles concernés par chaque activité.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">03</div>
+          <h3>Clarifier</h3>
+          <p>Distinguer réalisation, décision, consultation et information.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">04</div>
+          <h3>Vérifier</h3>
+          <p>Repérer les responsabilités absentes ou excessivement partagées.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">05</div>
+          <h3>Partager</h3>
+          <p>Utiliser la matrice comme référence commune du projet.</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <button type="button" aria-expanded="false">
+          <span>Pourquoi la RACI facilite-t-elle la coordination ?</span>
+          <span aria-hidden="true">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div>
+            Elle donne une représentation commune des responsabilités. Lorsqu’une activité
+            est attribuée explicitement, chacun sait mieux qui agit, qui valide, qui doit être
+            consulté et qui doit simplement recevoir l’information.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <button type="button" aria-expanded="false">
+          <span>À quel moment utiliser la matrice ?</span>
+          <span aria-hidden="true">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div>
+            Elle peut être préparée pendant la structuration du projet, puis revue lorsque les
+            responsabilités, les ressources ou le périmètre évoluent. Elle constitue un support
+            de référence qui accompagne le pilotage.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="bonnes-pratiques" class="reveal">
+      <div class="section-head">
+        <div class="section-kicker">05 · Pilotage</div>
+        <h2>Bonnes pratiques de pilotage</h2>
+        <p>
+          La gestion des parties prenantes est un travail continu. Les rôles, attentes et niveaux
+          d’influence peuvent évoluer au fil des phases du projet.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">01</div>
+          <h3>Nommer les rôles</h3>
+          <p>Éviter les formulations vagues et rattacher chaque responsabilité à un rôle identifiable.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">02</div>
+          <h3>Clarifier les décisions</h3>
+          <p>Déterminer qui possède l’autorité nécessaire pour arbitrer les sujets du projet.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">03</div>
+          <h3>Adapter la communication</h3>
+          <p>Partager le bon niveau d’information selon l’intérêt, l’influence et le rôle de chaque acteur.</p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <div class="callout__icon" aria-hidden="true">📐</div>
+        <div>
+          <strong>Bonnes pratiques professionnelles</strong>
+          Une bonne gouvernance ne consiste pas à inviter tout le monde à toutes les décisions.
+          Elle consiste à faire intervenir les bonnes personnes au bon moment, avec un rôle explicite
+          et une information adaptée.
+        </div>
+      </div>
+
+      <div class="pilot-card">
+        <div class="pilot-card__label">Fiche de pilotage · repères</div>
+        <div class="pilot-line"><span>Rôle</span><span class="pilot-value">QUI FAIT QUOI ?</span></div>
+        <div class="pilot-line"><span>Autorité</span><span class="pilot-value">QUI DÉCIDE ?</span></div>
+        <div class="pilot-line"><span>Consultation</span><span class="pilot-value">QUI DOIT ÊTRE ENTENDU ?</span></div>
+        <div class="pilot-line"><span>Information</span><span class="pilot-value">QUI DOIT ÊTRE TENU AU COURANT ?</span></div>
+      </div>
+
+      <div class="callout">
+        <div class="callout__icon" aria-hidden="true">🔗</div>
+        <div>
+          <strong>Pour aller plus loin</strong>
+          La matrice RACI peut être rapprochée des autres outils de gouvernance du projet :
+          organigramme des parties prenantes, plan de communication, registre des décisions
+          et dispositifs de suivi.
+        </div>
+      </div>
+    </section>
+
+    <section id="synthese" class="reveal">
+      <div class="section-head">
+        <div class="section-kicker">06 · Synthèse</div>
+        <h2>Points clés à retenir</h2>
+        <p>
+          Les parties prenantes constituent l’écosystème humain et organisationnel du projet.
+          Leur identification et la clarification de leurs rôles rendent le pilotage plus lisible.
+        </p>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-item">
+          <strong>01 · Identifier</strong>
+          <span>Repérer les acteurs qui influencent, financent, réalisent, utilisent ou sont concernés par le projet.</span>
+        </div>
+        <div class="summary-item">
+          <strong>02 · Clarifier</strong>
+          <span>Associer chaque acteur à des responsabilités et à un niveau d’autorité explicites.</span>
+        </div>
+        <div class="summary-item">
+          <strong>03 · Coordonner</strong>
+          <span>Adapter la consultation, la décision et l’information aux besoins du projet.</span>
+        </div>
+        <div class="summary-item">
+          <strong>04 · RACI</strong>
+          <span>Utiliser R, A, C et I pour rendre la répartition des responsabilités immédiatement lisible.</span>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout__icon" aria-hidden="true">💡</div>
+        <div>
+          <strong>Idée directrice</strong>
+          Un projet bien piloté ne repose pas seulement sur un planning : il repose aussi sur
+          une compréhension partagée de <strong>qui fait quoi, qui décide, qui est consulté et qui est informé</strong>.
+        </div>
+      </div>
+    </section>
+
+    <nav class="nav-lessons" aria-label="Navigation entre les leçons">
+      <a class="lesson-link" href="#" aria-label="Leçon précédente : Cycle de vie d’un projet">
+        <small>← LEÇON 02</small>
+        <strong>Cycle de vie d’un projet</strong>
+      </a>
+      <a class="lesson-link next" href="#" aria-label="Leçon suivante : Cahier des charges et objectifs du projet">
+        <small>LEÇON 04 →</small>
+        <strong>Cahier des charges et objectifs du projet</strong>
+      </a>
+    </nav>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Gestion de Projet · Module 1 · Leçon 03</span>
+      <a href="#top">Retour en haut ↑</a>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const progressBar = document.getElementById("progressBar");
+
+      function updateProgress() {
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - doc.clientHeight;
+        const progress = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+        progressBar.style.width = progress + "%";
+      }
+
+      document.addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+
+      document.querySelectorAll("[data-tabs]").forEach((tabs) => {
+        const buttons = [...tabs.querySelectorAll('[role="tab"]')];
+        const panels = [...tabs.querySelectorAll('[role="tabpanel"]')];
+
+        buttons.forEach((button, index) => {
+          button.addEventListener("click", () => {
+            buttons.forEach((b) => b.setAttribute("aria-selected", "false"));
+            panels.forEach((p) => p.classList.remove("is-active"));
+
+            button.setAttribute("aria-selected", "true");
+            const panel = document.getElementById(button.getAttribute("aria-controls"));
+            if (panel) panel.classList.add("is-active");
+          });
+
+          button.addEventListener("keydown", (event) => {
+            let targetIndex = null;
+            if (event.key === "ArrowRight") targetIndex = (index + 1) % buttons.length;
+            if (event.key === "ArrowLeft") targetIndex = (index - 1 + buttons.length) % buttons.length;
+            if (targetIndex !== null) {
+              event.preventDefault();
+              buttons[targetIndex].focus();
+              buttons[targetIndex].click();
+            }
+          });
+        });
+      });
+
+      document.querySelectorAll(".accordion button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const panel = button.nextElementSibling;
+          const expanded = button.getAttribute("aria-expanded") === "true";
+          button.setAttribute("aria-expanded", String(!expanded));
+          panel.style.maxHeight = expanded ? null : panel.scrollHeight + "px";
+          const symbol = button.querySelector("span:last-child");
+          if (symbol) symbol.textContent = expanded ? "+" : "−";
+        });
+      });
+
+      const reveals = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08 });
+        reveals.forEach((el) => observer.observe(el));
+      } else {
+        reveals.forEach((el) => el.classList.add("visible"));
+      }
+    })();
+  </script>
+</body>
+</html>

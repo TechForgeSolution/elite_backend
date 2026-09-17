@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 18 — Storytelling visuel : organiser images et sons autour d’une progression narrative.">
+<title>Leçon 18 — Storytelling visuel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231F6F54'/%3E%3Cpath d='M16 18h32v28H16zM22 24h20M22 31h14M22 38h18' stroke='white' stroke-width='4' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --color-bg:#FFFFFF;
+  --color-bg-alt:#F6F8F6;
+  --color-text:#0B0F0D;
+  --color-text-muted:#5A6560;
+  --color-accent:#1F6F54;
+  --color-accent-soft:#E7F2ED;
+  --color-border:#E3E8E5;
+  --color-accent-alt:#B3541E;
+  --shadow:0 12px 34px rgba(11,15,13,.07);
+  --radius:18px;
+  --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.7}
+a{color:inherit}
+button,a{outline-offset:4px}
+button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outline-offset:4px}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:4px;z-index:100;background:rgba(255,255,255,.96);border-bottom:1px solid var(--color-border);backdrop-filter:blur(10px)}
+.nav{max-width:var(--max);margin:auto;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 22px}
+.brand{display:flex;align-items:center;gap:12px;font-family:"Space Grotesk";font-weight:700;text-decoration:none}
+.brand-mark{width:36px;height:36px;border:1px solid var(--color-accent);display:grid;place-items:center;color:var(--color-accent);border-radius:10px}
+.brand small{display:block;color:var(--color-text-muted);font:500 11px "Roboto Mono";letter-spacing:.06em;text-transform:uppercase}
+.toc-btn{border:1px solid var(--color-border);background:white;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.hero-inner{max-width:var(--max);margin:auto;padding:78px 22px 64px;display:grid;grid-template-columns:1.35fr .65fr;gap:50px;align-items:center}
+.eyebrow{font:600 12px "Roboto Mono";letter-spacing:.1em;color:var(--color-accent);text-transform:uppercase}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.15}
+h1{font-size:clamp(38px,6vw,68px);letter-spacing:-.045em;margin:14px 0 18px}
+h2{font-size:clamp(28px,4vw,40px);margin:0 0 18px}
+h3{font-size:20px;margin:0 0 9px}
+.lead{font-size:19px;max-width:720px;color:#33403a}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}
+.badge{padding:7px 11px;border:1px solid var(--color-border);background:#fff;border-radius:999px;font-size:12px;font-weight:600}
+.badge.green{color:var(--color-accent);background:var(--color-accent-soft);border-color:#cde2d8}
+.hero-visual{background:#fff;border:1px solid var(--color-border);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+main{max-width:var(--max);margin:auto}
+.toc{margin:34px 22px 0;border:1px solid var(--color-border);border-radius:16px;background:#fff;overflow:hidden}
+.toc summary{cursor:pointer;padding:17px 20px;font-weight:700}
+.toc-grid{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--color-border)}
+.toc-grid a{padding:13px 20px;text-decoration:none;border-bottom:1px solid var(--color-border);font-size:14px}
+.toc-grid a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+section.lesson{padding:78px 22px;border-bottom:1px solid var(--color-border)}
+.section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:30px}
+.num{min-width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent);font:600 13px "Roboto Mono"}
+.prose{max-width:720px}
+.visual{margin:34px 0;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:20px;padding:18px;overflow:hidden}
+.visual figcaption{font-size:12px;color:var(--color-text-muted);margin:12px 4px 2px}
+svg{display:block;width:100%;height:auto}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.card{border:1px solid var(--color-border);border-radius:16px;padding:22px;background:#fff;transition:.2s transform,.2s box-shadow}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.icon{width:40px;height:40px;border-radius:11px;background:var(--color-accent-soft);color:var(--color-accent);display:grid;place-items:center;font-size:20px;margin-bottom:15px}
+.callout{margin:28px 0;padding:18px 20px;border-left:4px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 12px 12px 0}
+.callout strong{display:block;margin-bottom:4px}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:15px;margin:28px 0}
+table{border-collapse:collapse;width:100%;min-width:680px;background:#fff}
+th,td{padding:13px 15px;border-bottom:1px solid var(--color-border);text-align:left}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;background:var(--color-bg-alt)}
+tr:hover td{background:#fbfcfb}
+.mono{font-family:"Roboto Mono";font-variant-numeric:tabular-nums}
+.tabs{margin:28px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--color-border);gap:4px}
+.tab-buttons button{border:0;background:transparent;padding:12px 15px;cursor:pointer;font-weight:600;color:var(--color-text-muted)}
+.tab-buttons button[aria-selected=true]{color:var(--color-accent);border-bottom:2px solid var(--color-accent)}
+.tab-panel{display:none;padding:22px 2px}
+.tab-panel.active{display:block}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:30px 0}
+.step{position:relative;padding:18px 12px;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:14px;text-align:center}
+.step b{display:grid;place-items:center;margin:0 auto 10px;width:30px;height:30px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 12px "Roboto Mono"}
+.step span{font-size:12px;font-weight:600}
+.accordion{border-top:1px solid var(--color-border);margin-top:25px}
+.acc{border-bottom:1px solid var(--color-border)}
+.acc button{width:100%;text-align:left;padding:18px 0;border:0;background:none;font-weight:700;cursor:pointer;display:flex;justify-content:space-between}
+.acc-content{display:none;padding:0 0 18px;color:var(--color-text-muted)}
+.acc.open .acc-content{display:block}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.key{padding:20px;border:1px solid var(--color-border);border-radius:15px;background:var(--color-bg-alt)}
+.key b{color:var(--color-accent)}
+.bottom-nav{max-width:var(--max);margin:auto;padding:34px 22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.bottom-nav a{padding:17px;border:1px solid var(--color-border);border-radius:14px;text-decoration:none}
+.bottom-nav a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.bottom-nav small{display:block;color:var(--color-text-muted);font-size:11px;text-transform:uppercase;margin-bottom:5px}
+footer{border-top:1px solid var(--color-border);padding:30px 22px;text-align:center;color:var(--color-text-muted);font-size:13px}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--color-border);background:#fff;border-radius:50%;cursor:pointer;box-shadow:var(--shadow);display:none}
+.top.show{display:block}
+.reveal{opacity:0;transform:translateY(18px);transition:.6s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){
+ .hero-inner{grid-template-columns:1fr}
+ .grid-3{grid-template-columns:1fr}
+ .story-grid,.key-grid{grid-template-columns:1fr}
+ .steps{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:520px){
+ .nav{padding:0 15px}.brand span{display:none}
+ .hero-inner{padding:55px 17px 45px}
+ section.lesson{padding:58px 17px}
+ .toc{margin-left:17px;margin-right:17px}
+ .toc-grid{grid-template-columns:1fr}
+ .steps{grid-template-columns:repeat(2,1fr)}
+ .bottom-nav{grid-template-columns:1fr;padding:25px 17px}
+ h1{font-size:40px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .reveal{opacity:1;transform:none;transition:none}
+ .card{transition:none}
+}
+</style>
+</head>
+
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top">
+      <span class="brand-mark">18</span>
+      <span>FORMATION AUDIOVISUELLE<small>Montage vidéo · Narration & livraison</small></span>
+    </a>
+    <button class="toc-btn" id="tocToggle" aria-expanded="false" aria-controls="toc">☰ Sommaire</button>
+  </nav>
+</header>
+
+<div id="top"></div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow">Module 4 · Montage vidéo</div>
+      <h1>Storytelling<br>visuel</h1>
+      <p class="lead">Organiser les images et les sons autour d’une progression narrative claire, afin que le spectateur comprenne, ressente et suive naturellement l’histoire.</p>
+      <div class="badges">
+        <span class="badge green">LEÇON 18</span>
+        <span class="badge">15 min</span>
+        <span class="badge">Débutant → Avancé</span>
+        <span class="badge">Narration</span>
+      </div>
+    </div>
+
+    <div class="hero-visual" role="img" aria-label="Schéma illustrant la progression d'une histoire de l'intention vers l'émotion">
+      <svg viewBox="0 0 520 350" aria-hidden="true">
+        <rect x="18" y="18" width="484" height="314" rx="18" fill="#F6F8F6" stroke="#E3E8E5"/>
+        <path d="M55 270 C125 245 135 205 205 205 S285 225 335 155 S425 115 466 65" fill="none" stroke="#1F6F54" stroke-width="5"/>
+        <circle cx="55" cy="270" r="11" fill="#1F6F54"/><circle cx="205" cy="205" r="11" fill="#1F6F54"/>
+        <circle cx="335" cy="155" r="11" fill="#1F6F54"/><circle cx="466" cy="65" r="11" fill="#1F6F54"/>
+        <text x="45" y="302" font-family="Inter" font-size="14" fill="#0B0F0D">Intention</text>
+        <text x="178" y="235" font-family="Inter" font-size="14" fill="#0B0F0D">Conflit</text>
+        <text x="306" y="185" font-family="Inter" font-size="14" fill="#0B0F0D">Émotion</text>
+        <text x="416" y="48" font-family="Inter" font-size="14" fill="#0B0F0D">Résolution</text>
+        <g fill="#1F6F54">
+          <rect x="60" y="76" width="74" height="45" rx="7"/><rect x="143" y="76" width="74" height="45" rx="7"/>
+          <rect x="226" y="76" width="74" height="45" rx="7"/><rect x="309" y="76" width="74" height="45" rx="7"/>
+        </g>
+        <g fill="#E7F2ED">
+          <rect x="69" y="84" width="56" height="29" rx="4"/><rect x="152" y="84" width="56" height="29" rx="4"/>
+          <rect x="235" y="84" width="56" height="29" rx="4"/><rect x="318" y="84" width="56" height="29" rx="4"/>
+        </g>
+        <text x="65" y="63" font-family="Roboto Mono" font-size="11" fill="#5A6560">IMAGES + SON + RYTHME</text>
+      </svg>
+      <figcaption>Une narration visuelle transforme une succession de plans en parcours émotionnel.</figcaption>
+    </div>
+  </div>
+</section>
+
+<main>
+<details class="toc" id="toc">
+  <summary>Sommaire de la leçon</summary>
+  <div class="toc-grid">
+    <a href="#intention">01 · Intention</a>
+    <a href="#structure">02 · Structure</a>
+    <a href="#personnage">03 · Personnage</a>
+    <a href="#conflit">04 · Conflit</a>
+    <a href="#pointdevue">05 · Point de vue</a>
+    <a href="#emotion">06 · Émotion</a>
+    <a href="#montage">07 · Construire avec le montage</a>
+    <a href="#synthese">08 · Points clés à retenir</a>
+  </div>
+</details>
+
+<section class="lesson reveal" id="intention">
+  <div class="section-head"><div class="num">01</div><div><div class="eyebrow">Donner un sens</div><h2>L’intention</h2></div></div>
+  <div class="prose">
+    <p>L’<strong>intention</strong> est ce que le film cherche à faire comprendre ou ressentir. Avant de choisir une transition ou un effet, le monteur doit savoir pourquoi la scène existe.</p>
+    <p>Une bonne intention peut être informative, émotionnelle, persuasive ou immersive. Elle devient le filtre qui permet de sélectionner les plans, les sons et le rythme.</p>
+  </div>
+
+  <figure class="visual">
+    <svg viewBox="0 0 900 270" role="img" aria-label="Chaîne intention, choix des plans, son, rythme et effet sur le spectateur">
+      <rect x="35" y="80" width="145" height="100" rx="14" fill="#fff" stroke="#1F6F54" stroke-width="2"/>
+      <rect x="220" y="80" width="145" height="100" rx="14" fill="#fff" stroke="#E3E8E5"/>
+      <rect x="405" y="80" width="145" height="100" rx="14" fill="#fff" stroke="#E3E8E5"/>
+      <rect x="590" y="80" width="145" height="100" rx="14" fill="#fff" stroke="#E3E8E5"/>
+      <rect x="775" y="80" width="90" height="100" rx="14" fill="#E7F2ED" stroke="#1F6F54"/>
+      <g font-family="Inter" text-anchor="middle" fill="#0B0F0D" font-size="16">
+        <text x="107" y="118">INTENTION</text><text x="107" y="145" font-size="12" fill="#5A6560">Pourquoi ?</text>
+        <text x="292" y="118">PLANS</text><text x="292" y="145" font-size="12" fill="#5A6560">Quoi montrer ?</text>
+        <text x="477" y="118">SON</text><text x="477" y="145" font-size="12" fill="#5A6560">Que faire entendre ?</text>
+        <text x="662" y="118">RYTHME</text><text x="662" y="145" font-size="12" fill="#5A6560">Quand couper ?</text>
+        <text x="820" y="118">EFFET</text><text x="820" y="145" font-size="12">Ressenti</text>
+      </g>
+      <g stroke="#1F6F54" stroke-width="2" fill="none">
+        <path d="M180 130h35m-7-7 7 7-7 7M365 130h35m-7-7 7 7-7 7M550 130h35m-7-7 7 7-7 7M735 130h35m-7-7 7 7-7 7"/>
+      </g>
+    </svg>
+    <figcaption>Le storytelling commence avant le montage : l’intention guide chaque décision.</figcaption>
+  </figure>
+
+  <div class="callout"><strong>💡 À retenir</strong>Un plan n’est pas seulement « beau ». Il doit servir l’intention de la scène.</div>
+</section>
+
+<section class="lesson reveal" id="structure">
+  <div class="section-head"><div class="num">02</div><div><div class="eyebrow">Donner une progression</div><h2>La structure</h2></div></div>
+  <div class="prose">
+    <p>La structure organise les événements dans un ordre qui facilite la compréhension. En montage, elle peut être chronologique, parallèle, progressive ou basée sur une révélation.</p>
+  </div>
+
+  <div class="steps" aria-label="Structure narrative en six étapes">
+    <div class="step"><b>01</b><span>Situation</span></div>
+    <div class="step"><b>02</b><span>Objectif</span></div>
+    <div class="step"><b>03</b><span>Obstacle</span></div>
+    <div class="step"><b>04</b><span>Montée</span></div>
+    <div class="step"><b>05</b><span>Climax</span></div>
+    <div class="step"><b>06</b><span>Résolution</span></div>
+  </div>
+
+  <figure class="visual">
+    <svg viewBox="0 0 900 330" role="img" aria-label="Courbe de progression narrative avec six étapes">
+      <line x1="65" y1="270" x2="850" y2="270" stroke="#E3E8E5" stroke-width="2"/>
+      <path d="M65 240 L200 220 L330 185 L475 125 L610 55 L735 120 L850 90" fill="none" stroke="#1F6F54" stroke-width="5"/>
+      <g fill="#1F6F54">
+        <circle cx="65" cy="240" r="8"/><circle cx="200" cy="220" r="8"/><circle cx="330" cy="185" r="8"/>
+        <circle cx="475" cy="125" r="8"/><circle cx="610" cy="55" r="10"/><circle cx="735" cy="120" r="8"/><circle cx="850" cy="90" r="8"/>
+      </g>
+      <g font-family="Inter" font-size="13" fill="#0B0F0D" text-anchor="middle">
+        <text x="65" y="300">Situation</text><text x="200" y="300">Objectif</text><text x="330" y="300">Obstacle</text>
+        <text x="475" y="300">Montée</text><text x="610" y="35">CLIMAX</text><text x="735" y="150">Résolution</text><text x="850" y="120">Fin</text>
+      </g>
+    </svg>
+    <figcaption>Le rythme visuel peut suivre une courbe : plus l’enjeu augmente, plus les décisions de montage peuvent devenir resserrées.</figcaption>
+  </figure>
+
+  <div class="story-grid">
+    <div class="card"><div class="icon">A</div><h3>Chronologique</h3><p>Les événements sont montrés dans l’ordre où ils se produisent. Idéal pour expliquer un processus ou raconter une expérience.</p></div>
+    <div class="card"><div class="icon">B</div><h3>Parallèle</h3><p>Deux actions sont montées en alternance pour créer un lien, une comparaison ou une tension.</p></div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="personnage">
+  <div class="section-head"><div class="num">03</div><div><div class="eyebrow">Créer un point d’ancrage</div><h2>Le personnage</h2></div></div>
+  <div class="prose">
+    <p>Le personnage donne au spectateur une raison de suivre l’histoire. Il peut s’agir d’une personne, d’un groupe, d’une marque ou même d’un lieu.</p>
+    <p>Le montage doit rendre son objectif lisible : <strong>qui est-il ? que veut-il ? que fait-il ? que risque-t-il ?</strong></p>
+  </div>
+
+  <figure class="visual">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Construction du personnage : identité, objectif, action et transformation">
+      <g font-family="Inter" text-anchor="middle">
+        <circle cx="150" cy="145" r="78" fill="#E7F2ED" stroke="#1F6F54" stroke-width="2"/>
+        <circle cx="375" cy="145" r="78" fill="#fff" stroke="#E3E8E5" stroke-width="2"/>
+        <circle cx="600" cy="145" r="78" fill="#fff" stroke="#E3E8E5" stroke-width="2"/>
+        <circle cx="825" cy="145" r="78" fill="#E7F2ED" stroke="#1F6F54" stroke-width="2"/>
+        <g fill="#0B0F0D" font-size="17"><text x="150" y="140">IDENTITÉ</text><text x="375" y="140">OBJECTIF</text><text x="600" y="140">ACTION</text><text x="825" y="140">TRANSFORMATION</text></g>
+        <g fill="#5A6560" font-size="12"><text x="150" y="165">Qui ?</text><text x="375" y="165">Que veut-il ?</text><text x="600" y="165">Que fait-il ?</text><text x="825" y="165">Qu’est-ce qui change ?</text></g>
+      </g>
+      <g stroke="#1F6F54" stroke-width="2">
+        <path d="M228 145h68m-8-7 8 7-8 7M453 145h68m-8-7 8 7-8 7M678 145h68m-8-7 8 7-8 7" fill="none"/>
+      </g>
+    </svg>
+    <figcaption>Le personnage devient le fil conducteur qui relie les plans et donne une direction à la scène.</figcaption>
+  </figure>
+</section>
+
+<section class="lesson reveal" id="conflit">
+  <div class="section-head"><div class="num">04</div><div><div class="eyebrow">Créer de l’enjeu</div><h2>Le conflit</h2></div></div>
+  <div class="prose">
+    <p>Sans obstacle, une histoire peut sembler plate. Le conflit n’est pas forcément une dispute : c’est tout ce qui empêche le personnage d’atteindre son objectif.</p>
+  </div>
+
+  <div class="grid-3">
+    <div class="card"><div class="icon">↔</div><h3>Conflit externe</h3><p>Le personnage doit affronter une personne, un environnement, une contrainte ou un événement.</p></div>
+    <div class="card"><div class="icon">◎</div><h3>Conflit interne</h3><p>Le problème se situe dans le doute, la peur, l’hésitation ou le choix du personnage.</p></div>
+    <div class="card"><div class="icon">!</div><h3>Contrainte</h3><p>Un délai, un manque de ressources ou une règle augmente l’enjeu et accélère la progression.</p></div>
+  </div>
+
+  <figure class="visual">
+    <svg viewBox="0 0 900 250" role="img" aria-label="Schéma objectif obstacle tension action résolution">
+      <g font-family="Inter" text-anchor="middle">
+        <rect x="35" y="75" width="145" height="100" rx="14" fill="#E7F2ED" stroke="#1F6F54"/>
+        <rect x="210" y="75" width="145" height="100" rx="14" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="385" y="75" width="145" height="100" rx="14" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="560" y="75" width="145" height="100" rx="14" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="735" y="75" width="130" height="100" rx="14" fill="#E7F2ED" stroke="#1F6F54"/>
+        <g fill="#0B0F0D" font-size="16"><text x="107" y="115">OBJECTIF</text><text x="282" y="115">OBSTACLE</text><text x="457" y="115">TENSION</text><text x="632" y="115">ACTION</text><text x="800" y="115">ISSUE</text></g>
+        <g fill="#5A6560" font-size="12"><text x="107" y="143">Je veux…</text><text x="282" y="143">Mais…</text><text x="457" y="143">Que va-t-il se passer ?</text><text x="632" y="143">Il agit</text><text x="800" y="143">Résultat</text></g>
+      </g>
+    </svg>
+    <figcaption>Le montage peut accentuer la tension en rapprochant progressivement les coupes et les événements importants.</figcaption>
+  </figure>
+</section>
+
+<section class="lesson reveal" id="pointdevue">
+  <div class="section-head"><div class="num">05</div><div><div class="eyebrow">Choisir ce que le public sait</div><h2>Le point de vue</h2></div></div>
+  <div class="prose">
+    <p>Le point de vue détermine la quantité d’informations donnée au spectateur et la manière dont il vit la scène.</p>
+  </div>
+
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Types de point de vue">
+      <button role="tab" aria-selected="true" aria-controls="tab-subjectif" id="btn-subjectif">Subjectif</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-observateur" id="btn-observateur">Observateur</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-omniscient" id="btn-omniscient">Omniscient</button>
+    </div>
+    <div class="tab-panel active" id="tab-subjectif" role="tabpanel" aria-labelledby="btn-subjectif">
+      <h3>Le spectateur vit la scène avec le personnage</h3>
+      <p>Caméra proche, regard, respiration, son subjectif : les choix de montage peuvent réduire les informations pour augmenter l’immersion.</p>
+    </div>
+    <div class="tab-panel" id="tab-observateur" role="tabpanel" aria-labelledby="btn-observateur">
+      <h3>Le spectateur regarde la scène</h3>
+      <p>Le montage conserve davantage de distance. Les plans servent surtout à comprendre les actions et les relations spatiales.</p>
+    </div>
+    <div class="tab-panel" id="tab-omniscient" role="tabpanel" aria-labelledby="btn-omniscient">
+      <h3>Le spectateur sait plus que le personnage</h3>
+      <p>Le montage peut montrer une information cachée au personnage. Cela crée anticipation, suspense ou ironie dramatique.</p>
+    </div>
+  </div>
+
+  <figure class="visual">
+    <svg viewBox="0 0 900 270" role="img" aria-label="Comparaison des informations disponibles selon le point de vue">
+      <line x1="80" y1="210" x2="820" y2="210" stroke="#E3E8E5" stroke-width="2"/>
+      <g font-family="Inter">
+        <rect x="90" y="120" width="180" height="90" rx="14" fill="#E7F2ED" stroke="#1F6F54"/>
+        <rect x="360" y="85" width="180" height="125" rx="14" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="630" y="45" width="180" height="165" rx="14" fill="#E7F2ED" stroke="#1F6F54"/>
+        <text x="180" y="153" text-anchor="middle" font-size="17">Subjectif</text>
+        <text x="450" y="120" text-anchor="middle" font-size="17">Observateur</text>
+        <text x="720" y="82" text-anchor="middle" font-size="17">Omniscient</text>
+        <text x="180" y="180" text-anchor="middle" font-size="12" fill="#5A6560">peu d'informations</text>
+        <text x="450" y="153" text-anchor="middle" font-size="12" fill="#5A6560">informations visibles</text>
+        <text x="720" y="115" text-anchor="middle" font-size="12" fill="#5A6560">beaucoup d'informations</text>
+      </g>
+    </svg>
+    <figcaption>Modifier le point de vue modifie directement l’expérience du spectateur.</figcaption>
+  </figure>
+</section>
+
+<section class="lesson reveal" id="emotion">
+  <div class="section-head"><div class="num">06</div><div><div class="eyebrow">Faire ressentir</div><h2>L’émotion</h2></div></div>
+  <div class="prose">
+    <p>L’émotion naît rarement d’un seul effet. Elle résulte de la combinaison entre <strong>image, durée du plan, mouvement, silence, musique, bruitage et performance</strong>.</p>
+  </div>
+
+  <figure class="visual">
+    <svg viewBox="0 0 900 330" role="img" aria-label="Les composantes de l'émotion au montage">
+      <circle cx="450" cy="165" r="75" fill="#E7F2ED" stroke="#1F6F54" stroke-width="3"/>
+      <text x="450" y="158" text-anchor="middle" font-family="Space Grotesk" font-size="22" font-weight="700">ÉMOTION</text>
+      <text x="450" y="182" text-anchor="middle" font-family="Inter" font-size="12" fill="#5A6560">effet global</text>
+      <g font-family="Inter" font-size="15" text-anchor="middle" fill="#0B0F0D">
+        <rect x="75" y="45" width="145" height="60" rx="12" fill="#fff" stroke="#E3E8E5"/><text x="147" y="80">IMAGE</text>
+        <rect x="280" y="15" width="145" height="60" rx="12" fill="#fff" stroke="#E3E8E5"/><text x="352" y="50">RYTHME</text>
+        <rect x="475" y="15" width="145" height="60" rx="12" fill="#fff" stroke="#E3E8E5"/><text x="547" y="50">MUSIQUE</text>
+        <rect x="680" y="45" width="145" height="60" rx="12" fill="#fff" stroke="#E3E8E5"/><text x="752" y="80">BRUITAGE</text>
+        <rect x="180" y="240" width="145" height="60" rx="12" fill="#fff" stroke="#E3E8E5"/><text x="252" y="275">SILENCE</text>
+        <rect x="575" y="240" width="145" height="60" rx="12" fill="#fff" stroke="#E3E8E5"/><text x="647" y="275">PERFORMANCE</text>
+      </g>
+      <g stroke="#1F6F54" stroke-width="2">
+        <path d="M210 105l190 35M350 75l70 60M550 75l-70 60M690 105l-190 35M325 240l90-55M575 240l-90-55" fill="none"/>
+      </g>
+    </svg>
+    <figcaption>L’émotion est une construction collective : chaque élément audiovisuel participe au même effet.</figcaption>
+  </figure>
+
+  <div class="callout"><strong>⚠️ Attention</strong>Ajouter beaucoup de musique, d’effets ou de transitions ne crée pas automatiquement de l’émotion. La cohérence entre les éléments est plus importante que leur quantité.</div>
+</section>
+
+<section class="lesson reveal" id="montage">
+  <div class="section-head"><div class="num">07</div><div><div class="eyebrow">Passer de l’idée à la timeline</div><h2>Construire avec le montage</h2></div></div>
+  <div class="prose">
+    <p>Une fois l’histoire comprise, le monteur traduit la narration dans la timeline. Il organise les plans, choisit les points de coupe et synchronise le son pour accompagner la progression.</p>
+  </div>
+
+  <figure class="visual">
+    <svg viewBox="0 0 900 360" role="img" aria-label="Timeline audiovisuelle montrant images, dialogues, musique et bruitages">
+      <g font-family="Roboto Mono" font-size="12">
+        <text x="25" y="70" fill="#5A6560">IMAGE</text><text x="25" y="145" fill="#5A6560">DIALOGUE</text>
+        <text x="25" y="220" fill="#5A6560">MUSIQUE</text><text x="25" y="295" fill="#5A6560">SFX</text>
+      </g>
+      <g stroke="#E3E8E5"><line x1="110" y1="35" x2="870" y2="35"/><line x1="110" y1="105" x2="870" y2="105"/><line x1="110" y1="180" x2="870" y2="180"/><line x1="110" y1="255" x2="870" y2="255"/><line x1="110" y1="330" x2="870" y2="330"/></g>
+      <g>
+        <rect x="120" y="48" width="135" height="42" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+        <rect x="265" y="48" width="90" height="42" rx="7" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="365" y="48" width="175" height="42" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+        <rect x="550" y="48" width="130" height="42" rx="7" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="690" y="48" width="160" height="42" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+        <rect x="145" y="118" width="230" height="42" rx="7" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="390" y="118" width="180" height="42" rx="7" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="180" y="193" width="610" height="42" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+        <rect x="300" y="268" width="65" height="42" rx="7" fill="#fff" stroke="#E3E8E5"/>
+        <rect x="545" y="268" width="95" height="42" rx="7" fill="#fff" stroke="#E3E8E5"/>
+      </g>
+      <g font-family="Inter" font-size="11" fill="#0B0F0D">
+        <text x="137" y="73">PLAN 01</text><text x="282" y="73">PLAN 02</text><text x="382" y="73">PLAN 03</text><text x="567" y="73">PLAN 04</text><text x="707" y="73">PLAN 05</text>
+        <text x="160" y="143">phrase / dialogue</text><text x="410" y="143">phrase / dialogue</text>
+        <text x="430" y="218">musique : montée progressive</text><text x="315" y="293">impact</text><text x="570" y="293">respiration</text>
+      </g>
+      <line x1="365" y1="35" x2="365" y2="330" stroke="#1F6F54" stroke-width="2" stroke-dasharray="5 6"/>
+    </svg>
+    <figcaption>La timeline devient la représentation concrète de la narration : les couches audiovisuelles doivent raconter la même histoire.</figcaption>
+  </figure>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Élément</th><th scope="col">Question du monteur</th><th scope="col">Effet recherché</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Image</th><td>Quel plan apporte l’information utile ?</td><td>Compréhension</td></tr>
+        <tr><th scope="row">Coupe</th><td>À quel moment changer de plan ?</td><td>Rythme / attention</td></tr>
+        <tr><th scope="row">Dialogue</th><td>Quelle parole porte l’idée principale ?</td><td>Information / caractère</td></tr>
+        <tr><th scope="row">Musique</th><td>Quelle direction émotionnelle donner ?</td><td>Ambiance / tension</td></tr>
+        <tr><th scope="row">Silence</th><td>Où laisser respirer la scène ?</td><td>Impact / attente</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="accordion">
+    <div class="acc">
+      <button aria-expanded="false">Comment savoir si une coupe fonctionne ? <span>＋</span></button>
+      <div class="acc-content">La coupe fonctionne si elle conserve la compréhension de l’action et sert le rythme. Si le spectateur remarque surtout la coupe plutôt que l’histoire, vérifiez si elle est réellement nécessaire.</div>
+    </div>
+    <div class="acc">
+      <button aria-expanded="false">Pourquoi le silence peut-il être puissant ? <span>＋</span></button>
+      <div class="acc-content">Le silence crée un contraste. Après une séquence sonore dense, quelques secondes sans musique peuvent attirer l’attention sur un regard, une parole ou une révélation.</div>
+    </div>
+    <div class="acc">
+      <button aria-expanded="false">Faut-il toujours suivre la musique ? <span>＋</span></button>
+      <div class="acc-content">Non. Une coupe peut suivre un beat, mais elle peut aussi volontairement le contrarier pour créer une rupture, une surprise ou une sensation d’inconfort.</div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="synthese">
+  <div class="section-head"><div class="num">08</div><div><div class="eyebrow">Synthèse</div><h2>Points clés à retenir</h2></div></div>
+  <div class="key-grid">
+    <div class="key"><b>01 · Intention</b><br>Définir ce que le spectateur doit comprendre ou ressentir.</div>
+    <div class="key"><b>02 · Structure</b><br>Organiser les événements pour créer une progression lisible.</div>
+    <div class="key"><b>03 · Personnage</b><br>Donner un objectif et un fil conducteur à l’histoire.</div>
+    <div class="key"><b>04 · Conflit</b><br>Introduire un obstacle qui crée de l’enjeu et de la tension.</div>
+    <div class="key"><b>05 · Point de vue</b><br>Choisir ce que le spectateur sait et comment il vit la scène.</div>
+    <div class="key"><b>06 · Émotion</b><br>Combiner image, rythme et son pour produire un effet cohérent.</div>
+  </div>
+  <div class="callout"><strong>💡 Idée centrale</strong>Le storytelling visuel consiste à faire en sorte que chaque plan, chaque coupe et chaque élément sonore contribue à la même progression narrative.</div>
+</section>
+</main>
+
+<nav class="bottom-nav" aria-label="Navigation entre les leçons">
+  <a href="lecon-17-after-effects.html"><small>← Leçon précédente</small>Leçon 17 · After Effects</a>
+  <a href="#top"><small>↑ Sommaire</small>Retour au début</a>
+  <a href="lecon-19-export-formats.html"><small>Leçon suivante →</small>Leçon 19 · Export et formats</a>
+</nav>
+
+<footer>Formation audiovisuelle · Module 4 — Montage vidéo, narration et livraison</footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('topBtn');
+function updateScroll(){
+  const d=document.documentElement;
+  const p=d.scrollTop/(d.scrollHeight-d.clientHeight)*100;
+  progress.style.width=Math.min(100,Math.max(0,p))+'%';
+  topBtn.classList.toggle('show',d.scrollTop>500);
+}
+window.addEventListener('scroll',updateScroll,{passive:true});
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  const buttons=group.querySelectorAll('[role=tab]');
+  const panels=group.querySelectorAll('[role=tabpanel]');
+  buttons.forEach((btn,i)=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.setAttribute('aria-selected','true');
+      panels[i].classList.add('active');
+    });
+  });
+});
+
+document.querySelectorAll('.acc button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.parentElement;
+    const open=item.classList.toggle('open');
+    btn.setAttribute('aria-expanded',String(open));
+    btn.querySelector('span').textContent=open?'−':'＋';
+  });
+});
+
+document.getElementById('tocToggle').addEventListener('click',()=>{
+  const toc=document.getElementById('toc');
+  const open=!toc.open;
+  toc.open=open;
+  document.getElementById('tocToggle').setAttribute('aria-expanded',String(open));
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+updateScroll();
+</script>
+</body>
+</html>

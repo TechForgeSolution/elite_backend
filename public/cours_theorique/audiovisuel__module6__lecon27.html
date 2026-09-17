@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 27 — Motion design : timing, easing, transitions, typographie animée, storyboard et rythme.">
+<title>Leçon 27 — Motion Design | Graphisme 2D/3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#fff;--color-bg-alt:#f6f8f6;--color-text:#0b0f0d;
+  --color-text-muted:#5a6560;--color-accent:#1f6f54;--color-accent-soft:#e7f2ed;
+  --color-border:#e3e8e5;--color-accent-alt:#b3541e;
+  --shadow:0 12px 32px rgba(11,15,13,.07);--radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+::selection{background:var(--color-accent-soft);color:var(--color-text)}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;background:var(--color-accent)}
+.site-header{position:sticky;top:4px;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--color-border)}
+.header-inner{max-width:1180px;margin:auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.03em}
+.brand small{display:block;font:500 10px "IBM Plex Mono";letter-spacing:.1em;color:var(--color-text-muted);text-transform:uppercase}
+.nav{display:flex;gap:18px;align-items:center;font-size:13px}
+.nav a{color:var(--color-text-muted)}
+.nav a:hover{color:var(--color-accent)}
+.menu-btn{display:none;border:1px solid var(--color-border);background:#fff;border-radius:9px;padding:7px 10px}
+.container{width:min(1180px,calc(100% - 40px));margin:auto}
+.hero{padding:72px 0 52px;border-bottom:1px solid var(--color-border)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;background:var(--color-accent-soft);color:var(--color-accent);border-radius:999px;font:600 11px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.06em}
+.hero h1{font:700 clamp(38px,6vw,72px)/1.02 "Space Grotesk";letter-spacing:-.055em;max-width:900px;margin:20px 0 18px}
+.hero p{max-width:720px;color:var(--color-text-muted);font-size:18px;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+.meta span{border:1px solid var(--color-border);border-radius:999px;padding:6px 11px;font-size:12px;background:#fff}
+.toc{margin:30px 0 0;padding:22px;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius)}
+.toc strong{font-family:"Space Grotesk"}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 24px;margin-top:12px}
+.toc a{font-size:13px;color:var(--color-text-muted)}
+main{padding:20px 0 60px}
+section.lesson-section{padding:64px 0;border-bottom:1px solid var(--color-border)}
+.section-head{max-width:760px;margin-bottom:28px}
+.kicker{font:600 11px "IBM Plex Mono";color:var(--color-accent);text-transform:uppercase;letter-spacing:.12em}
+h2{font:700 clamp(28px,4vw,44px)/1.15 "Space Grotesk";letter-spacing:-.04em;margin:7px 0 12px}
+h3{font:700 20px "Space Grotesk";margin:26px 0 8px}
+p{max-width:720px}
+.lead{font-size:17px;color:var(--color-text-muted)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border:1px solid var(--color-border);border-radius:var(--radius);padding:22px;background:#fff;transition:.2s transform,.2s box-shadow}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.icon{width:38px;height:38px;display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent);border-radius:11px;font-weight:700}
+.card h3{margin:13px 0 6px;font-size:17px}
+.card p{font-size:14px;color:var(--color-text-muted);margin:0}
+.callout{margin:25px 0;padding:18px 20px;border-left:4px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 13px 13px 0}
+.callout.warn{border-left-color:var(--color-accent-alt);background:#fbf1eb}
+.callout b{font-family:"Space Grotesk"}
+.visual{border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;overflow:hidden;margin:28px 0;box-shadow:0 8px 25px rgba(11,15,13,.035)}
+.visual figcaption{padding:12px 18px;border-top:1px solid var(--color-border);font-size:12px;color:var(--color-text-muted)}
+svg{display:block;width:100%;height:auto}
+.svg-label{font:600 13px Inter,sans-serif;fill:var(--color-text)}
+.svg-muted{font:400 11px Inter,sans-serif;fill:var(--color-text-muted)}
+.svg-mono{font:500 12px "IBM Plex Mono";fill:var(--color-accent)}
+.tabs{margin:25px 0}
+.tab-buttons{display:flex;gap:7px;border-bottom:1px solid var(--color-border);flex-wrap:wrap}
+.tab-buttons button{border:0;background:transparent;padding:11px 15px;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent}
+.tab-buttons button[aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent);font-weight:700}
+.tab-panel{padding:20px;background:var(--color-bg-alt);border-radius:0 0 14px 14px}
+.hidden{display:none}
+table{width:100%;border-collapse:collapse;font-size:13px}
+.table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:14px;margin:24px 0}
+th,td{padding:12px 14px;border-bottom:1px solid var(--color-border);text-align:left;white-space:nowrap}
+th{background:var(--color-bg-alt);font-family:"Space Grotesk"}
+td.num{font-family:"IBM Plex Mono";text-align:right}
+tr:last-child td{border-bottom:0}
+.highlight{color:var(--color-accent);font-weight:700}
+.accordion{border:1px solid var(--color-border);border-radius:14px;overflow:hidden;margin:20px 0}
+.acc-item+ .acc-item{border-top:1px solid var(--color-border)}
+.acc-btn{width:100%;padding:16px 18px;border:0;background:#fff;text-align:left;cursor:pointer;display:flex;justify-content:space-between;font-weight:600}
+.acc-content{display:none;padding:0 18px 17px;color:var(--color-text-muted);font-size:14px}
+.acc-item.open .acc-content{display:block}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:30px 0}
+.step{position:relative;padding:18px 14px;background:var(--color-bg-alt);border-radius:14px;border:1px solid var(--color-border)}
+.step strong{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 12px "IBM Plex Mono";margin-bottom:12px}
+.step b{font-size:13px}
+.step p{font-size:12px;color:var(--color-text-muted);margin:5px 0 0;line-height:1.5}
+.timeline{position:relative;padding:20px 0}
+.timeline:before{content:"";position:absolute;left:28px;top:25px;bottom:25px;width:2px;background:var(--color-border)}
+.timeline-item{position:relative;padding:0 0 25px 65px}
+.dot{position:absolute;left:18px;top:4px;width:21px;height:21px;border-radius:50%;background:var(--color-accent);border:5px solid var(--color-accent-soft)}
+.mono{font-family:"IBM Plex Mono";font-variant-numeric:tabular-nums}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{padding:18px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg-alt)}
+.key b{display:block;font-family:"Space Grotesk";margin-bottom:5px}
+.key span{font-size:13px;color:var(--color-text-muted)}
+.lesson-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:42px 0}
+.nav-card{border:1px solid var(--color-border);border-radius:15px;padding:16px;color:var(--color-text)}
+.nav-card:hover{border-color:var(--color-accent);text-decoration:none}
+.nav-card small{display:block;color:var(--color-text-muted);font:500 10px "IBM Plex Mono";text-transform:uppercase}
+.nav-card b{font-family:"Space Grotesk"}
+footer{border-top:1px solid var(--color-border);padding:30px 0;color:var(--color-text-muted);font-size:12px}
+.top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);box-shadow:var(--shadow);cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){
+ .grid-3,.key-grid{grid-template-columns:repeat(2,1fr)}
+ .stepper{grid-template-columns:repeat(2,1fr)}
+ .toc-grid{grid-template-columns:1fr 1fr}
+ .nav{display:none}.menu-btn{display:block}
+ .nav.open{display:flex;position:absolute;left:20px;right:20px;top:58px;background:#fff;border:1px solid var(--color-border);padding:15px;border-radius:12px;flex-direction:column;align-items:flex-start}
+}
+@media(max-width:650px){
+ .container{width:min(100% - 28px,1180px)}
+ .hero{padding:50px 0 35px}
+ .grid-2,.grid-3,.key-grid,.lesson-nav{grid-template-columns:1fr}
+ .stepper{grid-template-columns:1fr}
+ .toc-grid{grid-template-columns:1fr}
+ section.lesson-section{padding:45px 0}
+ .header-inner{padding:11px 14px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#top" aria-label="Retour au début">GRAPHISME 2D/3D<small>Création & animation</small></a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">Menu</button>
+    <nav class="nav" id="mainNav" aria-label="Navigation de la leçon">
+      <a href="#notions">Notions</a>
+      <a href="#timing">Timing</a>
+      <a href="#easing">Easing</a>
+      <a href="#typo">Typographie</a>
+      <a href="#storyboard">Storyboard</a>
+      <a href="#rythme">Rythme</a>
+      <a href="#essentiel">Essentiel</a>
+    </nav>
+  </div>
+</header>
+
+<div id="top"></div>
+<section class="hero">
+<div class="container">
+  <span class="eyebrow">Module 5 · Graphisme 2D/3D</span>
+  <h1>Leçon 27 — Motion Design</h1>
+  <p>Animer des formes, des textes et des données pour communiquer avec clarté, intention et rythme.</p>
+  <div class="meta">
+    <span>Débutant / intermédiaire</span><span>15 min</span><span>Animation & communication visuelle</span>
+  </div>
+
+  <nav class="toc" aria-label="Sommaire">
+    <strong>Sommaire</strong>
+    <div class="toc-grid">
+      <a href="#notions">01 — Comprendre le motion design</a>
+      <a href="#timing">02 — Timing</a>
+      <a href="#easing">03 — Easing & transitions</a>
+      <a href="#typo">04 — Typographie animée</a>
+      <a href="#storyboard">05 — Storyboard</a>
+      <a href="#rythme">06 — Rythme & narration</a>
+      <a href="#synthese">07 — Synthèse visuelle</a>
+      <a href="#essentiel">08 — Points clés</a>
+    </div>
+  </nav>
+</div>
+</section>
+
+<main>
+<section class="lesson-section reveal" id="notions">
+<div class="container">
+ <div class="section-head"><span class="kicker">01 · Fondamentaux</span><h2>Le mouvement devient un langage</h2>
+ <p class="lead">Le motion design associe graphisme, animation, son et narration pour transmettre une information. Le mouvement n'est pas un simple effet : il guide l'œil et donne une hiérarchie aux informations.</p></div>
+
+ <div class="grid-3">
+  <article class="card"><div class="icon">01</div><h3>Forme</h3><p>Un cercle, un rectangle ou une ligne peut devenir un repère visuel grâce à son déplacement.</p></article>
+  <article class="card"><div class="icon">02</div><h3>Texte</h3><p>La typographie peut apparaître, se déplacer ou se transformer pour accompagner le message.</p></article>
+  <article class="card"><div class="icon">03</div><h3>Donnée</h3><p>Un nombre ou un graphique animé permet de montrer une évolution plutôt que de l'annoncer.</p></article>
+ </div>
+
+ <figure class="visual">
+ <svg viewBox="0 0 1000 360" role="img" aria-labelledby="flowTitle flowDesc">
+   <title id="flowTitle">Chaîne de communication du motion design</title>
+   <desc id="flowDesc">Un message devient une composition, puis un mouvement, puis une information perçue par le spectateur.</desc>
+   <rect x="0" y="0" width="1000" height="360" fill="#F6F8F6"/>
+   <g transform="translate(55 95)">
+    <rect width="180" height="125" rx="18" fill="#fff" stroke="#E3E8E5"/>
+    <circle cx="90" cy="38" r="17" fill="#E7F2ED"/><text x="90" y="43" text-anchor="middle" class="svg-mono">01</text>
+    <text x="90" y="76" text-anchor="middle" class="svg-label">MESSAGE</text>
+    <text x="90" y="99" text-anchor="middle" class="svg-muted">idée à transmettre</text>
+   </g>
+   <path d="M250 157H335" stroke="#1F6F54" stroke-width="2"/><path d="M328 150l9 7-9 7" fill="none" stroke="#1F6F54" stroke-width="2"/>
+   <g transform="translate(345 95)">
+    <rect width="180" height="125" rx="18" fill="#fff" stroke="#E3E8E5"/>
+    <circle cx="90" cy="38" r="17" fill="#E7F2ED"/><text x="90" y="43" text-anchor="middle" class="svg-mono">02</text>
+    <text x="90" y="76" text-anchor="middle" class="svg-label">COMPOSITION</text>
+    <text x="90" y="99" text-anchor="middle" class="svg-muted">formes + texte + données</text>
+   </g>
+   <path d="M540 157H625" stroke="#1F6F54" stroke-width="2"/><path d="M618 150l9 7-9 7" fill="none" stroke="#1F6F54" stroke-width="2"/>
+   <g transform="translate(635 95)">
+    <rect width="180" height="125" rx="18" fill="#fff" stroke="#E3E8E5"/>
+    <circle cx="90" cy="38" r="17" fill="#E7F2ED"/><text x="90" y="43" text-anchor="middle" class="svg-mono">03</text>
+    <text x="90" y="76" text-anchor="middle" class="svg-label">MOUVEMENT</text>
+    <text x="90" y="99" text-anchor="middle" class="svg-muted">timing + easing + rythme</text>
+   </g>
+   <path d="M830 157H915" stroke="#1F6F54" stroke-width="2"/><path d="M908 150l9 7-9 7" fill="none" stroke="#1F6F54" stroke-width="2"/>
+   <text x="970" y="151" text-anchor="end" class="svg-label">PERCEPTION</text>
+   <text x="970" y="174" text-anchor="end" class="svg-muted">œil guidé</text>
+ </svg>
+ <figcaption>Le mouvement relie l'intention graphique à la perception du spectateur.</figcaption>
+ </figure>
+</div>
+</section>
+
+<section class="lesson-section reveal" id="timing">
+<div class="container">
+ <div class="section-head"><span class="kicker">02 · Timing</span><h2>Le timing : donner une durée au geste</h2>
+ <p class="lead">Le timing correspond à la durée et au moment où une action se produit. Une même animation peut paraître calme, énergique ou brusque selon sa durée.</p></div>
+
+ <div class="stepper" aria-label="Principes du timing">
+  <div class="step"><strong>01</strong><b>Entrée</b><p>Choisir le moment où l'élément devient visible.</p></div>
+  <div class="step"><strong>02</strong><b>Action</b><p>Déterminer combien de temps le mouvement dure.</p></div>
+  <div class="step"><strong>03</strong><b>Pause</b><p>Laisser l'information être comprise.</p></div>
+  <div class="step"><strong>04</strong><b>Sortie</b><p>Organiser la disparition ou la transition.</p></div>
+  <div class="step"><strong>05</strong><b>Enchaînement</b><p>Relier les actions sans casser la lecture.</p></div>
+ </div>
+
+ <figure class="visual">
+ <svg viewBox="0 0 1000 320" role="img" aria-labelledby="timeTitle">
+  <title id="timeTitle">Comparaison de trois timings</title>
+  <rect width="1000" height="320" fill="#fff"/>
+  <text x="40" y="55" class="svg-label">MÊME ACTION · DURÉES DIFFÉRENTES</text>
+  <g transform="translate(45 85)">
+   <text x="0" y="25" class="svg-label">Rapide</text><text x="0" y="48" class="svg-muted">énergie / urgence</text>
+   <line x1="160" y1="30" x2="890" y2="30" stroke="#E3E8E5"/>
+   <rect x="160" y="12" width="120" height="36" rx="8" fill="#E7F2ED"/><text x="220" y="36" text-anchor="middle" class="svg-mono">0,4 s</text>
+  </g>
+  <g transform="translate(45 160)">
+   <text x="0" y="25" class="svg-label">Modéré</text><text x="0" y="48" class="svg-muted">information / équilibre</text>
+   <line x1="160" y1="30" x2="890" y2="30" stroke="#E3E8E5"/>
+   <rect x="160" y="12" width="280" height="36" rx="8" fill="#E7F2ED"/><text x="300" y="36" text-anchor="middle" class="svg-mono">0,9 s</text>
+  </g>
+  <g transform="translate(45 235)">
+   <text x="0" y="25" class="svg-label">Lent</text><text x="0" y="48" class="svg-muted">solennité / emphase</text>
+   <line x1="160" y1="30" x2="890" y2="30" stroke="#E3E8E5"/>
+   <rect x="160" y="12" width="520" height="36" rx="8" fill="#E7F2ED"/><text x="420" y="36" text-anchor="middle" class="svg-mono">1,8 s</text>
+  </g>
+ </svg>
+ <figcaption>Les valeurs sont indicatives : la bonne durée dépend du message, du support et du rythme global.</figcaption>
+ </figure>
+
+ <div class="callout"><b>💡 À retenir.</b> Le timing sert d'abord la compréhension. Une information importante mérite généralement davantage de temps à l'écran qu'un élément secondaire.</div>
+</div>
+</section>
+
+<section class="lesson-section reveal" id="easing">
+<div class="container">
+ <div class="section-head"><span class="kicker">03 · Easing</span><h2>L'easing : rendre le mouvement crédible</h2>
+ <p class="lead">L'easing décrit la manière dont la vitesse évolue pendant une animation. Une transition linéaire garde la même vitesse ; une courbe d'accélération ou de décélération produit un mouvement plus naturel.</p></div>
+
+ <figure class="visual">
+ <svg viewBox="0 0 1000 420" role="img" aria-labelledby="easeTitle easeDesc">
+  <title id="easeTitle">Courbes d'easing</title>
+  <desc id="easeDesc">Trois courbes représentent linear, ease-in et ease-out.</desc>
+  <rect width="1000" height="420" fill="#F6F8F6"/>
+  <g transform="translate(85 50)">
+   <line x1="0" y1="290" x2="250" y2="290" stroke="#AAB4AF"/><line x1="0" y1="290" x2="0" y2="20" stroke="#AAB4AF"/>
+   <line x1="0" y1="290" x2="250" y2="20" stroke="#1F6F54" stroke-width="4"/>
+   <text x="0" y="325" class="svg-label">linear</text><text x="0" y="345" class="svg-muted">vitesse constante</text>
+  </g>
+  <g transform="translate(375 50)">
+   <line x1="0" y1="290" x2="250" y2="290" stroke="#AAB4AF"/><line x1="0" y1="290" x2="0" y2="20" stroke="#AAB4AF"/>
+   <path d="M0 290 C15 288 40 260 75 210 C120 145 175 70 250 20" fill="none" stroke="#1F6F54" stroke-width="4"/>
+   <text x="0" y="325" class="svg-label">ease-in</text><text x="0" y="345" class="svg-muted">démarrage progressif</text>
+  </g>
+  <g transform="translate(665 50)">
+   <line x1="0" y1="290" x2="250" y2="290" stroke="#AAB4AF"/><line x1="0" y1="290" x2="0" y2="20" stroke="#AAB4AF"/>
+   <path d="M0 290 C75 240 130 150 175 85 C210 38 235 23 250 20" fill="none" stroke="#1F6F54" stroke-width="4"/>
+   <text x="0" y="325" class="svg-label">ease-out</text><text x="0" y="345" class="svg-muted">arrivée progressive</text>
+  </g>
+ </svg>
+ <figcaption>La courbe décrit la vitesse, pas seulement la position finale.</figcaption>
+ </figure>
+
+ <div class="grid-2">
+  <article class="card"><div class="icon">↗</div><h3>Ease-in</h3><p>Utile lorsqu'un élément doit donner l'impression de prendre progressivement de la vitesse.</p></article>
+  <article class="card"><div class="icon">↘</div><h3>Ease-out</h3><p>Très efficace pour les entrées à l'écran : l'élément arrive vite puis ralentit pour se stabiliser.</p></article>
+ </div>
+
+ <div class="tabs" data-tabs>
+  <div class="tab-buttons" role="tablist" aria-label="Comparaison des transitions">
+   <button role="tab" aria-selected="true" aria-controls="tab-sobre" id="btn-sobre">Transition sobre</button>
+   <button role="tab" aria-selected="false" aria-controls="tab-dynamique" id="btn-dynamique">Transition dynamique</button>
+  </div>
+  <div id="tab-sobre" class="tab-panel" role="tabpanel" aria-labelledby="btn-sobre">
+   <b>Objectif :</b> privilégier la lisibilité. Une durée modérée et un ease-out discret conviennent aux interfaces, présentations et contenus institutionnels.
+  </div>
+  <div id="tab-dynamique" class="tab-panel hidden" role="tabpanel" aria-labelledby="btn-dynamique">
+   <b>Objectif :</b> créer davantage d'énergie. On peut raccourcir le timing et accentuer l'accélération, tout en conservant une hiérarchie visuelle claire.
+  </div>
+ </div>
+</div>
+</section>
+
+<section class="lesson-section reveal" id="typo">
+<div class="container">
+ <div class="section-head"><span class="kicker">04 · Typographie</span><h2>La typographie animée</h2>
+ <p class="lead">Animer un texte ne signifie pas faire bouger chaque lettre au hasard. Le mouvement doit renforcer le sens, la hiérarchie et le rythme de lecture.</p></div>
+
+ <figure class="visual">
+ <svg viewBox="0 0 1000 370" role="img" aria-labelledby="typeTitle">
+  <title id="typeTitle">Construction d'une typographie animée</title>
+  <rect width="1000" height="370" fill="#fff"/>
+  <g transform="translate(55 70)">
+   <text x="0" y="55" font-family="Space Grotesk" font-size="46" font-weight="700" fill="#0B0F0D">IDÉE</text>
+   <text x="0" y="90" class="svg-muted">mot-clé</text>
+  </g>
+  <path d="M205 115H310" stroke="#1F6F54" stroke-width="2"/><path d="M303 108l9 7-9 7" fill="none" stroke="#1F6F54" stroke-width="2"/>
+  <g transform="translate(335 70)">
+   <text x="0" y="55" font-family="Space Grotesk" font-size="46" font-weight="700" fill="#0B0F0D">→ IDÉE</text>
+   <text x="0" y="90" class="svg-muted">apparition / déplacement</text>
+  </g>
+  <path d="M580 115H685" stroke="#1F6F54" stroke-width="2"/><path d="M678 108l9 7-9 7" fill="none" stroke="#1F6F54" stroke-width="2"/>
+  <g transform="translate(710 70)">
+   <text x="0" y="55" font-family="Space Grotesk" font-size="46" font-weight="700" fill="#1F6F54">IDÉE</text>
+   <text x="0" y="90" class="svg-muted">accent final</text>
+  </g>
+  <line x1="55" y1="205" x2="945" y2="205" stroke="#E3E8E5"/>
+  <text x="55" y="245" class="svg-label">Principes</text>
+  <text x="55" y="278" class="svg-muted">1. hiérarchiser</text><text x="260" y="278" class="svg-muted">2. révéler</text>
+  <text x="450" y="278" class="svg-muted">3. accentuer</text><text x="665" y="278" class="svg-muted">4. laisser lire</text>
+ </svg>
+ <figcaption>Une animation typographique efficace organise l'apparition de l'information.</figcaption>
+ </figure>
+
+ <div class="grid-3">
+  <article class="card"><div class="icon">A</div><h3>Apparition</h3><p>Fondu, masque ou déplacement léger pour introduire le message.</p></article>
+  <article class="card"><div class="icon">↔</div><h3>Transformation</h3><p>Une forme ou un mot évolue pour illustrer une relation ou un changement.</p></article>
+  <article class="card"><div class="icon">!</div><h3>Accent</h3><p>Une variation courte attire l'attention sur le mot réellement important.</p></article>
+ </div>
+
+ <div class="callout warn"><b>⚠️ Attention.</b> Trop de mouvements simultanés créent une compétition visuelle. La typographie doit rester lisible avant d'être spectaculaire.</div>
+</div>
+</section>
+
+<section class="lesson-section reveal" id="storyboard">
+<div class="container">
+ <div class="section-head"><span class="kicker">05 · Préparation</span><h2>Le storyboard : penser avant d'animer</h2>
+ <p class="lead">Le storyboard transforme une idée en séquence. Il permet de prévoir ce qui apparaît, ce qui bouge et ce que le spectateur doit comprendre à chaque moment.</p></div>
+
+ <div class="timeline">
+  <div class="timeline-item"><span class="dot"></span><h3>Plan 01 — Introduction</h3><p>Présenter le contexte et installer le point de départ. Le regard doit comprendre immédiatement le sujet.</p></div>
+  <div class="timeline-item"><span class="dot"></span><h3>Plan 02 — Développement</h3><p>Faire entrer les informations dans un ordre logique. Les mouvements servent la progression du récit.</p></div>
+  <div class="timeline-item"><span class="dot"></span><h3>Plan 03 — Mise en relation</h3><p>Relier les éléments par des transitions cohérentes : déplacement, transformation ou continuité graphique.</p></div>
+  <div class="timeline-item"><span class="dot"></span><h3>Plan 04 — Conclusion</h3><p>Stabiliser l'information principale et donner une fin visuelle claire.</p></div>
+ </div>
+
+ <figure class="visual">
+ <svg viewBox="0 0 1000 310" role="img" aria-labelledby="boardTitle">
+  <title id="boardTitle">Storyboard en quatre vignettes</title>
+  <rect width="1000" height="310" fill="#F6F8F6"/>
+  <g transform="translate(45 55)">
+   <rect width="205" height="160" rx="12" fill="#fff" stroke="#E3E8E5"/>
+   <text x="16" y="25" class="svg-mono">01</text><circle cx="105" cy="92" r="42" fill="#E7F2ED"/><text x="105" y="98" text-anchor="middle" class="svg-label">SUJET</text>
+  </g>
+  <g transform="translate(275 55)">
+   <rect width="205" height="160" rx="12" fill="#fff" stroke="#E3E8E5"/>
+   <text x="16" y="25" class="svg-mono">02</text><rect x="65" y="55" width="80" height="70" rx="10" fill="#E7F2ED"/><path d="M55 150H160" stroke="#1F6F54" stroke-width="3"/>
+  </g>
+  <g transform="translate(505 55)">
+   <rect width="205" height="160" rx="12" fill="#fff" stroke="#E3E8E5"/>
+   <text x="16" y="25" class="svg-mono">03</text><circle cx="75" cy="95" r="25" fill="#E7F2ED"/><circle cx="135" cy="95" r="25" fill="#E7F2ED"/><path d="M100 95h10" stroke="#1F6F54" stroke-width="3"/>
+  </g>
+  <g transform="translate(735 55)">
+   <rect width="205" height="160" rx="12" fill="#fff" stroke="#E3E8E5"/>
+   <text x="16" y="25" class="svg-mono">04</text><text x="102" y="103" text-anchor="middle" font-family="Space Grotesk" font-size="30" font-weight="700" fill="#1F6F54">MESSAGE</text>
+  </g>
+ </svg>
+ <figcaption>Un storyboard simple suffit : intention, composition, mouvement et information principale.</figcaption>
+ </figure>
+</div>
+</section>
+
+<section class="lesson-section reveal" id="rythme">
+<div class="container">
+ <div class="section-head"><span class="kicker">06 · Narration</span><h2>Le rythme : organiser l'attention</h2>
+ <p class="lead">Le rythme naît de l'alternance entre mouvement, pause, répétition et changement. Il permet de créer une progression sans surcharger l'écran.</p></div>
+
+ <div class="grid-2">
+  <div class="card"><div class="icon">↗</div><h3>Accélérer</h3><p>Multiplier les actions courtes peut produire une sensation d'énergie, de progression ou d'urgence.</p></div>
+  <div class="card"><div class="icon">Ⅱ</div><h3>Respirer</h3><p>Une pause permet au spectateur de lire et d'assimiler une information importante.</p></div>
+ </div>
+
+ <figure class="visual">
+ <svg viewBox="0 0 1000 330" role="img" aria-labelledby="rhythmTitle">
+  <title id="rhythmTitle">Courbe visuelle du rythme d'une séquence</title>
+  <rect width="1000" height="330" fill="#fff"/>
+  <text x="55" y="48" class="svg-label">INTENSITÉ</text>
+  <line x1="55" y1="250" x2="945" y2="250" stroke="#AAB4AF"/>
+  <line x1="55" y1="70" x2="55" y2="250" stroke="#AAB4AF"/>
+  <path d="M55 220 C130 215 150 120 230 135 C300 148 315 225 380 220 C455 215 470 95 550 105 C625 115 640 200 710 185 C790 168 810 85 880 105 C915 115 930 150 945 140" fill="none" stroke="#1F6F54" stroke-width="5"/>
+  <text x="105" y="285" class="svg-muted">intro</text><text x="360" y="285" class="svg-muted">pause</text><text x="520" y="285" class="svg-muted">développement</text><text x="800" y="285" class="svg-muted">conclusion</text>
+  <text x="55" y="75" class="svg-mono">fort</text><text x="55" y="242" class="svg-mono">faible</text>
+ </svg>
+ <figcaption>Le rythme n'est pas une vitesse constante : il respire avec le contenu.</figcaption>
+ </figure>
+
+ <div class="accordion" data-accordion>
+  <div class="acc-item">
+   <button class="acc-btn" aria-expanded="false">Comment choisir le rythme ? <span>+</span></button>
+   <div class="acc-content">Commencer par la structure du message. Les informations complexes doivent disposer d'un temps de lecture suffisant ; les transitions secondaires peuvent être plus rapides.</div>
+  </div>
+  <div class="acc-item">
+   <button class="acc-btn" aria-expanded="false">Pourquoi les pauses sont-elles importantes ? <span>+</span></button>
+   <div class="acc-content">Sans pause, toutes les informations semblent avoir la même importance. Une respiration visuelle crée une hiérarchie et facilite la mémorisation.</div>
+  </div>
+  <div class="acc-item">
+   <button class="acc-btn" aria-expanded="false">Quel rôle joue le son ? <span>+</span></button>
+   <div class="acc-content">Lorsqu'il est présent, le son peut renforcer les transitions et les accents. Il doit accompagner le mouvement sans masquer le message.</div>
+  </div>
+ </div>
+</div>
+</section>
+
+<section class="lesson-section reveal" id="synthese">
+<div class="container">
+ <div class="section-head"><span class="kicker">07 · Vue d'ensemble</span><h2>De l'idée à l'animation</h2>
+ <p class="lead">Un motion design cohérent suit une logique : définir le message, construire la composition, organiser le mouvement puis régler le rythme.</p></div>
+
+ <figure class="visual">
+ <svg viewBox="0 0 1000 390" role="img" aria-labelledby="processTitle">
+  <title id="processTitle">Processus complet de création d'un motion design</title>
+  <rect width="1000" height="390" fill="#F6F8F6"/>
+  <path d="M115 195H885" stroke="#D3DAD6" stroke-width="3"/>
+  <g>
+   <circle cx="115" cy="195" r="46" fill="#fff" stroke="#1F6F54" stroke-width="3"/><text x="115" y="190" text-anchor="middle" class="svg-mono">01</text><text x="115" y="213" text-anchor="middle" class="svg-label">MESSAGE</text>
+   <circle cx="345" cy="195" r="46" fill="#fff" stroke="#1F6F54" stroke-width="3"/><text x="345" y="190" text-anchor="middle" class="svg-mono">02</text><text x="345" y="213" text-anchor="middle" class="svg-label">DESIGN</text>
+   <circle cx="575" cy="195" r="46" fill="#fff" stroke="#1F6F54" stroke-width="3"/><text x="575" y="190" text-anchor="middle" class="svg-mono">03</text><text x="575" y="213" text-anchor="middle" class="svg-label">ANIMATION</text>
+   <circle cx="805" cy="195" r="46" fill="#fff" stroke="#1F6F54" stroke-width="3"/><text x="805" y="190" text-anchor="middle" class="svg-mono">04</text><text x="805" y="213" text-anchor="middle" class="svg-label">RYTHME</text>
+  </g>
+  <text x="115" y="110" text-anchor="middle" class="svg-muted">quoi ?</text><text x="345" y="110" text-anchor="middle" class="svg-muted">avec quoi ?</text><text x="575" y="110" text-anchor="middle" class="svg-muted">comment ?</text><text x="805" y="110" text-anchor="middle" class="svg-muted">quand ?</text>
+  <text x="500" y="330" text-anchor="middle" class="svg-label">UN BON MOUVEMENT EST AU SERVICE D'UNE BONNE INFORMATION</text>
+ </svg>
+ <figcaption>La méthode permet de contrôler la cohérence avant d'entrer dans les détails d'animation.</figcaption>
+ </figure>
+</div>
+</section>
+
+<section class="lesson-section reveal" id="essentiel">
+<div class="container">
+ <div class="section-head"><span class="kicker">08 · Synthèse</span><h2>Points clés à retenir</h2></div>
+ <div class="key-grid">
+  <div class="key"><b>Timing</b><span>La durée influence directement la perception du mouvement.</span></div>
+  <div class="key"><b>Easing</b><span>La vitesse doit évoluer de manière cohérente avec l'intention.</span></div>
+  <div class="key"><b>Typographie</b><span>Le texte animé doit rester lisible et hiérarchisé.</span></div>
+  <div class="key"><b>Storyboard</b><span>La séquence se pense avant de se produire dans le logiciel.</span></div>
+  <div class="key"><b>Rythme</b><span>L'alternance entre action et pause guide l'attention.</span></div>
+  <div class="key"><b>Transitions</b><span>Une transition doit relier deux informations de façon compréhensible.</span></div>
+  <div class="key"><b>Données</b><span>Une animation peut montrer une évolution au lieu de simplement l'annoncer.</span></div>
+  <div class="key"><b>Intention</b><span>Chaque mouvement doit avoir une fonction dans le message.</span></div>
+ </div>
+ <div class="callout"><b>📌 Idée centrale.</b> En motion design, la qualité ne vient pas du nombre d'effets utilisés, mais de la précision avec laquelle le mouvement sert la communication.</div>
+</div>
+</section>
+
+<div class="container">
+ <nav class="lesson-nav" aria-label="Navigation entre les leçons">
+  <a class="nav-card" href="#" aria-label="Leçon précédente"><small>Précédente</small><b>Leçon 26</b></a>
+  <a class="nav-card" href="#top" style="text-align:center"><small>Module 5</small><b>Sommaire du module</b></a>
+  <a class="nav-card" href="#" style="text-align:right" aria-label="Leçon suivante"><small>Suivante</small><b>Leçon 28 — Compositing</b></a>
+ </nav>
+</div>
+</main>
+
+<footer>
+<div class="container">Filière Graphisme 2D/3D · Module 5 · Leçon 27 — Motion Design</div>
+</footer>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+ const progress=document.getElementById('progress');
+ const topBtn=document.getElementById('topBtn');
+ const menuBtn=document.getElementById('menuBtn');
+ const nav=document.getElementById('mainNav');
+
+ function update(){
+   const h=document.documentElement.scrollHeight-window.innerHeight;
+   progress.style.width=(h>0?(window.scrollY/h)*100:0)+'%';
+   topBtn.classList.toggle('show',window.scrollY>500);
+ }
+ window.addEventListener('scroll',update,{passive:true});
+ update();
+
+ topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+ menuBtn.addEventListener('click',()=>{
+   const open=nav.classList.toggle('open');
+   menuBtn.setAttribute('aria-expanded',open);
+ });
+ nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+
+ document.querySelectorAll('[data-tabs]').forEach(tabs=>{
+   const buttons=[...tabs.querySelectorAll('[role=tab]')];
+   const panels=[...tabs.querySelectorAll('[role=tabpanel]')];
+   buttons.forEach((btn,i)=>{
+     btn.addEventListener('click',()=>{
+       buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+       panels.forEach(p=>p.classList.add('hidden'));
+       btn.setAttribute('aria-selected','true');
+       document.getElementById(btn.getAttribute('aria-controls')).classList.remove('hidden');
+     });
+     btn.addEventListener('keydown',e=>{
+       if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+         e.preventDefault();
+         const dir=e.key==='ArrowRight'?1:-1;
+         const next=(i+dir+buttons.length)%buttons.length;
+         buttons[next].focus();buttons[next].click();
+       }
+     });
+   });
+ });
+
+ document.querySelectorAll('[data-accordion] .acc-btn').forEach(btn=>{
+   btn.addEventListener('click',()=>{
+     const item=btn.parentElement;
+     const open=item.classList.toggle('open');
+     btn.setAttribute('aria-expanded',open);
+     btn.querySelector('span').textContent=open?'−':'+';
+   });
+ });
+
+ const observer=new IntersectionObserver(entries=>{
+   entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}})
+ },{threshold:.08});
+ document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+})();
+</script>
+</body>
+</html>

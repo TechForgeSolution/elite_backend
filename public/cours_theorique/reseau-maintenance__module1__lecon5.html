@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 05 — Maintenance préventive et outils">
+<title>Leçon 05 — Maintenance préventive et outils</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F7FA;
+  --color-text:#10161D;
+  --color-accent:#1F6FEB;
+  --color-neutral:#A9B4BE;
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --shadow:0 14px 40px rgba(16,22,29,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button,a{outline-offset:3px}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:var(--color-neutral);z-index:1000}
+.progress i{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:rgba(244,247,250,.94);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
+.nav{max-width:1180px;margin:auto;min-height:64px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.02em}
+.brand small{display:block;font:500 11px "IBM Plex Mono";color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.nav-links{display:flex;gap:18px;align-items:center;font-size:14px}
+.nav-links a{color:var(--color-text)}
+.menu{display:none;background:none;border:1px solid var(--border);padding:8px 10px;color:var(--color-text);border-radius:8px}
+main{max-width:1180px;margin:auto}
+.hero{padding:72px 22px 42px;display:grid;grid-template-columns:1.25fr .75fr;gap:50px;align-items:center}
+.eyebrow{font:600 12px "IBM Plex Mono";color:var(--color-accent);letter-spacing:.12em;text-transform:uppercase}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12;letter-spacing:-.025em}
+h1{font-size:clamp(40px,6vw,72px);margin:12px 0 20px}
+h2{font-size:clamp(28px,4vw,42px);margin:0 0 18px}
+h3{font-size:20px;margin:0 0 9px}
+.lead{font-size:19px;max-width:720px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}
+.badge{border:1px solid var(--border);border-radius:999px;padding:7px 11px;background:var(--soft);font:500 12px "IBM Plex Mono"}
+.hero-art{background:var(--soft);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.hero-art svg{display:block;width:100%;height:auto}
+.toc{margin:0 22px 45px;padding:25px;background:var(--soft);border:1px solid var(--border);border-radius:16px}
+.toc-title{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.1em;margin-bottom:13px}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px 25px}
+.toc a{font-weight:600}
+section.lesson{padding:68px 22px;border-top:1px solid var(--border)}
+section.lesson:nth-of-type(even){background:var(--soft)}
+.content{max-width:720px}
+.section-head{display:flex;gap:15px;align-items:flex-start;margin-bottom:26px}
+.num{font:600 13px "IBM Plex Mono";color:var(--color-accent);border:1px solid var(--color-accent);padding:5px 8px;border-radius:7px;white-space:nowrap}
+p{margin:0 0 17px}
+strong{font-weight:700}
+.figure{margin:32px 0;background:var(--color-bg);border:1px solid var(--border);border-radius:16px;padding:16px}
+.figure svg{width:100%;height:auto;display:block}
+.caption{font-size:13px;color:var(--muted);margin-top:10px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:28px 0}
+.card{padding:20px;border:1px solid var(--border);border-radius:14px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:26px;margin-bottom:8px}
+.callout{margin:28px 0;padding:20px 22px;border:1px solid var(--color-accent);border-left:5px solid var(--color-accent);border-radius:12px;background:var(--soft10)}
+.callout .label{font-weight:700;margin-bottom:5px}
+.table-wrap{overflow-x:auto;margin:28px 0;border:1px solid var(--border);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:650px;font-family:"IBM Plex Mono",monospace;font-size:13px}
+th,td{padding:13px 15px;border-bottom:1px solid var(--border);text-align:left}
+th{background:var(--soft10);font-weight:600}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:var(--soft)}
+.terminal{margin:28px 0;background:var(--soft10);border:1px solid var(--border);border-radius:13px;overflow:hidden}
+.terminal-bar{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--border);font:500 11px "IBM Plex Mono";color:var(--muted)}
+.copy{border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);border-radius:6px;padding:5px 8px;cursor:pointer}
+pre{margin:0;padding:18px;overflow:auto;font:400 13px/1.65 "IBM Plex Mono"}
+.tabs{margin:28px 0}
+.tab-buttons{display:flex;gap:7px;border-bottom:1px solid var(--border);overflow:auto}
+.tab-btn{border:0;background:none;color:var(--muted);padding:11px 14px;cursor:pointer;font:600 13px "IBM Plex Sans";white-space:nowrap}
+.tab-btn[aria-selected=true]{color:var(--color-accent);border-bottom:3px solid var(--color-accent)}
+.tab-panel{padding:20px 0}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:32px 0}
+.step{position:relative;padding:18px 13px;border:1px solid var(--border);border-radius:12px;background:var(--color-bg)}
+.step b{display:block;font:600 12px "IBM Plex Mono";color:var(--color-accent);margin-bottom:7px}
+details{border-top:1px solid var(--border);padding:15px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-weight:700}
+.key-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.key{padding:19px;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+.nav-bottom{padding:45px 22px;display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center}
+.nav-card{border:1px solid var(--border);border-radius:12px;padding:15px;background:var(--soft)}
+.nav-card.next{text-align:right}
+.top{position:fixed;right:22px;bottom:22px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);border-radius:50%;width:44px;height:44px;cursor:pointer;box-shadow:var(--shadow);display:none}
+footer{border-top:1px solid var(--border);padding:28px 22px;text-align:center;font-size:13px;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;padding-top:45px}
+  .toc-grid{grid-template-columns:1fr 1fr}
+  .cards,.key-grid{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr}
+  .nav-links{display:none}.menu{display:block}
+  .nav.open .nav-links{display:flex;position:absolute;top:64px;left:0;right:0;background:var(--color-bg);padding:18px 22px;border-bottom:1px solid var(--border);flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .nav{padding:0 15px}
+  .hero,section.lesson,.toc,.nav-bottom{padding-left:15px;padding-right:15px}
+  .toc{margin-left:15px;margin-right:15px}
+  .toc-grid{grid-template-columns:1fr}
+  h1{font-size:42px}
+  .lead{font-size:17px}
+  .nav-bottom{grid-template-columns:1fr}
+  .nav-card.next{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}
+}
+</style>
+</head>
+<body id="top">
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+<header>
+  <nav class="nav" id="nav">
+    <div class="brand">MAINTENANCE & RÉSEAU<small>Module 01 · Matériel & systèmes</small></div>
+    <button class="menu" id="menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#sommaire">Sommaire</a><a href="#nettoyage">Nettoyage</a><a href="#outils">Outils</a><a href="#planning">Planification</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero reveal">
+  <div>
+    <div class="eyebrow">Leçon 05 · Maintenance préventive</div>
+    <h1>Entretenir avant la panne.</h1>
+    <p class="lead">Planifier un entretien régulier et utiliser les outils de diagnostic adaptés pour maintenir un ordinateur fiable, propre, à jour et correctement surveillé.</p>
+    <div class="meta">
+      <span class="badge">MODULE 01</span><span class="badge">DÉBUTANT</span><span class="badge">15 MIN</span><span class="badge">MATÉRIEL · SYSTÈMES</span>
+    </div>
+  </div>
+  <div class="hero-art" role="img" aria-label="Illustration d'un ordinateur entretenu avec ventilation, disque et outils de surveillance">
+    <svg viewBox="0 0 520 390" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="var(--color-text)" stroke-width="3">
+        <rect x="45" y="50" width="330" height="220" rx="12"/>
+        <rect x="68" y="73" width="284" height="174" rx="5" stroke="var(--color-accent)"/>
+        <path d="M165 310h90M135 330h150M180 270v40M250 270v40"/>
+        <circle cx="210" cy="160" r="57" stroke="var(--color-neutral)"/>
+        <path d="M210 103v114M153 160h114M170 120l80 80M250 120l-80 80"/>
+        <circle cx="210" cy="160" r="9" fill="var(--color-accent)" stroke="var(--color-accent)"/>
+        <rect x="400" y="85" width="75" height="170" rx="8" stroke="var(--color-neutral)"/>
+        <path d="M420 112h35M420 140h35M420 168h35M420 196h20M420 224h35"/>
+      </g>
+      <g fill="var(--color-accent)" font-family="IBM Plex Mono" font-size="12">
+        <text x="62" y="35">WORKSTATION_01</text><text x="399" y="72">MONITOR</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="toc reveal" id="sommaire">
+  <div class="toc-title">Sommaire de la leçon</div>
+  <div class="toc-grid">
+    <a href="#definition">01 · Comprendre la maintenance préventive</a>
+    <a href="#nettoyage">02 · Nettoyage et dépoussiérage</a>
+    <a href="#stockage">03 · Défragmentation et stockage</a>
+    <a href="#updates">04 · Mises à jour</a>
+    <a href="#temperatures">05 · Surveiller les températures</a>
+    <a href="#outils">06 · Boîte à outils</a>
+    <a href="#planning">07 · Planifier l'entretien</a>
+    <a href="#cles">08 · Points clés à retenir</a>
+  </div>
+</section>
+
+<section class="lesson reveal" id="definition">
+  <div class="section-head"><span class="num">01</span><div><h2>Comprendre la maintenance préventive</h2><p class="lead">Agir avant que le dysfonctionnement ne devienne une panne.</p></div></div>
+  <div class="content">
+    <p>La <strong>maintenance préventive</strong> regroupe les actions réalisées régulièrement pour réduire les risques de panne, préserver les performances et prolonger la durée de vie du matériel.</p>
+    <p>Elle s'appuie sur une logique simple : <strong>observer → entretenir → contrôler → planifier</strong>. L'objectif n'est pas d'attendre qu'un ordinateur manifeste un problème, mais de détecter les signes précurseurs.</p>
+    <div class="figure">
+      <svg viewBox="0 0 900 260" role="img" aria-label="Cycle de maintenance préventive en quatre étapes">
+        <g fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="2">
+          <rect x="35" y="80" width="170" height="85" rx="12"/><rect x="250" y="80" width="170" height="85" rx="12"/>
+          <rect x="465" y="80" width="170" height="85" rx="12"/><rect x="680" y="80" width="170" height="85" rx="12"/>
+        </g>
+        <g stroke="var(--color-accent)" stroke-width="4" fill="none">
+          <path d="M205 122h45M420 122h45M635 122h45"/>
+          <path d="M770 175c0 55-590 65-680 0" stroke-dasharray="7 7"/>
+        </g>
+        <g font-family="IBM Plex Sans" text-anchor="middle" fill="var(--color-text)">
+          <text x="120" y="112" font-size="18" font-weight="700">OBSERVER</text><text x="120" y="139" font-size="13">bruit · poussière · chaleur</text>
+          <text x="335" y="112" font-size="18" font-weight="700">ENTRETENIR</text><text x="335" y="139" font-size="13">nettoyer · mettre à jour</text>
+          <text x="550" y="112" font-size="18" font-weight="700">CONTRÔLER</text><text x="550" y="139" font-size="13">températures · stockage</text>
+          <text x="765" y="112" font-size="18" font-weight="700">PLANIFIER</text><text x="765" y="139" font-size="13">fréquence · traçabilité</text>
+        </g>
+      </svg>
+      <div class="caption">Figure 1 — Le cycle élémentaire d'une maintenance préventive.</div>
+    </div>
+    <div class="callout"><div class="label">💡 À retenir</div>Une maintenance efficace est régulière, documentée et proportionnée à l'usage de la machine.</div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="nettoyage">
+  <div class="section-head"><span class="num">02</span><div><h2>Nettoyage et dépoussiérage</h2><p class="lead">La poussière gêne le refroidissement et peut favoriser la montée en température.</p></div></div>
+  <div class="content">
+    <div class="cards">
+      <article class="card"><div class="icon">🖥</div><h3>Extérieur</h3><p>Nettoyer l'écran, le clavier, les grilles et les surfaces avec un matériel adapté.</p></article>
+      <article class="card"><div class="icon">🌀</div><h3>Ventilation</h3><p>Vérifier les entrées et sorties d'air. Une grille obstruée réduit l'efficacité du refroidissement.</p></article>
+      <article class="card"><div class="icon">⚙</div><h3>Intérieur</h3><p>Sur un poste fixe, inspecter les ventilateurs et accumulations de poussière lors d'un entretien planifié.</p></article>
+      <article class="card"><div class="icon">⌨</div><h3>Périphériques</h3><p>Contrôler les câbles, connecteurs et périphériques afin de détecter usure ou mauvais branchement.</p></article>
+    </div>
+    <div class="figure">
+      <svg viewBox="0 0 900 360" role="img" aria-label="Schéma de circulation de l'air dans un ordinateur">
+        <rect x="130" y="45" width="640" height="270" rx="18" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+        <rect x="185" y="95" width="230" height="165" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+        <circle cx="300" cy="177" r="54" fill="none" stroke="var(--color-accent)" stroke-width="3"/>
+        <path d="M300 123v108M246 177h108M262 139l76 76M338 139l-76 76" stroke="var(--color-text)" stroke-width="2"/>
+        <rect x="475" y="105" width="215" height="55" rx="8" fill="var(--soft10)" stroke="var(--color-neutral)" stroke-width="2"/>
+        <rect x="475" y="190" width="215" height="55" rx="8" fill="var(--soft10)" stroke="var(--color-neutral)" stroke-width="2"/>
+        <g fill="none" stroke="var(--color-accent)" stroke-width="4">
+          <path d="M150 130H105v100h80" marker-end="url(#a)"/><path d="M720 230h75V130h-80"/>
+        </g>
+        <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0l8 4-8 4" fill="none" stroke="var(--color-accent)" stroke-width="2"/></marker></defs>
+        <g font-family="IBM Plex Mono" fill="var(--color-text)" font-size="14">
+          <text x="250" y="182">VENTILATEUR</text><text x="500" y="137">CPU / CARTE MÈRE</text><text x="500" y="222">STOCKAGE / ALIM.</text>
+          <text x="72" y="120">AIR</text><text x="790" y="120">AIR</text>
+        </g>
+      </svg>
+      <div class="caption">Figure 2 — Principe simplifié de circulation de l'air dans un boîtier.</div>
+    </div>
+    <div class="callout"><div class="label">⚠️ Attention / erreur fréquente</div>Ne pas nettoyer un équipement sous tension. Avant une intervention interne, arrêter correctement le système, débrancher l'alimentation et respecter les précautions adaptées au matériel.</div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="stockage">
+  <div class="section-head"><span class="num">03</span><div><h2>Défragmentation et stockage</h2><p class="lead">L'entretien du stockage dépend du type de support.</p></div></div>
+  <div class="content">
+    <p>La <strong>défragmentation</strong> réorganise les fragments de fichiers sur un disque dur mécanique afin de rendre les accès plus efficaces. Elle concerne surtout les supports HDD.</p>
+    <p>Pour un <strong>SSD</strong>, on privilégie les mécanismes d'optimisation prévus par le système plutôt qu'une défragmentation classique répétée. La maintenance doit donc commencer par l'identification du support.</p>
+    <div class="figure">
+      <svg viewBox="0 0 900 310" role="img" aria-label="Comparaison visuelle HDD et SSD">
+        <g font-family="Space Grotesk" fill="var(--color-text)" text-anchor="middle">
+          <text x="225" y="35" font-size="24" font-weight="700">HDD</text><text x="675" y="35" font-size="24" font-weight="700">SSD</text>
+        </g>
+        <g fill="var(--soft)" stroke="var(--color-text)" stroke-width="2">
+          <rect x="55" y="65" width="340" height="180" rx="14"/><rect x="505" y="65" width="340" height="180" rx="14"/>
+        </g>
+        <g stroke="var(--color-accent)" stroke-width="8">
+          <path d="M90 105h45M150 105h95M260 105h45M325 105h35M90 145h95M205 145h55M275 145h90M90 185h35M145 185h110M270 185h45M325 185h40"/>
+        </g>
+        <g fill="var(--color-neutral)" font-family="IBM Plex Mono" font-size="13" text-anchor="middle">
+          <text x="225" y="225">fragments dispersés</text><text x="675" y="225">cellules mémoire</text>
+        </g>
+        <path d="M395 155h110" stroke="var(--color-text)" stroke-width="2" stroke-dasharray="7 7"/>
+      </svg>
+      <div class="caption">Figure 3 — La stratégie d'entretien n'est pas identique pour un HDD et un SSD.</div>
+    </div>
+    <div class="callout"><div class="label">🔒 Sécurité / bonne pratique</div>Avant toute opération de maintenance du stockage, vérifier l'état des sauvegardes importantes. Une opération d'entretien ne remplace jamais une sauvegarde.</div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="updates">
+  <div class="section-head"><span class="num">04</span><div><h2>Mises à jour</h2><p class="lead">Maintenir le système et les logiciels dans un état cohérent.</p></div></div>
+  <div class="content">
+    <p>Les mises à jour peuvent corriger des défauts, améliorer la stabilité et maintenir la compatibilité avec les composants et logiciels. Elles doivent être intégrées à la routine de maintenance.</p>
+    <div class="tabs" data-tabs>
+      <div class="tab-buttons" role="tablist" aria-label="Types de mises à jour">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-os" id="btn-os">Système</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-app" id="btn-app">Applications</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-driver" id="btn-driver">Pilotes</button>
+      </div>
+      <div class="tab-panel" id="tab-os" role="tabpanel" aria-labelledby="btn-os">Contrôler les mises à jour du système d'exploitation et redémarrer lorsque cela est nécessaire.</div>
+      <div class="tab-panel" id="tab-app" role="tabpanel" aria-labelledby="btn-app" hidden>Maintenir les logiciels installés et supprimer ceux qui ne sont plus utilisés lorsque cela est pertinent.</div>
+      <div class="tab-panel" id="tab-driver" role="tabpanel" aria-labelledby="btn-driver" hidden>Vérifier les pilotes lorsqu'un matériel présente un comportement anormal ou lorsqu'une mise à jour est planifiée.</div>
+    </div>
+    <div class="callout"><div class="label">💡 À retenir</div>Une mise à jour fait partie d'une démarche d'entretien : elle doit être planifiée et accompagnée d'un contrôle du fonctionnement après intervention.</div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="temperatures">
+  <div class="section-head"><span class="num">05</span><div><h2>Surveiller les températures</h2><p class="lead">La température est un indicateur important de l'état thermique d'un ordinateur.</p></div></div>
+  <div class="content">
+    <p>Une surveillance régulière permet de repérer une situation inhabituelle : ventilation insuffisante, poussière, charge élevée ou refroidissement dégradé. L'interprétation doit toujours tenir compte du matériel et de son activité.</p>
+    <div class="figure">
+      <svg viewBox="0 0 900 330" role="img" aria-label="Tableau de bord thermique illustrant la surveillance du processeur">
+        <rect x="55" y="45" width="790" height="235" rx="16" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="3"/>
+        <text x="90" y="88" font-family="IBM Plex Mono" font-size="14" fill="var(--color-neutral)">THERMAL_MONITOR / CPU</text>
+        <text x="90" y="155" font-family="Space Grotesk" font-size="58" font-weight="700" fill="var(--color-text)">54°C</text>
+        <text x="92" y="183" font-family="IBM Plex Sans" font-size="14" fill="var(--muted)">température observée</text>
+        <rect x="330" y="110" width="440" height="24" rx="12" fill="var(--soft10)" stroke="var(--color-neutral)"/>
+        <rect x="330" y="110" width="245" height="24" rx="12" fill="var(--color-accent)"/>
+        <g stroke="var(--color-neutral)" stroke-width="2">
+          <path d="M330 150v15M440 150v15M550 150v15M660 150v15M770 150v15"/>
+        </g>
+        <g font-family="IBM Plex Mono" font-size="11" fill="var(--color-text)">
+          <text x="326" y="187">0</text><text x="432" y="187">25</text><text x="543" y="187">50</text><text x="653" y="187">75</text><text x="758" y="187">100</text>
+        </g>
+        <path d="M90 235h680" stroke="var(--color-neutral)" stroke-width="2"/>
+        <polyline points="95,235 170,220 245,228 320,185 395,205 470,155 545,175 620,135 695,150 765,120" fill="none" stroke="var(--color-accent)" stroke-width="4"/>
+      </svg>
+      <div class="caption">Figure 4 — Exemple de représentation visuelle d'une surveillance thermique.</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Indicateur</th><th scope="col">À observer</th><th scope="col">Action de maintenance</th></tr></thead>
+        <tbody>
+          <tr><td>Température CPU</td><td>Variation inhabituelle</td><td>Contrôler charge et refroidissement</td></tr>
+          <tr><td>Ventilateur</td><td>Bruit / rotation anormale</td><td>Inspecter ventilation et poussière</td></tr>
+          <tr><td>Boîtier</td><td>Flux d'air réduit</td><td>Nettoyer les grilles</td></tr>
+          <tr><td>Charge système</td><td>CPU durablement sollicité</td><td>Identifier le processus concerné</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="outils">
+  <div class="section-head"><span class="num">06</span><div><h2>Boîte à outils de diagnostic</h2><p class="lead">Choisir l'outil en fonction de l'indicateur à contrôler.</p></div></div>
+  <div class="content">
+    <div class="cards">
+      <article class="card"><h3>Moniteur système</h3><p>Observe l'utilisation du processeur, de la mémoire et des processus actifs.</p></article>
+      <article class="card"><h3>Gestionnaire de périphériques</h3><p>Permet de repérer les matériels et pilotes nécessitant une vérification.</p></article>
+      <article class="card"><h3>Outil de stockage</h3><p>Permet de contrôler l'espace disponible et l'état logique du support.</p></article>
+      <article class="card"><h3>Surveillance thermique</h3><p>Affiche les mesures de température et aide à repérer une anomalie thermique.</p></article>
+    </div>
+    <div class="terminal">
+      <div class="terminal-bar"><span>CONSOLE · EXEMPLE WINDOWS</span><button class="copy" data-copy="systeminfo">Copier</button></div>
+      <pre id="cmd1">systeminfo</pre>
+    </div>
+    <p class="caption">Exemple de commande permettant d'obtenir des informations système. Les outils disponibles peuvent varier selon le système installé.</p>
+    <details>
+      <summary>Pourquoi commencer par observer ?</summary>
+      <p>Parce qu'une mesure ou une observation donne un point de départ avant toute intervention. La maintenance préventive cherche à éviter les interventions inutiles.</p>
+    </details>
+    <details>
+      <summary>Que faut-il consigner ?</summary>
+      <p>La date, l'équipement concerné, les contrôles effectués, les anomalies observées et les actions réalisées constituent une base simple de traçabilité.</p>
+    </details>
+  </div>
+</section>
+
+<section class="lesson reveal" id="planning">
+  <div class="section-head"><span class="num">07</span><div><h2>Planifier l'entretien</h2><p class="lead">Une bonne maintenance devient une routine lorsqu'elle est organisée dans le temps.</p></div></div>
+  <div class="content">
+    <p>La fréquence dépend de l'environnement, de l'intensité d'utilisation et du type de matériel. Une organisation simple consiste à distinguer les contrôles fréquents des opérations périodiques.</p>
+    <div class="stepper" aria-label="Processus de planification">
+      <div class="step"><b>01 · INVENTORIER</b>Identifier les équipements et leurs caractéristiques.</div>
+      <div class="step"><b>02 · OBSERVER</b>Relever les symptômes et indicateurs utiles.</div>
+      <div class="step"><b>03 · PLANIFIER</b>Définir les tâches et leur fréquence.</div>
+      <div class="step"><b>04 · INTERVENIR</b>Réaliser l'entretien dans les conditions prévues.</div>
+      <div class="step"><b>05 · TRACER</b>Enregistrer les opérations et observations.</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Action</th><th scope="col">Fréquence indicative</th><th scope="col">Trace</th></tr></thead>
+        <tbody>
+          <tr><td>Observation générale</td><td>Régulière</td><td>Fiche de maintenance</td></tr>
+          <tr><td>Nettoyage extérieur</td><td>Périodique</td><td>Date + équipement</td></tr>
+          <tr><td>Contrôle ventilation</td><td>Périodique</td><td>État observé</td></tr>
+          <tr><td>Mises à jour</td><td>Selon politique</td><td>Version / date</td></tr>
+          <tr><td>Surveillance thermique</td><td>Selon besoin</td><td>Mesures relevées</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><div class="label">🛠️ Cas pratique</div>Pour un parc informatique, centraliser les dates d'entretien dans un tableau permet de visualiser rapidement les équipements contrôlés et ceux dont l'entretien approche.</div>
+  </div>
+</section>
+
+<section class="lesson reveal" id="cles">
+  <div class="section-head"><span class="num">08</span><div><h2>Points clés à retenir</h2><p class="lead">Les réflexes essentiels de cette leçon.</p></div></div>
+  <div class="key-grid">
+    <article class="key"><h3>01 · Prévenir</h3><p>Entretenir avant l'apparition de la panne.</p></article>
+    <article class="key"><h3>02 · Nettoyer</h3><p>Maintenir les surfaces et la ventilation propres.</p></article>
+    <article class="key"><h3>03 · Adapter</h3><p>Tenir compte du support HDD ou SSD pour le stockage.</p></article>
+    <article class="key"><h3>04 · Mettre à jour</h3><p>Intégrer système, logiciels et pilotes dans la routine.</p></article>
+    <article class="key"><h3>05 · Surveiller</h3><p>Utiliser les indicateurs comme la température et la charge.</p></article>
+    <article class="key"><h3>06 · Planifier</h3><p>Organiser les opérations et conserver une trace.</p></article>
+  </div>
+</section>
+
+<div class="nav-bottom">
+  <a class="nav-card" href="#" aria-label="Leçon précédente"><small>← LEÇON 04</small><br><strong>Pilotes et périphériques</strong></a>
+  <a href="#sommaire">↑ Sommaire</a>
+  <a class="nav-card next" href="#" aria-label="Leçon suivante"><small>LEÇON 06 →</small><br><strong>Dépannage logiciel avancé</strong></a>
+</div>
+</main>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+<footer>MODULE 01 · MAINTENANCE INFORMATIQUE — LEÇON 05 · Support pédagogique</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('progressBar'), topBtn=document.getElementById('topBtn');
+  function update(){
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    const pct=max>0?(window.scrollY/max)*100:0;
+    bar.style.width=Math.min(100,pct)+'%';
+    topBtn.style.display=window.scrollY>500?'block':'none';
+  }
+  window.addEventListener('scroll',update,{passive:true}); update();
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  const menu=document.getElementById('menu'), nav=document.getElementById('nav');
+  menu.addEventListener('click',()=>{
+    const open=nav.classList.toggle('open');
+    menu.setAttribute('aria-expanded',open);
+  });
+  document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=group.querySelectorAll('.tab-btn');
+    buttons.forEach(btn=>btn.addEventListener('click',()=>{
+      buttons.forEach(b=>{b.setAttribute('aria-selected','false');});
+      group.querySelectorAll('[role="tabpanel"]').forEach(p=>p.hidden=true);
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.getAttribute('aria-controls')).hidden=false;
+    }));
+  });
+
+  document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',async()=>{
+    try{
+      await navigator.clipboard.writeText(btn.dataset.copy);
+      const old=btn.textContent; btn.textContent='Copié'; setTimeout(()=>btn.textContent=old,1200);
+    }catch(e){}
+  }));
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+  },{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+})();
+</script>
+</body>
+</html>

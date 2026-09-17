@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 28 — Compositing : assembler plusieurs sources dans une image homogène.">
+  <title>Leçon 28 — Compositing | Filière Audiovisuel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#FFFFFF;
+      --color-bg-alt:#F6F8F6;
+      --color-text:#0B0F0D;
+      --color-text-muted:#5A6560;
+      --color-accent:#1F6F54;
+      --color-accent-soft:#E7F2ED;
+      --color-border:#E3E8E5;
+      --color-accent-alt:#B3541E;
+      --shadow:0 10px 30px rgba(11,15,13,.06);
+      --radius:18px;
+      --max:1160px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--color-bg);color:var(--color-text);
+      font-family:Inter,system-ui,sans-serif;line-height:1.7;
+      -webkit-font-smoothing:antialiased;
+    }
+    body:before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+      background-image:linear-gradient(to bottom,rgba(31,111,84,.018) 1px,transparent 1px);
+      background-size:100% 42px;
+    }
+    a{color:inherit}
+    .progress{position:fixed;top:0;left:0;width:100%;height:3px;background:transparent;z-index:1000}
+    .progress i{display:block;width:0;height:100%;background:var(--color-accent);transition:width .1s linear}
+    .header{
+      position:sticky;top:0;z-index:900;background:rgba(255,255,255,.94);
+      backdrop-filter:blur(10px);border-bottom:1px solid var(--color-border)
+    }
+    .header-inner,.container{width:min(var(--max),calc(100% - 40px));margin:auto}
+    .header-inner{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{font-family:Sora,sans-serif;font-weight:700;letter-spacing:-.03em;text-decoration:none}
+    .brand small{display:block;color:var(--color-text-muted);font:500 10px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+    .toc-toggle{border:1px solid var(--color-border);background:#fff;padding:10px 14px;border-radius:10px;font:600 12px Inter;cursor:pointer}
+    .hero{padding:74px 0 52px;border-bottom:1px solid var(--color-border)}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg-alt);font:600 11px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.08em;color:var(--color-accent)}
+    h1,h2,h3{font-family:Sora,sans-serif;letter-spacing:-.035em;line-height:1.15;margin:0 0 16px}
+    h1{font-size:clamp(40px,7vw,78px);max-width:850px;margin-top:20px}
+    h2{font-size:clamp(28px,4vw,42px)}
+    h3{font-size:20px}
+    .hero p{font-size:18px;color:var(--color-text-muted);max-width:720px;margin:0}
+    .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+    .meta span{font:500 12px "IBM Plex Mono";border:1px solid var(--color-border);padding:8px 10px;border-radius:8px;background:#fff}
+    .meta strong{color:var(--color-accent)}
+    .toc{
+      display:none;border-bottom:1px solid var(--color-border);background:var(--color-bg-alt)
+    }
+    .toc.open{display:block}
+    .toc-inner{padding:22px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .toc a{text-decoration:none;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--color-text-muted)}
+    .toc a:hover,.toc a:focus{background:#fff;color:var(--color-accent)}
+    main{padding:58px 0}
+    section{scroll-margin-top:90px;margin:0 0 80px}
+    .section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:28px}
+    .num{font:600 12px "IBM Plex Mono";color:var(--color-accent);padding-top:5px;min-width:34px}
+    .lead{font-size:17px;color:var(--color-text-muted);max-width:760px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .card{
+      border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;
+      padding:24px;box-shadow:var(--shadow)
+    }
+    .visual{
+      border:1px solid var(--color-border);border-radius:var(--radius);background:var(--color-bg-alt);
+      overflow:hidden;margin:24px 0;
+    }
+    .visual svg{display:block;width:100%;height:auto}
+    .caption{padding:12px 16px;border-top:1px solid var(--color-border);font-size:12px;color:var(--color-text-muted)}
+    .pill{display:inline-block;font:600 11px "IBM Plex Mono";color:var(--color-accent);background:var(--color-accent-soft);padding:5px 8px;border-radius:7px;margin-bottom:10px}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .small-card{padding:18px;border:1px solid var(--color-border);border-radius:14px;background:#fff}
+    .small-card h3{font-size:16px;margin-bottom:7px}
+    .small-card p{font-size:13px;color:var(--color-text-muted);margin:0}
+    .callout{border-left:3px solid var(--color-accent);background:var(--color-accent-soft);padding:18px 20px;border-radius:0 12px 12px 0;margin:24px 0}
+    .callout strong{display:block;margin-bottom:5px}
+    .warning{border-left-color:var(--color-accent-alt);background:#FBF4EF}
+    table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border:1px solid var(--color-border);border-radius:14px;overflow:hidden}
+    th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--color-border);vertical-align:top}
+    th{background:var(--color-bg-alt);font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.04em}
+    tr:last-child td{border-bottom:0}
+    .stepper{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--color-border);border-radius:16px;overflow:hidden}
+    .step{padding:18px 12px;background:#fff;border-right:1px solid var(--color-border);min-height:150px}
+    .step:last-child{border-right:0}
+    .step b{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 12px "IBM Plex Mono";margin-bottom:12px}
+    .step strong{font-size:13px;display:block}
+    .step span{display:block;color:var(--color-text-muted);font-size:12px;margin-top:5px}
+    .accordion{border-top:1px solid var(--color-border)}
+    details{border-bottom:1px solid var(--color-border);padding:0}
+    summary{cursor:pointer;list-style:none;padding:17px 0;font-weight:600}
+    summary::-webkit-details-marker{display:none}
+    details p{color:var(--color-text-muted);margin:0 0 18px;max-width:760px}
+    .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .key{border:1px solid var(--color-border);border-radius:16px;padding:22px;background:#fff}
+    .key .icon{font:600 14px "IBM Plex Mono";color:var(--color-accent);margin-bottom:12px}
+    .key p{font-size:13px;color:var(--color-text-muted);margin:0}
+    .nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
+    .nav a{border:1px solid var(--color-border);border-radius:14px;padding:18px;text-decoration:none;background:#fff}
+    .nav a:hover{border-color:var(--color-accent);box-shadow:var(--shadow)}
+    .nav small{display:block;color:var(--color-text-muted);font:500 10px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.08em}
+    .nav strong{display:block;margin-top:6px}
+    footer{border-top:1px solid var(--color-border);padding:28px 0 42px;color:var(--color-text-muted);font-size:12px}
+    .top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid var(--color-border);background:#fff;border-radius:50%;cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+    .top.show{opacity:1;pointer-events:auto}
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .mono{font-family:"IBM Plex Mono",monospace}
+    @media(max-width:900px){
+      .cards{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr 1fr}
+      .step{border-right:0;border-bottom:1px solid var(--color-border)}
+      .toc-inner{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:680px){
+      .header-inner,.container{width:min(var(--max),calc(100% - 28px))}
+      .hero{padding:50px 0 38px}.grid,.keys,.nav{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr}.toc-inner{grid-template-columns:1fr}
+      .stepper{grid-template-columns:1fr}
+      .step{min-height:auto;border-right:0}
+      .hero p{font-size:16px}.section-head{display:block}.num{margin-bottom:8px}
+      table{font-size:12px;display:block;overflow-x:auto}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}
+    }
+    :focus-visible{outline:3px solid rgba(31,111,84,.3);outline-offset:3px}
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="Retour au début">
+        Filière Audiovisuel
+        <small>Support de cours · Module 5</small>
+      </a>
+      <button class="toc-toggle" id="tocToggle" aria-expanded="false" aria-controls="toc">Sommaire</button>
+    </div>
+  </header>
+
+  <div class="toc" id="toc">
+    <nav class="container toc-inner" aria-label="Sommaire de la leçon">
+      <a href="#intro">01 · Comprendre</a>
+      <a href="#passes">02 · Passes</a>
+      <a href="#alpha">03 · Alpha</a>
+      <a href="#nodes">04 · Nodes</a>
+      <a href="#keying">05 · Keying</a>
+      <a href="#tracking">06 · Tracking</a>
+      <a href="#integration">07 · Intégration</a>
+      <a href="#grain">08 · Grain</a>
+      <a href="#workflow">09 · Workflow</a>
+      <a href="#retenir">10 · À retenir</a>
+    </nav>
+  </div>
+
+  <div id="top"></div>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Leçon 28 · Module 5</span>
+      <h1>Compositing</h1>
+      <p>Assembler plusieurs sources dans une image homogène, en contrôlant les couches, les masques, les effets et l’intégration finale.</p>
+      <div class="meta">
+        <span>OBJECTIF <strong>Assembler plusieurs sources dans une image homogène.</strong></span>
+        <span>NIVEAU <strong>Intermédiaire</strong></span>
+        <span>DURÉE <strong>15 min</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <section id="intro" class="reveal">
+      <div class="section-head">
+        <div class="num">01</div>
+        <div>
+          <h2>Comprendre le compositing</h2>
+          <p class="lead">Le compositing consiste à réunir des éléments produits par différentes sources — vidéo, rendu 3D, images, masques ou effets — afin de produire une seule image cohérente.</p>
+        </div>
+      </div>
+
+      <div class="visual" role="img" aria-labelledby="v1title">
+        <svg viewBox="0 0 1100 390" xmlns="http://www.w3.org/2000/svg">
+          <title id="v1title">Chaîne de compositing, des sources vers l'image finale</title>
+          <rect width="1100" height="390" fill="#F6F8F6"/>
+          <g font-family="Inter, sans-serif">
+            <g transform="translate(35 75)">
+              <rect width="170" height="90" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="85" y="35" text-anchor="middle" font-weight="700" fill="#0B0F0D">SOURCES</text>
+              <text x="85" y="59" text-anchor="middle" font-size="13" fill="#5A6560">vidéo · 3D · images</text>
+            </g>
+            <g transform="translate(250 75)">
+              <rect width="170" height="90" rx="14" fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="85" y="35" text-anchor="middle" font-weight="700" fill="#1F6F54">PASSES</text>
+              <text x="85" y="59" text-anchor="middle" font-size="13" fill="#5A6560">lumière · ombres · Z</text>
+            </g>
+            <g transform="translate(465 75)">
+              <rect width="170" height="90" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="85" y="35" text-anchor="middle" font-weight="700" fill="#0B0F0D">ISOLATION</text>
+              <text x="85" y="59" text-anchor="middle" font-size="13" fill="#5A6560">alpha · keying · masques</text>
+            </g>
+            <g transform="translate(680 75)">
+              <rect width="170" height="90" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="85" y="35" text-anchor="middle" font-weight="700" fill="#0B0F0D">MOUVEMENT</text>
+              <text x="85" y="59" text-anchor="middle" font-size="13" fill="#5A6560">tracking · stabilisation</text>
+            </g>
+            <g transform="translate(895 75)">
+              <rect width="170" height="90" rx="14" fill="#0B0F0D"/>
+              <text x="85" y="35" text-anchor="middle" font-weight="700" fill="#fff">FINAL</text>
+              <text x="85" y="59" text-anchor="middle" font-size="13" fill="#E7F2ED">image homogène</text>
+            </g>
+            <g stroke="#1F6F54" stroke-width="2" fill="none">
+              <path d="M205 120h45"/><path d="M420 120h45"/><path d="M635 120h45"/><path d="M850 120h45"/>
+            </g>
+            <g fill="#1F6F54">
+              <path d="M245 114l10 6-10 6z"/><path d="M460 114l10 6-10 6z"/><path d="M675 114l10 6-10 6z"/><path d="M890 114l10 6-10 6z"/>
+            </g>
+            <text x="550" y="245" text-anchor="middle" font-size="15" font-weight="600" fill="#0B0F0D">Le but n’est pas seulement d’empiler des images :</text>
+            <text x="550" y="273" text-anchor="middle" font-size="14" fill="#5A6560">chaque source doit partager la même logique de lumière, de perspective, de mouvement et de texture.</text>
+          </g>
+        </svg>
+        <div class="caption">Principe général : chaque étape prépare l’image pour la suivante.</div>
+      </div>
+
+      <div class="callout">
+        <strong>À retenir</strong>
+        Un bon compositing est souvent invisible : le spectateur doit percevoir une seule scène, pas l’assemblage de plusieurs sources.
+      </div>
+    </section>
+
+    <section id="passes" class="reveal">
+      <div class="section-head">
+        <div class="num">02</div>
+        <div>
+          <h2>Les passes : reconstruire l’image</h2>
+          <p class="lead">Les passes sont des sorties séparées d’un rendu. Elles permettent de modifier certains aspects de l’image sans recalculer toute la scène.</p>
+        </div>
+      </div>
+
+      <div class="visual" role="img" aria-labelledby="v2title">
+        <svg viewBox="0 0 1100 430" xmlns="http://www.w3.org/2000/svg">
+          <title id="v2title">Exemple de passes de rendu superposées</title>
+          <rect width="1100" height="430" fill="#F6F8F6"/>
+          <g font-family="Inter, sans-serif">
+            <g transform="translate(55 60)">
+              <rect width="230" height="130" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <rect x="18" y="18" width="194" height="62" rx="8" fill="#0B0F0D"/>
+              <circle cx="80" cy="49" r="22" fill="#E7F2ED"/><rect x="112" y="34" width="72" height="30" rx="5" fill="#1F6F54"/>
+              <text x="115" y="107" text-anchor="middle" font-weight="700">BEAUTY</text>
+              <text x="115" y="125" text-anchor="middle" font-size="11" fill="#5A6560">image de base</text>
+            </g>
+            <g transform="translate(310 60)">
+              <rect width="230" height="130" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <rect x="18" y="18" width="194" height="62" rx="8" fill="#E7F2ED"/>
+              <circle cx="80" cy="49" r="22" fill="#1F6F54"/><rect x="112" y="34" width="72" height="30" rx="5" fill="#0B0F0D"/>
+              <text x="115" y="107" text-anchor="middle" font-weight="700">DIFFUSE</text>
+              <text x="115" y="125" text-anchor="middle" font-size="11" fill="#5A6560">couleur diffuse</text>
+            </g>
+            <g transform="translate(565 60)">
+              <rect width="230" height="130" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <rect x="18" y="18" width="194" height="62" rx="8" fill="#0B0F0D"/>
+              <path d="M25 70L75 25 125 70 175 25 205 58" stroke="#fff" stroke-width="8" fill="none" opacity=".75"/>
+              <text x="115" y="107" text-anchor="middle" font-weight="700">SHADOW</text>
+              <text x="115" y="125" text-anchor="middle" font-size="11" fill="#5A6560">ombres</text>
+            </g>
+            <g transform="translate(820 60)">
+              <rect width="230" height="130" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <rect x="18" y="18" width="194" height="62" rx="8" fill="#fff" stroke="#E3E8E5"/>
+              <circle cx="75" cy="49" r="20" fill="#E3E8E5"/><circle cx="155" cy="49" r="20" fill="#5A6560"/>
+              <text x="115" y="107" text-anchor="middle" font-weight="700">Z-DEPTH</text>
+              <text x="115" y="125" text-anchor="middle" font-size="11" fill="#5A6560">profondeur</text>
+            </g>
+            <path d="M165 215v35h770v-35" fill="none" stroke="#1F6F54" stroke-width="2"/>
+            <text x="550" y="285" text-anchor="middle" font-weight="700" fill="#1F6F54">RECONSTRUCTION</text>
+            <g transform="translate(270 315)">
+              <rect width="560" height="70" rx="12" fill="#fff" stroke="#1F6F54"/>
+              <text x="280" y="30" text-anchor="middle" font-weight="700">Contrôle séparé</text>
+              <text x="280" y="51" text-anchor="middle" font-size="12" fill="#5A6560">ajuster une lumière, une ombre ou une profondeur sans toucher au reste</text>
+            </g>
+          </g>
+        </svg>
+        <div class="caption">Les passes transforment un rendu « figé » en ensemble de contrôles exploitables au compositing.</div>
+      </div>
+
+      <div class="cards">
+        <div class="small-card"><span class="pill">BEAUTY</span><h3>Image principale</h3><p>Le rendu complet servant de référence visuelle.</p></div>
+        <div class="small-card"><span class="pill">DIFFUSE</span><h3>Couleur</h3><p>Permet d’intervenir sur la contribution diffuse.</p></div>
+        <div class="small-card"><span class="pill">SHADOW</span><h3>Ombres</h3><p>Contrôle des zones de contact et de profondeur.</p></div>
+        <div class="small-card"><span class="pill">Z-DEPTH</span><h3>Distance</h3><p>Une information utile pour flou, brume ou profondeur.</p></div>
+      </div>
+    </section>
+
+    <section id="alpha" class="reveal">
+      <div class="section-head">
+        <div class="num">03</div>
+        <div>
+          <h2>Alpha et masques</h2>
+          <p class="lead">Le canal alpha décrit la transparence d’un pixel. Il permet de détacher un élément de son fond et de contrôler précisément où une opération doit agir.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="visual" role="img" aria-labelledby="v3title">
+          <svg viewBox="0 0 540 330" xmlns="http://www.w3.org/2000/svg">
+            <title id="v3title">Représentation d'une image RGBA et de son canal alpha</title>
+            <defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#fff"/><rect x="12" y="12" width="12" height="12" fill="#fff"/><rect x="12" width="12" height="12" fill="#E3E8E5"/><rect y="12" width="12" height="12" fill="#E3E8E5"/></pattern></defs>
+            <rect width="540" height="330" fill="#F6F8F6"/>
+            <rect x="35" y="50" width="210" height="210" rx="10" fill="url(#grid)" stroke="#E3E8E5"/>
+            <circle cx="140" cy="155" r="65" fill="#1F6F54"/><rect x="92" y="120" width="96" height="70" rx="15" fill="#0B0F0D"/>
+            <text x="140" y="292" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">RGB + ALPHA</text>
+            <rect x="295" y="50" width="210" height="210" rx="10" fill="#fff" stroke="#E3E8E5"/>
+            <circle cx="400" cy="155" r="65" fill="#0B0F0D"/><rect x="352" y="120" width="96" height="70" rx="15" fill="#fff"/>
+            <text x="400" y="292" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">ALPHA · MATTE</text>
+            <text x="270" y="158" text-anchor="middle" font-family="Inter" font-size="22" fill="#1F6F54">→</text>
+          </svg>
+        </div>
+        <div class="card">
+          <span class="pill">0 → 1</span>
+          <h3>Une information de transparence</h3>
+          <p>Un alpha proche de <strong>0</strong> indique une zone transparente ; un alpha proche de <strong>1</strong> indique une zone opaque. Les valeurs intermédiaires créent des contours semi-transparents.</p>
+          <div class="callout">
+            <strong>Bon réflexe</strong>
+            Inspecter le matte en noir et blanc avant de l’utiliser. Les défauts de bord sont souvent plus faciles à repérer ainsi.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="nodes" class="reveal">
+      <div class="section-head">
+        <div class="num">04</div>
+        <div>
+          <h2>Nodes : penser comme un graphe</h2>
+          <p class="lead">Dans un compositing nodal, chaque opération devient un bloc relié à d’autres blocs. Cette organisation rend le traitement lisible, modifiable et réutilisable.</p>
+        </div>
+      </div>
+
+      <div class="visual" role="img" aria-labelledby="v4title">
+        <svg viewBox="0 0 1100 430" xmlns="http://www.w3.org/2000/svg">
+          <title id="v4title">Graphe de nodes de compositing</title>
+          <rect width="1100" height="430" fill="#F6F8F6"/>
+          <g font-family="Inter, sans-serif">
+            <g stroke="#1F6F54" stroke-width="2" fill="none">
+              <path d="M195 135C240 135 240 105 285 105"/><path d="M195 270C240 270 240 300 285 300"/>
+              <path d="M445 105C500 105 500 185 555 185"/><path d="M445 300C500 300 500 215 555 215"/>
+              <path d="M715 200h90"/>
+            </g>
+            <g fill="#1F6F54">
+              <path d="M280 99l10 6-10 6z"/><path d="M280 294l10 6-10 6z"/><path d="M550 179l10 6-10 6z"/><path d="M550 209l10 6-10 6z"/><path d="M800 194l10 6-10 6z"/>
+            </g>
+            <g>
+              <rect x="45" y="90" width="150" height="90" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <text x="120" y="127" text-anchor="middle" font-weight="700">READ</text><text x="120" y="151" text-anchor="middle" font-size="12" fill="#5A6560">source / render</text>
+              <rect x="45" y="225" width="150" height="90" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <text x="120" y="262" text-anchor="middle" font-weight="700">MATTE</text><text x="120" y="286" text-anchor="middle" font-size="12" fill="#5A6560">alpha / masque</text>
+              <rect x="290" y="60" width="155" height="90" rx="12" fill="#E7F2ED" stroke="#1F6F54"/>
+              <text x="367" y="97" text-anchor="middle" font-weight="700" fill="#1F6F54">KEYER</text><text x="367" y="121" text-anchor="middle" font-size="12" fill="#5A6560">isoler</text>
+              <rect x="290" y="255" width="155" height="90" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <text x="367" y="292" text-anchor="middle" font-weight="700">MASK</text><text x="367" y="316" text-anchor="middle" font-size="12" fill="#5A6560">restreindre</text>
+              <rect x="560" y="160" width="155" height="90" rx="12" fill="#fff" stroke="#E3E8E5"/>
+              <text x="637" y="197" text-anchor="middle" font-weight="700">MERGE</text><text x="637" y="221" text-anchor="middle" font-size="12" fill="#5A6560">assembler</text>
+              <rect x="810" y="160" width="155" height="90" rx="12" fill="#0B0F0D"/>
+              <text x="887" y="197" text-anchor="middle" font-weight="700" fill="#fff">GRADE + GRAIN</text><text x="887" y="221" text-anchor="middle" font-size="12" fill="#E7F2ED">finition</text>
+            </g>
+          </g>
+        </svg>
+        <div class="caption">Le graphe se lit de gauche à droite : sources, traitements, fusion, puis sortie.</div>
+      </div>
+
+      <div class="grid">
+        <div class="card"><span class="pill">LOGIQUE</span><h3>Une opération = une responsabilité</h3><p>Évitez un seul bloc qui mélange keying, correction colorimétrique et finition. Des nodes séparés facilitent les corrections et le diagnostic.</p></div>
+        <div class="card"><span class="pill">ORGANISATION</span><h3>Nommer et regrouper</h3><p>Des noms explicites, des couleurs sobres et des groupes logiques permettent à une autre personne de comprendre rapidement le plan de compositing.</p></div>
+      </div>
+    </section>
+
+    <section id="keying" class="reveal">
+      <div class="section-head">
+        <div class="num">05</div>
+        <div>
+          <h2>Keying : isoler un sujet</h2>
+          <p class="lead">Le keying transforme une caractéristique du fond — souvent une couleur — en masque. L’objectif est d’obtenir une silhouette propre sans détruire les détails du sujet.</p>
+        </div>
+      </div>
+
+      <div class="visual" role="img" aria-labelledby="v5title">
+        <svg viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg">
+          <title id="v5title">Avant et après keying d'un sujet</title>
+          <defs><pattern id="chk" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="11" height="11" fill="#fff"/><rect x="11" y="11" width="11" height="11" fill="#fff"/><rect x="11" width="11" height="11" fill="#E3E8E5"/><rect y="11" width="11" height="11" fill="#E3E8E5"/></pattern></defs>
+          <rect width="1100" height="420" fill="#F6F8F6"/>
+          <g font-family="Inter">
+            <rect x="55" y="60" width="430" height="280" rx="14" fill="#E7F2ED" stroke="#E3E8E5"/>
+            <circle cx="270" cy="180" r="66" fill="#fff" stroke="#0B0F0D" stroke-width="5"/>
+            <path d="M205 265Q270 210 335 265" fill="#0B0F0D"/>
+            <text x="270" y="370" text-anchor="middle" font-weight="700">AVANT · FOND À ISOLER</text>
+            <rect x="615" y="60" width="430" height="280" rx="14" fill="url(#chk)" stroke="#E3E8E5"/>
+            <circle cx="830" cy="180" r="66" fill="#fff" stroke="#0B0F0D" stroke-width="5"/>
+            <path d="M765 265Q830 210 895 265" fill="#0B0F0D"/>
+            <text x="830" y="370" text-anchor="middle" font-weight="700">APRÈS · ALPHA PROPRE</text>
+            <path d="M500 200h100" stroke="#1F6F54" stroke-width="3"/>
+            <path d="M590 194l12 6-12 6z" fill="#1F6F54"/>
+          </g>
+        </svg>
+        <div class="caption">Étapes typiques : key → nettoyage du matte → dépollution des contours → fusion avec le nouveau fond.</div>
+      </div>
+
+      <div class="cards">
+        <div class="small-card"><span class="pill">01</span><h3>Key</h3><p>Construire une première sélection du fond.</p></div>
+        <div class="small-card"><span class="pill">02</span><h3>Clean</h3><p>Retirer les trous et zones parasites du matte.</p></div>
+        <div class="small-card"><span class="pill">03</span><h3>Edge</h3><p>Contrôler les contours, le spill et les franges.</p></div>
+        <div class="small-card"><span class="pill">04</span><h3>Merge</h3><p>Intégrer le sujet dans son nouvel environnement.</p></div>
+      </div>
+
+      <div class="callout warning">
+        <strong>Attention aux contours</strong>
+        Un halo autour du sujet, une couleur résiduelle du fond ou un contour trop net sont des indices fréquents d’une incrustation mal intégrée.
+      </div>
+    </section>
+
+    <section id="tracking" class="reveal">
+      <div class="section-head">
+        <div class="num">06</div>
+        <div>
+          <h2>Tracking : faire suivre les éléments</h2>
+          <p class="lead">Le tracking analyse le mouvement d’une image afin d’appliquer ce mouvement à un autre élément. C’est essentiel lorsqu’un graphique, un écran ou un effet doit rester attaché à une scène en mouvement.</p>
+        </div>
+      </div>
+
+      <div class="visual" role="img" aria-labelledby="v6title">
+        <svg viewBox="0 0 1100 410" xmlns="http://www.w3.org/2000/svg">
+          <title id="v6title">Suivi de mouvement avec points de tracking</title>
+          <rect width="1100" height="410" fill="#F6F8F6"/>
+          <g font-family="Inter">
+            <rect x="80" y="55" width="600" height="290" rx="16" fill="#fff" stroke="#E3E8E5"/>
+            <path d="M125 290L260 115L410 210L560 90L635 265" fill="none" stroke="#E3E8E5" stroke-width="20" stroke-linecap="round"/>
+            <rect x="360" y="145" width="160" height="100" rx="8" fill="#E7F2ED" stroke="#1F6F54" stroke-width="2"/>
+            <g fill="none" stroke="#1F6F54" stroke-width="2">
+              <path d="M385 170h30m-15-15v30M485 215h30m-15-15v30M560 125h30m-15-15v30"/>
+            </g>
+            <path d="M400 170C460 135 520 180 575 125" fill="none" stroke="#1F6F54" stroke-width="2" stroke-dasharray="6 6"/>
+            <text x="380" y="305" font-size="12" fill="#5A6560">points suivis</text>
+            <g transform="translate(750 90)">
+              <rect width="280" height="210" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="140" y="40" text-anchor="middle" font-weight="700">TYPE DE TRACKING</text>
+              <text x="25" y="78" font-size="13">Point tracking</text><text x="25" y="99" font-size="11" fill="#5A6560">un ou plusieurs points</text>
+              <text x="25" y="132" font-size="13">Planar tracking</text><text x="25" y="153" font-size="11" fill="#5A6560">une surface / perspective</text>
+              <text x="25" y="186" font-size="13">Camera tracking</text><text x="25" y="207" font-size="11" fill="#5A6560">mouvement de caméra 3D</text>
+            </g>
+          </g>
+        </svg>
+        <div class="caption">Le mouvement extrait du plan devient une donnée réutilisable par un élément graphique ou un effet.</div>
+      </div>
+    </section>
+
+    <section id="integration" class="reveal">
+      <div class="section-head">
+        <div class="num">07</div>
+        <div>
+          <h2>Intégration : rendre l’image crédible</h2>
+          <p class="lead">Après le détourage et le tracking, le travail le plus important est souvent l’intégration. Chaque élément doit partager les mêmes indices visuels que la scène.</p>
+        </div>
+      </div>
+
+      <div class="visual" role="img" aria-labelledby="v7title">
+        <svg viewBox="0 0 1100 430" xmlns="http://www.w3.org/2000/svg">
+          <title id="v7title">Les différents indices d'une intégration crédible</title>
+          <rect width="1100" height="430" fill="#F6F8F6"/>
+          <g font-family="Inter">
+            <rect x="60" y="55" width="980" height="300" rx="16" fill="#fff" stroke="#E3E8E5"/>
+            <rect x="105" y="105" width="250" height="170" rx="10" fill="#E7F2ED"/>
+            <circle cx="230" cy="165" r="43" fill="#fff" stroke="#0B0F0D" stroke-width="4"/>
+            <path d="M165 250Q230 195 295 250" fill="#0B0F0D"/>
+            <text x="230" y="318" text-anchor="middle" font-weight="700">SUJET</text>
+            <g stroke="#1F6F54" stroke-width="2">
+              <path d="M395 130h120"/><path d="M395 180h120"/><path d="M395 230h120"/><path d="M395 280h120"/>
+            </g>
+            <g fill="#1F6F54"><circle cx="405" cy="130" r="5"/><circle cx="405" cy="180" r="5"/><circle cx="405" cy="230" r="5"/><circle cx="405" cy="280" r="5"/></g>
+            <g font-size="14" fill="#0B0F0D">
+              <text x="545" y="135">Échelle &amp; perspective</text>
+              <text x="545" y="185">Lumière &amp; température</text>
+              <text x="545" y="235">Ombres &amp; réflexions</text>
+              <text x="545" y="285">Profondeur &amp; mouvement</text>
+            </g>
+            <rect x="770" y="105" width="220" height="170" rx="10" fill="#0B0F0D"/>
+            <text x="880" y="155" text-anchor="middle" fill="#E7F2ED" font-weight="700">IMAGE CRÉDIBLE</text>
+            <path d="M820 205h120" stroke="#1F6F54" stroke-width="6"/>
+            <path d="M820 230h90" stroke="#fff" stroke-width="3" opacity=".7"/>
+            <text x="880" y="260" text-anchor="middle" fill="#fff" font-size="12">les indices concordent</text>
+          </g>
+        </svg>
+        <div class="caption">Une intégration convaincante repose sur plusieurs indices cohérents, pas sur une seule correction.</div>
+      </div>
+
+      <table>
+        <thead><tr><th scope="col">Contrôle</th><th scope="col">Question à se poser</th><th scope="col">Résultat attendu</th></tr></thead>
+        <tbody>
+          <tr><td>Échelle</td><td>Le sujet a-t-il la bonne taille par rapport à la scène ?</td><td>Proportions crédibles.</td></tr>
+          <tr><td>Lumière</td><td>La direction et la température correspondent-elles ?</td><td>Éclairage cohérent.</td></tr>
+          <tr><td>Ombres</td><td>Le sujet influence-t-il son environnement ?</td><td>Contact et profondeur lisibles.</td></tr>
+          <tr><td>Profondeur</td><td>Le flou et la netteté correspondent-ils à la distance ?</td><td>Perspective atmosphérique crédible.</td></tr>
+          <tr><td>Mouvement</td><td>Le motion blur correspond-il à celui du plan ?</td><td>Mouvement homogène.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="grain" class="reveal">
+      <div class="section-head">
+        <div class="num">08</div>
+        <div>
+          <h2>Le grain et la finition</h2>
+          <p class="lead">Les sources numériques peuvent avoir des textures différentes. Ajouter ou harmoniser le grain à la fin aide à faire coexister les éléments dans une même image.</p>
+        </div>
+      </div>
+
+      <div class="visual" role="img" aria-labelledby="v8title">
+        <svg viewBox="0 0 1100 390" xmlns="http://www.w3.org/2000/svg">
+          <title id="v8title">Comparaison d'un élément trop propre et d'un élément harmonisé par le grain</title>
+          <rect width="1100" height="390" fill="#F6F8F6"/>
+          <g font-family="Inter">
+            <g transform="translate(70 60)">
+              <rect width="430" height="245" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <rect x="45" y="40" width="340" height="150" rx="8" fill="#E7F2ED"/>
+              <circle cx="215" cy="115" r="48" fill="#1F6F54"/>
+              <text x="215" y="225" text-anchor="middle" font-weight="700">SOURCE TROP PROPRE</text>
+            </g>
+            <g transform="translate(600 60)">
+              <rect width="430" height="245" rx="14" fill="#fff" stroke="#1F6F54"/>
+              <rect x="45" y="40" width="340" height="150" rx="8" fill="#E7F2ED"/>
+              <circle cx="215" cy="115" r="48" fill="#1F6F54"/>
+              <g fill="#0B0F0D" opacity=".16">
+                <circle cx="85" cy="65" r="1.5"/><circle cx="130" cy="110" r="1.2"/><circle cx="180" cy="75" r="1.4"/><circle cx="240" cy="150" r="1.2"/><circle cx="290" cy="85" r="1.5"/><circle cx="350" cy="125" r="1.2"/><circle cx="115" cy="165" r="1.4"/><circle cx="335" cy="160" r="1.3"/>
+              </g>
+              <text x="215" y="225" text-anchor="middle" font-weight="700">GRAIN HARMONISÉ</text>
+            </g>
+            <path d="M515 180h70" stroke="#1F6F54" stroke-width="3"/><path d="M575 174l12 6-12 6z" fill="#1F6F54"/>
+          </g>
+        </svg>
+        <div class="caption">La finition doit rester subtile : le grain harmonise l’image, il ne doit pas devenir le sujet.</div>
+      </div>
+
+      <div class="callout">
+        <strong>Ordre recommandé</strong>
+        Construire l’image → intégrer les éléments → harmoniser la couleur → ajouter la texture/grain → vérifier la sortie finale.
+      </div>
+
+      <div class="accordion">
+        <details>
+          <summary>Pourquoi les contours trahissent-ils un incrustage ?</summary>
+          <p>Parce que le contour contient souvent des pixels semi-transparents contaminés par l’ancien fond. Un matte trop dur ou trop doux peut également créer une silhouette artificielle.</p>
+        </details>
+        <details>
+          <summary>Pourquoi ajouter le grain à la fin ?</summary>
+          <p>Parce que les corrections et transformations peuvent modifier la texture. En ajoutant le grain après l’intégration, on donne aux différentes sources une texture finale commune.</p>
+        </details>
+        <details>
+          <summary>Quand utiliser un masque plutôt qu’un keyer ?</summary>
+          <p>Un masque est adapté lorsqu’on connaît précisément une zone à inclure ou exclure. Le keyer est utile lorsqu’une caractéristique de l’image permet de construire automatiquement une sélection, par exemple une couleur de fond.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="workflow" class="reveal">
+      <div class="section-head">
+        <div class="num">09</div>
+        <div>
+          <h2>Workflow de compositing</h2>
+          <p class="lead">Une méthode structurée évite de corriger trop tôt des détails qui seront ensuite modifiés par une étape précédente.</p>
+        </div>
+      </div>
+
+      <div class="stepper" aria-label="Étapes du workflow">
+        <div class="step"><b>01</b><strong>Préparer</strong><span>Organiser les sources.</span></div>
+        <div class="step"><b>02</b><strong>Isoler</strong><span>Alpha, masques, keying.</span></div>
+        <div class="step"><b>03</b><strong>Suivre</strong><span>Tracking du mouvement.</span></div>
+        <div class="step"><b>04</b><strong>Assembler</strong><span>Fusion des éléments.</span></div>
+        <div class="step"><b>05</b><strong>Éclairer</strong><span>Couleur et lumière.</span></div>
+        <div class="step"><b>06</b><strong>Intégrer</strong><span>Ombres, profondeur, flou.</span></div>
+        <div class="step"><b>07</b><strong>Finir</strong><span>Grain et contrôle final.</span></div>
+      </div>
+    </section>
+
+    <section id="retenir" class="reveal">
+      <div class="section-head">
+        <div class="num">10</div>
+        <div>
+          <h2>Points clés à retenir</h2>
+          <p class="lead">Le compositing est une discipline de cohérence : les sources doivent finir par sembler appartenir à la même image.</p>
+        </div>
+      </div>
+
+      <div class="keys">
+        <div class="key"><div class="icon">01 / PASSES</div><h3>Contrôler</h3><p>Les passes permettent d’ajuster séparément lumière, ombres, profondeur et autres composantes.</p></div>
+        <div class="key"><div class="icon">02 / ALPHA</div><h3>Isoler</h3><p>Alpha et masques définissent précisément les zones visibles et les zones affectées.</p></div>
+        <div class="key"><div class="icon">03 / NODES</div><h3>Structurer</h3><p>Un graphe clair rend les opérations compréhensibles et faciles à modifier.</p></div>
+        <div class="key"><div class="icon">04 / KEYING</div><h3>Détourer</h3><p>Un matte propre est indispensable avant toute intégration crédible.</p></div>
+        <div class="key"><div class="icon">05 / TRACKING</div><h3>Synchroniser</h3><p>Le mouvement extrait d’un plan peut piloter un élément ajouté.</p></div>
+        <div class="key"><div class="icon">06 / INTÉGRATION</div><h3>Harmoniser</h3><p>Échelle, lumière, ombres, profondeur et mouvement doivent raconter la même scène.</p></div>
+      </div>
+
+      <div class="nav">
+        <a href="#top"><small>Retour au début</small><strong>↑ Revoir la leçon 28</strong></a>
+        <a href="#next"><small>Navigation</small><strong>Leçon 29 — Cinema 4D →</strong></a>
+      </div>
+      <div id="next" style="height:1px"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div><strong>Filière Audiovisuel</strong> · Module 5 · Leçon 28 — Compositing</div>
+      <div style="margin-top:6px">Support pédagogique autonome · HTML / CSS / JavaScript natifs</div>
+    </div>
+  </footer>
+
+  <button class="top" id="topBtn" aria-label="Revenir en haut">↑</button>
+
+  <script>
+    const progressBar = document.getElementById('progressBar');
+    const topBtn = document.getElementById('topBtn');
+    const tocToggle = document.getElementById('tocToggle');
+    const toc = document.getElementById('toc');
+
+    function updateScroll(){
+      const doc = document.documentElement;
+      const scrollable = doc.scrollHeight - doc.clientHeight;
+      const pct = scrollable > 0 ? (doc.scrollTop / scrollable) * 100 : 0;
+      progressBar.style.width = pct + '%';
+      topBtn.classList.toggle('show', doc.scrollTop > 500);
+    }
+    window.addEventListener('scroll', updateScroll, {passive:true});
+    updateScroll();
+
+    tocToggle.addEventListener('click', () => {
+      const open = toc.classList.toggle('open');
+      tocToggle.setAttribute('aria-expanded', open);
+    });
+    toc.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      toc.classList.remove('open');
+      tocToggle.setAttribute('aria-expanded','false');
+    }));
+    topBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!reduced && 'IntersectionObserver' in window){
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {threshold:.08});
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    } else {
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    }
+  </script>
+</body>
+</html>

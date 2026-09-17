@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 14 — Identification et analyse des risques. Filière Gestion de Projet.">
+<title>Leçon 14 — Identification et analyse des risques | Gestion de Projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+  --font-display:"Manrope",sans-serif;
+  --font-body:"Inter",sans-serif;
+  --font-mono:"IBM Plex Mono",monospace;
+  --shadow:0 14px 36px color-mix(in srgb,var(--color-text) 8%,var(--color-bg));
+  --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);line-height:1.7}
+a{color:var(--color-text);text-decoration:none}
+button,a{outline-offset:4px}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--color-accent)}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;background:var(--color-accent)}
+.site-header{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:var(--font-display);font-weight:800;letter-spacing:-.03em;display:flex;align-items:center;gap:12px}
+.brand-mark{width:30px;height:30px;border:2px solid var(--color-text);position:relative}
+.brand-mark:after{content:"";position:absolute;width:7px;height:7px;background:var(--color-accent);right:-2px;bottom:-2px}
+.nav-links{display:flex;gap:16px;align-items:center;font-size:.88rem}
+.nav-links a{color:var(--muted)}
+.nav-links a:hover{color:var(--color-accent)}
+.menu-btn{display:none;border:1px solid var(--line);background:var(--color-bg);color:var(--color-text);padding:8px 11px;border-radius:8px}
+.container{width:min(1120px,calc(100% - 40px));margin:auto}
+.hero{padding:76px 0 44px}
+.eyebrow{font:600 .78rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;letter-spacing:-.035em}
+h1{font-size:clamp(2.3rem,6vw,4.8rem);max-width:850px;margin:14px 0 22px}
+.hero-lead{max-width:720px;font-size:1.08rem;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
+.badge{font:500 .76rem var(--font-mono);padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--soft)}
+.badge.accent{border-color:var(--color-accent);background:var(--soft10)}
+.toc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:26px}
+.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.toc a{padding:10px 12px;border-left:2px solid var(--line);font-size:.9rem}
+.toc a:hover{border-color:var(--color-accent);background:var(--soft)}
+section{padding:70px 0;scroll-margin-top:70px}
+section:nth-of-type(even){background:var(--soft)}
+.section-inner{max-width:900px;margin:auto}
+h2{font-size:clamp(1.75rem,3vw,2.7rem);margin:8px 0 18px}
+h3{font-size:1.2rem;margin-top:28px}
+p{max-width:720px}
+.kicker{font:500 .72rem var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.callout{margin:28px 0;padding:20px 22px;border-left:5px solid var(--color-accent);background:var(--soft10);border-radius:0 12px 12px 0}
+.callout strong{display:block;font-family:var(--font-display);margin-bottom:4px}
+.diagram{margin:30px 0;padding:18px;border:1px solid var(--line);background:var(--color-bg);border-radius:16px;overflow:auto;box-shadow:var(--shadow)}
+svg{display:block;max-width:100%;height:auto;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}
+.card{padding:20px;border:1px solid var(--line);background:var(--color-bg);border-radius:14px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .num{font:600 1.1rem var(--font-mono);color:var(--color-accent)}
+.card h3{margin:8px 0 7px}
+.card p{font-size:.92rem;margin:0;color:var(--muted)}
+.table-wrap{overflow-x:auto;margin:26px 0;border:1px solid var(--line);border-radius:14px}
+table{width:100%;min-width:700px;border-collapse:collapse;background:var(--color-bg)}
+th,td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font:600 .76rem var(--font-mono);text-transform:uppercase;letter-spacing:.05em;background:var(--soft);white-space:nowrap}
+td{font-size:.9rem}
+tbody tr:hover{background:var(--soft)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;background:var(--soft10);padding:2px 6px;border-radius:5px}
+.risk-matrix{display:grid;grid-template-columns:44px repeat(5,1fr);grid-template-rows:repeat(6,54px);gap:4px;max-width:680px;margin:24px auto}
+.risk-matrix div{border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:600 .76rem var(--font-mono);background:var(--soft)}
+.risk-matrix .axis{border:0;background:transparent;color:var(--muted)}
+.risk-matrix .cell{background:var(--soft10)}
+.risk-matrix .priority{border:2px solid var(--color-accent);background:var(--soft10)}
+.tabs{margin:30px 0}
+.tab-list{display:flex;gap:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab-btn{border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);padding:11px 14px;font:600 .86rem var(--font-body);cursor:pointer}
+.tab-btn[aria-selected="true"]{color:var(--color-text);border-color:var(--color-accent)}
+.tab-panel{padding:22px 0}
+.tab-panel[hidden]{display:none}
+details{border-top:1px solid var(--line);padding:15px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-family:var(--font-display);font-weight:700}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:32px 0}
+.step{position:relative;padding:17px 12px;border-top:3px solid var(--color-neutral);background:var(--color-bg)}
+.step.active{border-color:var(--color-accent)}
+.step .n{font:600 .75rem var(--font-mono);color:var(--color-accent)}
+.step strong{display:block;font-family:var(--font-display);font-size:.9rem;margin-top:5px}
+.step small{display:block;color:var(--muted);font-size:.78rem;line-height:1.4;margin-top:4px}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.summary-item{padding:19px;border:1px solid var(--line);background:var(--color-bg);border-radius:12px}
+.summary-item strong{font-family:var(--font-display)}
+.pilot{font-family:var(--font-mono);background:var(--soft10);border:1px solid var(--line);padding:20px;border-radius:12px;margin:24px 0;font-size:.85rem;white-space:pre-wrap}
+.nav-bottom{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;padding:38px 0}
+.nav-card{border:1px solid var(--line);padding:16px;border-radius:12px;background:var(--color-bg)}
+.nav-card.next{text-align:right}
+.nav-card:hover{border-color:var(--color-accent)}
+.nav-card small{display:block;color:var(--muted);font:500 .7rem var(--font-mono);text-transform:uppercase}
+.nav-card strong{font-family:var(--font-display);display:block;margin-top:5px}
+.top-btn{position:fixed;right:20px;bottom:20px;z-index:800;border:1px solid var(--line);background:var(--color-bg);color:var(--color-text);border-radius:50%;width:44px;height:44px;cursor:pointer;box-shadow:var(--shadow)}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.82rem}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+  .nav-links{display:none}
+  .menu-btn{display:block}
+  .nav-links.open{display:flex;position:absolute;top:58px;left:0;right:0;padding:15px 24px;background:var(--color-bg);border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start}
+  .toc-grid{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr 1fr}
+  .summary-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .container{width:min(100% - 28px,1120px)}
+  .hero{padding-top:54px}
+  h1{font-size:2.35rem}
+  .toc-grid{grid-template-columns:1fr}
+  section{padding:50px 0}
+  .stepper{grid-template-columns:1fr}
+  .nav-bottom{grid-template-columns:1fr}
+  .nav-card.next{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="site-header">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span>Gestion de Projet</a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks">Sommaire</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#identification">Identification</a>
+      <a href="#probabilite">Probabilité</a>
+      <a href="#impact">Impact</a>
+      <a href="#matrice">Matrice</a>
+      <a href="#priorisation">Priorisation</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">Module 3 · Budget, ressources et risques</div>
+    <h1>Identification et analyse des risques</h1>
+    <p class="hero-lead">Identifier un risque ne consiste pas seulement à prévoir ce qui pourrait mal se passer : il faut aussi apprécier sa probabilité, mesurer son impact et déterminer son niveau de priorité.</p>
+    <div class="meta" aria-label="Informations sur la leçon">
+      <span class="badge accent">LEÇON 14</span>
+      <span class="badge">Intermédiaire</span>
+      <span class="badge">18 min</span>
+      <span class="badge">Objectif : identifier et évaluer</span>
+    </div>
+  </div>
+</section>
+
+<section class="toc" aria-label="Sommaire">
+  <div class="container">
+    <div class="kicker">Sommaire de la leçon</div>
+    <div class="toc-grid">
+      <a href="#identification">01 · Identifier les risques</a>
+      <a href="#typologie">02 · Internes / externes</a>
+      <a href="#probabilite">03 · Probabilité</a>
+      <a href="#impact">04 · Impact</a>
+      <a href="#matrice">05 · Matrice des risques</a>
+      <a href="#priorisation">06 · Priorisation</a>
+      <a href="#pilotage">07 · Fiche de pilotage</a>
+      <a href="#synthese">08 · Points clés</a>
+    </div>
+  </div>
+</section>
+
+<section id="identification">
+  <div class="container section-inner reveal">
+    <div class="kicker">01 · Détection</div>
+    <h2>Identifier les risques</h2>
+    <p>Un <strong>risque</strong> est un événement ou une situation incertaine qui, s'il se produit, peut influencer les objectifs du projet. L'identification consiste à rechercher systématiquement les événements susceptibles de perturber le périmètre, les délais, les coûts, les ressources ou la qualité.</p>
+
+    <div class="diagram" role="img" aria-label="Schéma montrant le passage des objectifs du projet vers les sources de risques puis vers des risques identifiés">
+      <svg viewBox="0 0 900 250" width="900" height="250" xmlns="http://www.w3.org/2000/svg">
+        <g font-family="Inter, sans-serif" fill="#14213D">
+          <rect x="25" y="78" width="190" height="94" rx="12" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="120" y="112" text-anchor="middle" font-weight="700">OBJECTIFS</text>
+          <text x="120" y="138" text-anchor="middle" font-size="13">coûts · délais</text>
+          <text x="120" y="158" text-anchor="middle" font-size="13">qualité · périmètre</text>
+          <path d="M215 125 H310" stroke="#FF9F1C" stroke-width="3"/>
+          <path d="M296 117 L310 125 L296 133" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+          <rect x="310" y="52" width="250" height="146" rx="12" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="435" y="88" text-anchor="middle" font-weight="700">SOURCES D'INCERTITUDE</text>
+          <text x="435" y="116" text-anchor="middle" font-size="13">ressources</text>
+          <text x="435" y="140" text-anchor="middle" font-size="13">fournisseurs · organisation</text>
+          <text x="435" y="164" text-anchor="middle" font-size="13">marché · environnement</text>
+          <path d="M560 125 H655" stroke="#FF9F1C" stroke-width="3"/>
+          <path d="M641 117 L655 125 L641 133" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+          <rect x="655" y="78" width="220" height="94" rx="12" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="765" y="112" text-anchor="middle" font-weight="700">RISQUES IDENTIFIÉS</text>
+          <text x="765" y="138" text-anchor="middle" font-size="13">événement + cause</text>
+          <text x="765" y="158" text-anchor="middle" font-size="13">+ conséquence possible</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="callout">
+      <strong>💡 À retenir</strong>
+      Un risque doit être formulé de manière suffisamment précise pour pouvoir ensuite être évalué. Une formulation utile relie l'événement incertain à sa cause et à la conséquence possible sur le projet.
+    </div>
+
+    <div class="cards">
+      <article class="card"><div class="num">01</div><h3>Cause</h3><p>La situation ou le facteur à l'origine de l'incertitude.</p></article>
+      <article class="card"><div class="num">02</div><h3>Événement</h3><p>Ce qui pourrait effectivement se produire pendant le projet.</p></article>
+      <article class="card"><div class="num">03</div><h3>Conséquence</h3><p>L'effet potentiel sur un objectif du projet.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="typologie">
+  <div class="container section-inner reveal">
+    <div class="kicker">02 · Typologie</div>
+    <h2>Risques internes et externes</h2>
+    <p>La source du risque aide l'équipe à comprendre où chercher l'incertitude et quelles informations surveiller. La distinction interne/externe ne remplace pas l'évaluation : elle facilite surtout la cartographie initiale.</p>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Types de risques">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-interne" id="btn-interne">Risques internes</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-externe" id="btn-externe">Risques externes</button>
+      </div>
+      <div class="tab-panel" id="tab-interne" role="tabpanel" aria-labelledby="btn-interne">
+        <p>Ils prennent naissance dans l'environnement que l'équipe ou l'organisation du projet peut en partie influencer.</p>
+        <div class="cards">
+          <article class="card"><div class="num">A</div><h3>Ressources</h3><p>Disponibilité, compétences ou capacité insuffisante.</p></article>
+          <article class="card"><div class="num">B</div><h3>Organisation</h3><p>Coordination, responsabilités ou décisions trop lentes.</p></article>
+          <article class="card"><div class="num">C</div><h3>Technique</h3><p>Défaillance, intégration ou dépendance technique.</p></article>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-externe" role="tabpanel" aria-labelledby="btn-externe" hidden>
+        <p>Ils proviennent de facteurs situés en dehors du contrôle direct de l'équipe projet.</p>
+        <div class="cards">
+          <article class="card"><div class="num">A</div><h3>Fournisseurs</h3><p>Retard, indisponibilité ou évolution d'une prestation.</p></article>
+          <article class="card"><div class="num">B</div><h3>Marché</h3><p>Évolution des prix, de la demande ou du contexte concurrentiel.</p></article>
+          <article class="card"><div class="num">C</div><h3>Environnement</h3><p>Évolution réglementaire, économique ou contextuelle.</p></article>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>⚠️ Attention / erreur fréquente</strong>
+      Ne pas confondre la cause d'un risque avec le risque lui-même. « Fournisseur dépendant » décrit une source ou une situation ; le risque doit expliciter l'événement redouté et sa conséquence sur le projet.
+    </div>
+  </div>
+</section>
+
+<section id="probabilite">
+  <div class="container section-inner reveal">
+    <div class="kicker">03 · Évaluation</div>
+    <h2>Évaluer la probabilité</h2>
+    <p>La <strong>probabilité</strong> traduit la possibilité qu'un risque se réalise. Dans une analyse qualitative, elle peut être classée sur une échelle simple. L'objectif n'est pas de produire une fausse précision, mais de disposer d'un langage commun pour comparer les risques.</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption class="kicker" style="caption-side:top;text-align:left;padding:12px">Échelle qualitative de probabilité</caption>
+        <thead><tr><th scope="col">Niveau</th><th scope="col">Lecture</th><th scope="col">Interprétation</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1 · Faible</td><td>Peu probable</td><td>Le scénario est possible mais peu susceptible de se produire.</td></tr>
+          <tr><td class="mono">2 · Moyenne</td><td>Possible</td><td>Le scénario présente une possibilité crédible.</td></tr>
+          <tr><td class="mono">3 · Forte</td><td>Probable</td><td>Le scénario est suffisamment plausible pour nécessiter une attention élevée.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diagram" role="img" aria-label="Échelle de probabilité en trois niveaux">
+      <svg viewBox="0 0 850 170" width="850" height="170" xmlns="http://www.w3.org/2000/svg">
+        <g font-family="Inter, sans-serif" fill="#14213D">
+          <text x="425" y="28" text-anchor="middle" font-family="Manrope" font-size="18" font-weight="700">Probabilité croissante</text>
+          <rect x="90" y="72" width="190" height="52" rx="8" fill="#F4F6F8" stroke="#8D99AE"/>
+          <rect x="330" y="72" width="190" height="52" rx="8" fill="#FF9F1C" fill-opacity=".10" stroke="#8D99AE"/>
+          <rect x="570" y="72" width="190" height="52" rx="8" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="185" y="104" text-anchor="middle" font-weight="700">1 · FAIBLE</text>
+          <text x="425" y="104" text-anchor="middle" font-weight="700">2 · MOYENNE</text>
+          <text x="665" y="104" text-anchor="middle" font-weight="700">3 · FORTE</text>
+          <path d="M185 142 H665" stroke="#8D99AE"/>
+          <path d="M665 142 L650 134 M665 142 L650 150" fill="none" stroke="#8D99AE"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="callout">
+      <strong>📐 Bonnes pratiques professionnelles</strong>
+      Fonder l'estimation sur les informations disponibles : historique, expérience de l'équipe, données du fournisseur, contraintes connues et évolution observée. Documenter le raisonnement permet de réévaluer le risque plus tard.
+    </div>
+  </div>
+</section>
+
+<section id="impact">
+  <div class="container section-inner reveal">
+    <div class="kicker">04 · Conséquences</div>
+    <h2>Évaluer l'impact</h2>
+    <p>L'<strong>impact</strong> mesure la gravité des conséquences si le risque se réalise. Un même événement peut avoir des effets différents selon l'objectif touché : délai, coût, qualité, périmètre ou ressources.</p>
+
+    <div class="cards">
+      <article class="card"><div class="num">DÉLAI</div><h3>Échéance</h3><p>Retard d'une activité, d'un jalon ou de la livraison finale.</p></article>
+      <article class="card"><div class="num">COÛT</div><h3>Budget</h3><p>Dépense supplémentaire, perte de ressources ou dépassement.</p></article>
+      <article class="card"><div class="num">QUALITÉ</div><h3>Résultat</h3><p>Dégradation du niveau de qualité attendu ou reprise de travaux.</p></article>
+      <article class="card"><div class="num">PÉRIMÈTRE</div><h3>Livrables</h3><p>Réduction, modification ou impossibilité de produire un livrable.</p></article>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Niveau</th><th scope="col">Impact</th><th scope="col">Question de lecture</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1 · Faible</td><td>Conséquence limitée</td><td>Le projet peut absorber l'effet avec peu de perturbation.</td></tr>
+          <tr><td class="mono">2 · Moyen</td><td>Conséquence significative</td><td>Un objectif est affecté et une action de pilotage devient nécessaire.</td></tr>
+          <tr><td class="mono">3 · Fort</td><td>Conséquence majeure</td><td>Le risque peut compromettre fortement un objectif important du projet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="matrice">
+  <div class="container section-inner reveal">
+    <div class="kicker">05 · Croisement</div>
+    <h2>Construire la matrice des risques</h2>
+    <p>La matrice croise la probabilité et l'impact afin de positionner les risques sur une échelle commune. Une méthode simple consiste à calculer un score qualitatif <span class="mono">P × I</span>. Plus le score est élevé, plus l'attention du pilotage doit être importante.</p>
+
+    <div class="diagram" role="img" aria-label="Matrice des risques croisant probabilité et impact sur trois niveaux">
+      <div style="min-width:600px">
+        <div style="text-align:center;font-family:var(--font-display);font-weight:700;margin-bottom:8px">Matrice Probabilité × Impact</div>
+        <div class="risk-matrix">
+          <div class="axis" style="grid-row:1/6;writing-mode:vertical-rl;transform:rotate(180deg)">PROBABILITÉ →</div>
+          <div class="axis">I 1</div><div class="axis">I 2</div><div class="axis">I 3</div><div class="axis">I 4</div><div class="axis">I 5</div>
+          <div class="axis">P5</div><div class="cell">5</div><div class="cell">10</div><div class="priority">15</div><div class="priority">20</div><div class="priority">25</div>
+          <div class="axis">P4</div><div class="cell">4</div><div class="cell">8</div><div class="priority">12</div><div class="priority">16</div><div class="priority">20</div>
+          <div class="axis">P3</div><div class="cell">3</div><div class="cell">6</div><div class="cell">9</div><div class="priority">12</div><div class="priority">15</div>
+          <div class="axis">P2</div><div class="cell">2</div><div class="cell">4</div><div class="cell">6</div><div class="cell">8</div><div class="priority">10</div>
+          <div class="axis">P1</div><div class="cell">1</div><div class="cell">2</div><div class="cell">3</div><div class="cell">4</div><div class="cell">5</div>
+        </div>
+        <div style="text-align:center;font:500 .75rem var(--font-mono);color:var(--muted)">IMPACT →</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Risque</th><th scope="col">P</th><th scope="col">I</th><th scope="col">P × I</th><th scope="col">Lecture</th></tr></thead>
+        <tbody>
+          <tr><td>Retard d'un fournisseur critique</td><td class="mono">4</td><td class="mono">5</td><td class="mono">20</td><td>Priorité élevée</td></tr>
+          <tr><td>Absence temporaire d'une ressource</td><td class="mono">3</td><td class="mono">3</td><td class="mono">9</td><td>À surveiller</td></tr>
+          <tr><td>Petite correction documentaire</td><td class="mono">2</td><td class="mono">1</td><td class="mono">2</td><td>Priorité faible</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>💡 À retenir</strong>
+      La matrice est un outil de comparaison et de communication. Le score ne remplace pas le jugement de l'équipe : un risque à faible fréquence mais à conséquence majeure peut nécessiter une attention particulière.
+    </div>
+  </div>
+</section>
+
+<section id="priorisation">
+  <div class="container section-inner reveal">
+    <div class="kicker">06 · Décision</div>
+    <h2>Prioriser les risques</h2>
+    <p>Prioriser revient à concentrer l'attention sur les risques qui présentent le plus d'enjeu pour les objectifs du projet. La priorité est construite à partir de l'évaluation et du contexte, pas uniquement à partir d'une liste de risques.</p>
+
+    <div class="stepper" aria-label="Processus de priorisation">
+      <div class="step active"><span class="n">01</span><strong>Recenser</strong><small>Formuler les risques.</small></div>
+      <div class="step active"><span class="n">02</span><strong>Évaluer P</strong><small>Estimer la probabilité.</small></div>
+      <div class="step active"><span class="n">03</span><strong>Évaluer I</strong><small>Mesurer l'impact.</small></div>
+      <div class="step active"><span class="n">04</span><strong>Croiser</strong><small>Positionner dans la matrice.</small></div>
+      <div class="step active"><span class="n">05</span><strong>Prioriser</strong><small>Concentrer le pilotage.</small></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Priorité</th><th scope="col">Caractéristique</th><th scope="col">Pilotage</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Élevée</td><td>Probabilité et/ou impact importants</td><td>Suivi rapproché et visibilité forte dans le pilotage.</td></tr>
+          <tr><td class="mono">Moyenne</td><td>Enjeu intermédiaire</td><td>Surveillance régulière et réévaluation.</td></tr>
+          <tr><td class="mono">Faible</td><td>Enjeu limité</td><td>Surveillance proportionnée au contexte.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details>
+      <summary>Pourquoi la priorisation doit-elle être révisée ?</summary>
+      <p>La probabilité et l'impact peuvent évoluer au cours du projet. Une information nouvelle, un changement de fournisseur, une modification du calendrier ou l'avancement d'une activité peuvent modifier le niveau de risque.</p>
+    </details>
+    <details>
+      <summary>Que doit contenir une bonne formulation ?</summary>
+      <p>Elle doit permettre de distinguer clairement la cause, l'événement incertain et la conséquence possible. Cette précision facilite ensuite l'évaluation et le suivi.</p>
+    </details>
+  </div>
+</section>
+
+<section id="pilotage">
+  <div class="container section-inner reveal">
+    <div class="kicker">07 · Fiche de pilotage</div>
+    <h2>Tracer l'analyse dans un registre des risques</h2>
+    <p>Le registre permet de conserver une vue structurée des risques identifiés et de leur évaluation. Il transforme l'analyse en information exploitable pour le pilotage du projet.</p>
+
+    <div class="pilot" aria-label="Exemple de fiche de pilotage">RISQUE : Retard d'un fournisseur critique
+SOURCE : Externe — fournisseur
+PROBABILITÉ : 4 / 5
+IMPACT : 5 / 5
+SCORE : 20
+PRIORITÉ : ÉLEVÉE
+OBJECTIF TOUCHÉ : Délai
+STATUT : À surveiller et réévaluer</div>
+
+    <div class="callout">
+      <strong>📐 Bonnes pratiques professionnelles</strong>
+      Conserver la même échelle d'évaluation pour tous les risques comparés. Une analyse cohérente facilite les arbitrages et rend les évolutions visibles au fil du projet.
+    </div>
+  </div>
+</section>
+
+<section id="synthese">
+  <div class="container section-inner reveal">
+    <div class="kicker">08 · Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <div class="summary-grid">
+      <div class="summary-item"><strong>01 · Identifier</strong><br>Rechercher les événements incertains susceptibles d'affecter les objectifs.</div>
+      <div class="summary-item"><strong>02 · Qualifier</strong><br>Distinguer les sources internes et externes pour structurer l'analyse.</div>
+      <div class="summary-item"><strong>03 · Évaluer</strong><br>Attribuer un niveau de probabilité et un niveau d'impact selon une échelle commune.</div>
+      <div class="summary-item"><strong>04 · Croiser</strong><br>Utiliser la matrice pour visualiser le niveau relatif des risques.</div>
+      <div class="summary-item"><strong>05 · Prioriser</strong><br>Concentrer l'attention de pilotage sur les risques les plus significatifs.</div>
+      <div class="summary-item"><strong>06 · Réévaluer</strong><br>Actualiser l'analyse lorsque le contexte ou les informations évoluent.</div>
+    </div>
+
+    <div class="diagram" role="img" aria-label="Résumé visuel du processus d'analyse des risques">
+      <svg viewBox="0 0 900 190" width="900" height="190" xmlns="http://www.w3.org/2000/svg">
+        <g font-family="Inter, sans-serif" fill="#14213D">
+          <line x1="100" y1="95" x2="800" y2="95" stroke="#8D99AE" stroke-width="2"/>
+          <g><circle cx="100" cy="95" r="28" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="100" y="101" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">01</text><text x="100" y="145" text-anchor="middle" font-weight="700">Identifier</text></g>
+          <g><circle cx="275" cy="95" r="28" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="275" y="101" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">02</text><text x="275" y="145" text-anchor="middle" font-weight="700">Classer</text></g>
+          <g><circle cx="450" cy="95" r="28" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="450" y="101" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">03</text><text x="450" y="145" text-anchor="middle" font-weight="700">Évaluer</text></g>
+          <g><circle cx="625" cy="95" r="28" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="625" y="101" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">04</text><text x="625" y="145" text-anchor="middle" font-weight="700">Matrice</text></g>
+          <g><circle cx="800" cy="95" r="28" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="3"/><text x="800" y="101" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">05</text><text x="800" y="145" text-anchor="middle" font-weight="700">Prioriser</text></g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="callout">
+      <strong>🔗 Pour aller plus loin</strong>
+      La prochaine leçon approfondit le <strong>plan de gestion des risques</strong> : l'analyse réalisée ici constitue la base nécessaire pour organiser le traitement et le suivi des risques du projet.
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="container">
+  <nav class="nav-bottom" aria-label="Navigation entre les leçons">
+    <a class="nav-card" href="#top" aria-label="Leçon précédente">
+      <small>← Leçon précédente</small>
+      <strong>LEÇON 13 — Gestion des achats et fournisseurs</strong>
+    </a>
+    <a class="nav-card" href="#top" aria-label="Retour au début de la leçon">
+      <small>Sommaire</small>
+      <strong>Leçon 14</strong>
+    </a>
+    <a class="nav-card next" href="#top" aria-label="Leçon suivante">
+      <small>Leçon suivante →</small>
+      <strong>LEÇON 15 — Plan de gestion des risques</strong>
+    </a>
+  </nav>
+</div>
+
+<footer>
+  <div class="container">Gestion de Projet · Module 3 · Leçon 14 · Support théorique</div>
+</footer>
+
+<button class="top-btn" id="topBtn" aria-label="Retour en haut" title="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const progress=document.getElementById('progress');
+  const topBtn=document.getElementById('topBtn');
+  const menuBtn=document.getElementById('menuBtn');
+  const navLinks=document.getElementById('navLinks');
+
+  function updateProgress(){
+    const doc=document.documentElement;
+    const max=doc.scrollHeight-doc.clientHeight;
+    progress.style.width=(max>0?(doc.scrollTop/max)*100:0)+'%';
+    topBtn.style.opacity=doc.scrollTop>500?'1':'.65';
+  }
+  window.addEventListener('scroll',updateProgress,{passive:true});
+  updateProgress();
+
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  menuBtn.addEventListener('click',()=>{
+    const open=navLinks.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded',String(open));
+  });
+  navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    navLinks.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded','false');
+  }));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=[...group.querySelectorAll('[role="tab"]')];
+    const panels=[...group.querySelectorAll('[role="tabpanel"]')];
+    buttons.forEach((button,i)=>{
+      button.addEventListener('click',()=>{
+        buttons.forEach((b,j)=>{
+          const selected=j===i;
+          b.setAttribute('aria-selected',String(selected));
+          panels[j].hidden=!selected;
+        });
+      });
+      button.addEventListener('keydown',e=>{
+        let next=i;
+        if(e.key==='ArrowRight') next=(i+1)%buttons.length;
+        if(e.key==='ArrowLeft') next=(i-1+buttons.length)%buttons.length;
+        if(next!==i){
+          e.preventDefault();
+          buttons[next].focus();
+          buttons[next].click();
+        }
+      });
+    });
+  });
+
+  const items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}
+      });
+    },{threshold:.12});
+    items.forEach(item=>observer.observe(item));
+  }else{items.forEach(item=>item.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 18 — Gestion des délais et des écarts. Filière Gestion de Projet.">
+<title>Leçon 18 — Gestion des délais et des écarts | Gestion de Projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--color-bg:#F4F6F8;--color-text:#14213D;--color-accent:#FF9F1C;--color-neutral:#8D99AE;
+--font-display:"Manrope",sans-serif;--font-body:"Inter",sans-serif;--font-mono:"IBM Plex Mono",monospace;
+--line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+--soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+--soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+--shadow:0 14px 34px color-mix(in srgb,var(--color-text) 8%,var(--color-bg));
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);line-height:1.7}
+a{color:var(--color-text);text-decoration:none}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:0;height:4px;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:900;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px)}
+.nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font:800 1rem var(--font-display);display:flex;align-items:center;gap:11px;letter-spacing:-.02em}
+.mark{width:30px;height:30px;border:2px solid var(--color-text);position:relative}.mark:after{content:"";position:absolute;right:-2px;bottom:-2px;width:7px;height:7px;background:var(--color-accent)}
+.navlinks{display:flex;gap:16px;font-size:.88rem}.navlinks a{color:var(--muted)}.navlinks a:hover{color:var(--color-accent)}
+.menu{display:none;border:1px solid var(--line);background:var(--color-bg);color:var(--color-text);padding:8px 12px;border-radius:8px}
+.container{width:min(1120px,calc(100% - 40px));margin:auto}.hero{padding:76px 0 45px}.eyebrow,.kicker{font:600 .75rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;letter-spacing:-.035em}h1{font-size:clamp(2.35rem,6vw,4.8rem);max-width:900px;margin:14px 0 20px}
+.lead{max-width:720px;font-size:1.08rem;color:var(--muted)}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}.badge{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--soft);font:500 .74rem var(--font-mono)}.badge.accent{border-color:var(--color-accent);background:var(--soft10)}
+.toc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}.tocgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.toc a{padding:10px 12px;border-left:2px solid var(--line);font-size:.88rem}.toc a:hover{border-color:var(--color-accent);background:var(--soft)}
+section{padding:70px 0;scroll-margin-top:70px}section:nth-of-type(even){background:var(--soft)}.inner{max-width:920px;margin:auto}h2{font-size:clamp(1.8rem,3vw,2.75rem);margin:8px 0 18px}h3{font-size:1.18rem;margin:28px 0 8px}p{max-width:720px}
+.callout{margin:28px 0;padding:20px 22px;border-left:5px solid var(--color-accent);background:var(--soft10);border-radius:0 12px 12px 0}.callout strong{display:block;font-family:var(--font-display)}
+.diagram{margin:30px 0;padding:18px;border:1px solid var(--line);background:var(--color-bg);border-radius:16px;overflow:auto;box-shadow:var(--shadow)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}.card{padding:20px;border:1px solid var(--line);background:var(--color-bg);border-radius:14px;transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}.num{font:600 .8rem var(--font-mono);color:var(--color-accent)}.card h3{margin:7px 0}.card p{font-size:.9rem;color:var(--muted);margin:0}
+.tablewrap{overflow-x:auto;margin:26px 0;border:1px solid var(--line);border-radius:14px}table{width:100%;min-width:720px;border-collapse:collapse;background:var(--color-bg)}th,td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--soft);font:600 .74rem var(--font-mono);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}td{font-size:.9rem}tbody tr:hover{background:var(--soft)}.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;background:var(--soft10);padding:2px 6px;border-radius:5px}
+.stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:30px 0}.step{padding:16px 11px;border-top:3px solid var(--color-neutral);background:var(--color-bg)}.step.active{border-color:var(--color-accent)}.step b{font:600 .72rem var(--font-mono);color:var(--color-accent)}.step strong{display:block;font:700 .86rem var(--font-display);margin-top:4px}.step small{display:block;color:var(--muted);font-size:.74rem;line-height:1.4;margin-top:4px}
+.tabs{margin:30px 0}.tablist{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);gap:4px}.tab{border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);padding:11px 14px;cursor:pointer;font-weight:600}.tab[aria-selected=true]{color:var(--color-text);border-color:var(--color-accent)}.panel{padding:20px 0}.panel[hidden]{display:none}
+details{border-top:1px solid var(--line);padding:15px 0}details:last-child{border-bottom:1px solid var(--line)}summary{cursor:pointer;font:700 1rem var(--font-display)}
+.pilot{margin:25px 0;padding:20px;background:var(--soft10);border:1px solid var(--line);border-radius:12px;font:500 .82rem/1.8 var(--font-mono);white-space:pre-wrap}
+.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.summary div{padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--color-bg)}.summary strong{font-family:var(--font-display)}
+.bottomnav{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;padding:38px 0}.navcard{padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--color-bg)}.navcard:hover{border-color:var(--color-accent)}.navcard.next{text-align:right}.navcard small{display:block;color:var(--muted);font:500 .7rem var(--font-mono);text-transform:uppercase}.navcard strong{display:block;font-family:var(--font-display);margin-top:4px}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--color-bg);color:var(--color-text);cursor:pointer;box-shadow:var(--shadow)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.8rem}.reveal{opacity:0;transform:translateY(18px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){.navlinks{display:none}.menu{display:block}.navlinks.open{display:flex;position:absolute;top:59px;left:0;right:0;padding:14px 22px;background:var(--color-bg);border-bottom:1px solid var(--line);flex-direction:column}.tocgrid{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.stepper{grid-template-columns:repeat(2,1fr)}.summary{grid-template-columns:1fr}}
+@media(max-width:480px){.container{width:calc(100% - 28px)}.hero{padding-top:54px}h1{font-size:2.35rem}.tocgrid{grid-template-columns:1fr}.stepper{grid-template-columns:1fr}.bottomnav{grid-template-columns:1fr}.navcard.next{text-align:left}section{padding:52px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header>
+<nav class="nav" aria-label="Navigation de la leçon">
+<a class="brand" href="#top"><span class="mark" aria-hidden="true"></span>Gestion de Projet</a>
+<button class="menu" id="menu" aria-expanded="false" aria-controls="links">Sommaire</button>
+<div class="navlinks" id="links">
+<a href="#retard">Retard</a><a href="#avance">Avance</a><a href="#dependances">Dépendances</a><a href="#chemin">Chemin critique</a><a href="#actions">Actions correctives</a><a href="#replanification">Replanification</a>
+</div>
+</nav>
+</header>
+
+<main id="top">
+<section class="hero">
+<div class="container">
+<div class="eyebrow">Module 4 · Exécution, suivi et contrôle</div>
+<h1>Gestion des délais et des écarts</h1>
+<p class="lead">Piloter les délais consiste à comparer l'avancement réel au calendrier prévu, à comprendre les écarts et à agir suffisamment tôt pour préserver les objectifs du projet.</p>
+<div class="meta">
+<span class="badge accent">LEÇON 18</span><span class="badge">Avancé</span><span class="badge">20 min</span><span class="badge">Identifier et corriger les retards</span>
+</div>
+</div>
+</section>
+
+<section class="toc" aria-label="Sommaire">
+<div class="container">
+<div class="kicker">Sommaire</div>
+<div class="tocgrid">
+<a href="#retard">01 · Retard</a><a href="#avance">02 · Avance</a><a href="#dependances">03 · Dépendances</a><a href="#chemin">04 · Chemin critique</a><a href="#actions">05 · Actions correctives</a><a href="#replanification">06 · Replanification</a><a href="#pilotage">07 · Fiche de pilotage</a><a href="#synthese">08 · Points clés</a>
+</div>
+</div>
+</section>
+
+<section id="retard"><div class="container inner reveal">
+<div class="kicker">01 · Écart négatif</div><h2>Comprendre le retard</h2>
+<p>Un <strong>retard</strong> apparaît lorsque l'avancement réel d'une activité ou d'un jalon est inférieur à ce qui était prévu au calendrier. Il faut distinguer le simple décalage d'une activité de l'effet réel sur la date de fin du projet.</p>
+<div class="diagram" role="img" aria-label="Frise comparant une date prévue et une date réelle, avec un écart de retard">
+<svg viewBox="0 0 900 230" width="900" height="230" xmlns="http://www.w3.org/2000/svg">
+<g font-family="Inter, sans-serif" fill="#14213D">
+<text x="30" y="30" font-family="Manrope" font-size="18" font-weight="700">Lecture d'un écart de délai</text>
+<line x1="80" y1="92" x2="820" y2="92" stroke="#8D99AE" stroke-width="2"/>
+<line x1="80" y1="160" x2="820" y2="160" stroke="#8D99AE" stroke-width="2"/>
+<text x="30" y="97" font-size="13" font-weight="700">PRÉVU</text><text x="30" y="165" font-size="13" font-weight="700">RÉEL</text>
+<rect x="180" y="76" width="330" height="32" rx="7" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="2"/>
+<rect x="180" y="144" width="470" height="32" rx="7" fill="#F4F6F8" stroke="#8D99AE"/>
+<line x1="510" y1="55" x2="510" y2="190" stroke="#FF9F1C" stroke-width="2" stroke-dasharray="5 5"/>
+<line x1="650" y1="125" x2="650" y2="190" stroke="#FF9F1C" stroke-width="2" stroke-dasharray="5 5"/>
+<text x="510" y="215" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">date prévue</text>
+<text x="650" y="215" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">date réelle</text>
+<text x="580" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">écart</text>
+</g></svg></div>
+<div class="callout"><strong>💡 À retenir</strong>Un retard se mesure par rapport à une référence : planning de référence, date de début ou de fin prévue, jalon ou durée planifiée.</div>
+<div class="cards">
+<article class="card"><div class="num">CAUSE</div><h3>Pourquoi ?</h3><p>Rechercher l'origine : ressource, dépendance, estimation, décision ou événement externe.</p></article>
+<article class="card"><div class="num">EFFET</div><h3>Sur quoi ?</h3><p>Déterminer si l'écart touche une activité, un jalon ou la date finale.</p></article>
+<article class="card"><div class="num">RÉACTION</div><h3>Que faire ?</h3><p>Choisir une action proportionnée avant que l'écart ne se propage.</p></article>
+</div>
+</div></section>
+
+<section id="avance"><div class="container inner reveal">
+<div class="kicker">02 · Écart positif</div><h2>Comprendre l'avance</h2>
+<p>Une <strong>avance</strong> signifie qu'une activité ou un jalon est réalisé plus tôt que prévu. Elle peut créer une marge de manœuvre, mais elle doit être analysée : une avance ponctuelle ne garantit pas que le projet entier sera terminé plus tôt.</p>
+<div class="tablewrap"><table>
+<thead><tr><th scope="col">Situation</th><th scope="col">Lecture</th><th scope="col">Point de vigilance</th></tr></thead>
+<tbody>
+<tr><td class="mono">Activité en avance</td><td>Fin ou progression avant la référence.</td><td>Vérifier les dépendances suivantes.</td></tr>
+<tr><td class="mono">Jalon en avance</td><td>Événement atteint plus tôt.</td><td>Confirmer que les conditions du jalon sont bien satisfaites.</td></tr>
+<tr><td class="mono">Projet en avance</td><td>Plusieurs écarts favorables convergent.</td><td>Ne pas modifier automatiquement toutes les dates de référence.</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong>Conserver une référence claire permet de mesurer les écarts sans confondre amélioration ponctuelle et changement officiel du calendrier.</div>
+</div></section>
+
+<section id="dependances"><div class="container inner reveal">
+<div class="kicker">03 · Relations entre activités</div><h2>Analyser les dépendances</h2>
+<p>Une <strong>dépendance</strong> décrit une relation entre des activités : le démarrage ou l'achèvement d'une activité peut conditionner une autre. Lorsqu'une activité amont prend du retard, les activités dépendantes peuvent être affectées.</p>
+<div class="diagram" role="img" aria-label="Chaîne de dépendances entre trois activités montrant la propagation possible d'un retard">
+<svg viewBox="0 0 900 220" width="900" height="220" xmlns="http://www.w3.org/2000/svg">
+<g font-family="Inter, sans-serif" fill="#14213D">
+<rect x="45" y="78" width="210" height="72" rx="11" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2"/>
+<rect x="345" y="78" width="210" height="72" rx="11" fill="#F4F6F8" stroke="#8D99AE"/>
+<rect x="645" y="78" width="210" height="72" rx="11" fill="#FF9F1C" fill-opacity=".10" stroke="#8D99AE"/>
+<text x="150" y="108" text-anchor="middle" font-weight="700">A · CONCEPTION</text><text x="150" y="130" text-anchor="middle" font-size="12">activité amont</text>
+<text x="450" y="108" text-anchor="middle" font-weight="700">B · DÉVELOPPEMENT</text><text x="450" y="130" text-anchor="middle" font-size="12">dépend de A</text>
+<text x="750" y="108" text-anchor="middle" font-weight="700">C · TEST</text><text x="750" y="130" text-anchor="middle" font-size="12">dépend de B</text>
+<path d="M255 114 H345" stroke="#FF9F1C" stroke-width="3"/><path d="M331 106 L345 114 L331 122" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+<path d="M555 114 H645" stroke="#FF9F1C" stroke-width="3"/><path d="M631 106 L645 114 L631 122" fill="none" stroke="#FF9F1C" stroke-width="3"/>
+<text x="450" y="185" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">retard en A → risque de décalage en B → puis en C</text>
+</g></svg></div>
+<div class="cards">
+<article class="card"><div class="num">01</div><h3>Amont</h3><p>Activité dont le résultat est nécessaire à une autre activité.</p></article>
+<article class="card"><div class="num">02</div><h3>Aval</h3><p>Activité qui dépend d'un résultat ou d'un événement précédent.</p></article>
+<article class="card"><div class="num">03</div><h3>Propagation</h3><p>Un écart peut se transmettre lorsqu'une activité aval ne peut pas commencer.</p></article>
+</div>
+</div></section>
+
+<section id="chemin"><div class="container inner reveal">
+<div class="kicker">04 · Pilotage du calendrier</div><h2>Repérer le chemin critique</h2>
+<p>Le <strong>chemin critique</strong> est la séquence d'activités qui détermine la durée minimale du projet dans le réseau de planification considéré. Un retard sur une activité critique peut directement décaler la date de fin du projet lorsqu'aucune marge ne permet de l'absorber.</p>
+<div class="diagram" role="img" aria-label="Réseau simplifié avec un chemin critique mis en évidence par une bordure ambre">
+<svg viewBox="0 0 900 300" width="900" height="300" xmlns="http://www.w3.org/2000/svg">
+<g font-family="Inter, sans-serif" fill="#14213D">
+<text x="450" y="28" text-anchor="middle" font-family="Manrope" font-size="18" font-weight="700">Réseau simplifié du projet</text>
+<rect x="30" y="110" width="130" height="60" rx="10" fill="#F4F6F8" stroke="#8D99AE"/>
+<rect x="220" y="110" width="150" height="60" rx="10" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="3"/>
+<rect x="430" y="65" width="150" height="60" rx="10" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="3"/>
+<rect x="430" y="155" width="150" height="60" rx="10" fill="#F4F6F8" stroke="#8D99AE"/>
+<rect x="640" y="110" width="150" height="60" rx="10" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="3"/>
+<text x="95" y="145" text-anchor="middle" font-weight="700">DÉMARRAGE</text>
+<text x="295" y="145" text-anchor="middle" font-weight="700">A · 4 j</text>
+<text x="505" y="100" text-anchor="middle" font-weight="700">B · 6 j</text>
+<text x="505" y="190" text-anchor="middle" font-weight="700">C · 3 j</text>
+<text x="715" y="145" text-anchor="middle" font-weight="700">FIN · JALON</text>
+<path d="M160 140 H220 M370 140 L430 95 M370 140 L430 185 M580 95 L640 140 M580 185 L640 140" fill="none" stroke="#8D99AE" stroke-width="2"/>
+<path d="M160 140 H220 M370 140 L430 95 M580 95 L640 140" fill="none" stroke="#FF9F1C" stroke-width="4"/>
+<text x="450" y="265" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">chemin critique : Démarrage → A → B → Fin</text>
+</g></svg></div>
+<div class="tablewrap"><table>
+<thead><tr><th scope="col">Élément</th><th scope="col">Question de pilotage</th><th scope="col">Conséquence d'un retard</th></tr></thead>
+<tbody>
+<tr><td>Activité critique</td><td>Dispose-t-elle d'une marge suffisante ?</td><td>Risque direct pour la date finale.</td></tr>
+<tr><td>Activité non critique</td><td>Quelle marge reste disponible ?</td><td>L'écart peut parfois être absorbé.</td></tr>
+<tr><td>Jalon final</td><td>La date cible est-elle préservée ?</td><td>Mesure synthétique de l'effet sur l'échéance.</td></tr>
+</tbody></table></div>
+</div></section>
+
+<section id="actions"><div class="container inner reveal">
+<div class="kicker">05 · Réponse</div><h2>Choisir des actions correctives</h2>
+<p>Une action corrective vise à réduire ou absorber un écart constaté. Elle doit être liée à la cause identifiée et évaluée selon ses effets sur les autres contraintes du projet.</p>
+<div class="tabs" data-tabs>
+<div class="tablist" role="tablist" aria-label="Approches de correction d'un retard">
+<button class="tab" role="tab" aria-selected="true" aria-controls="p1" id="t1">Ressources</button>
+<button class="tab" role="tab" aria-selected="false" aria-controls="p2" id="t2">Séquence</button>
+<button class="tab" role="tab" aria-selected="false" aria-controls="p3" id="t3">Périmètre</button>
+</div>
+<div class="panel" id="p1" role="tabpanel" aria-labelledby="t1"><h3>Agir sur les ressources</h3><p>Réexaminer l'allocation des ressources, les disponibilités et les compétences nécessaires lorsque la contrainte vient d'un manque de capacité.</p></div>
+<div class="panel" id="p2" role="tabpanel" aria-labelledby="t2" hidden><h3>Agir sur la séquence</h3><p>Rechercher des activités pouvant être réordonnées ou réalisées en parallèle sans créer de nouvelle dépendance non maîtrisée.</p></div>
+<div class="panel" id="p3" role="tabpanel" aria-labelledby="t3" hidden><h3>Agir sur le périmètre</h3><p>Lorsque le contexte l'impose, analyser les éléments du périmètre qui peuvent être reconsidérés sans perdre les objectifs essentiels du projet.</p></div>
+</div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Corriger un retard sans analyser ses effets peut déplacer l'écart vers le coût, la qualité, les ressources ou une autre activité. Une action corrective doit donc être évaluée globalement.</div>
+<div class="cards">
+<article class="card"><div class="num">DIAGNOSTIC</div><h3>Cause avant action</h3><p>Une mesure efficace répond à la cause de l'écart plutôt qu'à son seul symptôme.</p></article>
+<article class="card"><div class="num">IMPACT</div><h3>Effets croisés</h3><p>Comparer l'effet de l'action sur délai, coût, qualité et périmètre.</p></article>
+<article class="card"><div class="num">SUIVI</div><h3>Nouvelle mesure</h3><p>Vérifier ensuite si l'écart diminue et si le calendrier reste maîtrisé.</p></article>
+</div>
+</div></section>
+
+<section id="replanification"><div class="container inner reveal">
+<div class="kicker">06 · Mise à jour</div><h2>Replanifier sans perdre la référence</h2>
+<p>La <strong>replanification</strong> consiste à mettre à jour l'organisation temporelle du projet lorsque les conditions d'exécution ont changé. Elle doit rendre visibles les nouvelles dates, les dépendances affectées et les décisions prises.</p>
+<div class="stepper" aria-label="Étapes de replanification">
+<div class="step active"><b>01</b><strong>Constater</strong><small>Mesurer l'écart.</small></div>
+<div class="step active"><b>02</b><strong>Analyser</strong><small>Identifier la cause.</small></div>
+<div class="step active"><b>03</b><strong>Décider</strong><small>Choisir l'action.</small></div>
+<div class="step active"><b>04</b><strong>Recalculer</strong><small>Réviser les dates.</small></div>
+<div class="step active"><b>05</b><strong>Formaliser</strong><small>Mettre à jour le planning.</small></div>
+<div class="step active"><b>06</b><strong>Suivre</strong><small>Contrôler le nouvel écart.</small></div>
+</div>
+<div class="tablewrap"><table>
+<thead><tr><th scope="col">Avant</th><th scope="col">Analyse</th><th scope="col">Après</th></tr></thead>
+<tbody>
+<tr><td>Planning de référence</td><td>Écart réel + causes + dépendances</td><td>Planning actualisé</td></tr>
+<tr><td>Dates prévues</td><td>Impact sur jalons et chemin critique</td><td>Nouvelles dates communiquées</td></tr>
+<tr><td>Ressources planifiées</td><td>Capacité réellement disponible</td><td>Allocation ajustée si nécessaire</td></tr>
+</tbody></table></div>
+<details><summary>Pourquoi conserver la trace de l'ancien planning ?</summary><p>La référence permet de comparer ce qui était prévu avec ce qui s'est réellement produit. Cette traçabilité rend les écarts compréhensibles et facilite le suivi des décisions de pilotage.</p></details>
+<details><summary>Quand un écart devient-il préoccupant ?</summary><p>Lorsqu'il menace un jalon important, consomme la marge disponible, affecte le chemin critique ou se propage vers plusieurs activités dépendantes.</p></details>
+</div></section>
+
+<section id="pilotage"><div class="container inner reveal">
+<div class="kicker">07 · Fiche de pilotage</div><h2>Formaliser un écart de délai</h2>
+<p>Une fiche de pilotage synthétique aide à conserver les informations essentielles nécessaires au suivi.</p>
+<div class="pilot" aria-label="Exemple de fiche de pilotage">ACTIVITÉ : Développement du module
+RÉFÉRENCE : 10 jours prévus
+AVANCEMENT : 70 %
+ÉCART : 2 jours de retard estimé
+DÉPENDANCE : Tests fonctionnels
+CHEMIN CRITIQUE : Oui
+ACTION : Réallocation de capacité + mise à jour du calendrier
+SUIVI : Réévaluation au prochain point de pilotage</div>
+<div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong>Employer des indicateurs cohérents, dater les observations et distinguer clairement la référence, le réel, l'écart et l'action décidée.</div>
+</div></section>
+
+<section id="synthese"><div class="container inner reveal">
+<div class="kicker">08 · Synthèse visuelle</div><h2>Points clés à retenir</h2>
+<div class="summary">
+<div><strong>01 · Retard</strong><br>Comparer l'avancement réel à la référence et rechercher la cause.</div>
+<div><strong>02 · Avance</strong><br>Un écart favorable doit lui aussi être interprété dans le contexte du calendrier.</div>
+<div><strong>03 · Dépendances</strong><br>Un décalage peut se propager vers les activités aval.</div>
+<div><strong>04 · Chemin critique</strong><br>Les activités critiques exigent une attention particulière car leur retard peut toucher la date finale.</div>
+<div><strong>05 · Correction</strong><br>Choisir une action liée à la cause et mesurer ses effets sur les autres contraintes.</div>
+<div><strong>06 · Replanification</strong><br>Mettre à jour les dates, dépendances et décisions tout en conservant une référence traçable.</div>
+</div>
+<div class="diagram" role="img" aria-label="Chaîne synthétique de gestion d'un écart de délai">
+<svg viewBox="0 0 900 190" width="900" height="190" xmlns="http://www.w3.org/2000/svg">
+<g font-family="Inter, sans-serif" fill="#14213D">
+<line x1="90" y1="88" x2="810" y2="88" stroke="#8D99AE" stroke-width="2"/>
+<g><circle cx="90" cy="88" r="27" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="90" y="94" text-anchor="middle" font-family="IBM Plex Mono">01</text><text x="90" y="135" text-anchor="middle" font-weight="700">Mesurer</text></g>
+<g><circle cx="270" cy="88" r="27" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="270" y="94" text-anchor="middle" font-family="IBM Plex Mono">02</text><text x="270" y="135" text-anchor="middle" font-weight="700">Analyser</text></g>
+<g><circle cx="450" cy="88" r="27" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="450" y="94" text-anchor="middle" font-family="IBM Plex Mono">03</text><text x="450" y="135" text-anchor="middle" font-weight="700">Corriger</text></g>
+<g><circle cx="630" cy="88" r="27" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/><text x="630" y="94" text-anchor="middle" font-family="IBM Plex Mono">04</text><text x="630" y="135" text-anchor="middle" font-weight="700">Replanifier</text></g>
+<g><circle cx="810" cy="88" r="27" fill="#FF9F1C" fill-opacity=".10" stroke="#FF9F1C" stroke-width="3"/><text x="810" y="94" text-anchor="middle" font-family="IBM Plex Mono">05</text><text x="810" y="135" text-anchor="middle" font-weight="700">Suivre</text></g>
+</g></svg></div>
+<div class="callout"><strong>🔗 Pour aller plus loin</strong>La prochaine leçon porte sur la <strong>gestion des changements</strong>, qui permet de maîtriser les modifications susceptibles d'affecter le planning et les autres objectifs du projet.</div>
+</div></section>
+</main>
+
+<div class="container">
+<nav class="bottomnav" aria-label="Navigation entre les leçons">
+<a class="navcard" href="#top"><small>← Leçon précédente</small><strong>LEÇON 17 — Suivi de l'avancement</strong></a>
+<a class="navcard" href="#top"><small>Retour au sommaire</small><strong>LEÇON 18</strong></a>
+<a class="navcard next" href="#top"><small>Leçon suivante →</small><strong>LEÇON 19 — Gestion des changements</strong></a>
+</nav>
+</div>
+<footer><div class="container">Gestion de Projet · Module 4 · Leçon 18 · Support théorique</div></footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(()=> {
+const progress=document.getElementById("progress"), topBtn=document.getElementById("topBtn"), menu=document.getElementById("menu"), links=document.getElementById("links");
+function scrollState(){const d=document.documentElement,max=d.scrollHeight-d.clientHeight;progress.style.width=(max?d.scrollTop/max*100:0)+"%";topBtn.style.opacity=d.scrollTop>450?"1":".65"}
+addEventListener("scroll",scrollState,{passive:true});scrollState();
+topBtn.onclick=()=>scrollTo({top:0,behavior:"smooth"});
+menu.onclick=()=>{const open=links.classList.toggle("open");menu.setAttribute("aria-expanded",String(open))};
+links.querySelectorAll("a").forEach(a=>a.onclick=()=>{links.classList.remove("open");menu.setAttribute("aria-expanded","false")});
+document.querySelectorAll("[data-tabs]").forEach(group=>{
+const tabs=[...group.querySelectorAll('[role="tab"]')], panels=[...group.querySelectorAll('[role="tabpanel"]')];
+tabs.forEach((tab,i)=>{
+tab.onclick=()=>{tabs.forEach((t,j)=>t.setAttribute("aria-selected",String(j===i)));panels.forEach((p,j)=>p.hidden=j!==i)};
+tab.onkeydown=e=>{let n=i;if(e.key==="ArrowRight")n=(i+1)%tabs.length;if(e.key==="ArrowLeft")n=(i-1+tabs.length)%tabs.length;if(n!==i){e.preventDefault();tabs[n].focus();tabs[n].click()}};
+})});
+const els=document.querySelectorAll(".reveal");
+if("IntersectionObserver"in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");io.unobserve(e.target)}}),{threshold:.12});els.forEach(e=>io.observe(e))}else els.forEach(e=>e.classList.add("visible"));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 04 — Segmentation, ciblage et positionnement">
+<title>Marketing — Leçon 04 | Segmentation, ciblage et positionnement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F4EF;
+  --color-text:#1C2B42;
+  --color-accent:#C08A34;
+  --color-neutral:#6E7580;
+  --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --accent-strong:color-mix(in srgb,var(--color-accent) 78%,var(--color-text));
+  --shadow:0 16px 40px color-mix(in srgb,var(--color-text) 9%,transparent);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-text);text-decoration:none}
+button,a{outline-offset:4px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--color-accent)}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:transparent;z-index:1000}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:.78rem}
+.brand span{color:var(--color-accent)}
+.nav-toggle{display:none;border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);padding:8px 12px;border-radius:10px}
+.navlinks{display:flex;gap:18px;flex-wrap:wrap;font-size:.86rem}
+.navlinks a{color:var(--text-muted)}
+.navlinks a:hover{color:var(--color-accent)}
+main{max-width:1040px;margin:auto;padding:0 24px 70px}
+.hero{padding:78px 0 45px;border-bottom:1px solid var(--border)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em;font-size:.74rem;color:var(--color-accent)}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;line-height:1.15}
+h1{font-size:clamp(2.4rem,6vw,4.8rem);max-width:850px;margin:14px 0 20px}
+h2{font-size:clamp(1.8rem,3vw,2.7rem);margin:0 0 18px}
+h3{font-size:1.35rem;margin:0 0 9px}
+.lead{font-size:1.12rem;max-width:720px;color:var(--text-muted)}
+.meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:25px}
+.badge{border:1px solid var(--border);padding:7px 11px;border-radius:999px;font-size:.78rem;background:var(--bg-alt)}
+.badge strong{color:var(--color-accent)}
+.toc{margin:36px 0 12px;padding:24px;background:var(--bg-alt);border-left:4px solid var(--color-accent)}
+.toc-title{font-weight:700;margin-bottom:12px}
+.toc ol{margin:0;padding-left:22px;columns:2}
+.toc li{margin:5px 0}
+section{padding:68px 0;border-bottom:1px solid var(--border)}
+.section-intro{max-width:720px;color:var(--text-muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.card{border:1px solid var(--border);padding:22px;border-radius:var(--radius);background:color-mix(in srgb,var(--color-bg) 88%,transparent);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .num{font-family:"IBM Plex Mono";font-size:.78rem;color:var(--color-accent);margin-bottom:15px}
+.table-wrap{overflow-x:auto;margin-top:28px;border:1px solid var(--border);border-radius:var(--radius)}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{padding:15px 17px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;background:var(--accent-soft)}
+tr:last-child td{border-bottom:0}
+.callout{margin:28px 0;padding:21px 23px;border-left:5px solid var(--color-accent);background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0}
+.callout-title{font-weight:700;margin-bottom:5px}
+.diagram{margin:32px 0;padding:22px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-alt)}
+svg{display:block;width:100%;height:auto}
+.tabs{margin-top:28px}
+.tab-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.tab-buttons button{cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--color-text);padding:10px 14px;border-radius:10px;font-weight:600}
+.tab-buttons button[aria-selected="true"]{border-color:var(--color-accent);background:var(--accent-soft)}
+.tab-panel{display:none;padding:22px 0}
+.tab-panel.active{display:block}
+details{border-bottom:1px solid var(--border);padding:16px 0}
+summary{cursor:pointer;font-weight:700}
+.example{margin-top:28px;padding:25px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-alt)}
+.process{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:30px}
+.step{position:relative;padding:20px 18px 20px 50px;border-top:2px solid var(--color-accent)}
+.step:not(:last-child){border-right:1px solid var(--border)}
+.step b{font-family:"IBM Plex Mono";color:var(--color-accent);font-size:.8rem}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:25px}
+.key{padding:18px;border:1px solid var(--border);border-radius:12px}
+.key strong{display:block;margin-bottom:5px}
+footer{max-width:1040px;margin:auto;padding:30px 24px;color:var(--text-muted);font-size:.82rem;display:flex;justify-content:space-between;gap:15px}
+.bottom-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:45px}
+.bottom-nav a{border:1px solid var(--border);padding:17px;border-radius:12px}
+.bottom-nav a:hover{border-color:var(--color-accent)}
+.backtop{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-text);cursor:pointer;box-shadow:var(--shadow)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+.mono{font-family:"IBM Plex Mono",monospace}
+@media(max-width:800px){
+  .nav-toggle{display:block}
+  .navlinks{display:none;width:100%;flex-direction:column;padding-top:10px}
+  .navlinks.open{display:flex}
+  .nav{flex-wrap:wrap}
+  .grid,.process{grid-template-columns:1fr}
+  .process .step{border-right:0;border-bottom:1px solid var(--border)}
+  .toc ol{columns:1}
+  .bottom-nav{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  main{padding:0 17px 50px}
+  .hero{padding-top:55px}
+  section{padding:50px 0}
+  h1{font-size:2.45rem}
+  footer{padding:25px 17px;display:block}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top">Marketing <span>•</span> Commerce & Vente</a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">Sommaire</button>
+    <div class="navlinks" id="navLinks">
+      <a href="#segmentation">Segmentation</a>
+      <a href="#criteres">Critères</a>
+      <a href="#ciblage">Ciblage</a>
+      <a href="#positionnement">Positionnement</a>
+      <a href="#carte">Carte perceptuelle</a>
+      <a href="#synthese">À retenir</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero reveal">
+  <div class="eyebrow">Module 1 — Fondamentaux du marketing et de la vente</div>
+  <h1>Segmentation, ciblage et positionnement</h1>
+  <p class="lead">Identifier et cibler les bons clients grâce à une démarche simple : découper le marché, choisir les segments prioritaires et construire une place claire dans l’esprit du client.</p>
+  <div class="meta">
+    <span class="badge"><strong>Leçon 04</strong></span>
+    <span class="badge">Niveau : Débutant</span>
+    <span class="badge">25 min</span>
+  </div>
+  <div class="toc">
+    <div class="toc-title">Sommaire</div>
+    <ol>
+      <li><a href="#segmentation">Comprendre la segmentation</a></li>
+      <li><a href="#criteres">Les critères de segmentation</a></li>
+      <li><a href="#ciblage">Le ciblage</a></li>
+      <li><a href="#positionnement">Le positionnement</a></li>
+      <li><a href="#carte">La carte perceptuelle</a></li>
+      <li><a href="#exemple">Exemple concret</a></li>
+      <li><a href="#synthese">Points clés à retenir</a></li>
+    </ol>
+  </div>
+</section>
+
+<section id="segmentation" class="reveal">
+  <div class="eyebrow">01 / Découper le marché</div>
+  <h2>Comprendre la segmentation</h2>
+  <p class="section-intro">Un marché n'est pas constitué d'un seul type de client. La segmentation consiste à diviser un marché en groupes de clients qui présentent des caractéristiques ou des comportements suffisamment proches pour être étudiés et servis de manière adaptée.</p>
+  <div class="grid">
+    <article class="card"><div class="num">01</div><h3>Observer</h3><p>Identifier les différences entre les clients : profil, lieu, situation économique et comportement.</p></article>
+    <article class="card"><div class="num">02</div><h3>Regrouper</h3><p>Former des groupes cohérents partageant des caractéristiques communes.</p></article>
+    <article class="card"><div class="num">03</div><h3>Comprendre</h3><p>Déterminer les besoins et attentes propres à chaque groupe.</p></article>
+  </div>
+  <div class="callout">
+    <div class="callout-title">💡 À retenir</div>
+    <div>Segmenter ne signifie pas exclure des clients. Cela permet surtout de mieux comprendre à qui l'entreprise s'adresse et d'adapter son offre.</div>
+  </div>
+</section>
+
+<section id="criteres" class="reveal">
+  <div class="eyebrow">02 / Les variables</div>
+  <h2>Les critères de segmentation</h2>
+  <p class="section-intro">Plusieurs familles de critères permettent de distinguer les segments d'un marché.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Critère</th><th scope="col">Ce qu'on observe</th><th scope="col">Exemple</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Démographique</strong></td><td>Âge, sexe, taille du foyer, situation familiale, etc.</td><td>Jeunes adultes, familles avec enfants.</td></tr>
+        <tr><td><strong>Géographique</strong></td><td>Région, ville, quartier, climat ou zone de résidence.</td><td>Clients vivant en zone urbaine.</td></tr>
+        <tr><td><strong>Socio-économique</strong></td><td>Revenus, profession, niveau d'études ou catégorie sociale.</td><td>Clients recherchant une offre accessible.</td></tr>
+        <tr><td><strong>Comportemental</strong></td><td>Habitudes d'achat, fréquence, fidélité, usages et réactions à l'offre.</td><td>Clients réguliers ou acheteurs occasionnels.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="ciblage" class="reveal">
+  <div class="eyebrow">03 / Choisir ses priorités</div>
+  <h2>Le ciblage</h2>
+  <p class="section-intro">Après avoir segmenté le marché, l'entreprise choisit les groupes de clients auxquels elle souhaite donner la priorité. Le ciblage transforme donc l'analyse du marché en choix commercial.</p>
+  <div class="diagram" aria-label="Schéma en entonnoir de segmentation, ciblage et positionnement">
+    <svg viewBox="0 0 900 330" role="img">
+      <title>Entonnoir segmentation ciblage positionnement</title>
+      <path d="M90 45 H810 L660 140 H240 Z" fill="none" stroke="var(--color-accent)" stroke-width="3"/>
+      <path d="M240 155 H660 L570 225 H330 Z" fill="none" stroke="var(--color-text)" stroke-width="3"/>
+      <path d="M330 240 H570 L515 285 H385 Z" fill="none" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="450" y="100" text-anchor="middle" fill="var(--color-text)" font-size="25" font-family="Inter">SEGMENTATION</text>
+      <text x="450" y="195" text-anchor="middle" fill="var(--color-text)" font-size="25" font-family="Inter">CIBLAGE</text>
+      <text x="450" y="270" text-anchor="middle" fill="var(--color-text)" font-size="22" font-family="Inter">POSITIONNEMENT</text>
+    </svg>
+  </div>
+  <div class="process">
+    <div class="step"><b>ÉTAPE 01</b><h3>Segmenter</h3><p>Découper le marché en groupes cohérents.</p></div>
+    <div class="step"><b>ÉTAPE 02</b><h3>Cibler</h3><p>Sélectionner les segments prioritaires.</p></div>
+    <div class="step"><b>ÉTAPE 03</b><h3>Positionner</h3><p>Définir la place que l'offre doit occuper dans l'esprit du client.</p></div>
+  </div>
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Approches de ciblage">
+      <button role="tab" aria-selected="true" aria-controls="tab1" id="tabbtn1">Un segment</button>
+      <button role="tab" aria-selected="false" aria-controls="tab2" id="tabbtn2">Plusieurs segments</button>
+      <button role="tab" aria-selected="false" aria-controls="tab3" id="tabbtn3">Marché large</button>
+    </div>
+    <div id="tab1" class="tab-panel active" role="tabpanel" aria-labelledby="tabbtn1"><strong>Ciblage concentré :</strong> l'entreprise concentre ses efforts sur un segment précis.</div>
+    <div id="tab2" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn2"><strong>Ciblage différencié :</strong> l'entreprise adapte son offre ou son approche à plusieurs segments.</div>
+    <div id="tab3" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn3"><strong>Ciblage large :</strong> l'entreprise s'adresse à un marché plus global avec une proposition relativement générale.</div>
+  </div>
+</section>
+
+<section id="positionnement" class="reveal">
+  <div class="eyebrow">04 / Occuper une place claire</div>
+  <h2>Le positionnement</h2>
+  <p class="section-intro">Le positionnement correspond à la manière dont une offre est perçue par rapport aux alternatives disponibles. Il doit rendre l'offre identifiable et compréhensible pour la cible.</p>
+  <div class="grid">
+    <article class="card"><div class="num">01</div><h3>Pour qui ?</h3><p>La cible prioritaire doit être clairement définie.</p></article>
+    <article class="card"><div class="num">02</div><h3>Quelle promesse ?</h3><p>L'offre doit exprimer une valeur qui compte réellement pour la cible.</p></article>
+    <article class="card"><div class="num">03</div><h3>Pourquoi nous ?</h3><p>Le positionnement doit être différenciant et crédible face aux concurrents.</p></article>
+  </div>
+  <div class="callout">
+    <div class="callout-title">⚠️ Attention / erreur fréquente</div>
+    <div>Vouloir être « tout pour tout le monde » rend souvent le positionnement flou. Une cible et une promesse clairement formulées facilitent la communication commerciale.</div>
+  </div>
+</section>
+
+<section id="carte" class="reveal">
+  <div class="eyebrow">05 / Visualiser les perceptions</div>
+  <h2>La carte perceptuelle</h2>
+  <p class="section-intro">Une carte perceptuelle permet de représenter visuellement la position de plusieurs offres selon deux dimensions importantes pour les clients. Ici, les axes représentent le prix et la qualité perçue.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 760 520" role="img" aria-label="Carte perceptuelle prix qualité">
+      <title>Carte perceptuelle prix qualité</title>
+      <line x1="90" y1="440" x2="690" y2="440" stroke="var(--color-text)" stroke-width="3"/>
+      <line x1="90" y1="440" x2="90" y2="60" stroke="var(--color-text)" stroke-width="3"/>
+      <text x="390" y="490" text-anchor="middle" fill="var(--color-text)" font-size="22" font-family="Inter">PRIX →</text>
+      <text x="25" y="250" text-anchor="middle" transform="rotate(-90 25 250)" fill="var(--color-text)" font-size="22" font-family="Inter">QUALITÉ PERÇUE →</text>
+      <line x1="90" y1="250" x2="690" y2="250" stroke="var(--border)" stroke-width="1"/>
+      <line x1="390" y1="60" x2="390" y2="440" stroke="var(--border)" stroke-width="1"/>
+      <circle cx="200" cy="350" r="12" fill="var(--color-accent)"/>
+      <text x="220" y="355" fill="var(--color-text)" font-size="17" font-family="Inter">Offre A</text>
+      <circle cx="315" cy="170" r="12" fill="var(--color-accent)"/>
+      <text x="335" y="175" fill="var(--color-text)" font-size="17" font-family="Inter">Offre B</text>
+      <circle cx="550" cy="130" r="12" fill="var(--color-accent)"/>
+      <text x="570" y="135" fill="var(--color-text)" font-size="17" font-family="Inter">Offre C</text>
+      <circle cx="590" cy="330" r="12" fill="var(--color-accent)"/>
+      <text x="610" y="335" fill="var(--color-text)" font-size="17" font-family="Inter">Offre D</text>
+      <text x="105" y="80" fill="var(--text-muted)" font-size="15" font-family="Inter">Qualité élevée / prix faible</text>
+      <text x="505" y="425" fill="var(--text-muted)" font-size="15" font-family="Inter">Prix élevé</text>
+    </svg>
+  </div>
+  <div class="example">
+    <h3>Comment lire la carte ?</h3>
+    <p>Les offres placées dans des zones différentes ne sont pas perçues de la même façon. L'entreprise peut utiliser cette représentation pour comparer son offre à celles des concurrents et réfléchir à une position cohérente.</p>
+  </div>
+</section>
+
+<section id="exemple" class="reveal">
+  <div class="eyebrow">06 / Mise en situation</div>
+  <h2>Exemple concret</h2>
+  <p class="section-intro">Imaginons une entreprise qui commercialise une offre de restauration. Elle ne s'adresse pas nécessairement de la même manière à tous les consommateurs.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Étape</th><th scope="col">Décision</th><th scope="col">Illustration</th></tr></thead>
+      <tbody>
+        <tr><td>Segmentation</td><td>Identifier plusieurs groupes.</td><td>Étudiants, salariés, familles, clients recherchant une offre premium.</td></tr>
+        <tr><td>Ciblage</td><td>Choisir le ou les groupes prioritaires.</td><td>Priorité aux étudiants et salariés recherchant une solution accessible.</td></tr>
+        <tr><td>Positionnement</td><td>Définir une place claire.</td><td>Une offre pratique, accessible et adaptée au rythme quotidien de la cible.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <div class="callout-title">👨‍🍳 Conseil professionnel</div>
+    <div>Un bon positionnement doit pouvoir être compris rapidement. Si le client ne comprend pas à qui l'offre s'adresse et quelle valeur elle apporte, le message commercial risque de perdre en efficacité.</div>
+  </div>
+</section>
+
+<section id="synthese" class="reveal">
+  <div class="eyebrow">07 / Synthèse</div>
+  <h2>Points clés à retenir</h2>
+  <div class="key-grid">
+    <div class="key"><strong>Segmenter</strong><span>Diviser le marché en groupes de clients présentant des caractéristiques communes.</span></div>
+    <div class="key"><strong>Analyser les critères</strong><span>Utiliser notamment les critères démographiques, géographiques, socio-économiques et comportementaux.</span></div>
+    <div class="key"><strong>Cibler</strong><span>Sélectionner les segments auxquels l'entreprise souhaite donner la priorité.</span></div>
+    <div class="key"><strong>Positionner</strong><span>Construire une perception claire et différenciante de l'offre.</span></div>
+    <div class="key"><strong>Cartographier</strong><span>Utiliser une carte perceptuelle pour visualiser les positions relatives des offres.</span></div>
+    <div class="key"><strong>Rester cohérent</strong><span>Faire correspondre cible, promesse, offre et communication.</span></div>
+  </div>
+  <div class="callout">
+    <div class="callout-title">📌 Rappel</div>
+    <div>La logique à mémoriser est simple : <strong>SEGMENTER → CIBLER → POSITIONNER</strong>.</div>
+  </div>
+  <div class="bottom-nav">
+    <a href="#top"><small>Leçon précédente</small><br><strong>← Leçon 03</strong></a>
+    <a href="#top"><small>Module 1</small><br><strong>Retour au sommaire ↑</strong></a>
+    <a href="#top"><small>Leçon suivante</small><br><strong>Leçon 05 →</strong></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>Marketing, Commerce & Vente — Leçon 04</span>
+  <span>Support pédagogique</span>
+</footer>
+
+<button class="backtop" id="backTop" aria-label="Retour en haut">↑</button>
+
+<script>
+const progressBar=document.getElementById('progressBar');
+function updateProgress(){
+  const doc=document.documentElement;
+  const max=doc.scrollHeight-doc.clientHeight;
+  progressBar.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+updateProgress();
+
+const navToggle=document.getElementById('navToggle');
+const navLinks=document.getElementById('navLinks');
+navToggle.addEventListener('click',()=>{
+  const open=navLinks.classList.toggle('open');
+  navToggle.setAttribute('aria-expanded',String(open));
+});
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  navLinks.classList.remove('open');
+  navToggle.setAttribute('aria-expanded','false');
+}));
+
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  const buttons=[...group.querySelectorAll('[role="tab"]')];
+  const panels=[...group.querySelectorAll('[role="tabpanel"]')];
+  buttons.forEach((btn,i)=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.setAttribute('aria-selected','true');
+      panels[i].classList.add('active');
+    });
+    btn.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){
+        e.preventDefault(); buttons[(i+1)%buttons.length].focus();
+      }
+      if(e.key==='ArrowLeft'||e.key==='ArrowUp'){
+        e.preventDefault(); buttons[(i-1+buttons.length)%buttons.length].focus();
+      }
+    });
+  });
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+document.getElementById('backTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

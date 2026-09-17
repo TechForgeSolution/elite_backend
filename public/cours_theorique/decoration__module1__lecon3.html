@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 03 — Aménagement de l'espace et circulation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FAF6F0;
+  --color-text:#3B2E28;
+  --color-accent:#C1694F;
+  --color-neutral:#A8998C;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"Work Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent)}
+h1,h2,h3{font-family:"Fraunces",serif;line-height:1.15}
+h1{font-size:clamp(2.5rem,6vw,5rem);margin:.3rem 0 1rem}
+h2{font-size:clamp(1.8rem,3vw,2.8rem);margin:0 0 1rem}
+h3{font-size:1.35rem}
+p{max-width:720px}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));backdrop-filter:blur(8px)}
+.nav{max-width:1180px;margin:auto;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.logo{font-family:"Fraunces",serif;font-weight:700}
+nav{display:flex;gap:1rem;flex-wrap:wrap}
+nav a{text-decoration:none;font-size:.9rem}
+.container{max-width:1180px;margin:auto;padding:0 1rem}
+.hero{padding:6rem 0 3rem;display:grid;grid-template-columns:1.2fr .8fr;gap:3rem;align-items:center}
+.kicker,.badge{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem}
+.badges{display:flex;gap:.6rem;flex-wrap:wrap}
+.badge{border:1px solid var(--color-neutral);padding:.35rem .65rem;border-radius:999px}
+.hero-art{border:1px solid var(--color-neutral);padding:1rem;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));border-radius:18px}
+.toc{padding:1.5rem;border-top:1px solid var(--color-neutral);border-bottom:1px solid var(--color-neutral)}
+.toc ol{columns:2;max-width:720px}
+section{padding:5rem 0}
+section:nth-of-type(even){background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.section-inner{max-width:900px;margin:auto;padding:0 1rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.card,.sample,.callout{border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));padding:1.2rem;border-radius:14px;background:var(--color-bg)}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card{transition:.2s}
+.callout{border-left:5px solid var(--color-accent);margin:1.5rem 0}
+.sample{background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));font-family:"IBM Plex Mono",monospace}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:650px}
+th,td{text-align:left;padding:.8rem;border-bottom:1px solid var(--color-neutral)}
+th{font-family:"Fraunces",serif}
+svg{width:100%;height:auto;display:block}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.tabs button,.backtop{border:1px solid var(--color-neutral);background:var(--color-bg);color:var(--color-text);padding:.65rem 1rem;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"],.tabs button:hover{border-color:var(--color-accent)}
+.panel{display:none}.panel.active{display:block}
+details{border-bottom:1px solid var(--color-neutral);padding:1rem 0}
+summary{cursor:pointer;font-family:"Fraunces",serif;font-size:1.15rem}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin:2rem 0}
+.step{padding:1rem;border-top:3px solid var(--color-accent)}
+.step strong{display:block;font-family:"IBM Plex Mono",monospace}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+footer{padding:3rem 0;border-top:1px solid var(--color-neutral)}
+.footer-nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.fade{opacity:0;transform:translateY(18px);transition:.6s ease}.fade.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.keys{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr}.toc ol{columns:1}}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.hero{padding-top:4rem}section{padding:3.5rem 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade{transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="nav">
+    <div class="logo">Filière Décoration</div>
+    <nav aria-label="Navigation principale">
+      <a href="#sommaire">Sommaire</a>
+      <a href="#zones">Zones</a>
+      <a href="#ergonomie">Ergonomie</a>
+      <a href="#circulation">Circulation</a>
+      <a href="#mobilier">Mobilier</a>
+      <a href="#proportion">Proportions</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+<div class="container" style="max-width:720px">
+  <div class="kicker">Module 1 · Décoration — Fondamentaux et harmonie des espaces</div>
+  <h1>Aménagement de l'espace et circulation</h1>
+  <p>Organiser un espace en optimisant la circulation et la fonctionnalité, tout en conservant une composition harmonieuse.</p>
+  <div class="badges">
+    <span class="badge">Leçon 03</span><span class="badge">Débutant</span><span class="badge">15 min</span>
+  </div>
+</div>
+<div class="hero-art" aria-label="Schéma d'un espace organisé autour d'une circulation centrale">
+<svg viewBox="0 0 600 430" role="img" aria-label="Plan simplifié montrant une zone de vie, une zone de circulation et des meubles">
+<rect x="35" y="35" width="530" height="350" rx="10" fill="none" stroke="#3B2E28" stroke-width="3"/>
+<rect x="65" y="70" width="180" height="115" rx="8" fill="rgba(193,105,79,.10)" stroke="#C1694F" stroke-width="3"/>
+<text x="155" y="130" text-anchor="middle" fill="#3B2E28" font-size="20">ZONE DE VIE</text>
+<rect x="345" y="70" width="150" height="70" rx="8" fill="none" stroke="#A8998C" stroke-width="3"/>
+<text x="420" y="112" text-anchor="middle" fill="#3B2E28" font-size="16">MOBILIER</text>
+<rect x="345" y="205" width="150" height="70" rx="8" fill="none" stroke="#A8998C" stroke-width="3"/>
+<text x="420" y="247" text-anchor="middle" fill="#3B2E28" font-size="16">MOBILIER</text>
+<path d="M75 330 H525" stroke="#C1694F" stroke-width="8" stroke-linecap="round"/>
+<path d="M500 315 L525 330 L500 345" fill="none" stroke="#C1694F" stroke-width="6"/>
+<text x="300" y="365" text-anchor="middle" fill="#3B2E28" font-size="16">AXE DE CIRCULATION</text>
+</svg>
+</div>
+</section>
+
+<section id="sommaire">
+<div class="section-inner">
+<h2>Sommaire</h2>
+<div class="toc"><ol>
+<li><a href="#zones">Les zones de vie</a></li>
+<li><a href="#ergonomie">Les règles d'ergonomie</a></li>
+<li><a href="#circulation">Le plan de circulation</a></li>
+<li><a href="#mobilier">L'agencement du mobilier</a></li>
+<li><a href="#proportion">Échelle et proportion</a></li>
+<li><a href="#synthese">Points clés à retenir</a></li>
+</ol></div>
+</div>
+</section>
+
+<section id="zones">
+<div class="section-inner fade">
+<h2>1. Les zones de vie</h2>
+<p>Un aménagement commence par l'identification des fonctions de l'espace. Chaque zone doit répondre à un usage précis et trouver sa place dans l'ensemble.</p>
+<div class="grid">
+<article class="card"><h3>🛋️ Zone de séjour</h3><p>Espace consacré à l'assise, aux échanges, à la détente et aux activités conviviales.</p></article>
+<article class="card"><h3>🍽️ Zone de repas</h3><p>Elle doit permettre l'installation, le déplacement autour de la table et le service.</p></article>
+<article class="card"><h3>🚶 Zone de passage</h3><p>Elle assure les déplacements entre les différentes fonctions sans couper inutilement les espaces de vie.</p></article>
+</div>
+<div class="callout"><strong>💡 À retenir</strong><p>Avant de choisir les meubles, on définit les fonctions, puis on organise les relations entre les zones.</p></div>
+</div>
+</section>
+
+<section id="ergonomie">
+<div class="section-inner fade">
+<h2>2. Les règles d'ergonomie</h2>
+<p>L'ergonomie consiste à adapter l'aménagement aux gestes, aux dimensions humaines et aux usages quotidiens. Un espace réussi doit être agréable à regarder mais surtout simple à utiliser.</p>
+<div class="sample">PRINCIPE → usage → dimensions → dégagements → confort → sécurité</div>
+<div class="grid">
+<article class="card"><h3>Accès</h3><p>Les portes, fenêtres et équipements doivent rester accessibles et utilisables sans obstacle.</p></article>
+<article class="card"><h3>Dégagement</h3><p>Les meubles ne doivent pas créer de passages trop étroits ni gêner les mouvements essentiels.</p></article>
+<article class="card"><h3>Confort</h3><p>Les distances entre les éléments doivent correspondre aux gestes réels : s'asseoir, servir, ouvrir, circuler.</p></article>
+</div>
+<details><summary>Pourquoi éviter le mobilier surdimensionné ?</summary><p>Un meuble trop volumineux peut réduire les dégagements, déséquilibrer visuellement la pièce et rendre les déplacements moins fluides.</p></details>
+<details><summary>Pourquoi penser aux usages avant l'esthétique ?</summary><p>Parce qu'un aménagement décoratif qui ne répond pas aux usages quotidiens perd rapidement sa fonctionnalité.</p></details>
+</div>
+</section>
+
+<section id="circulation">
+<div class="section-inner fade">
+<h2>3. Le plan de circulation</h2>
+<p>Le plan de circulation représente les parcours possibles dans un espace. Il permet de repérer les axes principaux, les zones de conflit et les obstacles.</p>
+<svg viewBox="0 0 900 330" role="img" aria-label="Diagramme d'un parcours fluide autour de zones de mobilier">
+<rect x="30" y="30" width="840" height="260" rx="12" fill="none" stroke="#3B2E28" stroke-width="3"/>
+<rect x="80" y="75" width="170" height="75" rx="8" fill="rgba(193,105,79,.10)" stroke="#C1694F" stroke-width="3"/>
+<text x="165" y="120" text-anchor="middle" fill="#3B2E28">ZONE A</text>
+<rect x="650" y="75" width="140" height="75" rx="8" fill="none" stroke="#A8998C" stroke-width="3"/>
+<text x="720" y="120" text-anchor="middle" fill="#3B2E28">ZONE B</text>
+<path d="M270 112 H625" stroke="#C1694F" stroke-width="7" stroke-linecap="round"/>
+<path d="M600 97 L625 112 L600 127" fill="none" stroke="#C1694F" stroke-width="6"/>
+<path d="M720 160 V235 H165 V160" fill="none" stroke="#A8998C" stroke-width="5" stroke-dasharray="10 10"/>
+<text x="450" y="270" text-anchor="middle" fill="#3B2E28">PARCOURS PRINCIPAL + PARCOURS SECONDAIRE</text>
+</svg>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong><p>Placer les meubles uniquement en fonction des murs peut créer des circulations inutiles. Il faut d'abord observer les parcours naturels.</p></div>
+</div>
+</section>
+
+<section id="mobilier">
+<div class="section-inner fade">
+<h2>4. L'agencement du mobilier</h2>
+<p>Le mobilier structure l'espace. Son implantation doit créer des ensembles lisibles, faciliter les activités et maintenir des passages cohérents.</p>
+<div class="tabs" role="tablist" aria-label="Approches d'agencement">
+<button role="tab" aria-selected="true" aria-controls="tab1" id="b1">Espace compact</button>
+<button role="tab" aria-selected="false" aria-controls="tab2" id="b2">Espace ouvert</button>
+</div>
+<div id="tab1" class="panel active" role="tabpanel" aria-labelledby="b1">
+<div class="card"><h3>Petit espace</h3><p>Privilégier un nombre limité de meubles, conserver les axes de passage et rapprocher les éléments qui participent à la même activité.</p></div>
+</div>
+<div id="tab2" class="panel" role="tabpanel" aria-labelledby="b2">
+<div class="card"><h3>Grand espace</h3><p>Créer plusieurs sous-zones fonctionnelles permet d'éviter l'effet de vide et donne une lecture plus claire de l'espace.</p></div>
+</div>
+<table>
+<thead><tr><th scope="col">Élément</th><th scope="col">Fonction</th><th scope="col">Point d'attention</th></tr></thead>
+<tbody>
+<tr><th scope="row">Canapé</th><td>Assise / convivialité</td><td>Orienter vers le point focal</td></tr>
+<tr><th scope="row">Table</th><td>Repas / travail</td><td>Prévoir les dégagements nécessaires</td></tr>
+<tr><th scope="row">Rangement</th><td>Organisation</td><td>Préserver l'ouverture des portes</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="proportion">
+<div class="section-inner fade">
+<h2>5. Échelle et proportion</h2>
+<p>L'échelle met en relation les dimensions d'un élément avec celles de l'espace et du corps humain. La proportion concerne les rapports entre les différentes dimensions d'un ensemble.</p>
+<div class="stepper">
+<div class="step"><strong>01</strong>Observer</div>
+<div class="step"><strong>02</strong>Mesurer</div>
+<div class="step"><strong>03</strong>Comparer</div>
+<div class="step"><strong>04</strong>Agencer</div>
+<div class="step"><strong>05</strong>Équilibrer</div>
+</div>
+<svg viewBox="0 0 900 320" role="img" aria-label="Comparaison visuelle de l'échelle et de la proportion">
+<rect x="70" y="75" width="220" height="170" fill="none" stroke="#A8998C" stroke-width="4"/>
+<rect x="110" y="115" width="80" height="70" fill="rgba(193,105,79,.10)" stroke="#C1694F" stroke-width="4"/>
+<text x="180" y="220" text-anchor="middle" fill="#3B2E28">Échelle</text>
+<rect x="430" y="75" width="350" height="170" fill="none" stroke="#3B2E28" stroke-width="4"/>
+<rect x="485" y="115" width="95" height="70" fill="rgba(193,105,79,.10)" stroke="#C1694F" stroke-width="4"/>
+<rect x="620" y="105" width="120" height="90" fill="none" stroke="#A8998C" stroke-width="4"/>
+<text x="605" y="220" text-anchor="middle" fill="#3B2E28">Proportion</text>
+</svg>
+<div class="callout"><strong>🎨 Inspiration / style</strong><p>Un espace harmonieux alterne volumes, vides et axes de circulation. La décoration gagne en qualité lorsque les dimensions des éléments semblent appartenir au même ensemble.</p></div>
+</div>
+</section>
+
+<section id="synthese">
+<div class="section-inner fade">
+<h2>Points clés à retenir</h2>
+<div class="keys">
+<div class="sample"><strong>01</strong><br>Définir les fonctions</div>
+<div class="sample"><strong>02</strong><br>Organiser les parcours</div>
+<div class="sample"><strong>03</strong><br>Adapter le mobilier</div>
+<div class="sample"><strong>04</strong><br>Respecter échelle & proportion</div>
+</div>
+<div class="callout"><strong>📋 Cas pratique</strong><p>Pour concevoir un espace, commencez par les usages et les déplacements. Positionnez ensuite les éléments majeurs, vérifiez les dégagements, puis affinez l'équilibre visuel.</p></div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="container">
+<div class="footer-nav">
+<a href="#sommaire">↑ Retour au sommaire</a>
+<a href="#sommaire">← Leçon 02 · Théorie des couleurs et harmonies chromatiques</a>
+<a href="#sommaire">Leçon 04 · Choix des matériaux, textures et revêtements →</a>
+</div>
+<p class="kicker">Filière Décoration · Module 1 · Leçon 03</p>
+</div>
+</footer>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+ const h=document.documentElement;
+ const max=h.scrollHeight-h.clientHeight;
+ progress.style.width=(max?scrollY/max*100:0)+'%';
+}
+addEventListener('scroll',updateProgress,{passive:true}); updateProgress();
+
+document.querySelectorAll('.tabs button').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected','false'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.setAttribute('aria-selected','true');
+  document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+ });
+});
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.12});
+document.querySelectorAll('.fade').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 13 — Introduction à la gestion financière | Module 3 — Gestion financière</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filiere comptabilite
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 3 — Gestion financière</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau intermédiaire</span>
+    </div>
+    <h1>Leçon 13-Introduction à la gestion financière</h1>
+    <p class="lede">Leçon 13 — comprendre à quoi sert la gestion financière, distinguer rentabilité, solvabilité et liquidité, et voir comment ces équilibres guident les décisions financières de l'entreprise.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="À quoi sert la gestion financière" data-num="13.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">13.1</span><h2>À quoi sert la gestion financière</h2></div>
+      <p>La comptabilité enregistre ce qui s'est passé : elle produit des écritures, des comptes, un bilan et un compte de résultat fiables. La <strong>gestion financière</strong> prend le relais : elle interprète ces chiffres pour éclairer des décisions à venir — investir, emprunter, distribuer un dividende, ou simplement tenir la trésorerie du mois prochain.</p>
+      <p>Elle s'organise autour de trois questions que se pose toute entreprise, quelle que soit sa taille : l'activité est-elle rentable, l'entreprise peut-elle faire face à l'ensemble de ses dettes, et dispose-t-elle du cash nécessaire au bon moment ?</p>
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Une entreprise peut être rentable sur le papier et pourtant manquer de trésorerie un mois donné : rentabilité, solvabilité et liquidité mesurent trois réalités différentes, qu'il ne faut jamais confondre.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 820 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Les données comptables alimentent trois piliers de la gestion financière — rentabilité, solvabilité, liquidité — qui éclairent ensemble les décisions financières">
+        <defs>
+          <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#1F6F54"></path>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif" font-size="13" fill="#0B0F0D">
+          <rect x="20" y="80" width="140" height="55" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="90" y="103" text-anchor="middle" font-weight="600" font-size="12">Données comptables</text>
+          <text x="90" y="120" text-anchor="middle" fill="#5A6560" font-size="11">bilan, résultat</text>
+
+          <rect x="240" y="20" width="150" height="50" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="315" y="42" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Rentabilité</text>
+          <text x="315" y="58" text-anchor="middle" fill="#1F6F54" font-size="11">ce que rapporte l'activité</text>
+
+          <rect x="240" y="85" width="150" height="50" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="315" y="107" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Solvabilité</text>
+          <text x="315" y="123" text-anchor="middle" fill="#1F6F54" font-size="11">faire face à ses dettes</text>
+
+          <rect x="240" y="150" width="150" height="50" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="315" y="172" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Liquidité</text>
+          <text x="315" y="188" text-anchor="middle" fill="#1F6F54" font-size="11">avoir du cash à temps</text>
+
+          <line x1="160" y1="107" x2="236" y2="45" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="160" y1="107" x2="236" y2="110" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="160" y1="107" x2="236" y2="175" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+
+          <rect x="640" y="80" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="720" y="103" text-anchor="middle" font-weight="600" font-size="12">Décisions financières</text>
+          <text x="720" y="120" text-anchor="middle" fill="#5A6560" font-size="11">investir, financer, distribuer</text>
+
+          <line x1="390" y1="45" x2="636" y2="95" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="390" y1="110" x2="636" y2="108" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="390" y1="175" x2="636" y2="122" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="La rentabilité : ce que rapporte l'activité" data-num="13.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">13.2</span><h2>La rentabilité : ce que rapporte l'activité</h2></div>
+      <p>La <strong>rentabilité</strong> mesure la capacité de l'entreprise à dégager un profit à partir de son activité, rapporté au chiffre d'affaires ou aux capitaux engagés. Elle se lit d'abord dans le compte de résultat, sous forme de marges successives, puis se rapporte aux capitaux investis.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Principaux indicateurs de rentabilité</caption>
+        <thead>
+          <tr><th scope="col">Indicateur</th><th scope="col">Formule</th><th scope="col" class="num">Exemple</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Taux de marge nette</td><td class="mono">Résultat net / Chiffre d'affaires</td><td class="num">6,2 %</td></tr>
+          <tr><td>Rentabilité économique</td><td class="mono">Résultat d'exploitation / Actif total</td><td class="num">9,0 %</td></tr>
+          <tr><td>Rentabilité des capitaux propres</td><td class="mono">Résultat net / Capitaux propres</td><td class="num">14,5 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <p>Un taux isolé dit peu de choses : il faut le comparer dans le temps, à un objectif fixé, ou à des entreprises du même secteur. Une marge nette de 6 % peut être excellente dans la distribution alimentaire et faible dans l'édition de logiciels.</p>
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Confondre rentabilité et trésorerie disponible : une entreprise rentable qui facture à 60 jours peut afficher un beau résultat net tout en manquant de cash pour payer ses charges du mois.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="La solvabilité : faire face à ses dettes" data-num="13.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">13.3</span><h2>La solvabilité : faire face à ses dettes</h2></div>
+      <p>La <strong>solvabilité</strong> mesure la capacité de l'entreprise à honorer l'ensemble de ses dettes, y compris à long terme et en cas de cessation d'activité — c'est-à-dire si l'on vendait tout l'actif pour rembourser tout le passif. Elle se lit dans la structure du bilan, entre capitaux propres et dettes.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Deux angles de la solvabilité">
+        <button class="tab-btn" role="tab" id="tab-solv-1" aria-controls="panel-solv-1" aria-selected="true">Ratio d'autonomie financière</button>
+        <button class="tab-btn" role="tab" id="tab-solv-2" aria-controls="panel-solv-2" aria-selected="false" tabindex="-1">Ratio d'endettement</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-solv-1" role="tabpanel" aria-labelledby="tab-solv-1" tabindex="0">
+        <div class="prose">
+          <p>Il rapporte les capitaux propres au total du bilan : <span class="mono">Capitaux propres / Total du bilan</span>. Plus il est élevé, moins l'entreprise dépend de financements externes pour couvrir son actif, et plus elle est jugée solide par les créanciers.</p>
+          <p>En dessous d'un tiers environ, une entreprise est souvent considérée comme fortement dépendante de ses dettes, ce qui peut compliquer l'accès à de nouveaux financements.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-solv-2" role="tabpanel" aria-labelledby="tab-solv-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Il rapporte l'endettement financier aux capitaux propres : <span class="mono">Dettes financières / Capitaux propres</span>. Il indique combien d'euros de dette pèsent sur chaque euro apporté par les associés.</p>
+          <p>Un ratio supérieur à 1 signifie que l'entreprise est financée davantage par la dette que par ses fonds propres — ce qui n'est pas alarmant en soi, mais mérite d'être surveillé dans la durée.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">📌 Rappel normatif</div>
+        <p>Les établissements bancaires examinent systématiquement ces ratios de solvabilité avant d'accorder un financement : ils conditionnent souvent l'octroi d'un prêt à un niveau minimal de capitaux propres.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="La liquidité : disposer de cash au bon moment" data-num="13.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">13.4</span><h2>La liquidité : disposer de cash au bon moment</h2></div>
+      <p>La <strong>liquidité</strong> mesure la capacité de l'entreprise à faire face à ses échéances à court terme — payer ses fournisseurs, ses salaires, ses charges sociales — avec les moyens dont elle dispose immédiatement ou à court terme. C'est l'équilibre le plus concret au quotidien : une entreprise rentable et solvable peut malgré tout se retrouver en défaut de paiement si elle manque de liquidité au mauvais moment.</p>
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Une entreprise affiche un actif circulant de <span class="mono">180 000 €</span> (stocks, créances clients, trésorerie) pour des dettes à court terme de <span class="mono">150 000 €</span>. Son ratio de liquidité générale est de <span class="mono">1,2</span> : elle dispose, en théorie, de 1,20 € d'actif à court terme pour chaque euro de dette à court terme.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Ratios de liquidité usuels</caption>
+        <thead>
+          <tr><th scope="col">Ratio</th><th scope="col">Formule</th><th scope="col" class="num">Exemple</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Liquidité générale</td><td class="mono">Actif circulant / Dettes à court terme</td><td class="num">1,20</td></tr>
+          <tr><td>Liquidité réduite</td><td class="mono">(Actif circulant − Stocks) / Dettes à court terme</td><td class="num">0,85</td></tr>
+          <tr><td>Liquidité immédiate</td><td class="mono">Trésorerie / Dettes à court terme</td><td class="num">0,30</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <p>La liquidité réduite exclut les stocks, moins rapidement transformables en cash que les créances ou la trésorerie. C'est souvent le ratio le plus révélateur d'une tension de trésorerie à venir, avant même qu'elle ne soit visible sur le compte bancaire.</p>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Trois équilibres à arbitrer, pas toujours alignés" data-num="13.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">13.5</span><h2>Trois équilibres à arbitrer, pas toujours alignés</h2></div>
+      <p>Rentabilité, solvabilité et liquidité peuvent évoluer dans des directions opposées au même moment. Une entreprise en forte croissance en est souvent l'illustration :</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 18l5-6 4 4 7-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <h3>Croissance et rentabilité</h3>
+        <p>Le chiffre d'affaires et la marge progressent, le résultat net s'améliore d'un exercice à l'autre.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="7" height="10" rx="1" stroke="currentColor" stroke-width="1.6"></rect><rect x="14" y="5" width="7" height="16" rx="1" stroke="currentColor" stroke-width="1.6"></rect></svg>
+        <h3>Investissements et solvabilité</h3>
+        <p>Les investissements nécessaires à cette croissance sont financés en partie par de nouvelles dettes, ce qui pèse sur le ratio d'endettement.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M4 12l4-4M4 12l4 4" stroke="currentColor" stroke-width="1.6"></path><path d="M20 6v12" stroke="currentColor" stroke-width="1.6"></path></svg>
+        <h3>Stocks, clients et liquidité</h3>
+        <p>Les stocks et les créances clients augmentent plus vite que la trésorerie encaissée, ce qui tend la liquidité à court terme.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Une entreprise rentable peut-elle vraiment être en difficulté de trésorerie ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Oui, et c'est l'une des causes les plus fréquentes de défaillance d'entreprises par ailleurs saines : le résultat comptable inclut des produits et des charges qui ne se traduisent pas immédiatement en encaissements ou décaissements, notamment les délais de paiement clients.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Faut-il donner la priorité à l'un de ces trois équilibres ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Non : la gestion financière consiste précisément à les suivre ensemble et à arbitrer, car améliorer l'un peut dégrader temporairement un autre. La priorité dépend du contexte de l'entreprise à un instant donné.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Les décisions financières du quotidien" data-num="13.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">13.6</span><h2>Les décisions financières du quotidien</h2></div>
+      <p>Ces trois équilibres ne sont pas de simples indicateurs à consulter en fin d'exercice : ils orientent des décisions concrètes, prises tout au long de l'année.</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Décider d'investir</h3>
+        <p>Évaluer si un investissement (matériel, local, recrutement) sera suffisamment rentable pour être engagé.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Choisir le financement</h3>
+        <p>Arbitrer entre autofinancement, emprunt bancaire ou apport en capital, selon l'impact sur la solvabilité.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Piloter la trésorerie</h3>
+        <p>Anticiper les échéances à venir pour s'assurer que la liquidité suit le rythme des encaissements et décaissements.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Décider d'une distribution</h3>
+        <p>Déterminer si une partie du résultat peut être distribuée aux associés sans fragiliser les équilibres financiers.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🔗 Pour aller plus loin</div>
+        <p>Les prochaines leçons du module reprennent chacun de ces équilibres en détail, à commencer par la lecture financière du bilan, pour apprendre à repérer ces signaux directement dans les états financiers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="13.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">13.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>La gestion financière interprète les données comptables pour éclairer les décisions à venir, alors que la comptabilité enregistre le passé.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>La rentabilité mesure ce que rapporte l'activité, à comparer dans le temps et par rapport au secteur.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>La solvabilité mesure la capacité à honorer l'ensemble des dettes, y compris à long terme.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>La liquidité mesure la capacité à faire face aux échéances à court terme avec les moyens disponibles.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Ces trois équilibres évoluent parfois en sens opposés et doivent être arbitrés ensemble, jamais isolément.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Clôture, sauvegarde et archivage</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante</span>
+        <span class="dest">Lecture financière du bilan</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 3</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 3 : Gestion financière</span>
+    <span>Leçon 13</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

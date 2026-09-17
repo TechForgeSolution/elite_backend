@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 30 — Projet final : piloter un projet de A à Z. Synthèse complète de la gestion de projet.">
+<title>Leçon 30 — Projet final : piloter un projet de A à Z | Gestion de Projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+  --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --max:1180px;
+  --reading:720px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.68}
+a{color:inherit}
+button{font:inherit}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:var(--color-bg);z-index:1000}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font:800 15px Manrope,sans-serif;letter-spacing:.02em}
+.brand small{display:block;margin-top:3px;font:500 10px "IBM Plex Mono";color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase}
+.nav a{text-decoration:none;font-weight:600;font-size:14px}
+.container{max-width:var(--max);margin:auto;padding:0 24px}
+.hero{padding:76px 0 48px;display:grid;grid-template-columns:1.25fr .75fr;gap:44px;align-items:end}
+.kicker{font:600 12px "IBM Plex Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:Manrope,sans-serif;line-height:1.12;letter-spacing:-.035em}
+h1{font-size:clamp(40px,6.2vw,70px);margin:12px 0 20px}
+h2{font-size:clamp(27px,4vw,39px);margin:0 0 17px}
+h3{font-size:19px;margin:0 0 9px}
+.lead{max-width:var(--reading);font-size:18px;color:var(--text-muted)}
+.meta{border:1px solid var(--border);border-radius:18px;padding:22px;background:var(--accent-soft)}
+.meta-row{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid var(--border)}
+.meta-row:last-child{border-bottom:0}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.badge{display:inline-flex;border:1px solid var(--color-accent);border-radius:999px;padding:6px 10px;font:600 11px "IBM Plex Mono";text-transform:uppercase}
+.toc{margin-bottom:42px;border:1px solid var(--border);border-radius:18px;padding:22px;background:var(--color-bg)}
+.toc-title{font:600 12px "IBM Plex Mono";letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.toc ol{margin:0;padding-left:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px 28px}
+.toc a{text-decoration:none}
+.toc a:hover{color:var(--color-accent)}
+.section{padding:70px 0;border-top:1px solid var(--border)}
+.section.alt{background:var(--bg-alt)}
+.section-inner{max-width:var(--max);margin:auto;padding:0 24px}
+.section-head{display:grid;grid-template-columns:130px 1fr;gap:30px;margin-bottom:30px}
+.num{font:600 13px "IBM Plex Mono";color:var(--color-accent);padding-top:5px}
+.content{max-width:var(--reading)}
+.content p{margin:0 0 17px}
+.content ul{padding-left:22px}
+.content li{margin:8px 0}
+.callout{margin:28px 0;padding:20px 22px;border-left:5px solid var(--color-accent);border-radius:0 14px 14px 0;background:var(--accent-soft)}
+.callout strong{display:block;margin-bottom:5px;font-family:Manrope}
+.diagram{margin:30px 0;padding:20px;border:1px solid var(--border);border-radius:18px;background:var(--color-bg);overflow:auto}
+svg{display:block;width:100%;min-width:680px;height:auto}
+svg text{font-family:Inter,Arial,sans-serif;fill:var(--color-text)}
+svg .mono-svg{font-family:"IBM Plex Mono",monospace}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin:28px 0}
+.card{padding:21px;border:1px solid var(--border);border-radius:16px;background:var(--color-bg);transition:.2s ease}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:22px;margin-bottom:9px}
+.card p{margin:0;color:var(--text-muted);font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:30px 0}
+.step{padding:18px 14px;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+.step b{display:block;color:var(--color-accent);font:600 12px "IBM Plex Mono";margin-bottom:7px}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:16px;margin:28px 0}
+table{width:100%;min-width:760px;border-collapse:collapse}
+th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{font:700 13px Manrope,sans-serif}
+td{font-size:14px}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--accent-soft)}
+.pilot{margin:30px 0;padding:22px;border:1px solid var(--color-accent);border-radius:16px;background:var(--accent-soft);font-family:"IBM Plex Mono",monospace}
+.pilot-title{font-weight:600;margin-bottom:13px}
+.pilot-line{display:flex;justify-content:space-between;gap:20px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.pilot-line:last-child{border-bottom:0}
+.tabs{margin:30px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border)}
+.tab-btn{border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);padding:10px 14px;border-radius:10px 10px 0 0;cursor:pointer}
+.tab-btn[aria-selected="true"]{background:var(--accent-soft);border-color:var(--color-accent);font-weight:700}
+.tab-panel{display:none;padding:22px;border:1px solid var(--border);border-top:0;border-radius:0 0 14px 14px}
+.tab-panel.active{display:block}
+details{border-top:1px solid var(--border);padding:16px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-family:Manrope;font-weight:700}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.key{padding:19px;border-top:4px solid var(--color-accent);border-left:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:12px;background:var(--color-bg)}
+.key h3{font-size:17px}
+.key p{margin:7px 0 0;color:var(--text-muted);font-size:14px}
+.nav-bottom{padding:40px 0 60px;border-top:1px solid var(--border)}
+.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.nav-card{display:block;padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--color-bg);text-decoration:none}
+.nav-card:hover{border-color:var(--color-accent)}
+.nav-card span{display:block;margin-bottom:7px;font:500 11px "IBM Plex Mono";color:var(--color-neutral);text-transform:uppercase}
+footer{border-top:1px solid var(--border);padding:25px 24px;color:var(--text-muted);font-size:13px}
+.footer-in{max-width:var(--max);margin:auto;display:flex;justify-content:space-between;gap:20px}
+.top{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);cursor:pointer;opacity:0;pointer-events:none;transition:.2s;z-index:800}
+.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(16px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--color-accent) 70%,transparent);outline-offset:3px}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .key-grid{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:650px){
+  .container,.section-inner{padding-left:16px;padding-right:16px}
+  .nav{padding:12px 16px}
+  .hero{padding-top:42px}
+  .toc ol{grid-template-columns:1fr}
+  .section-head{grid-template-columns:1fr;gap:8px}
+  .grid,.key-grid,.steps,.nav-grid{grid-template-columns:1fr}
+  .footer-in{flex-direction:column}
+  .meta-row{flex-direction:column;gap:4px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">GESTION DE PROJET<small>Module 6 · Management, performance et clôture</small></div>
+    <a href="#sommaire">Sommaire</a>
+  </nav>
+</header>
+
+<section class="hero container" aria-labelledby="lesson-title">
+  <div>
+    <div class="kicker">Leçon 30 · Projet final</div>
+    <h1 id="lesson-title">Piloter un projet de A à Z</h1>
+    <p class="lead">Une synthèse complète pour relier les compétences de la filière : transformer un besoin en projet structuré, planifier les travaux, mobiliser les ressources, maîtriser les risques, communiquer, exécuter, suivre, rendre compte et clôturer.</p>
+  </div>
+  <aside class="meta" aria-label="Informations de la leçon">
+    <div class="meta-row"><span>Module</span><strong>06</strong></div>
+    <div class="meta-row"><span>Niveau</span><strong>Avancé / Professionnel</strong></div>
+    <div class="meta-row"><span>Durée</span><strong class="mono">25 min</strong></div>
+    <div class="meta-row"><span>Objectif</span><strong>Mobiliser toutes les compétences acquises dans une synthèse complète.</strong></div>
+  </aside>
+</section>
+
+<div id="sommaire" class="container toc" aria-label="Sommaire de la leçon">
+  <div class="toc-title">Sommaire · parcours de pilotage</div>
+  <ol>
+    <li><a href="#s1">01 — Du besoin à la charte</a></li>
+    <li><a href="#s2">02 — Du périmètre à la WBS</a></li>
+    <li><a href="#s3">03 — Planning et jalons</a></li>
+    <li><a href="#s4">04 — Budget et ressources</a></li>
+    <li><a href="#s5">05 — Risques et communication</a></li>
+    <li><a href="#s6">06 — Exécution et coordination</a></li>
+    <li><a href="#s7">07 — Suivi et pilotage</a></li>
+    <li><a href="#s8">08 — Reporting et décision</a></li>
+    <li><a href="#s9">09 — Clôture et capitalisation</a></li>
+    <li><a href="#keys">Synthèse finale</a></li>
+  </ol>
+</div>
+
+<main>
+<section class="section reveal" id="s1">
+<div class="section-inner">
+  <div class="section-head"><div class="num">01 / CADRAGE</div><div><h2>Du besoin à la charte</h2>
+  <div class="content">
+    <p>Tout projet commence par un besoin à satisfaire ou un problème à résoudre. Le chef de projet transforme ce besoin en une intention structurée : résultat recherché, objectifs, périmètre, parties prenantes, contraintes et critères de réussite.</p>
+    <p>La charte formalise le cadre initial. Elle donne au projet une direction commune et sert de référence lorsque des décisions doivent être prises.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Chaîne de transformation du besoin vers la charte de projet">
+    <svg viewBox="0 0 1000 300">
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)">
+        <rect x="40" y="95" width="185" height="90" rx="15"/>
+        <rect x="280" y="95" width="185" height="90" rx="15"/>
+        <rect x="520" y="95" width="185" height="90" rx="15"/>
+      </g>
+      <rect x="760" y="95" width="200" height="90" rx="15" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <g text-anchor="middle">
+        <text x="132" y="130" font-size="17" font-weight="700">Besoin</text><text x="132" y="154" font-size="12">problème / opportunité</text>
+        <text x="372" y="130" font-size="17" font-weight="700">Objectifs</text><text x="372" y="154" font-size="12">résultats attendus</text>
+        <text x="612" y="130" font-size="17" font-weight="700">Périmètre</text><text x="612" y="154" font-size="12">inclus / hors périmètre</text>
+        <text x="860" y="130" font-size="17" font-weight="700">Charte</text><text x="860" y="154" font-size="12">cadre de référence</text>
+      </g>
+      <g stroke="var(--color-neutral)" stroke-width="2">
+        <line x1="225" y1="140" x2="280" y2="140"/><line x1="465" y1="140" x2="520" y2="140"/><line x1="705" y1="140" x2="760" y2="140"/>
+      </g>
+    </svg>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong>Un projet bien piloté ne démarre pas par une liste de tâches : il démarre par une compréhension partagée du besoin et du résultat attendu.</div>
+</div>
+</section>
+
+<section class="section alt reveal" id="s2">
+<div class="section-inner">
+  <div class="section-head"><div class="num">02 / PÉRIMÈTRE</div><div><h2>Du périmètre à la WBS</h2>
+  <div class="content">
+    <p>Après le cadrage, le projet doit être découpé en éléments maîtrisables. La WBS (Work Breakdown Structure) décompose le périmètre en livrables et lots de travail jusqu’à obtenir un niveau suffisamment précis pour planifier et attribuer les responsabilités.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Arborescence WBS simplifiée d'un projet">
+    <svg viewBox="0 0 1000 410">
+      <rect x="375" y="25" width="250" height="62" rx="14" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="500" y="62" text-anchor="middle" font-size="18" font-weight="700">PROJET</text>
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)">
+        <rect x="80" y="145" width="180" height="58" rx="12"/><rect x="310" y="145" width="180" height="58" rx="12"/>
+        <rect x="540" y="145" width="180" height="58" rx="12"/><rect x="770" y="145" width="150" height="58" rx="12"/>
+      </g>
+      <g text-anchor="middle" font-size="14" font-weight="700">
+        <text x="170" y="180">Livrable A</text><text x="400" y="180">Livrable B</text><text x="630" y="180">Livrable C</text><text x="845" y="180">Livrable D</text>
+      </g>
+      <g fill="var(--accent-soft)" stroke="var(--color-accent)">
+        <rect x="105" y="265" width="130" height="52" rx="10"/><rect x="335" y="265" width="130" height="52" rx="10"/>
+        <rect x="565" y="265" width="130" height="52" rx="10"/><rect x="795" y="265" width="100" height="52" rx="10"/>
+      </g>
+      <g text-anchor="middle" font-size="12"><text x="170" y="296">Lot de travail</text><text x="400" y="296">Lot de travail</text><text x="630" y="296">Lot de travail</text><text x="845" y="296">Lot de travail</text></g>
+      <g stroke="var(--color-neutral)" stroke-width="2">
+        <line x1="500" y1="87" x2="500" y2="120"/><line x1="170" y1="120" x2="845" y2="120"/>
+        <line x1="170" y1="120" x2="170" y2="145"/><line x1="400" y1="120" x2="400" y2="145"/><line x1="630" y1="120" x2="630" y2="145"/><line x1="845" y1="120" x2="845" y2="145"/>
+        <line x1="170" y1="203" x2="170" y2="265"/><line x1="400" y1="203" x2="400" y2="265"/><line x1="630" y1="203" x2="630" y2="265"/><line x1="845" y1="203" x2="845" y2="265"/>
+      </g>
+    </svg>
+  </div>
+  <div class="grid">
+    <article class="card"><div class="icon">01</div><h3>Décomposer</h3><p>Passer du projet global à des livrables puis à des lots de travail compréhensibles.</p></article>
+    <article class="card"><div class="icon">02</div><h3>Clarifier</h3><p>Rendre le périmètre visible et limiter les oublis ou ambiguïtés.</p></article>
+    <article class="card"><div class="icon">03</div><h3>Préparer</h3><p>Fournir une base solide pour le planning, les ressources et le suivi.</p></article>
+  </div>
+</div>
+</section>
+
+<section class="section reveal" id="s3">
+<div class="section-inner">
+  <div class="section-head"><div class="num">03 / PLANNING</div><div><h2>Planning et jalons</h2>
+  <div class="content">
+    <p>Le planning transforme la WBS en séquence temporelle. Les tâches reçoivent des durées, des dates et des dépendances. Les jalons matérialisent les moments importants : validation, livraison ou décision.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Planning simplifié avec tâches, dépendances et jalons">
+    <svg viewBox="0 0 1000 360">
+      <text x="250" y="38" text-anchor="middle" font-size="14" font-weight="700">S1</text>
+      <text x="390" y="38" text-anchor="middle" font-size="14" font-weight="700">S2</text>
+      <text x="530" y="38" text-anchor="middle" font-size="14" font-weight="700">S3</text>
+      <text x="670" y="38" text-anchor="middle" font-size="14" font-weight="700">S4</text>
+      <text x="810" y="38" text-anchor="middle" font-size="14" font-weight="700">S5</text>
+      <line x1="180" y1="55" x2="900" y2="55" stroke="var(--color-neutral)" stroke-width="1"/>
+      <g font-size="13">
+        <text x="35" y="95">Cadrage</text><text x="35" y="155">Conception</text><text x="35" y="215">Réalisation</text><text x="35" y="275">Validation</text>
+      </g>
+      <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+        <rect x="180" y="76" width="170" height="32" rx="8"/><rect x="320" y="136" width="245" height="32" rx="8"/>
+        <rect x="500" y="196" width="300" height="32" rx="8"/><rect x="730" y="256" width="170" height="32" rx="8"/>
+      </g>
+      <g fill="var(--color-text)" font-size="12"><text x="265" y="97" text-anchor="middle">Charte</text><text x="442" y="157" text-anchor="middle">Conception détaillée</text><text x="650" y="217" text-anchor="middle">Production</text><text x="815" y="277" text-anchor="middle">Validation finale</text></g>
+      <g fill="var(--color-accent)" stroke="var(--color-accent)">
+        <polygon points="565,47 577,59 565,71 553,59"/><polygon points="900,47 912,59 900,71 888,59"/>
+      </g>
+      <text x="565" y="90" text-anchor="middle" class="mono-svg" font-size="11">JALON</text>
+      <text x="900" y="90" text-anchor="middle" class="mono-svg" font-size="11">JALON</text>
+    </svg>
+  </div>
+  <div class="pilot">
+    <div class="pilot-title">FICHE DE PILOTAGE · LIGNE DE PLANNING</div>
+    <div class="pilot-line"><span>Tâche</span><strong>Production du livrable</strong></div>
+    <div class="pilot-line"><span>Durée</span><strong>10 j</strong></div>
+    <div class="pilot-line"><span>Dépendance</span><strong>Conception validée</strong></div>
+    <div class="pilot-line"><span>Jalon associé</span><strong>Validation</strong></div>
+  </div>
+</div>
+</section>
+
+<section class="section alt reveal" id="s4">
+<div class="section-inner">
+  <div class="section-head"><div class="num">04 / MOYENS</div><div><h2>Budget et ressources</h2>
+  <div class="content">
+    <p>Le budget traduit les besoins du projet en ressources financières. Les ressources comprennent notamment les personnes, les compétences, les équipements, les outils, les fournisseurs et le temps disponible.</p>
+  </div></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Ressource</th><th scope="col">Rôle</th><th scope="col">Planification</th><th scope="col">Indicateur de maîtrise</th></tr></thead>
+      <tbody>
+        <tr><td>Équipe</td><td>Produire les livrables</td><td>Charge / disponibilité</td><td>Avancement</td></tr>
+        <tr><td>Matériel</td><td>Permettre l’exécution</td><td>Disponibilité</td><td>Utilisation</td></tr>
+        <tr><td>Fournisseurs</td><td>Apporter produits ou services</td><td>Délais / engagements</td><td>Respect des échéances</td></tr>
+        <tr><td>Budget</td><td>Financer les activités</td><td>Prévision / consommation</td><td>Écart budgétaire</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram" role="img" aria-label="Relation entre périmètre, planning, ressources et budget">
+    <svg viewBox="0 0 1000 300">
+      <rect x="375" y="105" width="250" height="85" rx="16" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="500" y="140" text-anchor="middle" font-size="18" font-weight="700">Projet</text>
+      <text x="500" y="165" text-anchor="middle" font-size="12">équilibre des contraintes</text>
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)">
+        <rect x="55" y="45" width="205" height="65" rx="13"/><rect x="740" y="45" width="205" height="65" rx="13"/>
+        <rect x="55" y="200" width="205" height="65" rx="13"/><rect x="740" y="200" width="205" height="65" rx="13"/>
+      </g>
+      <g text-anchor="middle" font-size="15" font-weight="700">
+        <text x="157" y="82">Périmètre</text><text x="842" y="82">Planning</text><text x="157" y="237">Ressources</text><text x="842" y="237">Budget</text>
+      </g>
+      <g stroke="var(--color-neutral)" stroke-width="2">
+        <line x1="260" y1="78" x2="375" y2="125"/><line x1="740" y1="78" x2="625" y2="125"/>
+        <line x1="260" y1="232" x2="375" y2="170"/><line x1="740" y1="232" x2="625" y2="170"/>
+      </g>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section class="section reveal" id="s5">
+<div class="section-inner">
+  <div class="section-head"><div class="num">05 / MAÎTRISE</div><div><h2>Risques et communication</h2>
+  <div class="content">
+    <p>Le risque correspond à un événement incertain susceptible d’influencer les objectifs du projet. Le pilotage consiste à identifier les risques, apprécier leur importance, définir des réponses et surveiller leur évolution.</p>
+    <p>La communication organise la circulation de l’information entre les parties prenantes. Elle doit répondre à quatre questions : <strong>quoi</strong> communiquer, <strong>à qui</strong>, <strong>quand</strong> et <strong>par quel canal</strong>.</p>
+  </div></div></div>
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Pilotage des risques et communication">
+      <button class="tab-btn" id="risk-tab" role="tab" aria-selected="true" aria-controls="risk-panel">Risques</button>
+      <button class="tab-btn" id="com-tab" role="tab" aria-selected="false" aria-controls="com-panel">Communication</button>
+    </div>
+    <div class="tab-panel active" id="risk-panel" role="tabpanel" aria-labelledby="risk-tab">
+      <strong>Cycle de maîtrise :</strong> identifier → analyser → répondre → surveiller. La réponse doit rester proportionnée à l’exposition du projet.
+    </div>
+    <div class="tab-panel" id="com-panel" role="tabpanel" aria-labelledby="com-tab">
+      <strong>Plan de communication :</strong> définir les destinataires, l’information utile, la fréquence, le responsable et le canal approprié.
+    </div>
+  </div>
+  <div class="diagram" role="img" aria-label="Cycle de gestion des risques">
+    <svg viewBox="0 0 1000 310">
+      <circle cx="500" cy="155" r="58" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="500" y="151" text-anchor="middle" font-size="16" font-weight="700">Risque</text><text x="500" y="174" text-anchor="middle" font-size="12">sous contrôle</text>
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)">
+        <rect x="55" y="45" width="190" height="62" rx="13"/><rect x="755" y="45" width="190" height="62" rx="13"/>
+        <rect x="55" y="205" width="190" height="62" rx="13"/><rect x="755" y="205" width="190" height="62" rx="13"/>
+      </g>
+      <g text-anchor="middle" font-size="14" font-weight="700">
+        <text x="150" y="82">Identifier</text><text x="850" y="82">Analyser</text><text x="150" y="242">Répondre</text><text x="850" y="242">Surveiller</text>
+      </g>
+      <g stroke="var(--color-neutral)" stroke-width="2">
+        <line x1="245" y1="76" x2="442" y2="137"/><line x1="755" y1="76" x2="558" y2="137"/>
+        <line x1="245" y1="236" x2="442" y2="173"/><line x1="755" y1="236" x2="558" y2="173"/>
+      </g>
+    </svg>
+  </div>
+  <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Une information importante mais transmise trop tard peut perdre sa valeur de pilotage. La communication doit suivre le rythme réel des décisions et des échéances.</div>
+</div>
+</section>
+
+<section class="section alt reveal" id="s6">
+<div class="section-inner">
+  <div class="section-head"><div class="num">06 / EXÉCUTION</div><div><h2>Exécution et coordination</h2>
+  <div class="content">
+    <p>L’exécution transforme le plan en résultats. Le chef de projet coordonne les personnes, facilite les décisions, suit les engagements et maintient la cohérence entre les travaux réalisés et les objectifs du projet.</p>
+  </div></div></div>
+  <div class="steps" aria-label="Séquence de l'exécution">
+    <div class="step"><b>01</b><strong>Mobiliser</strong><br>Mettre les ressources en action.</div>
+    <div class="step"><b>02</b><strong>Coordonner</strong><br>Synchroniser les travaux.</div>
+    <div class="step"><b>03</b><strong>Décider</strong><br>Traiter les arbitrages.</div>
+    <div class="step"><b>04</b><strong>Livrer</strong><br>Produire les résultats attendus.</div>
+  </div>
+  <div class="pilot">
+    <div class="pilot-title">FICHE DE PILOTAGE · EXÉCUTION</div>
+    <div class="pilot-line"><span>Objectif de la phase</span><strong>Produire les livrables</strong></div>
+    <div class="pilot-line"><span>Responsabilité</span><strong>Équipe projet</strong></div>
+    <div class="pilot-line"><span>Point de coordination</span><strong>Réunion de suivi</strong></div>
+    <div class="pilot-line"><span>Décision à tracer</span><strong>Journal des décisions</strong></div>
+  </div>
+</div>
+</section>
+
+<section class="section reveal" id="s7">
+<div class="section-inner">
+  <div class="section-head"><div class="num">07 / SUIVI</div><div><h2>Suivi et pilotage</h2>
+  <div class="content">
+    <p>Le suivi compare régulièrement la situation réelle avec la référence du projet. L’objectif n’est pas seulement de constater un écart, mais de comprendre sa cause, d’en mesurer l’effet et de décider d’une action adaptée.</p>
+  </div></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Dimension</th><th scope="col">Référence</th><th scope="col">Réel</th><th scope="col">Écart à surveiller</th></tr></thead>
+      <tbody>
+        <tr><td>Délai</td><td>Planning prévu</td><td>Avancement constaté</td><td>Retard / avance</td></tr>
+        <tr><td>Coût</td><td>Budget prévu</td><td>Dépenses</td><td>Écart budgétaire</td></tr>
+        <tr><td>Périmètre</td><td>Livrables prévus</td><td>Travaux réalisés</td><td>Variation du contenu</td></tr>
+        <tr><td>Qualité</td><td>Critères définis</td><td>Résultats contrôlés</td><td>Non-conformité</td></tr>
+        <tr><td>Ressources</td><td>Capacité planifiée</td><td>Disponibilité réelle</td><td>Surcharge / sous-charge</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram" role="img" aria-label="Boucle de pilotage par comparaison entre prévu et réel">
+    <svg viewBox="0 0 1000 280">
+      <rect x="55" y="92" width="190" height="76" rx="14" fill="var(--color-bg)" stroke="var(--color-neutral)"/>
+      <rect x="405" y="92" width="190" height="76" rx="14" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <rect x="755" y="92" width="190" height="76" rx="14" fill="var(--color-bg)" stroke="var(--color-neutral)"/>
+      <g text-anchor="middle"><text x="150" y="122" font-size="16" font-weight="700">Prévu</text><text x="150" y="146" font-size="12">référence</text>
+      <text x="500" y="122" font-size="16" font-weight="700">Comparer</text><text x="500" y="146" font-size="12">mesurer l’écart</text>
+      <text x="850" y="122" font-size="16" font-weight="700">Agir</text><text x="850" y="146" font-size="12">corriger / arbitrer</text></g>
+      <g stroke="var(--color-neutral)" stroke-width="2"><line x1="245" y1="130" x2="405" y2="130"/><line x1="595" y1="130" x2="755" y2="130"/></g>
+      <path d="M850 190 C850 245 150 245 150 190" fill="none" stroke="var(--color-neutral)" stroke-width="2"/>
+      <polygon points="150,190 142,204 158,204" fill="var(--color-neutral)"/>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section class="section alt reveal" id="s8">
+<div class="section-inner">
+  <div class="section-head"><div class="num">08 / REPORTING</div><div><h2>Reporting et décision</h2>
+  <div class="content">
+    <p>Le reporting transforme les informations de suivi en une communication synthétique destinée aux personnes qui doivent comprendre la situation et décider. Un bon reporting met en évidence l’état du projet, les écarts, les risques, les décisions nécessaires et les prochaines échéances.</p>
+  </div></div></div>
+  <div class="grid">
+    <article class="card"><div class="icon">01</div><h3>Situation</h3><p>Où en est le projet par rapport à ses objectifs et à son planning ?</p></article>
+    <article class="card"><div class="icon">02</div><h3>Écarts</h3><p>Quels écarts significatifs nécessitent une analyse ou une action ?</p></article>
+    <article class="card"><div class="icon">03</div><h3>Décisions</h3><p>Quels arbitrages ou décisions sont nécessaires pour poursuivre ?</p></article>
+  </div>
+  <div class="pilot">
+    <div class="pilot-title">FICHE DE PILOTAGE · SYNTHÈSE REPORTING</div>
+    <div class="pilot-line"><span>Avancement global</span><strong>____ %</strong></div>
+    <div class="pilot-line"><span>Délai</span><strong>prévu / réel</strong></div>
+    <div class="pilot-line"><span>Budget</span><strong>prévu / consommé</strong></div>
+    <div class="pilot-line"><span>Risques prioritaires</span><strong>____</strong></div>
+    <div class="pilot-line"><span>Décision attendue</span><strong>____</strong></div>
+    <div class="pilot-line"><span>Prochain jalon</span><strong>____</strong></div>
+  </div>
+  <details><summary>Pourquoi le reporting doit rester synthétique ?</summary><p>Parce que son rôle est de rendre rapidement visibles les éléments qui influencent le pilotage. Les détails peuvent être conservés dans les documents de référence du projet.</p></details>
+</div>
+</section>
+
+<section class="section reveal" id="s9">
+<div class="section-inner">
+  <div class="section-head"><div class="num">09 / CLÔTURE</div><div><h2>Clôture et capitalisation</h2>
+  <div class="content">
+    <p>La clôture ne consiste pas uniquement à terminer les dernières tâches. Elle vérifie que les livrables sont acceptés, que les engagements sont traités, que les documents sont archivés et que les enseignements utiles sont capitalisés.</p>
+    <p>Le projet devient ainsi une source d’apprentissage pour les projets futurs : ce qui a fonctionné, ce qui a généré des écarts et ce qui doit être amélioré.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Frise de clôture d'un projet">
+    <svg viewBox="0 0 1000 300">
+      <line x1="100" y1="145" x2="900" y2="145" stroke="var(--color-neutral)" stroke-width="3"/>
+      <g>
+        <circle cx="140" cy="145" r="18" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="3"/>
+        <circle cx="340" cy="145" r="18" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="3"/>
+        <circle cx="540" cy="145" r="18" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="3"/>
+        <circle cx="740" cy="145" r="18" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="3"/>
+        <circle cx="880" cy="145" r="18" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="3"/>
+      </g>
+      <g text-anchor="middle">
+        <text x="140" y="105" font-size="14" font-weight="700">Accepter</text><text x="140" y="190" font-size="12">livrables</text>
+        <text x="340" y="105" font-size="14" font-weight="700">Finaliser</text><text x="340" y="190" font-size="12">engagements</text>
+        <text x="540" y="105" font-size="14" font-weight="700">Archiver</text><text x="540" y="190" font-size="12">documents</text>
+        <text x="740" y="105" font-size="14" font-weight="700">Bilan</text><text x="740" y="190" font-size="12">performance</text>
+        <text x="880" y="105" font-size="14" font-weight="700">Capitaliser</text><text x="880" y="190" font-size="12">enseignements</text>
+      </g>
+    </svg>
+  </div>
+  <div class="callout"><strong>📐 Bonne pratique professionnelle</strong>La clôture doit être préparée avant la fin opérationnelle : les critères d’acceptation, les documents attendus et les responsabilités de fin de projet doivent être connus.</div>
+</div>
+</section>
+
+<section class="section alt reveal" id="keys">
+<div class="section-inner">
+  <div class="section-head"><div class="num">SYNTHÈSE</div><div><h2>La chaîne complète de pilotage</h2>
+  <div class="content"><p>Les notions de la filière forment un système. Chaque élément prépare le suivant et alimente le pilotage global du projet.</p></div></div></div>
+  <div class="key-grid">
+    <article class="key"><h3>01 · Besoin</h3><p>Comprendre le problème ou l’opportunité et définir le résultat recherché.</p></article>
+    <article class="key"><h3>02 · Charte</h3><p>Formaliser les objectifs, le périmètre et le cadre de référence.</p></article>
+    <article class="key"><h3>03 · WBS</h3><p>Décomposer le projet en livrables et lots de travail.</p></article>
+    <article class="key"><h3>04 · Planning</h3><p>Organiser les tâches, durées, dépendances et jalons.</p></article>
+    <article class="key"><h3>05 · Budget</h3><p>Prévoir et maîtriser les ressources financières nécessaires.</p></article>
+    <article class="key"><h3>06 · Ressources</h3><p>Mobiliser les personnes, compétences, moyens et fournisseurs.</p></article>
+    <article class="key"><h3>07 · Risques</h3><p>Anticiper les événements susceptibles d’affecter les objectifs.</p></article>
+    <article class="key"><h3>08 · Communication</h3><p>Faire circuler la bonne information au bon moment.</p></article>
+    <article class="key"><h3>09 · Exécution</h3><p>Transformer le plan en résultats et coordonner les travaux.</p></article>
+    <article class="key"><h3>10 · Suivi</h3><p>Comparer le réel au prévu et agir sur les écarts.</p></article>
+    <article class="key"><h3>11 · Reporting</h3><p>Synthétiser la situation pour faciliter les décisions.</p></article>
+    <article class="key"><h3>12 · Clôture</h3><p>Accepter, finaliser, archiver, faire le bilan et capitaliser.</p></article>
+  </div>
+  <div class="diagram" role="img" aria-label="Vue globale du cycle de vie du projet de A à Z">
+    <svg viewBox="0 0 1000 420">
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)">
+        <rect x="45" y="45" width="200" height="65" rx="13"/><rect x="400" y="45" width="200" height="65" rx="13"/><rect x="755" y="45" width="200" height="65" rx="13"/>
+        <rect x="45" y="180" width="200" height="65" rx="13"/><rect x="400" y="180" width="200" height="65" rx="13"/><rect x="755" y="180" width="200" height="65" rx="13"/>
+      </g>
+      <rect x="310" y="315" width="380" height="65" rx="13" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <g text-anchor="middle" font-size="15" font-weight="700">
+        <text x="145" y="83">Besoin → Charte</text><text x="500" y="83">WBS → Planning</text><text x="855" y="83">Budget → Ressources</text>
+        <text x="145" y="218">Risques → Communication</text><text x="500" y="218">Exécution → Suivi</text><text x="855" y="218">Reporting</text>
+        <text x="500" y="353" font-size="17">Clôture → Bilan → Capitalisation</text>
+      </g>
+      <g stroke="var(--color-neutral)" stroke-width="2" fill="none">
+        <path d="M245 78 H400"/><path d="M600 78 H755"/>
+        <path d="M855 110 V180"/><path d="M755 212 H600"/><path d="M400 212 H245"/>
+        <path d="M145 245 V280 H310 V315"/><path d="M500 245 V315"/><path d="M855 245 V280 H690 V315"/>
+      </g>
+    </svg>
+  </div>
+  <div class="callout"><strong>🔗 Pour aller plus loin</strong>Cette leçon finale sert de carte mentale de la filière : les outils, méthodes et documents étudiés prennent leur sens lorsqu’ils sont reliés dans une même logique de pilotage.</div>
+</div>
+</section>
+</main>
+
+<div class="nav-bottom container">
+  <div class="nav-grid">
+    <a class="nav-card" href="#">
+      <span>← Leçon précédente</span>
+      <strong>Leçon 29 — Clôture et bilan du projet</strong>
+    </a>
+    <a class="nav-card" href="#sommaire">
+      <span>Dernière leçon du parcours</span>
+      <strong>Retour au sommaire de la Leçon 30</strong>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <span>Gestion de Projet · Module 6 · Projet final</span>
+    <span class="mono">LEÇON 30 · 25 MIN · AVANCÉ / PROFESSIONNEL</span>
+  </div>
+</footer>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const progress=document.getElementById('progressBar');
+  const topBtn=document.getElementById('topBtn');
+  function update(){
+    const doc=document.documentElement;
+    const max=doc.scrollHeight-doc.clientHeight;
+    progress.style.width=(max>0?(doc.scrollTop/max)*100:0)+'%';
+    topBtn.classList.toggle('show',doc.scrollTop>500);
+  }
+  addEventListener('scroll',update,{passive:true});
+  update();
+  topBtn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=[...group.querySelectorAll('[role="tab"]')];
+    const panels=[...group.querySelectorAll('[role="tabpanel"]')];
+    buttons.forEach((button,index)=>{
+      button.addEventListener('click',()=>{
+        buttons.forEach((b,i)=>{
+          const active=i===index;
+          b.setAttribute('aria-selected',String(active));
+          b.tabIndex=active?0:-1;
+          panels[i].classList.toggle('active',active);
+        });
+      });
+      button.addEventListener('keydown',event=>{
+        if(event.key==='ArrowRight'||event.key==='ArrowLeft'){
+          event.preventDefault();
+          const direction=event.key==='ArrowRight'?1:-1;
+          const next=(index+direction+buttons.length)%buttons.length;
+          buttons[next].focus();
+          buttons[next].click();
+        }
+      });
+    });
+  });
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  },{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+})();
+</script>
+</body>
+</html>
