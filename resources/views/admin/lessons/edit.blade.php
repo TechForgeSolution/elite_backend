@@ -339,7 +339,7 @@
                             @if($lesson->url_video_explication ?? $lesson->url_video)
                                 <div class="media-preview-tag">
                                     <i class="fas fa-video" style="color: #8b5cf6;"></i>
-                                    <a href="{{ $lesson->url_video_explication ?? $lesson->url_video }}" target="_blank" style="color: inherit; text-decoration: underline;">Tester la vidéo d'explication</a>
+                                    <a href="{{ route('admin.lessons.video-preview', [$lesson, 'explication']) }}" target="_blank" style="color: inherit; text-decoration: underline;">Tester la vidéo d'explication dans le lecteur</a>
                                 </div>
                             @endif
                             <div class="form-help">Vidéo pédagogique expliquant les concepts fondamentaux de la leçon.</div>
@@ -372,7 +372,7 @@
                             @if($lesson->url_video_pratique)
                                 <div class="media-preview-tag">
                                     <i class="fas fa-laptop-code" style="color: #10b981;"></i>
-                                    <a href="{{ $lesson->url_video_pratique }}" target="_blank" style="color: inherit; text-decoration: underline;">Tester la vidéo pratique</a>
+                                    <a href="{{ route('admin.lessons.video-preview', [$lesson, 'pratique']) }}" target="_blank" style="color: inherit; text-decoration: underline;">Tester la vidéo pratique dans le lecteur</a>
                                 </div>
                             @endif
                             <div class="form-help">Démonstration concrète, atelier pratique, manipulation d'outils et cas réel.</div>

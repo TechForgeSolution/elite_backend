@@ -82,6 +82,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('modules/{module}/lessons/create', [LessonController::class, 'create'])->name('lessons.create');
     Route::post('modules/{module}/lessons', [LessonController::class, 'store'])->name('lessons.store');
     Route::get('lessons/{lesson}/edit', [LessonController::class, 'edit'])->name('lessons.edit');
+    Route::get('lessons/{lesson}/video/{part}', [LessonController::class, 'videoPreview'])
+        ->whereIn('part', ['explication', 'pratique'])->name('lessons.video-preview');
     Route::put('lessons/{lesson}', [LessonController::class, 'update'])->name('lessons.update');
     Route::delete('lessons/{lesson}', [LessonController::class, 'destroy'])->name('lessons.destroy');
 

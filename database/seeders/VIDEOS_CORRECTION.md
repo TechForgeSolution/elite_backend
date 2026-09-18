@@ -103,3 +103,11 @@ https://developers.google.com/workspace/drive/api/guides/manage-downloads
 Tester sur Android/iOS une vidéo explicative et une vidéo pratique, notamment
 une grosse vidéo : démarrage, pause, déplacement dans la durée, plein écran.
 La lecture sur appareil n'a pas été exécutée dans l'environnement de développement.
+
+Dans l'administration, le bouton de test ouvre désormais une page interne avec
+un lecteur HTML5. Ouvrir l'URL Drive elle-même déclenche un téléchargement car
+Drive répond avec `Content-Disposition: attachment`; ce comportement est normal.
+Le lecteur admin et le lecteur mobile demandent `preload="metadata"`, puis le
+navigateur charge les plages d'octets nécessaires à la lecture. Ils ne créent
+pas volontairement une copie complète avant le démarrage. Le volume réellement
+transféré dépend du tampon du système, des déplacements dans la vidéo et du cache.

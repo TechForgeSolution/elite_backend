@@ -7,6 +7,9 @@ use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use App\Services\DirectVideoUrl;
 
 class LessonController extends Controller
 {
@@ -126,6 +129,31 @@ class LessonController extends Controller
         return $pack 
             ? redirect()->route('admin.packs.show', $pack)->with('success', 'Leçon mise à jour avec succès.')
             : redirect()->back()->with('success', 'Leçon mise à jour avec succès.');
+    }
+
+    public function videoPreview(Lesson $lesson, string $part, DirectVideoUrl $resolver): View|RedirectResponse
+    {
+        $url = match ($part) {
+            'explication' => $lesson->url_video_explication ?: $lesson->url_video,
+            'pratique' => $lesson->url_video_pratique ?: $lesson->url_video,
+            default => abort(404),
+        };
+        abort_unless($url, 404);
+
+        $host = strtolower(parse_url($url, PHP_URL_HOST) ?: '');
+        $isDirectMedia = $resolver->driveId($url) !== null
+            || in_array($host, ['drive.usercontent.google.com'], true)
+            || str_ends_with(strtolower(parse_url($url, PHP_URL_PATH) ?: ''), '.mp4');
+
+        if (! $isDirectMedia) {
+            return redirect()->away($url);
+        }
+
+        return view('admin.lessons.video-preview', [
+            'lesson' => $lesson,
+            'part' => $part,
+            'url' => $url,
+        ]);
     }
 
     public function destroy(Lesson $lesson)
