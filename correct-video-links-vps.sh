@@ -25,7 +25,10 @@ for executable in "$PHP_BIN" flock tee mktemp; do
     command -v "$executable" >/dev/null 2>&1 || fail "Executable absent : $executable"
 done
 for file in artisan .env vendor/autoload.php public/cours.json \
-    app/Services/DirectVideoUrl.php app/Console/Commands/CorrectCoursVideos.php \
+    app/Services/DirectVideoUrl.php app/Services/CourseVideoUrl.php \
+    app/Http/Controllers/Api/PublicCourseController.php \
+    resources/views/admin/lessons/video-preview.blade.php \
+    app/Console/Commands/CorrectCoursVideos.php \
     database/seeders/CoursVideoLinksSeeder.php; do
     [[ -r "$file" ]] || fail "Fichier absent ou illisible : $file"
 done
@@ -52,6 +55,8 @@ if (( DRY_RUN )); then
     exit 0
 fi
 run "$PHP_BIN" artisan cours:correct-videos --force --no-interaction --no-ansi
+run "$PHP_BIN" artisan route:clear --no-interaction --no-ansi
+run "$PHP_BIN" artisan view:clear --no-interaction --no-ansi
 printf 'Correction terminee. Journal : %s\n' "$LOG_FILE"
-printf '%s\n' 'Deployer aussi la modification mobile du lecteur puis recharger les lecons.' \
-    'La lecture reste soumise aux permissions et quotas Google Drive.'
+printf '%s\n' 'Le relais video Laravel est actif apres deploiement de tous les fichiers.' \
+    'Tester une video dans administration, puis sur mobile.'

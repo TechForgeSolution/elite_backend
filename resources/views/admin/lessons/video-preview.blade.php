@@ -18,7 +18,7 @@
 <main>
     <h1>{{ $lesson->titre }}</h1>
     <p>Vidéo {{ $part === 'pratique' ? 'pratique' : "d'explication" }}</p>
-    <video controls autoplay playsinline preload="metadata" crossorigin="anonymous">
+    <video controls autoplay playsinline preload="metadata">
         <source src="{{ $url }}" type="video/mp4">
         Votre navigateur ne prend pas en charge la lecture vidéo HTML5.
     </video>

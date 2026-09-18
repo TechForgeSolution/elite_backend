@@ -21,6 +21,11 @@ Le seeder partage également le verrou PHP de CoursJsonSeeder.
 - `correct-video-links-vps.sh`
 - `app/Console/Commands/CorrectCoursVideos.php`
 - `app/Services/DirectVideoUrl.php`
+- `app/Services/CourseVideoUrl.php`
+- `app/Http/Controllers/Api/PublicCourseController.php`
+- `app/Http/Controllers/Admin/LessonController.php`
+- `routes/api.php`
+- `resources/views/admin/lessons/video-preview.blade.php`
 - `database/seeders/CoursVideoLinksSeeder.php`
 - `public/cours.json`
 

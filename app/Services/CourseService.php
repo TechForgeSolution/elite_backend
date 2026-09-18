@@ -19,6 +19,10 @@ use Illuminate\Validation\ValidationException;
 
 class CourseService
 {
+    public function __construct(private readonly CourseVideoUrl $videoUrl)
+    {
+    }
+
     public function getCategories(): array
     {
         $categories = Category::active()
@@ -332,9 +336,9 @@ class CourseService
                 'has_access' => $hasPack,
                 'has_video' => !empty($lesson->url_video) || !empty($lesson->url_video_explication) || !empty($lesson->url_video_pratique),
                 'has_web_link' => !empty($lesson->url_web),
-                'url_video' => $hasPack && $isUnlocked ? $lesson->url_video : null,
-                'url_video_explication' => $hasPack && $isUnlocked ? $lesson->url_video_explication : null,
-                'url_video_pratique' => $hasPack && $isUnlocked ? $lesson->url_video_pratique : null,
+                'url_video' => $hasPack && $isUnlocked ? $this->videoUrl->playback($lesson, 'explication', $lesson->url_video) : null,
+                'url_video_explication' => $hasPack && $isUnlocked ? $this->videoUrl->playback($lesson, 'explication', $lesson->url_video_explication ?: $lesson->url_video) : null,
+                'url_video_pratique' => $hasPack && $isUnlocked ? $this->videoUrl->playback($lesson, 'pratique', $lesson->url_video_pratique ?: $lesson->url_video) : null,
                 'url_web' => $hasPack && $isUnlocked ? $lesson->url_web : null,
             ];
         })->toArray();
@@ -434,9 +438,9 @@ class CourseService
             'titre' => $lesson->titre,
             'contenu_texte' => $lesson->contenu_texte,
             'url_web' => $lesson->url_web,
-            'url_video' => $lesson->url_video,
-            'url_video_explication' => $lesson->url_video_explication,
-            'url_video_pratique' => $lesson->url_video_pratique,
+            'url_video' => $this->videoUrl->playback($lesson, 'explication', $lesson->url_video),
+            'url_video_explication' => $this->videoUrl->playback($lesson, 'explication', $lesson->url_video_explication ?: $lesson->url_video),
+            'url_video_pratique' => $this->videoUrl->playback($lesson, 'pratique', $lesson->url_video_pratique ?: $lesson->url_video),
             'duree_minutes' => $lesson->duree_minutes,
             'is_completed' => $progress ? (bool)$progress->completed : false,
             'temps_passe' => $progress ? $progress->temps_passe_secondes : 0,

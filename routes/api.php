@@ -47,7 +47,10 @@ Route::get('/packs',             [CourseController::class, 'packs']);
 Route::get('/packs/{id}',        [CourseController::class, 'packDetails'])->where('id', '[0-9]+');
 Route::get('/public/courses/digital', [PublicCourseController::class, 'digital']);
 Route::get('/public/lessons/{lesson}/theory', [PublicCourseController::class, 'theory'])->where('lesson', '[0-9]+');
-Route::get('/public/lessons/{lesson}/video/{part}', [PublicCourseController::class, 'video'])->where(['lesson' => '[0-9]+', 'part' => 'pratique|explication']);
+Route::get('/public/lessons/{lesson}/video/{part}', [PublicCourseController::class, 'video'])
+    ->where(['lesson' => '[0-9]+', 'part' => 'pratique|explication'])
+    ->middleware('signed:relative')
+    ->name('public.lesson-video');
 
 Route::get('/faq',               [FaqController::class, 'index']);
 Route::get('/faq/search',        [FaqController::class, 'search']);

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Services\DirectVideoUrl;
+use App\Services\CourseVideoUrl;
 
 class LessonController extends Controller
 {
@@ -131,7 +132,7 @@ class LessonController extends Controller
             : redirect()->back()->with('success', 'Leçon mise à jour avec succès.');
     }
 
-    public function videoPreview(Lesson $lesson, string $part, DirectVideoUrl $resolver): View|RedirectResponse
+    public function videoPreview(Lesson $lesson, string $part, DirectVideoUrl $resolver, CourseVideoUrl $videoUrl): View|RedirectResponse
     {
         $url = match ($part) {
             'explication' => $lesson->url_video_explication ?: $lesson->url_video,
@@ -152,7 +153,7 @@ class LessonController extends Controller
         return view('admin.lessons.video-preview', [
             'lesson' => $lesson,
             'part' => $part,
-            'url' => $url,
+            'url' => $videoUrl->playback($lesson, $part, $url),
         ]);
     }
 

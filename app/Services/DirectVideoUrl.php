@@ -6,6 +6,19 @@ use RuntimeException;
 
 class DirectVideoUrl
 {
+    public function forDriveId(string $id): string
+    {
+        if (! preg_match('/^[\w-]+$/', $id)) {
+            throw new RuntimeException('Identifiant vidÃ©o Drive invalide.');
+        }
+
+        return 'https://drive.usercontent.google.com/download?'.http_build_query([
+            'id' => $id,
+            'export' => 'download',
+            'confirm' => 't',
+        ], '', '&', PHP_QUERY_RFC3986);
+    }
+
     public function driveId(?string $url): ?string
     {
         $parts = parse_url($url ?? '');
