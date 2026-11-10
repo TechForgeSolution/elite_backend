@@ -402,10 +402,13 @@ class CoursJsonSeeder extends Seeder
             $key = $question['id'] ?? $question['numero'] ?? null;
             $local = $question['correction_et_explications'] ?? null;
             $correction = is_array($local) ? $local : ($corrections[$key] ?? []);
+            // Recent CFPAM quiz exports use `enonce` for the question and
+            // `explication_detaillee` in their correction section.
+            $question['question'] ??= $question['enonce'] ?? null;
             $question['bonne_reponse'] = $question['bonne_reponse'] ?? $question['reponse_correcte']
                 ?? $correction['bonne_reponse'] ?? $correction['reponse_correcte'] ?? null;
             $question['explication'] = $question['explication'] ?? $correction['explication']
-                ?? (is_string($local) ? $local : null);
+                ?? $correction['explication_detaillee'] ?? (is_string($local) ? $local : null);
             if (is_array($question['options'] ?? null) && array_is_list($question['options'])) {
                 $options = [];
                 foreach ($question['options'] as $option) {
