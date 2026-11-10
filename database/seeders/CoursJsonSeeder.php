@@ -7,6 +7,8 @@ use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\Pack;
 use App\Models\Quiz;
+use App\Models\QuizAnswer;
+use App\Models\QuizQuestion;
 use App\Services\TheoryCourseCatalog;
 use App\Services\DirectVideoUrl;
 use Illuminate\Database\Seeder;
