@@ -5,6 +5,7 @@
 @php
     $currentModule = $lesson->module ?? ($lesson->chapter?->module ?? null);
     $pack = $currentModule?->pack;
+    $canSwapVideos = ($lesson->url_video_explication ?: $lesson->url_video) && $lesson->url_video_pratique;
 @endphp
 
 @section('breadcrumb')
@@ -411,6 +412,13 @@
                 </button>
 
                 <div style="display: flex; gap: 0.75rem;">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            title="Échange les deux liens vidéo"
+                            @disabled(! $canSwapVideos)
+                            onclick="if(confirm('Permuter la vidéo d’explication et la vidéo pratique ?')) document.getElementById('swapVideosForm').submit();">
+                        <i class="fas fa-right-left" style="margin-right: 0.5rem;"></i> Permuter les vidéos
+                    </button>
                     <a href="{{ $currentModule ? route('admin.modules.show', $currentModule) : route('admin.packs.index') }}" class="btn btn-secondary">
                         <i class="fas fa-times" style="margin-right: 0.5rem;"></i> Annuler
                     </a>
@@ -426,6 +434,9 @@
     <form id="deleteLessonForm" action="{{ route('admin.lessons.destroy', $lesson) }}" method="POST" style="display: none;">
         @csrf
         @method('DELETE')
+    </form>
+    <form id="swapVideosForm" action="{{ route('admin.lessons.swap-videos', $lesson) }}" method="POST" style="display: none;">
+        @csrf
     </form>
 </div>
 @endsection

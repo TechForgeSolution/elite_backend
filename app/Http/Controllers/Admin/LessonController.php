@@ -157,6 +157,26 @@ class LessonController extends Controller
         ]);
     }
 
+    /** Swap the two mobile video parts while preserving the legacy fallback. */
+    public function swapVideos(Lesson $lesson): RedirectResponse
+    {
+        $explication = $lesson->url_video_explication ?: $lesson->url_video;
+        $pratique = $lesson->url_video_pratique;
+
+        if (! $explication || ! $pratique) {
+            return back()->with('error', 'Les deux vidéos sont nécessaires avant de pouvoir les permuter.');
+        }
+
+        $lesson->update([
+            'url_video_explication' => $pratique,
+            'url_video_pratique' => $explication,
+            // url_video is the compatibility fallback read by older clients.
+            'url_video' => $pratique,
+        ]);
+
+        return back()->with('success', 'Les vidéos d’explication et de pratique ont été permutées.');
+    }
+
     public function destroy(Lesson $lesson)
     {
         $pack = $lesson->module?->pack;
