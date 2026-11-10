@@ -86,6 +86,8 @@ class CoursJsonSeederTest extends TestCase
         $this->assertStringContainsString(chr(64 + $lut->ordre).' : Le LUT transforme', $question->explication);
         $this->assertSame(11, Lesson::sole()->ordre);
         $this->assertNull(Lesson::sole()->url_video_pratique);
+        $this->assertSame('https://drive.usercontent.google.com/download?id=video&export=download&confirm=t', Lesson::sole()->url_video_explication);
+        $this->assertSame(Lesson::sole()->url_video_explication, Lesson::sole()->url_video);
         $this->assertSame('https://elite.tfs237.com/cours_theorique/audiovisuel__module3__lecon11.html', Lesson::sole()->url_web);
         $this->seed(CoursJsonSeeder::class);
         $this->assertDatabaseCount('packs', 1);

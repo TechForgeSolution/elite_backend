@@ -171,12 +171,18 @@ class CoursJsonSeeder extends Seeder
                     ]);
                     $counts['modules']++;
                     foreach ($moduleData['lecons'] as $lesson) {
+                        // The mobile app reads the two dedicated fields first,
+                        // then falls back to url_video for older API payloads.
+                        // Keep that fallback aligned with the explanation part,
+                        // never with the practical video.
+                        $urlVideoExplication = $this->resourceUrl($lesson['explication'] ?? $lesson['explications'] ?? null);
+                        $urlVideoPratique = $this->resourceUrl($lesson['pratique'] ?? $lesson['cours_pratique'] ?? null);
                         $record = $this->preserveOrCreate(Lesson::class, ['module_id' => $module->id, 'ordre' => $lesson['numero']], [
                             'titre' => $lesson['nom'],
                             'url_web' => $theoryUrls[$theory->key($slug, $moduleData['numero'], $lesson['numero'])] ?? null,
-                            'url_video_explication' => $this->resourceUrl($lesson['explication'] ?? $lesson['explications'] ?? null),
-                            'url_video_pratique' => $this->resourceUrl($lesson['pratique'] ?? $lesson['cours_pratique'] ?? null),
-                            'url_video' => $this->resourceUrl($lesson['pratique'] ?? $lesson['cours_pratique'] ?? null),
+                            'url_video_explication' => $urlVideoExplication,
+                            'url_video_pratique' => $urlVideoPratique,
+                            'url_video' => $urlVideoExplication,
                             'active' => true,
                         ]);
                         $expectedUrl = $theoryUrls[$theory->key($slug, $moduleData['numero'], $lesson['numero'])] ?? null;
