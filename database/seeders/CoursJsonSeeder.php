@@ -388,7 +388,8 @@ class CoursJsonSeeder extends Seeder
         }
         $corrections = [];
         foreach ($data['correction_et_explications'] ?? $data['Correction et Explications'] ?? [] as $correction) {
-            $key = $correction['question_id'] ?? $correction['numero'] ?? $correction['id'] ?? null;
+            // Some CFPAM files name this link simply `question`.
+            $key = $correction['question_id'] ?? $correction['numero'] ?? $correction['id'] ?? $correction['question'] ?? null;
             if ($key === null || isset($corrections[$key])) {
                 throw new RuntimeException('Identifiant de correction absent ou dupliqué.');
             }
