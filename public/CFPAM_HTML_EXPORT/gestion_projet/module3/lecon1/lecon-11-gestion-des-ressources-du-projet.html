@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 11 — Gestion des ressources du projet. Module 3 : Budget, ressources et risques.">
+<title>Leçon 11 — Gestion des ressources du projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"Inter",sans-serif;line-height:1.7}
+a{color:var(--color-text)}
+a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:5px}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:color-mix(in srgb,var(--color-neutral) 18%,var(--color-bg))}
+.progress-bar{height:100%;width:0;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:900;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));background:color-mix(in srgb,var(--color-bg) 94%,var(--color-text));backdrop-filter:blur(8px)}
+.header-inner,.container,.footer-inner{width:min(1180px,calc(100% - 32px));margin:auto}
+.header-inner{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font:700 16px "Manrope",sans-serif}
+.brand-mark{position:relative;width:35px;height:35px;display:grid;place-items:center;border:2px solid var(--color-text);border-radius:6px;font:600 11px "JetBrains Mono",monospace}
+.brand-mark:after{content:"";position:absolute;width:7px;height:7px;right:-5px;top:-5px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg)}
+.header-nav{display:flex;gap:18px;font-size:14px;font-weight:600}
+.header-nav a{text-decoration:none}
+.hero{padding:76px 0 50px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:48px;align-items:end}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{display:inline-flex;padding:5px 10px;min-height:30px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:6px;font-size:12px;font-weight:600}
+.badge-accent{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+h1,h2,h3{font-family:"Manrope",sans-serif;line-height:1.15;letter-spacing:-.025em}
+h1{font-size:clamp(40px,6vw,68px);margin:0 0 18px;max-width:850px}
+h2{font-size:clamp(29px,4vw,42px);margin:0 0 20px}
+h3{font-size:20px;margin:0 0 10px}
+p{margin:0 0 16px}
+.lead{max-width:720px;font-size:19px;color:color-mix(in srgb,var(--color-text) 75%,var(--color-bg))}
+.meta{border-left:4px solid var(--color-accent);padding:20px 0 20px 22px}
+.meta-row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));font-size:14px}
+.meta-row:last-child{border-bottom:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.toc{margin:18px 0 55px;padding:25px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:10px}
+.toc-title{font:700 17px "Manrope",sans-serif;margin-bottom:13px}
+.toc ol{margin:0;padding-left:22px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 30px}
+.toc a{text-underline-offset:3px}
+section{padding:72px 0;scroll-margin-top:92px}
+section.alt{width:100vw;margin-left:calc(50% - 50vw);padding-left:max(16px,calc((100vw - 1180px)/2));padding-right:max(16px,calc((100vw - 1180px)/2));background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.section-head{max-width:760px;margin-bottom:34px}
+.kicker{margin-bottom:10px;color:var(--color-accent);font:600 12px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+.text-column{max-width:720px}
+.callout{margin:28px 0;padding:20px 22px;border:2px solid var(--color-accent);border-radius:8px;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));display:grid;grid-template-columns:38px 1fr;gap:14px}
+.callout-icon{font-size:23px;line-height:1.3}
+.callout strong{display:block;font-family:"Manrope",sans-serif;margin-bottom:4px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-top:30px}
+.card{padding:21px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:9px;background:var(--color-bg);transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card-icon{width:40px;height:40px;display:grid;place-items:center;margin-bottom:14px;border:1px solid var(--color-accent);border-radius:7px;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));font:600 11px "JetBrains Mono",monospace}
+.card p{font-size:14px;margin:0}
+.diagram{margin:34px auto;overflow-x:auto;padding:8px 0 15px}
+.diagram svg{display:block;width:100%;min-width:720px;height:auto}
+svg text{fill:var(--color-text);font-family:"Inter",sans-serif}
+.table-wrap{overflow-x:auto;margin:30px 0;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:9px}
+table{width:100%;min-width:760px;border-collapse:collapse;background:var(--color-bg)}
+th,td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg))}
+th{font:700 13px "Manrope",sans-serif;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+td{font-size:14px}
+tbody tr:hover{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+tbody tr:last-child td{border-bottom:0}
+.key td:first-child{border-left:4px solid var(--color-accent)}
+.pilot{margin:30px 0;padding:22px;border:1px solid color-mix(in srgb,var(--color-accent) 45%,var(--color-neutral));border-radius:9px;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.pilot-label{margin-bottom:12px;font:600 12px "JetBrains Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.pilot-line{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg))}
+.pilot-line:last-child{border-bottom:0}
+.pilot-value{font:500 13px "JetBrains Mono",monospace;text-align:right}
+.tabs{margin:30px 0}
+.tab-list{display:flex;flex-wrap:wrap;gap:7px;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));margin-bottom:20px}
+.tab{border:0;border-bottom:3px solid transparent;background:transparent;padding:12px 15px;cursor:pointer;font:600 14px "Inter",sans-serif}
+.tab[aria-selected=true]{border-bottom-color:var(--color-accent)}
+.panel{display:none;max-width:760px}
+.panel.active{display:block}
+.accordion{border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+.accordion button{width:100%;padding:18px 0;border:0;background:transparent;display:flex;justify-content:space-between;text-align:left;cursor:pointer;font:700 17px "Manrope",sans-serif}
+.accordion button span:last-child{font:600 18px "JetBrains Mono",monospace;color:var(--color-accent)}
+.accordion-panel{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.accordion-panel>div{padding:0 0 18px;max-width:720px}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);margin:38px 0}
+.step{position:relative;padding:14px 14px 14px 0}
+.step:not(:last-child):after{content:"";position:absolute;top:16px;left:35px;right:0;height:1px;background:var(--color-neutral);opacity:.55}
+.step-number{position:relative;z-index:2;width:33px;height:33px;display:grid;place-items:center;border:2px solid var(--color-text);border-radius:50%;background:var(--color-bg);font:600 11px "JetBrains Mono",monospace;margin-bottom:12px}
+.step:first-child .step-number,.step:last-child .step-number{border-color:var(--color-accent)}
+.step h3{font-size:15px}
+.step p{font-size:13px;margin:0}
+.resource-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0}
+.flow-item{padding:18px;border-top:3px solid var(--color-accent);background:var(--color-bg);border-radius:6px}
+.flow-item strong{display:block;font:700 15px "Manrope",sans-serif;margin-bottom:5px}
+.flow-item span{font-size:13px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
+.summary-item{padding:18px;border-top:3px solid var(--color-accent);background:var(--color-bg);border-radius:6px}
+.summary-item strong{display:block;font:700 15px "Manrope",sans-serif;margin-bottom:7px}
+.summary-item span{font-size:13px}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:60px 0}
+.lesson-link{display:block;padding:22px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:9px;text-decoration:none;transition:transform .2s,border-color .2s}
+.lesson-link:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.lesson-link small{display:block;margin-bottom:7px;font:500 11px "JetBrains Mono",monospace;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+.lesson-link strong{font:700 16px "Manrope",sans-serif}
+.next{text-align:right}
+footer{border-top:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));padding:30px 0 42px;font-size:13px;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+.footer-inner{display:flex;justify-content:space-between;gap:20px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:1000px){
+  .hero{grid-template-columns:1fr;gap:30px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .summary,.resource-flow{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr;gap:8px}
+  .step{padding-left:48px}
+  .step:not(:last-child):after{left:16px;top:44px;bottom:-8px;width:1px;height:auto;right:auto}
+  .step-number{position:absolute;left:0;top:10px}
+}
+@media(max-width:600px){
+  .container,.header-inner,.footer-inner{width:calc(100% - 24px)}
+  .header-nav{display:none}
+  .hero{padding:45px 0 35px}
+  h1{font-size:39px}
+  .lead{font-size:17px}
+  section{padding:54px 0}
+  section.alt{padding-left:12px;padding-right:12px}
+  .toc ol{grid-template-columns:1fr}
+  .cards,.summary,.resource-flow,.nav-lessons{grid-template-columns:1fr}
+  .next{text-align:left}
+  .footer-inner{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="brand" href="#top" aria-label="Retour au début">
+      <span class="brand-mark">GP</span><span>Gestion de Projet</span>
+    </a>
+    <nav class="header-nav" aria-label="Navigation">
+      <a href="#sommaire">Sommaire</a>
+      <a href="#ressources">Ressources</a>
+      <a href="#allocation">Allocation</a>
+      <a href="#synthese">Synthèse</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container" id="top">
+  <div class="hero reveal">
+    <div>
+      <div class="eyebrow">
+        <span class="badge badge-accent">MODULE 3 · BUDGET, RESSOURCES ET RISQUES</span>
+        <span class="badge">LEÇON 11</span>
+        <span class="badge">INTERMÉDIAIRE</span>
+      </div>
+      <h1>Gestion des ressources du projet</h1>
+      <p class="lead">Identifier et planifier les ressources nécessaires au projet, vérifier leur disponibilité et organiser leur allocation au bon moment.</p>
+    </div>
+    <aside class="meta" aria-label="Informations de la leçon">
+      <div class="meta-row"><span>Durée estimée</span><strong class="mono">15 min</strong></div>
+      <div class="meta-row"><span>Objectif</span><strong>Identifier & planifier</strong></div>
+      <div class="meta-row"><span>Ressources</span><strong class="mono">4 familles</strong></div>
+    </aside>
+  </div>
+
+  <nav class="toc reveal" id="sommaire" aria-label="Sommaire">
+    <div class="toc-title">Sommaire de la leçon</div>
+    <ol>
+      <li><a href="#definition">Comprendre les ressources du projet</a></li>
+      <li><a href="#ressources">Les quatre familles de ressources</a></li>
+      <li><a href="#disponibilite">Disponibilité et capacité</a></li>
+      <li><a href="#allocation">Allocation des ressources</a></li>
+      <li><a href="#pilotage">Planification et pilotage</a></li>
+      <li><a href="#synthese">Points clés à retenir</a></li>
+    </ol>
+  </nav>
+
+  <section id="definition" class="reveal">
+    <div class="section-head">
+      <div class="kicker">01 · Fondamentaux</div>
+      <h2>Comprendre les ressources du projet</h2>
+      <p>Une ressource est un moyen mobilisé pour permettre au projet de réaliser ses activités et d’atteindre ses objectifs. Elle peut être humaine, matérielle, financière ou technologique.</p>
+    </div>
+    <div class="text-column">
+      <p>La planification des ressources consiste à déterminer <strong>ce qui est nécessaire</strong>, <strong>en quelle quantité</strong>, <strong>à quel moment</strong> et <strong>pendant quelle durée</strong>. Elle met en relation les activités du projet avec les moyens réellement disponibles.</p>
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">💡</div>
+        <div><strong>À retenir</strong>Une ressource utile n’est pas seulement identifiée : sa disponibilité doit être compatible avec le calendrier et les besoins des activités.</div>
+      </div>
+    </div>
+
+    <div class="diagram" role="img" aria-label="Schéma des quatre familles de ressources du projet">
+      <svg viewBox="0 0 940 420" xmlns="http://www.w3.org/2000/svg">
+        <title>Les quatre familles de ressources</title>
+        <desc>Un projet au centre est relié aux ressources humaines, matérielles, financières et technologiques.</desc>
+        <line x1="470" y1="210" x2="160" y2="95" stroke="var(--color-neutral)" stroke-width="2"/>
+        <line x1="470" y1="210" x2="470" y2="75" stroke="var(--color-neutral)" stroke-width="2"/>
+        <line x1="470" y1="210" x2="780" y2="95" stroke="var(--color-neutral)" stroke-width="2"/>
+        <line x1="470" y1="210" x2="470" y2="350" stroke="var(--color-neutral)" stroke-width="2"/>
+        <circle cx="470" cy="210" r="74" fill="var(--color-text)"/>
+        <text x="470" y="204" text-anchor="middle" style="fill:var(--color-bg);font-family:Manrope;font-weight:700;font-size:21px">PROJET</text>
+        <text x="470" y="229" text-anchor="middle" style="fill:var(--color-bg);font-size:12px">activités · livrables</text>
+
+        <rect x="55" y="57" width="210" height="76" rx="9" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+        <text x="160" y="87" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px">HUMAINES</text>
+        <text x="160" y="109" text-anchor="middle" style="font-size:12px">compétences · temps</text>
+
+        <rect x="365" y="37" width="210" height="76" rx="9" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+        <text x="470" y="67" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px">MATÉRIELLES</text>
+        <text x="470" y="89" text-anchor="middle" style="font-size:12px">équipements · locaux</text>
+
+        <rect x="675" y="57" width="210" height="76" rx="9" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+        <text x="780" y="87" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px">FINANCIÈRES</text>
+        <text x="780" y="109" text-anchor="middle" style="font-size:12px">budgets · dépenses</text>
+
+        <rect x="365" y="312" width="210" height="76" rx="9" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+        <text x="470" y="342" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:17px">TECHNOLOGIQUES</text>
+        <text x="470" y="364" text-anchor="middle" style="font-size:12px">logiciels · systèmes</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="ressources" class="alt reveal">
+    <div class="section-head">
+      <div class="kicker">02 · Typologie</div>
+      <h2>Les quatre familles de ressources</h2>
+      <p>La distinction entre familles permet de ne pas limiter la planification aux seules personnes. Chaque catégorie possède ses propres contraintes de disponibilité, de capacité et de coût.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">RH</div>
+        <h3>Ressources humaines</h3>
+        <p>Personnes, compétences, rôles et temps de travail nécessaires aux activités du projet.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">MAT</div>
+        <h3>Ressources matérielles</h3>
+        <p>Équipements, matériels, espaces ou moyens physiques nécessaires à la réalisation.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">FIN</div>
+        <h3>Ressources financières</h3>
+        <p>Moyens financiers permettant de couvrir les achats, prestations et autres dépenses du projet.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">TEC</div>
+        <h3>Ressources technologiques</h3>
+        <p>Logiciels, systèmes, plateformes et capacités techniques indispensables aux travaux.</p>
+      </article>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Famille</th>
+            <th scope="col">Exemples</th>
+            <th scope="col">Point de planification</th>
+            <th scope="col">Indicateur utile</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="key">
+            <td><strong>Humaines</strong></td>
+            <td>Chef de projet, experts, équipe métier</td>
+            <td>Compétence et capacité disponibles</td>
+            <td class="mono">jours-homme</td>
+          </tr>
+          <tr>
+            <td><strong>Matérielles</strong></td>
+            <td>Équipements, salles, matériels</td>
+            <td>Disponibilité et période d’utilisation</td>
+            <td class="mono">unités / durée</td>
+          </tr>
+          <tr class="key">
+            <td><strong>Financières</strong></td>
+            <td>Enveloppes, paiements, achats</td>
+            <td>Montant et calendrier des dépenses</td>
+            <td class="mono">budget</td>
+          </tr>
+          <tr>
+            <td><strong>Technologiques</strong></td>
+            <td>Logiciels, licences, infrastructures</td>
+            <td>Accès, capacité et compatibilité</td>
+            <td class="mono">licences / capacité</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pilot">
+      <div class="pilot-label">Fiche de pilotage · inventaire initial</div>
+      <div class="pilot-line"><span>Ressource</span><span class="pilot-value">QUOI ?</span></div>
+      <div class="pilot-line"><span>Quantité / capacité</span><span class="pilot-value">COMBIEN ?</span></div>
+      <div class="pilot-line"><span>Période</span><span class="pilot-value">QUAND ?</span></div>
+      <div class="pilot-line"><span>Responsable</span><span class="pilot-value">QUI ?</span></div>
+    </div>
+  </section>
+
+  <section id="disponibilite" class="reveal">
+    <div class="section-head">
+      <div class="kicker">03 · Capacité</div>
+      <h2>Disponibilité et capacité</h2>
+      <p>Identifier une ressource ne garantit pas qu’elle sera disponible lorsque le projet en aura besoin. La planification doit donc rapprocher la demande du projet de la capacité réellement mobilisable.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Disponibilité et capacité">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="panel-disponibilite" id="tab-disponibilite">Disponibilité</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-capacite" id="tab-capacite">Capacité</button>
+      </div>
+      <div class="panel active" id="panel-disponibilite" role="tabpanel" aria-labelledby="tab-disponibilite" tabindex="0">
+        <h3>Quand la ressource peut-elle être mobilisée ?</h3>
+        <p>La disponibilité concerne la période pendant laquelle une ressource peut effectivement être utilisée par le projet. Une personne peut être affectée à plusieurs activités, un équipement peut être déjà réservé, et une licence peut être limitée dans le temps.</p>
+      </div>
+      <div class="panel" id="panel-capacite" role="tabpanel" aria-labelledby="tab-capacite" tabindex="0">
+        <h3>Quelle quantité de travail peut-elle fournir ?</h3>
+        <p>La capacité représente le volume que la ressource peut raisonnablement fournir sur une période donnée. Pour une ressource humaine, elle dépend notamment du temps disponible et des autres engagements ; pour un équipement, elle dépend de sa capacité d’utilisation.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon" aria-hidden="true">⚠️</div>
+      <div><strong>Attention / erreur fréquente</strong>Planifier une ressource à 100 % de sa capacité théorique sans tenir compte de ses autres engagements, des temps de coordination ou des contraintes de calendrier peut créer une allocation irréaliste.</div>
+    </div>
+
+    <div class="diagram" role="img" aria-label="Schéma comparant besoin, disponibilité et allocation">
+      <svg viewBox="0 0 940 300" xmlns="http://www.w3.org/2000/svg">
+        <title>Du besoin à l’allocation</title>
+        <desc>Le besoin du projet est comparé à la disponibilité, puis transformé en allocation planifiée.</desc>
+        <rect x="45" y="100" width="225" height="92" rx="9" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+        <text x="157" y="137" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:18px">BESOIN</text>
+        <text x="157" y="163" text-anchor="middle" style="font-size:12px">volume · compétence · période</text>
+
+        <line x1="270" y1="146" x2="360" y2="146" stroke="var(--color-neutral)" stroke-width="2"/>
+        <polygon points="360,146 348,139 348,153" fill="var(--color-neutral)"/>
+
+        <rect x="360" y="100" width="225" height="92" rx="9" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="2"/>
+        <text x="472" y="137" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:18px">DISPONIBILITÉ</text>
+        <text x="472" y="163" text-anchor="middle" style="font-size:12px">calendrier · capacité</text>
+
+        <line x1="585" y1="146" x2="675" y2="146" stroke="var(--color-neutral)" stroke-width="2"/>
+        <polygon points="675,146 663,139 663,153" fill="var(--color-neutral)"/>
+
+        <rect x="675" y="100" width="220" height="92" rx="9" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+        <text x="785" y="137" text-anchor="middle" style="font-family:Manrope;font-weight:700;font-size:18px">ALLOCATION</text>
+        <text x="785" y="163" text-anchor="middle" style="font-size:12px">qui · combien · quand</text>
+      </svg>
+    </div>
+
+    <div class="accordion">
+      <button type="button" aria-expanded="false"><span>Pourquoi vérifier la disponibilité avant l’allocation ?</span><span aria-hidden="true">+</span></button>
+      <div class="accordion-panel"><div>Parce qu’une allocation n’est réaliste que si la ressource peut réellement être mobilisée sur la période prévue. Cette vérification permet d’anticiper les conflits de planning et les besoins de remplacement ou d’ajustement.</div></div>
+    </div>
+    <div class="accordion">
+      <button type="button" aria-expanded="false"><span>Que faire lorsque la capacité est insuffisante ?</span><span aria-hidden="true">+</span></button>
+      <div class="accordion-panel"><div>Le pilotage peut conduire à revoir la séquence des activités, répartir différemment la charge, ajuster les délais ou rechercher une capacité complémentaire. L’objectif est de conserver une planification cohérente avec les moyens réellement mobilisables.</div></div>
+    </div>
+  </section>
+
+  <section id="allocation" class="alt reveal">
+    <div class="section-head">
+      <div class="kicker">04 · Organisation</div>
+      <h2>Allocation des ressources</h2>
+      <p>L’allocation consiste à affecter les ressources identifiées aux activités du projet, en tenant compte des compétences requises, des quantités disponibles et du calendrier.</p>
+    </div>
+
+    <div class="resource-flow">
+      <div class="flow-item"><strong>Activité</strong><span>Quel travail doit être réalisé ?</span></div>
+      <div class="flow-item"><strong>Besoin</strong><span>Quelle ressource est nécessaire ?</span></div>
+      <div class="flow-item"><strong>Disponibilité</strong><span>Peut-elle être mobilisée ?</span></div>
+      <div class="flow-item"><strong>Allocation</strong><span>Quelle affectation retenir ?</span></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Activité</th>
+            <th scope="col">Ressource</th>
+            <th scope="col">Quantité</th>
+            <th scope="col">Période</th>
+            <th scope="col">Allocation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="key">
+            <td><strong>Conception</strong></td>
+            <td>Expert métier</td>
+            <td class="mono">5 j</td>
+            <td class="mono">S01–S02</td>
+            <td class="mono">100 %</td>
+          </tr>
+          <tr>
+            <td><strong>Développement</strong></td>
+            <td>Ressource technique</td>
+            <td class="mono">15 j</td>
+            <td class="mono">S02–S04</td>
+            <td class="mono">80 %</td>
+          </tr>
+          <tr class="key">
+            <td><strong>Coordination</strong></td>
+            <td>Chef de projet</td>
+            <td class="mono">8 j</td>
+            <td class="mono">S01–S04</td>
+            <td class="mono">40 %</td>
+          </tr>
+          <tr>
+            <td><strong>Support matériel</strong></td>
+            <td>Équipement</td>
+            <td class="mono">1 unité</td>
+            <td class="mono">S02–S04</td>
+            <td class="mono">3 sem.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon" aria-hidden="true">📐</div>
+      <div><strong>Bonnes pratiques professionnelles</strong>Une allocation doit être lisible dans le temps : associer une ressource à une activité, une quantité ou capacité, et une période facilite le suivi des charges et des conflits.</div>
+    </div>
+
+    <div class="diagram" role="img" aria-label="Frise simplifiée de disponibilité et allocation">
+      <svg viewBox="0 0 940 280" xmlns="http://www.w3.org/2000/svg">
+        <title>Frise d’allocation des ressources</title>
+        <desc>Trois ressources sont représentées sur quatre périodes de projet.</desc>
+        <text x="165" y="38" style="font-family:Manrope;font-weight:700;font-size:15px">RESSOURCE</text>
+        <text x="330" y="38" text-anchor="middle" style="font:600 12px JetBrains Mono">S01</text>
+        <text x="465" y="38" text-anchor="middle" style="font:600 12px JetBrains Mono">S02</text>
+        <text x="600" y="38" text-anchor="middle" style="font:600 12px JetBrains Mono">S03</text>
+        <text x="735" y="38" text-anchor="middle" style="font:600 12px JetBrains Mono">S04</text>
+        <line x1="300" y1="55" x2="810" y2="55" stroke="var(--color-neutral)" stroke-width="1"/>
+        <line x1="300" y1="55" x2="300" y2="245" stroke="var(--color-neutral)" stroke-width="1"/>
+        <line x1="427" y1="55" x2="427" y2="245" stroke="var(--color-neutral)" stroke-width="1" opacity=".55"/>
+        <line x1="555" y1="55" x2="555" y2="245" stroke="var(--color-neutral)" stroke-width="1" opacity=".55"/>
+        <line x1="682" y1="55" x2="682" y2="245" stroke="var(--color-neutral)" stroke-width="1" opacity=".55"/>
+        <line x1="810" y1="55" x2="810" y2="245" stroke="var(--color-neutral)" stroke-width="1"/>
+        <text x="160" y="96" text-anchor="middle" style="font-weight:600">Chef de projet</text>
+        <text x="160" y="156" text-anchor="middle" style="font-weight:600">Expert métier</text>
+        <text x="160" y="216" text-anchor="middle" style="font-weight:600">Ressource technique</text>
+        <rect x="305" y="76" width="500" height="27" rx="5" fill="color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))" stroke="var(--color-accent)" stroke-width="2"/>
+        <rect x="305" y="136" width="245" height="27" rx="5" fill="var(--color-text)"/>
+        <rect x="425" y="196" width="380" height="27" rx="5" fill="color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg))" stroke="var(--color-neutral)" stroke-width="2"/>
+        <text x="555" y="95" text-anchor="middle" style="fill:var(--color-text);font:600 11px JetBrains Mono">40 %</text>
+        <text x="427" y="155" text-anchor="middle" style="fill:var(--color-bg);font:600 11px JetBrains Mono">100 %</text>
+        <text x="615" y="215" text-anchor="middle" style="font:600 11px JetBrains Mono">80 %</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="pilotage" class="reveal">
+    <div class="section-head">
+      <div class="kicker">05 · Pilotage</div>
+      <h2>Planification et pilotage</h2>
+      <p>La gestion des ressources ne s’arrête pas au moment de l’allocation. Elle doit être suivie dans le temps afin de comparer la planification aux disponibilités et aux besoins réels.</p>
+    </div>
+
+    <div class="steps" aria-label="Cycle de gestion des ressources">
+      <div class="step"><div class="step-number">01</div><h3>Identifier</h3><p>Déterminer les ressources nécessaires.</p></div>
+      <div class="step"><div class="step-number">02</div><h3>Quantifier</h3><p>Évaluer quantité, capacité et durée.</p></div>
+      <div class="step"><div class="step-number">03</div><h3>Vérifier</h3><p>Contrôler disponibilité et contraintes.</p></div>
+      <div class="step"><div class="step-number">04</div><h3>Allouer</h3><p>Affecter les ressources aux activités.</p></div>
+      <div class="step"><div class="step-number">05</div><h3>Suivre</h3><p>Comparer planification et réalité.</p></div>
+    </div>
+
+    <div class="cards">
+      <article class="card"><div class="card-icon" aria-hidden="true">CAL</div><h3>Calendrier</h3><p>Suivre les périodes de mobilisation et les éventuels conflits de disponibilité.</p></article>
+      <article class="card"><div class="card-icon" aria-hidden="true">CHA</div><h3>Charge</h3><p>Observer la quantité de travail demandée par rapport à la capacité disponible.</p></article>
+      <article class="card"><div class="card-icon" aria-hidden="true">COÛ</div><h3>Coût</h3><p>Relier l’utilisation des ressources aux dépenses et aux enveloppes prévues.</p></article>
+      <article class="card"><div class="card-icon" aria-hidden="true">ÉCA</div><h3>Écart</h3><p>Repérer les différences entre l’allocation prévue et la situation observée.</p></article>
+    </div>
+
+    <div class="pilot">
+      <div class="pilot-label">Fiche de pilotage · tableau de bord ressources</div>
+      <div class="pilot-line"><span>Charge planifiée</span><span class="pilot-value">PLAN</span></div>
+      <div class="pilot-line"><span>Charge réellement mobilisée</span><span class="pilot-value">RÉEL</span></div>
+      <div class="pilot-line"><span>Disponibilité restante</span><span class="pilot-value">CAPACITÉ</span></div>
+      <div class="pilot-line"><span>Écart d’allocation</span><span class="pilot-value">ÉCART</span></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon" aria-hidden="true">🔗</div>
+      <div><strong>Pour aller plus loin</strong>La gestion des ressources est directement liée au planning et au budget : une modification de disponibilité peut entraîner une modification des séquences, des délais, des charges ou des coûts.</div>
+    </div>
+
+    <div class="accordion">
+      <button type="button" aria-expanded="false"><span>Pourquoi la planification des ressources influence-t-elle le planning ?</span><span aria-hidden="true">+</span></button>
+      <div class="accordion-panel"><div>Les activités dépendent de ressources qui doivent être disponibles au moment prévu. Une capacité insuffisante ou une indisponibilité peut donc modifier la séquence des activités ou leur durée.</div></div>
+    </div>
+    <div class="accordion">
+      <button type="button" aria-expanded="false"><span>Pourquoi la gestion des ressources est-elle liée au budget ?</span><span aria-hidden="true">+</span></button>
+      <div class="accordion-panel"><div>Les ressources mobilisées ont souvent un coût. Le volume et la durée d’utilisation des ressources participent donc à la construction et au suivi des dépenses du projet.</div></div>
+    </div>
+  </section>
+
+  <section id="synthese" class="alt reveal">
+    <div class="section-head">
+      <div class="kicker">06 · Synthèse</div>
+      <h2>Points clés à retenir</h2>
+      <p>Une gestion structurée des ressources relie les besoins du projet aux moyens disponibles et à leur utilisation dans le temps.</p>
+    </div>
+
+    <div class="summary">
+      <div class="summary-item"><strong>01 · Identifier</strong><span>Recenser les ressources humaines, matérielles, financières et technologiques nécessaires.</span></div>
+      <div class="summary-item"><strong>02 · Planifier</strong><span>Déterminer quantité, capacité, période et durée de mobilisation.</span></div>
+      <div class="summary-item"><strong>03 · Allouer</strong><span>Affecter les ressources aux activités en tenant compte de leur disponibilité.</span></div>
+      <div class="summary-item"><strong>04 · Piloter</strong><span>Suivre les charges, disponibilités et écarts pour maintenir une allocation cohérente.</span></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon" aria-hidden="true">💡</div>
+      <div><strong>Idée directrice</strong>La bonne ressource doit être disponible <strong>au bon moment</strong>, en <strong>quantité suffisante</strong> et avec une allocation cohérente avec les activités du projet.</div>
+    </div>
+  </section>
+
+  <nav class="nav-lessons" aria-label="Navigation entre les leçons">
+    <a class="lesson-link" href="#" aria-label="Leçon précédente : Plan de projet complet">
+      <small>← LEÇON 10</small><strong>Plan de projet complet</strong>
+    </a>
+    <a class="lesson-link next" href="#" aria-label="Leçon suivante : Élaboration du budget projet">
+      <small>LEÇON 12 →</small><strong>Élaboration du budget projet</strong>
+    </a>
+  </nav>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>Gestion de Projet · Module 3 · Leçon 11</span>
+    <a href="#top">Retour en haut ↑</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const bar = document.getElementById("progressBar");
+  const updateProgress = () => {
+    const root = document.documentElement;
+    const max = root.scrollHeight - root.clientHeight;
+    bar.style.width = (max > 0 ? root.scrollTop / max * 100 : 0) + "%";
+  };
+  document.addEventListener("scroll", updateProgress, {passive:true});
+  updateProgress();
+
+  document.querySelectorAll("[data-tabs]").forEach(tabs => {
+    const buttons = [...tabs.querySelectorAll('[role="tab"]')];
+    const panels = [...tabs.querySelectorAll('[role="tabpanel"]')];
+
+    const activate = index => {
+      buttons.forEach((b,i) => b.setAttribute("aria-selected", String(i === index)));
+      panels.forEach((p,i) => p.classList.toggle("active", i === index));
+    };
+
+    buttons.forEach((button,index) => {
+      button.addEventListener("click", () => activate(index));
+      button.addEventListener("keydown", event => {
+        let next = null;
+        if(event.key === "ArrowRight") next = (index + 1) % buttons.length;
+        if(event.key === "ArrowLeft") next = (index - 1 + buttons.length) % buttons.length;
+        if(next !== null){ event.preventDefault(); buttons[next].focus(); activate(next); }
+      });
+    });
+  });
+
+  document.querySelectorAll(".accordion button").forEach(button => {
+    button.addEventListener("click", () => {
+      const panel = button.nextElementSibling;
+      const expanded = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", String(!expanded));
+      panel.style.maxHeight = expanded ? null : panel.scrollHeight + "px";
+      const symbol = button.querySelector("span:last-child");
+      if(symbol) symbol.textContent = expanded ? "+" : "−";
+    });
+  });
+
+  const reveals = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.08});
+    reveals.forEach(el => observer.observe(el));
+  } else {
+    reveals.forEach(el => el.classList.add("visible"));
+  }
+})();
+</script>
+</body>
+</html>

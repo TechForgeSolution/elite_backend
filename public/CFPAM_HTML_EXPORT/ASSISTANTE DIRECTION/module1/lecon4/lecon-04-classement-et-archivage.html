@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 4 — Classement et archivage, module Assistance de direction.">
+<title>Leçon 4 — Classement et archivage</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FDFCFA;--color-bg-alt:#F5F2EC;--color-text:#16181C;--color-text-muted:#5E5A54;
+  --color-accent:#2F5D50;--color-accent-soft:#E8EFEB;--color-brass:#A8823C;--color-border:#E4DFD6;
+  --radius:3px;--font-display:'Source Serif 4',Georgia,serif;--font-body:'Inter','Public Sans',sans-serif;
+}
+[data-theme="dark"]{
+  --color-bg:#15171A;--color-bg-alt:#1C1F23;--color-text:#EDEAE3;--color-text-muted:#A8A399;
+  --color-accent:#6FA893;--color-accent-soft:#20302B;--color-brass:#C4A05C;--color-border:#33362F;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;color:var(--color-text);line-height:1.25}
+h1{font-size:2.1rem}h2{font-size:1.5rem;margin-top:2.6rem}h3{font-size:1.15rem}
+p{margin:.9rem 0}a{color:var(--color-accent)}strong{font-weight:700}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}.muted{color:var(--color-text-muted)}
+.caption{font-size:.8rem;letter-spacing:.02em;color:var(--color-text-muted)}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:1000;transition:width .1s ease-out}
+header.site{position:sticky;top:0;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(5px);border-bottom:1px solid var(--color-border);padding:10px 0}
+.header-inner{max-width:760px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.filiere-tag{font-size:.72rem;letter-spacing:.06em;color:var(--color-accent);font-weight:600;text-transform:uppercase}
+.lecon-title-mini{font-size:.85rem;color:var(--color-text-muted);display:none}
+@media(min-width:640px){.lecon-title-mini{display:inline}}
+.somm-toggle{position:relative}.somm-btn{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius);padding:7px 14px;font-family:var(--font-body);font-size:.85rem;cursor:pointer;color:var(--color-text)}
+.somm-btn:hover,.theme-btn:hover{border-color:var(--color-accent)}
+.somm-menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);box-shadow:0 4px 14px rgba(0,0,0,.06);min-width:270px;padding:10px;display:none;max-height:70vh;overflow-y:auto}
+.somm-menu.open{display:block}.somm-menu a{display:block;padding:7px 10px;font-size:.88rem;color:var(--color-text);text-decoration:none;border-radius:var(--radius)}
+.somm-menu a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+.theme-btn{background:none;border:1px solid var(--color-border);border-radius:var(--radius);padding:6px 10px;cursor:pointer;font-size:.8rem;color:var(--color-text-muted)}
+.hero{padding:56px 0 32px;border-bottom:1px solid var(--color-border)}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.badge{font-size:.72rem;padding:4px 11px;border-radius:var(--radius);background:var(--color-accent-soft);color:var(--color-accent);border:1px solid var(--color-border);font-weight:600}
+.badge.brass{background:transparent;color:var(--color-brass);border-color:var(--color-brass)}
+.hero h1{margin:0 0 10px}.hero .subtitle{font-size:1.05rem;color:var(--color-text-muted);max-width:650px}
+.sommaire-block{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius);padding:20px 24px;margin:30px 0}
+.sommaire-block h2{margin-top:0;font-size:1.05rem}.sommaire-block ol{margin:0;padding-left:1.2rem}.sommaire-block li{margin:6px 0}.sommaire-block a{text-decoration:none}.sommaire-block a:hover{text-decoration:underline}
+section{padding:34px 0;border-bottom:1px solid var(--color-border)}section:last-of-type{border-bottom:none}
+.objectifs-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}.objectifs-list li{display:flex;gap:10px;align-items:flex-start;font-size:.98rem}.objectifs-list li::before{content:"—";color:var(--color-accent);flex-shrink:0}
+.callout{border-left:3px solid var(--color-accent);background:var(--color-bg-alt);border-radius:var(--radius);padding:16px 18px;margin:22px 0}
+.callout .callout-label{font-weight:600;font-size:.88rem;margin-bottom:4px;display:block}.callout.warn{border-left-color:var(--color-brass)}.callout.model{border-left-color:#5E5A54}.callout.check{border-left-color:var(--color-accent)}.callout.scenario{border-left-color:var(--color-brass);background:var(--color-accent-soft)}.callout.privacy{border-left-color:#8B4B4B}.callout.more{border-left-color:var(--color-text-muted)}
+.model-block{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius);padding:0;margin:18px 0;overflow:hidden}
+.model-block-head{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--color-border);background:var(--color-bg);gap:12px}
+.model-block-head span{font-size:.8rem;font-weight:600;color:var(--color-text-muted)}.copy-btn{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);padding:5px 12px;font-size:.78rem;cursor:pointer;color:var(--color-accent);font-family:var(--font-body);white-space:nowrap}.copy-btn:hover{background:var(--color-accent-soft)}
+.model-block pre{margin:0;padding:16px;font-family:'Courier New',monospace;font-size:.85rem;white-space:pre-wrap;line-height:1.55}
+.table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--color-border);border-radius:var(--radius)}table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:590px}th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--color-border);vertical-align:top}th{background:var(--color-bg-alt);font-weight:600}tr:last-child td{border-bottom:none}
+.tabs{margin:22px 0}.tab-list{display:flex;gap:4px;border-bottom:1px solid var(--color-border);flex-wrap:wrap}.tab-btn{background:none;border:none;padding:10px 16px;font-family:var(--font-body);font-size:.9rem;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent;margin-bottom:-1px}.tab-btn.active{color:var(--color-accent);border-bottom-color:var(--color-accent);font-weight:600}.tab-panel{display:none;padding:18px 4px}.tab-panel.active{display:block}
+.accordion-item{border:1px solid var(--color-border);border-radius:var(--radius);margin:10px 0;background:var(--color-bg)}.accordion-trigger{width:100%;text-align:left;background:none;border:none;padding:14px 16px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:var(--color-text)}.accordion-trigger .chevron{transition:transform .2s ease;color:var(--color-text-muted)}.accordion-item.open .chevron{transform:rotate(180deg)}.accordion-panel{display:none;padding:0 16px 16px;color:var(--color-text-muted);font-size:.92rem}.accordion-item.open .accordion-panel{display:block}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:22px 0}.card{border:1px solid var(--color-border);border-radius:var(--radius);padding:16px;background:var(--color-bg-alt)}.card h3{margin:0 0 8px;font-size:1rem}.card p{margin:0;font-size:.88rem;color:var(--color-text-muted)}
+.stepper{display:flex;gap:0;margin:26px 0;overflow-x:auto;padding-bottom:6px}.step{flex:1;min-width:155px;position:relative;padding:0 14px 0 0}.step-num{width:28px;height:28px;border-radius:50%;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:600;margin-bottom:10px;position:relative;z-index:2}.step-line{position:absolute;top:14px;left:28px;right:14px;height:1px;background:var(--color-border)}.step:last-child .step-line{display:none}.step h3{font-size:.92rem;margin:0 0 4px}.step p{font-size:.82rem;margin:0}
+.diagram{border:1px solid var(--color-border);background:var(--color-bg-alt);border-radius:var(--radius);padding:12px;margin:22px 0}.diagram svg{display:block;width:100%;height:auto}
+.checklist{list-style:none;padding:0;margin:18px 0;display:grid;gap:8px}.checklist li{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--color-border);border-radius:var(--radius);background:var(--color-bg)}.checklist input[type="checkbox"]{margin-top:3px;width:16px;height:16px;accent-color:var(--color-accent);flex-shrink:0}.checklist label{font-size:.92rem;cursor:pointer}.checklist li.checked{background:var(--color-accent-soft);border-color:var(--color-accent)}.checklist li.checked label{color:var(--color-text-muted);text-decoration:line-through}
+.prevnext{display:flex;gap:16px;justify-content:space-between;margin:30px 0}.prevnext a,.prevnext span{flex:1;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px 18px;text-decoration:none;color:var(--color-text);font-size:.88rem;display:block}.prevnext a:hover{border-color:var(--color-accent)}.prevnext .dir-label{color:var(--color-text-muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px}.prevnext .disabled{color:var(--color-text-muted);opacity:.55;cursor:default}.back-module{text-align:center;margin:16px 0 34px}.back-module a{font-size:.86rem}
+footer{padding:30px 0 60px;text-align:center;color:var(--color-text-muted);font-size:.8rem}
+#back-to-top{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--color-accent);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:1.1rem;z-index:800;box-shadow:0 2px 8px rgba(0,0,0,.15)}#back-to-top.show{display:flex}
+.fade-in{opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease}.fade-in.visible{opacity:1;transform:translateY(0)}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:600px){.wrap{padding:0 18px}.header-inner{padding:0 18px}.hero{padding-top:40px}h1{font-size:1.75rem}h2{font-size:1.35rem}.prevnext{flex-direction:column}.somm-menu{right:-10px;min-width:250px}.stepper{margin-right:-4px}}
+@media print{
+  header.site,#progress-bar,#back-to-top,.theme-btn,.prevnext,footer .no-print{display:none!important}
+  body{background:#fff;color:#000}.wrap{max-width:760px}.hero{padding-top:20px}section{border-bottom:1px solid #ccc;break-inside:avoid}.callout,.model-block,.card,.accordion-panel{display:block!important}.sommaire-block{break-inside:avoid}.diagram{break-inside:avoid}a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div id="progress-bar" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 4 — Classement et archivage</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle" aria-label="Sommaire">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#methodes">1. Méthodes de classement</a>
+          <a href="#plan">2. Plan de classement</a>
+          <a href="#nommage">3. Nommage des fichiers</a>
+          <a href="#conservation">4. Durées de conservation</a>
+          <a href="#archivage">5. Archivage papier et numérique</a>
+          <a href="#confidentialite">6. Confidentialité</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="hero" style="border-bottom:none;padding-bottom:0">
+  <div class="badges">
+    <span class="badge">Module 1 — Secrétariat et bureautique professionnelle</span>
+    <span class="badge brass">Niveau débutant</span>
+    <span class="badge">25 min</span>
+  </div>
+  <h1>Leçon 4 — Classement et archivage</h1>
+  <p class="subtitle">Organiser les documents avec une logique simple, stable et confidentielle pour retrouver n’importe quel document en moins d’une minute.</p>
+</section>
+
+<div class="sommaire-block" id="objectifs">
+  <h2>Objectifs pédagogiques</h2>
+  <ul class="objectifs-list">
+    <li>Choisir une méthode de classement adaptée à la nature des documents.</li>
+    <li>Construire un plan de classement simple, logique et documenté.</li>
+    <li>Nommer les fichiers de façon homogène afin de les retrouver rapidement.</li>
+    <li>Distinguer les documents à conserver, à archiver et à éliminer selon les règles définies par l’organisation.</li>
+    <li>Organiser un archivage papier et numérique sans multiplier les emplacements inutiles.</li>
+    <li>Appliquer les règles élémentaires de confidentialité lors du classement et de l’archivage.</li>
+  </ul>
+</div>
+
+<section id="methodes">
+  <h2>1. Méthodes de classement</h2>
+  <p>Classer consiste à <strong>donner une place prévisible à chaque document</strong>. Un bon classement permet de répondre rapidement à trois questions : <em>où est le document ? comment est-il nommé ? dans quel état doit-il être conservé ?</em></p>
+  <p>Pour un débutant, l’essentiel est de choisir une logique compréhensible par toute personne amenée à reprendre le dossier. Le classement ne doit pas dépendre de la mémoire d’une seule personne.</p>
+
+  <div class="card-grid">
+    <div class="card"><h3>Par sujet</h3><p>Les documents sont regroupés par thème ou dossier : réunions, fournisseurs, contrats, correspondance, etc.</p></div>
+    <div class="card"><h3>Par date</h3><p>Les documents sont rangés selon une chronologie. Cette méthode est utile lorsque la date est le premier repère de recherche.</p></div>
+    <div class="card"><h3>Par nom</h3><p>Les documents sont organisés par ordre alphabétique : clients, partenaires, salariés ou organismes.</p></div>
+    <div class="card"><h3>Par type</h3><p>Les factures, comptes rendus, courriers ou tableaux peuvent être regroupés lorsque leur nature est le critère principal.</p></div>
+  </div>
+
+  <div class="tabs" data-tabs="methodes">
+    <div class="tab-list" role="tablist" aria-label="Comparer deux logiques de classement">
+      <button class="tab-btn active" role="tab" aria-selected="true" data-tab="a">Classement utile</button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="b">Classement à risque</button>
+    </div>
+    <div class="tab-panel active" data-panel="a">
+      <p><strong>Exemple :</strong> les comptes rendus de réunion sont rangés dans un dossier « Réunions », puis par année. Une personne qui ne connaît pas le bureau peut suivre cette logique et retrouver le document.</p>
+    </div>
+    <div class="tab-panel" data-panel="b">
+      <p><strong>Exemple :</strong> certains comptes rendus sont dans « Bureau », d’autres dans « Direction », d’autres encore sur le bureau de l’ordinateur. Même si les documents existent, leur emplacement n’est pas prévisible.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-label">💡 À retenir</span>
+    Un classement efficace n’est pas celui qui paraît le plus sophistiqué : c’est celui dont la logique est immédiatement compréhensible et appliquée de manière constante.
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-label">⚠️ Erreur fréquente</span>
+    Créer trop de sous-dossiers dès le départ. Une arborescence très profonde ralentit la recherche. Commencez par quelques catégories clairement définies, puis affinez seulement si le volume de documents le justifie.
+  </div>
+</section>
+
+<section id="plan">
+  <h2>2. Construire un plan de classement</h2>
+  <p>Le <strong>plan de classement</strong> est la carte qui indique où placer les documents. Avant de déplacer un lot de fichiers, on définit les grandes catégories, leur ordre et les sous-catégories nécessaires.</p>
+
+  <div class="diagram" aria-label="Schéma d’un plan de classement">
+    <svg viewBox="0 0 720 300" role="img" aria-labelledby="plan-title plan-desc">
+      <title id="plan-title">Exemple de plan de classement</title>
+      <desc id="plan-desc">Une arborescence part du dossier Direction et se divise en Administration, Réunions, Correspondance et Partenaires.</desc>
+      <rect x="260" y="20" width="200" height="44" rx="3" fill="#E8EFEB" stroke="#2F5D50"/>
+      <text x="360" y="47" text-anchor="middle" font-family="Inter" font-size="14" fill="#16181C">DIRECTION</text>
+      <line x1="360" y1="64" x2="360" y2="94" stroke="#A8823C"/>
+      <line x1="90" y1="94" x2="630" y2="94" stroke="#A8823C"/>
+      <g font-family="Inter" font-size="12" fill="#16181C">
+        <line x1="90" y1="94" x2="90" y2="120" stroke="#A8823C"/>
+        <line x1="270" y1="94" x2="270" y2="120" stroke="#A8823C"/>
+        <line x1="450" y1="94" x2="450" y2="120" stroke="#A8823C"/>
+        <line x1="630" y1="94" x2="630" y2="120" stroke="#A8823C"/>
+        <rect x="20" y="120" width="140" height="42" rx="3" fill="#FDFCFA" stroke="#E4DFD6"/>
+        <rect x="200" y="120" width="140" height="42" rx="3" fill="#FDFCFA" stroke="#E4DFD6"/>
+        <rect x="380" y="120" width="140" height="42" rx="3" fill="#FDFCFA" stroke="#E4DFD6"/>
+        <rect x="560" y="120" width="140" height="42" rx="3" fill="#FDFCFA" stroke="#E4DFD6"/>
+        <text x="90" y="146" text-anchor="middle">01 Administration</text>
+        <text x="270" y="146" text-anchor="middle">02 Réunions</text>
+        <text x="450" y="146" text-anchor="middle">03 Correspondance</text>
+        <text x="630" y="146" text-anchor="middle">04 Partenaires</text>
+        <line x1="270" y1="162" x2="270" y2="188" stroke="#A8823C"/>
+        <rect x="195" y="188" width="150" height="40" rx="3" fill="#E8EFEB" stroke="#E4DFD6"/>
+        <text x="270" y="213" text-anchor="middle">2026</text>
+        <line x1="270" y1="228" x2="270" y2="254" stroke="#A8823C"/>
+        <rect x="190" y="254" width="160" height="34" rx="3" fill="#FDFCFA" stroke="#E4DFD6"/>
+        <text x="270" y="276" text-anchor="middle">Comité de direction</text>
+      </g>
+    </svg>
+    <p class="caption">Exemple volontairement simple : les numéros stabilisent l’ordre des dossiers dans une arborescence numérique.</p>
+  </div>
+
+  <div class="stepper" aria-label="Étapes de construction du plan de classement">
+    <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Recenser</h3><p>Identifier les grandes familles de documents.</p></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Regrouper</h3><p>Réunir les documents qui répondent au même besoin.</p></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Nommer</h3><p>Donner des intitulés courts et non ambigus.</p></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Tester</h3><p>Vérifier qu’un collègue peut retrouver un document sans aide.</p></div>
+  </div>
+
+  <div class="model-block">
+    <div class="model-block-head"><span>📋 Modèle — Plan de classement documenté</span><button class="copy-btn" data-copy-target="model-plan">Copier</button></div>
+    <pre id="model-plan">01_ADMINISTRATION
+   01_Courriers
+   02_Documents_internes
+
+02_REUNIONS
+   2026
+      01_Comite_direction
+      02_Reunions_equipe
+
+03_CORRESPONDANCE
+   2026
+   2025
+
+04_PARTENAIRES
+   [Nom du partenaire]
+      01_Correspondance
+      02_Documents</pre>
+  </div>
+
+  <p class="caption">Le plan peut être adapté à l’organisation réelle. L’important est de documenter la logique retenue et de l’appliquer sans exception inutile.</p>
+</section>
+
+<section id="nommage">
+  <h2>3. Nommage des fichiers</h2>
+  <p>Un fichier bien nommé doit être identifiable <strong>sans être ouvert</strong>. Évitez les noms vagues comme <code>document.docx</code>, <code>nouveau.docx</code> ou <code>final_final.docx</code>.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Élément</th><th>Exemple</th><th>Pourquoi ?</th></tr></thead>
+      <tbody>
+        <tr><td>Date</td><td>2026-09-17</td><td>Un format constant facilite le tri chronologique.</td></tr>
+        <tr><td>Type</td><td>CR, Courrier, Rapport</td><td>Le type du document est visible immédiatement.</td></tr>
+        <tr><td>Sujet</td><td>Comite_direction</td><td>Le contenu est identifiable sans ambiguïté.</td></tr>
+        <tr><td>Version</td><td>v01, v02</td><td>Les versions peuvent être distinguées lorsque plusieurs travaux existent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="model-block">
+    <div class="model-block-head"><span>📋 Modèle — Convention de nommage</span><button class="copy-btn" data-copy-target="model-nom">Copier</button></div>
+    <pre id="model-nom">AAAA-MM-JJ_TYPE_SUJET_VERSION.ext
+
+Exemple :
+2026-09-17_CR_Comite_direction_v01.docx
+2026-09-17_Courrier_Partenaire_A_v02.pdf
+2026-09-17_Rapport_activite_v01.pdf</pre>
+  </div>
+
+  <div class="callout">
+    <span class="callout-label">💡 À retenir</span>
+    Choisissez une convention de nommage et tenez-vous-y. L’objectif est que deux personnes nomment le même type de document de façon comparable.
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-label">⚠️ Erreur fréquente</span>
+    Mélanger plusieurs conventions : <code>CR réunion 17 sept</code>, <code>17-09-26 compte rendu</code>, puis <code>CR_2026_09_17</code>. Le tri et la recherche deviennent moins prévisibles.
+  </div>
+</section>
+
+<section id="conservation">
+  <h2>4. Durées de conservation</h2>
+  <p>Conserver un document ne signifie pas nécessairement le garder indéfiniment. Pour chaque catégorie, l’organisation doit définir ou appliquer une <strong>durée de conservation</strong> et les règles de sortie correspondantes.</p>
+  <p>Au niveau débutant, retenez surtout la logique : <strong>document actif → document à conserver → archivage → élimination lorsque cela est autorisé</strong>. La durée exacte dépend du type de document et des règles applicables dans l’organisation.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Situation</th><th>Action de classement</th><th>Point de vigilance</th></tr></thead>
+      <tbody>
+        <tr><td>Document utilisé régulièrement</td><td>Conserver dans l’espace de travail courant.</td><td>Éviter les doublons dispersés.</td></tr>
+        <tr><td>Document moins utilisé mais encore nécessaire</td><td>Le déplacer vers l’espace d’archives prévu.</td><td>Conserver son classement et son nommage.</td></tr>
+        <tr><td>Document dont la conservation arrive à échéance</td><td>Appliquer la règle interne avant toute suppression.</td><td>Ne pas supprimer de sa propre initiative un document important.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout privacy">
+    <span class="callout-label">🔒 Confidentialité</span>
+    Une archive reste un document à protéger. Le fait qu’elle soit ancienne ne signifie pas qu’elle peut être laissée dans un emplacement accessible à tout le monde.
+  </div>
+
+  <div class="accordion" data-accordion>
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">Que faire si la durée de conservation n’est pas connue ? <span class="chevron">⌄</span></button>
+      <div class="accordion-panel"><p>Ne pas inventer une durée et ne pas supprimer le document. Vérifier la règle interne ou demander la consigne au responsable compétent, puis appliquer la règle documentée.</p></div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">Pourquoi éviter les doublons ? <span class="chevron">⌄</span></button>
+      <div class="accordion-panel"><p>Deux copies différentes peuvent créer un doute sur la version à utiliser. Lorsque plusieurs copies sont nécessaires, leur rôle doit être identifiable.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="archivage">
+  <h2>5. Archivage papier et numérique</h2>
+  <p>L’archivage est une étape de rangement qui vise à conserver les documents nécessaires tout en les retirant du flux de travail courant. La logique de classement doit rester cohérente entre le papier et le numérique.</p>
+
+  <div class="tabs" data-tabs="papier-numerique">
+    <div class="tab-list" role="tablist" aria-label="Comparer archivage papier et numérique">
+      <button class="tab-btn active" role="tab" aria-selected="true" data-tab="papier">Papier</button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="numerique">Numérique</button>
+    </div>
+    <div class="tab-panel active" data-panel="papier">
+      <h3>Organiser un dossier papier</h3>
+      <p>Identifier la catégorie, classer les pièces dans un ordre constant, inscrire clairement le contenu sur le dossier et ranger celui-ci dans l’emplacement prévu.</p>
+      <ul>
+        <li>Éviter les piles sans intitulé.</li>
+        <li>Garder un ordre de rangement stable.</li>
+        <li>Ne pas laisser un document confidentiel visible sur un bureau.</li>
+      </ul>
+    </div>
+    <div class="tab-panel" data-panel="numerique">
+      <h3>Organiser une arborescence numérique</h3>
+      <p>Créer les dossiers à partir du plan de classement, appliquer la convention de nommage et déplacer les documents vers leur emplacement définitif.</p>
+      <ul>
+        <li>Éviter les dossiers « Divers » utilisés comme solution permanente.</li>
+        <li>Éviter de conserver plusieurs versions sans indication.</li>
+        <li>Vérifier l’accès aux dossiers contenant des documents confidentiels.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 720 210" role="img" aria-label="Flux simple du document actif vers l’archive">
+      <rect x="20" y="70" width="145" height="60" rx="3" fill="#E8EFEB" stroke="#2F5D50"/>
+      <text x="92" y="96" text-anchor="middle" font-family="Inter" font-size="13" fill="#16181C">Document actif</text>
+      <text x="92" y="116" text-anchor="middle" font-family="Inter" font-size="11" fill="#5E5A54">utilisé</text>
+      <path d="M165 100 H270" stroke="#A8823C" fill="none"/>
+      <polygon points="270,100 258,94 258,106" fill="#A8823C"/>
+      <rect x="290" y="70" width="145" height="60" rx="3" fill="#FDFCFA" stroke="#E4DFD6"/>
+      <text x="362" y="96" text-anchor="middle" font-family="Inter" font-size="13" fill="#16181C">Classement</text>
+      <text x="362" y="116" text-anchor="middle" font-family="Inter" font-size="11" fill="#5E5A54">nom + emplacement</text>
+      <path d="M435 100 H540" stroke="#A8823C" fill="none"/>
+      <polygon points="540,100 528,94 528,106" fill="#A8823C"/>
+      <rect x="560" y="70" width="140" height="60" rx="3" fill="#E8EFEB" stroke="#2F5D50"/>
+      <text x="630" y="96" text-anchor="middle" font-family="Inter" font-size="13" fill="#16181C">Archive</text>
+      <text x="630" y="116" text-anchor="middle" font-family="Inter" font-size="11" fill="#5E5A54">conservée</text>
+    </svg>
+    <p class="caption">Le même raisonnement s’applique au papier et au numérique : identifier, classer, conserver dans l’emplacement prévu.</p>
+  </div>
+</section>
+
+<section id="confidentialite">
+  <h2>6. Confidentialité</h2>
+  <p>Le classement donne aussi de la visibilité aux documents. Une bonne organisation doit donc limiter l’exposition des informations qui ne doivent pas être accessibles à tout le monde.</p>
+
+  <div class="card-grid">
+    <div class="card"><h3>Accès</h3><p>Ranger les documents confidentiels dans l’espace prévu et ne pas les laisser sur un bureau accessible.</p></div>
+    <div class="card"><h3>Partage</h3><p>Ne transmettre un document qu’aux personnes qui doivent effectivement y accéder.</p></div>
+    <div class="card"><h3>Copies</h3><p>Éviter les copies inutiles qui multiplient les emplacements et les risques de diffusion.</p></div>
+  </div>
+
+  <div class="callout privacy">
+    <span class="callout-label">🔒 Confidentialité</span>
+    Avant de déplacer, partager ou éliminer un document, vérifier sa nature et les règles d’accès ou de conservation applicables. En cas de doute, demander une consigne plutôt que prendre une décision irréversible.
+  </div>
+
+  <div class="callout check">
+    <span class="callout-label">✅ Checklist rapide</span>
+    <ul class="checklist" style="margin-bottom:0">
+      <li><input type="checkbox" id="quick1"><label for="quick1">Le document est dans la bonne catégorie.</label></li>
+      <li><input type="checkbox" id="quick2"><label for="quick2">Son nom permet de l’identifier sans l’ouvrir.</label></li>
+      <li><input type="checkbox" id="quick3"><label for="quick3">Il n’existe pas de copie inutile ou ambiguë.</label></li>
+      <li><input type="checkbox" id="quick4"><label for="quick4">Son niveau de confidentialité est respecté.</label></li>
+    </ul>
+  </div>
+</section>
+
+<section id="mise-en-situation">
+  <h2>Mise en situation professionnelle</h2>
+  <div class="callout scenario">
+    <span class="callout-label">🎭 Mise en situation</span>
+    <p>La direction vous remet un lot de <strong>50 documents désordonnés</strong> : courriers, comptes rendus, documents internes et documents liés à plusieurs partenaires. Certains fichiers ont des noms imprécis et plusieurs documents semblent être des versions différentes du même contenu.</p>
+    <p>Votre mission est de réorganiser ce lot selon un plan de classement simple, de renommer les fichiers et de préparer l’archivage des documents qui ne sont plus utilisés au quotidien.</p>
+  </div>
+
+  <h3>Procédure proposée</h3>
+  <div class="stepper">
+    <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Inventorier</h3><p>Parcourir les 50 documents sans les déplacer au hasard.</p></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Catégoriser</h3><p>Attribuer chaque document à une famille.</p></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Renommer</h3><p>Appliquer une convention homogène.</p></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Ranger</h3><p>Déplacer vers l’arborescence prévue.</p></div>
+    <div class="step"><div class="step-num">5</div><h3>Contrôler</h3><p>Tester la recherche de plusieurs documents.</p></div>
+  </div>
+
+  <div class="callout model">
+    <span class="callout-label">📋 Critère de réussite</span>
+    Une autre personne doit pouvoir prendre l’arborescence et retrouver plusieurs documents sans vous demander où ils sont. Le plan de classement documenté et l’arborescence numérique appliquée constituent le livrable de la leçon.
+  </div>
+</section>
+<section id="points-cles">
+  <h2>Points clés à retenir</h2>
+  <ul class="objectifs-list">
+    <li>Un classement efficace repose sur une logique simple, prévisible et constante.</li>
+    <li>Le plan de classement définit les catégories et les emplacements avant le rangement.</li>
+    <li>Un nom de fichier utile permet d’identifier le document sans l’ouvrir.</li>
+    <li>Les durées de conservation doivent suivre les règles définies par l’organisation ; en cas de doute, on vérifie avant de supprimer.</li>
+    <li>L’archivage papier et numérique doit conserver une logique de rangement cohérente.</li>
+    <li>La confidentialité fait partie du classement : accès, partage et copies doivent être maîtrisés.</li>
+    <li>Le bon test final est simple : une autre personne doit pouvoir retrouver le document rapidement.</li>
+  </ul>
+</section>
+
+<section id="boite-a-outils">
+  <h2>Boîte à outils</h2>
+  <p><strong>Livrable de la leçon :</strong> un <strong>plan de classement documenté</strong> et une <strong>arborescence numérique appliquée</strong> au lot de 50 documents.</p>
+
+  <div class="model-block">
+    <div class="model-block-head"><span>📋 Livrable — Fiche de plan de classement</span><button class="copy-btn" data-copy-target="livrable-plan">Copier</button></div>
+    <pre id="livrable-plan">PLAN DE CLASSEMENT — [SERVICE / DIRECTION]
+
+Objectif :
+Permettre de retrouver un document en moins d’une minute.
+
+01_ADMINISTRATION
+   Contenu :
+   Règle de nommage :
+
+02_REUNIONS
+   Contenu :
+   Règle de nommage :
+
+03_CORRESPONDANCE
+   Contenu :
+   Règle de nommage :
+
+04_PARTENAIRES
+   Contenu :
+   Règle de nommage :
+
+Règle commune de nommage :
+AAAA-MM-JJ_TYPE_SUJET_VERSION
+
+Responsable du classement :
+Date de mise en application :</pre>
+  </div>
+
+  <div class="model-block">
+    <div class="model-block-head"><span>📋 Livrable — Arborescence numérique appliquée</span><button class="copy-btn" data-copy-target="livrable-arbo">Copier</button></div>
+    <pre id="livrable-arbo">[DOSSIER PRINCIPAL]
+├── 01_ADMINISTRATION
+│   ├── 01_Courriers
+│   └── 02_Documents_internes
+├── 02_REUNIONS
+│   └── 2026
+│       ├── 01_Comite_direction
+│       └── 02_Reunions_equipe
+├── 03_CORRESPONDANCE
+│   ├── 2026
+│   └── 2025
+└── 04_PARTENAIRES
+    └── [Nom du partenaire]
+        ├── 01_Correspondance
+        └── 02_Documents</pre>
+  </div>
+
+  <h3>Checklist de contrôle avant de considérer le classement terminé</h3>
+  <ul class="checklist" id="delivery-checklist">
+    <li><input type="checkbox" id="chk1"><label for="chk1">Les 50 documents ont été inventoriés.</label></li>
+    <li><input type="checkbox" id="chk2"><label for="chk2">Chaque document possède une catégorie clairement définie.</label></li>
+    <li><input type="checkbox" id="chk3"><label for="chk3">La convention de nommage est appliquée de manière homogène.</label></li>
+    <li><input type="checkbox" id="chk4"><label for="chk4">Les documents sont placés dans l’arborescence prévue.</label></li>
+    <li><input type="checkbox" id="chk5"><label for="chk5">Les doublons ou versions ambiguës ont été signalés ou traités selon la consigne.</label></li>
+    <li><input type="checkbox" id="chk6"><label for="chk6">Les règles de confidentialité et d’accès ont été vérifiées.</label></li>
+    <li><input type="checkbox" id="chk7"><label for="chk7">Un test de recherche montre que plusieurs documents peuvent être retrouvés rapidement.</label></li>
+  </ul>
+
+  <div class="callout more">
+    <span class="callout-label">🔗 Pour aller plus loin</span>
+    Reprenez le même plan avec un petit lot de documents supplémentaires et vérifiez si une personne qui n’a pas participé au classement comprend immédiatement la logique.
+  </div>
+</section>
+
+<div class="prevnext">
+  <a href="lecon-03-prise-de-notes-et-vitesse-de-saisie.html"><span class="dir-label">← Précédent</span>Leçon 3 — Prise de notes et vitesse de saisie</a>
+  <a href="lecon-05-accueil-physique-et-telephonique.html"><span class="dir-label">Suivant →</span>Leçon 5 — Accueil physique et téléphonique</a>
+</div>
+<div class="back-module"><a href="module-01-secretariat-et-bureautique-professionnelle.html">← Retour au module</a></div>
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 1 — Secrétariat et bureautique professionnelle · Leçon 4 · Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const themeBtn=document.getElementById('theme-toggle');
+  const applyTheme=t=>document.documentElement.setAttribute('data-theme',t);
+  let saved=null;try{saved=localStorage.getItem('lecon-theme')}catch(e){}
+  if(saved)applyTheme(saved);
+  themeBtn.addEventListener('click',()=>{
+    const current=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';
+    const next=current==='dark'?'light':'dark';applyTheme(next);
+    try{localStorage.setItem('lecon-theme',next)}catch(e){}
+  });
+
+  const sommBtn=document.getElementById('somm-btn'),sommMenu=document.getElementById('somm-menu');
+  sommBtn.addEventListener('click',()=>{
+    const open=sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded',open?'true':'false');
+  });
+  document.addEventListener('click',e=>{
+    if(!sommMenu.contains(e.target)&&e.target!==sommBtn){
+      sommMenu.classList.remove('open');sommBtn.setAttribute('aria-expanded','false');
+    }
+  });
+  sommMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    sommMenu.classList.remove('open');sommBtn.setAttribute('aria-expanded','false');
+  }));
+
+  const bar=document.getElementById('progress-bar');
+  function updateProgress(){
+    const h=document.documentElement,scrollTop=h.scrollTop||document.body.scrollTop;
+    const scrollHeight=h.scrollHeight-h.clientHeight;
+    bar.style.width=scrollHeight>0?(scrollTop/scrollHeight*100)+'%':'0%';
+  }
+  document.addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+
+  const backBtn=document.getElementById('back-to-top');
+  document.addEventListener('scroll',()=>{
+    backBtn.classList.toggle('show',(document.documentElement.scrollTop||document.body.scrollTop)>500);
+  },{passive:true});
+  backBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  document.querySelectorAll('.tabs').forEach(tabs=>{
+    const btns=tabs.querySelectorAll('.tab-btn'),panels=tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn=>btn.addEventListener('click',()=>{
+      btns.forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false')});
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');btn.setAttribute('aria-selected','true');
+      const panel=tabs.querySelector('.tab-panel[data-panel="'+btn.dataset.tab+'"]');
+      if(panel)panel.classList.add('active');
+    }));
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(trigger=>{
+    trigger.addEventListener('click',()=>{
+      const item=trigger.parentElement,open=item.classList.toggle('open');
+      trigger.setAttribute('aria-expanded',open?'true':'false');
+    });
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const target=document.getElementById(btn.dataset.copyTarget),text=target.textContent;
+      const done=()=>{
+        const orig=btn.textContent;btn.textContent='Copié ✓';
+        setTimeout(()=>btn.textContent=orig,1600);
+      };
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(()=>{
+          fallbackCopy(text);done();
+        });
+      }else{fallbackCopy(text);done();}
+    });
+  });
+  function fallbackCopy(text){
+    const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');
+    ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta);
+  }
+
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb=>{
+    let stored=null;try{stored=localStorage.getItem('classement-'+cb.id)}catch(e){}
+    if(stored==='1'){cb.checked=true;cb.parentElement.classList.add('checked')}
+    cb.addEventListener('change',()=>{
+      cb.parentElement.classList.toggle('checked',cb.checked);
+      try{localStorage.setItem('classement-'+cb.id,cb.checked?'1':'0')}catch(e){}
+    });
+  });
+
+  const observer='IntersectionObserver' in window?new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')});
+  },{threshold:.12}):null;
+  document.querySelectorAll('section,.sommaire-block').forEach(el=>{
+    el.classList.add('fade-in');if(observer)observer.observe(el);else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

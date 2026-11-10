@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Leçon 09 — Impression et prépresse : préparer des fichiers conformes aux contraintes d'impression.">
+<title>Leçon 09 — Impression et prépresse | Infographie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F7F6F3;--color-text:#14161A;--color-accent:#3D3BF3;--color-neutral:#C7C2B8;
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,sans-serif;line-height:1.65}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{height:4px;width:0;position:fixed;top:0;left:0;background:var(--color-accent);z-index:1000}
+.container{width:min(1120px,calc(100% - 40px));margin:auto}
+.site-header{position:sticky;top:4px;z-index:20;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font:700 15px "Space Grotesk";text-transform:uppercase;letter-spacing:.05em}.brand span{color:var(--color-accent)}
+.module{font:500 11px "IBM Plex Mono";border:1px solid var(--color-neutral);padding:6px 9px}
+.hero{padding:70px 0 45px;border-bottom:1px solid var(--line)}
+.kicker,.eyebrow{font:600 11px "IBM Plex Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.08;letter-spacing:-.025em}
+h1{font-size:clamp(2.5rem,7vw,5.1rem);max-width:920px;margin:14px 0 18px}
+h2{font-size:clamp(1.8rem,4vw,2.7rem);margin:0 0 18px}h3{font-size:1.15rem;margin:0 0 8px}
+.lead{max-width:730px;font-size:1.13rem;color:var(--muted)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.badge{font:500 11px "IBM Plex Mono";border:1px solid var(--line);padding:7px 10px;background:var(--soft)}
+.toc{padding:25px 0;border-bottom:1px solid var(--line)}.toc-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:12px}
+.toc a{font-size:.82rem;padding:10px;border-left:2px solid var(--color-neutral)}.toc a:hover{background:var(--soft10);border-left-color:var(--color-accent)}
+section{padding:62px 0;border-bottom:1px solid var(--line)}section:nth-child(even){background:var(--soft)}
+.section-inner{width:min(1000px,calc(100% - 40px));margin:auto}
+p{max-width:730px}.visual{margin:28px 0;padding:18px;border:1px solid var(--line);background:var(--color-bg)}
+.visual svg{display:block;width:100%;height:auto}.caption{font:11px "IBM Plex Mono";color:var(--muted);margin-top:9px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:24px 0}.card{border:1px solid var(--line);padding:20px;background:var(--color-bg);transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.45rem;color:var(--color-accent)}.callout{border-left:5px solid var(--color-accent);padding:17px 20px;margin:25px 0;background:var(--soft10)}
+.callout strong{font-family:"Space Grotesk"}
+.table-wrap{overflow-x:auto;margin:24px 0}table{width:100%;min-width:680px;border-collapse:collapse;background:var(--color-bg)}
+th,td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left}th{font:600 11px "IBM Plex Mono";text-transform:uppercase;background:var(--soft10)}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);margin:28px 0}.step{padding:17px;border-top:2px solid var(--color-neutral);border-right:1px solid var(--line)}.step:last-child{border-right:0}.num{display:block;color:var(--color-accent);font:600 12px "IBM Plex Mono";margin-bottom:7px}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.key{padding:18px;border:1px solid var(--line);background:var(--color-bg)}.key b{font:600 11px "IBM Plex Mono";color:var(--color-accent)}
+details{border-top:1px solid var(--line);padding:15px 0}details:last-child{border-bottom:1px solid var(--line)}summary{cursor:pointer;font-family:"Space Grotesk";font-weight:600}
+.lesson-nav{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:38px 0}.nav-card{border:1px solid var(--line);padding:20px;background:var(--color-bg)}.next{text-align:right}
+footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);font-size:.84rem}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--color-neutral);background:var(--color-bg);cursor:pointer}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.toc-grid{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(3,1fr)}.step{border-bottom:1px solid var(--line)}.key-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.container,.section-inner{width:calc(100% - 28px)}.module{display:none}.hero{padding:48px 0 32px}.toc-grid,.grid,.key-grid,.lesson-nav{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.step{border-right:0}.visual{padding:10px}h1{font-size:2.7rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="site-header">
+ <div class="container nav">
+  <a class="brand" href="#top">Filière <span>Infographie</span></a>
+  <div class="module">MODULE 02 · PRODUCTION PROFESSIONNELLE</div>
+  <a href="#sommaire">Sommaire ↓</a>
+ </div>
+</header>
+
+<div id="top"></div>
+<div class="hero">
+ <div class="container">
+  <div class="kicker">Leçon 09 · Impression et prépresse</div>
+  <h1>Préparer un fichier qui peut réellement être imprimé.</h1>
+  <p class="lead">Comprendre le fond perdu, les traits de coupe, la résolution, le CMJN, les profils ICC et le PDF/X pour livrer des fichiers conformes aux contraintes d'impression.</p>
+  <div class="meta">
+   <span class="badge">INTERMÉDIAIRE</span><span class="badge">30 MIN</span><span class="badge">PRÉPRESSE</span><span class="badge">PRINT</span>
+  </div>
+ </div>
+</div>
+
+<div class="toc" id="sommaire">
+ <div class="container">
+  <div class="kicker">Sommaire</div>
+  <div class="toc-grid">
+   <a href="#preparation">01 · Préparer</a><a href="#fondperdu">02 · Fond perdu</a><a href="#coupe">03 · Traits de coupe</a>
+   <a href="#resolution">04 · Résolution</a><a href="#cmjn">05 · CMJN</a><a href="#icc">06 · Profils ICC</a>
+   <a href="#pdfx">07 · PDF/X</a><a href="#workflow">08 · Workflow</a><a href="#check">09 · Contrôle final</a><a href="#cles">10 · Points clés</a>
+  </div>
+ </div>
+</div>
+
+<main>
+<section class="reveal" id="preparation">
+ <div class="section-inner">
+  <div class="eyebrow">01 · Préparation</div><h2>Le prépresse : transformer une création en fichier imprimable</h2>
+  <p>Le prépresse regroupe les contrôles et réglages réalisés avant l'impression. L'objectif est de réduire les écarts entre ce qui a été conçu à l'écran et ce que la chaîne d'impression peut produire.</p>
+  <div class="visual">
+   <svg viewBox="0 0 900 330" role="img" aria-label="Chaîne de préparation d'un document pour l'impression">
+    <rect x="35" y="45" width="830" height="235" fill="none" stroke="#C7C2B8"/>
+    <g font-family="IBM Plex Mono" text-anchor="middle">
+     <circle cx="130" cy="150" r="48" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="130" y="155">01</text><text x="130" y="220">FORMAT</text>
+     <circle cx="290" cy="150" r="48" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="290" y="155">02</text><text x="290" y="220">FOND PERDU</text>
+     <circle cx="450" cy="150" r="48" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="450" y="155">03</text><text x="450" y="220">COULEUR</text>
+     <circle cx="610" cy="150" r="48" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="610" y="155">04</text><text x="610" y="220">RÉSOLUTION</text>
+     <circle cx="770" cy="150" r="48" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="770" y="155">05</text><text x="770" y="220">PDF/X</text>
+    </g>
+    <path d="M178 150H242M338 150H402M498 150H562M658 150H722" stroke="#14161A" stroke-width="2"/>
+   </svg>
+   <div class="caption">Une préparation efficace vérifie le document avant de produire le fichier final.</div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><br>Un fichier « beau à l'écran » n'est pas automatiquement prêt pour l'impression. Le format, les débords, la couleur, les images et le PDF doivent être contrôlés.</div>
+ </div>
+</section>
+
+<section class="reveal" id="fondperdu">
+ <div class="section-inner">
+  <div class="eyebrow">02 · Fond perdu</div><h2>Le fond perdu évite les liserés blancs</h2>
+  <p>Le <strong>fond perdu</strong> est une zone qui dépasse le format fini. Les éléments graphiques destinés à aller jusqu'au bord sont prolongés dans cette zone afin de compenser les petites variations de coupe.</p>
+  <div class="visual">
+   <svg viewBox="0 0 900 420" role="img" aria-label="Schéma d'un document avec fond perdu, format fini et zone sûre">
+    <rect x="120" y="35" width="660" height="350" fill="none" stroke="#3D3BF3" stroke-width="4" stroke-dasharray="12 8"/>
+    <rect x="155" y="70" width="590" height="280" fill="#F7F6F3" stroke="#14161A" stroke-width="3"/>
+    <rect x="190" y="105" width="520" height="210" fill="none" stroke="#C7C2B8" stroke-width="2" stroke-dasharray="5 6"/>
+    <text x="450" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#3D3BF3">FOND PERDU</text>
+    <text x="450" y="335" text-anchor="middle" font-family="IBM Plex Mono" font-size="14">FORMAT FINI</text>
+    <text x="450" y="125" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#3D3BF3">ZONE SÛRE POUR LE CONTENU</text>
+    <path d="M120 400H155M745 400H780" stroke="#3D3BF3" stroke-width="3"/>
+    <text x="450" y="414" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">DÉBORDEMENT AU-DELÀ DE LA COUPE</text>
+   </svg>
+   <div class="caption">Le fond perdu se situe au-delà du format fini ; les textes et éléments importants restent éloignés du bord.</div>
+  </div>
+  <div class="grid">
+   <div class="card"><div class="icon">□</div><h3>Format fini</h3><p>C'est la dimension réelle du produit après découpe.</p></div>
+   <div class="card"><div class="icon">↗</div><h3>Débordement</h3><p>Les fonds et images qui touchent le bord doivent dépasser dans le fond perdu.</p></div>
+   <div class="card"><div class="icon">⌗</div><h3>Zone sûre</h3><p>Les textes, logos et informations importantes sont placés avec une marge de sécurité.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="reveal" id="coupe">
+ <div class="section-inner">
+  <div class="eyebrow">03 · Coupe</div><h2>Traits de coupe : indiquer où le document doit être découpé</h2>
+  <p>Les <strong>traits de coupe</strong> servent de repères à la finition. Ils matérialisent les limites du format final sans faire partie du visuel destiné au client.</p>
+  <div class="visual">
+   <svg viewBox="0 0 900 320" role="img" aria-label="Schéma de traits de coupe autour d'un document">
+    <rect x="260" y="65" width="380" height="190" fill="#F7F6F3" stroke="#14161A" stroke-width="2"/>
+    <path d="M235 65H205M260 40V15M665 65H695M640 40V15M235 255H205M260 280V305M665 255H695M640 280V305" stroke="#3D3BF3" stroke-width="4"/>
+    <path d="M260 65V255M640 65V255M260 65H640M260 255H640" stroke="#C7C2B8" stroke-width="2" stroke-dasharray="7 6"/>
+    <text x="450" y="160" text-anchor="middle" font-family="IBM Plex Mono" font-size="15">FORMAT FINI</text>
+    <text x="450" y="292" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#3D3BF3">REPÈRES DE COUPE</text>
+   </svg>
+  </div>
+  <div class="callout"><strong>⚠️ Attention</strong><br>Ne pas confondre les traits de coupe avec le fond perdu : les premiers indiquent la découpe, le second garantit que le graphisme dépasse suffisamment la zone de coupe.</div>
+ </div>
+</section>
+
+<section class="reveal" id="resolution">
+ <div class="section-inner">
+  <div class="eyebrow">04 · Résolution</div><h2>Résolution : conserver une image suffisamment détaillée</h2>
+  <p>La résolution décrit la densité de pixels d'une image matricielle. Pour l'impression, il faut considérer la résolution <strong>à la taille finale d'utilisation</strong>, et non simplement la valeur affichée dans le fichier.</p>
+  <div class="table-wrap">
+   <table>
+    <thead><tr><th scope="col">Élément</th><th scope="col">Nature</th><th scope="col">Contrôle</th></tr></thead>
+    <tbody>
+     <tr><td>Logo vectoriel</td><td>Vectoriel</td><td>Redimensionnable sans perte de détail</td></tr>
+     <tr><td>Photographie</td><td>Matriciel</td><td>Vérifier pixels disponibles à la taille finale</td></tr>
+     <tr><td>Illustration raster</td><td>Matriciel</td><td>Éviter un agrandissement excessif</td></tr>
+    </tbody>
+   </table>
+  </div>
+  <div class="visual">
+   <svg viewBox="0 0 900 260" role="img" aria-label="Comparaison conceptuelle entre une image vectorielle et une image matricielle">
+    <rect x="60" y="45" width="300" height="160" fill="none" stroke="#14161A" stroke-width="2"/>
+    <path d="M105 165L180 90L235 145L315 75" fill="none" stroke="#3D3BF3" stroke-width="7"/>
+    <text x="210" y="235" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">VECTORIEL · FORMES</text>
+    <rect x="540" y="45" width="300" height="160" fill="none" stroke="#14161A" stroke-width="2"/>
+    <g fill="#C7C2B8"><rect x="585" y="85" width="25" height="25"/><rect x="610" y="110" width="25" height="25"/><rect x="635" y="135" width="25" height="25"/><rect x="660" y="110" width="25" height="25"/><rect x="685" y="85" width="25" height="25"/></g>
+    <text x="690" y="235" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">MATRICIEL · PIXELS</text>
+   </svg>
+  </div>
+ </div>
+</section>
+
+<section class="reveal" id="cmjn">
+ <div class="section-inner">
+  <div class="eyebrow">05 · Couleur</div><h2>CMJN : penser en encres d'impression</h2>
+  <p>Le modèle <strong>CMJN</strong> repose sur quatre composantes : cyan, magenta, jaune et noir. Il est utilisé pour décrire les couleurs dans de nombreux flux d'impression.</p>
+  <div class="visual">
+   <svg viewBox="0 0 900 320" role="img" aria-label="Schéma conceptuel des quatre composantes CMJN">
+    <g font-family="IBM Plex Mono" text-anchor="middle">
+     <circle cx="190" cy="135" r="82" fill="none" stroke="#3D3BF3" stroke-width="5"/><text x="190" y="140">C</text><text x="190" y="255">CYAN</text>
+     <circle cx="390" cy="135" r="82" fill="none" stroke="#14161A" stroke-width="5"/><text x="390" y="140">M</text><text x="390" y="255">MAGENTA</text>
+     <circle cx="590" cy="135" r="82" fill="none" stroke="#C7C2B8" stroke-width="12"/><text x="590" y="140">J</text><text x="590" y="255">JAUNE</text>
+     <circle cx="790" cy="135" r="82" fill="none" stroke="#14161A" stroke-width="14"/><text x="790" y="140">N</text><text x="790" y="255">NOIR</text>
+    </g>
+   </svg>
+   <div class="caption">Le schéma utilise uniquement les quatre couleurs autorisées par l'identité visuelle de la leçon ; il représente les composantes par leurs repères.</div>
+  </div>
+  <div class="callout"><strong>📐 Repère technique</strong><br>Le document doit être préparé selon les spécifications du prestataire d'impression : mode colorimétrique, profil de travail, type de papier et norme PDF demandée peuvent varier selon le flux.</div>
+ </div>
+</section>
+
+<section class="reveal" id="icc">
+ <div class="section-inner">
+  <div class="eyebrow">06 · Gestion couleur</div><h2>Profils ICC : décrire le comportement colorimétrique</h2>
+  <p>Un <strong>profil ICC</strong> caractérise le comportement colorimétrique d'un périphérique ou d'un espace de travail. Il aide les logiciels à interpréter et convertir les couleurs de manière contrôlée.</p>
+  <div class="steps">
+   <div class="step"><span class="num">01</span><strong>Créer</strong><br>Définir l'espace colorimétrique.</div>
+   <div class="step"><span class="num">02</span><strong>Importer</strong><br>Identifier les profils présents.</div>
+   <div class="step"><span class="num">03</span><strong>Convertir</strong><br>Adapter au flux cible.</div>
+   <div class="step"><span class="num">04</span><strong>Contrôler</strong><br>Vérifier les couleurs.</div>
+   <div class="step"><span class="num">05</span><strong>Exporter</strong><br>Intégrer les paramètres requis.</div>
+   <div class="step"><span class="num">06</span><strong>Valider</strong><br>Comparer au cahier des charges.</div>
+  </div>
+  <details><summary>Pourquoi le profil ICC est-il important ?</summary><p>Parce que deux appareils ou deux procédés d'impression peuvent interpréter différemment une même description numérique de couleur. Le profil fournit un cadre de conversion et d'interprétation.</p></details>
+ </div>
+</section>
+
+<section class="reveal" id="pdfx">
+ <div class="section-inner">
+  <div class="eyebrow">07 · PDF professionnel</div><h2>PDF/X : standardiser la livraison</h2>
+  <p>Les normes <strong>PDF/X</strong> sont conçues pour les échanges de fichiers PDF dans les flux d'impression. Le choix précis de la norme dépend du prestataire et du procédé utilisés.</p>
+  <div class="table-wrap">
+   <table>
+    <thead><tr><th scope="col">Contrôle</th><th scope="col">Question à se poser</th><th scope="col">Objectif</th></tr></thead>
+    <tbody>
+     <tr><td>Format</td><td>Le format fini correspond-il à la commande ?</td><td>Éviter une mauvaise dimension.</td></tr>
+     <tr><td>Fond perdu</td><td>Les éléments au bord débordent-ils correctement ?</td><td>Éviter les liserés après coupe.</td></tr>
+     <tr><td>Images</td><td>Les images ont-elles assez de pixels à leur taille finale ?</td><td>Conserver la netteté.</td></tr>
+     <tr><td>Couleur</td><td>Le flux colorimétrique est-il conforme ?</td><td>Réduire les écarts de reproduction.</td></tr>
+     <tr><td>PDF</td><td>La norme demandée est-elle respectée ?</td><td>Faciliter l'exploitation en imprimerie.</td></tr>
+    </tbody>
+   </table>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><br>Ne choisissez pas une norme PDF/X au hasard : le cahier des charges de l'imprimeur reste la référence.</div>
+ </div>
+</section>
+
+<section class="reveal" id="workflow">
+ <div class="section-inner">
+  <div class="eyebrow">08 · Workflow</div><h2>Le workflow de prépresse</h2>
+  <div class="visual">
+   <svg viewBox="0 0 900 210" role="img" aria-label="Frise du workflow de prépresse">
+    <path d="M80 75H820" stroke="#C7C2B8" stroke-width="4"/>
+    <g font-family="IBM Plex Mono" text-anchor="middle">
+     <circle cx="80" cy="75" r="26" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="80" y="80">01</text><text x="80" y="125">FORMAT</text>
+     <circle cx="228" cy="75" r="26" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="228" y="80">02</text><text x="228" y="125">DÉBORD</text>
+     <circle cx="376" cy="75" r="26" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="376" y="80">03</text><text x="376" y="125">IMAGES</text>
+     <circle cx="524" cy="75" r="26" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="524" y="80">04</text><text x="524" y="125">CMJN/ICC</text>
+     <circle cx="672" cy="75" r="26" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="672" y="80">05</text><text x="672" y="125">PDF/X</text>
+     <circle cx="820" cy="75" r="26" fill="#F7F6F3" stroke="#3D3BF3" stroke-width="3"/><text x="820" y="80">06</text><text x="820" y="125">CONTRÔLE</text>
+    </g>
+   </svg>
+  </div>
+ </div>
+</section>
+
+<section class="reveal" id="check">
+ <div class="section-inner">
+  <div class="eyebrow">09 · Contrôle final</div><h2>La checklist avant livraison</h2>
+  <div class="grid">
+   <div class="card"><h3>Format</h3><p>Format fini, orientation et dimensions vérifiés.</p></div>
+   <div class="card"><h3>Débordement</h3><p>Fonds et images allant au bord prolongés dans le fond perdu.</p></div>
+   <div class="card"><h3>Coupe</h3><p>Repères et zone de sécurité cohérents avec la commande.</p></div>
+   <div class="card"><h3>Images</h3><p>Résolution contrôlée à la taille finale d'utilisation.</p></div>
+   <div class="card"><h3>Couleurs</h3><p>Mode et profil colorimétrique conformes au flux demandé.</p></div>
+   <div class="card"><h3>PDF</h3><p>Norme et paramètres d'export conformes au cahier des charges.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="reveal" id="cles">
+ <div class="section-inner">
+  <div class="eyebrow">10 · Synthèse</div><h2>Points clés à retenir</h2>
+  <div class="key-grid">
+   <div class="key"><b>01 · FOND PERDU</b><p>Il prolonge le graphisme au-delà de la zone de coupe.</p></div>
+   <div class="key"><b>02 · COUPE</b><p>Les traits de coupe indiquent les limites du format fini.</p></div>
+   <div class="key"><b>03 · RÉSOLUTION</b><p>Une image matricielle doit être évaluée à sa taille finale.</p></div>
+   <div class="key"><b>04 · CMJN</b><p>Le flux d'impression peut utiliser les quatre composantes CMJN.</p></div>
+   <div class="key"><b>05 · ICC</b><p>Le profil décrit et accompagne la gestion colorimétrique.</p></div>
+   <div class="key"><b>06 · PDF/X</b><p>Une norme adaptée facilite l'échange dans le flux d'impression.</p></div>
+   <div class="key"><b>07 · CAHIER DES CHARGES</b><p>Les spécifications de l'imprimeur priment sur les réglages génériques.</p></div>
+   <div class="key"><b>08 · CONTRÔLE</b><p>La vérification finale réduit les erreurs avant production.</p></div>
+  </div>
+ </div>
+</section>
+</main>
+
+<div class="container">
+ <nav class="lesson-nav" aria-label="Navigation entre les leçons">
+  <a class="nav-card" href="#" onclick="return false;">← <strong>Leçon 08</strong><br>Design graphique</a>
+  <a class="nav-card next" href="#" onclick="return false;"><strong>Leçon 10</strong> →<br>Portfolio professionnel</a>
+ </nav>
+</div>
+
+<footer><div class="container"><div class="brand">Filière <span>Infographie</span></div><p>Module 02 · Production professionnelle · Leçon 09</p></div></footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById("progress");
+function updateProgress(){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h>0?(scrollY/h)*100:0)+"%"}
+addEventListener("scroll",updateProgress,{passive:true});updateProgress();
+document.getElementById("topBtn").addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(e=>obs.observe(e));
+</script>
+</body>
+</html>

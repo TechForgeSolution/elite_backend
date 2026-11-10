@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 05 — Automatiser la gestion des données</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;
+  --color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-border:#E1E4E8;
+  --muted:#4B5563;
+  --code-bg:#0F172A;--code-text:#E2E8F0;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 var(--font-body)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);padding:56px 0 40px}
+.crumb{font:500 .9rem var(--font-body);color:var(--muted);margin:0 0 16px}
+h1{font:700 clamp(2rem,5vw,2.75rem)/1.12 var(--font-head);letter-spacing:-.02em;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.meta li{background:var(--color-bg);border:1px solid var(--color-border);border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:500}
+.meta li.lvl{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.goal{margin:28px 0 0;padding:16px 20px;background:var(--color-bg);border-left:4px solid var(--color-accent);border-radius:0 8px 8px 0}
+.goal strong{font-family:var(--font-head)}
+nav.toc{margin:32px 0 0;padding:20px 24px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+nav.toc p{margin:0 0 8px;font:700 1rem var(--font-head)}
+nav.toc ol{margin:0;padding-left:1.25rem}
+nav.toc a{color:var(--color-text);text-decoration:none;border-bottom:1px solid var(--color-accent)}
+nav.toc a:hover{background:var(--color-accent-soft)}
+section{padding:48px 0 8px}
+h2{font:700 1.65rem/1.25 var(--font-head);letter-spacing:-.01em;margin:0 0 16px;display:flex;gap:12px;align-items:baseline}
+h2 .n{color:var(--color-accent)}
+h3{font:700 1.15rem var(--font-head);margin:28px 0 8px}
+p{margin:0 0 16px}
+ul,ol{padding-left:1.25rem;margin:0 0 16px}
+li{margin-bottom:6px}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:24px 0;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ic{font-size:1.4rem;line-height:1.4}
+.callout p{margin:0}
+.callout b{font-family:var(--font-head)}
+.callout.tip{background:var(--color-accent-soft);border-color:#99E6DA}
+.callout.warn{background:#FFF8E6;border-color:#F3D98B}
+.callout.link{background:var(--color-bg);border-left:4px solid var(--color-accent)}
+.criteria{display:grid;gap:12px;margin:20px 0;padding:0;list-style:none}
+.criteria li{margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.criteria b{font-family:var(--font-head);color:#0B6F66}
+figure{margin:28px 0}
+figure svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}
+code{font:500 .92em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--color-bg-alt);padding:2px 6px;border-radius:4px}
+.formula{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:12px 16px;font-size:.95rem}
+
+.table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--color-border);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--color-border);vertical-align:top}
+th{background:var(--color-bg-alt);font:700 .9rem var(--font-head)}
+tr:last-child td{border-bottom:0}
+td.ok{color:#065F56;font-weight:600}
+tr.hl td{background:var(--color-accent-soft)}
+
+/* Flux SVG interactif */
+.flow-svg g[role="button"]{cursor:pointer}
+.flow-svg g[role="button"] rect.box{fill:#fff;stroke:#E1E4E8;stroke-width:2;transition:fill .15s,stroke .15s}
+.flow-svg g[role="button"]:hover rect.box{fill:#F6F8FA;stroke:#0D9488}
+.flow-svg g[role="button"][aria-pressed="true"] rect.box{fill:#CCFBF1;stroke:#0D9488}
+.flow-svg g[role="button"]:focus{outline:none}
+.flow-svg g[role="button"]:focus-visible rect.box{stroke:#0D9488;stroke-width:4}
+.flow-detail{margin-top:12px;padding:16px 18px;border:1px solid var(--color-border);border-left:4px solid var(--color-accent);border-radius:0 10px 10px 0;background:var(--color-bg-alt)}
+.flow-detail h3{margin:0 0 6px;font-size:1.05rem}
+.flow-detail p{margin:0 0 8px}
+.flow-detail p:last-child{margin:0}
+
+/* Code */
+.code{margin:20px 0;border-radius:12px;overflow:hidden;background:var(--code-bg);border:1px solid #1E293B}
+.code-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 14px;background:#1E293B;color:#CBD5E1;font:500 .82rem var(--font-body)}
+.code-head button{all:unset;cursor:pointer;padding:3px 10px;border:1px solid #475569;border-radius:6px;font:600 .78rem var(--font-body);color:#E2E8F0}
+.code-head button:hover{background:#334155}
+.code-head button:focus-visible{outline:3px solid #5EEAD4;outline-offset:2px}
+.code pre{margin:0;padding:16px 18px;overflow-x:auto;color:var(--code-text);font:400 .88rem/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;tab-size:2}
+.code pre code{background:none;padding:0;font:inherit;color:inherit}
+.k{color:#7DD3FC}.s{color:#86EFAC}.v{color:#FCD34D;font-weight:600}.c{color:#94A3B8;font-style:italic}.b{color:#F9A8D4}
+
+/* Outils interactifs */
+.tool{border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-alt);padding:20px;margin:24px 0}
+.tool h3{margin-top:0}
+.fields{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media(max-width:560px){.fields{grid-template-columns:1fr}}
+.fields .full{grid-column:1/-1}
+label{display:block;font-size:.9rem;font-weight:500}
+input[type="text"],input[type="email"],select{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg);color:var(--color-text)}
+.btn{font:600 .95rem var(--font-body);padding:9px 18px;border-radius:8px;border:1px solid var(--color-accent);background:var(--color-accent);color:#fff;cursor:pointer}
+.btn:hover{background:#0B7C72}
+.btn.ghost{background:var(--color-bg);color:var(--color-text);border-color:var(--color-border)}
+.btn.ghost:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.result{margin-top:18px;display:grid;gap:10px}
+.result div{background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;padding:10px 14px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;align-items:baseline}
+.result span{font-size:.85rem;color:var(--muted)}
+.result strong{font:600 .98rem ui-monospace,SFMono-Regular,Menlo,monospace;color:#0B6F66;word-break:break-all}
+.log{margin-top:14px;padding:12px 16px;border-radius:10px;background:var(--color-bg);border:1px solid var(--color-border);font-size:.95rem;min-height:3.2em}
+.log.upd{border-left:4px solid #D97706}
+.log.new{border-left:4px solid var(--color-accent)}
+
+/* Checklist */
+.check{display:grid;gap:10px;margin:20px 0;padding:0;list-style:none}
+.check li{margin:0}
+.check label{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);cursor:pointer;font-size:1rem;font-weight:400}
+.check label:hover{border-color:var(--color-accent)}
+.check input{margin-top:5px;width:18px;height:18px;accent-color:var(--color-accent);flex:none}
+.check b{font-family:var(--font-head)}
+.score{display:flex;align-items:center;gap:14px;margin:0 0 8px;font-weight:600}
+.bar{flex:1;height:10px;border-radius:999px;background:var(--color-border);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--color-accent);transition:width .25s}
+
+/* Cartes */
+.cards{display:grid;gap:12px;margin:20px 0}
+.card{border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);overflow:hidden}
+.card button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card button:hover{background:var(--color-bg-alt)}
+.card button:focus-visible{outline:3px solid var(--color-accent);outline-offset:-3px}
+.card .t{font:700 1.05rem var(--font-head);display:block}
+.card .sub{font-size:.9rem;color:var(--muted)}
+.tag{font:600 .8rem var(--font-body);padding:2px 10px;border-radius:999px;border:1px solid var(--color-border);white-space:nowrap}
+.tag.yes{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.tag.mid{background:var(--color-bg-alt)}
+.card .chev{transition:transform .2s;color:var(--color-accent);font-weight:700}
+.card[data-open="true"] .chev{transform:rotate(90deg)}
+.card .body{display:none;padding:0 18px 16px;border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.card[data-open="true"] .body{display:block}
+.card .body p{margin:12px 0 6px}
+
+.recap{margin:48px 0 0;padding:24px;border:2px solid var(--color-accent);border-radius:12px}
+.recap h2{font-size:1.3rem}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 64px}
+.pager a{display:block;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:500}
+.pager a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pager small{display:block;color:var(--muted);font-weight:400}
+.pager .next{text-align:right}
+@media(max-width:560px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">Module 1 — Fondamentaux et premières automatisations</p>
+    <h1>Leçon 05 — Automatiser la gestion des données</h1>
+    <ul class="meta">
+      <li class="lvl">Niveau : Débutant</li>
+      <li>⏱ 30 min</li>
+      <li>5 parties</li>
+    </ul>
+    <p class="goal"><strong>Objectif :</strong> enregistrer, organiser, nettoyer et mettre à jour automatiquement des données dans des tableaux ou des bases de données No-Code.</p>
+    <nav class="toc" aria-label="Sommaire">
+      <p>Dans cette leçon</p>
+      <ol>
+        <li><a href="#structure">Structurer une base de données propre</a></li>
+        <li><a href="#ingestion">Ingestion automatique des données</a></li>
+        <li><a href="#nettoyage">Nettoyage et formatage automatiques</a></li>
+        <li><a href="#upsert">Recherche et mise à jour (upsert)</a></li>
+        <li><a href="#rgpd">Sauvegardes et protection (RGPD)</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="structure">
+  <h2><span class="n">1.</span>Structurer une base de données propre</h2>
+  <p>Dans la Leçon 04, chaque réponse de formulaire a déclenché des messages. Mais où vont les données ensuite ? Si elles s'entassent sans règle, vous retrouverez vite des doublons, des colonnes incohérentes et des informations introuvables. La première décision est donc le <b>bon support de stockage</b>.</p>
+
+  <h3>Tableur ou base relationnelle ?</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Critère</th><th>Tableur (Excel, Google Sheets)</th><th>Base relationnelle (Airtable, Notion)</th></tr></thead>
+      <tbody>
+        <tr><td>Principe</td><td>Une grande grille de lignes et de colonnes</td><td>Plusieurs tables reliées entre elles</td></tr>
+        <tr><td>Idéal pour</td><td>Calculs, listes simples, petits volumes</td><td>Suivi de clients, projets, demandes liées</td></tr>
+        <tr><td>Types de champs</td><td>Libres (tout est du texte ou un nombre)</td><td>Typés : email, date, liste, lien vers une autre table</td></tr>
+        <tr><td>Doublons</td><td>Fréquents, la même personne est recopiée</td><td>Évités : une personne = une fiche, réutilisée</td></tr>
+        <tr><td>Prise en main</td><td class="ok">Très rapide</td><td>Un peu plus de réflexion au départ</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Règle pratique : commencez par un tableur si vous n'avez qu'une seule liste. Passez à une base relationnelle dès que la même information apparaît à plusieurs endroits (par exemple un client qui envoie plusieurs demandes).</p>
+
+  <figure>
+    <svg viewBox="0 0 640 250" role="img" aria-labelledby="rt rd">
+      <title id="rt">Relation entre une table Contacts et une table Demandes</title>
+      <desc id="rd">Un contact peut avoir plusieurs demandes. Chaque demande est liée à un seul contact grâce à son identifiant.</desc>
+      <rect x="30" y="30" width="250" height="180" rx="12" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="2"/>
+      <rect x="30" y="30" width="250" height="40" rx="12" fill="#CCFBF1"/>
+      <rect x="30" y="58" width="250" height="12" fill="#CCFBF1"/>
+      <text x="155" y="57" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="16" fill="#090D12">Table Contacts</text>
+      <g font-family="Inter, sans-serif" font-size="14" fill="#090D12">
+        <text x="50" y="100">🔑 id_contact</text>
+        <text x="50" y="128">nom</text>
+        <text x="50" y="156">email (unique)</text>
+        <text x="50" y="184">téléphone</text>
+      </g>
+      <rect x="360" y="30" width="250" height="180" rx="12" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="2"/>
+      <rect x="360" y="30" width="250" height="40" rx="12" fill="#CCFBF1"/>
+      <rect x="360" y="58" width="250" height="12" fill="#CCFBF1"/>
+      <text x="485" y="57" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="16" fill="#090D12">Table Demandes</text>
+      <g font-family="Inter, sans-serif" font-size="14" fill="#090D12">
+        <text x="380" y="100">🔑 id_demande</text>
+        <text x="380" y="128">🔗 id_contact</text>
+        <text x="380" y="156">sujet</text>
+        <text x="380" y="184">date_reception</text>
+      </g>
+      <line x1="280" y1="128" x2="360" y2="128" stroke="#0D9488" stroke-width="3"/>
+      <g font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#0B6F66">
+        <text x="288" y="118">1</text>
+        <text x="342" y="118">N</text>
+      </g>
+    </svg>
+    <figcaption>Un contact (1) peut avoir plusieurs demandes (N). Son nom et son email ne sont saisis qu'une seule fois.</figcaption>
+  </figure>
+
+  <h3>Les 4 bonnes pratiques de structure</h3>
+  <ul class="criteria">
+    <li><b>Un identifiant unique</b> — Chaque ligne a une clé : l'email pour un contact, un numéro pour une demande.</li>
+    <li><b>Une colonne = un type</b> — Une colonne « date » ne contient que des dates, jamais « bientôt » ou « lundi ».</li>
+    <li><b>Une information = une colonne</b> — Séparez <code>prenom</code> et <code>nom</code> au lieu d'un champ « nom complet ».</li>
+    <li><b>Des listes plutôt que du texte libre</b> — Un statut (Nouveau, En cours, Terminé) évite les variantes.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> Ajoutez dès le départ une colonne <code>statut</code> et une colonne <code>date_creation</code>. Elles serviront pour presque tous vos suivis et filtres automatiques.</p></div>
+</section>
+
+<section id="ingestion">
+  <h2><span class="n">2.</span>Ingestion automatique des données</h2>
+  <p>L'<b>ingestion</b> consiste à faire entrer les données dans votre tableau sans les recopier à la main. Le principe est celui de la Leçon 04 : une réponse au formulaire déclenche le scénario, mais l'action est désormais <b>« Ajouter une ligne »</b> dans votre tableau central de suivi. Cliquez sur chaque bloc pour voir le parcours complet.</p>
+
+  <figure>
+    <svg class="flow-svg" viewBox="0 0 700 300" role="group" aria-labelledby="ft fd">
+      <title id="ft">Flux de gestion des données</title>
+      <desc id="fd">Un formulaire envoie ses données au nettoyage, puis à une recherche de doublon. Si la personne existe, la ligne est mise à jour, sinon elle est créée dans le tableau central.</desc>
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0D9488"/></marker>
+      </defs>
+      <g stroke="#0D9488" stroke-width="2.5" fill="none" marker-end="url(#arr)">
+        <line x1="150" y1="90" x2="170" y2="90"/>
+        <line x1="320" y1="90" x2="340" y2="90"/>
+        <line x1="490" y1="70" x2="530" y2="50"/>
+        <line x1="490" y1="110" x2="530" y2="140"/>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#0B6F66">
+        <text x="498" y="46">Trouvé</text>
+        <text x="498" y="136">Absent</text>
+      </g>
+
+      <g role="button" tabindex="0" data-node="form" aria-pressed="true" aria-label="Formulaire">
+        <rect class="box" x="10" y="50" width="140" height="80" rx="12"/>
+        <text x="80" y="78" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="12" fill="#0D9488">1 · SOURCE</text>
+        <text x="80" y="100" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="15" fill="#090D12">Formulaire</text>
+        <text x="80" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#4B5563">Données brutes</text>
+      </g>
+      <g role="button" tabindex="0" data-node="clean" aria-pressed="false" aria-label="Nettoyage">
+        <rect class="box" x="172" y="50" width="148" height="80" rx="12"/>
+        <text x="246" y="78" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="12" fill="#0D9488">2 · NETTOYAGE</text>
+        <text x="246" y="100" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="15" fill="#090D12">Standardiser</text>
+        <text x="246" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#4B5563">Nom, tél., date</text>
+      </g>
+      <g role="button" tabindex="0" data-node="search" aria-pressed="false" aria-label="Recherche de doublon">
+        <rect class="box" x="342" y="50" width="148" height="80" rx="12"/>
+        <text x="416" y="78" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="12" fill="#0D9488">3 · RECHERCHE</text>
+        <text x="416" y="100" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="15" fill="#090D12">Existe déjà ?</text>
+        <text x="416" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#4B5563">Clé : email</text>
+      </g>
+      <g role="button" tabindex="0" data-node="update" aria-pressed="false" aria-label="Mettre à jour la ligne">
+        <rect class="box" x="532" y="10" width="160" height="70" rx="12"/>
+        <text x="612" y="36" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="12" fill="#0D9488">4a · ACTION</text>
+        <text x="612" y="58" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="15" fill="#090D12">Mettre à jour</text>
+      </g>
+      <g role="button" tabindex="0" data-node="create" aria-pressed="false" aria-label="Créer une nouvelle ligne">
+        <rect class="box" x="532" y="110" width="160" height="70" rx="12"/>
+        <text x="612" y="136" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="12" fill="#0D9488">4b · ACTION</text>
+        <text x="612" y="158" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="15" fill="#090D12">Créer la ligne</text>
+      </g>
+      <g role="img" aria-label="Tableau central de suivi">
+        <rect x="180" y="215" width="340" height="50" rx="12" fill="#090D12"/>
+        <text x="350" y="246" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="15" fill="#FFFFFF">Tableau central de suivi</text>
+      </g>
+      <g stroke="#0D9488" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#arr)">
+        <path d="M612 80 V200 H524"/>
+        <path d="M612 180 V200"/>
+      </g>
+      <text x="10" y="290" font-family="Inter, sans-serif" font-size="12" fill="#4B5563">Cliquez ou appuyez sur Entrée sur un bloc pour afficher son rôle.</text>
+    </svg>
+    <figcaption>Le chemin d'une réponse : source, nettoyage, recherche, puis mise à jour ou création.</figcaption>
+  </figure>
+  <div class="flow-detail" id="flow-detail" aria-live="polite"></div>
+
+  <h3>Faire correspondre les champs aux colonnes</h3>
+  <p>Chaque champ du formulaire (<code>data.nom</code>, <code>data.email</code>…) doit être associé à une colonne du tableau. Ce « mapping » se fait dans l'action « Ajouter une ligne » :</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Champ du formulaire</th><th>Colonne du tableau</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr><td><code>{{nom}}</code></td><td>Nom</td><td>Texte court</td></tr>
+        <tr><td><code>{{email}}</code></td><td>Email</td><td>Email (clé unique)</td></tr>
+        <tr><td><code>{{telephone}}</code></td><td>Téléphone</td><td>Texte (format international)</td></tr>
+        <tr><td><code>{{sujet}}</code></td><td>Sujet</td><td>Liste</td></tr>
+        <tr><td>Heure de réception</td><td>Date de création</td><td>Date</td></tr>
+        <tr><td>(valeur fixe « Nouveau »)</td><td>Statut</td><td>Liste</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="code">
+    <div class="code-head"><span>ligne-tableau.json — ce qui est écrit dans le tableau</span><button type="button" data-copy="code-row">Copier</button></div>
+<pre><code id="code-row">{
+  <span class="k">"Nom"</span>: <span class="v">{{nom}}</span>,
+  <span class="k">"Email"</span>: <span class="v">{{email}}</span>,
+  <span class="k">"Téléphone"</span>: <span class="v">{{telephone}}</span>,
+  <span class="k">"Sujet"</span>: <span class="v">{{sujet}}</span>,
+  <span class="k">"Statut"</span>: <span class="s">"Nouveau"</span>,
+  <span class="k">"Date de création"</span>: <span class="v">{{submitted_at}}</span>
+}</code></pre>
+  </div>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Lien avec la Leçon 04.</b> Le même déclencheur alimente maintenant trois choses : l'email d'accusé, la notification d'équipe et la ligne du tableau. Ajoutez simplement une nouvelle action au scénario existant.</p></div>
+</section>
+
+<section id="nettoyage">
+  <h2><span class="n">3.</span>Nettoyage et formatage automatiques</h2>
+  <p>Les personnes ne saisissent jamais les données de la même façon : « aïcha mballa », « AÏCHA MBALLA  », « 06 12.34 56 78 », « 5/10/26 ». Sans nettoyage, impossible de trier, de chercher ou de détecter un doublon. On standardise donc <b>à la volée</b>, avant d'écrire dans le tableau.</p>
+  <ul class="criteria">
+    <li><b>Noms</b> — Supprimer les espaces en trop, mettre une majuscule à chaque mot (fonctions <code>TRIM</code>, <code>PROPER</code>).</li>
+    <li><b>Emails</b> — Tout en minuscules, sans espace (<code>LOWER</code>, <code>TRIM</code>).</li>
+    <li><b>Téléphones</b> — Retirer espaces, points et tirets, puis ajouter l'indicatif international.</li>
+    <li><b>Dates</b> — Uniformiser vers un seul format, idéalement <code>AAAA-MM-JJ</code> (norme ISO).</li>
+  </ul>
+
+  <div class="code">
+    <div class="code-head"><span>formules.txt — nettoyage dans un tableur</span><button type="button" data-copy="code-formulas">Copier</button></div>
+<pre><code id="code-formulas"><span class="c">// Nom : espaces retirés, majuscule à chaque mot</span>
+=PROPER(TRIM(<span class="v">A2</span>))
+
+<span class="c">// Email : minuscules, sans espace</span>
+=LOWER(TRIM(<span class="v">B2</span>))
+
+<span class="c">// Téléphone : on retire espaces, points, tirets et parenthèses</span>
+=REGEXREPLACE(<span class="v">C2</span>; <span class="s">"[^0-9+]"</span>; <span class="s">""</span>)
+
+<span class="c">// Date saisie en texte : conversion en vraie date</span>
+=DATEVALUE(<span class="v">D2</span>)</code></pre>
+  </div>
+
+  <div class="tool" id="clean-tool">
+    <h3>Essayez : nettoyer une saisie</h3>
+    <p>Tapez des données « sales » et observez le résultat standardisé.</p>
+    <div class="fields">
+      <label>Nom<input type="text" id="c-nom" value="  aÏcha   MBALLA " autocomplete="off"></label>
+      <label>Email<input type="text" id="c-email" value=" Aicha@Exemple.COM " autocomplete="off"></label>
+      <label>Téléphone<input type="text" id="c-tel" value="06 12.34 56 78" autocomplete="off"></label>
+      <label>Date (JJ/MM/AAAA)<input type="text" id="c-date" value="5/10/2026" autocomplete="off"></label>
+      <label class="full">Indicatif par défaut
+        <select id="c-cc">
+          <option value="+33">+33 (France)</option>
+          <option value="+237">+237 (Cameroun)</option>
+          <option value="+32">+32 (Belgique)</option>
+          <option value="+221">+221 (Sénégal)</option>
+        </select>
+      </label>
+    </div>
+    <div class="result" aria-live="polite">
+      <div><span>Nom</span><strong id="r-nom"></strong></div>
+      <div><span>Email</span><strong id="r-email"></strong></div>
+      <div><span>Téléphone</span><strong id="r-tel"></strong></div>
+      <div><span>Date</span><strong id="r-date"></strong></div>
+    </div>
+  </div>
+
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> Ne nettoyez jamais « à l'aveugle ». Un numéro sans indicatif peut venir d'un autre pays, et « 03/04/2026 » peut être le 3 avril ou le 4 mars. Précisez le format attendu dans le formulaire (champ date, indicatif par défaut) plutôt que de deviner.</p></div>
+</section>
+
+<section id="upsert">
+  <h2><span class="n">4.</span>Recherche et mise à jour (upsert)</h2>
+  <p>Si la même personne remplit deux fois le formulaire, doit-on créer une deuxième ligne ? Non. On utilise le principe d'<b>upsert</b> (<i>update</i> + <i>insert</i>) : on <b>cherche d'abord</b>, puis on met à jour si la ligne existe, ou on la crée sinon.</p>
+
+  <div class="formula"><b>1.</b> Chercher la ligne avec la clé (email nettoyé) &nbsp;→&nbsp; <b>2.</b> Trouvée ? Mettre à jour &nbsp;|&nbsp; Absente ? Créer</div>
+
+  <div class="code">
+    <div class="code-head"><span>upsert.txt — logique à configurer dans la plateforme</span><button type="button" data-copy="code-upsert">Copier</button></div>
+<pre><code id="code-upsert"><span class="c">// Étape 1 : recherche dans le tableau</span>
+<span class="k">Rechercher une ligne</span>
+  colonne = <span class="s">"Email"</span>
+  valeur  = <span class="v">{{email_nettoye}}</span>
+
+<span class="c">// Étape 2 : routeur selon le résultat</span>
+<span class="b">SI</span> une ligne est trouvée
+  <span class="k">Mettre à jour la ligne</span> {{id_ligne}}
+    Téléphone = <span class="v">{{telephone}}</span>
+    Dernière demande = <span class="v">{{submitted_at}}</span>
+<span class="b">SINON</span>
+  <span class="k">Créer une ligne</span>
+    Nom, Email, Téléphone, Statut = <span class="s">"Nouveau"</span></code></pre>
+  </div>
+
+  <div class="tool" id="upsert-tool">
+    <h3>Simulateur d'upsert</h3>
+    <p>Le tableau contient déjà deux contacts. Envoyez une nouvelle saisie : un email connu met à jour la ligne, un email inconnu en crée une.</p>
+    <div class="table-wrap" style="background:var(--color-bg)">
+      <table>
+        <thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th></tr></thead>
+        <tbody id="u-body"></tbody>
+      </table>
+    </div>
+    <div class="fields">
+      <label>Nom<input type="text" id="u-nom" value="Aïcha Mballa" autocomplete="off"></label>
+      <label>Email<input type="text" id="u-email" value="AICHA@exemple.com" autocomplete="off"></label>
+      <label class="full">Téléphone<input type="text" id="u-tel" value="+33 7 11 22 33 44" autocomplete="off"></label>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn" id="u-send">Envoyer la saisie</button>
+      <button type="button" class="btn ghost" id="u-reset">Réinitialiser</button>
+    </div>
+    <div class="log" id="u-log" aria-live="polite">Aucune saisie envoyée pour l'instant.</div>
+  </div>
+
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> La recherche ne fonctionne que si la clé est <b>nettoyée</b> : sans passage en minuscules, « Aicha@Exemple.com » et « aicha@exemple.com » seraient vus comme deux personnes. Le nettoyage (partie 3) vient toujours avant la recherche.</p></div>
+</section>
+
+<section id="rgpd">
+  <h2><span class="n">5.</span>Sauvegardes et protection des données (RGPD)</h2>
+  <p>Dès que votre tableau contient des noms, des emails ou des téléphones, ce sont des <b>données personnelles</b>. En Europe, le RGPD impose des règles simples à respecter, et la plupart de ces bonnes pratiques valent partout. Cochez celles que vous appliquez déjà.</p>
+
+  <div class="score"><span id="score-txt">0 / 6</span><div class="bar" aria-hidden="true"><i id="score-bar"></i></div></div>
+  <ul class="check" id="checklist">
+    <li><label><input type="checkbox"><span><b>Minimisation</b> — Je ne collecte que les champs réellement utiles (pas de date de naissance « au cas où »).</span></label></li>
+    <li><label><input type="checkbox"><span><b>Consentement</b> — Le formulaire explique l'usage des données et contient une case à cocher claire.</span></label></li>
+    <li><label><input type="checkbox"><span><b>Accès restreint</b> — Seules les personnes concernées ont accès au tableau, avec des droits adaptés (lecture ou édition).</span></label></li>
+    <li><label><input type="checkbox"><span><b>Durée de conservation</b> — J'ai fixé un délai (par exemple 24 mois) après lequel les lignes sont archivées ou supprimées.</span></label></li>
+    <li><label><input type="checkbox"><span><b>Sauvegarde</b> — Une copie régulière du tableau existe dans un autre emplacement sécurisé.</span></label></li>
+    <li><label><input type="checkbox"><span><b>Droits des personnes</b> — Je sais retrouver, corriger ou supprimer les données d'une personne qui me le demande.</span></label></li>
+  </ul>
+
+  <h3>Quelques points à retenir</h3>
+  <div class="cards" id="cards">
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Sauvegarde et archivage</span><span class="sub">Ne jamais dépendre d'une seule copie</span></span>
+        <span><span class="tag yes">Essentiel</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p><b>Bonne pratique :</b> programmez une copie automatique (hebdomadaire ou mensuelle) dans un dossier distinct, et conservez au moins deux copies sur deux supports différents.</p>
+        <p><b>Archivage :</b> déplacez les anciennes lignes vers un onglet ou une table « Archives » plutôt que de les laisser alourdir le tableau actif.</p>
+      </div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Accès et partage</span><span class="sub">Le moins de monde possible, avec le moins de droits possible</span></span>
+        <span><span class="tag yes">Essentiel</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p><b>Bonne pratique :</b> partagez nommément, jamais par « lien public ». Retirez l'accès dès qu'une personne change de rôle.</p>
+        <p><b>Automatisations :</b> créez un compte de service dédié plutôt que d'utiliser votre mot de passe personnel dans la plateforme.</p>
+      </div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Minimisation et durée</span><span class="sub">Garder uniquement ce qui sert, le temps nécessaire</span></span>
+        <span><span class="tag mid">Bonne pratique</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p><b>Bonne pratique :</b> avant d'ajouter une colonne, demandez-vous à quoi elle servira. Prévoyez une automatisation mensuelle qui supprime ou anonymise les lignes devenues inutiles.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> N'envoyez jamais de données personnelles dans un outil ou une IA dont vous ne connaissez pas la politique de confidentialité. Vérifiez où sont hébergées les données et ce que le fournisseur en fait. En cas de doute, consultez la personne responsable des données dans votre organisation.</p></div>
+
+  <div class="recap">
+    <h2>À retenir</h2>
+    <ul>
+      <li>Un tableur suffit pour une liste simple, une base relationnelle évite les doublons dès que les informations sont liées.</li>
+      <li>Une réponse de formulaire alimente automatiquement un tableau central grâce au mapping champ → colonne.</li>
+      <li>Nettoyez les noms, emails, téléphones et dates avant d'écrire.</li>
+      <li>Cherchez avant d'écrire : mettre à jour si la ligne existe, créer sinon (upsert).</li>
+      <li>Collectez le minimum, restreignez les accès, sauvegardez et fixez une durée de conservation.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Navigation entre leçons">
+  <a href="lecon-04.html"><small>Leçon précédente</small>Leçon 04 — Automatiser les formulaires, les emails et les notifications</a>
+  <a class="next" href="lecon-06.html"><small>Leçon suivante (Module 2)</small>Leçon 06 — Utiliser l'IA pour rédiger, résumer et trier automatiquement</a>
+</nav>
+
+</main>
+
+<script>
+/* Flux SVG interactif */
+(function(){
+  var info={
+    form:{t:'1 · La source : le formulaire',p:['Chaque réponse arrive sous forme de données brutes, avec des fautes, des majuscules et des formats variables.','C\u2019est le déclencheur vu dans la Leçon 04.']},
+    clean:{t:'2 · Le nettoyage',p:['On standardise avant d\u2019écrire : nom avec majuscules, email en minuscules, téléphone en format international, date au format AAAA-MM-JJ.','Des données propres rendent les recherches et les tris fiables.']},
+    search:{t:'3 · La recherche de doublon',p:['On cherche dans le tableau une ligne qui a la même clé (ici l\u2019email nettoyé).','Le résultat décide du chemin : trouvé ou absent.']},
+    update:{t:'4a · Mettre à jour la ligne',p:['La personne existe déjà : on complète ou on corrige sa ligne (nouveau téléphone, date de dernière demande) sans créer de doublon.']},
+    create:{t:'4b · Créer la ligne',p:['La personne est nouvelle : on ajoute une ligne avec le statut « Nouveau » et la date de création.']}
+  };
+  var nodes=document.querySelectorAll('.flow-svg g[role="button"]');
+  var box=document.getElementById('flow-detail');
+  function show(key){
+    nodes.forEach(function(n){n.setAttribute('aria-pressed',String(n.getAttribute('data-node')===key))});
+    box.innerHTML='';
+    var h=document.createElement('h3');h.textContent=info[key].t;box.appendChild(h);
+    info[key].p.forEach(function(x){var p=document.createElement('p');p.textContent=x;box.appendChild(p)});
+  }
+  nodes.forEach(function(n){
+    n.addEventListener('click',function(){show(n.getAttribute('data-node'))});
+    n.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();show(n.getAttribute('data-node'))}
+    });
+  });
+  show('form');
+})();
+
+/* Copier le code */
+document.querySelectorAll('button[data-copy]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.getAttribute('data-copy'));
+    var txt=el.textContent;
+    function ok(){btn.textContent='Copié ✓';setTimeout(function(){btn.textContent='Copier'},1800)}
+    function fallback(){
+      var r=document.createRange();r.selectNodeContents(el);
+      var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+      try{document.execCommand('copy');ok()}catch(e){}
+      s.removeAllRanges();
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(ok,fallback);
+    }else{fallback()}
+  });
+});
+
+/* Fonctions de nettoyage */
+function cleanName(s){
+  s=String(s).replace(/\s+/g,' ').trim().toLowerCase();
+  return s.replace(/(^|[\s'\u2019-])([a-zà-öø-ÿ])/g,function(m,a,b){return a+b.toUpperCase()});
+}
+function cleanEmail(s){return String(s).replace(/\s+/g,'').toLowerCase()}
+function cleanPhone(s,cc){
+  var t=String(s).replace(/[^0-9+]/g,'');
+  if(!t)return '';
+  if(t.indexOf('00')===0)t='+'+t.slice(2);
+  if(t.charAt(0)==='+')return t;
+  if(t.charAt(0)==='0')t=t.slice(1);
+  return cc+t;
+}
+function cleanDate(s){
+  var m=String(s).trim().match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/);
+  var y,mo,d;
+  if(m){d=+m[1];mo=+m[2];y=+m[3]}
+  else{
+    var iso=String(s).trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if(!iso)return 'Format non reconnu';
+    y=+iso[1];mo=+iso[2];d=+iso[3];
+  }
+  var dt=new Date(y,mo-1,d);
+  if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return 'Date invalide';
+  return y+'-'+(mo<10?'0':'')+mo+'-'+(d<10?'0':'')+d;
+}
+
+/* Outil de nettoyage */
+(function(){
+  var ids=['c-nom','c-email','c-tel','c-date','c-cc'];
+  var el={};ids.forEach(function(i){el[i]=document.getElementById(i)});
+  function render(){
+    document.getElementById('r-nom').textContent=cleanName(el['c-nom'].value)||'—';
+    document.getElementById('r-email').textContent=cleanEmail(el['c-email'].value)||'—';
+    document.getElementById('r-tel').textContent=cleanPhone(el['c-tel'].value,el['c-cc'].value)||'—';
+    document.getElementById('r-date').textContent=cleanDate(el['c-date'].value);
+  }
+  ids.forEach(function(i){el[i].addEventListener('input',render);el[i].addEventListener('change',render)});
+  render();
+})();
+
+/* Simulateur d'upsert */
+(function(){
+  var initial=[
+    {nom:'Aïcha Mballa',email:'aicha@exemple.com',tel:'+33612345678'},
+    {nom:'Paul Ndzana',email:'paul@exemple.com',tel:'+237699001122'}
+  ];
+  var rows=JSON.parse(JSON.stringify(initial));
+  var body=document.getElementById('u-body'),log=document.getElementById('u-log');
+  var changed=-1;
+  function draw(){
+    body.innerHTML='';
+    rows.forEach(function(r,i){
+      var tr=document.createElement('tr');
+      if(i===changed)tr.className='hl';
+      [r.nom,r.email,r.tel].forEach(function(v){var td=document.createElement('td');td.textContent=v;tr.appendChild(td)});
+      body.appendChild(tr);
+    });
+  }
+  document.getElementById('u-send').addEventListener('click',function(){
+    var nom=cleanName(document.getElementById('u-nom').value);
+    var email=cleanEmail(document.getElementById('u-email').value);
+    var tel=cleanPhone(document.getElementById('u-tel').value,'+33');
+    if(!email||email.indexOf('@')<1){
+      log.className='log';log.textContent='Email manquant ou invalide : le scénario s\u2019arrête avant l\u2019écriture.';return;
+    }
+    var idx=-1;rows.forEach(function(r,i){if(r.email===email)idx=i});
+    if(idx>=0){
+      rows[idx].nom=nom||rows[idx].nom;rows[idx].tel=tel||rows[idx].tel;changed=idx;
+      log.className='log upd';
+      log.textContent='Recherche : ligne trouvée pour '+email+' → mise à jour (aucun doublon créé).';
+    }else{
+      rows.push({nom:nom,email:email,tel:tel});changed=rows.length-1;
+      log.className='log new';
+      log.textContent='Recherche : aucune ligne pour '+email+' → nouvelle ligne créée.';
+    }
+    draw();
+  });
+  document.getElementById('u-reset').addEventListener('click',function(){
+    rows=JSON.parse(JSON.stringify(initial));changed=-1;
+    log.className='log';log.textContent='Tableau réinitialisé.';draw();
+  });
+  draw();
+})();
+
+/* Checklist RGPD */
+(function(){
+  var boxes=document.querySelectorAll('#checklist input');
+  var txt=document.getElementById('score-txt'),bar=document.getElementById('score-bar');
+  function upd(){
+    var n=0;boxes.forEach(function(b){if(b.checked)n++});
+    txt.textContent=n+' / '+boxes.length;
+    bar.style.width=(n/boxes.length*100)+'%';
+  }
+  boxes.forEach(function(b){b.addEventListener('change',upd)});
+  upd();
+})();
+
+/* Cartes accordéon */
+document.querySelectorAll('#cards .card').forEach(function(card){
+  var btn=card.querySelector('button');
+  btn.addEventListener('click',function(){
+    var open=card.getAttribute('data-open')==='true';
+    card.setAttribute('data-open',String(!open));
+    btn.setAttribute('aria-expanded',String(!open));
+  });
+});
+</script>
+</body>
+</html>

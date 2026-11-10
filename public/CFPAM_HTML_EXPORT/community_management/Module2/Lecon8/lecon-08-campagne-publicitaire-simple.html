@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 08 — Lancer une campagne publicitaire simple sur les réseaux sociaux.">
+<title>Leçon 08 — Lancer une campagne publicitaire simple | Community Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F7F9FC;--color-text:#0A0A0F;
+  --color-text-muted:#5B6472;--color-accent:#2E5AAC;--color-accent-soft:#EAF0FB;
+  --color-border:#E5E8EE;--shadow:0 12px 35px rgba(10,10,15,.07);
+  --radius:16px;--reading:760px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:var(--color-border);z-index:1000}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent);transition:width .1s linear}
+.site-header{position:sticky;top:4px;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--color-border)}
+.header-inner{max-width:1120px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk",sans-serif;font-weight:700;color:var(--color-text);font-size:.95rem}
+.header-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{border:1px solid var(--color-border);background:#fff;color:var(--color-text);width:40px;height:40px;border-radius:10px;cursor:pointer}
+.icon-btn:hover{border-color:var(--color-accent);color:var(--color-accent)}
+main{overflow:hidden}
+.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.hero-inner{max-width:1120px;margin:auto;padding:78px 24px 64px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.badge{display:inline-flex;align-items:center;padding:7px 11px;border:1px solid var(--color-border);border-radius:999px;background:#fff;color:var(--color-text-muted);font-size:.78rem;font-weight:600}
+.badge.accent{background:var(--color-accent-soft);color:var(--color-accent);border-color:#D8E2F7}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;line-height:1.15;letter-spacing:-.025em}
+h1{font-size:clamp(2.25rem,5vw,4.5rem);max-width:900px;margin:0 0 18px}
+.hero-subtitle{font-size:1.12rem;color:var(--color-text-muted);max-width:720px;margin:0}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:28px;color:var(--color-text-muted);font-size:.92rem}
+.hero-meta strong{color:var(--color-text)}
+.container{max-width:1120px;margin:auto;padding:0 24px}
+.toc{margin:-28px auto 54px;position:relative;max-width:900px}
+.toc-card{background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+.toc-title{font-family:"Space Grotesk";font-weight:700;margin:0 0 12px}
+.toc ol{margin:0;padding-left:22px;columns:2;column-gap:50px}
+.toc li{margin:7px 0;break-inside:avoid}
+.lesson{max-width:var(--reading);margin:0 auto;padding-bottom:50px}
+.section{padding:36px 0;scroll-margin-top:90px}
+.section+.section{border-top:1px solid var(--color-border)}
+h2{font-size:clamp(1.65rem,3vw,2.35rem);margin:0 0 18px}
+h3{font-size:1.2rem;margin:28px 0 10px}
+p{margin:0 0 16px}
+.lead{font-size:1.08rem;color:#252B35}
+.callout{margin:24px 0;padding:18px 20px;border:1px solid var(--color-border);border-left:4px solid var(--color-accent);border-radius:12px;background:var(--color-accent-soft)}
+.callout strong{display:block;margin-bottom:4px}
+.warning{background:#fff;border-left-color:var(--color-accent)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
+.card{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:#fff;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#CBD6EB}
+.card-icon{font-size:1.5rem;margin-bottom:10px}
+.card h3{margin:0 0 7px;font-size:1.05rem}
+.card p{font-size:.92rem;color:var(--color-text-muted);margin:0}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:30px 0}
+.step{position:relative;padding:18px 12px;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:12px;text-align:center}
+.step:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);z-index:2;color:var(--color-accent);font-weight:700}
+.step-number{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--color-accent);color:#fff;font-size:.78rem;font-weight:700;margin:0 auto 9px}
+.step strong{font-size:.88rem;display:block}
+.step span{font-size:.76rem;color:var(--color-text-muted)}
+.diagram{margin:28px 0;border:1px solid var(--color-border);border-radius:16px;background:#fff;padding:18px;overflow:auto}
+.diagram svg{display:block;width:100%;min-width:700px;height:auto}
+.tabs{margin:25px 0}
+.tab-buttons{display:flex;gap:8px;border-bottom:1px solid var(--color-border);margin-bottom:0}
+.tab-btn{border:0;background:transparent;padding:12px 15px;cursor:pointer;color:var(--color-text-muted);font-weight:600;border-bottom:2px solid transparent}
+.tab-btn[aria-selected="true"]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+.tab-panel{padding:22px;border:1px solid var(--color-border);border-top:0;border-radius:0 0 12px 12px}
+.hidden{display:none!important}
+.accordion{border-top:1px solid var(--color-border);margin:24px 0}
+details{border-bottom:1px solid var(--color-border);padding:0}
+summary{cursor:pointer;list-style:none;padding:18px 0;font-weight:700}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";float:right;color:var(--color-accent);font-size:1.25rem}
+details[open] summary::after{content:"−"}
+details p{color:var(--color-text-muted);padding:0 0 16px;margin:0}
+.example{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:14px;padding:22px;margin:24px 0}
+.example-label{font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:var(--color-accent);font-weight:700;margin-bottom:8px}
+.table-wrap{overflow-x:auto;margin:22px 0}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--color-border);vertical-align:top}
+th{font-size:.85rem;background:var(--color-bg-alt)}
+td{font-size:.92rem}
+.key-points{background:var(--color-text);color:#fff;border-radius:18px;padding:30px;margin:35px 0}
+.key-points h2{margin-top:0}
+.key-points ul{margin:0;padding-left:22px}
+.key-points li{margin:9px 0}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:35px 0 60px;border-top:1px solid var(--color-border)}
+.nav-card{border:1px solid var(--color-border);border-radius:14px;padding:20px;background:#fff;transition:.2s}
+.nav-card:hover{border-color:#C8D4EC;box-shadow:var(--shadow)}
+.nav-card.next{text-align:right}
+.nav-label{font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-muted);font-weight:700}
+.nav-title{display:block;font-family:"Space Grotesk";font-weight:700;margin-top:5px;color:var(--color-text)}
+footer{border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.footer-inner{max-width:1120px;margin:auto;padding:25px 24px;display:flex;justify-content:space-between;gap:15px;color:var(--color-text-muted);font-size:.82rem}
+.back-top{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);box-shadow:var(--shadow);cursor:pointer;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:40}
+.back-top.show{opacity:1;transform:none;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid #9FB5E0;outline-offset:3px}
+body.dark{--color-bg:#0B0D12;--color-bg-alt:#121620;--color-text:#F4F6FA;--color-text-muted:#AAB3C2;--color-border:#29303D}
+body.dark .site-header{background:rgba(11,13,18,.94)}
+body.dark .icon-btn,body.dark .badge,body.dark .toc-card,body.dark .card,body.dark .diagram,body.dark .nav-card,body.dark .back-top,.dark .example{background:#10141C}
+body.dark .card:hover,body.dark .nav-card:hover{border-color:#46536A}
+body.dark .tab-panel{background:#10141C}
+body.dark .callout{background:#111B2D}
+body.dark .key-points{background:#000;color:#fff}
+@media(max-width:800px){
+  .hero-inner{padding:55px 20px 48px}
+  .container{padding:0 20px}
+  .toc{margin:20px auto 35px}
+  .toc ol{columns:1}
+  .cards{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr}
+  .step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-17px;transform:translateX(-50%)}
+  .step{padding:15px}
+  .footer-inner{flex-direction:column}
+}
+@media(max-width:520px){
+  .header-inner{padding:11px 16px}
+  .brand{font-size:.82rem}
+  h1{font-size:2.2rem}
+  .hero-meta{gap:10px;flex-direction:column}
+  .nav{grid-template-columns:1fr}
+  .nav-card.next{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#top">Community Management & réseaux sociaux</a>
+    <div class="header-actions">
+      <a class="icon-btn" href="#sommaire" aria-label="Ouvrir le sommaire" title="Sommaire">☰</a>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Activer le mode sombre" title="Mode sombre">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">
+      <span class="badge accent">Module 2</span>
+      <span class="badge">Débutant</span>
+      <span class="badge">15 min</span>
+    </div>
+    <h1>Leçon 08 — Lancer une campagne publicitaire simple sur les réseaux sociaux</h1>
+    <p class="hero-subtitle">Comprendre les bases de la publicité sur les réseaux sociaux et préparer une campagne simple.</p>
+    <div class="hero-meta">
+      <span><strong>Filière :</strong> Community Management et gestion des réseaux sociaux</span>
+      <span><strong>Module :</strong> Animer, promouvoir et piloter ses réseaux sociaux</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <aside class="toc reveal" id="sommaire" aria-label="Sommaire">
+    <div class="toc-card">
+      <p class="toc-title">Sommaire de la leçon</p>
+      <ol>
+        <li><a href="#pourquoi">Pourquoi faire de la publicité ?</a></li>
+        <li><a href="#objectif">Définir l’objectif publicitaire</a></li>
+        <li><a href="#ciblage">Cibler son audience</a></li>
+        <li><a href="#budget">Budget et format créatif</a></li>
+        <li><a href="#sponsorise">Publication ou page sponsorisée</a></li>
+        <li><a href="#suivi">Suivre les résultats et ajuster</a></li>
+        <li><a href="#exemple">Exemple de campagne simple</a></li>
+        <li><a href="#points-cles">Points clés à retenir</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <article class="lesson">
+    <section class="section reveal" id="pourquoi">
+      <h2>1. Pourquoi faire de la publicité sur les réseaux sociaux ?</h2>
+      <p class="lead">Une présence organique permet de publier gratuitement, mais la portée d’une publication dépend notamment de l’algorithme et des interactions de la communauté. La publicité permet de payer pour diffuser un contenu auprès d’une audience choisie.</p>
+      <p>Le community manager doit donc comprendre la différence entre <strong>organique</strong> et <strong>payant</strong>. L’organique construit progressivement la visibilité et la relation avec la communauté. Le payant sert à donner davantage de portée à un objectif précis : faire connaître une offre, générer des visites, obtenir des contacts ou soutenir une publication importante.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">◎</div>
+          <h3>Organique</h3>
+          <p>Visibilité obtenue sans achat média, grâce aux publications, aux interactions et au travail régulier de la communauté.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">↗</div>
+          <h3>Payant</h3>
+          <p>Diffusion financée pour atteindre une audience définie et soutenir un objectif publicitaire.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">＋</div>
+          <h3>Complémentarité</h3>
+          <p>La publicité ne remplace pas une présence régulière : elle vient renforcer une stratégie existante.</p>
+        </div>
+      </div>
+      <div class="callout"><strong>💡 À retenir</strong>Une campagne publicitaire efficace commence par une intention claire. Payer pour toucher davantage de personnes ne suffit pas si l’objectif et l’audience ne sont pas définis.</div>
+    </section>
+
+    <section class="section reveal" id="objectif">
+      <h2>2. Définir l’objectif publicitaire</h2>
+      <p>Avant de choisir un budget ou un visuel, il faut déterminer <strong>ce que la campagne doit obtenir</strong>. L’objectif influence le ciblage, le message, le format et la manière de mesurer les résultats.</p>
+      <div class="cards">
+        <div class="card"><div class="card-icon">◉</div><h3>Notoriété</h3><p>Faire connaître une activité, une marque, un produit ou une offre auprès d’un public.</p></div>
+        <div class="card"><div class="card-icon">⌁</div><h3>Trafic</h3><p>Encourager les personnes à consulter une page, un profil, un site ou une ressource.</p></div>
+        <div class="card"><div class="card-icon">✓</div><h3>Action</h3><p>Favoriser une action mesurable : prise de contact, demande d’information ou achat.</p></div>
+      </div>
+      <p>Pour une petite activité, un objectif simple et mesurable est généralement plus facile à piloter qu’une campagne qui cherche à tout obtenir en même temps.</p>
+    </section>
+
+    <section class="section reveal" id="ciblage">
+      <h2>3. Cibler son audience</h2>
+      <p>Le ciblage consiste à définir les personnes auxquelles la publicité doit être présentée. Il peut s’appuyer sur des critères comme la zone géographique, l’âge, les centres d’intérêt ou certains comportements disponibles dans la plateforme publicitaire.</p>
+      <div class="callout warning"><strong>⚠️ Erreur fréquente</strong>Lancer une campagne sans objectif ni audience définie. Une audience trop large peut disperser le budget, tandis qu’une audience trop étroite peut limiter fortement la diffusion.</div>
+      <h3>Un ciblage cohérent répond à trois questions</h3>
+      <div class="stepper">
+        <div class="step"><div class="step-number">1</div><strong>Qui ?</strong><span>Profil recherché</span></div>
+        <div class="step"><div class="step-number">2</div><strong>Où ?</strong><span>Zone géographique</span></div>
+        <div class="step"><div class="step-number">3</div><strong>Pourquoi ?</strong><span>Besoin ou intérêt</span></div>
+      </div>
+      <p>Le ciblage doit rester cohérent avec l’offre. Par exemple, une activité locale n’a pas forcément intérêt à diffuser son annonce à une audience nationale si son service est disponible uniquement dans une ville ou une zone précise.</p>
+    </section>
+
+    <section class="section reveal" id="budget">
+      <h2>4. Budget et format créatif</h2>
+      <p>Le budget correspond à la somme que l’annonceur accepte de consacrer à la diffusion. Pour une campagne simple, il est préférable de commencer avec un montant maîtrisé, puis d’observer les résultats avant d’augmenter l’investissement.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Élément</th><th>Question à se poser</th><th>Principe</th></tr></thead>
+          <tbody>
+            <tr><td>Budget</td><td>Combien puis-je investir ?</td><td>Définir une limite claire et compatible avec l’objectif.</td></tr>
+            <tr><td>Durée</td><td>Combien de temps diffuser ?</td><td>Prévoir une période suffisamment longue pour observer les premiers résultats.</td></tr>
+            <tr><td>Créatif</td><td>Que va voir l’audience ?</td><td>Utiliser un visuel et un message simples, lisibles et cohérents.</td></tr>
+            <tr><td>Appel à l’action</td><td>Que doit faire la personne ?</td><td>Indiquer clairement l’action attendue.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Le créatif regroupe notamment le texte, l’image ou la vidéo utilisée dans l’annonce. Dans cette leçon, l’essentiel est de retenir qu’un bon créatif doit présenter rapidement <strong>l’offre, son intérêt et l’action attendue</strong>.</p>
+    </section>
+
+    <section class="section reveal" id="sponsorise">
+      <h2>5. Publication sponsorisée ou page sponsorisée ?</h2>
+      <p>Une campagne peut mettre en avant une publication existante ou chercher à promouvoir plus largement la présence d’une page. Ces deux approches ne répondent pas exactement au même besoin.</p>
+      <div class="tabs" role="tablist" aria-label="Comparer les formes de promotion">
+        <div class="tab-buttons">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-publication" id="btn-publication">Publication sponsorisée</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-page" id="btn-page">Page sponsorisée</button>
+        </div>
+        <div class="tab-panel" role="tabpanel" id="tab-publication" aria-labelledby="btn-publication">
+          <h3>Mettre en avant un contenu précis</h3>
+          <p>La publication sponsorisée consiste à donner davantage de visibilité à un contenu précis. Elle convient lorsque le message ou l’offre est déjà formulé dans une publication et que l’objectif est d’augmenter sa diffusion auprès d’une audience définie.</p>
+        </div>
+        <div class="tab-panel hidden" role="tabpanel" id="tab-page" aria-labelledby="btn-page">
+          <h3>Promouvoir la présence de la page</h3>
+          <p>La promotion d’une page vise davantage la visibilité de la présence elle-même. Elle peut être pertinente lorsqu’une activité cherche à faire découvrir son univers, ses contenus et son identité à de nouvelles personnes.</p>
+        </div>
+      </div>
+      <div class="callout"><strong>💡 À retenir</strong>Le choix du format doit découler de l’objectif. On ne choisit pas d’abord un bouton ou un format pour chercher ensuite une raison de l’utiliser.</div>
+    </section>
+
+    <section class="section reveal" id="suivi">
+      <h2>6. Suivre les résultats et ajuster</h2>
+      <p>Une campagne ne se pilote pas uniquement au moment de son lancement. Il faut observer les indicateurs disponibles afin de comprendre si la diffusion contribue réellement à l’objectif fixé.</p>
+      <div class="diagram" role="img" aria-label="Cycle simplifié de pilotage d'une campagne : objectif, diffusion, observation, ajustement.">
+        <svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="#2E5AAC"/>
+            </marker>
+          </defs>
+          <rect x="25" y="65" width="180" height="80" rx="14" fill="#F7F9FC" stroke="#E5E8EE"/>
+          <rect x="250" y="65" width="180" height="80" rx="14" fill="#F7F9FC" stroke="#E5E8EE"/>
+          <rect x="475" y="65" width="180" height="80" rx="14" fill="#EAF0FB" stroke="#2E5AAC"/>
+          <rect x="700" y="65" width="175" height="80" rx="14" fill="#F7F9FC" stroke="#E5E8EE"/>
+          <line x1="205" y1="105" x2="245" y2="105" stroke="#2E5AAC" stroke-width="3" marker-end="url(#arrow)"/>
+          <line x1="430" y1="105" x2="470" y2="105" stroke="#2E5AAC" stroke-width="3" marker-end="url(#arrow)"/>
+          <line x1="655" y1="105" x2="695" y2="105" stroke="#2E5AAC" stroke-width="3" marker-end="url(#arrow)"/>
+          <text x="115" y="98" text-anchor="middle" font-family="Inter" font-size="18" font-weight="700" fill="#0A0A0F">Objectif</text>
+          <text x="115" y="122" text-anchor="middle" font-family="Inter" font-size="13" fill="#5B6472">Ce que l’on veut obtenir</text>
+          <text x="340" y="98" text-anchor="middle" font-family="Inter" font-size="18" font-weight="700" fill="#0A0A0F">Diffusion</text>
+          <text x="340" y="122" text-anchor="middle" font-family="Inter" font-size="13" fill="#5B6472">Audience + budget</text>
+          <text x="565" y="98" text-anchor="middle" font-family="Inter" font-size="18" font-weight="700" fill="#0A0A0F">Observation</text>
+          <text x="565" y="122" text-anchor="middle" font-family="Inter" font-size="13" fill="#5B6472">Résultats</text>
+          <text x="787" y="98" text-anchor="middle" font-family="Inter" font-size="18" font-weight="700" fill="#0A0A0F">Ajustement</text>
+          <text x="787" y="122" text-anchor="middle" font-family="Inter" font-size="13" fill="#5B6472">Améliorer</text>
+        </svg>
+      </div>
+      <p>Selon l’objectif, on peut notamment regarder la portée, les impressions, les interactions, les clics ou les actions obtenues. L’important est de relier chaque indicateur à la question que la campagne cherche à résoudre.</p>
+      <div class="accordion">
+        <details>
+          <summary>Pourquoi ne faut-il pas modifier une campagne trop vite ?</summary>
+          <p>Une campagne a besoin d’un minimum de diffusion pour produire des données utiles. Modifier constamment le ciblage, le budget ou le contenu rend plus difficile l’interprétation des résultats.</p>
+        </details>
+        <details>
+          <summary>Que faire si les résultats sont faibles ?</summary>
+          <p>Il faut revenir à l’objectif et examiner les principaux éléments : audience, message, créatif, budget et appel à l’action. L’ajustement doit être raisonné plutôt que réalisé au hasard.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="section reveal" id="exemple">
+      <h2>7. Exemple de campagne simple pour une petite activité</h2>
+      <p>Imaginons une petite activité locale qui propose un service et souhaite recevoir davantage de demandes de contact.</p>
+      <div class="example">
+        <div class="example-label">Exemple pédagogique</div>
+        <h3>Une campagne en 5 décisions</h3>
+        <div class="stepper">
+          <div class="step"><div class="step-number">1</div><strong>Objectif</strong><span>Obtenir des contacts</span></div>
+          <div class="step"><div class="step-number">2</div><strong>Audience</strong><span>Personnes de la zone ciblée</span></div>
+          <div class="step"><div class="step-number">3</div><strong>Budget</strong><span>Montant maîtrisé</span></div>
+          <div class="step"><div class="step-number">4</div><strong>Créatif</strong><span>Offre + bénéfice + action</span></div>
+          <div class="step"><div class="step-number">5</div><strong>Suivi</strong><span>Observer les contacts obtenus</span></div>
+        </div>
+        <p>La logique est volontairement simple : l’activité choisit un objectif unique, définit les personnes à atteindre, fixe une limite de budget, prépare un message clair puis observe les résultats pour décider des éventuels ajustements.</p>
+      </div>
+      <p>Cette méthode permet d’éviter une erreur fréquente : commencer directement par la création de l’annonce sans avoir défini ce que l’on cherche à obtenir.</p>
+    </section>
+
+    <section class="section reveal" id="points-cles">
+      <div class="key-points">
+        <h2>Points clés à retenir</h2>
+        <ul>
+          <li>La publicité payante complète la présence organique ; elle ne la remplace pas.</li>
+          <li>Une campagne commence par un <strong>objectif publicitaire clair</strong>.</li>
+          <li>Le ciblage doit correspondre au public réellement concerné par l’offre.</li>
+          <li>Le budget et la durée doivent rester cohérents avec les moyens disponibles.</li>
+          <li>Le créatif doit présenter clairement l’offre, son intérêt et l’action attendue.</li>
+          <li>Une publication sponsorisée et une promotion de page répondent à des intentions différentes.</li>
+          <li>Les résultats doivent être observés avant de décider des ajustements.</li>
+          <li>La meilleure campagne n’est pas celle qui dépense le plus, mais celle qui relie correctement <strong>objectif → audience → budget → créatif → suivi</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <nav class="nav" aria-label="Navigation entre les leçons">
+      <a class="nav-card" href="lecon-07-gerer-crise-commentaire-negatif.html">
+        <span class="nav-label">← Leçon précédente</span>
+        <span class="nav-title">Leçon 07 — Gérer une situation de crise ou un commentaire négatif</span>
+      </a>
+      <a class="nav-card next" href="lecon-09-suivre-analyser-performances.html">
+        <span class="nav-label">Leçon suivante →</span>
+        <span class="nav-title">Leçon 09 — Suivre et analyser les performances des réseaux sociaux</span>
+      </a>
+    </nav>
+  </article>
+</div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>Community Management et gestion des réseaux sociaux</span>
+    <span>Module 2 · Leçon 08</span>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" type="button" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const progressBar=document.getElementById('progressBar');
+  const backTop=document.getElementById('backTop');
+  const themeToggle=document.getElementById('themeToggle');
+
+  function updateProgress(){
+    const doc=document.documentElement;
+    const max=doc.scrollHeight-doc.clientHeight;
+    progressBar.style.width=(max>0?(doc.scrollTop/max)*100:0)+'%';
+    backTop.classList.toggle('show',doc.scrollTop>500);
+  }
+  window.addEventListener('scroll',updateProgress,{passive:true});
+  updateProgress();
+
+  backTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  themeToggle.addEventListener('click',()=>{
+    document.body.classList.toggle('dark');
+    const dark=document.body.classList.contains('dark');
+    themeToggle.setAttribute('aria-label',dark?'Désactiver le mode sombre':'Activer le mode sombre');
+    localStorage.setItem('lesson08-theme',dark?'dark':'light');
+  });
+  if(localStorage.getItem('lesson08-theme')==='dark') document.body.classList.add('dark');
+
+  const buttons=document.querySelectorAll('.tab-btn');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const group=btn.closest('.tabs');
+      group.querySelectorAll('.tab-btn').forEach(b=>b.setAttribute('aria-selected','false'));
+      group.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.getAttribute('aria-controls')).classList.remove('hidden');
+    });
+    btn.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        const arr=[...buttons];
+        const i=arr.indexOf(btn);
+        arr[(i+(e.key==='ArrowRight'?1:-1)+arr.length)%arr.length].focus();
+      }
+    });
+  });
+
+  const reveals=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}
+      });
+    },{threshold:.08});
+    reveals.forEach(el=>observer.observe(el));
+  }else reveals.forEach(el=>el.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

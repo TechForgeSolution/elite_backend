@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 25 — Collaboration et travail à distance | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2314213D'/%3E%3Ccircle cx='50' cy='50' r='22' fill='none' stroke='%23FF9F1C' stroke-width='8'/%3E%3Ccircle cx='50' cy='28' r='7' fill='%23FF9F1C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#F4F6F8;
+    --color-text:#14213D;
+    --color-accent:#FF9F1C;
+    --color-neutral:#8D99AE;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --badge-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --card-bg: color-mix(in srgb, var(--color-neutral) 8%, var(--color-bg));
+    --accent-10: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-16: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg));
+    --accent-40: color-mix(in srgb, var(--color-accent) 40%, var(--color-bg));
+    --text-08: color-mix(in srgb, var(--color-text) 8%, var(--color-bg));
+    --text-04: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+
+    --font-display:'Sora', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--color-bg);
+    color:var(--color-text);
+    font-family:var(--font-body);
+    font-weight:400;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:700;
+    line-height:1.25;
+    margin:0 0 .5em 0;
+    letter-spacing:-0.01em;
+  }
+  h1{font-size:clamp(1.9rem,4vw,2.75rem);}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem);}
+  h3{font-size:1.15rem;font-weight:600;}
+  p{margin:0 0 1.1em 0;}
+  a{color:var(--color-accent);}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  .prose{max-width:720px;}
+
+  /* Progress bar */
+  #progress-bar{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:var(--color-accent);
+    z-index:1000;
+    transition:width .1s linear;
+  }
+
+  /* Header */
+  header.site-header{
+    position:sticky;top:0;z-index:900;
+    background:color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .header-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;max-width:1040px;margin:0 auto;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--font-display);font-weight:700;font-size:.95rem;
+  }
+  .brand-mark{
+    width:26px;height:26px;border-radius:6px;
+    background:var(--color-text);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:15px;height:15px;}
+  .brand span.sub{color:var(--text-muted);font-weight:500;}
+
+  nav.menu-sommaire{display:flex;gap:22px;}
+  nav.menu-sommaire a{
+    font-size:.85rem;color:var(--text-muted);text-decoration:none;font-weight:500;
+  }
+  nav.menu-sommaire a:hover{color:var(--color-accent);}
+  .menu-toggle{display:none;}
+
+  @media (max-width:760px){
+    nav.menu-sommaire{display:none;}
+  }
+
+  /* Hero */
+  .hero{
+    padding:64px 0 40px 0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .badge{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    padding:5px 10px;
+    border-radius:5px;
+    background:var(--badge-bg);
+    border:1px solid var(--accent-40);
+    color:var(--color-text);
+    white-space:nowrap;
+  }
+  .badge.module{background:var(--text-08);border-color:var(--border-soft);color:var(--text-muted);}
+
+  .hero .module-tag{
+    font-family:var(--font-mono);
+    font-size:.8rem;color:var(--color-accent);
+    margin-bottom:10px;display:block;
+  }
+  .hero p.subtitle{
+    font-size:1.1rem;color:var(--text-muted);max-width:640px;
+  }
+
+  /* Sommaire */
+  .sommaire{
+    padding:34px 0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .sommaire h2{font-size:1rem;text-transform:none;color:var(--text-muted);font-family:var(--font-body);font-weight:600;margin-bottom:16px;}
+  .sommaire ol{
+    list-style:none;margin:0;padding:0;
+    display:grid;grid-template-columns:repeat(2,1fr);gap:10px 28px;
+  }
+  @media (max-width:640px){.sommaire ol{grid-template-columns:1fr;}}
+  .sommaire li{
+    border-bottom:1px dashed var(--border-soft);
+    padding-bottom:8px;
+  }
+  .sommaire a{
+    display:flex;justify-content:space-between;gap:10px;
+    text-decoration:none;color:var(--color-text);font-size:.92rem;font-weight:500;
+  }
+  .sommaire a .num{font-family:var(--font-mono);color:var(--color-accent);}
+  .sommaire a:hover{color:var(--color-accent);}
+
+  /* Sections */
+  main section{
+    padding:56px 0;
+    border-bottom:1px solid var(--border-soft);
+    opacity:0;transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  main section.in-view{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    main section{opacity:1;transform:none;transition:none;}
+  }
+  main section.alt{background:var(--bg-alt);}
+  .section-eyebrow{
+    font-family:var(--font-mono);font-size:.78rem;color:var(--color-accent);
+    display:block;margin-bottom:8px;
+  }
+
+  /* Boxes / callouts */
+  .box{
+    border:1px solid var(--border-soft);
+    border-left:4px solid var(--color-accent);
+    border-radius:6px;
+    padding:18px 20px;
+    margin:26px 0;
+    background:var(--card-bg);
+    max-width:720px;
+  }
+  .box .box-title{
+    display:flex;align-items:center;gap:8px;
+    font-weight:600;font-family:var(--font-display);margin-bottom:6px;font-size:.98rem;
+  }
+  .box p:last-child{margin-bottom:0;}
+
+  /* Fiche de pilotage */
+  .fiche{
+    background:var(--accent-10);
+    border:1px solid var(--accent-40);
+    border-radius:8px;
+    padding:18px 20px;
+    margin:26px 0;
+    font-family:var(--font-mono);
+    font-size:.87rem;
+    position:relative;
+    max-width:720px;
+  }
+  .fiche-label{
+    display:block;font-size:.7rem;letter-spacing:.02em;color:var(--text-muted);
+    margin-bottom:10px;font-family:var(--font-body);font-weight:600;
+  }
+  .fiche pre{margin:0;white-space:pre-wrap;color:var(--color-text);}
+  .copy-btn{
+    position:absolute;top:14px;right:14px;
+    background:var(--color-bg);border:1px solid var(--border-soft);
+    border-radius:5px;font-family:var(--font-body);font-size:.72rem;
+    padding:5px 9px;cursor:pointer;color:var(--text-muted);
+  }
+  .copy-btn:hover{border-color:var(--color-accent);color:var(--color-accent);}
+
+  /* Tables */
+  .table-scroll{overflow-x:auto;margin:26px 0;border:1px solid var(--border-soft);border-radius:8px;}
+  table{
+    border-collapse:collapse;width:100%;min-width:560px;
+    font-size:.88rem;
+  }
+  thead th{
+    background:var(--text-08);
+    text-align:left;padding:11px 14px;
+    font-family:var(--font-display);font-weight:600;font-size:.8rem;
+    border-bottom:1px solid var(--border-soft);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:11px 14px;border-bottom:1px solid var(--border-soft);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.num, th.num{font-family:var(--font-mono);white-space:nowrap;}
+  tr.key-row td{background:var(--accent-10);}
+  tr.key-row td:first-child{border-left:3px solid var(--color-accent);}
+
+  /* Tabs */
+  .tabs{margin:28px 0;max-width:720px;}
+  .tab-list{display:flex;gap:4px;border-bottom:1px solid var(--border-soft);}
+  .tab-btn{
+    font-family:var(--font-body);font-weight:600;font-size:.88rem;
+    background:none;border:none;padding:10px 16px;cursor:pointer;
+    color:var(--text-muted);border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+  }
+  .tab-btn[aria-selected="true"]{color:var(--color-text);border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible, .accordion-trigger:focus-visible, a:focus-visible, button:focus-visible{
+    outline:2px solid var(--color-accent);outline-offset:2px;
+  }
+  .tab-panel{padding:20px 2px;display:none;}
+  .tab-panel[data-active="true"]{display:block;}
+  .tab-panel p:last-child{margin-bottom:0;}
+
+  /* Accordion */
+  .accordion{margin:26px 0;max-width:720px;border-top:1px solid var(--border-soft);}
+  .accordion-item{border-bottom:1px solid var(--border-soft);}
+  .accordion-trigger{
+    width:100%;text-align:left;background:none;border:none;cursor:pointer;
+    padding:16px 4px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    font-family:var(--font-display);font-weight:600;font-size:.95rem;color:var(--color-text);
+  }
+  .accordion-trigger .chevron{
+    flex-shrink:0;width:18px;height:18px;transition:transform .25s ease;color:var(--color-accent);
+  }
+  .accordion-trigger[aria-expanded="true"] .chevron{transform:rotate(45deg);}
+  .accordion-panel{
+    max-height:0;overflow:hidden;transition:max-height .3s ease;
+  }
+  .accordion-panel .inner{padding:0 4px 18px 4px;color:var(--text-muted);font-size:.93rem;}
+
+  /* Cards */
+  .card-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:16px;margin:28px 0;
+  }
+  .card{
+    border:1px solid var(--border-soft);border-radius:8px;padding:18px;
+    background:var(--color-bg);transition:border-color .2s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{
+    width:34px;height:34px;border-radius:7px;background:var(--accent-10);
+    display:flex;align-items:center;justify-content:center;margin-bottom:12px;
+  }
+  .card .icon svg{width:18px;height:18px;}
+  .card h3{margin-bottom:6px;font-size:.98rem;}
+  .card p{font-size:.87rem;color:var(--text-muted);margin:0;}
+
+  /* Stepper */
+  .stepper{
+    display:flex;overflow-x:auto;gap:0;margin:32px 0;padding-bottom:8px;
+  }
+  .step{
+    flex:1 1 160px;min-width:160px;position:relative;padding:0 18px 0 0;
+  }
+  .step .step-top{display:flex;align-items:center;gap:0;}
+  .step-dot{
+    width:28px;height:28px;border-radius:50%;background:var(--color-text);color:var(--color-bg);
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.75rem;
+    flex-shrink:0;
+  }
+  .step-line{flex:1;height:2px;background:var(--border-soft);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:.92rem;margin:14px 0 6px 0;}
+  .step p{font-size:.83rem;color:var(--text-muted);margin:0;padding-right:10px;}
+
+  /* SVG schema wrapper */
+  figure.schema{
+    margin:30px 0;padding:20px;background:var(--color-bg);
+    border:1px solid var(--border-soft);border-radius:10px;
+  }
+  figure.schema svg{width:100%;height:auto;display:block;}
+  figure.schema figcaption{
+    margin-top:12px;font-size:.82rem;color:var(--text-muted);text-align:center;
+  }
+
+  /* Key points */
+  .keypoints{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;margin-top:30px;
+  }
+  .keypoint{
+    border:1px solid var(--border-soft);border-radius:8px;padding:18px;
+    background:var(--color-bg);border-top:3px solid var(--color-accent);
+  }
+  .keypoint .kp-num{font-family:var(--font-mono);color:var(--color-accent);font-size:.8rem;}
+  .keypoint p{font-size:.9rem;margin:8px 0 0 0;color:var(--text-muted);}
+
+  /* Bottom nav */
+  .lesson-nav{
+    padding:44px 0;
+  }
+  .lesson-nav .row{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .nav-link{
+    flex:1 1 260px;
+    border:1px solid var(--border-soft);border-radius:8px;padding:16px 18px;
+    text-decoration:none;color:var(--color-text);
+    display:block;
+  }
+  .nav-link:hover{border-color:var(--color-accent);}
+  .nav-link .dir{font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono);display:block;margin-bottom:4px;}
+  .nav-link.next{text-align:right;}
+  .back-module{
+    text-align:center;margin-top:20px;font-size:.85rem;
+  }
+
+  footer{
+    padding:30px 0 50px 0;text-align:center;color:var(--text-muted);font-size:.82rem;
+  }
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed;bottom:26px;right:26px;
+    width:44px;height:44px;border-radius:50%;
+    background:var(--color-text);color:var(--color-bg);
+    border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+    z-index:800;
+  }
+  #back-to-top.visible{opacity:1;pointer-events:auto;}
+  #back-to-top svg{width:18px;height:18px;}
+
+  ::selection{background:var(--accent-40);}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="#F4F6F8" stroke-width="2"/><circle cx="12" cy="6" r="2" fill="#FF9F1C"/></svg>
+      </div>
+      <span>Gestion de Projet <span class="sub">— Module 5</span></span>
+    </div>
+    <nav class="menu-sommaire" aria-label="Navigation de la leçon">
+      <a href="#reunions">Réunions</a>
+      <a href="#documentaire">Documents</a>
+      <a href="#communication">Communication</a>
+      <a href="#suivi">Suivi</a>
+      <a href="#responsabilites">Responsabilités</a>
+      <a href="#pratiques">Bonnes pratiques</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="module-tag">Module 5 — Méthodes Agile et outils de gestion</span>
+    <h1>Leçon 25 — Collaboration et travail à distance</h1>
+    <p class="subtitle">Organiser une équipe projet à distance : cadencer les réunions, fluidifier le partage documentaire, clarifier les responsabilités et maintenir un suivi fiable quand l'équipe n'est plus dans la même pièce.</p>
+    <div class="badges">
+      <span class="badge module">Module 5</span>
+      <span class="badge">Niveau avancé</span>
+      <span class="badge">18 min de lecture</span>
+      <span class="badge">Leçon 25 / 30</span>
+    </div>
+  </div>
+</section>
+
+<section class="sommaire">
+  <div class="wrap">
+    <h2>Sommaire de la leçon</h2>
+    <ol>
+      <li><a href="#introduction"><span>Le projet, à distance</span><span class="num">01</span></a></li>
+      <li><a href="#reunions"><span>Réunions virtuelles</span><span class="num">02</span></a></li>
+      <li><a href="#documentaire"><span>Partage documentaire</span><span class="num">03</span></a></li>
+      <li><a href="#communication"><span>Communication distribuée</span><span class="num">04</span></a></li>
+      <li><a href="#suivi"><span>Suivi de l'avancement</span><span class="num">05</span></a></li>
+      <li><a href="#responsabilites"><span>Clarifier les responsabilités</span><span class="num">06</span></a></li>
+      <li><a href="#pratiques"><span>Bonnes pratiques distribuées</span><span class="num">07</span></a></li>
+      <li><a href="#retenir"><span>Points clés à retenir</span><span class="num">08</span></a></li>
+    </ol>
+  </div>
+</section>
+
+<section id="introduction">
+  <div class="wrap prose">
+    <span class="section-eyebrow">01 — Cadrage</span>
+    <h2>Un projet qui se pilote sans se voir</h2>
+    <p>Dans une équipe projet distribuée — télétravail partiel, équipe multi-sites ou prestataires répartis sur plusieurs fuseaux horaires — les mécanismes de coordination qui fonctionnaient naturellement au bureau (un échange rapide devant la machine à café, un tableau blanc partagé) doivent être <strong>reconstruits volontairement</strong>. Rien ne se transmet plus par défaut : chaque flux d'information doit avoir un canal, un rythme et un responsable explicites.</p>
+    <p>Le travail à distance ne change pas les fondamentaux de la gestion de projet — jalons, livrables, budget, risques — mais il déplace la charge de coordination du chef de projet vers des <strong>rituels et des outils</strong> conçus pour compenser l'absence de synchronisation informelle.</p>
+    <div class="box">
+      <div class="box-title">💡 À retenir</div>
+      <p>Une équipe à distance n'est pas une équipe de bureau à qui l'on a coupé la vidéo : c'est une équipe qui doit remplacer par des rituels explicites tout ce que la proximité physique faisait gratuitement.</p>
+    </div>
+  </div>
+</section>
+
+<section id="reunions" class="alt">
+  <div class="wrap prose">
+    <span class="section-eyebrow">02 — Rituels</span>
+    <h2>Réunions virtuelles : cadencer sans saturer</h2>
+    <p>Une équipe distribuée a besoin de moins de réunions qu'on ne le pense, mais de réunions <strong>mieux typées</strong>. Chaque format de réunion doit répondre à un seul objectif : décider, synchroniser ou approfondir — jamais les trois en même temps.</p>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Types de réunions virtuelles">
+        <button class="tab-btn" role="tab" aria-selected="true" id="tab-sync" aria-controls="panel-sync">Point de synchronisation</button>
+        <button class="tab-btn" role="tab" aria-selected="false" id="tab-decision" aria-controls="panel-decision">Réunion de décision</button>
+        <button class="tab-btn" role="tab" aria-selected="false" id="tab-atelier" aria-controls="panel-atelier">Atelier collaboratif</button>
+      </div>
+      <div class="tab-panel" data-active="true" role="tabpanel" id="panel-sync" aria-labelledby="tab-sync">
+        <p><strong>Objectif :</strong> vérifier l'avancement, lever les blocages. <strong>Durée cible :</strong> <span class="mono">15 min</span>. <strong>Fréquence :</strong> quotidienne ou tri-hebdomadaire. Chaque participant répond à trois questions : ce qui est fait, ce qui reste à faire, ce qui bloque. Aucune résolution de problème en direct — les blocages complexes sont reportés vers un échange dédié.</p>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="panel-decision" aria-labelledby="tab-decision">
+        <p><strong>Objectif :</strong> trancher un arbitrage identifié à l'avance. <strong>Durée cible :</strong> <span class="mono">30 min</span>. L'ordre du jour et les options à arbitrer sont partagés au moins 24 h avant ; la réunion sert à décider, pas à découvrir le sujet. Chaque décision est actée avec son porteur et sa date d'effet.</p>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="panel-atelier" aria-labelledby="tab-atelier">
+        <p><strong>Objectif :</strong> concevoir ou résoudre collectivement (planification, rétrospective, cadrage). <strong>Durée cible :</strong> <span class="mono">60–90 min</span>. S'appuie sur un support visuel partagé (tableau collaboratif) et une facilitation active pour éviter que la réunion ne dérive vers un simple statut d'avancement.</p>
+      </div>
+    </div>
+
+    <figure class="schema" aria-describedby="fig1-caption">
+      <svg viewBox="0 0 680 220" role="img" aria-label="Frise hebdomadaire des réunions d'une équipe projet à distance">
+        <line x1="40" y1="120" x2="640" y2="120" stroke="#8D99AE" stroke-width="2"/>
+        <g font-family="JetBrains Mono, monospace" font-size="11" fill="#14213D">
+          <text x="40" y="145">Lun</text><text x="150" y="145">Mar</text><text x="260" y="145">Mer</text>
+          <text x="370" y="145">Jeu</text><text x="480" y="145">Ven</text>
+        </g>
+        <g>
+          <circle cx="40" cy="120" r="6" fill="#14213D"/>
+          <circle cx="150" cy="120" r="6" fill="#14213D"/>
+          <circle cx="260" cy="120" r="6" fill="#14213D"/>
+          <circle cx="370" cy="120" r="6" fill="#14213D"/>
+          <circle cx="480" cy="120" r="6" fill="#14213D"/>
+        </g>
+        <g font-family="Inter, sans-serif" font-size="11" fill="#14213D" text-anchor="middle">
+          <rect x="16" y="55" width="48" height="40" rx="6" fill="#FDECD3" stroke="#FF9F1C"/>
+          <text x="40" y="72">Sync</text><text x="40" y="86" class="mono" font-family="JetBrains Mono, monospace">15'</text>
+          <rect x="126" y="55" width="48" height="40" rx="6" fill="#FDECD3" stroke="#FF9F1C"/>
+          <text x="150" y="72">Sync</text><text x="150" y="86" font-family="JetBrains Mono, monospace">15'</text>
+          <rect x="236" y="150" width="48" height="40" rx="6" fill="#EEF1F4" stroke="#8D99AE"/>
+          <text x="260" y="167">Atelier</text><text x="260" y="181" font-family="JetBrains Mono, monospace">75'</text>
+          <rect x="346" y="55" width="48" height="40" rx="6" fill="#FDECD3" stroke="#FF9F1C"/>
+          <text x="370" y="72">Sync</text><text x="370" y="86" font-family="JetBrains Mono, monospace">15'</text>
+          <rect x="456" y="150" width="48" height="40" rx="6" fill="#F3E4CB" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="480" y="167">Décision</text><text x="480" y="181" font-family="JetBrains Mono, monospace">30'</text>
+        </g>
+        <g font-family="Inter, sans-serif" font-size="10" fill="#8D99AE">
+          <line x1="40" y1="95" x2="40" y2="114" stroke="#8D99AE" stroke-dasharray="2 2"/>
+          <line x1="150" y1="95" x2="150" y2="114" stroke="#8D99AE" stroke-dasharray="2 2"/>
+          <line x1="370" y1="95" x2="370" y2="114" stroke="#8D99AE" stroke-dasharray="2 2"/>
+          <line x1="260" y1="150" x2="260" y2="126" stroke="#8D99AE" stroke-dasharray="2 2"/>
+          <line x1="480" y1="150" x2="480" y2="126" stroke="#8D99AE" stroke-dasharray="2 2"/>
+        </g>
+      </svg>
+      <figcaption id="fig1-caption">Exemple de cadence hebdomadaire : synchronisations courtes en début de journée, atelier et décision positionnés à des moments dédiés.</figcaption>
+    </figure>
+
+    <div class="box">
+      <div class="box-title">⚠️ Attention / erreur fréquente</div>
+      <p>Transformer chaque point de synchronisation en réunion de statut individuel où chacun rapporte au chef de projet : cela recrée en visio la logique de reporting hiérarchique que l'équipe est censée dépasser, et allonge mécaniquement la durée de la réunion.</p>
+    </div>
+  </div>
+</section>
+
+<section id="documentaire">
+  <div class="wrap prose">
+    <span class="section-eyebrow">03 — Information</span>
+    <h2>Partage documentaire : une seule source de vérité</h2>
+    <p>À distance, un document envoyé par messagerie et modifié localement génère rapidement des versions divergentes. La règle de base est celle de la <strong>source unique de vérité</strong> : chaque type de document (charte de projet, planning, budget, comptes rendus, spécifications) vit à un seul endroit, accessible à toute l'équipe, avec un historique de versions.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption class="visually-hidden" style="position:absolute;left:-9999px;">Comparatif des usages de documents partagés selon le type de contenu</caption>
+        <thead>
+          <tr>
+            <th scope="col">Type de contenu</th>
+            <th scope="col">Format recommandé</th>
+            <th scope="col">Fréquence de mise à jour</th>
+            <th scope="col">Propriétaire</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Charte de projet</td>
+            <td>Document stable, versionné</td>
+            <td class="num">Ponctuelle</td>
+            <td>Chef de projet</td>
+          </tr>
+          <tr class="key-row">
+            <td>Planning / rétroplanning</td>
+            <td>Fichier partagé collaboratif</td>
+            <td class="num">Hebdomadaire</td>
+            <td>Chef de projet</td>
+          </tr>
+          <tr>
+            <td>Comptes rendus de réunion</td>
+            <td>Note courte, envoyée sous 24 h</td>
+            <td class="num">À chaque réunion</td>
+            <td>Animateur de la réunion</td>
+          </tr>
+          <tr>
+            <td>Spécifications fonctionnelles</td>
+            <td>Document structuré, commentable</td>
+            <td class="num">Au fil de l'eau</td>
+            <td>Référent fonctionnel</td>
+          </tr>
+          <tr class="key-row">
+            <td>Registre des risques</td>
+            <td>Tableau partagé</td>
+            <td class="num">Hebdomadaire</td>
+            <td>Chef de projet</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="fiche">
+      <span class="fiche-label">Fiche de pilotage — Règle de nommage documentaire</span>
+      <button class="copy-btn" data-copy>Copier</button>
+      <pre>AAAA-MM-JJ_NomDuLivrable_v[MAJEUR].[MINEUR]_[INITIALES]
+Exemple : 2026-03-14_Planning-Sprint12_v2.1_JD
+Statut :  BROUILLON | EN RELECTURE | VALIDÉ</pre>
+    </div>
+
+    <div class="box">
+      <div class="box-title">📐 Bonnes pratiques professionnelles</div>
+      <p>Nommer un référent documentaire par type de livrable, distinct du contributeur : cette personne garantit que la version en ligne est bien la version de référence, même si elle n'en est pas l'auteure principale.</p>
+    </div>
+  </div>
+</section>
+
+<section id="communication" class="alt">
+  <div class="wrap prose">
+    <span class="section-eyebrow">04 — Flux d'échange</span>
+    <h2>Communication distribuée : choisir le bon canal</h2>
+    <p>La cause la plus fréquente de friction dans une équipe à distance n'est pas le manque d'outils, mais l'absence de règle sur <strong>quel canal utiliser pour quel type de message</strong>. Un arbitrage urgent noyé dans un fil de messagerie interne, ou une question de détail interrompant tout le monde en réunion, ralentissent le projet autant qu'ils fatiguent l'équipe.</p>
+
+    <figure class="schema" aria-describedby="fig2-caption">
+      <svg viewBox="0 0 680 300" role="img" aria-label="Matrice de choix du canal de communication selon l'urgence et la complexité du message">
+        <line x1="90" y1="30" x2="90" y2="260" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="90" y1="260" x2="640" y2="260" stroke="#8D99AE" stroke-width="1.5"/>
+        <text x="90" y="20" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE" text-anchor="middle">Complexité +</text>
+        <text x="640" y="280" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE" text-anchor="end">Urgence +</text>
+        <text x="90" y="278" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE" text-anchor="middle">Complexité −</text>
+        <text x="105" y="255" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">Urgence −</text>
+
+        <line x1="365" y1="30" x2="365" y2="260" stroke="#8D99AE" stroke-dasharray="3 4"/>
+        <line x1="90" y1="145" x2="640" y2="145" stroke="#8D99AE" stroke-dasharray="3 4"/>
+
+        <g font-family="Sora, sans-serif" font-size="12" font-weight="600" fill="#14213D">
+          <rect x="105" y="45" width="240" height="80" rx="6" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="225" y="75" text-anchor="middle">Message asynchrone</text>
+          <text x="225" y="95" text-anchor="middle" font-family="Inter, sans-serif" font-weight="400" font-size="11" fill="#8D99AE">Info simple, non urgente</text>
+
+          <rect x="380" y="45" width="240" height="80" rx="6" fill="#F3E4CB" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="500" y="75" text-anchor="middle">Appel direct / chat</text>
+          <text x="500" y="95" text-anchor="middle" font-family="Inter, sans-serif" font-weight="400" font-size="11" fill="#14213D">Info simple, urgente</text>
+
+          <rect x="105" y="160" width="240" height="90" rx="6" fill="#EEF1F4" stroke="#8D99AE"/>
+          <text x="225" y="190" text-anchor="middle">Document partagé</text>
+          <text x="225" y="210" text-anchor="middle" font-family="Inter, sans-serif" font-weight="400" font-size="11" fill="#8D99AE">Info riche, non urgente</text>
+
+          <rect x="380" y="160" width="240" height="90" rx="6" fill="#F3E4CB" stroke="#FF9F1C" stroke-width="2"/>
+          <text x="500" y="190" text-anchor="middle">Réunion de décision</text>
+          <text x="500" y="210" text-anchor="middle" font-family="Inter, sans-serif" font-weight="400" font-size="11" fill="#14213D">Info riche, urgente</text>
+        </g>
+      </svg>
+      <figcaption id="fig2-caption">Le canal se choisit en croisant urgence et complexité du message — pas par habitude ou par défaut.</figcaption>
+    </figure>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="true">Communication synchrone vs asynchrone</button>
+        <div class="accordion-panel" style="max-height:200px;">
+          <div class="inner">La communication <strong>synchrone</strong> (appel, visio, messagerie instantanée en direct) est adaptée aux échanges qui demandent une réaction immédiate ou une négociation. La communication <strong>asynchrone</strong> (message, document commenté, enregistrement) laisse à chacun le temps de répondre selon son fuseau horaire et sa charge — elle doit rester le mode par défaut dans une équipe distribuée pour préserver les plages de travail concentré.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">Gérer le décalage horaire</button>
+        <div class="accordion-panel">
+          <div class="inner">Lorsque l'équipe couvre plusieurs fuseaux, on définit une plage de chevauchement commune, même courte, réservée aux échanges synchrones indispensables. Tout le reste passe en asynchrone, avec des délais de réponse explicites (par exemple : réponse attendue sous un jour ouvré).</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">Documenter les décisions informelles</button>
+        <div class="accordion-panel">
+          <div class="inner">Une décision prise lors d'un échange rapide en messagerie instantanée doit être reportée dans le document de suivi du projet dans la journée, sous peine de disparaître dans l'historique de conversation et d'être invisible pour les membres absents au moment de l'échange.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="suivi">
+  <div class="wrap prose">
+    <span class="section-eyebrow">05 — Pilotage</span>
+    <h2>Suivi de l'avancement à distance</h2>
+    <p>Sans visibilité physique sur le travail de chacun, le suivi d'avancement repose sur des <strong>indicateurs déclarés et partagés</strong>, mis à jour par l'équipe elle-même plutôt que collectés individuellement par le chef de projet. L'enjeu est de rendre l'état du projet visible en continu, sans multiplier les demandes de statut.</p>
+
+    <figure class="schema" aria-describedby="fig3-caption">
+      <svg viewBox="0 0 680 230" role="img" aria-label="Tableau de bord de suivi avec trois indicateurs clés de projet">
+        <g font-family="Sora, sans-serif" font-weight="600" font-size="12" fill="#14213D">
+          <text x="130" y="28" text-anchor="middle">Avancement</text>
+          <text x="340" y="28" text-anchor="middle">Budget consommé</text>
+          <text x="550" y="28" text-anchor="middle">Jalons tenus</text>
+        </g>
+        <g>
+          <circle cx="130" cy="110" r="60" fill="none" stroke="#EEF1F4" stroke-width="14"/>
+          <circle cx="130" cy="110" r="60" fill="none" stroke="#FF9F1C" stroke-width="14" stroke-dasharray="264 377" stroke-linecap="round" transform="rotate(-90 130 110)"/>
+          <text x="130" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="20" fill="#14213D">70%</text>
+        </g>
+        <g>
+          <circle cx="340" cy="110" r="60" fill="none" stroke="#EEF1F4" stroke-width="14"/>
+          <circle cx="340" cy="110" r="60" fill="none" stroke="#14213D" stroke-width="14" stroke-dasharray="219 377" stroke-linecap="round" transform="rotate(-90 340 110)"/>
+          <text x="340" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="20" fill="#14213D">58%</text>
+        </g>
+        <g>
+          <circle cx="550" cy="110" r="60" fill="none" stroke="#EEF1F4" stroke-width="14"/>
+          <circle cx="550" cy="110" r="60" fill="none" stroke="#8D99AE" stroke-width="14" stroke-dasharray="320 377" stroke-linecap="round" transform="rotate(-90 550 110)"/>
+          <text x="550" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="20" fill="#14213D">6/7</text>
+        </g>
+        <g font-family="Inter, sans-serif" font-size="11" fill="#8D99AE" text-anchor="middle">
+          <text x="130" y="205">Cible : 75% à date</text>
+          <text x="340" y="205">Cible : 60% à date</text>
+          <text x="550" y="205">1 jalon en retard</text>
+        </g>
+      </svg>
+      <figcaption id="fig3-caption">Tableau de bord synthétique : trois jauges suffisent souvent à donner une vision d'ensemble fiable, sans détailler chaque tâche.</figcaption>
+    </figure>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Tâche</th>
+            <th scope="col">Responsable</th>
+            <th scope="col">Échéance</th>
+            <th scope="col">Avancement</th>
+            <th scope="col">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Rédaction spécifications module A</td>
+            <td>C. Nguyen</td>
+            <td class="num">2026-03-18</td>
+            <td class="num">80%</td>
+            <td>En cours</td>
+          </tr>
+          <tr class="key-row">
+            <td>Revue de conception — jalon</td>
+            <td>Équipe projet</td>
+            <td class="num">2026-03-20</td>
+            <td class="num">0%</td>
+            <td>Jalon à venir</td>
+          </tr>
+          <tr>
+            <td>Intégration environnement de test</td>
+            <td>R. Haddad</td>
+            <td class="num">2026-03-22</td>
+            <td class="num">45%</td>
+            <td>En cours</td>
+          </tr>
+          <tr class="key-row">
+            <td>Validation budget T1</td>
+            <td>Chef de projet</td>
+            <td class="num">2026-03-15</td>
+            <td class="num">100%</td>
+            <td>Écart signalé</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <div class="box-title">⚠️ Attention / erreur fréquente</div>
+      <p>Multiplier les tableaux de suivi parallèles (un par outil, un par membre de l'équipe) : l'information se fragmente et personne, y compris le chef de projet, n'a plus une vision fiable de l'état réel du projet.</p>
+    </div>
+  </div>
+</section>
+
+<section id="responsabilites" class="alt">
+  <div class="wrap prose">
+    <span class="section-eyebrow">06 — Rôles</span>
+    <h2>Clarifier les responsabilités à distance</h2>
+    <p>L'ambiguïté sur « qui fait quoi » est amplifiée par la distance : au bureau, un doute se résout en se retournant vers un collègue ; à distance, il se traduit souvent par une tâche qui n'avance pas, chacun pensant qu'elle est prise en charge par quelqu'un d'autre. La matrice RACI reste l'outil de référence pour lever cette ambiguïté par écrit.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Activité</th>
+            <th scope="col">Chef de projet</th>
+            <th scope="col">Référent fonctionnel</th>
+            <th scope="col">Équipe de réalisation</th>
+            <th scope="col">Sponsor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Rédaction des spécifications</td>
+            <td class="num">C</td>
+            <td class="num">R</td>
+            <td class="num">C</td>
+            <td class="num">I</td>
+          </tr>
+          <tr class="key-row">
+            <td>Validation du planning</td>
+            <td class="num">R</td>
+            <td class="num">C</td>
+            <td class="num">I</td>
+            <td class="num">A</td>
+          </tr>
+          <tr>
+            <td>Développement / production du livrable</td>
+            <td class="num">I</td>
+            <td class="num">C</td>
+            <td class="num">R</td>
+            <td class="num">I</td>
+          </tr>
+          <tr class="key-row">
+            <td>Arbitrage budgétaire</td>
+            <td class="num">C</td>
+            <td class="num">I</td>
+            <td class="num">I</td>
+            <td class="num">A/R</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.85rem;color:var(--text-muted);"><span class="mono">R</span> Réalisateur · <span class="mono">A</span> Approbateur · <span class="mono">C</span> Consulté · <span class="mono">I</span> Informé</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div>
+        <h3>Chef de projet</h3>
+        <p>Garant du rythme, des arbitrages et de la cohérence globale du planning à distance.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></div>
+        <h3>Référent fonctionnel</h3>
+        <p>Propriétaire du contenu métier ; seul habilité à valider les spécifications.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><path d="M4 17l5-5 4 4 7-7"/><path d="M15 9h5v5"/></svg></div>
+        <h3>Équipe de réalisation</h3>
+        <p>Responsable de la production des livrables et de la mise à jour de son propre avancement.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="1.6"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg></div>
+        <h3>Sponsor</h3>
+        <p>Approuve les décisions structurantes et arbitre en dernier ressort en cas de blocage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pratiques">
+  <div class="wrap prose">
+    <span class="section-eyebrow">07 — Méthode</span>
+    <h2>Bonnes pratiques du travail distribué</h2>
+    <p>Ces pratiques ne remplacent pas les rituels et outils déjà décrits : elles en garantissent l'efficacité dans la durée, en évitant les dérives les plus courantes du travail à distance.</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-top"><div class="step-dot">1</div><div class="step-line"></div></div>
+        <h3>Charte d'équipe distante</h3>
+        <p>Définir dès le lancement les horaires de disponibilité, les délais de réponse attendus et les canaux par type de message.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">2</div><div class="step-line"></div></div>
+        <h3>Documentation par défaut</h3>
+        <p>Écrire ce qui peut l'être plutôt que de convoquer une réunion, pour ne pas dépendre de la disponibilité de chacun.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">3</div><div class="step-line"></div></div>
+        <h3>Visibilité de l'avancement</h3>
+        <p>Maintenir un tableau de suivi unique, mis à jour par chacun, consultable à tout moment sans solliciter personne.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">4</div><div class="step-line"></div></div>
+        <h3>Rituels courts et réguliers</h3>
+        <p>Préférer des points fréquents et brefs à de longues réunions espacées, pour détecter les blocages tôt.</p>
+      </div>
+      <div class="step">
+        <div class="step-top"><div class="step-dot">5</div></div>
+        <h3>Reconnaissance du travail</h3>
+        <p>Rendre visibles les avancées individuelles dans les canaux d'équipe, pour compenser l'absence de reconnaissance informelle du bureau.</p>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-title">🔗 Pour aller plus loin</div>
+      <p>La cadence des rituels décrite ici s'articule directement avec les outils numériques vus en leçon 24 : le choix d'un outil ne remplace jamais la définition préalable des règles d'usage entre les membres de l'équipe.</p>
+    </div>
+  </div>
+</section>
+
+<section id="retenir" class="alt">
+  <div class="wrap prose" style="max-width:960px;">
+    <span class="section-eyebrow">08 — Synthèse</span>
+    <h2>Points clés à retenir</h2>
+    <div class="keypoints">
+      <div class="keypoint">
+        <span class="kp-num">01</span>
+        <h3>Reconstruire la coordination</h3>
+        <p>À distance, rien ne se transmet par défaut : chaque flux d'information doit avoir un canal, un rythme et un responsable définis.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">02</span>
+        <h3>Typer chaque réunion</h3>
+        <p>Synchronisation, décision, atelier : trois objectifs, trois formats, jamais mélangés dans la même réunion.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">03</span>
+        <h3>Une seule source de vérité</h3>
+        <p>Chaque document de référence vit à un seul endroit, avec un propriétaire clair et un historique de versions.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">04</span>
+        <h3>Choisir le bon canal</h3>
+        <p>L'urgence et la complexité du message déterminent s'il relève du synchrone ou de l'asynchrone — pas l'habitude.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">05</span>
+        <h3>Rendre l'avancement visible</h3>
+        <p>Un tableau de suivi unique et à jour évite de multiplier les demandes de statut individuelles.</p>
+      </div>
+      <div class="keypoint">
+        <span class="kp-num">06</span>
+        <h3>Clarifier les rôles par écrit</h3>
+        <p>La matrice RACI lève les ambiguïtés que la distance ne permet plus de résoudre d'un simple regard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="wrap lesson-nav">
+  <div class="row">
+    <a class="nav-link prev" href="#">
+      <span class="dir">← Leçon précédente</span>
+      Leçon 24 — Outils numériques de gestion de projet
+    </a>
+    <a class="nav-link next" href="#">
+      <span class="dir">Leçon suivante →</span>
+      Leçon 26 — Leadership et management d'équipe projet
+    </a>
+  </div>
+  <p class="back-module"><a href="#">Retour au sommaire du Module 5</a></p>
+</div>
+
+<footer>
+  <div class="wrap">
+    Filière Gestion de Projet — Module 5 : Méthodes Agile et outils de gestion
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* Scroll progress bar */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* Back to top */
+  var backToTop = document.getElementById('back-to-top');
+  document.addEventListener('scroll', function(){
+    backToTop.classList.toggle('visible', window.scrollY > 480);
+  }, {passive:true});
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+
+  /* Section reveal on scroll */
+  var sections = document.querySelectorAll('main section');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12});
+    sections.forEach(function(s){ io.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  }
+
+  /* Tabs */
+  document.querySelectorAll('[data-tabs]').forEach(function(tabsEl){
+    var buttons = tabsEl.querySelectorAll('.tab-btn');
+    var panels = tabsEl.querySelectorAll('.tab-panel');
+    buttons.forEach(function(btn, i){
+      btn.addEventListener('click', function(){
+        buttons.forEach(function(b){ b.setAttribute('aria-selected','false'); });
+        panels.forEach(function(p){ p.removeAttribute('data-active'); });
+        btn.setAttribute('aria-selected','true');
+        panels[i].setAttribute('data-active','true');
+      });
+      btn.addEventListener('keydown', function(e){
+        var idx = Array.prototype.indexOf.call(buttons, btn);
+        if(e.key === 'ArrowRight'){ buttons[(idx+1) % buttons.length].focus(); buttons[(idx+1) % buttons.length].click(); }
+        if(e.key === 'ArrowLeft'){ buttons[(idx-1+buttons.length) % buttons.length].focus(); buttons[(idx-1+buttons.length) % buttons.length].click(); }
+      });
+    });
+  });
+
+  /* Accordions */
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var panel = trigger.nextElementSibling;
+    var expanded = trigger.getAttribute('aria-expanded') === 'true';
+    panel.style.maxHeight = expanded ? panel.scrollHeight + 'px' : '0px';
+    trigger.addEventListener('click', function(){
+      var isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+      panel.style.maxHeight = !isOpen ? panel.scrollHeight + 'px' : '0px';
+    });
+  });
+
+  /* Copy button on "fiche de pilotage" blocks */
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.parentElement.querySelector('pre');
+      var text = pre ? pre.textContent : '';
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(text).then(function(){
+          var original = btn.textContent;
+          btn.textContent = 'Copié';
+          setTimeout(function(){ btn.textContent = original; }, 1600);
+        });
+      }
+    });
+  });
+
+  /* Smooth anchor scroll for sommaire / menu (respects reduced motion) */
+  var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){
+    link.addEventListener('click', function(e){
+      var id = link.getAttribute('href').slice(1);
+      var target = id ? document.getElementById(id) : null;
+      if(target){
+        e.preventDefault();
+        target.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block:'start'});
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

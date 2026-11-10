@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 09 — Analyser les performances marketing avec l'IA | Filière IA &amp; Marketing</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563EB'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23fff'/%3E%3Ccircle cx='24' cy='8' r='2.5' fill='%23F97316'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F5F8FC;--color-text:#0A0F1C;--color-text-muted:#626B78;--color-accent:#2563EB;--color-accent-soft:#EAF1FF;--color-border:#DDE5F0;--color-orange:#F97316;--color-orange-dark:#B45309;--color-orange-soft:#FFF3E8;--r:10px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.2;margin:0 0 .6em;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1.1em}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+#bar::after{content:"";position:absolute;right:0;top:0;height:100%;width:36px;background:var(--color-orange)}
+header.top{position:sticky;top:3px;z-index:90;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px;position:relative}
+.brand{font:700 .95rem Sora,sans-serif;display:flex;align-items:center;gap:10px}
+.logo{width:26px;height:26px;border-radius:7px;background:var(--color-accent);position:relative}
+.logo::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--color-orange);border:2px solid #fff}
+.btn{font:500 .9rem Inter,sans-serif;border:1px solid var(--color-border);background:#fff;color:var(--color-text);padding:8px 14px;border-radius:8px;cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.btn:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+#menu{display:none;position:absolute;right:20px;top:60px;width:min(340px,calc(100vw - 40px));background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:8px;box-shadow:0 12px 32px rgba(10,15,28,.12)}
+#menu.open{display:block}
+#menu a{display:block;padding:9px 12px;border-radius:6px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#menu a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+.hero{background:var(--color-bg-alt);padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.crumb{color:var(--color-text-muted);font-size:.9rem;margin-bottom:18px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0}
+.badge{font-size:.85rem;font-weight:500;padding:5px 12px;border-radius:99px;background:var(--color-accent-soft);color:#1D4ED8}
+.badge.o{background:var(--color-orange-soft);color:var(--color-orange-dark)}
+.sub{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.obj{margin-top:28px;padding:16px 18px;background:#fff;border-left:4px solid var(--color-orange);border-radius:0 var(--r) var(--r) 0}
+.obj b{font-family:Sora,sans-serif}
+nav.toc{padding:48px 0 8px}
+nav.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+nav.toc a{display:flex;gap:12px;align-items:baseline;padding:10px 14px;border-radius:8px;text-decoration:none;color:var(--color-text);border:1px solid transparent;transition:.2s}
+nav.toc a:hover{background:var(--color-accent-soft);border-color:var(--color-border);transform:translateX(3px)}
+nav.toc span{color:var(--color-accent);font:700 .95rem Sora,sans-serif;min-width:1.4em}
+section.s{padding:64px 0}
+section.s.alt{background:var(--color-bg-alt)}
+.lead{color:var(--color-text-muted)}
+dfn{font-style:normal;font-weight:600;background:var(--color-accent-soft);padding:0 4px;border-radius:4px}
+figure{margin:32px 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:20px}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:10px;text-align:center}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+svg text{font-family:Inter,sans-serif;fill:var(--color-text)}
+.tabs [role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{font:600 .95rem Inter,sans-serif;padding:11px 16px;border:0;background:none;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .2s}
+.tabs [role=tab]:hover{color:var(--color-text)}
+.tabs [role=tab][aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.panel{background:#fff;border:1px solid var(--color-border);border-top:0;border-radius:0 0 var(--r) var(--r);padding:22px 22px 6px}
+.panel[hidden]{display:none}
+.panel ul{padding-left:1.2em;margin:0 0 1.1em}
+.panel li{margin-bottom:.35em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:28px}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:22px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent);box-shadow:0 10px 24px rgba(37,99,235,.1)}
+.card .ic{width:44px;height:44px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;margin-bottom:14px}
+.card:nth-child(even) .ic{background:var(--color-orange-soft)}
+.card .ic svg{width:24px;height:24px;stroke:var(--color-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card:nth-child(even) .ic svg{stroke:var(--color-orange-dark)}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0 0 .6em}
+.card small{display:block;font-size:.85rem}
+.note{display:flex;gap:14px;padding:18px 20px;border-radius:var(--r);margin:24px 0;background:var(--color-accent-soft);border-left:4px solid var(--color-accent)}
+.note.warn{background:var(--color-orange-soft);border-color:var(--color-orange)}
+.note.good{background:#fff;border:1px solid var(--color-border);border-left:4px solid var(--color-accent)}
+.note .e{font-size:1.4rem;line-height:1.4}
+.note p:last-child{margin:0}
+.note strong{font-family:Sora,sans-serif;display:block;margin-bottom:2px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.cols{grid-template-columns:1fr}.hero{padding:48px 0 40px}section.s{padding:48px 0}}
+details{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);margin:12px 0}
+details summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";color:var(--color-accent);font:600 1.3rem/1 Sora,sans-serif;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details>div{padding:0 18px 6px;color:var(--color-text-muted)}
+.fx{font-family:Sora,sans-serif;font-weight:600;color:var(--color-text);background:var(--color-accent-soft);border-radius:8px;padding:10px 14px;margin:0 0 1em}
+.code{background:#0D1117;border-radius:var(--r);margin:20px 0 28px;overflow:hidden}
+.code header{display:flex;justify-content:space-between;align-items:center;padding:8px 8px 8px 16px;background:#161B22;color:#C9D1D9;font-size:.85rem}
+.code .cp{font:500 .82rem Inter,sans-serif;background:#21262D;color:#E6EDF3;border:1px solid #30363D;border-radius:6px;padding:5px 12px;cursor:pointer;transition:background .2s}
+.code .cp:hover{background:#2D333B}
+.code pre{margin:0;padding:16px;overflow-x:auto;color:#E6EDF3;font:.9rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
+.code .ph{color:#79C0FF}
+.code .k{color:#FDBA74}
+.steps{counter-reset:s;list-style:none;padding:0;margin:20px 0}
+.steps li{counter-increment:s;position:relative;padding:0 0 18px 48px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--color-accent);color:#fff;font:700 .9rem/32px Sora,sans-serif;text-align:center}
+.steps li:not(:last-child)::after{content:"";position:absolute;left:15px;top:36px;bottom:4px;width:2px;background:var(--color-border)}
+.key{display:grid;gap:12px;padding:0;list-style:none;margin:24px 0 0}
+.key li{display:flex;gap:14px;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:16px 18px}
+.key li::before{content:"✓";flex:none;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:700;margin-top:2px}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:48px 0 24px}
+.pn a{display:block;padding:18px 20px;border:1px solid var(--color-border);border-radius:var(--r);text-decoration:none;color:var(--color-text);transition:.2s}
+.pn a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pn small{display:block;color:var(--color-text-muted);font-size:.85rem}
+.pn .nx{text-align:right;border-color:var(--color-accent)}
+.mod{text-align:center;padding-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:24px 0;color:var(--color-text-muted);font-size:.88rem;text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,transform .2s;box-shadow:0 6px 16px rgba(37,99,235,.35);z-index:80}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{transform:translateY(-3px)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.rv{opacity:1;transform:none}}
+@media(max-width:480px){.pn{grid-template-columns:1fr}.pn .nx{text-align:left}}
+</style>
+</head>
+<body>
+<div id="bar" role="presentation"></div>
+
+<header class="top">
+<div class="wide">
+<div class="brand"><span class="logo" aria-hidden="true"></span>Filière IA &amp; Marketing</div>
+<button class="btn" id="mbtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+<nav id="menu" aria-label="Sommaire de la leçon"></nav>
+</div>
+</header>
+
+<main>
+<div class="hero">
+<div class="wrap">
+<div class="crumb">Module 2 — Déployer et piloter des actions marketing avec l'IA</div>
+<h1>Analyser les performances marketing avec l'IA</h1>
+<p class="sub">Leçon 09. Choisir les bons indicateurs, laisser l'IA lire vos tableaux de bord, repérer les anomalies et transformer les chiffres en actions.</p>
+<div class="badges">
+<span class="badge">Module 2</span>
+<span class="badge">⏱ 15 min de lecture</span>
+<span class="badge o">Niveau débutant</span>
+</div>
+<div class="obj"><b>Objectif :</b> utiliser l'IA pour interpréter des données marketing et en tirer des recommandations.</div>
+</div>
+</div>
+
+<div class="wrap"><nav class="toc" aria-label="Table des matières"><h2 style="font-size:1.2rem">Dans cette leçon</h2><ol id="toc"></ol></nav></div>
+
+<!-- 1 -->
+<section class="s" id="kpi">
+<div class="wrap rv">
+<h2>1. Choisir les indicateurs (KPI) selon l'objectif</h2>
+<p>Un <dfn>KPI</dfn> (indicateur clé de performance) est un chiffre qui mesure si vous atteignez un objectif. Règle simple : <strong>on choisit l'objectif d'abord, l'indicateur ensuite</strong>. Mesurer trop de choses noie l'information ; deux ou trois KPI par objectif suffisent.</p>
+<p class="lead">Cliquez sur chaque onglet pour voir les KPI par catégorie.</p>
+
+<div class="tabs" id="tabs">
+<div role="tablist" aria-label="KPI par catégorie">
+<button role="tab" id="tb1" aria-controls="p1" aria-selected="true">Acquisition / Clics</button>
+<button role="tab" id="tb2" aria-controls="p2" aria-selected="false" tabindex="-1">Engagement / Rétention</button>
+<button role="tab" id="tb3" aria-controls="p3" aria-selected="false" tabindex="-1">Conversion / Ventes</button>
+</div>
+<div class="panel" id="p1" role="tabpanel" aria-labelledby="tb1">
+<p><strong>Objectif : faire venir du monde.</strong></p>
+<ul><li><b>Impressions :</b> nombre d'affichages de votre contenu ou annonce.</li><li><b>Clics et CTR :</b> combien de personnes cliquent, en proportion.</li><li><b>Coût par clic :</b> prix moyen d'un clic.</li></ul>
+</div>
+<div class="panel" id="p2" role="tabpanel" aria-labelledby="tb2" hidden>
+<p><strong>Objectif : garder l'attention et fidéliser.</strong></p>
+<ul><li><b>Taux d'ouverture et de clic</b> d'un e-mail.</li><li><b>Interactions :</b> j'aime, commentaires, partages.</li><li><b>Taux de réachat :</b> part des clients qui reviennent.</li></ul>
+</div>
+<div class="panel" id="p3" role="tabpanel" aria-labelledby="tb3" hidden>
+<p><strong>Objectif : transformer l'intérêt en ventes.</strong></p>
+<ul><li><b>Taux de conversion :</b> part des visiteurs qui passent à l'action.</li><li><b>CPA :</b> coût pour obtenir un client ou une vente.</li><li><b>ROAS :</b> revenu généré pour 1 € de publicité.</li></ul>
+</div>
+</div>
+
+<div class="cards">
+<article class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><h3>CTR</h3><p>Clics ÷ impressions.</p><small><b>Lecture :</b> mon message attire-t-il ?</small></article>
+<article class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Taux de conversion</h3><p>Actions ÷ visiteurs.</p><small><b>Lecture :</b> ma page convainc-t-elle ?</small></article>
+<article class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M16 7H10a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6H7"/></svg></div><h3>CPA</h3><p>Dépenses ÷ conversions.</p><small><b>Lecture :</b> combien me coûte un client ?</small></article>
+<article class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></svg></div><h3>ROAS</h3><p>Revenu ÷ dépenses pub.</p><small><b>Lecture :</b> ma publicité est-elle rentable ?</small></article>
+</div>
+
+<h3 style="margin-top:36px">Comment se calculent-ils ?</h3>
+<details>
+<summary>CTR (taux de clic)</summary>
+<div><p class="fx">CTR = clics ÷ impressions × 100</p><p>Exemple : 300 clics pour 10 000 impressions donnent 3 %.</p></div>
+</details>
+<details>
+<summary>Taux de conversion</summary>
+<div><p class="fx">Taux de conversion = conversions ÷ visiteurs × 100</p><p>Exemple : 30 achats pour 1 000 visiteurs donnent 3 %.</p></div>
+</details>
+<details>
+<summary>CPA (coût par acquisition)</summary>
+<div><p class="fx">CPA = dépenses ÷ nombre de conversions</p><p>Exemple : 200 € dépensés pour 10 ventes donnent un CPA de 20 €.</p></div>
+</details>
+<details>
+<summary>ROAS (retour sur dépenses publicitaires)</summary>
+<div><p class="fx">ROAS = revenu généré ÷ dépenses publicitaires</p><p>Exemple : 800 € de ventes pour 200 € de pub donnent un ROAS de 4, soit 4 € gagnés pour 1 € dépensé.</p></div>
+</details>
+
+<div class="note good"><span class="e" aria-hidden="true">🎯</span><div><strong>Bonne pratique marketing</strong><p>Associez toujours un indicateur d'attirance (CTR) à un indicateur de résultat (CPA ou ROAS). Un beau CTR sans ventes ne prouve rien.</p></div></div>
+</div>
+</section>
+
+<!-- 2 -->
+<section class="s alt" id="tableau-de-bord">
+<div class="wrap rv">
+<h2>2. Faire lire un tableau de bord par l'IA</h2>
+<p>Un tableau de bord rassemble vos chiffres au même endroit. L'IA peut le <strong>résumer en langage courant</strong>, comparer deux périodes et signaler des <dfn>tendances cachées</dfn> : par exemple, une audience qui progresse sur mobile alors que les ventes y baissent.</p>
+
+<figure>
+<svg viewBox="0 0 600 270" role="img" aria-labelledby="t1 d1" width="600" height="270">
+<title id="t1">Exemple de tableau de bord marketing</title>
+<desc id="d1">Trois indicateurs (CTR 3,2 %, CPA 18 euros, ROAS 3,9) et une courbe de visites sur huit semaines en hausse, avec un creux à la semaine 6.</desc>
+<rect x="10" y="10" width="580" height="250" rx="14" fill="#fff" stroke="#DDE5F0" stroke-width="2"/>
+<rect x="28" y="28" width="170" height="62" rx="10" fill="#EAF1FF"/>
+<text x="42" y="52" font-size="12" style="fill:#626B78">CTR</text><text x="42" y="78" font-size="22" font-weight="700">3,2 %</text>
+<rect x="215" y="28" width="170" height="62" rx="10" fill="#EAF1FF"/>
+<text x="229" y="52" font-size="12" style="fill:#626B78">CPA</text><text x="229" y="78" font-size="22" font-weight="700">18 €</text>
+<rect x="402" y="28" width="170" height="62" rx="10" fill="#FFF3E8"/>
+<text x="416" y="52" font-size="12" style="fill:#B45309">ROAS</text><text x="416" y="78" font-size="22" font-weight="700">3,9</text>
+<path d="M50 220H550M50 170H550M50 120H550" stroke="#DDE5F0" stroke-width="1"/>
+<polyline points="60,200 130,185 200,175 270,160 340,150 410,185 480,135 540,120" fill="none" stroke="#2563EB" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="410" cy="185" r="7" fill="#F97316"/>
+<text x="410" y="207" text-anchor="middle" font-size="11" style="fill:#B45309">Creux</text>
+<text x="60" y="242" font-size="11" style="fill:#626B78">S1</text><text x="270" y="242" font-size="11" style="fill:#626B78">S4</text><text x="540" y="242" text-anchor="middle" font-size="11" style="fill:#626B78">S8</text>
+<text x="50" y="112" font-size="11" style="fill:#626B78">Visites par semaine</text>
+</svg>
+<figcaption>Schéma illustratif : indicateurs clés et courbe de tendance.</figcaption>
+</figure>
+
+<p>Pour de bons résultats, donnez à l'IA le contexte (objectif, période, canal) et des données <strong>anonymisées</strong>. Voici un prompt de départ :</p>
+<div class="code"><header><span>Lecture d'un tableau de bord</span><button class="cp" type="button">Copier le code</button></header><pre><code>Tu es analyste marketing. Voici les résultats de [nom de la campagne] sur [période] : [coller les données]. Mon objectif est [objectif]. Résume la performance en 5 lignes, identifie les 3 tendances principales et signale ce qui te paraît surprenant.</code></pre></div>
+<div class="code"><header><span>Analyse d'un fichier CSV de ventes</span><button class="cp" type="button">Copier le code</button></header><pre><code>Analyse ce fichier CSV de vente : [coller ou joindre les données]. Identifie les 3 tendances principales, puis explique chacune en une phrase simple pour un non-spécialiste.</code></pre></div>
+
+<div class="note"><span class="e" aria-hidden="true">💡</span><div><strong>À retenir</strong><p>L'IA gagne un temps précieux sur la lecture, mais elle ne voit que ce que vous lui donnez : des données incomplètes produisent une analyse incomplète.</p></div></div>
+</div>
+</section>
+
+<!-- 3 -->
+<section class="s" id="anomalies">
+<div class="wrap rv">
+<h2>3. Détecter tôt les anomalies et les baisses</h2>
+<p>Une <dfn>anomalie</dfn> est un écart inhabituel par rapport à la normale : un coût qui double, des clics qui chutent, une page qui ne convertit plus. Des outils d'analyse et des algorithmes comparent en continu vos chiffres à leur historique et vous <strong>alertent</strong> quand l'écart est trop grand, souvent avant que vous ne le remarquiez.</p>
+
+<figure>
+<svg viewBox="0 0 600 220" role="img" aria-labelledby="t2 d2" width="600" height="220">
+<title id="t2">Détection d'une anomalie</title>
+<desc id="d2">Une courbe de conversions reste dans une zone normale pendant cinq jours, puis chute brutalement au sixième jour en sortant de cette zone, ce qui déclenche une alerte.</desc>
+<rect x="40" y="60" width="520" height="70" fill="#EAF1FF"/>
+<text x="46" y="55" font-size="11" style="fill:#626B78">Zone normale</text>
+<polyline points="60,95 150,85 240,100 330,90 420,98 480,170 550,160" fill="none" stroke="#2563EB" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="480" cy="170" r="8" fill="#F97316"/>
+<rect x="400" y="185" width="150" height="26" rx="13" fill="#FFF3E8" stroke="#F97316"/>
+<text x="475" y="203" text-anchor="middle" font-size="12" font-weight="600" style="fill:#B45309">Alerte : baisse</text>
+<text x="60" y="160" font-size="11" style="fill:#626B78">Jours</text>
+</svg>
+<figcaption>Quand la courbe sort de sa zone habituelle, une alerte se déclenche.</figcaption>
+</figure>
+
+<p>Un réflexe utile : demander à l'IA <em>pourquoi</em> le chiffre a bougé, en lui listant ce qui a changé de votre côté.</p>
+<div class="code"><header><span>Diagnostic d'une baisse</span><button class="cp" type="button">Copier le code</button></header><pre><code>Le taux de conversion de [produit] est passé de [valeur avant] à [valeur après] depuis le [date]. Voici ce qui a changé de notre côté : [nouvelle page, nouveau budget, nouvelle audience]. Propose 5 causes possibles, de la plus probable à la moins probable, et indique comment vérifier chacune.</code></pre></div>
+
+<div class="note warn"><span class="e" aria-hidden="true">⚠️</span><div><strong>Attention / erreur fréquente</strong><p>Réagir à chaque variation. Un week-end creux ou un jour férié peut suffire à expliquer une baisse : regardez toujours la durée et le contexte avant d'agir.</p></div></div>
+</div>
+</section>
+
+<!-- 4 -->
+<section class="s alt" id="recommandations">
+<div class="wrap rv">
+<h2>4. Des données brutes aux actions concrètes</h2>
+<p>Une analyse n'a de valeur que si elle débouche sur une décision. Voici la boucle à suivre, à répéter à chaque campagne :</p>
+
+<ol class="steps">
+<li><strong>Collecte.</strong> Rassembler les données fiables : campagnes, site, e-mails, ventes.</li>
+<li><strong>Analyse IA.</strong> Demander à l'IA de résumer, comparer et repérer les écarts.</li>
+<li><strong>Recommandation.</strong> Obtenir des pistes d'action claires, classées par priorité.</li>
+<li><strong>Ajustement.</strong> Tester la meilleure piste, puis mesurer à nouveau.</li>
+</ol>
+
+<p>Le secret est de demander explicitement des actions, avec une priorité et un moyen de vérifier le résultat :</p>
+<div class="code"><header><span>Du constat à la recommandation</span><button class="cp" type="button">Copier le code</button></header><pre><code>Voici les résultats de nos deux campagnes : [coller les données]. Compare-les, puis propose 3 actions concrètes pour améliorer [objectif]. Pour chaque action, précise : pourquoi, l'effort nécessaire (faible, moyen, élevé) et l'indicateur qui permettra de vérifier le résultat.</code></pre></div>
+<div class="code"><header><span>Rapport simple pour un responsable</span><button class="cp" type="button">Copier le code</button></header><pre><code>À partir de ces résultats : [coller les données], rédige un compte rendu de 10 lignes pour un responsable non spécialiste : ce qui a marché, ce qui n'a pas marché, et les 3 prochaines décisions à prendre.</code></pre></div>
+
+<div class="note good"><span class="e" aria-hidden="true">🎯</span><div><strong>Bonne pratique marketing</strong><p>Changez une seule chose à la fois. Si vous modifiez le visuel, le texte et le budget ensemble, vous ne saurez pas ce qui a fait la différence.</p></div></div>
+<details>
+<summary>Pour aller plus loin : de quoi se compose une bonne recommandation ?</summary>
+<div><ul><li>Un constat chiffré (ce qui se passe).</li><li>Une cause probable (pourquoi).</li><li>Une action précise (quoi faire).</li><li>Un indicateur de contrôle (comment vérifier).</li></ul></div>
+</details>
+<div class="note good"><span class="e" aria-hidden="true">🔗</span><div><strong>Pour aller plus loin</strong><p>Gardez une trace de vos prompts d'analyse qui fonctionnent bien : vous pourrez les réutiliser à chaque nouveau bilan.</p></div></div>
+</div>
+</section>
+
+<!-- 5 -->
+<section class="s" id="limites">
+<div class="wrap rv">
+<h2>5. Limites de l'analyse automatisée et recul humain</h2>
+<p>L'IA calcule vite, mais elle ne comprend ni votre marché, ni votre histoire, ni vos objectifs réels. Le regard humain reste indispensable.</p>
+<div class="cols">
+<div class="card"><h3>Ce que l'IA fait bien</h3><p>Résumer de gros volumes de chiffres.</p><p>Repérer des écarts et des motifs répétitifs.</p><p>Proposer des pistes à explorer.</p></div>
+<div class="card"><h3>Ce qui revient à l'humain</h3><p>Comprendre le contexte (saison, actualité, concurrence).</p><p>Décider selon la stratégie et les valeurs de la marque.</p><p>Assumer la responsabilité de la décision.</p></div>
+</div>
+
+<div class="note warn"><span class="e" aria-hidden="true">⚠️</span><div><strong>Attention / erreur fréquente</strong><p>Prendre une corrélation pour une cause. Deux chiffres qui évoluent ensemble ne prouvent pas que l'un provoque l'autre. L'IA peut aussi se tromper dans un calcul : revérifiez les chiffres importants.</p></div></div>
+<div class="note warn"><span class="e" aria-hidden="true">⚠️</span><div><strong>Attention / erreur fréquente</strong><p>Fournir des données clients personnelles à un outil public. Anonymisez toujours et respectez les règles de votre entreprise.</p></div></div>
+<div class="note"><span class="e" aria-hidden="true">💡</span><div><strong>À retenir</strong><p>Données de mauvaise qualité, analyse de mauvaise qualité. L'IA est une aide à la décision, jamais le décideur.</p></div></div>
+</div>
+</section>
+
+<!-- Points clés -->
+<section class="s alt" id="points-cles">
+<div class="wrap rv">
+<h2>Points clés à retenir</h2>
+<ul class="key">
+<li>Choisissez l'objectif d'abord, puis deux ou trois KPI adaptés : clics, engagement ou conversion.</li>
+<li>CTR, taux de conversion, CPA et ROAS se calculent par de simples divisions.</li>
+<li>L'IA peut lire un tableau de bord, le résumer et révéler des tendances cachées.</li>
+<li>Les alertes d'anomalies permettent de réagir tôt, mais il faut vérifier le contexte avant d'agir.</li>
+<li>La boucle Collecte, Analyse IA, Recommandation, Ajustement transforme les chiffres en actions.</li>
+<li>L'IA ne remplace pas le recul stratégique humain : vérifiez, contextualisez, décidez.</li>
+</ul>
+</div>
+</section>
+
+<div class="wrap">
+<div class="pn">
+<a class="pv" href="lecon-08-utiliser-ia-publicite-en-ligne.html"><small>Leçon précédente</small>Leçon 08 — Utiliser l'IA pour la publicité en ligne</a>
+<a class="nx" href="lecon-10-plan-marketing-ia-bonnes-pratiques.html"><small>Leçon suivante</small>Leçon 10 — Construire son plan marketing IA et adopter les bonnes pratiques</a>
+</div>
+<p class="mod"><a href="module-02.html">Retour au sommaire du module 2</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière IA &amp; Marketing · Module 2 · Leçon 09</div></footer>
+<button id="top" aria-label="Retour en haut de la page">↑</button>
+
+<script>
+(function(){
+var secs=[].slice.call(document.querySelectorAll('section.s[id]'));
+var toc=document.getElementById('toc'),menu=document.getElementById('menu');
+secs.forEach(function(s,i){
+var t=s.querySelector('h2').textContent.replace(/^\d+\.\s*/,'');
+var n=s.id==='points-cles'?'✓':(i+1);
+var li=document.createElement('li');li.innerHTML='<a href="#'+s.id+'"><span>'+n+'</span>'+t+'</a>';toc.appendChild(li);
+var a=document.createElement('a');a.href='#'+s.id;a.textContent=t;menu.appendChild(a);
+});
+var mb=document.getElementById('mbtn');
+function cm(){menu.classList.remove('open');mb.setAttribute('aria-expanded','false')}
+mb.addEventListener('click',function(e){e.stopPropagation();var o=menu.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+menu.addEventListener('click',cm);
+document.addEventListener('click',function(e){if(!menu.contains(e.target))cm()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){cm();mb.focus()}});
+
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function sc(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';top.classList.toggle('show',h.scrollTop>600)}
+window.addEventListener('scroll',sc,{passive:true});sc();
+top.addEventListener('click',function(){window.scrollTo({top:0})});
+
+var tabs=[].slice.call(document.querySelectorAll('#tabs [role=tab]'));
+function sel(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on});t.focus()}
+tabs.forEach(function(t,i){
+t.addEventListener('click',function(){sel(t)});
+t.addEventListener('keydown',function(e){
+var k=e.key,j=k==='ArrowRight'?i+1:k==='ArrowLeft'?i-1:k==='Home'?0:k==='End'?tabs.length-1:-1;
+if(j>-1){e.preventDefault();sel(tabs[(j+tabs.length)%tabs.length])}});
+});
+
+document.querySelectorAll('.code pre code').forEach(function(c){
+c.innerHTML=c.innerHTML.replace(/\[[^\]]+\]/g,'<span class="ph">$&</span>').replace(/^(Tu es [^.]+\.)/,'<span class="k">$1</span>');
+});
+document.querySelectorAll('.cp').forEach(function(b){
+b.addEventListener('click',function(){
+var txt=b.closest('.code').querySelector('code').textContent;
+function ok(){b.textContent='Copié ✓';setTimeout(function(){b.textContent='Copier le code'},1800)}
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb)}else fb();
+function fb(){var r=document.createRange();r.selectNodeContents(b.closest('.code').querySelector('code'));var s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy');ok()}catch(e){}s.removeAllRanges()}
+});
+});
+
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
+rv.forEach(function(r){io.observe(r)});
+}else rv.forEach(function(r){r.classList.add('in')});
+})();
+</script>
+</body>
+</html>

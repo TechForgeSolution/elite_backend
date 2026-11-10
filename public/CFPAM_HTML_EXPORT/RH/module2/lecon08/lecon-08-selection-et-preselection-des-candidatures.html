@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 08 — Sélection et présélection des candidatures — Filière Gestion des Ressources Humaines">
+  <title>Leçon 08 — Sélection et présélection des candidatures | GRH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --color-bg:#F7F8F6;
+      --color-text:#1F2933;
+      --color-accent:#2F6B5F;
+      --color-neutral:#8A9690;
+      --color-accent-soft:color-mix(in srgb,var(--color-accent) 9%,var(--color-bg));
+      --color-accent-mid:color-mix(in srgb,var(--color-accent) 18%,var(--color-bg));
+      --color-text-soft:color-mix(in srgb,var(--color-text) 68%,var(--color-bg));
+      --color-border:color-mix(in srgb,var(--color-neutral) 30%,var(--color-bg));
+      --shadow:0 14px 35px color-mix(in srgb,var(--color-text) 8%,transparent);
+      --radius:18px;
+      --max:1160px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--color-bg);color:var(--color-text);
+      font-family:Inter,system-ui,sans-serif;line-height:1.65;
+    }
+    h1,h2,h3,h4{font-family:Manrope,Inter,sans-serif;line-height:1.2;margin:0}
+    h1{font-size:clamp(2rem,4.5vw,4rem);letter-spacing:-.04em}
+    h2{font-size:clamp(1.45rem,2.5vw,2.15rem);letter-spacing:-.025em}
+    h3{font-size:1.08rem}
+    p{margin:.7rem 0;color:var(--color-text-soft)}
+    a{color:inherit}
+    :focus-visible{outline:3px solid color-mix(in srgb,var(--color-accent) 48%,transparent);outline-offset:3px}
+    .container{width:min(calc(100% - 32px),var(--max));margin:auto}
+    .mono{font-family:"JetBrains Mono",monospace}
+
+    .progress{
+      position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;
+      background:transparent;
+    }
+    .progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+
+    header{
+      position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--color-bg) 94%,transparent);
+      backdrop-filter:blur(12px);border-bottom:1px solid var(--color-border);
+    }
+    .nav{height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:800}
+    .brand-mark{
+      width:38px;height:38px;border:1.5px solid var(--color-accent);border-radius:11px;
+      display:grid;place-items:center;color:var(--color-accent);font-family:Manrope;font-weight:800;
+    }
+    .brand small{display:block;color:var(--color-neutral);font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+    .menu-btn{display:none;border:1px solid var(--color-border);background:var(--color-bg);border-radius:10px;padding:8px 11px;font-size:1.1rem}
+    .nav-links{display:flex;gap:22px;align-items:center}
+    .nav-links a{text-decoration:none;font-size:.9rem;font-weight:600;color:var(--color-text-soft)}
+    .nav-links a:hover{color:var(--color-accent)}
+
+    .hero{padding:72px 0 42px}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:42px;align-items:center}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--color-border);
+      border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent);
+      font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+    }
+    .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--color-accent);display:block}
+    .hero h1{margin:18px 0 16px;max-width:720px}
+    .hero-lead{font-size:1.08rem;max-width:670px}
+    .badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+    .badge{
+      display:inline-flex;align-items:center;gap:7px;border:1px solid var(--color-border);
+      padding:8px 11px;border-radius:10px;background:var(--color-bg);font-size:.78rem;font-weight:700;
+    }
+    .badge strong{color:var(--color-accent)}
+    .hero-visual{
+      min-height:350px;border:1px solid var(--color-border);border-radius:24px;background:var(--color-bg);
+      box-shadow:var(--shadow);display:grid;place-items:center;padding:20px;overflow:hidden;
+    }
+    svg{max-width:100%;height:auto}
+    .figure-caption{text-align:center;font-size:.76rem;color:var(--color-neutral);margin-top:8px}
+
+    .toc{
+      margin:10px 0 34px;border:1px solid var(--color-border);border-radius:16px;background:var(--color-bg);
+      box-shadow:0 7px 22px color-mix(in srgb,var(--color-text) 4%,transparent);
+    }
+    .toc-inner{padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .toc-title{font-family:Manrope;font-weight:800;font-size:.85rem;color:var(--color-accent)}
+    .toc a{font-size:.82rem;text-decoration:none;color:var(--color-text-soft);padding:6px 8px;border-radius:8px}
+    .toc a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+
+    main{padding-bottom:50px}
+    section{scroll-margin-top:92px;margin:68px 0}
+    .section-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:26px}
+    .section-num{
+      flex:0 0 38px;height:38px;border-radius:11px;background:var(--color-accent);
+      color:var(--color-bg);display:grid;place-items:center;font-family:"JetBrains Mono";font-size:.78rem;font-weight:700;
+    }
+    .section-kicker{font-size:.74rem;color:var(--color-accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    .card{
+      background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);
+      padding:22px;box-shadow:0 8px 24px color-mix(in srgb,var(--color-text) 4%,transparent);
+    }
+    .card.soft{background:var(--color-accent-soft)}
+    .icon{
+      width:40px;height:40px;border-radius:12px;background:var(--color-accent-soft);color:var(--color-accent);
+      display:grid;place-items:center;font-family:"JetBrains Mono";font-weight:700;margin-bottom:15px;
+    }
+    .card h3{margin-bottom:7px}
+    .card ul{padding-left:19px;margin:10px 0 0;color:var(--color-text-soft)}
+    .card li{margin:5px 0}
+
+    .process{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:24px}
+    .process-step{position:relative;text-align:center;padding:0 8px}
+    .process-step:not(:last-child)::after{
+      content:"";position:absolute;top:19px;left:calc(50% + 19px);right:calc(-50% + 19px);
+      height:1px;background:var(--color-border);
+    }
+    .process-dot{
+      position:relative;z-index:2;width:38px;height:38px;border-radius:50%;margin:0 auto 10px;
+      display:grid;place-items:center;background:var(--color-bg);border:2px solid var(--color-accent);
+      color:var(--color-accent);font-family:"JetBrains Mono";font-size:.72rem;font-weight:700;
+    }
+    .process-step b{font-size:.78rem;display:block}
+    .process-step span{display:block;color:var(--color-neutral);font-size:.7rem;margin-top:3px}
+
+    .tabs{border:1px solid var(--color-border);border-radius:18px;overflow:hidden;background:var(--color-bg)}
+    .tab-list{display:flex;overflow:auto;border-bottom:1px solid var(--color-border);background:var(--color-accent-soft)}
+    .tab{
+      border:0;background:transparent;padding:14px 16px;font:700 .82rem Inter;white-space:nowrap;color:var(--color-text-soft);cursor:pointer;
+    }
+    .tab[aria-selected="true"]{color:var(--color-accent);background:var(--color-bg)}
+    .tab-panel{padding:23px}
+    .tab-panel[hidden]{display:none}
+
+    .table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:16px}
+    table{border-collapse:collapse;width:100%;min-width:760px;background:var(--color-bg)}
+    th,td{text-align:left;padding:14px 15px;border-bottom:1px solid var(--color-border);vertical-align:top}
+    th{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--color-accent);background:var(--color-accent-soft)}
+    td{font-size:.86rem;color:var(--color-text-soft)}
+    tr:last-child td{border-bottom:0}
+
+    .callout{
+      border-left:4px solid var(--color-accent);background:var(--color-accent-soft);
+      border-radius:0 15px 15px 0;padding:18px 20px;margin:20px 0;
+    }
+    .callout strong{color:var(--color-accent)}
+    .warning{border-left-color:var(--color-neutral);background:color-mix(in srgb,var(--color-neutral) 8%,var(--color-bg))}
+
+    .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:12px;margin:24px 0}
+    .flow-box{border:1px solid var(--color-border);border-radius:15px;padding:17px;background:var(--color-bg);text-align:center}
+    .flow-box strong{display:block;color:var(--color-accent);font-size:.85rem}
+    .flow-arrow{font-size:1.4rem;color:var(--color-accent);text-align:center}
+
+    .score-card{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+    .criteria{display:grid;gap:10px}
+    .criterion{
+      display:grid;grid-template-columns:1fr auto;gap:15px;align-items:center;
+      padding:13px 15px;border:1px solid var(--color-border);border-radius:12px;
+    }
+    .criterion span{font-size:.83rem;color:var(--color-text-soft)}
+    .criterion b{font-family:"JetBrains Mono";font-size:.8rem;color:var(--color-accent)}
+
+    .candidate-board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+    .candidate{
+      border:1px solid var(--color-border);border-radius:16px;padding:17px;background:var(--color-bg);
+    }
+    .candidate-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:12px}
+    .candidate-name{font-family:Manrope;font-weight:800}
+    .status{font-size:.68rem;font-weight:800;padding:5px 8px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent)}
+    .status.neutral{background:color-mix(in srgb,var(--color-neutral) 10%,var(--color-bg));color:var(--color-neutral)}
+    .bar{height:7px;background:color-mix(in srgb,var(--color-neutral) 16%,var(--color-bg));border-radius:99px;overflow:hidden;margin:8px 0}
+    .bar i{display:block;height:100%;background:var(--color-accent);border-radius:99px}
+    .candidate small{color:var(--color-neutral);font-size:.7rem}
+
+    .accordion{border-top:1px solid var(--color-border)}
+    details{border-bottom:1px solid var(--color-border)}
+    summary{cursor:pointer;list-style:none;padding:17px 4px;font-family:Manrope;font-weight:800}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"+";float:right;color:var(--color-accent);font-family:"JetBrains Mono"}
+    details[open] summary::after{content:"−"}
+    details div{padding:0 4px 18px;color:var(--color-text-soft)}
+
+    .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .key{
+      border:1px solid var(--color-border);border-radius:15px;padding:18px;background:var(--color-bg);
+      min-height:145px;
+    }
+    .key .num{font-family:"JetBrains Mono";font-size:.72rem;color:var(--color-accent);font-weight:700}
+    .key h3{margin:10px 0 7px;font-size:.94rem}
+
+    .lesson-nav{
+      display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:70px;
+    }
+    .lesson-nav a{
+      border:1px solid var(--color-border);border-radius:16px;padding:19px;text-decoration:none;background:var(--color-bg);
+    }
+    .lesson-nav a:hover{border-color:var(--color-accent)}
+    .lesson-nav small{display:block;color:var(--color-neutral);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}
+    .lesson-nav strong{display:block;margin-top:5px}
+
+    footer{border-top:1px solid var(--color-border);padding:30px 0 45px;color:var(--color-neutral);font-size:.78rem}
+    .footer-inner{display:flex;justify-content:space-between;gap:18px;align-items:center}
+
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .top-btn{
+      position:fixed;right:20px;bottom:20px;border:1px solid var(--color-border);background:var(--color-bg);
+      color:var(--color-accent);border-radius:12px;width:42px;height:42px;cursor:pointer;box-shadow:var(--shadow);display:none;
+    }
+    .top-btn.show{display:block}
+
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:1fr}
+      .hero-visual{min-height:280px}
+      .grid-3{grid-template-columns:1fr}
+      .process{grid-template-columns:repeat(3,1fr);gap:25px 4px}
+      .process-step:not(:last-child)::after{display:none}
+      .score-card{grid-template-columns:1fr}
+      .candidate-board{grid-template-columns:1fr}
+      .keys{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:700px){
+      .container{width:min(calc(100% - 22px),var(--max))}
+      .nav{height:62px}
+      .menu-btn{display:block}
+      .nav-links{
+        display:none;position:absolute;top:62px;left:11px;right:11px;padding:12px;
+        border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg);
+        box-shadow:var(--shadow);flex-direction:column;align-items:stretch;
+      }
+      .nav-links.open{display:flex}
+      .nav-links a{padding:10px}
+      .hero{padding-top:45px}
+      .toc-inner{align-items:flex-start;flex-direction:column}
+      section{margin:52px 0}
+      .grid-2{grid-template-columns:1fr}
+      .flow{grid-template-columns:1fr;gap:7px}
+      .flow-arrow{transform:rotate(90deg)}
+      .keys{grid-template-columns:1fr}
+      .lesson-nav{grid-template-columns:1fr}
+      .footer-inner{flex-direction:column;align-items:flex-start}
+    }
+    @media(max-width:480px){
+      h1{font-size:2.05rem}
+      .process{grid-template-columns:repeat(2,1fr)}
+      .hero-visual{padding:8px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+      .reveal{opacity:1;transform:none}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Retour au début de la leçon">
+        <span class="brand-mark">RH</span>
+        <span>Gestion des Ressources Humaines<small>Formation professionnelle</small></span>
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu">☰</button>
+      <nav class="nav-links" id="navLinks" aria-label="Navigation principale">
+        <a href="#cours">Cours</a>
+        <a href="#processus">Processus</a>
+        <a href="#criteres">Critères</a>
+        <a href="#exemple">Exemple RH</a>
+        <a href="#essentiel">À retenir</a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="top"></div>
+  <main id="cours">
+    <div class="container">
+      <section class="hero" style="margin-top:0">
+        <div class="hero-grid">
+          <div class="reveal">
+            <span class="eyebrow"><i></i> Module 2 · Recrutement et intégration</span>
+            <h1>Leçon 08 — Sélection et présélection des candidatures</h1>
+            <p class="hero-lead">Trier et évaluer les candidatures reçues à partir de critères objectifs, cohérents et liés au poste, afin de construire une <strong>short-list</strong> pertinente avant l’entretien.</p>
+            <div class="badges">
+              <span class="badge">Niveau <strong>Intermédiaire</strong></span>
+              <span class="badge">Durée <strong>10–15 min</strong></span>
+              <span class="badge">Focus <strong>Présélection</strong></span>
+            </div>
+          </div>
+
+          <div class="hero-visual reveal" aria-label="Schéma du processus de présélection">
+            <div>
+              <svg viewBox="0 0 560 340" role="img" aria-labelledby="heroTitle heroDesc">
+                <title id="heroTitle">Processus de sélection des candidatures</title>
+                <desc id="heroDesc">Des candidatures reçues sont triées, évaluées avec une grille puis transformées en short-list.</desc>
+                <rect x="24" y="48" width="130" height="220" rx="18" fill="var(--color-accent-soft)" stroke="var(--color-border)"/>
+                <text x="89" y="79" text-anchor="middle" font-family="Manrope" font-size="15" font-weight="800" fill="var(--color-text)">Candidatures</text>
+                <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+                  <rect x="48" y="103" width="82" height="45" rx="8"/><rect x="48" y="159" width="82" height="45" rx="8"/><rect x="48" y="215" width="82" height="28" rx="8"/>
+                </g>
+                <path d="M171 158h52" stroke="var(--color-accent)" stroke-width="2"/>
+                <path d="M214 150l10 8-10 8" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+                <rect x="225" y="82" width="135" height="153" rx="18" fill="var(--color-bg)" stroke="var(--color-border)"/>
+                <text x="292" y="111" text-anchor="middle" font-family="Manrope" font-size="14" font-weight="800" fill="var(--color-text)">Grille objective</text>
+                <g font-family="Inter" font-size="11" fill="var(--color-text-soft)">
+                  <text x="245" y="138">Compétences</text><text x="245" y="161">Expérience</text><text x="245" y="184">Formation</text><text x="245" y="207">Critères du poste</text>
+                </g>
+                <g fill="var(--color-accent)"><circle cx="338" cy="135" r="5"/><circle cx="338" cy="158" r="5"/><circle cx="338" cy="181" r="5"/><circle cx="338" cy="204" r="5"/></g>
+                <path d="M377 158h52" stroke="var(--color-accent)" stroke-width="2"/>
+                <path d="M420 150l10 8-10 8" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+                <rect x="430" y="102" width="105" height="112" rx="18" fill="var(--color-accent-soft)" stroke="var(--color-border)"/>
+                <text x="482" y="134" text-anchor="middle" font-family="Manrope" font-size="14" font-weight="800" fill="var(--color-text)">Short-list</text>
+                <circle cx="460" cy="164" r="13" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+                <circle cx="482" cy="164" r="13" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+                <circle cx="504" cy="164" r="13" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2"/>
+                <path d="M455 190h54" stroke="var(--color-accent)" stroke-width="3" stroke-linecap="round"/>
+                <text x="280" y="290" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--color-neutral)">TRIER → ÉVALUER → RETENIR</text>
+              </svg>
+              <div class="figure-caption">De la réception des CV à une sélection structurée des profils à rencontrer.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="toc reveal" aria-label="Sommaire de la leçon">
+        <div class="toc-inner">
+          <span class="toc-title">SOMMAIRE</span>
+          <a href="#comprendre">01 Comprendre</a>
+          <a href="#tri">02 Tri des candidatures</a>
+          <a href="#grille">03 Grille de présélection</a>
+          <a href="#criteres">04 Critères & non-discrimination</a>
+          <a href="#shortlist">05 Short-list</a>
+          <a href="#exemple">06 Exemple RH</a>
+          <a href="#essentiel">07 L’essentiel</a>
+        </div>
+      </nav>
+
+      <section id="comprendre">
+        <div class="section-head reveal">
+          <span class="section-num">01</span>
+          <div>
+            <div class="section-kicker">Fondamentaux</div>
+            <h2>Comprendre la sélection et la présélection</h2>
+            <p>La présélection intervient après la diffusion de l’offre et la réception des candidatures. Elle consiste à comparer les dossiers avec les exigences définies pour le poste.</p>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <article class="card reveal">
+            <div class="icon">01</div>
+            <h3>Présélection</h3>
+            <p>Premier filtre permettant d’identifier les candidatures qui répondent aux critères essentiels du poste.</p>
+            <ul>
+              <li>Vérifier les prérequis.</li>
+              <li>Écarter les dossiers manifestement incompatibles.</li>
+              <li>Conserver une trace des critères utilisés.</li>
+            </ul>
+          </article>
+          <article class="card soft reveal">
+            <div class="icon">02</div>
+            <h3>Sélection</h3>
+            <p>Analyse plus approfondie des profils retenus afin de préparer l’étape suivante du recrutement.</p>
+            <ul>
+              <li>Comparer les profils entre eux.</li>
+              <li>Hiérarchiser les candidatures.</li>
+              <li>Préparer la liste des personnes à contacter.</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <div class="icon">03</div>
+            <h3>Objectivité</h3>
+            <p>La décision doit reposer sur des éléments pertinents pour l’emploi, et non sur des préférences personnelles.</p>
+            <ul>
+              <li>Critères définis avant le tri.</li>
+              <li>Mêmes critères pour les candidats comparables.</li>
+              <li>Traçabilité des décisions.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="flow reveal" aria-label="Relation entre les étapes">
+          <div class="flow-box"><strong>Candidatures reçues</strong><span>Volume initial</span></div>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <div class="flow-box"><strong>Présélection</strong><span>Critères essentiels</span></div>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <div class="flow-box"><strong>Short-list</strong><span>Profils à approfondir</span></div>
+        </div>
+      </section>
+
+      <section id="tri">
+        <div class="section-head reveal">
+          <span class="section-num">02</span>
+          <div>
+            <div class="section-kicker">Méthode</div>
+            <h2>Le tri des CV et des lettres de motivation</h2>
+            <p>Le tri doit être organisé à partir du profil de poste : on recherche les informations utiles à la comparaison, sans transformer la lecture du dossier en jugement subjectif.</p>
+          </div>
+        </div>
+
+        <div class="process reveal" aria-label="Six étapes du tri des candidatures">
+          <div class="process-step"><div class="process-dot">01</div><b>Centraliser</b><span>Regrouper les dossiers</span></div>
+          <div class="process-step"><div class="process-dot">02</div><b>Vérifier</b><span>Pré-requis essentiels</span></div>
+          <div class="process-step"><div class="process-dot">03</div><b>Lire</b><span>CV + lettre</span></div>
+          <div class="process-step"><div class="process-dot">04</div><b>Comparer</b><span>Mêmes critères</span></div>
+          <div class="process-step"><div class="process-dot">05</div><b>Classer</b><span>Prioriser les profils</span></div>
+          <div class="process-step"><div class="process-dot">06</div><b>Retenir</b><span>Constituer la short-list</span></div>
+        </div>
+
+        <div class="tabs reveal" style="margin-top:32px">
+          <div class="tab-list" role="tablist" aria-label="Lecture des pièces de candidature">
+            <button class="tab" role="tab" aria-selected="true" aria-controls="panel-cv" id="tab-cv">CV</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="panel-lettre" id="tab-lettre">Lettre de motivation</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="panel-coherence" id="tab-coherence">Cohérence du dossier</button>
+          </div>
+          <div class="tab-panel" id="panel-cv" role="tabpanel" aria-labelledby="tab-cv">
+            <h3>Le CV : rechercher les éléments liés au poste</h3>
+            <p>Le CV permet notamment d’examiner le parcours professionnel, les formations, les compétences et les expériences pertinentes. L’objectif n’est pas de privilégier le document le plus esthétique, mais d’identifier les éléments utiles à la fonction.</p>
+            <div class="grid-2">
+              <div class="card soft"><strong>À observer</strong><p>Expériences comparables, compétences techniques, niveau de formation requis, responsabilités exercées et cohérence avec le profil recherché.</p></div>
+              <div class="card"><strong>À éviter</strong><p>Donner une importance excessive à la mise en page, aux impressions personnelles ou à des informations sans lien avec les exigences du poste.</p></div>
+            </div>
+          </div>
+          <div class="tab-panel" id="panel-lettre" role="tabpanel" aria-labelledby="tab-lettre" hidden>
+            <h3>La lettre de motivation : comprendre la démarche du candidat</h3>
+            <p>Lorsqu’elle est demandée, la lettre peut apporter des éléments sur la motivation, la compréhension du poste et l’intérêt porté à l’organisation. Elle complète le CV mais ne remplace pas l’analyse des compétences requises.</p>
+            <div class="callout"><strong>Point RH :</strong> la lettre doit être appréciée selon des éléments pertinents pour le recrutement, avec le même niveau d’exigence pour les candidatures comparables.</div>
+          </div>
+          <div class="tab-panel" id="panel-coherence" role="tabpanel" aria-labelledby="tab-coherence" hidden>
+            <h3>La cohérence du dossier</h3>
+            <p>La lecture croisée du CV et de la lettre permet de vérifier si les informations présentées sont cohérentes avec le parcours et avec le poste visé.</p>
+            <ul>
+              <li>Correspondance entre expériences et compétences annoncées.</li>
+              <li>Adéquation entre le parcours présenté et les missions du poste.</li>
+              <li>Absence de contradiction manifeste entre les documents.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="grille">
+        <div class="section-head reveal">
+          <span class="section-num">03</span>
+          <div>
+            <div class="section-kicker">Outil RH</div>
+            <h2>Construire une grille de présélection</h2>
+            <p>La grille transforme les exigences du profil de poste en critères observables. Elle facilite une comparaison structurée et limite les décisions prises uniquement à l’intuition.</p>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="card soft reveal">
+            <h3>Principe de construction</h3>
+            <p>Une bonne grille distingue les critères indispensables des critères complémentaires. Les critères doivent être formulés de manière suffisamment précise pour être appliqués de façon homogène.</p>
+            <div class="callout">
+              <strong>Exemple :</strong> pour un poste d’assistant RH, « maîtrise d’un outil bureautique » est plus exploitable qu’une appréciation vague comme « candidat à l’aise avec l’informatique ».
+            </div>
+          </div>
+          <div class="card reveal">
+            <h3>Exemple de critères pondérés</h3>
+            <div class="criteria">
+              <div class="criterion"><span>Formation pertinente</span><b>20%</b></div>
+              <div class="criterion"><span>Expérience liée au poste</span><b>30%</b></div>
+              <div class="criterion"><span>Compétences techniques</span><b>25%</b></div>
+              <div class="criterion"><span>Compétences comportementales</span><b>15%</b></div>
+              <div class="criterion"><span>Motivation / compréhension du poste</span><b>10%</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap reveal" style="margin-top:22px">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Critère</th>
+                <th scope="col">Ce que l’on vérifie</th>
+                <th scope="col">Indicateur possible</th>
+                <th scope="col">Nature</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Formation</strong></td>
+                <td>Adéquation avec le niveau ou la spécialité demandée.</td>
+                <td>Diplôme, certification ou formation pertinente.</td>
+                <td>Essentiel / complémentaire selon le poste</td>
+              </tr>
+              <tr>
+                <td><strong>Expérience</strong></td>
+                <td>Expériences utiles aux missions à réaliser.</td>
+                <td>Durée, fonctions exercées, secteurs ou responsabilités.</td>
+                <td>Essentiel</td>
+              </tr>
+              <tr>
+                <td><strong>Compétences techniques</strong></td>
+                <td>Capacité à mobiliser les savoir-faire requis.</td>
+                <td>Outils, méthodes, connaissances techniques.</td>
+                <td>Essentiel</td>
+              </tr>
+              <tr>
+                <td><strong>Compétences comportementales</strong></td>
+                <td>Comportements professionnels attendus dans le poste.</td>
+                <td>Organisation, communication, coopération, autonomie.</td>
+                <td>Selon le poste</td>
+              </tr>
+              <tr>
+                <td><strong>Motivation</strong></td>
+                <td>Compréhension du poste et intérêt professionnel exprimé.</td>
+                <td>Éléments cohérents dans la candidature.</td>
+                <td>Complémentaire</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="criteres">
+        <div class="section-head reveal">
+          <span class="section-num">04</span>
+          <div>
+            <div class="section-kicker">Équité</div>
+            <h2>Critères objectifs et non-discrimination</h2>
+            <p>Le tri doit rester centré sur les exigences professionnelles du poste. Les critères sans lien avec les compétences ou les aptitudes nécessaires ne doivent pas servir à départager les candidats.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card reveal">
+            <div class="icon">✓</div>
+            <h3>Critères pertinents</h3>
+            <ul>
+              <li>Formation requise ou utile à la fonction.</li>
+              <li>Expérience professionnelle pertinente.</li>
+              <li>Compétences nécessaires aux missions.</li>
+              <li>Disponibilité lorsque celle-ci est réellement liée au poste.</li>
+              <li>Éléments démontrant la compréhension du rôle.</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <div class="icon">!</div>
+            <h3>Critères à écarter</h3>
+            <p>Une décision de recrutement ne doit pas reposer sur des caractéristiques personnelles sans rapport avec les exigences professionnelles du poste.</p>
+            <ul>
+              <li>Préférences personnelles du recruteur.</li>
+              <li>Jugements fondés sur des stéréotypes.</li>
+              <li>Informations sans pertinence professionnelle.</li>
+              <li>Différences de traitement non justifiées par le poste.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout warning reveal">
+          <strong>Réflexe RH :</strong> avant de retenir ou d’écarter un dossier, pouvoir expliquer la décision par un critère professionnel défini dans le besoin de recrutement. La traçabilité des critères utilisés contribue à une procédure plus cohérente et plus équitable.
+        </div>
+
+        <div class="hero-visual reveal" style="min-height:270px;margin-top:22px">
+          <div>
+            <svg viewBox="0 0 780 240" role="img" aria-labelledby="fairTitle fairDesc">
+              <title id="fairTitle">Schéma de décision objective</title>
+              <desc id="fairDesc">Le profil de poste alimente des critères professionnels qui conduisent à une décision de présélection.</desc>
+              <rect x="25" y="75" width="180" height="90" rx="16" fill="var(--color-accent-soft)" stroke="var(--color-border)"/>
+              <text x="115" y="108" text-anchor="middle" font-family="Manrope" font-size="15" font-weight="800" fill="var(--color-text)">Profil de poste</text>
+              <text x="115" y="133" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--color-text-soft)">Missions + compétences</text>
+              <path d="M215 120h75" stroke="var(--color-accent)" stroke-width="2"/>
+              <path d="M282 112l10 8-10 8" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+              <rect x="300" y="55" width="180" height="130" rx="16" fill="var(--color-bg)" stroke="var(--color-border)"/>
+              <text x="390" y="88" text-anchor="middle" font-family="Manrope" font-size="15" font-weight="800" fill="var(--color-text)">Critères</text>
+              <text x="390" y="114" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--color-text-soft)">Objectifs</text>
+              <text x="390" y="136" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--color-text-soft)">Observables</text>
+              <text x="390" y="158" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--color-text-soft)">Communs</text>
+              <path d="M490 120h75" stroke="var(--color-accent)" stroke-width="2"/>
+              <path d="M557 112l10 8-10 8" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+              <rect x="575" y="75" width="180" height="90" rx="16" fill="var(--color-accent-soft)" stroke="var(--color-border)"/>
+              <text x="665" y="108" text-anchor="middle" font-family="Manrope" font-size="15" font-weight="800" fill="var(--color-text)">Décision</text>
+              <text x="665" y="133" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--color-text-soft)">Retenir / ne pas retenir</text>
+              <text x="390" y="220" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--color-neutral)">UNE DÉCISION EXPLICABLE PAR LE POSTE</text>
+            </svg>
+            <div class="figure-caption">La qualité de la décision dépend de la qualité des critères construits en amont.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="shortlist">
+        <div class="section-head reveal">
+          <span class="section-num">05</span>
+          <div>
+            <div class="section-kicker">Décision</div>
+            <h2>Construire une short-list</h2>
+            <p>La short-list est une liste resserrée de candidatures jugées suffisamment pertinentes pour poursuivre le processus de recrutement, généralement par un échange ou un entretien.</p>
+          </div>
+        </div>
+
+        <div class="candidate-board">
+          <article class="candidate reveal">
+            <div class="candidate-top"><span class="candidate-name">Profil A</span><span class="status">Retenu</span></div>
+            <small>Expérience forte · compétences conformes</small>
+            <div class="bar"><i style="width:92%"></i></div>
+            <small class="mono">92 / 100</small>
+          </article>
+          <article class="candidate reveal">
+            <div class="candidate-top"><span class="candidate-name">Profil B</span><span class="status">Retenu</span></div>
+            <small>Formation adaptée · expérience correcte</small>
+            <div class="bar"><i style="width:81%"></i></div>
+            <small class="mono">81 / 100</small>
+          </article>
+          <article class="candidate reveal">
+            <div class="candidate-top"><span class="candidate-name">Profil C</span><span class="status neutral">À écarter</span></div>
+            <small>Pré-requis essentiel non satisfait</small>
+            <div class="bar"><i style="width:48%"></i></div>
+            <small class="mono">48 / 100</small>
+          </article>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card reveal">
+            <h3>Une short-list utile doit être</h3>
+            <ul>
+              <li><strong>Resserrée :</strong> suffisamment limitée pour permettre une analyse approfondie.</li>
+              <li><strong>Justifiée :</strong> chaque profil retenu répond aux critères définis.</li>
+              <li><strong>Diversifiée :</strong> elle ne doit pas être constituée uniquement de profils identiques si plusieurs parcours répondent au besoin.</li>
+              <li><strong>Traçable :</strong> les critères de classement sont conservés.</li>
+            </ul>
+          </div>
+          <div class="card soft reveal">
+            <h3>Après la short-list</h3>
+            <p>Les profils retenus peuvent être contactés pour vérifier certains éléments et organiser la prochaine étape du recrutement, notamment l’entretien.</p>
+            <div class="callout"><strong>Transition :</strong> la Leçon 09 approfondira la conduite de l’entretien de recrutement.</div>
+          </div>
+        </div>
+
+        <div class="accordion reveal" style="margin-top:24px">
+          <details>
+            <summary>Pourquoi ne pas retenir uniquement le meilleur score ?</summary>
+            <div>Un score aide à structurer la comparaison, mais il ne remplace pas le jugement professionnel. Un critère indispensable peut, selon sa définition, avoir un poids particulier ou constituer un seuil à respecter. La grille doit donc être cohérente avec le profil de poste.</div>
+          </details>
+          <details>
+            <summary>Faut-il conserver tous les candidats dans la même catégorie ?</summary>
+            <div>Il est utile de distinguer les candidatures retenues, celles qui nécessitent une vérification complémentaire et celles qui ne répondent pas aux critères essentiels. Cette organisation facilite le suivi du recrutement.</div>
+          </details>
+          <details>
+            <summary>Que faire lorsqu’un CV est incomplet ?</summary>
+            <div>Il faut distinguer une information simplement absente d’un critère réellement non satisfait. Lorsque l’information est déterminante, elle peut être vérifiée dans le respect du processus de recrutement et des règles applicables.</div>
+          </details>
+        </div>
+      </section>
+
+      <section id="exemple">
+        <div class="section-head reveal">
+          <span class="section-num">06</span>
+          <div>
+            <div class="section-kicker">Situation RH expliquée</div>
+            <h2>Exemple professionnel : recrutement d’un assistant RH</h2>
+            <p>Une entreprise reçoit 42 candidatures pour un poste d’assistant RH. Le profil de poste exige notamment une formation pertinente, une première expérience administrative ou RH et la maîtrise des outils bureautiques.</p>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal" style="min-height:300px">
+          <div>
+            <svg viewBox="0 0 820 280" role="img" aria-labelledby="caseTitle caseDesc">
+              <title id="caseTitle">Exemple de réduction d'un volume de candidatures</title>
+              <desc id="caseDesc">42 candidatures deviennent 15 dossiers après présélection puis 6 profils dans la short-list.</desc>
+              <g font-family="Manrope" font-weight="800" text-anchor="middle">
+                <rect x="30" y="65" width="190" height="130" rx="20" fill="var(--color-accent-soft)" stroke="var(--color-border)"/>
+                <text x="125" y="110" font-size="18" fill="var(--color-text)">42</text>
+                <text x="125" y="140" font-size="13" fill="var(--color-text)">candidatures</text>
+                <text x="125" y="164" font-family="Inter" font-size="10" fill="var(--color-neutral)">Volume reçu</text>
+                <path d="M230 130h90" stroke="var(--color-accent)" stroke-width="2"/>
+                <path d="M310 122l10 8-10 8" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+                <rect x="330" y="65" width="190" height="130" rx="20" fill="var(--color-bg)" stroke="var(--color-border)"/>
+                <text x="425" y="110" font-size="18" fill="var(--color-text)">15</text>
+                <text x="425" y="140" font-size="13" fill="var(--color-text)">dossiers</text>
+                <text x="425" y="164" font-family="Inter" font-size="10" fill="var(--color-neutral)">Après critères essentiels</text>
+                <path d="M530 130h90" stroke="var(--color-accent)" stroke-width="2"/>
+                <path d="M610 122l10 8-10 8" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+                <rect x="630" y="65" width="160" height="130" rx="20" fill="var(--color-accent-soft)" stroke="var(--color-border)"/>
+                <text x="710" y="110" font-size="18" fill="var(--color-text)">6</text>
+                <text x="710" y="140" font-size="13" fill="var(--color-text)">profils</text>
+                <text x="710" y="164" font-family="Inter" font-size="10" fill="var(--color-neutral)">Short-list</text>
+              </g>
+              <text x="410" y="240" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--color-neutral)">42 → 15 → 6 : LE FILTRE EST DOCUMENTÉ À CHAQUE ÉTAPE</text>
+            </svg>
+            <div class="figure-caption">Illustration pédagogique : les volumes sont fictifs et servent à montrer la logique de présélection.</div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:20px">
+          <article class="card reveal">
+            <div class="icon">A</div>
+            <h3>Premier filtre</h3>
+            <p>Les dossiers ne répondant pas à un prérequis explicitement prévu dans le profil sont écartés selon une règle identique.</p>
+          </article>
+          <article class="card reveal">
+            <div class="icon">B</div>
+            <h3>Analyse comparative</h3>
+            <p>Les 15 dossiers restants sont comparés avec la grille : expérience, compétences, formation et éléments de motivation.</p>
+          </article>
+          <article class="card reveal">
+            <div class="icon">C</div>
+            <h3>Short-list</h3>
+            <p>Six profils présentent le meilleur niveau d’adéquation avec les critères du poste et sont préparés pour l’étape suivante.</p>
+          </article>
+        </div>
+
+        <div class="callout reveal">
+          <strong>Lecture RH :</strong> le nombre de candidatures ne constitue pas à lui seul un indicateur de qualité. Une présélection efficace vise surtout à faire émerger les profils les plus pertinents à partir de critères définis, comparables et liés au besoin.
+        </div>
+      </section>
+
+      <section id="essentiel">
+        <div class="section-head reveal">
+          <span class="section-num">07</span>
+          <div>
+            <div class="section-kicker">Synthèse</div>
+            <h2>Les points clés à retenir</h2>
+            <p>La présélection transforme un volume de candidatures en une liste structurée de profils à approfondir.</p>
+          </div>
+        </div>
+
+        <div class="keys">
+          <article class="key reveal">
+            <div class="num">01</div>
+            <h3>Partir du profil</h3>
+            <p>Les critères de tri doivent découler des missions et exigences du poste.</p>
+          </article>
+          <article class="key reveal">
+            <div class="num">02</div>
+            <h3>Comparer avec méthode</h3>
+            <p>Une grille commune rend la comparaison plus cohérente et traçable.</p>
+          </article>
+          <article class="key reveal">
+            <div class="num">03</div>
+            <h3>Rester objectif</h3>
+            <p>Les décisions doivent s’appuyer sur des critères professionnels pertinents.</p>
+          </article>
+          <article class="key reveal">
+            <div class="num">04</div>
+            <h3>Préparer la suite</h3>
+            <p>La short-list constitue la base du passage vers l’étape d’entretien.</p>
+          </article>
+        </div>
+
+        <div class="card soft reveal" style="margin-top:20px">
+          <h3>Fil conducteur de la leçon</h3>
+          <p class="mono" style="color:var(--color-accent)">PROFIL DE POSTE → CRITÈRES → TRI → ÉVALUATION → SHORT-LIST → ENTRETIEN</p>
+        </div>
+      </section>
+
+      <nav class="lesson-nav" aria-label="Navigation entre les leçons">
+        <a class="reveal" href="lecon-07-sourcing-et-diffusion-des-offres.html">
+          <small>← Leçon précédente</small>
+          <strong>Leçon 07 — Sourcing et diffusion des offres</strong>
+        </a>
+        <a class="reveal" href="lecon-09-conduite-de-l-entretien-de-recrutement.html">
+          <small>Leçon suivante →</small>
+          <strong>Leçon 09 — Conduite de l’entretien de recrutement</strong>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>Filière Gestion des Ressources Humaines · Module 2</span>
+      <span class="mono">LEÇON 08 · SÉLECTION & PRÉSÉLECTION</span>
+    </div>
+  </footer>
+
+  <button class="top-btn" id="topBtn" aria-label="Retour en haut">↑</button>
+
+  <script>
+    const progressBar = document.getElementById('progressBar');
+    const topBtn = document.getElementById('topBtn');
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    function updateProgress(){
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      progressBar.style.width = pct + '%';
+      topBtn.classList.toggle('show', window.scrollY > 500);
+    }
+    window.addEventListener('scroll', updateProgress, {passive:true});
+    updateProgress();
+
+    topBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+    menuBtn.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(open));
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded','false');
+    }));
+
+    document.querySelectorAll('.tab-list').forEach(list => {
+      const tabs = [...list.querySelectorAll('[role="tab"]')];
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activateTab(tab));
+        tab.addEventListener('keydown', e => {
+          let next = index;
+          if(e.key === 'ArrowRight') next = (index + 1) % tabs.length;
+          if(e.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+          if(e.key === 'Home') next = 0;
+          if(e.key === 'End') next = tabs.length - 1;
+          if(next !== index){ e.preventDefault(); tabs[next].focus(); activateTab(tabs[next]); }
+        });
+      });
+    });
+
+    function activateTab(tab){
+      const list = tab.parentElement;
+      const tabs = [...list.querySelectorAll('[role="tab"]')];
+      tabs.forEach(t => {
+        const selected = t === tab;
+        t.setAttribute('aria-selected', String(selected));
+        const panel = document.getElementById(t.getAttribute('aria-controls'));
+        if(panel) panel.hidden = !selected;
+      });
+    }
+
+    const reveals = document.querySelectorAll('.reveal');
+    if('IntersectionObserver' in window){
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {threshold:.08});
+      reveals.forEach(el => observer.observe(el));
+    }else{
+      reveals.forEach(el => el.classList.add('visible'));
+    }
+  </script>
+</body>
+</html>

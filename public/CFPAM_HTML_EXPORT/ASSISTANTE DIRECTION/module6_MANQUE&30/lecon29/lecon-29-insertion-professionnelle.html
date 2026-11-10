@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 29 — Insertion professionnelle</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 29 — Insertion professionnelle</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#cv-lettre">1. CV et lettre de motivation</a>
+          <a href="#candidature-spontanee">2. Candidature spontanée</a>
+          <a href="#profil-en-ligne">3. Profil en ligne</a>
+          <a href="#entretien-embauche">4. Entretien d'embauche</a>
+          <a href="#test-pratique">5. Test pratique</a>
+          <a href="#negociation-integration">6. Négociation et intégration</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 6 — Professionnalisation et projet</span>
+      <span class="badge brass">Niveau avancé</span>
+      <span class="badge">15 min</span>
+    </div>
+    <h1>Leçon 29 — Insertion professionnelle</h1>
+    <p class="subtitle">Se présenter et se placer sur le marché du travail : construire une candidature solide, exister en ligne, réussir l'entretien et négocier son intégration.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Construire un CV et une lettre de motivation ciblés et directement lisibles par un recruteur.</li>
+      <li>Rédiger une candidature spontanée pertinente, adressée à la bonne personne.</li>
+      <li>Optimiser un profil professionnel en ligne pour qu'il serve la recherche d'emploi.</li>
+      <li>Préparer et conduire un entretien d'embauche avec méthode.</li>
+      <li>Aborder un test pratique de recrutement en connaissant ses attentes réelles.</li>
+      <li>Négocier les conditions d'une proposition et réussir les premières semaines d'intégration.</li>
+    </ul>
+  </div>
+
+  <section id="cv-lettre">
+    <h2>1. CV et lettre de motivation</h2>
+    <p>Le CV et la lettre de motivation ne racontent pas la même chose. Le CV présente les faits — expériences, compétences, formations — de façon structurée et rapide à parcourir. La lettre explique pourquoi ces faits correspondent précisément au poste visé.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Document</th><th>Rôle</th><th>Règle clé</th></tr></thead>
+        <tbody>
+          <tr><td>CV</td><td>Donner une vue d'ensemble vérifiable en quelques secondes</td><td>Une page, informations les plus récentes en premier</td></tr>
+          <tr><td>Lettre de motivation</td><td>Relier le parcours au poste et à l'organisation visée</td><td>Jamais un résumé du CV : un argumentaire ciblé</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tabs" data-tabs="cv-generique-vs-cible">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">CV générique</button>
+        <button class="tab-btn" role="tab" data-tab="b">CV ciblé</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Le même document est envoyé à toutes les offres, sans reformulation. Les compétences mises en avant ne correspondent pas toujours à l'annonce, et le recruteur doit faire lui-même le lien entre le parcours et le poste.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Le CV met en avant, dans l'ordre, les expériences et compétences qui répondent directement aux exigences de l'annonce. Le vocabulaire utilisé reprend, quand c'est honnête de le faire, les termes employés dans l'offre elle-même.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Envoyer une lettre de motivation qui reformule simplement le CV, sans expliquer en quoi le parcours répond aux besoins précis du poste et de l'organisation visée.
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant envoi : aucune faute d'orthographe, coordonnées à jour, intitulé de poste exact repris dans la lettre, format PDF utilisé pour figer la mise en page.
+    </div>
+  </section>
+
+  <section id="candidature-spontanee">
+    <h2>2. Candidature spontanée</h2>
+    <p>Une candidature spontanée s'adresse à une organisation sans offre publiée. Elle suppose un travail de repérage préalable : identifier l'organisation, comprendre son activité, et si possible, identifier la personne à qui adresser le message plutôt qu'une adresse générique.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Cibler l'organisation</h3><p>Choisir des structures cohérentes avec le projet professionnel, pas au hasard.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Identifier un interlocuteur</h3><p>Nom et fonction de la personne concernée plutôt qu'un contact générique.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Personnaliser le message</h3><p>Expliquer ce que l'on peut apporter, pas seulement ce que l'on recherche.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Relancer</h3><p>Une relance courtoise, à un délai raisonnable, sans insistance excessive.</p></div>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Trame de candidature spontanée</span><button class="copy-btn" data-copy-target="model-spont-1">Copier</button></div>
+      <pre id="model-spont-1">Objet : Candidature spontanée — [fonction visée]
+
+[Civilité] [Nom],
+
+[Phrase d'accroche liée à l'organisation : actualité, projet, valeurs].
+
+[Paragraphe présentant le parcours et les compétences en lien direct avec l'organisation].
+
+[Paragraphe précisant ce que la candidature peut apporter concrètement].
+
+Je me tiens à votre disposition pour un échange à votre convenance.
+
+[Formule de politesse]
+[Nom, coordonnées]</pre>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Adresser la même candidature spontanée, avec la même accroche, à une longue liste d'organisations sans lien apparent entre elles : le manque de ciblage se remarque immédiatement.
+    </div>
+  </section>
+
+  <section id="profil-en-ligne">
+    <h2>3. Profil en ligne</h2>
+    <p>Un profil professionnel en ligne (réseau professionnel, portfolio) est aujourd'hui consulté par la plupart des recruteurs avant ou après réception d'une candidature. Il doit raconter la même histoire que le CV, sans la contredire, et rester à jour.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Cohérence</h3><p>Dates, intitulés de poste et compétences identiques à ceux du CV, pour éviter toute contradiction visible.</p></div>
+      <div class="card"><h3>Photo et résumé</h3><p>Une photo professionnelle et un résumé de quelques lignes qui présentent clairement le profil recherché.</p></div>
+      <div class="card"><h3>Confidentialité</h3><p>Réglages de visibilité vérifiés, en particulier pendant une recherche discrète auprès de son employeur actuel.</p></div>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      Avant une recherche d'emploi menée en parallèle d'un poste en cours, vérifier les réglages de visibilité du profil en ligne pour éviter qu'une mise à jour ne soit visible par l'employeur actuel.
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Un profil en ligne actif — publications régulières, mise à jour des compétences — est généralement mieux référencé et davantage consulté qu'un profil créé une fois puis laissé sans évolution.
+    </div>
+  </section>
+
+  <section id="entretien-embauche">
+    <h2>4. Entretien d'embauche</h2>
+    <p>Un entretien se prépare comme n'importe quelle réunion professionnelle importante : en connaissant son interlocuteur, en anticipant les questions attendues et en préparant ses propres questions.</p>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Avant l'entretien <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Rechercher l'organisation (activité, actualité récente, valeurs), relire l'annonce et son propre CV, préparer trois exemples concrets illustrant les compétences clés du poste.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Pendant l'entretien <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Structurer ses réponses (situation, action, résultat), rester concret plutôt que général, et poser des questions préparées à l'avance sur le poste et l'équipe.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Après l'entretien <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Envoyer un message de remerciement court dans les jours suivants, en rappelant brièvement sa motivation, sans relancer de façon excessive.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Une réponse structurée en trois temps (la situation rencontrée, l'action menée, le résultat obtenu) est toujours plus convaincante qu'une réponse générale sur ses qualités supposées.
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Arriver à l'entretien sans avoir préparé de questions à poser au recruteur : cela peut être interprété comme un manque d'intérêt réel pour le poste ou l'organisation.
+    </div>
+  </section>
+
+  <section id="test-pratique">
+    <h2>5. Test pratique</h2>
+    <p>Pour un poste d'assistance de direction, un test pratique est fréquent : mise en situation de rédaction, exercice bureautique chronométré, cas de gestion d'agenda ou de priorisation. Il évalue des compétences réellement utilisées au quotidien, pas des connaissances théoriques.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type de test</th><th>Ce qui est évalué</th><th>Comment s'y préparer</th></tr></thead>
+        <tbody>
+          <tr><td>Rédaction chronométrée</td><td>Clarté, orthographe, respect des consignes de forme</td><td>Relire systématiquement avant de rendre, même sous contrainte de temps</td></tr>
+          <tr><td>Cas de gestion d'agenda</td><td>Priorisation, gestion des conflits d'horaires</td><td>Justifier chaque choix par une règle de priorité claire</td></tr>
+          <tr><td>Exercice bureautique</td><td>Maîtrise des outils courants (traitement de texte, tableur)</td><td>S'entraîner sur des cas similaires avant l'entretien</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Pendant un test pratique : lire l'intégralité des consignes avant de commencer, gérer le temps disponible, relire le résultat produit avant de le rendre, même si le temps imparti est presque écoulé.
+    </div>
+  </section>
+
+  <section id="negociation-integration">
+    <h2>6. Négociation et intégration</h2>
+    <p>Une proposition reçue peut se discuter : rémunération, avantages, date de prise de poste. La négociation se prépare avec des éléments objectifs, et se conduit sans remettre en cause l'intérêt réel pour le poste. L'intégration, elle, se joue dès les premières semaines.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Préparer sa négociation</h3><p>S'appuyer sur des références de marché et sur la valeur apportée, pas sur une comparaison arbitraire.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Formuler la demande</h3><p>Demande claire, argumentée, laissant place à la discussion plutôt qu'à un ultimatum.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Prendre connaissance de l'équipe</h3><p>Comprendre les habitudes de travail et les priorités réelles dès les premiers jours.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Confirmer sa compréhension</h3><p>Reformuler les attentes du poste avec son responsable, pour éviter tout malentendu précoce.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Négocier uniquement sur la rémunération sans tenir compte des autres éléments de la proposition (missions réelles, perspectives, conditions de travail), qui pèsent souvent autant sur la décision finale.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Une offre d'assistant·e de direction correspond précisément à votre profil. Vous disposez d'une semaine pour postuler, puis, en cas de retour positif, d'un entretien suivi d'un court test pratique de rédaction et de gestion d'agenda.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 1, 4 et 5, décrivez comment vous adapteriez votre CV et votre lettre à cette offre, puis comment vous prépareriez l'entretien et le test qui suivraient.</p>
+    </div>
+  </section>
+
+  <section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Le CV présente les faits, la lettre de motivation explique pourquoi ils correspondent au poste visé.</li>
+      <li>Une candidature spontanée efficace cible une organisation précise et, si possible, un interlocuteur identifié.</li>
+      <li>Le profil en ligne doit rester cohérent avec le CV et à jour, avec des réglages de confidentialité vérifiés.</li>
+      <li>Un entretien se prépare en trois temps : avant, pendant (réponses structurées) et après (remerciement).</li>
+      <li>Un test pratique évalue des compétences réelles : lecture complète des consignes et relecture avant de rendre.</li>
+      <li>La négociation s'appuie sur des éléments objectifs, et l'intégration se prépare dès les premiers jours.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : un <strong>CV et une lettre de motivation finalisés</strong>, accompagnés d'un <strong>entretien simulé filmé et débriefé</strong>.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Trame de CV structuré</span><button class="copy-btn" data-copy-target="model-cv-1">Copier</button></div>
+      <pre id="model-cv-1">[Nom Prénom]
+[Titre professionnel visé]
+[Téléphone — Email — Ville]
+
+EXPÉRIENCE PROFESSIONNELLE
+[Fonction] — [Organisation] — [Dates]
+- [Réalisation concrète et chiffrée si possible]
+- [Réalisation concrète et chiffrée si possible]
+
+[Fonction précédente] — [Organisation] — [Dates]
+- [Réalisation concrète]
+
+FORMATION
+[Diplôme] — [Établissement] — [Année]
+
+COMPÉTENCES
+[Compétence 1] · [Compétence 2] · [Compétence 3]
+
+LANGUES
+[Langue] — [Niveau]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Grille de débriefing d'entretien simulé</span><button class="copy-btn" data-copy-target="model-cv-2">Copier</button></div>
+      <pre id="model-cv-2">GRILLE DE DÉBRIEFING — ENTRETIEN SIMULÉ
+
+Poste visé : [intitulé]
+Date de l'entretien simulé : [JJ/MM/AAAA]
+
+Points observés :
+- Clarté et structure des réponses (situation / action / résultat) : [observation]
+- Posture et élocution : [observation]
+- Pertinence des questions posées au recruteur : [observation]
+- Gestion d'une question inattendue ou difficile : [observation]
+
+Points forts à conserver : [liste]
+Points à retravailler avant l'entretien réel : [liste]</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">CV finalisé, relu et exporté en PDF</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Lettre de motivation ciblée sur une offre précise</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Profil en ligne vérifié et cohérent avec le CV</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Entretien simulé réalisé et filmé</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Grille de débriefing remplie après visionnage</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Points à retravailler identifiés avant un entretien réel</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 28 — Événementiel d'entreprise</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 30 — Projet professionnel final</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 6 — Professionnalisation et projet · Leçon 29 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

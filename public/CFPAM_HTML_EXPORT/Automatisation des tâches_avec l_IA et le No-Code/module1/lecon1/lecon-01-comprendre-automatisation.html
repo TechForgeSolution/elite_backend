@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 01 — Comprendre l'automatisation, l'IA et le No-Code</title>
+<meta name="description" content="Module 1 — Fondamentaux et premières automatisations. Comprendre ce qu'est l'automatisation et comment l'IA et le No-Code permettent de gagner du temps sans programmer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;
+  --color-bg-alt:#F6F8FA;
+  --color-text:#090D12;
+  --color-text-muted:#57606A;
+  --color-accent:#0D9488;
+  --color-accent-soft:#CCFBF1;
+  --color-accent-dark:#0F766E;
+  --color-border:#E1E4E8;
+  --font-title:'Sora','Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-title);font-weight:700;line-height:1.25;letter-spacing:-0.01em}
+a{color:var(--color-accent-dark)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+
+/* Progress bar */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:100;transition:width .08s linear}
+
+/* Top bar */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+.topbar-inner{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.brand{font-family:var(--font-title);font-weight:700;display:flex;align-items:center;gap:8px}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:var(--color-accent)}
+.topbar .crumb{color:var(--color-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Hero */
+.hero{background:var(--color-text);color:#fff;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(13,148,136,.55),rgba(13,148,136,0) 70%)}
+.hero-inner{max-width:1080px;margin:0 auto;padding:64px 20px 56px;position:relative;z-index:1}
+.eyebrow{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-soft);margin-bottom:16px}
+.hero h1{font-size:clamp(28px,5vw,46px);max-width:760px;margin-bottom:20px}
+.hero p.lead{max-width:640px;color:#C9D1D9;font-size:18px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:500;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.22);color:#fff;background:rgba(255,255,255,.06)}
+.chip.accent{background:var(--color-accent);border-color:var(--color-accent)}
+
+/* Layout */
+.layout{max-width:1080px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:230px minmax(0,720px);gap:56px;justify-content:center}
+.toc{position:sticky;top:84px;align-self:start;margin-top:48px;font-size:14.5px}
+.toc h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-muted);margin-bottom:12px;font-family:var(--font-body);font-weight:600}
+.toc ol{list-style:none;border-left:2px solid var(--color-border)}
+.toc a{display:block;padding:7px 0 7px 16px;margin-left:-2px;border-left:2px solid transparent;color:var(--color-text-muted);text-decoration:none;line-height:1.4;transition:color .15s,border-color .15s}
+.toc a:hover{color:var(--color-text)}
+.toc a.active{color:var(--color-accent-dark);border-left-color:var(--color-accent);font-weight:600}
+.toc-mobile{display:none}
+
+main{padding:48px 0 32px;min-width:0}
+section{margin-bottom:64px}
+section>h2{font-size:clamp(23px,3.4vw,30px);margin-bottom:20px;display:flex;align-items:baseline;gap:14px}
+section>h2 .num{font-size:14px;font-weight:700;color:var(--color-accent-dark);background:var(--color-accent-soft);border-radius:8px;padding:3px 10px;flex:none;transform:translateY(-3px)}
+h3{font-size:19px;margin:28px 0 10px}
+p{margin-bottom:16px}
+ul.clean,ol.clean{margin:0 0 18px 22px}
+ul.clean li,ol.clean li{margin-bottom:8px;padding-left:4px}
+ul.clean li::marker{color:var(--color-accent)}
+strong{font-weight:600}
+code.inline{font-family:var(--font-mono);font-size:.88em;background:var(--color-bg-alt);border:1px solid var(--color-border);padding:1px 6px;border-radius:6px}
+
+/* Objective box */
+.objective{border:1px solid var(--color-border);border-left:4px solid var(--color-accent);background:var(--color-bg-alt);border-radius:var(--radius);padding:20px 24px;margin-bottom:56px}
+.objective h2{font-size:15px;text-transform:uppercase;letter-spacing:.07em;color:var(--color-accent-dark);margin-bottom:8px;font-family:var(--font-body);font-weight:600}
+.objective p{margin:0;font-size:18px}
+
+/* Callouts */
+.callout{border-radius:var(--radius);padding:16px 20px 16px 18px;margin:24px 0;display:flex;gap:14px;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ico{font-size:22px;line-height:1.5;flex:none}
+.callout .body{min-width:0}
+.callout .title{font-family:var(--font-title);font-weight:700;font-size:15px;margin-bottom:4px}
+.callout p{margin:0;font-size:16px}
+.callout p+p{margin-top:8px}
+.callout.retenir{background:var(--color-accent-soft);border-color:#99F0E0}
+.callout.retenir .title{color:var(--color-accent-dark)}
+.callout.attention{background:#fff;border:1.5px solid var(--color-text)}
+.callout.aller{background:var(--color-bg);border-style:dashed;border-color:var(--color-accent)}
+.callout.aller .title{color:var(--color-accent-dark)}
+
+/* Diagram */
+.figure{border:1px solid var(--color-border);border-radius:var(--radius);padding:20px 12px 12px;margin:26px 0;background:var(--color-bg)}
+.figure svg{width:100%;height:auto;display:block}
+.figure figcaption{font-size:14px;color:var(--color-text-muted);text-align:center;padding:10px 12px 4px}
+.svg-box{fill:#fff;stroke:#090D12;stroke-width:1.5}
+.svg-box.accent{fill:#0D9488;stroke:#0D9488}
+.svg-box.soft{fill:#CCFBF1;stroke:#0D9488}
+.svg-t{font-family:'Sora','Inter',sans-serif;font-weight:700;font-size:17px;fill:#090D12}
+.svg-t.w{fill:#fff}
+.svg-s{font-family:'Inter',sans-serif;font-size:13px;fill:#57606A}
+.svg-s.w{fill:#E6FFFB}
+.svg-arrow{stroke:#090D12;stroke-width:2;fill:none}
+.svg-tag{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;fill:#0F766E;letter-spacing:.05em}
+
+/* Code */
+.code{border:1px solid #1F2937;border-radius:var(--radius);overflow:hidden;margin:22px 0;background:#0D1117}
+.code-head{display:flex;justify-content:space-between;align-items:center;background:#161B22;padding:8px 8px 8px 16px;font-size:12.5px;color:#9BA7B4;font-family:var(--font-mono);border-bottom:1px solid #21262D}
+.copy-btn{font-family:var(--font-body);font-size:12.5px;font-weight:600;color:#E6EDF3;background:#21262D;border:1px solid #30363D;border-radius:8px;padding:5px 12px;cursor:pointer;transition:background .15s,color .15s}
+.copy-btn:hover{background:#30363D}
+.copy-btn.done{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
+.code pre{margin:0;padding:16px;overflow-x:auto;font-family:var(--font-mono);font-size:13.5px;line-height:1.65;color:#E6EDF3;tab-size:2}
+.code .k{color:#5EEAD4}.code .s{color:#A7F3D0}.code .c{color:#7D8590}.code .n{color:#F0B72F}
+
+/* Tabs */
+.tabs{margin:26px 0;border:1px solid var(--color-border);border-radius:var(--radius);overflow:hidden}
+.tablist{display:flex;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tab{flex:1 0 auto;font:600 14.5px var(--font-body);padding:14px 18px;border:0;background:none;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tab:hover{color:var(--color-text)}
+.tab[aria-selected="true"]{color:var(--color-accent-dark);background:var(--color-bg);border-bottom-color:var(--color-accent)}
+.tabpanel{padding:22px 24px 8px}
+.tabpanel[hidden]{display:none}
+.tabpanel h3{margin-top:0}
+
+/* Before / after */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+.ba-card{border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;background:var(--color-bg)}
+.ba-card.after{border-color:var(--color-accent);background:linear-gradient(180deg,var(--color-accent-soft) 0,#fff 140px)}
+.ba-card h3{margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px}
+.ba-card .tag{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--color-text);color:#fff}
+.ba-card.after .tag{background:var(--color-accent)}
+.ba-card ul{list-style:none;margin:12px 0 0}
+.ba-card li{font-size:15px;padding:7px 0;border-top:1px solid var(--color-border);line-height:1.5}
+.ba-card li:first-child{border-top:0}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 24px}
+.kpi{background:var(--color-text);color:#fff;border-radius:var(--radius);padding:18px;text-align:center}
+.kpi b{display:block;font-family:var(--font-title);font-size:28px;color:#5EEAD4;line-height:1.2}
+.kpi span{font-size:13.5px;color:#C9D1D9;line-height:1.4;display:block;margin-top:4px}
+
+/* Stepper */
+.stepper{margin:26px 0;border:1px solid var(--color-border);border-radius:var(--radius);padding:24px 20px 20px;background:var(--color-bg)}
+.steps{list-style:none;display:flex;gap:0;margin-bottom:22px;overflow-x:auto;padding-bottom:6px}
+.step{flex:1 0 110px;text-align:center;position:relative;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:3px;background:var(--color-border);z-index:0}
+.step:first-child::before{display:none}
+.step.done::before,.step.current::before{background:var(--color-accent)}
+.step button{all:unset;cursor:pointer;display:block;width:100%;position:relative;z-index:1}
+.step .dot{width:40px;height:40px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;font:700 15px var(--font-title);background:#fff;border:2px solid var(--color-border);color:var(--color-text-muted);transition:all .2s}
+.step.done .dot{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
+.step.current .dot{background:var(--color-text);border-color:var(--color-text);color:#fff;box-shadow:0 0 0 5px var(--color-accent-soft)}
+.step .lbl{font-size:13px;font-weight:600;line-height:1.3;color:var(--color-text-muted)}
+.step.current .lbl,.step.done .lbl{color:var(--color-text)}
+.step-panel{background:var(--color-bg-alt);border-radius:10px;padding:18px 20px;min-height:128px}
+.step-panel h3{margin:0 0 6px;font-size:17px}
+.step-panel p{margin:0;font-size:15.5px}
+.step-panel code{font-family:var(--font-mono);font-size:.86em;background:#fff;border:1px solid var(--color-border);padding:1px 6px;border-radius:6px}
+.step-ctrl{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+.btn{font:600 14.5px var(--font-body);padding:10px 18px;border-radius:10px;border:1.5px solid var(--color-text);background:#fff;color:var(--color-text);cursor:pointer;transition:all .15s}
+.btn:hover:not(:disabled){background:var(--color-text);color:#fff}
+.btn.primary{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
+.btn.primary:hover:not(:disabled){background:var(--color-accent-dark);border-color:var(--color-accent-dark)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Accordions */
+.acc{margin:22px 0}
+details{border:1px solid var(--color-border);border-radius:var(--radius);margin-bottom:10px;background:var(--color-bg);overflow:hidden}
+details[open]{border-color:var(--color-accent)}
+summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:14px;font-family:var(--font-title);font-weight:600;font-size:16.5px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;font:500 24px var(--font-body);color:var(--color-accent-dark);transition:transform .2s;line-height:1}
+details[open] summary::after{transform:rotate(45deg)}
+summary:hover{background:var(--color-bg-alt)}
+summary .badge{font:600 11.5px var(--font-body);text-transform:uppercase;letter-spacing:.06em;background:var(--color-accent-soft);color:var(--color-accent-dark);padding:3px 9px;border-radius:6px;white-space:nowrap}
+.acc-body{padding:4px 20px 18px;border-top:1px solid var(--color-border)}
+.acc-body p{margin:14px 0 8px;font-size:16px}
+.acc-body ul{margin:6px 0 4px 20px;font-size:15.5px}
+.acc-body li{margin-bottom:5px}
+.acc-body li::marker{color:var(--color-accent)}
+
+/* Pros / cons */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+.card{border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;background:var(--color-bg)}
+.card h3{margin:0 0 10px;font-size:17px}
+.card ul{margin:0 0 0 18px;font-size:15.5px}
+.card li{margin-bottom:7px}
+.card li::marker{color:var(--color-accent)}
+.card.dark{background:var(--color-text);color:#fff;border-color:var(--color-text)}
+.card.dark li::marker{color:#5EEAD4}
+
+/* Recap + nav */
+.recap{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius);padding:24px}
+.recap h3{margin-top:0}
+.checklist{list-style:none;margin:0}
+.checklist li{display:flex;gap:12px;align-items:flex-start;padding:8px 0;font-size:16px}
+.checklist li::before{content:"✓";flex:none;width:24px;height:24px;border-radius:50%;background:var(--color-accent);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;margin-top:2px}
+
+.lesson-nav{max-width:1080px;margin:0 auto;padding:0 20px 72px}
+.lesson-nav-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid var(--color-border);padding-top:32px}
+.nav-card{display:block;border:1px solid var(--color-border);border-radius:var(--radius);padding:18px 22px;text-decoration:none;color:var(--color-text);transition:border-color .15s,transform .15s}
+.nav-card:hover:not(.disabled){border-color:var(--color-accent);transform:translateY(-2px)}
+.nav-card small{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-muted);font-weight:600;margin-bottom:4px}
+.nav-card strong{font-family:var(--font-title);font-size:16px;line-height:1.35;display:block}
+.nav-card.next{text-align:right;background:var(--color-text);color:#fff;border-color:var(--color-text)}
+.nav-card.next small{color:#5EEAD4}
+.nav-card.disabled{opacity:.5;cursor:default;background:var(--color-bg-alt)}
+
+footer{border-top:1px solid var(--color-border);padding:28px 20px;text-align:center;color:var(--color-text-muted);font-size:14px}
+
+/* Responsive */
+@media (max-width:1023px){
+  .layout{display:block;max-width:760px}
+  .toc{display:none}
+  .toc-mobile{display:block;margin:32px 0 0}
+  .toc-mobile details{background:var(--color-bg-alt)}
+  .toc-mobile ol{list-style:none;padding:4px 20px 16px}
+  .toc-mobile a{display:block;padding:8px 0;text-decoration:none;color:var(--color-text);font-size:15.5px}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .hero-inner{padding:44px 20px 40px}
+  .ba,.grid2{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr}
+  .tabpanel{padding:18px 18px 4px}
+  .lesson-nav-inner{grid-template-columns:1fr}
+  .nav-card.next{text-align:left}
+  .topbar .crumb{display:none}
+  section>h2{flex-direction:column;gap:8px}
+  summary .badge{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+@media print{.topbar,#progress,.toc,.toc-mobile,.copy-btn,.lesson-nav,.step-ctrl{display:none!important}.layout{display:block}}
+</style>
+</head>
+<body>
+<div id="progress" role="progressbar" aria-label="Progression de lecture" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-dot"></span> Filière Automatisation &amp; IA</div>
+    <div class="crumb">Module 1 · Leçon 01</div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Module 1 — Fondamentaux et premières automatisations</span>
+    <h1>Leçon 01 — Comprendre l'automatisation, l'IA et le No-Code</h1>
+    <p class="lead">Découvrez comment automatiser des tâches du quotidien, avec l'aide de l'IA et d'outils visuels, sans écrire une seule ligne de code.</p>
+    <div class="meta">
+      <span class="chip accent">🌱 Niveau : Débutant</span>
+      <span class="chip">⏱ 20 min</span>
+      <span class="chip">📘 Leçon 1 sur le module</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Sommaire">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><a href="#intro">1. Définitions</a></li>
+      <li><a href="#piliers">2. Les piliers d'un workflow</a></li>
+      <li><a href="#cas">3. Étude de cas</a></li>
+      <li><a href="#panorama">4. Panorama des outils</a></li>
+      <li><a href="#limites">5. Avantages, limites, risques</a></li>
+      <li><a href="#bilan">Bilan de la leçon</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="toc-mobile">
+      <details>
+        <summary>📑 Sommaire de la leçon</summary>
+        <ol>
+          <li><a href="#intro">1. Introduction &amp; définitions</a></li>
+          <li><a href="#piliers">2. Les piliers d'un workflow</a></li>
+          <li><a href="#cas">3. Étude de cas entreprise</a></li>
+          <li><a href="#panorama">4. Panorama No-Code &amp; IA</a></li>
+          <li><a href="#limites">5. Avantages, limites et risques</a></li>
+          <li><a href="#bilan">Bilan de la leçon</a></li>
+        </ol>
+      </details>
+    </div>
+
+    <div class="objective" style="margin-top:32px">
+      <h2>🎯 Objectif de la leçon</h2>
+      <p>Comprendre ce qu'est l'automatisation et comment l'IA et le No-Code permettent de gagner du temps sans programmer.</p>
+    </div>
+
+    <!-- 1 -->
+    <section id="intro" data-toc>
+      <h2><span class="num">01</span>Introduction &amp; définitions</h2>
+
+      <h3>Qu'est-ce que l'automatisation ?</h3>
+      <p>Automatiser, c'est confier à un système une suite d'opérations que vous faisiez à la main, <strong>de façon répétée et selon des règles claires</strong>. Recopier une commande d'un email vers un tableau, envoyer un accusé de réception, relancer un client : tant que la règle est la même à chaque fois, une machine peut s'en charger.</p>
+      <p>L'objectif n'est pas de remplacer les personnes, mais de <strong>libérer leur temps</strong> pour ce qui demande du jugement, de l'écoute et de la créativité.</p>
+
+      <h3>Le rôle charnière du No-Code et de l'IA</h3>
+      <p>Hier, automatiser exigeait un développeur. Aujourd'hui, deux évolutions ont tout changé :</p>
+      <ul class="clean">
+        <li><strong>Le No-Code</strong> : des outils visuels où l'on assemble des blocs (« quand ceci arrive, fais cela ») au lieu d'écrire du code.</li>
+        <li><strong>L'IA générative</strong> : elle comprend le langage naturel. Elle lit un email, résume un document, classe une demande ou rédige une réponse, des tâches que les règles rigides ne savaient pas traiter.</li>
+      </ul>
+      <p>Ensemble, ils permettent à une personne non technique de construire des automatisations <em>intelligentes</em>.</p>
+
+      <div class="callout retenir">
+        <div class="ico">💡</div>
+        <div class="body">
+          <div class="title">À retenir</div>
+          <p><strong>Automatisation</strong> = des règles qui s'exécutent seules. <strong>No-Code</strong> = les construire visuellement. <strong>IA</strong> = traiter ce qui est flou ou rédigé en langage naturel.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="piliers" data-toc>
+      <h2><span class="num">02</span>Les piliers d'un workflow</h2>
+      <p>Un <strong>workflow</strong> (ou « scénario ») est une chaîne d'étapes automatisées. Quel que soit l'outil, il repose sur la même triade :</p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 760 250" role="img" aria-labelledby="d1t d1d">
+          <title id="d1t">Triade d'un workflow</title>
+          <desc id="d1d">Un déclencheur lance un traitement ou logique, qui produit une action. Le tout forme un flux de données.</desc>
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#090D12"/></marker>
+          </defs>
+          <text class="svg-tag" x="20" y="30">SCÉNARIO AUTOMATISÉ</text>
+
+          <rect class="svg-box" x="20" y="55" width="190" height="110" rx="14"/>
+          <text class="svg-tag" x="40" y="82">① DÉCLENCHEUR</text>
+          <text class="svg-t" x="40" y="112">Trigger</text>
+          <text class="svg-s" x="40" y="136">Un événement démarre</text>
+          <text class="svg-s" x="40" y="154">le flux</text>
+
+          <rect class="svg-box soft" x="285" y="55" width="190" height="110" rx="14"/>
+          <text class="svg-tag" x="305" y="82">② TRAITEMENT</text>
+          <text class="svg-t" x="305" y="112">Logique / IA</text>
+          <text class="svg-s" x="305" y="136">Filtrer, décider,</text>
+          <text class="svg-s" x="305" y="154">transformer, classer</text>
+
+          <rect class="svg-box accent" x="550" y="55" width="190" height="110" rx="14"/>
+          <text class="svg-tag" x="570" y="82" style="fill:#CCFBF1">③ ACTION</text>
+          <text class="svg-t w" x="570" y="112">Résultat</text>
+          <text class="svg-s w" x="570" y="136">Envoyer, créer,</text>
+          <text class="svg-s w" x="570" y="154">mettre à jour</text>
+
+          <line class="svg-arrow" x1="212" y1="110" x2="281" y2="110" marker-end="url(#ah)"/>
+          <line class="svg-arrow" x1="477" y1="110" x2="546" y2="110" marker-end="url(#ah)"/>
+
+          <path d="M115 185 C115 225, 645 225, 645 185" fill="none" stroke="#0D9488" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#ah)"/>
+          <text class="svg-s" x="380" y="238" text-anchor="middle">Flux de données : chaque étape transmet ses informations à la suivante</text>
+        </svg>
+        <figcaption>Figure 1 — Déclencheur → Traitement → Action, reliés par un flux de données.</figcaption>
+      </figure>
+
+      <h3>Les trois piliers en détail</h3>
+      <ul class="clean">
+        <li><strong>Déclencheur (Trigger)</strong> : ce qui lance le scénario. Exemples : un formulaire est soumis, un email arrive, il est 8 h chaque lundi.</li>
+        <li><strong>Traitement / logique</strong> : ce que le scénario fait des informations reçues. Conditions (« si le montant &gt; 500 € »), filtres, calculs, ou une étape d'IA (résumer, classer, rédiger).</li>
+        <li><strong>Action</strong> : ce qui est produit à la fin. Ajouter une ligne dans un tableau, envoyer un message, créer une facture, notifier une équipe.</li>
+      </ul>
+
+      <h3>À quoi ressemblent les données qui circulent ?</h3>
+      <p>Entre deux étapes, l'information voyage sous forme de données structurées, le plus souvent en <strong>JSON</strong> : des paires « nom : valeur ». Pas besoin de savoir en écrire dès maintenant, mais il faut savoir le lire. Voici ce qu'un formulaire de demande de devis pourrait envoyer au déclencheur :</p>
+
+      <div class="code">
+        <div class="code-head"><span>payload.json — données reçues par le déclencheur</span><button class="copy-btn" type="button">Copier</button></div>
+<pre><code>{
+  "nom": "Amina Diallo",
+  "email": "amina@exemple.com",
+  "service": "Impression grand format",
+  "quantite": 40,
+  "message": "Bonjour, j'aimerais un devis pour une exposition."
+}</code></pre>
+      </div>
+
+      <p>Les étapes suivantes « piochent » dans ces données grâce à des expressions. Selon l'outil, la syntaxe change légèrement mais le principe reste identique :</p>
+
+      <div class="code">
+        <div class="code-head"><span>expressions — récupérer des valeurs</span><button class="copy-btn" type="button">Copier</button></div>
+<pre><code><span class="c">// n8n : valeur du champ « email » de l'étape précédente</span>
+{{ $json.email }}
+
+<span class="c">// Make : champ « email » du module n°1</span>
+{{1.email}}
+
+<span class="c">// Condition d'un filtre (exemple) : seulement les grosses commandes</span>
+{{ $json.quantite &gt;= 20 }}</code></pre>
+      </div>
+
+      <div class="callout attention">
+        <div class="ico">⚠️</div>
+        <div class="body">
+          <div class="title">Attention</div>
+          <p>Un scénario ne fait <strong>que ce que vous avez décrit</strong>. Si le déclencheur reçoit un champ vide ou mal orthographié, les étapes suivantes peuvent échouer. Nous apprendrons à tester ces cas dans les prochaines leçons.</p>
+        </div>
+      </div>
+
+      <h3>Un workflow, pas à pas</h3>
+      <p>Suivez l'exécution d'un scénario réel de bout en bout. Cliquez sur une étape ou utilisez les boutons.</p>
+
+      <div class="stepper" id="stepper" aria-label="Exécution d'un workflow">
+        <ol class="steps" id="steps"></ol>
+        <div class="step-panel" id="step-panel" aria-live="polite"></div>
+        <div class="step-ctrl">
+          <button class="btn" id="prev" type="button">← Précédent</button>
+          <button class="btn primary" id="next" type="button">Étape suivante →</button>
+        </div>
+      </div>
+
+      <div class="callout aller">
+        <div class="ico">🔗</div>
+        <div class="body">
+          <div class="title">Pour aller plus loin</div>
+          <p>Cherchez les mots-clés <em>« trigger »</em>, <em>« webhook »</em> et <em>« scénario »</em> dans la documentation de Make, n8n ou Zapier : vous retrouverez exactement ces trois piliers sous des noms voisins.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section id="cas" data-toc>
+      <h2><span class="num">03</span>Étude de cas entreprise</h2>
+      <p>Prenons <strong>l'Atelier Lumière</strong>, une TPE fictive de 6 personnes spécialisée dans l'impression et la signalétique. Elle reçoit environ <strong>40 demandes de devis par semaine</strong>, par email et par formulaire.</p>
+
+      <div class="ba">
+        <div class="ba-card">
+          <h3><span class="tag">Avant</span> Tout est manuel</h3>
+          <ul>
+            <li>📥 Lecture de chaque email, recopie dans un tableau</li>
+            <li>✍️ Réponse d'accusé de réception écrite à la main</li>
+            <li>🔁 Relances oubliées quand l'équipe est occupée</li>
+            <li>⏱ ≈ 20 min de saisie par demande</li>
+            <li>❌ Erreurs de recopie fréquentes (≈ 8 % des fiches)</li>
+          </ul>
+        </div>
+        <div class="ba-card after">
+          <h3><span class="tag">Après</span> Workflow automatisé</h3>
+          <ul>
+            <li>📝 Un formulaire unique alimente le tableau tout seul</li>
+            <li>🤖 L'IA résume la demande et la classe par type de service</li>
+            <li>✉️ L'accusé de réception part immédiatement</li>
+            <li>🔔 Un rappel de relance est créé automatiquement</li>
+            <li>👀 L'équipe ne fait que valider et chiffrer le devis</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><b>≈ 12 h</b><span>gagnées par semaine (de 13 h 20 à 1 h 20)</span></div>
+        <div class="kpi"><b>2 min</b><span>de validation humaine par demande</span></div>
+        <div class="kpi"><b>8 % → 1 %</b><span>d'erreurs de saisie</span></div>
+      </div>
+
+      <div class="callout retenir">
+        <div class="ico">💡</div>
+        <div class="body">
+          <div class="title">À retenir</div>
+          <p>Les chiffres de cet exemple sont <strong>illustratifs</strong>, mais l'ordre de grandeur est réaliste. Le vrai gain n'est pas seulement le temps : c'est aussi la <strong>fiabilité</strong> et la <strong>réactivité</strong> envers les clients. L'humain garde la décision finale.</p>
+        </div>
+      </div>
+
+      <h3>Humain, automatisation ou les deux ?</h3>
+      <p>Toutes les tâches ne se valent pas. Explorez les trois façons de traiter une même tâche :</p>
+
+      <div class="tabs" id="tabs-compare">
+        <div class="tablist" role="tablist" aria-label="Comparer les approches">
+          <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true" type="button">👤 Humain seul</button>
+          <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" type="button" tabindex="-1">⚙️ Automatisation</button>
+          <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" type="button" tabindex="-1">🤝 Automatisation + IA</button>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p1" aria-labelledby="t1">
+          <h3>Humain seul</h3>
+          <ul class="clean">
+            <li><strong>Force :</strong> jugement, empathie, gestion de l'imprévu.</li>
+            <li><strong>Limite :</strong> lent, fatigue, erreurs de recopie, ne passe pas à l'échelle.</li>
+            <li><strong>Idéal pour :</strong> négociation, conseil, situations délicates.</li>
+          </ul>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+          <h3>Automatisation par règles</h3>
+          <ul class="clean">
+            <li><strong>Force :</strong> rapide, constante, disponible 24 h/24, sans faute de recopie.</li>
+            <li><strong>Limite :</strong> ne gère que des cas prévus ; un format inattendu la bloque.</li>
+            <li><strong>Idéal pour :</strong> transférer, copier, notifier, planifier.</li>
+          </ul>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+          <h3>Automatisation + IA (avec validation humaine)</h3>
+          <ul class="clean">
+            <li><strong>Force :</strong> traite du texte libre (emails, avis, demandes) en plus des règles.</li>
+            <li><strong>Limite :</strong> l'IA peut se tromper ; une relecture reste nécessaire sur les sujets sensibles.</li>
+            <li><strong>Idéal pour :</strong> résumer, classer, rédiger un brouillon que l'humain valide.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section id="panorama" data-toc>
+      <h2><span class="num">04</span>Panorama du paysage No-Code &amp; IA</h2>
+      <p>L'écosystème est vaste. Retenez trois familles d'outils qui se combinent entre elles. Dépliez chaque catégorie.</p>
+
+      <div class="acc">
+        <details open>
+          <summary><span class="badge">Flux</span> Outils d'automatisation : Make, n8n, Zapier</summary>
+          <div class="acc-body">
+            <p>Ils relient vos applications entre elles et exécutent vos scénarios (déclencheur → traitement → action).</p>
+            <ul>
+              <li><strong>Make</strong> : éditeur visuel très flexible, idéal pour des scénarios riches en étapes.</li>
+              <li><strong>n8n</strong> : open source, peut être hébergé par vos soins, très personnalisable.</li>
+              <li><strong>Zapier</strong> : très simple à prendre en main, vaste catalogue d'applications connectées.</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary><span class="badge">IA</span> Assistants IA : ChatGPT, Claude</summary>
+          <div class="acc-body">
+            <p>Ils comprennent et produisent du langage. Utilisés seuls, ils aident à réfléchir et rédiger. Branchés à un flux, ils deviennent une étape de traitement.</p>
+            <ul>
+              <li>Résumer un email ou un document long.</li>
+              <li>Classer une demande (devis, réclamation, information).</li>
+              <li>Rédiger un brouillon de réponse à valider.</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary><span class="badge">Supports</span> Formulaires et tableaux : Forms, tableurs, bases de données</summary>
+          <div class="acc-body">
+            <p>Ce sont les points d'entrée et de sortie de vos données : le formulaire qui <em>déclenche</em>, le tableau qui <em>stocke</em> et que l'on consulte.</p>
+            <ul>
+              <li><strong>Formulaires</strong> (Google Forms, Microsoft Forms…) : collectent des informations propres et structurées.</li>
+              <li><strong>Tableaux</strong> (Google Sheets, Excel en ligne, Airtable…) : centralisent le suivi des demandes.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="callout aller">
+        <div class="ico">🔗</div>
+        <div class="body">
+          <div class="title">Pour aller plus loin</div>
+          <p>Ne cherchez pas « le meilleur outil ». Pour débuter, retenez un trio simple : <strong>un formulaire</strong>, <strong>un tableau</strong> et <strong>un outil de flux</strong>. L'IA s'ajoute ensuite là où elle apporte une vraie valeur.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="limites" data-toc>
+      <h2><span class="num">05</span>Avantages, limites et risques</h2>
+
+      <div class="grid2">
+        <div class="card dark">
+          <h3>✅ Avantages</h3>
+          <ul>
+            <li>Gain de temps sur les tâches répétitives</li>
+            <li>Moins d'erreurs de recopie</li>
+            <li>Réactivité immédiate, 24 h/24</li>
+            <li>Mise en place rapide, sans développeur</li>
+            <li>Équipe recentrée sur la valeur ajoutée</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>⚖️ Limites</h3>
+          <ul>
+            <li>Ne convient pas aux tâches floues ou rares</li>
+            <li>Un processus mal conçu, une fois automatisé, reste mal conçu</li>
+            <li>Maintenance nécessaire quand les outils évoluent</li>
+            <li>L'IA peut produire des réponses fausses</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Les quatre points de vigilance</h3>
+      <div class="acc">
+        <details>
+          <summary>👤 Le facteur humain</summary>
+          <div class="acc-body">
+            <p>Une automatisation change les habitudes. Expliquez-la à l'équipe, gardez une validation humaine sur les décisions importantes, et prévoyez qui surveille le scénario si quelque chose casse.</p>
+          </div>
+        </details>
+        <details>
+          <summary>🔌 La dépendance aux API et aux outils tiers</summary>
+          <div class="acc-body">
+            <p>Vos scénarios reposent sur des services externes. Si l'un change son fonctionnement, ses tarifs ou tombe en panne, votre flux s'arrête. Documentez vos scénarios et prévoyez une solution de repli manuelle.</p>
+          </div>
+        </details>
+        <details>
+          <summary>💸 Les coûts masqués</summary>
+          <div class="acc-body">
+            <p>Beaucoup d'outils facturent à l'<strong>opération</strong> ou au volume. Un scénario qui tourne souvent peut faire grimper la facture : abonnements, appels à l'IA, temps de maintenance. Estimez le coût avant de généraliser.</p>
+          </div>
+        </details>
+        <details>
+          <summary>🔐 La sécurité de base</summary>
+          <div class="acc-body">
+            <ul>
+              <li>Activez la <strong>double authentification</strong> sur vos comptes d'outils.</li>
+              <li>Ne partagez jamais vos <strong>clés d'API</strong> ni mots de passe dans un message ou un document.</li>
+              <li>N'envoyez à une IA que les données nécessaires ; évitez les informations sensibles de clients.</li>
+              <li>Limitez les accès : chaque scénario ne doit toucher que ce dont il a besoin.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="callout attention">
+        <div class="ico">⚠️</div>
+        <div class="body">
+          <div class="title">Attention</div>
+          <p>Dès que vous traitez des <strong>données personnelles</strong> (noms, emails, adresses de clients), vous devez respecter la réglementation applicable à votre activité, notamment sur la protection des données. En cas de doute, renseignez-vous auprès d'un professionnel avant d'automatiser.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bilan -->
+    <section id="bilan" data-toc>
+      <div class="recap">
+        <h3>✅ Bilan de la leçon</h3>
+        <ul class="checklist">
+          <li>L'automatisation exécute seule des tâches répétitives et réglées.</li>
+          <li>Le No-Code permet de la construire visuellement, l'IA de traiter le langage naturel.</li>
+          <li>Tout workflow suit la triade : Déclencheur → Traitement → Action.</li>
+          <li>L'humain garde la validation sur les décisions importantes.</li>
+          <li>Pensez aux limites : dépendance aux outils, coûts, sécurité et données personnelles.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="lesson-nav" aria-label="Navigation entre les leçons">
+  <div class="lesson-nav-inner">
+    <span class="nav-card disabled" aria-disabled="true">
+      <small>← Leçon précédente</small>
+      <strong>Aucune — c'est la première leçon</strong>
+    </span>
+    <a class="nav-card next" href="lecon-02-identifier-taches-repetitives.html">
+      <small>Leçon suivante →</small>
+      <strong>Leçon 02 — Identifier les tâches répétitives à automatiser</strong>
+    </a>
+  </div>
+</nav>
+
+<footer>Module 1 — Fondamentaux et premières automatisations · Leçon 01</footer>
+
+<script>
+(function(){
+  /* Barre de progression */
+  var bar=document.getElementById('progress');
+  function onScroll(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    var p=max>0?Math.min(100,Math.max(0,(h.scrollTop/max)*100)):0;
+    bar.style.width=p+'%';
+    bar.setAttribute('aria-valuenow',Math.round(p));
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  onScroll();
+
+  /* Sommaire : section active */
+  var links=document.querySelectorAll('.toc a');
+  var map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('active');});
+          var a=map[e.target.id]; if(a) a.classList.add('active');
+        }
+      });
+    },{rootMargin:'-20% 0px -70% 0px'});
+    document.querySelectorAll('section[data-toc]').forEach(function(s){io.observe(s);});
+  }
+
+  /* Boutons copier */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var code=btn.closest('.code').querySelector('pre').innerText;
+      function ok(){
+        btn.textContent='Copié ✓'; btn.classList.add('done');
+        setTimeout(function(){btn.textContent='Copier'; btn.classList.remove('done');},1800);
+      }
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code).then(ok,fallback);
+      } else fallback();
+      function fallback(){
+        var ta=document.createElement('textarea'); ta.value=code;
+        ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        try{document.execCommand('copy'); ok();}catch(e){btn.textContent='Échec';}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* Onglets */
+  var tabs=Array.prototype.slice.call(document.querySelectorAll('#tabs-compare .tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var on=t===tab;
+      t.setAttribute('aria-selected',on);
+      t.tabIndex=on?0:-1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden=!on;
+    });
+    tab.focus();
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){selectTab(t);});
+    t.addEventListener('keydown',function(e){
+      var n=null;
+      if(e.key==='ArrowRight') n=tabs[(i+1)%tabs.length];
+      if(e.key==='ArrowLeft') n=tabs[(i-1+tabs.length)%tabs.length];
+      if(e.key==='Home') n=tabs[0];
+      if(e.key==='End') n=tabs[tabs.length-1];
+      if(n){e.preventDefault(); selectTab(n);}
+    });
+  });
+
+  /* Stepper : exécution d'un workflow */
+  var data=[
+    {t:'Déclencheur',h:'Le formulaire est soumis',p:'Amina remplit le formulaire de devis. L\'outil de flux détecte l\'événement et démarre le scénario avec ses données : <code>nom</code>, <code>email</code>, <code>quantite</code>…'},
+    {t:'Réception',h:'Les données entrent dans le flux',p:'Le scénario reçoit le JSON du formulaire. Chaque champ devient disponible pour les étapes suivantes, par exemple <code>{{ $json.email }}</code>.'},
+    {t:'Traitement',h:'Filtre et analyse par l\'IA',p:'Une condition vérifie que l\'email est valide. Puis une étape d\'IA résume le message et classe la demande (ex. « grand format »).'},
+    {t:'Action',h:'Enregistrer et répondre',p:'Le scénario ajoute une ligne dans le tableau de suivi et envoie automatiquement un accusé de réception personnalisé à Amina.'},
+    {t:'Résultat',h:'L\'équipe prend le relais',p:'Une notification prévient l\'équipe. Une personne relit le résumé, chiffre le devis et valide : l\'humain décide, la machine a préparé.'}
+  ];
+  var cur=0;
+  var stepsEl=document.getElementById('steps');
+  var panel=document.getElementById('step-panel');
+  var prev=document.getElementById('prev');
+  var next=document.getElementById('next');
+  function render(){
+    stepsEl.innerHTML='';
+    data.forEach(function(s,i){
+      var li=document.createElement('li');
+      li.className='step'+(i<cur?' done':'')+(i===cur?' current':'');
+      var b=document.createElement('button'); b.type='button';
+      b.setAttribute('aria-label','Étape '+(i+1)+' : '+s.t);
+      if(i===cur) b.setAttribute('aria-current','step');
+      b.innerHTML='<span class="dot">'+(i<cur?'✓':(i+1))+'</span><span class="lbl">'+s.t+'</span>';
+      b.addEventListener('click',function(){cur=i;render();});
+      li.appendChild(b); stepsEl.appendChild(li);
+    });
+    panel.innerHTML='<h3>'+(cur+1)+'. '+data[cur].h+'</h3><p>'+data[cur].p+'</p>';
+    prev.disabled=cur===0;
+    next.textContent=cur===data.length-1?'Recommencer ↺':'Étape suivante →';
+  }
+  prev.addEventListener('click',function(){if(cur>0){cur--;render();}});
+  next.addEventListener('click',function(){cur=cur===data.length-1?0:cur+1;render();});
+  render();
+})();
+</script>
+</body>
+</html>

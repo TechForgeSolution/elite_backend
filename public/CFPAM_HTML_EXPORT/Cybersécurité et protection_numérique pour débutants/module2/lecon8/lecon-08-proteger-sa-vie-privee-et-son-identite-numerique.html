@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 08 — Protéger sa vie privée et son identité numérique | Filière Cybersécurité</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232563EB' d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identiques sur tous les cours de la filière) ===== */
+:root{
+  --color-bg:#FFFFFF; --color-bg-alt:#F4F8FC; --color-text:#0A0F14; --color-text-muted:#5B6472;
+  --color-accent:#2563EB; --color-accent-soft:#EAF2FF; --color-border:#E2E8F0;
+  --font-display:'Sora','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font-body);font-size:1.0625rem;line-height:1.7;color:var(--color-text);background:var(--color-bg)}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.2;margin:0 0 .6em}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+.muted{color:var(--color-text-muted)}
+
+/* ===== Barre de progression + header ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:.95rem;text-decoration:none;color:var(--color-text)}
+.brand svg{width:22px;height:22px}
+.menu-btn{font:500 .9rem var(--font-body);background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--color-text);transition:border-color .2s}
+.menu-btn:hover{border-color:var(--color-accent)}
+#drawer{display:none;position:absolute;right:20px;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(10,15,20,.08)}
+#drawer.open{display:block}
+#drawer a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#drawer a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+
+/* ===== Hero ===== */
+.hero{padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.82rem;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent)}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted);border:1px solid var(--color-border)}
+.hero .lead{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.course{font-size:.95rem;color:var(--color-text-muted);margin-bottom:12px}
+
+/* ===== Sommaire ===== */
+.toc{background:var(--color-bg-alt);border-radius:var(--radius);padding:24px 28px;margin:40px auto}
+.toc ol{margin:0;padding-left:1.2em}
+.toc li{padding:3px 0}
+.toc a{text-decoration:none;color:var(--color-text);transition:color .2s}
+.toc a:hover{color:var(--color-accent)}
+
+/* ===== Sections ===== */
+section.lesson{padding:64px 0}
+section.lesson.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ===== Cartes ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;transition:border-color .2s,transform .2s}
+.alt .card{background:#fff}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card svg{width:28px;height:28px;stroke:var(--color-accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin-bottom:.3em}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+
+/* ===== Encadrés ===== */
+.note{display:flex;gap:14px;border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:28px 0}
+.note .ic{font-size:1.3rem;line-height:1.5}
+.note strong{display:block;font-family:var(--font-display);margin-bottom:2px}
+.note p{margin:0;font-size:.98rem}
+
+/* ===== Tabs ===== */
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;overflow:hidden}
+.tablist{display:flex;overflow-x:auto;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.tablist button{flex:1 0 auto;font:500 .95rem var(--font-body);padding:12px 18px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent;transition:color .2s}
+.tablist button:hover{color:var(--color-text)}
+.tablist button[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent);background:#fff}
+.tabpanel{padding:20px 22px}
+.tabpanel[hidden]{display:none}
+.tabpanel p:last-child{margin:0}
+
+/* ===== Accordéons ===== */
+details{border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;margin:10px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details>div{padding:0 18px 16px;color:var(--color-text-muted);font-size:.98rem}
+
+/* ===== Schémas ===== */
+figure{margin:32px 0}
+figure svg{width:100%;height:auto;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius)}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--font-body)}
+
+/* ===== Stepper ===== */
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;counter-reset:s}
+.stepper li{counter-increment:s;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:44px 14px 14px;font-size:.92rem}
+.stepper li::before{content:counter(s);position:absolute;top:12px;left:14px;width:24px;height:24px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem/24px var(--font-display);text-align:center}
+.stepper b{display:block;font-family:var(--font-display);margin-bottom:2px}
+.stepper span{color:var(--color-text-muted)}
+
+/* ===== Points clés, nav, footer ===== */
+.keys{list-style:none;padding:0;margin:24px 0;display:grid;gap:12px}
+.keys li{display:flex;gap:12px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:14px 18px}
+.keys li::before{content:"✓";color:var(--color-accent);font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding:48px 0}
+.nav a,.nav span{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px 20px;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}
+.nav small{display:block;color:var(--color-text-muted)}
+.nav .next{text-align:right}
+.nav span{color:var(--color-text-muted);background:var(--color-bg-alt)}
+.modlink{text-align:center;margin-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:28px 0;font-size:.9rem;color:var(--color-text-muted);text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,border-color .2s}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{border-color:var(--color-accent)}
+.pwd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1rem;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:nowrap}
+.bad{border-left:3px solid #5B6472}.good{border-left:3px solid var(--color-accent)}
+@media (max-width:600px){.hero{padding:48px 0 40px}section.lesson{padding:44px 0}.toc{padding:20px}}
+</style>
+</head>
+<body>
+<div id="progress" role="presentation"></div>
+
+<header class="top">
+  <div class="wide">
+    <a class="brand" href="#debut">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#2563EB" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="M8.5 12l2.4 2.4L15.5 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Filière Cybersécurité
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="drawer">Sommaire</button>
+  </div>
+  <nav id="drawer" aria-label="Sommaire rapide">
+    <a href="#empreinte">1. Données personnelles et empreinte</a>
+    <a href="#reseaux">2. Confidentialité des réseaux sociaux</a>
+    <a href="#sensibles">3. Données à ne jamais publier</a>
+    <a href="#usurpation">4. Usurpation et géolocalisation</a>
+    <a href="#messagerie">5. Messageries instantanées</a>
+    <a href="#droits">6. Droits numériques et cyberharcèlement</a>
+    <a href="#cles">Points clés à retenir</a>
+  </nav>
+</header>
+
+<main id="debut">
+<div class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 2 — Protection des données, de l'identité et réaction aux incidents</span>
+      <span class="badge plain">⏱ 15 min de lecture</span>
+      <span class="badge plain">Niveau débutant</span>
+    </div>
+    <p class="course">Leçon 08</p>
+    <h1>Protéger sa vie privée et son identité numérique</h1>
+    <p class="lead">Objectif : maîtriser les informations personnelles diffusées en ligne et limiter les risques d'usurpation d'identité.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2 style="font-size:1.1rem">Dans cette leçon</h2>
+    <ol>
+      <li><a href="#empreinte">Données personnelles et empreinte numérique</a></li>
+      <li><a href="#reseaux">Paramètres de confidentialité des réseaux sociaux</a></li>
+      <li><a href="#sensibles">Données hautement sensibles à ne jamais publier</a></li>
+      <li><a href="#usurpation">Usurpation de compte, faux profils et géolocalisation</a></li>
+      <li><a href="#messagerie">Vie privée sur les messageries instantanées</a></li>
+      <li><a href="#droits">Droits numériques et cyberharcèlement</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============ 1. Empreinte ============ -->
+<section class="lesson" id="empreinte">
+  <div class="wrap reveal">
+    <h2>1. Données personnelles et empreinte numérique</h2>
+    <p>Une <strong>donnée personnelle</strong> est toute information qui permet d'identifier une personne, directement (nom, photo, numéro de téléphone) ou en recoupant plusieurs indices (employeur, ville, habitudes). Toutes vos traces en ligne forment votre <strong>empreinte numérique</strong>.</p>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-labelledby="i1t i1d">
+        <title id="i1t">Empreinte numérique active et passive</title>
+        <desc id="i1d">Au-dessus de la ligne, ce que vous publiez volontairement ; en dessous, les traces laissées sans que vous le décidiez.</desc>
+        <rect x="0" y="0" width="640" height="105" fill="#fff"/>
+        <rect x="0" y="105" width="640" height="125" fill="#EAF2FF"/>
+        <line x1="0" y1="105" x2="640" y2="105" stroke="#2563EB" stroke-width="2" stroke-dasharray="6 4"/>
+        <path d="M320 20l80 85H240z" fill="#fff" stroke="#2563EB" stroke-width="2"/>
+        <path d="M240 105h160l50 70-130 45-130-45z" fill="#fff" stroke="#2563EB" stroke-width="2"/>
+        <g font-size="14" fill="#0A0F14" text-anchor="middle"><text x="320" y="88" font-weight="600">Active</text><text x="320" y="150" font-weight="600">Passive</text><text x="100" y="60">Publications, photos,</text><text x="100" y="80">commentaires, profils</text><text x="540" y="150">Adresse IP, cookies,</text><text x="540" y="170">historique, appareils,</text><text x="540" y="190">position, données collectées</text></g>
+      </svg>
+      <figcaption>La partie volontaire est la plus visible, mais la partie passive est souvent la plus importante.</figcaption>
+    </figure>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Empreinte active et passive">
+        <button role="tab">Empreinte active</button><button role="tab">Empreinte passive</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Ce que vous <strong>publiez volontairement</strong> : messages, photos, avis, profils, inscriptions. Vous en maîtrisez le contenu, mais pas toujours la durée de vie ni la diffusion.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Ce qui est <strong>collecté à votre insu</strong> ou sans action directe : adresse IP, cookies, historique de navigation, données de localisation, informations publiées par d'autres sur vous.</p></div>
+    </div>
+    <details><summary>Qu'est-ce qu'une donnée « sensible » ?</summary><div>Certaines données demandent une protection renforcée : santé, opinions politiques ou religieuses, orientation, appartenance syndicale, données biométriques ou financières. Leur exposition peut avoir des conséquences plus graves.</div></details>
+  </div>
+</section>
+
+<!-- ============ 2. Réseaux sociaux ============ -->
+<section class="lesson alt" id="reseaux">
+  <div class="wrap reveal">
+    <h2>2. Paramètres de confidentialité des réseaux sociaux</h2>
+    <p>Les réglages par défaut favorisent souvent la visibilité. Les paramètres de confidentialité permettent de décider qui voit quoi.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><h3>Visibilité</h3><p>Choisir si les publications sont publiques, limitées aux amis ou à une liste précise.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg><h3>Recherche</h3><p>Limiter qui peut vous trouver par nom, numéro ou adresse e-mail.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4M4 12l6-6M4 12l6 6"/></svg><h3>Identifications</h3><p>Valider les identifications avant qu'elles n'apparaissent sur votre profil.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12h6"/></svg><h3>Applications liées</h3><p>Retirer les applications et jeux tiers qui n'ont plus d'utilité.</p></div>
+    </div>
+    <details><summary>Pourquoi revoir ces paramètres régulièrement ?</summary><div>Les plateformes modifient parfois leurs options et leurs conditions. Un contrôle périodique évite qu'un réglage change sans que l'on s'en rende compte.</div></details>
+  </div>
+</section>
+
+<!-- ============ 3. Données sensibles ============ -->
+<section class="lesson" id="sensibles">
+  <div class="wrap reveal">
+    <h2>3. Données hautement sensibles à ne jamais publier</h2>
+    <p>Certaines informations, une fois publiques, peuvent être copiées, conservées et réutilisées indéfiniment, même après suppression.</p>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div class="card"><h3>Pièces d'identité</h3><p>Carte d'identité, passeport, permis : elles servent à usurper une identité.</p></div>
+      <div class="card"><h3>Données bancaires</h3><p>Numéro de carte, IBAN, photo de carte ou de chéquier.</p></div>
+      <div class="card"><h3>Billets et codes</h3><p>Billets, cartes d'embarquement et QR codes contiennent des informations exploitables.</p></div>
+      <div class="card"><h3>Adresse et absences</h3><p>Une adresse précise combinée à des dates de départ signale une maison vide.</p></div>
+      <div class="card"><h3>Codes de vérification</h3><p>Codes reçus par SMS ou application : ils ne se communiquent à personne.</p></div>
+    </div>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Attention</strong><p>Même une photo « innocente » peut révéler une adresse, un lieu de travail ou un code d'accès visible en arrière-plan.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 4. Usurpation ============ -->
+<section class="lesson alt" id="usurpation">
+  <div class="wrap reveal">
+    <h2>4. Usurpation de compte, faux profils et géolocalisation</h2>
+    <p>Les informations publiques alimentent l'<strong>usurpation d'identité</strong> : un tiers se fait passer pour vous, avec un <strong>faux profil</strong> ou en prenant le contrôle d'un compte existant.</p>
+  </div>
+  <div class="wide reveal">
+    <ol class="stepper" aria-label="Mécanisme courant d'usurpation">
+      <li><b>Collecte</b><span>Infos et photos publiques sont récupérées.</span></li>
+      <li><b>Imitation</b><span>Un faux profil ou un compte piraté est mis en place.</span></li>
+      <li><b>Contact</b><span>Vos proches reçoivent des demandes en votre nom.</span></li>
+      <li><b>Exploitation</b><span>Demande d'argent, de codes ou de liens piégés.</span></li>
+    </ol>
+  </div>
+  <div class="wrap reveal">
+    <h3>Protéger sa géolocalisation</h3>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Sources de localisation">
+        <button role="tab">Photos</button><button role="tab">Applications</button><button role="tab">Publications</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Les photos peuvent contenir des <strong>métadonnées</strong> (lieu, date, appareil). Désactivez l'enregistrement de la position dans l'appareil photo, ou retirez ces données avant de partager.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Beaucoup d'applications demandent la position. Autorisez-la seulement pendant l'utilisation, et seulement si le service en a besoin.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Les identifications de lieu et les publications en direct révèlent vos habitudes. Mieux vaut publier après coup, et éviter de signaler son domicile ou ses horaires.</p></div>
+    </div>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Si un proche reçoit un message étrange venant de votre compte, prévenez-le sur un autre canal. Signalez aussitôt tout faux profil à la plateforme.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 5. Messagerie ============ -->
+<section class="lesson" id="messagerie">
+  <div class="wrap reveal">
+    <h2>5. Vie privée sur les messageries instantanées</h2>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Messageries instantanées">
+        <button role="tab">Chiffrement</button><button role="tab">Paramètres</button><button role="tab">Vigilance</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Le <strong>chiffrement de bout en bout</strong> garantit que seuls l'expéditeur et le destinataire lisent le message, pas même le service. Plusieurs messageries (comme Signal ou WhatsApp) l'appliquent par défaut ; vérifiez-le pour la vôtre.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Vous pouvez régler qui voit votre photo, votre statut et votre dernière connexion, qui peut vous ajouter à un groupe, et activer les <strong>messages éphémères</strong> pour les échanges sensibles.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Un contact peut être usurpé : méfiez-vous des demandes d'argent ou de codes, même d'un proche. Ne transmettez jamais un code de vérification reçu par SMS. Activez la <strong>vérification en deux étapes</strong> de la messagerie.</p></div>
+    </div>
+    <details><summary>Le chiffrement protège-t-il tout ?</summary><div>Il protège le trajet du message, pas ce que fait le destinataire : une capture d'écran, une sauvegarde non protégée ou un téléphone déverrouillé restent des points faibles.</div></details>
+  </div>
+</section>
+
+<!-- ============ 6. Droits ============ -->
+<section class="lesson alt" id="droits">
+  <div class="wrap reveal">
+    <h2>6. Droits numériques et réaction face au cyberharcèlement</h2>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Droits et cyberharcèlement">
+        <button role="tab">Droit à l'effacement</button><button role="tab">Cyberharcèlement</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Selon la législation de votre pays (par exemple le RGPD en Europe), vous pouvez demander la <strong>suppression de vos données</strong> à un organisme qui les détient, et le <strong>déréférencement</strong> de certains résultats dans un moteur de recherche. La demande s'adresse d'abord à l'organisme, puis, sans réponse satisfaisante, à l'autorité de protection des données.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Le <strong>cyberharcèlement</strong> désigne des propos ou comportements répétés visant à nuire à une personne en ligne : insultes, menaces, diffusion d'informations privées, faux profils. Ce n'est jamais de la faute de la victime, et la loi le sanctionne dans de nombreux pays.</p></div>
+    </div>
+  </div>
+  <div class="wide reveal">
+    <ol class="stepper" aria-label="Réagir face au cyberharcèlement">
+      <li><b>Ne pas répondre</b><span>Éviter d'envenimer la situation.</span></li>
+      <li><b>Conserver les preuves</b><span>Captures d'écran avec date, adresse du profil ou de la page.</span></li>
+      <li><b>Signaler</b><span>Utiliser l'outil de signalement de la plateforme.</span></li>
+      <li><b>Bloquer</b><span>Couper le contact avec l'auteur.</span></li>
+      <li><b>Demander de l'aide</b><span>Parler à un proche, contacter un service d'aide ou porter plainte.</span></li>
+    </ol>
+  </div>
+  <div class="wrap reveal">
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>Les preuves doivent être conservées avant tout signalement ou blocage, car les contenus peuvent disparaître. Selon les pays, des lignes d'écoute et associations existent (par exemple le 3018 en France).</p></div></div>
+    <div class="note"><span class="ic">🔗</span><div><strong>Pour aller plus loin</strong><p>La leçon suivante traite de la sécurité des paiements et achats en ligne.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ Points clés ============ -->
+<section class="lesson" id="cles">
+  <div class="wrap reveal">
+    <h2>Points clés à retenir</h2>
+    <ul class="keys">
+      <li>L'empreinte numérique comprend ce que l'on publie (active) et ce qui est collecté (passive).</li>
+      <li>Les paramètres de confidentialité des réseaux sociaux se règlent et se revoient.</li>
+      <li>Pièces d'identité, données bancaires, codes et adresses ne se publient jamais.</li>
+      <li>Les informations publiques servent à créer de faux profils et à usurper une identité.</li>
+      <li>La géolocalisation se limite dans les photos, les applications et les publications.</li>
+      <li>On dispose de droits (effacement) et d'une marche à suivre face au cyberharcèlement : preuves, signalement, aide.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="nav">
+    <a href="lecon-07-sauvegarder-et-proteger-ses-donnees.html" rel="prev"><small>Leçon précédente</small>Leçon 07 — Sauvegarder et protéger ses données</a>
+    <a class="next" href="lecon-09-securiser-ses-paiements-et-ses-achats-en-ligne.html" rel="next"><small>Leçon suivante</small>Leçon 09 — Sécuriser ses paiements et ses achats en ligne</a>
+  </div>
+  <p class="modlink"><a href="module-2.html">Retour au sommaire du module 2</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière Cybersécurité · Module 2 · Leçon 08</div></footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* Barre de progression, bouton retour haut */
+const bar=document.getElementById('progress'),topBtn=document.getElementById('top');
+function onScroll(){
+  const h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+  bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+  topBtn.classList.toggle('show',h.scrollTop>600);
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+/* Menu sommaire */
+const mb=document.getElementById('menuBtn'),dr=document.getElementById('drawer');
+mb.onclick=()=>{const o=dr.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+dr.addEventListener('click',e=>{if(e.target.tagName==='A'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+
+/* Onglets accessibles (flèches, Home, End) */
+document.querySelectorAll('[data-tabs]').forEach((box,n)=>{
+  const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+  tabs.forEach((t,i)=>{t.id=`t${n}-${i}`;panels[i].setAttribute('aria-labelledby',t.id);panels[i].tabIndex=0});
+  function select(i){tabs.forEach((t,j)=>{const on=i===j;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[j].hidden=!on})}
+  tabs.forEach((t,i)=>{
+    t.onclick=()=>select(i);
+    t.onkeydown=e=>{
+      let k=null;
+      if(e.key==='ArrowRight')k=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft')k=(i-1+tabs.length)%tabs.length;
+      if(e.key==='Home')k=0;if(e.key==='End')k=tabs.length-1;
+      if(k!==null){e.preventDefault();select(k);tabs[k].focus()}
+    };
+  });
+  select(0);
+});
+
+/* Apparition douce des sections (désactivée si prefers-reduced-motion) */
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+  els.forEach(el=>io.observe(el));
+}else els.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>

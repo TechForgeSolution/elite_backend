@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 03 — Créer un catalogue produit attractif</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23059669'/><path d='M25 35h50l-6 30H31zM38 35a12 12 0 0 1 24 0' fill='none' stroke='white' stroke-width='7' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--bg-alt:#F4F9F6;--text:#0A0F0C;--muted:#626B65;--accent:#059669;--accent-soft:#E8F7F0;--border:#DDE9E2;--accent-text:#047857;
+--display:'Sora','Segoe UI',system-ui,sans-serif;--body:'Source Sans 3','Segoe UI',system-ui,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.125rem/1.7 var(--body)}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.bar{max-width:1040px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font:700 1rem var(--display);display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.brand svg{width:26px;height:26px}
+.menu-btn{font:600 .95rem var(--body);background:none;border:1px solid var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--text)}
+.menu-btn:hover{border-color:var(--accent)}
+#menu{display:none;position:absolute;right:20px;top:100%;background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:280px;box-shadow:0 10px 30px rgba(10,15,12,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:9px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-size:1rem}
+#menu a:hover{background:var(--accent-soft)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);border-bottom:1px solid var(--border);padding:72px 0 56px}
+.hero .wrap{max-width:1040px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--accent-soft);color:var(--accent-text);border:1px solid var(--border);padding:4px 12px;border-radius:99px;font-size:.9rem;font-weight:600}
+.badge.dark{background:var(--text);color:#fff;border-color:var(--text)}
+.course{color:var(--muted);font-size:1rem;margin:0 0 8px}
+h1{font:700 clamp(2rem,4.5vw,3rem)/1.15 var(--display);margin:0 0 18px;letter-spacing:-.02em}
+.lead{font-size:1.25rem;color:var(--muted);margin:0}
+.hero svg{width:100%;height:auto}
+.goal{margin-top:24px;padding-left:16px;border-left:3px solid var(--accent);font-size:1.05rem}
+h2{font:700 clamp(1.5rem,3vw,2rem)/1.25 var(--display);margin:0 0 20px;letter-spacing:-.01em}
+h3{font:600 1.2rem/1.35 var(--display);margin:32px 0 10px}
+section.lesson{padding:72px 0}
+section.alt{background:var(--bg-alt);border-block:1px solid var(--border)}
+p{margin:0 0 1.1em}
+.toc{padding:48px 0 0}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:t}
+.toc a{display:flex;gap:14px;align-items:baseline;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);counter-increment:t;transition:border-color .2s,background .2s}
+.toc a::before{content:counter(t);font:700 .95rem var(--display);color:var(--accent-text)}
+.toc a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0;max-width:1040px}
+.full{max-width:1040px;margin:auto;padding:0 20px}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card svg{width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin:0 0 6px;font-size:1.1rem}
+.card p{margin:0;color:var(--muted);font-size:1rem;line-height:1.55}
+.note{border-radius:12px;padding:16px 20px;margin:28px 0;border:1px solid var(--border);background:var(--bg-alt)}
+.note strong{display:block;font:600 1rem var(--display);margin-bottom:4px}
+.note p{margin:0;font-size:1.02rem}
+.note.tip{background:var(--accent-soft);border-color:#bfe6d4}
+.note.warn{background:#fff;border-left:4px solid var(--text)}
+.note.best{border-left:4px solid var(--accent);background:#fff}
+.tabs [role=tablist]{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:22px;overflow-x:auto}
+.tabs [role=tab]{font:600 1rem var(--body);background:none;border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;color:var(--muted);white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--text);border-bottom-color:var(--accent)}
+.tabs [role=tab]:hover{color:var(--accent-text)}
+.panel[hidden]{display:none}
+.panel{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel ul{padding-left:20px;margin:0 0 1em}
+.panel li{margin-bottom:6px}
+.tw{overflow-x:auto;margin:24px 0}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:1rem;line-height:1.5;background:#fff}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+thead th{font:600 .95rem var(--display);background:var(--text);color:#fff}
+tbody th{font-weight:600;background:var(--bg-alt)}
+details{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent-text);font:700 1.3rem/1 var(--display);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details>div{padding:0 18px 14px;color:var(--muted);font-size:1.02rem}
+.fig{margin:28px 0;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{text-align:center;color:var(--muted);font-size:.95rem;margin-top:8px}
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:s;position:relative}
+.stepper li{counter-increment:s;position:relative;padding-top:52px;font-size:1rem;line-height:1.5}
+.stepper li::before{content:counter(s);position:absolute;top:0;left:0;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 1rem var(--display);z-index:1}
+.stepper li::after{content:"";position:absolute;top:18px;left:38px;right:-14px;height:2px;background:var(--border)}
+.stepper li:last-child::after{display:none}
+.stepper b{display:block;font:600 1rem var(--display);margin-bottom:4px}
+.key{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:1040px;margin:auto}
+.key div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px 18px 52px;position:relative;font-size:1.02rem;line-height:1.55}
+.key div::before{content:"";position:absolute;left:18px;top:22px;width:20px;height:20px;border-radius:50%;background:var(--accent-soft) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5 10.5l3.5 3.5L15 7' fill='none' stroke='%23059669' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
+.pager{max-width:1040px;margin:0 auto;padding:56px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pager a,.pager span{display:block;padding:18px 22px;border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);line-height:1.4}
+.pager small{display:block;color:var(--muted);font-size:.9rem;margin-bottom:4px}
+.pager a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.pager .next{text-align:right}
+.back{text-align:center;padding-bottom:40px}
+.back a{font-weight:600}
+footer{border-top:1px solid var(--border);padding:28px 20px;text-align:center;color:var(--muted);font-size:.95rem}
+#top{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.3rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s;z-index:60}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{background:var(--accent)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media(max-width:820px){
+.hero .wrap{grid-template-columns:1fr}.hero{padding:48px 0 40px}
+.cards,.key{grid-template-columns:1fr}
+.stepper{grid-template-columns:1fr;gap:20px}
+.stepper li{padding:2px 0 0 54px}.stepper li::after{display:none}
+.pager{grid-template-columns:1fr}.pager .next{text-align:left}
+section.lesson{padding:52px 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top">
+ <div class="bar">
+  <a class="brand" href="#debut"><svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#059669"/><path d="M25 35h50l-6 30H31zM38 35a12 12 0 0 1 24 0" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"/></svg>Formation E-commerce</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire rapide">
+   <a href="#fiche">Structure d'une fiche produit</a>
+   <a href="#caracteristiques">Caractéristiques et bénéfices</a>
+   <a href="#description">Description persuasive</a>
+   <a href="#visuels">Visuels et photos</a>
+   <a href="#prix">Prix, promotions et variantes</a>
+   <a href="#confiance">Disponibilité et réassurance</a>
+   <a href="#retenir">Points clés</a>
+  </nav>
+ </div>
+</header>
+
+<main id="debut">
+<section class="hero">
+ <div class="wrap">
+  <div>
+   <div class="badges"><span class="badge dark">Module 1 — Fondamentaux de la vente en ligne</span><span class="badge">15 min de lecture</span><span class="badge">Niveau débutant</span></div>
+   <p class="course">Leçon 03</p>
+   <h1>Créer un catalogue produit attractif</h1>
+   <p class="lead">Présentez vos produits de manière claire, persuasive et adaptée à la vente en ligne.</p>
+   <p class="goal"><strong>Objectif :</strong> structurer des fiches produits qui facilitent la compréhension, renforcent la confiance et accompagnent le client vers l'achat.</p>
+  </div>
+  <svg viewBox="0 0 320 260" role="img" aria-label="Illustration d'un catalogue produit en ligne avec fiche produit, prix, avis et bouton d'achat">
+   <rect x="18" y="24" width="214" height="182" rx="14" fill="#fff" stroke="#DDE9E2" stroke-width="2"/>
+   <rect x="18" y="24" width="214" height="28" rx="14" fill="#0A0F0C"/><rect x="18" y="39" width="214" height="13" fill="#0A0F0C"/>
+   <circle cx="34" cy="38" r="4" fill="#fff"/><circle cx="48" cy="38" r="4" fill="#059669"/>
+   <rect x="34" y="68" width="78" height="78" rx="9" fill="#E8F7F0"/>
+   <path d="M52 126l15-20 12 12 10-14 17 22" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+   <circle cx="87" cy="87" r="8" fill="#fff" stroke="#059669" stroke-width="2"/>
+   <rect x="128" y="68" width="78" height="8" rx="4" fill="#DDE9E2"/>
+   <rect x="128" y="86" width="60" height="8" rx="4" fill="#DDE9E2"/>
+   <text x="128" y="116" font-size="15" font-weight="700" fill="#0A0F0C" font-family="Sora,sans-serif">29 900 F</text>
+   <rect x="128" y="128" width="78" height="28" rx="14" fill="#059669"/>
+   <text x="167" y="146" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Sora,sans-serif">Acheter</text>
+   <text x="35" y="166" font-size="11" fill="#626B65" font-family="Source Sans 3,sans-serif">★★★★★ 4,8</text>
+   <rect x="42" y="222" width="122" height="22" rx="11" fill="#F4F9F6" stroke="#DDE9E2"/>
+   <text x="103" y="237" text-anchor="middle" font-size="11" font-weight="600" fill="#047857" font-family="Source Sans 3,sans-serif">Fiche produit</text>
+   <path d="M246 72h48v48h-48z" fill="#F4F9F6" stroke="#DDE9E2" stroke-width="2"/>
+   <path d="M256 88h28M256 98h20M256 108h24" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/>
+   <path d="M238 146h58" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+   <path d="M286 138l10 8-10 8" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+ </div>
+</section>
+
+<nav class="toc" aria-labelledby="toc-t">
+ <div class="wrap">
+  <h2 id="toc-t">Au programme</h2>
+  <ol>
+   <li><a href="#fiche">Structure et éléments clés d'une fiche produit performante</a></li>
+   <li><a href="#caracteristiques">Caractéristiques techniques et bénéfices clients</a></li>
+   <li><a href="#description">Rédiger une description persuasive et structurée</a></li>
+   <li><a href="#visuels">Gérer les visuels et photos produits</a></li>
+   <li><a href="#prix">Prix, promotions et variantes</a></li>
+   <li><a href="#confiance">Disponibilité, réassurance et preuve sociale</a></li>
+   <li><a href="#retenir">Points clés à retenir</a></li>
+  </ol>
+ </div>
+</nav>
+
+<section class="lesson" id="fiche">
+ <div class="wrap rv">
+  <h2>Construire une fiche produit performante</h2>
+  <p>Une fiche produit est l'équivalent numérique d'un vendeur qui présente un article en magasin. Elle doit permettre au visiteur de comprendre rapidement ce qu'il achète, pourquoi le produit peut lui être utile et dans quelles conditions il peut le commander.</p>
+  <p>Une fiche efficace organise les informations dans un ordre logique, depuis l'identification du produit jusqu'aux éléments qui rassurent avant l'achat.</p>
+  <ol class="stepper" aria-label="Structure d'une fiche produit">
+   <li><b>Identifier</b>Un nom clair et précis permet de comprendre immédiatement le produit.</li>
+   <li><b>Visualiser</b>Des images nettes montrent le produit sous plusieurs angles et dans son contexte.</li>
+   <li><b>Comprendre</b>La description explique les caractéristiques et surtout les bénéfices pour le client.</li>
+   <li><b>Décider</b>Prix, disponibilité, variantes, avis et informations de commande réduisent les hésitations.</li>
+  </ol>
+  <div class="note tip"><strong>💡 À retenir</strong><p>Une bonne fiche produit ne cherche pas seulement à « décrire » un article. Elle répond aux principales questions du client au moment où il doit prendre sa décision.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="caracteristiques">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Caractéristiques techniques et bénéfices clients</h2>
+   <p>Une caractéristique décrit objectivement le produit. Un bénéfice explique ce que cette caractéristique apporte concrètement au client. La distinction est essentielle pour rendre une présentation plus persuasive.</p>
+  </div>
+  <div class="cards">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h5M8 15h8"/></svg><h3>Caractéristique</h3><p>Une information mesurable ou descriptive : matière, dimensions, capacité, autonomie, poids, couleur ou technologie utilisée.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 5.4L20 10l-5.8 1.6L12 17l-2.2-5.4L4 10l5.8-1.6L12 3z"/><path d="M19 17l.8 2 2.2.7-2.2.6-.8 2-.8-2-2.2-.6 2.2-.7.8-2z"/></svg><h3>Bénéfice</h3><p>Le résultat utile pour le client : gagner du temps, être plus confortable, mieux organiser ses affaires, simplifier une tâche ou obtenir un meilleur rendu.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6M4 18h16"/><path d="M7 14l4-4 3 2 6-6"/></svg><h3>Argument</h3><p>Le lien entre les deux : une caractéristique pertinente devient un argument lorsqu'elle est reliée à un besoin ou à un résultat recherché.</p></div>
+  </div>
+  <div class="wrap" style="padding:0">
+   <div class="note best"><strong>🛒 Bonne pratique e-commerce</strong><p>Pour chaque caractéristique importante, expliquez sa conséquence pour l'utilisateur. Le client n'achète pas une spécification : il achète la valeur qu'elle représente pour lui.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="lesson" id="description">
+ <div class="wrap rv">
+  <h2>Rédiger une description persuasive et structurée</h2>
+  <p>Une description efficace part du besoin du client et progresse vers les informations qui permettent de comprendre le produit. Elle doit rester précise, lisible et crédible, sans exagération.</p>
+  <div class="tabs" data-tabs>
+   <div role="tablist" aria-label="Approches de rédaction">
+    <button role="tab" aria-selected="true">Problème → Solution</button>
+    <button role="tab" aria-selected="false">Caractéristique → Bénéfice</button>
+    <button role="tab" aria-selected="false">AIDA</button>
+   </div>
+   <div class="panel" role="tabpanel">
+    <p><strong>Problème → Solution</strong> commence par la situation rencontrée par le client puis montre comment le produit y répond.</p>
+    <ul><li>Identifier une difficulté concrète.</li><li>Présenter le produit comme réponse adaptée.</li><li>Montrer le résultat attendu sans promesse irréaliste.</li></ul>
+    <div class="note"><strong>Exemple de logique</strong><p>« Vous manquez de place pour organiser vos accessoires ? Cette solution compacte permet de les regrouper et de les retrouver plus facilement. »</p></div>
+   </div>
+   <div class="panel" role="tabpanel" hidden>
+    <p><strong>Caractéristique → Bénéfice</strong> relie directement une donnée du produit à son utilité pour l'utilisateur.</p>
+    <ul><li>Nommer la caractéristique.</li><li>Expliquer ce qu'elle change pour le client.</li><li>Privilégier les bénéfices pertinents pour la cible.</li></ul>
+    <div class="note"><strong>Exemple de logique</strong><p>« Format compact de 30 cm : il se range facilement sur une étagère ou dans un petit espace. »</p></div>
+   </div>
+   <div class="panel" role="tabpanel" hidden>
+    <p><strong>AIDA</strong> structure le message en quatre mouvements : attirer l'attention, susciter l'intérêt, renforcer le désir et faciliter l'action.</p>
+    <ul><li><strong>Attention :</strong> mettre en avant un élément important.</li><li><strong>Intérêt :</strong> expliquer la valeur du produit.</li><li><strong>Désir :</strong> montrer les bénéfices et usages.</li><li><strong>Action :</strong> présenter clairement les conditions d'achat.</li></ul>
+    <div class="note"><strong>Point de vigilance</strong><p>Le framework est une structure d'écriture, pas une raison pour multiplier les superlatifs. La crédibilité reste prioritaire.</p></div>
+   </div>
+  </div>
+  <details><summary>Comment organiser le texte d'une fiche produit ?</summary><div>Commencez par une présentation courte du produit, puis développez les bénéfices principaux, les caractéristiques utiles, les informations pratiques et enfin les éléments nécessaires à la décision : prix, variantes, disponibilité et livraison.</div></details>
+  <details><summary>Quel ton adopter ?</summary><div>Utilisez un vocabulaire simple, concret et adapté à la cible. Évitez le jargon inutile, les promesses absolues et les phrases trop longues qui ralentissent la lecture sur mobile.</div></details>
+ </div>
+</section>
+
+<section class="lesson alt" id="visuels">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Gérer les visuels et photos produits</h2>
+   <p>Les images permettent de voir ce que le texte ne peut pas toujours expliquer. Elles doivent donc être cohérentes, suffisamment nettes et orientées vers les informations utiles à la décision.</p>
+  </div>
+  <figure class="fig">
+   <svg viewBox="0 0 760 250" role="img" aria-label="Schéma présentant quatre rôles des photos produits : vue principale, détail, angle complémentaire et mise en situation">
+    <g font-family="Source Sans 3,sans-serif" fill="#0A0F0C">
+     <rect x="18" y="28" width="165" height="170" rx="14" fill="#F4F9F6" stroke="#DDE9E2" stroke-width="2"/>
+     <rect x="43" y="52" width="115" height="92" rx="9" fill="#E8F7F0"/>
+     <path d="M61 126l25-32 22 22 13-16 20 26" fill="none" stroke="#059669" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+     <text x="100" y="168" text-anchor="middle" font-weight="700" font-family="Sora,sans-serif">Vue principale</text>
+     <text x="100" y="187" text-anchor="middle" font-size="13" fill="#626B65">Identifier le produit</text>
+
+     <rect x="203" y="28" width="165" height="170" rx="14" fill="#F4F9F6" stroke="#DDE9E2" stroke-width="2"/>
+     <rect x="228" y="52" width="115" height="92" rx="9" fill="#E8F7F0"/>
+     <circle cx="285" cy="98" r="28" fill="none" stroke="#059669" stroke-width="4"/>
+     <path d="M300 113l18 18" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
+     <text x="285" y="168" text-anchor="middle" font-weight="700" font-family="Sora,sans-serif">Détail</text>
+     <text x="285" y="187" text-anchor="middle" font-size="13" fill="#626B65">Montrer la finition</text>
+
+     <rect x="388" y="28" width="165" height="170" rx="14" fill="#F4F9F6" stroke="#DDE9E2" stroke-width="2"/>
+     <rect x="413" y="52" width="115" height="92" rx="9" fill="#E8F7F0"/>
+     <path d="M435 126h70M443 116l22-34 25 34" fill="none" stroke="#059669" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+     <text x="470" y="168" text-anchor="middle" font-weight="700" font-family="Sora,sans-serif">Angle complémentaire</text>
+     <text x="470" y="187" text-anchor="middle" font-size="13" fill="#626B65">Réduire les zones d'ombre</text>
+
+     <rect x="573" y="28" width="165" height="170" rx="14" fill="#F4F9F6" stroke="#DDE9E2" stroke-width="2"/>
+     <rect x="598" y="52" width="115" height="92" rx="9" fill="#E8F7F0"/>
+     <circle cx="632" cy="86" r="16" fill="#fff" stroke="#059669" stroke-width="3"/>
+     <path d="M610 130c8-23 56-23 64 0" fill="none" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
+     <rect x="664" y="78" width="32" height="44" rx="5" fill="#fff" stroke="#059669" stroke-width="3"/>
+     <text x="655" y="168" text-anchor="middle" font-weight="700" font-family="Sora,sans-serif">Mise en situation</text>
+     <text x="655" y="187" text-anchor="middle" font-size="13" fill="#626B65">Projeter l'usage</text>
+    </g>
+   </svg>
+   <figcaption>Un catalogue convaincant combine plusieurs types de visuels : vue globale, détails, angles complémentaires et usage réel lorsque cela apporte une information utile.</figcaption>
+  </figure>
+
+  <div class="tw"><table>
+   <thead><tr><th>Élément visuel</th><th>Objectif</th><th>Point de vigilance</th></tr></thead>
+   <tbody>
+    <tr><th>Cadrage</th><td>Faire ressortir clairement le produit dans l'image.</td><td>Éviter un arrière-plan trop chargé qui détourne l'attention.</td></tr>
+    <tr><th>Éclairage</th><td>Rendre visibles les formes, matières et couleurs.</td><td>Limiter les ombres fortes et les différences de couleur trompeuses.</td></tr>
+    <tr><th>Angles</th><td>Montrer les faces et détails utiles à la compréhension.</td><td>Ne pas multiplier les images identiques sans information supplémentaire.</td></tr>
+    <tr><th>Mise en situation</th><td>Aider le client à visualiser le produit dans son usage.</td><td>Conserver une représentation fidèle du produit vendu.</td></tr>
+   </tbody>
+  </table></div>
+
+  <div class="wrap" style="padding:0">
+   <div class="note warn"><strong>⚠️ Attention / erreur fréquente</strong><p>Une belle photo ne compense pas une présentation trompeuse. Le produit, ses dimensions, ses couleurs et ses accessoires doivent rester représentés de façon cohérente avec ce que le client recevra.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="lesson" id="prix">
+ <div class="wrap rv">
+  <h2>Prix, promotions et variantes</h2>
+  <p>Le prix doit être immédiatement identifiable et présenté avec les informations nécessaires pour éviter toute ambiguïté. Les promotions et variantes doivent simplifier la décision plutôt que la compliquer.</p>
+  <div class="cards" style="grid-template-columns:repeat(3,1fr)">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M18 15v6M15 18h6"/></svg><h3>Prix lisible</h3><p>Présentez clairement le montant, la devise et, lorsque nécessaire, les frais ou conditions qui peuvent modifier le total.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l8-8 8 8-8 8-8-8z"/><path d="M9 9h.01M15 15h.01"/></svg><h3>Promotion claire</h3><p>Un ancien prix, un nouveau prix ou un avantage doit être compréhensible. Évitez les promotions artificiellement complexes.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><h3>Variantes utiles</h3><p>Tailles, couleurs, formats ou options doivent être nommés clairement et reliés à la disponibilité correspondante.</p></div>
+  </div>
+  <div class="note tip"><strong>💡 À retenir</strong><p>Plus le choix est complexe, plus l'interface doit être simple. Une variante doit aider le client à choisir exactement ce qu'il souhaite acheter.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="confiance">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Disponibilité, réassurance et preuve sociale</h2>
+   <p>Avant de commander, un client cherche à réduire son incertitude. Les informations de stock, les conditions de livraison, les avis et les éléments de réassurance rendent la décision plus sûre.</p>
+  </div>
+  <div class="cards">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z"/><path d="M8 12l3 3 5-6"/></svg><h3>Disponibilité</h3><p>Indiquez clairement si le produit est disponible, en rupture ou disponible sur commande. Une information à jour évite les déceptions.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.2-7 10-3.5-1.8-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><h3>Réassurance</h3><p>Livraison, retours, moyens de paiement et service client répondent aux inquiétudes pratiques qui peuvent bloquer une commande.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg><h3>Avis et notes</h3><p>La preuve sociale montre l'expérience d'autres clients. Les avis doivent rester authentiques et présentés de façon compréhensible.</p></div>
+  </div>
+  <div class="wrap" style="padding:0">
+   <div class="note best"><strong>🛒 Bonne pratique e-commerce</strong><p>Placez les éléments de confiance à proximité des informations qui déclenchent la décision : prix, bouton d'achat, livraison, retours et disponibilité.</p></div>
+   <details><summary>Quels éléments de réassurance sont les plus utiles ?</summary><div>Les informations les plus utiles sont généralement celles qui répondent aux risques perçus : comment payer, quand recevoir le produit, que faire en cas de problème, comment retourner un article et comment contacter le vendeur.</div></details>
+   <details><summary>Pourquoi la preuve sociale compte-t-elle ?</summary><div>Les avis et notes donnent un repère supplémentaire lorsque le client ne peut pas toucher ou essayer le produit avant l'achat. Leur valeur dépend de leur pertinence, de leur crédibilité et de leur cohérence avec le produit présenté.</div></details>
+  </div>
+ </div>
+</section>
+
+<section class="lesson" id="synthese">
+ <div class="wrap rv">
+  <h2>Relier tous les éléments de la fiche produit</h2>
+  <p>Un catalogue produit attractif fonctionne comme un ensemble cohérent. Chaque élément doit répondre à une question du client et préparer naturellement la suivante.</p>
+  <ol class="stepper" aria-label="Parcours de lecture d'une fiche produit">
+   <li><b>Qu'est-ce que c'est ?</b>Nom, visuel principal et présentation immédiate.</li>
+   <li><b>Pourquoi est-ce utile ?</b>Bénéfices, usages et caractéristiques importantes.</li>
+   <li><b>Combien et quelle version ?</b>Prix, promotion, taille, couleur ou autres variantes.</li>
+   <li><b>Puis-je acheter en confiance ?</b>Stock, livraison, retours, avis et service client.</li>
+  </ol>
+  <div class="note"><strong>🔗 Pour aller plus loin</strong><p>La prochaine étape consiste à mettre en place la boutique et les canaux de vente afin de transformer ces fiches produits en véritable parcours d'achat.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="retenir">
+ <div class="full rv">
+  <div class="wrap" style="padding:0"><h2>Points clés à retenir</h2></div>
+  <div class="key">
+   <div>Une fiche produit performante identifie clairement le produit, le montre, l'explique et facilite la décision.</div>
+   <div>Une caractéristique décrit le produit ; un bénéfice explique la valeur qu'elle apporte au client.</div>
+   <div>Une description persuasive reste structurée, concrète, lisible et adaptée à la cible.</div>
+   <div>Les photos doivent être nettes, cohérentes et montrer les angles ou usages réellement utiles.</div>
+   <div>Prix, promotions et variantes doivent être affichés sans ambiguïté pour réduire les hésitations.</div>
+   <div>Disponibilité, livraison, retours, avis et service client sont des éléments essentiels de réassurance.</div>
+  </div>
+ </div>
+</section>
+</main>
+
+<nav class="pager" aria-label="Navigation entre les leçons">
+ <a href="lecon-02-identifier-une-niche.html" rel="prev"><small>Leçon précédente</small>Leçon 02 — Identifier une niche, une cible et une offre rentable</a>
+ <a class="next" href="lecon-04-boutique-canaux-vente.html" rel="next"><small>Leçon suivante</small>Leçon 04 — Mettre en place sa boutique et ses canaux de vente</a>
+</nav>
+<p class="back"><a href="#debut">Retour au sommaire du Module 1</a></p>
+
+<footer>Formation E-commerce · Module 1 — Fondamentaux de la vente en ligne</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('progress'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
+var mb=document.getElementById('menuBtn'),mn=document.getElementById('menu');
+mb.addEventListener('click',function(){var o=mn.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+mn.addEventListener('click',function(e){if(e.target.tagName==='A'){mn.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){mn.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('[data-tabs]').forEach(function(t){
+var tabs=[].slice.call(t.querySelectorAll('[role=tab]')),ps=[].slice.call(t.querySelectorAll('[role=tabpanel]'));
+function sel(i){tabs.forEach(function(b,j){b.setAttribute('aria-selected',i===j);b.tabIndex=i===j?0:-1;ps[j].hidden=i!==j})}
+tabs.forEach(function(b,i){b.addEventListener('click',function(){sel(i)});
+b.addEventListener('keydown',function(e){var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:null;
+if(n===null)return;n=(n+tabs.length)%tabs.length;sel(n);tabs[n].focus()})});sel(0)});
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(el){io.observe(el)})}
+else rv.forEach(function(el){el.classList.add('in')});
+})();
+</script>
+</body>
+</html>

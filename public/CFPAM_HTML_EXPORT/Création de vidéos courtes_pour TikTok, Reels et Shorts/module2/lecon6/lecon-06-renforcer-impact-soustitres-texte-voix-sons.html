@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 06 — Renforcer l'impact : sous-titres, texte, voix et sons</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='9' y='2' width='14' height='28' rx='4' fill='%237C3AED'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F5FA;--color-text:#0A0A0F;--color-text-muted:#5B6472;--color-accent:#7C3AED;--color-accent-soft:#F0EAFE;--color-border:#E5E8EE;--accent-text:#6D28D9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.2;margin:0 0 .6em;letter-spacing:-.02em}
+h1{font-size:clamp(2rem,5vw,3.25rem);font-weight:700}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1em}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font:700 1rem Sora,sans-serif;display:flex;align-items:center;gap:8px}
+.logo i{width:12px;height:20px;border-radius:4px;background:var(--color-accent);display:inline-block}
+header.top a.menu{font-size:.9rem;text-decoration:none;color:var(--color-text);padding:6px 12px;border:1px solid var(--color-border);border-radius:99px;transition:.2s}
+header.top a.menu:hover{border-color:var(--color-accent);color:var(--accent-text)}
+.hero{padding:72px 0 48px;background:var(--color-bg-alt)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.85rem;padding:4px 12px;border-radius:99px;background:var(--color-accent-soft);color:var(--accent-text);font-weight:500}
+.badge.plain{background:#fff;border:1px solid var(--color-border);color:var(--color-text-muted)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.hero .lesson{color:var(--accent-text);font:600 .95rem Sora,sans-serif;margin-bottom:12px}
+.toc{padding:40px 0}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:block;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);transition:.2s}
+.toc a:hover{border-color:var(--color-accent);transform:translateX(4px)}
+section.s{padding:64px 0}
+section.s.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+.callout{display:flex;gap:14px;padding:16px 18px;margin:24px 0;border-left:4px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 12px 12px 0}
+.callout b{display:block;font-family:Sora,sans-serif}
+.callout p{margin:0}
+.fig{margin:28px 0;padding:16px;background:#fff;border:1px solid var(--color-border);border-radius:14px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{font-size:.875rem;color:var(--color-text-muted);margin-top:8px}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:24px 0}
+.card{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-3px)}
+.card .ic{font-size:1.5rem}
+.card h3{font-size:1.05rem;margin:.4em 0}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+.tabs [role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{font:600 .95rem Sora,sans-serif;padding:10px 16px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--accent-text);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:20px 0}
+.tabs [role=tabpanel][hidden]{display:none}
+.tabs ul{padding-left:1.1em;margin:0}
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));counter-reset:st}
+.stepper li{counter-increment:st;position:relative;padding:44px 14px 14px;background:#fff;border:1px solid var(--color-border);border-radius:12px;font-size:.95rem}
+.stepper li::before{content:counter(st);position:absolute;top:10px;left:14px;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .85rem/26px Sora,sans-serif;text-align:center}
+.stepper b{display:block;font-family:Sora,sans-serif}
+details{border:1px solid var(--color-border);border-radius:12px;background:#fff;margin:10px 0;padding:0 16px}
+summary{cursor:pointer;padding:14px 0;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--accent-text);font-weight:700}
+details[open] summary::after{content:"–"}
+details p{color:var(--color-text-muted)}
+.example{padding:16px 18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;margin:20px 0}
+.example b{font-family:Sora,sans-serif}
+.example p{margin:.4em 0 0;color:var(--color-text-muted);font-size:.97rem}
+.demo{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:24px 0;padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px}
+.phone{width:150px;aspect-ratio:9/16;background:#0A0A0F;border-radius:16px;position:relative;overflow:hidden;flex:none}
+.phone .scene{position:absolute;inset:0;background:#2a2535}
+.phone .scene::after{content:"";position:absolute;left:50%;top:32%;width:50px;height:50px;margin-left:-25px;border-radius:50%;background:#F0EAFE;opacity:.85}
+.phone .cap{position:absolute;left:8px;right:8px;top:62%;text-align:center;font:700 .85rem/1.25 Sora,sans-serif;color:#fff;transition:.2s}
+.phone .cap.on em{background:#7C3AED;font-style:normal;padding:1px 4px;border-radius:3px}
+.phone .cap.off{opacity:0}
+.demo .ctl p{color:var(--color-text-muted);font-size:.95rem}
+.demo button{font:600 .95rem Sora,sans-serif;padding:10px 16px;border:1px solid var(--color-accent);background:#fff;color:var(--accent-text);border-radius:99px;cursor:pointer;transition:.2s}
+.demo button:hover,.demo button[aria-pressed=true]{background:var(--color-accent);color:#fff}
+.quiz .q{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;margin:14px 0}
+.quiz .q p{font-weight:500}
+.opts{display:grid;gap:8px}
+.opts button{font:inherit;text-align:left;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;background:#fff;cursor:pointer;transition:.2s}
+.opts button:hover:not(:disabled){border-color:var(--color-accent);background:var(--color-accent-soft)}
+.opts button.ok{border-color:var(--color-accent);background:var(--color-accent-soft);font-weight:500}
+.opts button.ko{border-style:dashed;color:var(--color-text-muted);text-decoration:line-through}
+.fb{font-size:.95rem;margin:10px 0 0;color:var(--color-text-muted);min-height:1.4em}
+.score{font:600 1.1rem Sora,sans-serif;margin-top:16px}
+.key ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.key li{padding:12px 16px 12px 44px;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:12px}
+.key li::before{content:"✓";position:absolute;left:14px;color:var(--color-accent);font-weight:700}
+.pager{display:grid;gap:12px;grid-template-columns:1fr 1fr;padding:48px 0 24px}
+.pager a{padding:16px;border:1px solid var(--color-border);border-radius:14px;text-decoration:none;color:var(--color-text);display:block;transition:.2s}
+.pager a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.pager small{display:block;color:var(--color-text-muted)}
+.pager .next{text-align:right}
+.back{text-align:center;padding-bottom:32px}
+footer{border-top:1px solid var(--color-border);padding:24px 0;color:var(--color-text-muted);font-size:.9rem;text-align:center}
+#top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:.3s}
+#top.show{opacity:1;pointer-events:auto}
+@media (max-width:520px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}.hero{padding:48px 0 32px}section.s{padding:48px 0}}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="logo"><i></i>Création de contenu vidéo court</span>
+  <a class="menu" href="#sommaire">Sommaire</a>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge">Module 2 — Publier, optimiser et développer sa présence</span><span class="badge plain">⏱ 15 min</span><span class="badge plain">Niveau débutant</span></div>
+  <p class="lesson">Leçon 06</p>
+  <h1>Renforcer l'impact : sous-titres, texte, voix et sons</h1>
+  <p class="sub">À la fin de cette leçon, vous saurez rendre une vidéo compréhensible sans le son, placer votre texte à l'écran, soigner votre voix et choisir des sons en respectant les droits.</p>
+</div></div>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire"><div class="wrap">
+  <h2>Sommaire</h2>
+  <ol>
+    <li><a href="#soustitres">Les sous-titres</a></li>
+    <li><a href="#texte">Placer le texte à l'écran</a></li>
+    <li><a href="#voix">La voix off</a></li>
+    <li><a href="#sons">Sons, musiques et droits d'auteur</a></li>
+    <li><a href="#ia">Les outils d'IA pour la voix et les sous-titres</a></li>
+    <li><a href="#quiz">Vérifiez vos acquis</a></li>
+    <li><a href="#cles">Points clés à retenir</a></li>
+  </ol>
+</div></nav>
+
+<section class="s alt reveal" id="soustitres"><div class="wrap">
+  <h2>Les sous-titres</h2>
+  <p>Beaucoup de gens regardent des vidéos courtes <strong>sans le son</strong> : dans les transports, au travail, au lit. Des <strong>sous-titres</strong> (la transcription de ce que vous dites, à l'écran) rendent votre vidéo compréhensible dans tous les cas. Ils aident aussi les personnes sourdes ou malentendantes.</p>
+  <div class="demo">
+    <div class="phone" aria-hidden="true"><div class="scene"></div><div class="cap on" id="cap">Voici <em>3 astuces</em> pour mieux filmer</div></div>
+    <div class="ctl"><p>Testez l'effet : la vidéo est regardée sans le son. Les sous-titres sont-ils utiles ?</p>
+      <button type="button" id="capBtn" aria-pressed="true">Sous-titres : activés</button></div>
+  </div>
+  <h3>Sous-titrer en trois étapes</h3>
+  <ol class="stepper">
+    <li><b>Générer</b>Lancez la transcription automatique de votre application de montage.</li>
+    <li><b>Corriger</b>Relisez tout : noms propres, mots techniques, ponctuation.</li>
+    <li><b>Styliser</b>Choisissez une police lisible, grosse, avec contraste.</li>
+  </ol>
+  <div class="callout" role="note"><span aria-hidden="true">💡</span><div><b>À retenir</b><p>Les sous-titres automatiques font des erreurs. Relisez-les toujours avant de publier. Mettez en valeur un mot-clé par ligne avec une couleur d'accent, sans exagérer.</p></div></div>
+</div></section>
+
+<section class="s reveal" id="texte"><div class="wrap">
+  <h2>Placer le texte à l'écran</h2>
+  <p>Le <strong>texte à l'écran</strong> (titre, mots-clés, chiffres) renforce votre message. Il doit rester court et ne jamais masquer le sujet ni les zones occupées par l'interface de l'application.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 600 300" role="img" aria-label="Schéma d'un cadre vertical : un titre court placé dans le tiers supérieur, les sous-titres vers le centre-bas, le sujet au milieu, et les bords gardés libres.">
+      <rect x="215" y="10" width="170" height="280" rx="14" fill="#fff" stroke="#0A0A0F" stroke-width="2"/>
+      <rect x="215" y="10" width="170" height="36" rx="14" fill="#F0EAFE"/><rect x="215" y="236" width="170" height="54" rx="14" fill="#F0EAFE"/>
+      <rect x="235" y="62" width="130" height="26" rx="6" fill="#7C3AED"/>
+      <text x="300" y="80" font-family="Sora,sans-serif" font-size="12" fill="#fff" text-anchor="middle">Titre court</text>
+      <circle cx="300" cy="140" r="28" fill="#7C3AED" fill-opacity=".25" stroke="#7C3AED"/>
+      <rect x="240" y="192" width="120" height="26" rx="6" fill="#0A0A0F"/>
+      <text x="300" y="209" font-family="Sora,sans-serif" font-size="12" fill="#fff" text-anchor="middle">Sous-titres</text>
+      <g font-family="Inter,sans-serif" font-size="13" fill="#5B6472"><text x="30" y="30">Bord haut : libre</text><text x="30" y="270">Bord bas : libre</text><text x="30" y="80">Titre en haut</text><text x="410" y="209">Sous-titres sous le sujet</text></g>
+    </svg>
+    <figcaption>Le titre en haut, les sous-titres sous le sujet, les bords libres.</figcaption>
+  </figure>
+  <div class="cards">
+    <div class="card"><div class="ic">✂️</div><h3>Peu de mots</h3><p>Quelques mots par écran, pas des phrases entières.</p></div>
+    <div class="card"><div class="ic">👁️</div><h3>Lisible</h3><p>Texte clair sur fond contrasté, assez gros pour un petit écran.</p></div>
+    <div class="card"><div class="ic">⏲️</div><h3>Assez longtemps</h3><p>Laissez le texte le temps d'être lu, sans trop le prolonger.</p></div>
+  </div>
+</div></section>
+
+<section class="s alt reveal" id="voix"><div class="wrap">
+  <h2>La voix off</h2>
+  <p>La <strong>voix off</strong> est une voix enregistrée séparément et ajoutée sur les images. Elle est utile quand vous ne voulez pas parler face caméra, ou pour expliquer des images tournées sans son.</p>
+  <ol class="stepper">
+    <li><b>Écrire</b>Préparez un texte court, à l'oral.</li>
+    <li><b>Enregistrer</b>Dans un lieu calme, près du téléphone.</li>
+    <li><b>Nettoyer</b>Coupez les silences et les erreurs.</li>
+    <li><b>Mixer</b>Placez la voix au-dessus de la musique.</li>
+  </ol>
+  <details><summary>Comment avoir une voix claire ?</summary>
+    <p>Parlez un peu plus lentement et articulez. Souriez légèrement : cela s'entend. Enregistrez plusieurs prises et gardez la meilleure.</p></details>
+  <details><summary>Quel niveau pour la musique de fond ?</summary>
+    <p>Baissez-la nettement sous la voix, pour que chaque mot reste compréhensible. Dans le doute, baissez encore.</p></details>
+</div></section>
+
+<section class="s reveal" id="sons"><div class="wrap">
+  <h2>Sons, musiques et droits d'auteur</h2>
+  <p>Un son tendance peut donner de la visibilité à votre vidéo, car beaucoup de gens le recherchent. Mais une musique appartient à ses auteurs : vous n'avez pas le droit de l'utiliser comme vous voulez.</p>
+  <div class="tabs" id="tabs1">
+    <div role="tablist" aria-label="Choix de sons">
+      <button role="tab" id="t1" aria-controls="p1" aria-selected="true">Sons de la plateforme</button>
+      <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Musique libre de droits</button>
+    </div>
+    <div role="tabpanel" id="p1" aria-labelledby="t1"><ul>
+      <li>Utilisez la bibliothèque proposée dans l'application au moment de publier.</li>
+      <li>Les sons tendance y sont déjà disponibles.</li>
+      <li>Les règles peuvent être plus strictes pour un compte professionnel : renseignez-vous dans l'aide de la plateforme.</li></ul></div>
+    <div role="tabpanel" id="p2" aria-labelledby="t2" hidden><ul>
+      <li>Une musique « libre de droits » reste soumise à une licence : lisez ce qu'elle autorise.</li>
+      <li>Certaines licences demandent de citer l'auteur dans la description.</li>
+      <li>« Libre de droits » ne veut pas toujours dire « gratuit ».</li></ul></div>
+  </div>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Attention</b><p>Une musique commerciale utilisée sans autorisation peut faire couper le son, bloquer ou supprimer votre vidéo. Les règles varient selon les pays et les plateformes : vérifiez-les avant de publier.</p></div></div>
+</div></section>
+
+<section class="s alt reveal" id="ia"><div class="wrap">
+  <h2>Les outils d'IA pour la voix et les sous-titres</h2>
+  <p>L'intelligence artificielle accélère le travail, à condition de contrôler le résultat. Les offres changent vite : retenez les types d'outils plutôt que des noms.</p>
+  <div class="cards">
+    <div class="card"><div class="ic">📝</div><h3>Transcription</h3><p>Transforme la parole en sous-titres. Disponible dans de nombreuses applications de montage.</p></div>
+    <div class="card"><div class="ic">🎙️</div><h3>Nettoyage du son</h3><p>Réduit les bruits de fond et améliore la clarté de la voix.</p></div>
+    <div class="card"><div class="ic">🗣️</div><h3>Voix de synthèse</h3><p>Lit un texte à voix haute. Utile, mais écoutez si elle sonne naturelle.</p></div>
+    <div class="card"><div class="ic">🌍</div><h3>Traduction</h3><p>Propose des sous-titres dans une autre langue. À relire par une personne qui la maîtrise.</p></div>
+  </div>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Attention</b><p>Vérifiez les conditions d'utilisation de l'outil, surtout pour les voix de synthèse. Ne copiez jamais la voix d'une personne sans son accord.</p></div></div>
+</div></section>
+
+<section class="s reveal quiz" id="quiz"><div class="wrap">
+  <h2>Vérifiez vos acquis</h2>
+  <p>Trois questions. Cliquez sur une réponse pour voir la correction.</p>
+  <div id="qz"></div>
+  <div class="score" id="score" aria-live="polite"></div>
+</div></section>
+
+<section class="s alt reveal key" id="cles"><div class="wrap">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Beaucoup regardent sans le son : sous-titrez toujours vos vidéos.</li>
+    <li>Générez les sous-titres automatiquement, puis relisez et stylisez-les.</li>
+    <li>Un texte court, lisible, loin des bords de l'écran dynamise le message.</li>
+    <li>Une voix off claire se prépare : texte court, lieu calme, musique en retrait.</li>
+    <li>Choisissez vos sons dans la bibliothèque de la plateforme ou sous licence claire.</li>
+    <li>L'IA aide, mais ne remplace pas votre relecture.</li>
+  </ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pager" aria-label="Navigation entre leçons">
+    <a href="lecon-05-monter-video-courte.html"><small>Leçon précédente (Module 1)</small>Leçon 05 — Monter une vidéo courte</a>
+    <a class="next" href="lecon-07-publier-adapter-video-plateformes.html"><small>Leçon suivante</small>Leçon 07 — Publier et adapter une vidéo à chaque plateforme</a>
+  </nav>
+  <p class="back"><a href="#sommaire">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer><div class="wide">Module 2 — Publier, optimiser et développer sa présence</div></footer>
+<button id="top" aria-label="Retour en haut de la page">↑</button>
+
+<script>
+const bar=document.getElementById('bar'),topBtn=document.getElementById('top');
+function onScroll(){const h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';topBtn.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08}):null;
+document.querySelectorAll('.reveal').forEach(el=>io?io.observe(el):el.classList.add('in'));
+document.querySelectorAll('.tabs').forEach(t=>{
+  const tabs=[...t.querySelectorAll('[role=tab]')];
+  const sel=i=>tabs.forEach((b,j)=>{const on=i===j;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on;if(on)b.focus()});
+  tabs.forEach((b,i)=>{b.onclick=()=>sel(i);b.onkeydown=e=>{const k={ArrowRight:(i+1)%tabs.length,ArrowLeft:(i-1+tabs.length)%tabs.length,Home:0,End:tabs.length-1}[e.key];if(k!==undefined){e.preventDefault();sel(k)}}});
+});
+// Démo sous-titres
+const cap=document.getElementById('cap'),cb=document.getElementById('capBtn');
+cb.onclick=()=>{const on=cb.getAttribute('aria-pressed')!=='true';cb.setAttribute('aria-pressed',on);cb.textContent='Sous-titres : '+(on?'activés':'désactivés');cap.classList.toggle('off',!on)};
+// Quiz
+const Q=[
+ {q:"Pourquoi sous-titrer une vidéo courte ?",o:["Parce que beaucoup de gens regardent sans le son","Pour allonger la vidéo","Parce que l'application l'impose"],a:0,f:"Les sous-titres rendent la vidéo compréhensible sans le son."},
+ {q:"Que faire après avoir généré des sous-titres automatiques ?",o:["Les publier tels quels","Les relire et les corriger","Les supprimer"],a:1,f:"La transcription automatique fait parfois des erreurs."},
+ {q:"Quelle musique peut-on utiliser sans risque ?",o:["N'importe quel tube du moment","Un son de la bibliothèque de la plateforme ou une musique dont la licence l'autorise","Une musique trouvée sur un site au hasard"],a:1,f:"Vérifiez toujours ce que la licence ou la plateforme autorise."}
+];
+const qz=document.getElementById('qz'),sc=document.getElementById('score');let done=0,good=0;
+Q.forEach((it,i)=>{
+  const d=document.createElement('div');d.className='q';
+  d.innerHTML='<p>'+(i+1)+'. '+it.q+'</p><div class="opts"></div><p class="fb"></p>';
+  const box=d.querySelector('.opts'),fb=d.querySelector('.fb');
+  it.o.forEach((t,j)=>{const b=document.createElement('button');b.type='button';b.textContent=t;
+    b.onclick=()=>{[...box.children].forEach((x,k)=>{x.disabled=true;if(k===it.a)x.classList.add('ok');else if(k===j)x.classList.add('ko')});
+      const ok=j===it.a;if(ok)good++;fb.textContent=(ok?'Correct. ':'Pas tout à fait. ')+it.f;
+      if(++done===Q.length)sc.textContent='Résultat : '+good+' / '+Q.length};
+    box.appendChild(b)});
+  qz.appendChild(d);
+});
+</script>
+</body>
+</html>

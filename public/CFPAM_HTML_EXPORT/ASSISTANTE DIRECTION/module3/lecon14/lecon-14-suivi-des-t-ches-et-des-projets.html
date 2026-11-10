@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 14 — Suivi des tâches et des projets</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  /* Indicator stat cards */
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:14px; margin:22px 0;}
+  .stat-card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt); text-align:center;}
+  .stat-card .stat-num{font-family:var(--font-display); font-size:1.8rem; color:var(--color-accent); display:block;}
+  .stat-card .stat-label{font-size:0.8rem; color:var(--color-text-muted); margin-top:4px; display:block;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel, .stat-card{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 14 — Suivi des tâches et des projets</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#decoupage-taches">1. Découpage des tâches</a>
+          <a href="#responsable-echeance">2. Responsable et échéance</a>
+          <a href="#planning-gantt">3. Planning simple et diagramme de Gantt</a>
+          <a href="#relances">4. Relances</a>
+          <a href="#points-etape">5. Points d'étape</a>
+          <a href="#indicateurs">6. Indicateurs d'avancement</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 3 — Organisation, temps et réunions</span>
+      <span class="badge brass">Niveau intermédiaire</span>
+      <span class="badge">30 min</span>
+    </div>
+    <h1>Leçon 14 — Suivi des tâches et des projets</h1>
+    <p class="subtitle">Piloter des échéances multiples et rendre compte de l'avancement, du découpage des tâches jusqu'à la note de synthèse.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Découper un projet en tâches suffisamment précises pour être suivies.</li>
+      <li>Attribuer à chaque tâche un responsable unique et une échéance réaliste.</li>
+      <li>Choisir entre un planning simple et un diagramme de Gantt selon la complexité du projet.</li>
+      <li>Relancer efficacement avant une échéance, sans attendre le retard.</li>
+      <li>Structurer un point d'étape court et utile pour l'équipe et la direction.</li>
+      <li>Construire des indicateurs d'avancement simples et fiables.</li>
+    </ul>
+  </div>
+
+  <section id="decoupage-taches">
+    <h2>1. Découpage des tâches</h2>
+    <p>Un projet ne se pilote pas comme un objectif global : il se pilote comme une somme de tâches précises. Une tâche mal découpée — trop vaste ou trop vague — ne peut être ni estimée, ni suivie, ni déclarée réellement terminée.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Découpage insuffisant</th><th>Découpage exploitable</th></tr></thead>
+        <tbody>
+          <tr><td>« Organiser l'événement »</td><td>« Réserver la salle », « Envoyer les invitations », « Commander le traiteur »</td></tr>
+          <tr><td>« Avancer sur le rapport »</td><td>« Rédiger la partie 2 », « Faire valider les chiffres par le service finance »</td></tr>
+          <tr><td>« Voir avec le prestataire »</td><td>« Obtenir un devis du prestataire pour le 12 »</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Une tâche bien découpée commence par un verbe d'action, produit un résultat identifiable et peut être déclarée « faite » ou « pas faite » sans ambiguïté.
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Verbe d'action</h3><p>« Rédiger », « Envoyer », « Valider » — jamais « Voir », « Avancer » ou « Suivre ».</p></div>
+      <div class="card"><h3>Résultat identifiable</h3><p>Un livrable ou un état clair permet de savoir sans discussion si la tâche est terminée.</p></div>
+      <div class="card"><h3>Durée estimable</h3><p>Une tâche trop vaste pour être estimée en jours doit être redécoupée en sous-tâches.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Inscrire dans le tableau de suivi des intitulés généraux comme « Communication » ou « Logistique » : personne ne peut dire, un mois plus tard, si ce point est réellement traité.
+    </div>
+  </section>
+
+  <section id="responsable-echeance">
+    <h2>2. Responsable et échéance</h2>
+    <p>Une tâche sans responsable clairement désigné n'avance généralement pas, quelle que soit son importance : chacun suppose que quelqu'un d'autre s'en occupe. La règle est simple : un seul nom par tâche, jamais « l'équipe » ou « le service ».</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Identifier la tâche</h3><p>Intitulé précis, issu du découpage.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Désigner un responsable unique</h3><p>Une personne nommée, pas un groupe.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Fixer une échéance réaliste</h3><p>Date précise, tenant compte de la charge réelle du responsable.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Communiquer l'attribution</h3><p>Le responsable confirme avoir pris connaissance de sa tâche et de l'échéance.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Attribuer une tâche à plusieurs personnes à la fois « pour plus de sécurité » : en pratique, cela dilue la responsabilité et retarde souvent l'exécution plutôt que de l'accélérer.
+    </div>
+  </section>
+
+  <section id="planning-gantt">
+    <h2>3. Planning simple et diagramme de Gantt</h2>
+    <p>Un planning simple — une liste de tâches avec leur échéance — suffit pour un projet court et peu de tâches parallèles. Dès que plusieurs tâches se chevauchent ou dépendent les unes des autres, un diagramme de Gantt devient plus lisible : il montre visuellement les durées et les recouvrements.</p>
+
+    <svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramme de Gantt simplifié sur six semaines" style="width:100%; max-width:600px; display:block; margin:20px auto;">
+      <text x="10" y="18" font-family="Inter" font-size="10" fill="#5E5A54">S1</text>
+      <text x="100" y="18" font-family="Inter" font-size="10" fill="#5E5A54">S2</text>
+      <text x="190" y="18" font-family="Inter" font-size="10" fill="#5E5A54">S3</text>
+      <text x="280" y="18" font-family="Inter" font-size="10" fill="#5E5A54">S4</text>
+      <text x="370" y="18" font-family="Inter" font-size="10" fill="#5E5A54">S5</text>
+      <text x="460" y="18" font-family="Inter" font-size="10" fill="#5E5A54">S6</text>
+      <line x1="10" y1="28" x2="550" y2="28" stroke="#E4DFD6" stroke-width="1"/>
+      <text x="10" y="52" font-family="Inter" font-size="11" fill="#16181C">Cadrage</text>
+      <rect x="120" y="40" width="80" height="16" rx="2" fill="#2F5D50"/>
+      <text x="10" y="82" font-family="Inter" font-size="11" fill="#16181C">Collecte des données</text>
+      <rect x="200" y="70" width="160" height="16" rx="2" fill="#2F5D50"/>
+      <text x="10" y="112" font-family="Inter" font-size="11" fill="#16181C">Rédaction</text>
+      <rect x="280" y="100" width="180" height="16" rx="2" fill="#A8823C"/>
+      <text x="10" y="142" font-family="Inter" font-size="11" fill="#16181C">Relecture / validation</text>
+      <rect x="440" y="130" width="90" height="16" rx="2" fill="#2F5D50"/>
+      <text x="10" y="172" font-family="Inter" font-size="11" fill="#16181C">Diffusion</text>
+      <rect x="510" y="160" width="40" height="16" rx="2" fill="#5E5A54"/>
+    </svg>
+    <p class="caption">Le recouvrement entre « Rédaction » (semaines 4-6) et « Collecte des données » (semaines 3-5) apparaît immédiatement sur le diagramme, ce qu'une simple liste ne montre pas.</p>
+
+    <div class="tabs" data-tabs="planning-vs-gantt">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Planning simple</button>
+        <button class="tab-btn" role="tab" data-tab="b">Diagramme de Gantt</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Une liste de tâches avec responsable et échéance, souvent sous forme de tableau. Rapide à mettre à jour, suffisante pour un projet court dont les tâches s'enchaînent sans se chevaucher.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Une représentation visuelle des tâches sur une frise temporelle, avec leurs durées et leurs recouvrements. Plus longue à construire, mais indispensable dès que plusieurs tâches avancent en parallèle ou dépendent l'une de l'autre.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Le diagramme de Gantt n'est pas systématiquement supérieur au planning simple : il devient utile à partir du moment où la visualisation des chevauchements apporte une information que la liste seule ne donne pas.
+    </div>
+  </section>
+
+  <section id="relances">
+    <h2>4. Relances</h2>
+    <p>Une relance efficace intervient avant l'échéance, pas après. Relancer une fois le retard constaté ne permet plus de le prévenir — cela ne fait que le constater, souvent trop tard pour s'organiser autrement.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Moment</th><th>Objectif de la relance</th><th>Ton</th></tr></thead>
+        <tbody>
+          <tr><td>J-3 avant l'échéance</td><td>Vérifier que la tâche avance normalement, anticiper un blocage</td><td>Informatif, sans pression</td></tr>
+          <tr><td>Jour de l'échéance</td><td>Confirmer la livraison ou identifier le motif du retard</td><td>Direct, factuel</td></tr>
+          <tr><td>Après l'échéance dépassée</td><td>Obtenir une nouvelle date ferme et en informer les parties concernées</td><td>Ferme, sans reproche inutile</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      N'envoyer une relance qu'après avoir constaté le retard : une relance anticipée à J-3 permet souvent d'éviter le retard plutôt que de simplement le documenter.
+    </div>
+  </section>
+
+  <section id="points-etape">
+    <h2>5. Points d'étape</h2>
+    <p>Le point d'étape est un moment court et régulier pour faire le point sur l'avancement réel du projet. Sa valeur tient à sa régularité et à sa concision : un point d'étape trop long ou trop rare perd son utilité de pilotage.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Ce qui est fait</h3><p>Tâches réellement terminées depuis le dernier point, pas seulement « en bonne voie ».</p></div>
+      <div class="card"><h3>Ce qui bloque</h3><p>Difficultés identifiées, avec ce qui est nécessaire pour les lever.</p></div>
+      <div class="card"><h3>Ce qui vient</h3><p>Tâches prévues avant le prochain point d'étape, avec leur échéance.</p></div>
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">À quelle fréquence organiser un point d'étape ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Pour un projet de plusieurs semaines, un rythme hebdomadaire est généralement adapté. Un rythme plus rapproché est utile en phase critique, plus espacé sur des phases longues et stables.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Qui doit y participer ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Les responsables des tâches en cours, et non l'ensemble des personnes impliquées dans le projet. Un point d'étape trop large en participants devient une réunion, pas un point de suivi.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Comment gérer un point d'étape en cas de retard ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Nommer le retard factuellement, identifier sa cause et fixer une nouvelle échéance réaliste plutôt qu'optimiste. Un retard non traité au point d'étape se reproduit généralement au suivant.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="indicateurs">
+    <h2>6. Indicateurs d'avancement</h2>
+    <p>Quelques indicateurs simples suffisent à donner une image fiable de l'avancement d'un projet, à condition qu'ils reposent sur des données réellement à jour au moment où ils sont transmis.</p>
+
+    <div class="stat-grid">
+      <div class="stat-card"><span class="stat-num">62 %</span><span class="stat-label">Tâches terminées</span></div>
+      <div class="stat-card"><span class="stat-num">3</span><span class="stat-label">Tâches en retard</span></div>
+      <div class="stat-card"><span class="stat-num">2 / 4</span><span class="stat-label">Jalons atteints</span></div>
+    </div>
+    <p class="caption">Exemple d'indicateurs simples présentés dans une note d'avancement, avec leur date de mise à jour.</p>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant de transmettre des indicateurs : vérifier que le tableau de suivi source est à jour, dater les chiffres communiqués, distinguer clairement les tâches en retard des tâches simplement en cours.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>La direction lance un projet interne de réorganisation d'un service, à mener sur six semaines. Le projet implique trois responsables différents, des tâches qui se chevaucheront en semaines 3 et 4, et un point d'étape attendu chaque vendredi par la direction générale.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 1 à 6, construisez le découpage des premières tâches du projet, désignez pour chacune un responsable et une échéance, et indiquez à quel moment un diagramme de Gantt deviendrait utile.</p>
+    </div>
+  </section>
+<section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Une tâche exploitable commence par un verbe d'action et produit un résultat identifiable.</li>
+      <li>Chaque tâche doit avoir un responsable unique nommé, jamais un groupe ou un service.</li>
+      <li>Le diagramme de Gantt devient utile dès que des tâches se chevauchent ou dépendent l'une de l'autre.</li>
+      <li>Une relance efficace intervient avant l'échéance, pas après le constat du retard.</li>
+      <li>Un point d'étape reste court, régulier, et structuré autour du fait, du bloqué et de l'à venir.</li>
+      <li>Les indicateurs d'avancement doivent être datés et reposer sur un tableau de suivi à jour.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : un <strong>tableau de suivi à jour</strong> et une <strong>note d'avancement d'une page</strong>, fournis en <strong>.docx</strong> et en <strong>PDF</strong>.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Tableau de suivi</span><button class="copy-btn" data-copy-target="model-1">Copier</button></div>
+      <pre id="model-1">TABLEAU DE SUIVI — Projet : [nom du projet]
+Mis à jour le : [date]
+
+Tâche                          Responsable      Échéance     Statut
+------------------------------------------------------------------
+[Tâche 1 — verbe d'action]     [Nom]            [JJ/MM]      [Fait / En cours / Retard]
+[Tâche 2 — verbe d'action]     [Nom]            [JJ/MM]      [Fait / En cours / Retard]
+[Tâche 3 — verbe d'action]     [Nom]            [JJ/MM]      [Fait / En cours / Retard]
+[...]
+
+Jalons du projet :
+ - [Jalon 1] : [date prévue] — [Atteint / À venir]
+ - [Jalon 2] : [date prévue] — [Atteint / À venir]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Note d'avancement (une page)</span><button class="copy-btn" data-copy-target="model-2">Copier</button></div>
+      <pre id="model-2">NOTE D'AVANCEMENT — Projet : [nom du projet]
+Semaine du [date] — Destinataire : [nom]
+
+1. Avancement global
+   [X] % des tâches terminées — [nombre] tâches en retard
+
+2. Fait depuis la dernière note
+   - [Tâche terminée]
+   - [Tâche terminée]
+
+3. Points de blocage
+   - [Blocage identifié] — [ce qui est nécessaire pour le lever]
+
+4. À venir avant la prochaine note
+   - [Tâche prévue — responsable — échéance]
+   - [Tâche prévue — responsable — échéance]</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Toutes les tâches découpées avec un verbe d'action et un résultat identifiable</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Un responsable unique et une échéance fixés pour chaque tâche</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Un planning simple ou un diagramme de Gantt choisi selon la complexité du projet</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Relances programmées avant les échéances, pas seulement après</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Tableau de suivi mis à jour avant chaque point d'étape</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Note d'avancement rédigée avec des indicateurs datés</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 13 — Déplacements et missions</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 15 — Outils collaboratifs numériques</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 3 — Organisation, temps et réunions · Leçon 14 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

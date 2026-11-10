@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 02 — Identifier les tâches répétitives à automatiser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;
+  --color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-border:#E1E4E8;
+  --muted:#4B5563;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 var(--font-body)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);padding:56px 0 40px}
+.crumb{font:500 .9rem var(--font-body);color:var(--muted);margin:0 0 16px}
+h1{font:700 clamp(2rem,5vw,2.75rem)/1.12 var(--font-head);letter-spacing:-.02em;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.meta li{background:var(--color-bg);border:1px solid var(--color-border);border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:500}
+.meta li.lvl{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.goal{margin:28px 0 0;padding:16px 20px;background:var(--color-bg);border-left:4px solid var(--color-accent);border-radius:0 8px 8px 0}
+.goal strong{font-family:var(--font-head)}
+nav.toc{margin:32px 0 0;padding:20px 24px;border:1px solid var(--color-border);border-radius:10px}
+nav.toc p{margin:0 0 8px;font:700 1rem var(--font-head)}
+nav.toc ol{margin:0;padding-left:1.25rem;columns:1}
+nav.toc a{color:var(--color-text);text-decoration:none;border-bottom:1px solid var(--color-accent)}
+nav.toc a:hover{background:var(--color-accent-soft)}
+section{padding:48px 0 8px}
+h2{font:700 1.65rem/1.25 var(--font-head);letter-spacing:-.01em;margin:0 0 16px;display:flex;gap:12px;align-items:baseline}
+h2 .n{color:var(--color-accent)}
+h3{font:700 1.15rem var(--font-head);margin:28px 0 8px}
+p{margin:0 0 16px}
+ul,ol{padding-left:1.25rem;margin:0 0 16px}
+li{margin-bottom:6px}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:24px 0;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ic{font-size:1.4rem;line-height:1.4}
+.callout p{margin:0}
+.callout b{font-family:var(--font-head)}
+.callout.tip{background:var(--color-accent-soft);border-color:#99E6DA}
+.callout.warn{background:#FFF8E6;border-color:#F3D98B}
+.callout.link{background:var(--color-bg);border-left:4px solid var(--color-accent)}
+.criteria{display:grid;gap:12px;margin:20px 0;padding:0;list-style:none}
+.criteria li{margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.criteria b{font-family:var(--font-head);color:#0B6F66}
+figure{margin:28px 0}
+figure svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}
+.cards{display:grid;gap:12px;margin:20px 0}
+.card{border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);overflow:hidden}
+.card button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card button:hover{background:var(--color-bg-alt)}
+.card button:focus-visible{outline:3px solid var(--color-accent);outline-offset:-3px}
+.card .t{font:700 1.05rem var(--font-head);display:block}
+.card .s{font-size:.9rem;color:var(--muted)}
+.tag{font:600 .8rem var(--font-body);padding:2px 10px;border-radius:999px;border:1px solid var(--color-border);white-space:nowrap}
+.tag.yes{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.tag.mid{background:var(--color-bg-alt)}
+.card .chev{transition:transform .2s;color:var(--color-accent);font-weight:700}
+.card[data-open="true"] .chev{transform:rotate(90deg)}
+.card .body{display:none;padding:0 18px 16px;border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.card[data-open="true"] .body{display:block}
+.card .body p{margin:12px 0 6px}
+.flow{display:grid;gap:0;margin:24px 0;padding:0;list-style:none}
+.flow li{position:relative;margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.flow li+li{margin-top:22px}
+.flow li+li::before{content:"";position:absolute;left:28px;top:-23px;height:22px;border-left:2px solid var(--color-accent)}
+.flow b{font-family:var(--font-head)}
+.flow small{display:block;color:var(--muted)}
+.calc{border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-alt);padding:20px;margin:24px 0}
+.calc h3{margin-top:0}
+.fields{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media(max-width:560px){.fields{grid-template-columns:1fr}}
+label{display:block;font-size:.9rem;font-weight:500}
+input{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg)}
+.out{margin-top:18px;display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.out{grid-template-columns:1fr}}
+.out div{background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;padding:12px 14px}
+.out strong{display:block;font:700 1.4rem var(--font-head);color:#0B6F66}
+.out span{font-size:.85rem;color:var(--muted)}
+code{font:500 .92em ui-monospace,monospace;background:var(--color-bg-alt);padding:2px 6px;border-radius:4px}
+.formula{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:12px 16px;font-size:.95rem}
+.recap{margin:48px 0 0;padding:24px;border:2px solid var(--color-accent);border-radius:12px}
+.recap h2{font-size:1.3rem}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 64px}
+.pager a{display:block;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:500}
+.pager a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pager small{display:block;color:var(--muted);font-weight:400}
+.pager .next{text-align:right}
+@media(max-width:560px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">Module 1 — Fondamentaux et premières automatisations</p>
+    <h1>Leçon 02 — Identifier les tâches répétitives à automatiser</h1>
+    <ul class="meta">
+      <li class="lvl">Niveau : Débutant</li>
+      <li>⏱ 25 min</li>
+      <li>5 parties</li>
+    </ul>
+    <p class="goal"><strong>Objectif :</strong> repérer dans une activité les tâches qui méritent d'être automatisées et les prioriser selon des critères objectifs.</p>
+    <nav class="toc" aria-label="Sommaire">
+      <p>Dans cette leçon</p>
+      <ol>
+        <li><a href="#inventaire">L'inventaire des tâches quotidiennes</a></li>
+        <li><a href="#criteres">Les 4 critères d'éligibilité</a></li>
+        <li><a href="#typologie">Automatisable ou non ?</a></li>
+        <li><a href="#processus">Cartographier un processus métier</a></li>
+        <li><a href="#roi">Estimer le ROI</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="inventaire">
+  <h2><span class="n">1.</span>L'inventaire des tâches quotidiennes</h2>
+  <p>On ne peut pas automatiser ce qu'on ne voit pas. Avant de choisir le moindre outil, commencez par un audit de votre journée de travail.</p>
+  <h3>Méthode d'audit en 4 étapes</h3>
+  <ol>
+    <li><b>Observer</b> : pendant 5 jours ouvrés, notez chaque tâche dans un tableau (tâche, durée, nombre de fois).</li>
+    <li><b>Découper</b> : « gérer les factures » est trop vague. Écrivez « saisir une facture fournisseur dans le logiciel comptable ».</li>
+    <li><b>Regrouper</b> : rassemblez les tâches identiques ou voisines.</li>
+    <li><b>Classer</b> : repérez celles qui reviennent le plus souvent et celles qui vous agacent le plus.</li>
+  </ol>
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> Notez aussi les tâches « invisibles » de quelques minutes : copier-coller entre deux fichiers, relancer un collègue, renommer des documents. Elles pèsent lourd une fois additionnées.</p></div>
+</section>
+
+<section id="criteres">
+  <h2><span class="n">2.</span>Les 4 critères d'éligibilité</h2>
+  <p>Pour chaque tâche de votre inventaire, posez les quatre mêmes questions. Plus vous répondez « oui », plus la tâche est un bon candidat.</p>
+  <ul class="criteria">
+    <li><b>Fréquence</b> — La tâche revient-elle chaque jour ou chaque semaine ? Une tâche annuelle rentabilise rarement une automatisation.</li>
+    <li><b>Durée</b> — Prend-elle un temps significatif à chaque fois ? Dix minutes, cinq fois par semaine, c'est déjà plus de 40 heures par an.</li>
+    <li><b>Risque d'erreur humaine</b> — Une faute de frappe ou un oubli aurait-il des conséquences (mauvais montant, client non relancé) ?</li>
+    <li><b>Valeur ajoutée réelle</b> — Votre expertise change-t-elle le résultat ? Si non, la tâche est mécanique et peut être confiée à un outil.</li>
+  </ul>
+
+  <h3>Prioriser avec la matrice Valeur / Complexité</h3>
+  <p>Une fois les tâches évaluées, placez-les sur une matrice. Le gain attendu (valeur) se lit à la verticale, la difficulté de mise en œuvre (complexité) à l'horizontale.</p>
+  <figure>
+    <svg viewBox="0 0 640 440" role="img" aria-labelledby="mt md">
+      <title id="mt">Matrice de priorisation Valeur / Complexité</title>
+      <desc id="md">Quatre quadrants : gains rapides en haut à gauche, projets structurants en haut à droite, à faire à l'occasion en bas à gauche, à éviter en bas à droite.</desc>
+      <rect x="70" y="20" width="270" height="170" fill="#CCFBF1"/>
+      <rect x="340" y="20" width="270" height="170" fill="#F6F8FA"/>
+      <rect x="70" y="190" width="270" height="170" fill="#F6F8FA"/>
+      <rect x="340" y="190" width="270" height="170" fill="#FFFFFF"/>
+      <rect x="70" y="20" width="540" height="340" fill="none" stroke="#E1E4E8" stroke-width="2"/>
+      <line x1="340" y1="20" x2="340" y2="360" stroke="#E1E4E8" stroke-width="2"/>
+      <line x1="70" y1="190" x2="610" y2="190" stroke="#E1E4E8" stroke-width="2"/>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="16" fill="#090D12">
+        <text x="85" y="46">Gains rapides</text>
+        <text x="355" y="46">Projets structurants</text>
+        <text x="85" y="216">À faire à l'occasion</text>
+        <text x="355" y="216">À éviter</text>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="12" fill="#4B5563">
+        <text x="85" y="64">Automatiser en premier</text>
+        <text x="355" y="64">Planifier, découper en étapes</text>
+        <text x="85" y="234">Si le temps le permet</text>
+        <text x="355" y="234">Coût supérieur au gain</text>
+      </g>
+      <g fill="#0D9488" stroke="#FFFFFF" stroke-width="2">
+        <circle cx="150" cy="115" r="9"/><circle cx="250" cy="145" r="9"/>
+        <circle cx="440" cy="110" r="9"/><circle cx="150" cy="285" r="9"/>
+        <circle cx="500" cy="290" r="9"/>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="12" fill="#090D12">
+        <text x="164" y="119">Relances de factures</text>
+        <text x="206" y="171">Tri des e-mails</text>
+        <text x="454" y="114">Suivi client complet</text>
+        <text x="164" y="289">Archivage mensuel</text>
+        <text x="448" y="314">Cas rare et très varié</text>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#090D12">
+        <text x="340" y="394" text-anchor="middle">Complexité de mise en œuvre →</text>
+        <text transform="translate(26 190) rotate(-90)" text-anchor="middle">Valeur / gain attendu →</text>
+        <text x="70" y="378" font-weight="400" fill="#4B5563">Faible</text>
+        <text x="610" y="378" text-anchor="end" font-weight="400" fill="#4B5563">Élevée</text>
+      </g>
+    </svg>
+    <figcaption>Commencez toujours par le quadrant en haut à gauche : peu d'effort, beaucoup de gain.</figcaption>
+  </figure>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> Ne vous laissez pas séduire par un projet spectaculaire. Une première automatisation simple et réussie vous apprend plus qu'un grand chantier abandonné.</p></div>
+</section>
+
+<section id="typologie">
+  <h2><span class="n">3.</span>Tâches automatisables ou non ?</h2>
+  <p>Le bon réflexe : distinguer l'<b>exécution mécanique</b> (suivre des règles) de la <b>décision stratégique ou empathique</b> (juger, convaincre, rassurer). Cliquez sur chaque carte pour voir des exemples.</p>
+  <div class="cards" id="cards">
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Exécution mécanique</span><span class="s">Mêmes gestes, mêmes règles, à chaque fois</span></span>
+        <span><span class="tag yes">Automatisable</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p><b>Exemples :</b> copier des données d'un fichier à un autre, renommer et classer des documents, envoyer un accusé de réception, générer un rapport hebdomadaire.</p>
+        <p><b>Signal :</b> vous pourriez écrire la procédure sur une fiche sans aucune exception.</p>
+      </div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Règles + données structurées</span><span class="s">Des cas conditionnels, mais prévisibles</span></span>
+        <span><span class="tag yes">Automatisable</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p><b>Exemples :</b> router une demande selon son type, relancer un client après 7 jours sans réponse, trier des e-mails par catégorie avec l'aide d'une IA.</p>
+        <p><b>Signal :</b> la tâche suit des « si… alors… » clairs, quitte à ce qu'une IA aide à classer l'information.</p>
+      </div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Aide à la décision</span><span class="s">L'outil prépare, l'humain tranche</span></span>
+        <span><span class="tag mid">Partiel</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p><b>Exemples :</b> résumer un dossier avant une réunion, proposer un brouillon de réponse, signaler une facture inhabituelle.</p>
+        <p><b>Signal :</b> l'automatisation fait gagner du temps, mais une personne valide toujours le résultat.</p>
+      </div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Décision stratégique ou empathique</span><span class="s">Jugement, négociation, relation humaine</span></span>
+        <span><span class="tag">À garder</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p><b>Exemples :</b> négocier un contrat, annoncer une mauvaise nouvelle à un client, arbitrer un budget, accompagner un collègue en difficulté.</p>
+        <p><b>Signal :</b> le contexte, la confiance ou les émotions comptent plus que la procédure.</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Lien avec la Leçon 01.</b> Rappelez-vous la différence entre automatisation par règles et IA : la première exécute, la seconde aide à interpréter. Les cartes ci-dessus suivent cette logique.</p></div>
+</section>
+
+<section id="processus">
+  <h2><span class="n">4.</span>Cartographier un processus métier</h2>
+  <p>Avant d'automatiser, dessinez le processus tel qu'il existe aujourd'hui, étape par étape. Un schéma simple suffit : qui fait quoi, avec quel outil, dans quel ordre. Trois temps reviennent presque toujours : <b>saisie</b>, <b>transmission</b>, <b>validation</b>.</p>
+  <h3>Exemple : traiter une demande de congé</h3>
+  <ol class="flow">
+    <li><b>Saisie</b> — L'employé remplit un formulaire papier ou un e-mail.<small>Risque : informations incomplètes, oubli de date.</small></li>
+    <li><b>Transmission</b> — Le document est recopié et transmis au responsable, puis aux RH.<small>Risque : perte du message, double saisie, délai.</small></li>
+    <li><b>Validation</b> — Le responsable accepte ou refuse, les RH mettent à jour le planning.<small>Étape humaine : à conserver. La mise à jour du planning, elle, peut être automatisée.</small></li>
+  </ol>
+  <p>En relisant ce schéma avec les 4 critères, on voit que la <b>saisie</b> et la <b>transmission</b> sont de bons candidats, alors que la <b>décision</b> reste humaine.</p>
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> Repérez les « goulots » : les endroits où l'information est recopiée à la main ou attend qu'une personne soit disponible. C'est là que l'automatisation rapporte le plus.</p></div>
+</section>
+
+<section id="roi">
+  <h2><span class="n">5.</span>Estimer le ROI</h2>
+  <p>Le ROI (retour sur investissement) compare ce que vous gagnez à ce que vous dépensez. Pour une première estimation, restez simple :</p>
+  <p class="formula"><b>Gain annuel</b> = (minutes économisées × fois par semaine × 48 semaines ÷ 60) × coût horaire<br><b>Gain net</b> = gain annuel − temps de mise en place × coût horaire − coût annuel de l'outil</p>
+  <form class="calc" id="calc" onsubmit="return false" aria-labelledby="ct">
+    <h3 id="ct">Calculateur de ROI</h3>
+    <div class="fields">
+      <label>Minutes économisées par occurrence<input type="number" id="min" min="0" value="10"></label>
+      <label>Occurrences par semaine<input type="number" id="freq" min="0" value="15"></label>
+      <label>Coût horaire (€)<input type="number" id="rate" min="0" value="30"></label>
+      <label>Heures de mise en place<input type="number" id="setup" min="0" value="4"></label>
+      <label>Coût de l'outil (€ par mois)<input type="number" id="tool" min="0" value="20"></label>
+    </div>
+    <div class="out" aria-live="polite">
+      <div><strong id="o-h">—</strong><span>heures économisées par an</span></div>
+      <div><strong id="o-n">—</strong><span>gain net la première année</span></div>
+      <div><strong id="o-m">—</strong><span>mois pour être rentabilisé</span></div>
+    </div>
+  </form>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> Ne comptez pas que le temps. Une erreur évitée, un client relancé à temps ou un délai raccourci ont aussi une valeur, même si elle est plus difficile à chiffrer.</p></div>
+
+  <div class="recap">
+    <h2>À retenir</h2>
+    <ul>
+      <li>Auditez votre journée avant de choisir un outil.</li>
+      <li>Évaluez chaque tâche : fréquence, durée, risque d'erreur, valeur ajoutée.</li>
+      <li>Automatisez l'exécution mécanique, gardez la décision stratégique et empathique.</li>
+      <li>Cartographiez le processus : saisie, transmission, validation.</li>
+      <li>Vérifiez le ROI avant de vous lancer.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Navigation entre leçons">
+  <a href="lecon-01.html"><small>Leçon précédente</small>Leçon 01 — Comprendre l'automatisation, l'IA et le No-Code</a>
+  <a class="next" href="lecon-03.html"><small>Leçon suivante</small>Leçon 03 — Découvrir les outils d'IA et de No-Code</a>
+</nav>
+
+</main>
+
+<script>
+document.querySelectorAll('#cards .card').forEach(function(card){
+  var btn=card.querySelector('button');
+  btn.addEventListener('click',function(){
+    var open=card.getAttribute('data-open')==='true';
+    card.setAttribute('data-open',String(!open));
+    btn.setAttribute('aria-expanded',String(!open));
+  });
+});
+(function(){
+  var ids=['min','freq','rate','setup','tool'];
+  var el={};ids.forEach(function(i){el[i]=document.getElementById(i)});
+  var fmt=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0});
+  function v(i){var n=parseFloat(el[i].value);return isNaN(n)||n<0?0:n}
+  function calc(){
+    var hours=v('min')*v('freq')*48/60;
+    var gain=hours*v('rate');
+    var cost=v('setup')*v('rate')+v('tool')*12;
+    var net=gain-cost;
+    document.getElementById('o-h').textContent=fmt.format(hours)+' h';
+    document.getElementById('o-n').textContent=fmt.format(net)+' €';
+    var monthly=gain/12-v('tool');
+    var m=document.getElementById('o-m');
+    if(monthly<=0){m.textContent='Non rentable'}
+    else{
+      var months=(v('setup')*v('rate'))/monthly;
+      m.textContent=months<0.1?'< 1':(Math.round(months*10)/10).toString().replace('.',',');
+    }
+  }
+  ids.forEach(function(i){el[i].addEventListener('input',calc)});
+  calc();
+})();
+</script>
+</body>
+</html>

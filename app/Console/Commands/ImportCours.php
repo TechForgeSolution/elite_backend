@@ -22,7 +22,9 @@ class ImportCours extends Command
         }
         try {
             $seeder = new CoursJsonSeeder;
-            $seeder->offline = true;
+            // Missing bundled JSON files are fetched from the Drive URLs in
+            // index-cours.json before the replacement transaction begins.
+            $seeder->offline = false;
             $seeder->dryRun = (bool) $this->option('dry-run');
             $seeder->setContainer($this->laravel)->setCommand($this);
             $seeder->run();

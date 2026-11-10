@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 20 — Mesure et analyse de la performance digitale">
+<title>Leçon 20 — Mesure et analyse de la performance digitale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F5F2;
+  --color-text:#1B1F2E;
+  --color-accent:#FF5A36;
+  --color-neutral:#9AA3B2;
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --shadow:0 12px 35px color-mix(in srgb,var(--color-text) 10%,transparent);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,sans-serif;line-height:1.7}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.15;margin:0 0 1rem}
+h1{font-size:clamp(2.4rem,6vw,5rem);letter-spacing:-.04em}
+h2{font-size:clamp(1.7rem,3vw,2.5rem)}
+h3{font-size:1.2rem}
+p{max-width:720px}
+a{color:var(--color-text);text-decoration:none}
+a:hover{color:var(--color-accent)}
+button{font:inherit}
+.container{width:min(1120px,92%);margin:auto}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:var(--soft)}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.header-inner{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.02em}
+.brand small{display:block;color:var(--muted);font:500 .72rem "JetBrains Mono";text-transform:uppercase;letter-spacing:.08em}
+.menu{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.menu a{font-size:.82rem;font-weight:600;padding:6px 8px;border-radius:7px}
+.menu a:hover{background:var(--soft10)}
+.hero{padding:90px 0 65px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}
+.kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.badge{display:inline-flex;align-items:center;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font:600 .72rem "JetBrains Mono";text-transform:uppercase}
+.badge.accent{border-color:var(--color-accent);background:var(--soft10)}
+.lead{font-size:1.1rem;color:var(--muted);max-width:680px}
+.mono{font-family:"JetBrains Mono",monospace;background:var(--soft10);border-radius:8px;padding:.12em .4em}
+.hero-visual{background:var(--soft);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.hero-visual svg{display:block;width:100%;height:auto}
+.toc{padding:24px 0 55px}
+.toc-card{border:1px solid var(--line);border-radius:18px;padding:24px;background:var(--color-bg)}
+.toc ol{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 28px;margin:0;padding-left:24px}
+.toc li{padding:4px}
+.section{padding:82px 0}
+.section.alt{background:var(--soft)}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:25px;margin-bottom:32px}
+.num{font:600 .8rem "JetBrains Mono";color:var(--color-accent);letter-spacing:.1em}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--color-bg);border:1px solid var(--line);border-radius:16px;padding:22px;transition:.2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card .icon{font-size:1.6rem;margin-bottom:10px}
+.callout{margin:25px 0;padding:20px 22px;border-left:5px solid var(--color-accent);background:var(--soft10);border-radius:0 12px 12px 0}
+.callout strong{font-family:"Space Grotesk"}
+.diagram{margin:30px 0;background:var(--color-bg);border:1px solid var(--line);border-radius:18px;padding:14px;overflow:hidden}
+.diagram svg{width:100%;height:auto;display:block}
+.tabs{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:28px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--soft)}
+.tab-buttons button{border:0;background:transparent;padding:13px 18px;cursor:pointer;font-weight:700}
+.tab-buttons button.active{background:var(--color-bg);color:var(--color-accent);box-shadow:inset 0 -3px var(--color-accent)}
+.tab-panel{display:none;padding:24px}
+.tab-panel.active{display:block}
+.accordion{border-top:1px solid var(--line)}
+.accordion button{width:100%;border:0;background:transparent;padding:18px 0;text-align:left;display:flex;justify-content:space-between;cursor:pointer;font-weight:700}
+.accordion .answer{display:none;padding:0 0 18px;color:var(--muted)}
+.accordion.open .answer{display:block}
+.table-wrap{overflow-x:auto;margin:28px 0}
+table{width:100%;border-collapse:collapse;min-width:700px;background:var(--color-bg)}
+th,td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left}
+th{font-family:"Space Grotesk";font-size:.9rem}
+td.mono-cell,th.mono-cell{font-family:"JetBrains Mono";font-variant-numeric:tabular-nums}
+tr:hover td{background:var(--soft)}
+.highlight td:first-child{border-left:4px solid var(--color-accent)}
+.excerpt{margin:25px 0;background:var(--soft10);border:1px solid var(--line);border-radius:14px;padding:18px;font-family:"JetBrains Mono";font-size:.85rem;overflow:auto}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:32px 0}
+.step{position:relative;padding:18px 14px 14px;border-top:3px solid var(--color-neutral)}
+.step:not(:last-child):after{content:"→";position:absolute;right:-9px;top:4px;background:var(--color-bg);padding:0 4px;color:var(--color-accent);font-weight:700}
+.step .n{font:600 .75rem "JetBrains Mono";color:var(--color-accent)}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.summary .card{min-height:155px}
+.footer{padding:45px 0;border-top:1px solid var(--line)}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:35px}
+.lesson-nav{border:1px solid var(--line);border-radius:15px;padding:20px;background:var(--color-bg)}
+.lesson-nav.next{text-align:right}
+.top{position:fixed;right:20px;bottom:20px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);border-radius:50%;width:46px;height:46px;cursor:pointer;display:none;z-index:60}
+.reveal{opacity:0;transform:translateY(18px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:850px){
+  .hero-grid,.grid-2{grid-template-columns:1fr}
+  .grid-3,.summary{grid-template-columns:repeat(2,1fr)}
+  .toc ol{grid-template-columns:1fr 1fr}
+  .stepper{grid-template-columns:1fr}
+  .step{border-top:0;border-left:3px solid var(--color-neutral);padding-left:18px}
+  .step:not(:last-child):after{content:"↓";right:auto;left:4px;top:auto;bottom:-10px}
+}
+@media(max-width:560px){
+  .menu{display:none}
+  .hero{padding-top:55px}
+  .grid-3,.summary,.toc ol,.nav-lessons{grid-template-columns:1fr}
+  .section{padding:58px 0}
+  .section-head{display:block}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+  <div class="container header-inner">
+    <a class="brand" href="#top">Communication d'Entreprise<small>Module 4 · Digital & réseaux sociaux</small></a>
+    <nav class="menu" aria-label="Sommaire rapide">
+      <a href="#fondamentaux">01 KPI</a>
+      <a href="#engagement">02 Engagement</a>
+      <a href="#portee">03 Portée</a>
+      <a href="#trafic">04 Trafic</a>
+      <a href="#outils">05 Outils</a>
+      <a href="#dashboard">06 Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="kicker">
+        <span class="badge accent">LEÇON 20</span>
+        <span class="badge">Niveau avancé</span>
+        <span class="badge">20 min</span>
+      </div>
+      <h1>Mesure et analyse de la performance digitale</h1>
+      <p class="lead">Évaluer l'efficacité des actions digitales grâce aux KPI, à l'analyse du parcours utilisateur et à un tableau de bord orienté décision.</p>
+      <p><span class="mono">OBJECTIF</span> Évaluer l'efficacité des actions digitales.</p>
+    </div>
+    <div class="hero-visual" aria-label="Illustration du pilotage de la performance digitale">
+      <svg viewBox="0 0 520 360" role="img">
+        <title>Tableau de bord digital simplifié</title>
+        <rect x="25" y="25" width="470" height="310" rx="18" fill="#F6F5F2" stroke="#9AA3B2"/>
+        <rect x="45" y="48" width="430" height="42" rx="9" fill="color-mix(in srgb,#FF5A36 10%,#F6F5F2)"/>
+        <circle cx="70" cy="69" r="8" fill="#FF5A36"/><rect x="90" y="61" width="125" height="8" rx="4" fill="#1B1F2E"/>
+        <g font-family="JetBrains Mono" font-size="11" fill="#1B1F2E">
+          <text x="55" y="125">PORTÉE</text><text x="175" y="125">CLICS</text><text x="295" y="125">CONV.</text><text x="400" y="125">ENG.</text>
+        </g>
+        <g font-family="JetBrains Mono" font-size="20" font-weight="600" fill="#1B1F2E">
+          <text x="55" y="150">42K</text><text x="175" y="150">3.8K</text><text x="295" y="150">286</text><text x="400" y="150">7.4%</text>
+        </g>
+        <path d="M55 265 L120 235 L185 250 L250 190 L315 210 L380 165 L455 180" fill="none" stroke="#FF5A36" stroke-width="5"/>
+        <path d="M55 285 L120 280 L185 270 L250 275 L315 250 L380 245 L455 235" fill="none" stroke="#9AA3B2" stroke-width="3"/>
+        <g fill="#FF5A36"><circle cx="55" cy="265" r="5"/><circle cx="120" cy="235" r="5"/><circle cx="185" cy="250" r="5"/><circle cx="250" cy="190" r="5"/><circle cx="315" cy="210" r="5"/><circle cx="380" cy="165" r="5"/><circle cx="455" cy="180" r="5"/></g>
+        <line x1="55" y1="295" x2="455" y2="295" stroke="#9AA3B2"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="toc">
+  <div class="container toc-card">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><a href="#fondamentaux">Comprendre les KPI digitaux</a></li>
+      <li><a href="#engagement">Analyser le taux d'engagement</a></li>
+      <li><a href="#portee">Portée, visibilité et exposition</a></li>
+      <li><a href="#trafic">Trafic web et parcours utilisateur</a></li>
+      <li><a href="#outils">Outils d'analyse</a></li>
+      <li><a href="#dashboard">Construire un tableau de bord digital</a></li>
+    </ol>
+  </div>
+</section>
+
+<section id="fondamentaux" class="section alt">
+<div class="container reveal">
+  <div class="section-head"><div><div class="num">01 / FONDAMENTAUX</div><h2>Comprendre les KPI digitaux</h2></div></div>
+  <p>Un <strong>KPI</strong> (Key Performance Indicator) est un indicateur choisi pour mesurer une dimension importante de la performance d'une action digitale. Il transforme les traces laissées par les utilisateurs en informations utiles au pilotage.</p>
+  <div class="grid-3">
+    <article class="card"><div class="icon">◎</div><h3>Portée</h3><p>Nombre de personnes ou comptes uniques exposés à un contenu ou une campagne.</p></article>
+    <article class="card"><div class="icon">↗</div><h3>Interaction</h3><p>Actions réalisées sur un contenu : réactions, commentaires, partages, clics ou autres interactions.</p></article>
+    <article class="card"><div class="icon">◇</div><h3>Conversion</h3><p>Action attendue après l'exposition ou la visite : demande, inscription, achat ou autre objectif défini.</p></article>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><br>Un bon KPI n'est pas seulement facile à mesurer : il doit être relié à un objectif de communication ou de performance.</div>
+  <div class="diagram">
+    <svg viewBox="0 0 900 300" role="img">
+      <title>Chaîne de mesure de la performance digitale</title>
+      <g font-family="Space Grotesk" fill="#1B1F2E" font-weight="700">
+        <rect x="30" y="85" width="150" height="100" rx="16" fill="#F6F5F2" stroke="#9AA3B2"/><text x="105" y="125" text-anchor="middle">OBJECTIF</text><text x="105" y="150" text-anchor="middle" font-size="13">Pourquoi ?</text>
+        <rect x="215" y="85" width="150" height="100" rx="16" fill="color-mix(in srgb,#FF5A36 10%,#F6F5F2)" stroke="#FF5A36"/><text x="290" y="125" text-anchor="middle">KPI</text><text x="290" y="150" text-anchor="middle" font-size="13">Que mesurer ?</text>
+        <rect x="400" y="85" width="150" height="100" rx="16" fill="#F6F5F2" stroke="#9AA3B2"/><text x="475" y="125" text-anchor="middle">DONNÉES</text><text x="475" y="150" text-anchor="middle" font-size="13">Que s'est-il passé ?</text>
+        <rect x="585" y="85" width="150" height="100" rx="16" fill="#F6F5F2" stroke="#9AA3B2"/><text x="660" y="125" text-anchor="middle">ANALYSE</text><text x="660" y="150" text-anchor="middle" font-size="13">Pourquoi ?</text>
+        <rect x="770" y="85" width="100" height="100" rx="16" fill="color-mix(in srgb,#FF5A36 10%,#F6F5F2)" stroke="#FF5A36"/><text x="820" y="125" text-anchor="middle">ACTION</text><text x="820" y="150" text-anchor="middle" font-size="13">Que faire ?</text>
+      </g>
+      <g stroke="#FF5A36" stroke-width="3" fill="none"><path d="M180 135h35"/><path d="M365 135h35"/><path d="M550 135h35"/><path d="M735 135h35"/></g>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section id="engagement" class="section">
+<div class="container reveal">
+  <div class="section-head"><div><div class="num">02 / ENGAGEMENT</div><h2>Analyser le taux d'engagement</h2></div></div>
+  <p>Le taux d'engagement rapporte les interactions observées à une base de référence. Selon le canal et l'outil, cette base peut être la portée, les impressions, les abonnés ou les personnes exposées. Il faut donc toujours préciser la définition utilisée.</p>
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist">
+      <button class="active" role="tab" aria-selected="true" data-tab="t1">Lecture simple</button>
+      <button role="tab" aria-selected="false" data-tab="t2">Lecture avancée</button>
+    </div>
+    <div id="t1" class="tab-panel active" role="tabpanel"><h3>Comparer des contenus</h3><p>Si deux publications ont une portée proche, celle qui génère proportionnellement plus d'interactions manifeste un engagement plus fort. La comparaison doit utiliser la même méthode de calcul.</p></div>
+    <div id="t2" class="tab-panel" role="tabpanel"><h3>Contextualiser le signal</h3><p>Un taux élevé n'implique pas automatiquement une réussite business. Il faut croiser engagement, portée, trafic et conversions avec l'objectif initial.</p></div>
+  </div>
+  <div class="excerpt">KPI_ENGAGEMENT = interactions pertinentes ÷ base de référence × 100</div>
+  <div class="grid-2">
+    <article class="card"><h3>Exemple concret</h3><p>Une publication touche <span class="mono">10 000</span> personnes et obtient <span class="mono">750</span> interactions. Avec une base égale à la portée, le taux obtenu est de <span class="mono">7,5 %</span>.</p></article>
+    <article class="card"><h3>Question d'analyse</h3><p>Le contenu a-t-il suscité une interaction utile, attiré une audience pertinente ou simplement généré un volume d'actions sans suite ?</p></article>
+  </div>
+  <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong><br>Ne comparez pas des taux calculés selon des dénominateurs différents. La formule et la période doivent accompagner le KPI.</div>
+</div>
+</section>
+
+<section id="portee" class="section alt">
+<div class="container reveal">
+  <div class="section-head"><div><div class="num">03 / VISIBILITÉ</div><h2>Portée, visibilité et exposition</h2></div></div>
+  <p>La portée renseigne sur l'audience effectivement exposée, tandis que les impressions comptent les affichages. Une même personne peut générer plusieurs impressions : portée et impressions ne répondent donc pas à la même question.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 900 340" role="img">
+      <title>Différence entre portée et impressions</title>
+      <g font-family="Space Grotesk" font-weight="700" fill="#1B1F2E">
+        <rect x="55" y="55" width="350" height="230" rx="20" fill="#F6F5F2" stroke="#9AA3B2"/>
+        <text x="230" y="92" text-anchor="middle" font-size="22">PORTÉE</text>
+        <g fill="#FF5A36"><circle cx="135" cy="145" r="22"/><circle cx="230" cy="145" r="22"/><circle cx="325" cy="145" r="22"/></g>
+        <text x="230" y="220" text-anchor="middle" font-size="15">3 personnes exposées</text>
+        <rect x="495" y="55" width="350" height="230" rx="20" fill="color-mix(in srgb,#FF5A36 5%,#F6F5F2)" stroke="#FF5A36"/>
+        <text x="670" y="92" text-anchor="middle" font-size="22">IMPRESSIONS</text>
+        <g fill="#FF5A36"><circle cx="570" cy="145" r="18"/><circle cx="620" cy="145" r="18"/><circle cx="670" cy="145" r="18"/><circle cx="720" cy="145" r="18"/><circle cx="770" cy="145" r="18"/></g>
+        <text x="670" y="220" text-anchor="middle" font-size="15">5 affichages</text>
+      </g>
+    </svg>
+  </div>
+  <div class="grid-3">
+    <article class="card"><h3>Portée</h3><p>Utile pour apprécier l'étendue d'une diffusion auprès d'une audience.</p></article>
+    <article class="card"><h3>Impressions</h3><p>Utile pour observer le volume total d'affichages.</p></article>
+    <article class="card"><h3>Fréquence</h3><p>Rapport entre impressions et portée, utile pour comprendre la répétition d'exposition.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="trafic" class="section">
+<div class="container reveal">
+  <div class="section-head"><div><div class="num">04 / TRAFIC WEB</div><h2>Du clic au parcours utilisateur</h2></div></div>
+  <p>Le trafic web permet de relier les actions de communication digitale aux visites d'un site ou d'une page. L'analyse ne s'arrête pas au volume de visiteurs : il faut observer leur comportement et la réalisation de l'objectif.</p>
+  <div class="stepper">
+    <div class="step"><div class="n">01</div><strong>Exposition</strong><br>Un contenu est vu.</div>
+    <div class="step"><div class="n">02</div><strong>Clic</strong><br>L'utilisateur agit.</div>
+    <div class="step"><div class="n">03</div><strong>Visite</strong><br>Il arrive sur le site.</div>
+    <div class="step"><div class="n">04</div><strong>Comportement</strong><br>Il consulte ou quitte.</div>
+    <div class="step"><div class="n">05</div><strong>Conversion</strong><br>Il réalise l'objectif.</div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Indicateur</th><th scope="col">Question</th><th scope="col" class="mono-cell">Exemple</th><th scope="col">Interprétation</th></tr></thead>
+      <tbody>
+        <tr class="highlight"><td>Sessions / visites</td><td>Combien de visites ?</td><td class="mono-cell">4 800</td><td>Mesure du trafic observé.</td></tr>
+        <tr><td>Clics</td><td>Le contenu déclenche-t-il une action ?</td><td class="mono-cell">620</td><td>Signal d'intérêt ou d'intention.</td></tr>
+        <tr><td>Taux de conversion</td><td>Les visites produisent-elles l'objectif ?</td><td class="mono-cell">5,8 %</td><td>Relie trafic et résultat attendu.</td></tr>
+        <tr><td>Sources de trafic</td><td>D'où viennent les visiteurs ?</td><td class="mono-cell">Social / Search</td><td>Aide à comparer les canaux.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><strong>📋 Cas pratique</strong><br>Une campagne génère beaucoup de clics mais peu de demandes. L'analyse doit rapprocher la qualité du trafic, la page d'arrivée, le message, le parcours et l'objectif de conversion plutôt que de conclure à partir des clics seuls.</div>
+</div>
+</section>
+
+<section id="outils" class="section alt">
+<div class="container reveal">
+  <div class="section-head"><div><div class="num">05 / OUTILS</div><h2>Les outils d'analyse</h2></div></div>
+  <p>Les outils d'analyse servent à collecter, organiser et interpréter les données. Le choix dépend du canal observé et des questions auxquelles l'équipe souhaite répondre.</p>
+  <div class="grid-3">
+    <article class="card"><div class="icon">⌁</div><h3>Analyse web</h3><p>Observe les sources de trafic, les visites, les parcours et les conversions sur les propriétés web.</p></article>
+    <article class="card"><div class="icon">▦</div><h3>Analytics sociaux</h3><p>Mesure portée, interactions, audiences et performances des publications selon les plateformes.</p></article>
+    <article class="card"><div class="icon">▤</div><h3>Tableau de bord</h3><p>Rassemble les indicateurs utiles pour faciliter le suivi, la comparaison et la décision.</p></article>
+  </div>
+  <div class="accordion" id="faq">
+    <div class="accordion">
+      <button aria-expanded="false">Pourquoi croiser plusieurs outils ? <span>+</span></button>
+      <div class="answer">Parce qu'un outil donne une vue partielle de l'activité. Le rapprochement des données permet de passer d'une mesure isolée à une lecture du parcours et des résultats.</div>
+    </div>
+    <div class="accordion">
+      <button aria-expanded="false">Pourquoi définir une période ? <span>+</span></button>
+      <div class="answer">Un KPI n'a de sens que dans un contexte temporel. Une comparaison doit utiliser des périodes cohérentes et tenir compte des campagnes, événements ou changements de contenu.</div>
+    </div>
+    <div class="accordion">
+      <button aria-expanded="false">Que faire d'un KPI en baisse ? <span>+</span></button>
+      <div class="answer">Chercher le changement : audience, contenu, canal, fréquence, parcours ou contexte. La baisse est un signal d'analyse, pas une explication en elle-même.</div>
+    </div>
+  </div>
+  <div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong><br>Définir les KPI avant la campagne, documenter les formules, conserver les périodes de comparaison et relier chaque indicateur à une décision possible.</div>
+</div>
+</section>
+
+<section id="dashboard" class="section">
+<div class="container reveal">
+  <div class="section-head"><div><div class="num">06 / PILOTAGE</div><h2>Construire un tableau de bord digital</h2></div></div>
+  <p>Un tableau de bord digital doit rester lisible. Il sélectionne les indicateurs qui permettent de comprendre la performance et de décider des ajustements. Il ne doit pas devenir un inventaire de toutes les données disponibles.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 900 360" role="img">
+      <title>Architecture d'un tableau de bord digital</title>
+      <rect x="30" y="25" width="840" height="310" rx="20" fill="#F6F5F2" stroke="#9AA3B2"/>
+      <rect x="55" y="50" width="790" height="45" rx="10" fill="color-mix(in srgb,#FF5A36 10%,#F6F5F2)"/>
+      <text x="75" y="79" font-family="Space Grotesk" font-size="20" font-weight="700" fill="#1B1F2E">TABLEAU DE BORD · PERFORMANCE DIGITALE</text>
+      <g font-family="JetBrains Mono" font-size="13" fill="#1B1F2E">
+        <text x="70" y="130">PORTÉE</text><text x="270" y="130">ENGAGEMENT</text><text x="485" y="130">TRAFIC</text><text x="685" y="130">CONVERSION</text>
+        <text x="70" y="158" font-size="22" font-weight="600">42K</text><text x="270" y="158" font-size="22" font-weight="600">7.4%</text><text x="485" y="158" font-size="22" font-weight="600">4.8K</text><text x="685" y="158" font-size="22" font-weight="600">5.8%</text>
+      </g>
+      <line x1="55" y1="185" x2="845" y2="185" stroke="#9AA3B2"/>
+      <path d="M70 285 L160 265 L250 275 L340 225 L430 240 L520 205 L610 220 L700 190 L815 205" fill="none" stroke="#FF5A36" stroke-width="5"/>
+      <path d="M70 305 L160 300 L250 295 L340 300 L430 280 L520 285 L610 270 L700 275 L815 250" fill="none" stroke="#9AA3B2" stroke-width="3"/>
+      <text x="70" y="215" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#1B1F2E">ÉVOLUTION DANS LE TEMPS</text>
+    </svg>
+  </div>
+  <div class="grid-2">
+    <article class="card"><h3>1. Commencer par les objectifs</h3><p>Exposition, engagement, trafic ou conversion : le tableau de bord doit refléter les priorités de la stratégie.</p></article>
+    <article class="card"><h3>2. Choisir les indicateurs</h3><p>Limiter les KPI à ceux qui expliquent réellement la performance et permettent une action.</p></article>
+    <article class="card"><h3>3. Ajouter le contexte</h3><p>Période, campagne, canal, audience et comparaison sont indispensables à l'interprétation.</p></article>
+    <article class="card"><h3>4. Passer à la décision</h3><p>Chaque observation importante doit pouvoir conduire à une optimisation : contenu, ciblage, canal, fréquence ou parcours.</p></article>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><br>Mesurer décrit ce qui s'est passé. Analyser cherche à comprendre pourquoi. Piloter consiste ensuite à décider quoi changer.</div>
+</div>
+</section>
+
+<section class="section alt" id="resume">
+<div class="container reveal">
+  <div class="section-head"><div><div class="num">SYNTHÈSE</div><h2>Points clés à retenir</h2></div></div>
+  <div class="summary">
+    <article class="card"><div class="num">01</div><h3>Choisir les bons KPI</h3><p>Un indicateur doit être lié à un objectif.</p></article>
+    <article class="card"><div class="num">02</div><h3>Contextualiser</h3><p>Formule, période et base de comparaison comptent.</p></article>
+    <article class="card"><div class="num">03</div><h3>Croiser les signaux</h3><p>Portée, engagement, trafic et conversions se complètent.</p></article>
+    <article class="card"><div class="num">04</div><h3>Décider</h3><p>La valeur de l'analyse réside dans l'amélioration de l'action digitale.</p></article>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 900 260" role="img">
+      <title>Résumé visuel de la mesure digitale</title>
+      <g font-family="Space Grotesk" font-weight="700" fill="#1B1F2E">
+        <circle cx="110" cy="130" r="72" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2"/><text x="110" y="124" text-anchor="middle">MESURER</text><text x="110" y="148" text-anchor="middle" font-size="13">Données</text>
+        <circle cx="320" cy="130" r="72" fill="color-mix(in srgb,#FF5A36 10%,#F6F5F2)" stroke="#FF5A36" stroke-width="3"/><text x="320" y="124" text-anchor="middle">ANALYSER</text><text x="320" y="148" text-anchor="middle" font-size="13">Contexte</text>
+        <circle cx="530" cy="130" r="72" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2"/><text x="530" y="124" text-anchor="middle">DÉCIDER</text><text x="530" y="148" text-anchor="middle" font-size="13">Priorités</text>
+        <circle cx="740" cy="130" r="72" fill="color-mix(in srgb,#FF5A36 10%,#F6F5F2)" stroke="#FF5A36" stroke-width="3"/><text x="740" y="124" text-anchor="middle">OPTIMISER</text><text x="740" y="148" text-anchor="middle" font-size="13">Actions</text>
+      </g>
+      <g stroke="#FF5A36" stroke-width="3"><path d="M182 130h66"/><path d="M392 130h66"/><path d="M602 130h66"/></g>
+    </svg>
+  </div>
+</div>
+</section>
+</main>
+
+<footer class="footer">
+<div class="container">
+  <h2>Navigation du module</h2>
+  <div class="nav-lessons">
+    <a class="lesson-nav" href="#"><span class="num">← LEÇON PRÉCÉDENTE</span><h3>Leçon 19 — Publicité digitale et campagnes en ligne</h3></a>
+    <a class="lesson-nav next" href="#"><span class="num">LEÇON SUIVANTE →</span><h3>Leçon 21 — Identification et anticipation des crises</h3></a>
+  </div>
+  <p style="margin-top:30px;color:var(--muted)">Filière Communication d'Entreprise · Module 4 · Support pédagogique en ligne</p>
+</div>
+</footer>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progressBar=document.getElementById('progressBar');
+const topBtn=document.getElementById('topBtn');
+function updateScroll(){
+  const doc=document.documentElement;
+  const max=doc.scrollHeight-doc.clientHeight;
+  progressBar.style.width=(max>0?(doc.scrollTop/max)*100:0)+'%';
+  topBtn.style.display=doc.scrollTop>500?'block':'none';
+}
+window.addEventListener('scroll',updateScroll,{passive:true});
+updateScroll();
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  const buttons=group.querySelectorAll('[data-tab]');
+  const panels=group.querySelectorAll('.tab-panel');
+  buttons.forEach(btn=>btn.addEventListener('click',()=>{
+    buttons.forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false')});
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');btn.setAttribute('aria-selected','true');
+    group.querySelector('#'+btn.dataset.tab).classList.add('active');
+  }));
+});
+document.querySelectorAll('.accordion button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.parentElement;
+    const open=item.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open);
+    btn.querySelector('span').textContent=open?'−':'+';
+  });
+});
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

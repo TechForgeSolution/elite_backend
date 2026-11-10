@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 28 — Sauvegarde, PRA et PCA</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F6FEB'/%3E%3Ctext x='16' y='22' font-size='16' font-family='sans-serif' font-weight='700' text-anchor='middle' fill='white'%3E28%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+--section:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));--soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));--border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:80px}body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 "IBM Plex Sans",sans-serif}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--color-accent);width:0;z-index:99}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav,.wrap{max-width:1120px;margin:auto;padding:0 24px}.nav{height:62px;display:flex;align-items:center;justify-content:space-between}
+.brand,h1,h2,h3{font-family:"Space Grotesk",sans-serif}.brand{font-weight:700}.brand b,.eyebrow,a{color:var(--color-accent)}a{text-decoration:none}a:hover{text-decoration:underline}
+.hero{padding:68px 24px 52px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;max-width:1120px;margin:auto}
+.eyebrow{font:600 .76rem "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase}h1{font-size:clamp(2.5rem,6vw,4.7rem);line-height:1.05;margin:12px 0 20px;letter-spacing:-.04em}h2{font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.15;margin:0 0 18px}h3{margin:0 0 8px}
+.lead{font-size:1.12rem;max-width:720px;color:var(--muted)}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badge{border:1px solid var(--border);border-radius:999px;padding:6px 11px;background:var(--soft);font-size:.82rem}
+.art,.visual{border:1px solid var(--border);border-radius:16px;background:var(--section);padding:16px;overflow:auto;margin-top:26px}.art{margin-top:0}.art svg,.visual svg{display:block;width:100%;height:auto}
+.toc{border-block:1px solid var(--border);padding:24px 0}.tocgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.toc a{border:1px solid var(--border);padding:11px 13px;border-radius:9px;display:block;background:var(--color-bg)}
+section.lesson{padding:68px 0}section.lesson:nth-child(even){background:var(--section)}.text{max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}.card,.key,.navcard{border:1px solid var(--border);border-radius:13px;background:var(--color-bg);padding:20px;transition:.2s}.card:hover,.navcard:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{min-width:40px;height:40px;padding:0 8px;width:max-content;border:1px solid var(--color-accent);border-radius:9px;display:grid;place-items:center;color:var(--color-accent);font:600 .8rem "IBM Plex Mono";margin-bottom:14px}
+.callout{margin:25px 0;padding:16px 18px;border-left:4px solid var(--color-accent);background:var(--soft);border-radius:0 10px 10px 0}.callout strong{display:block;margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin-top:24px;background:var(--color-bg);border:1px solid var(--border)}th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font:600 .78rem "IBM Plex Mono";text-transform:uppercase}tr:hover td{background:var(--soft)}.mono{font-family:"IBM Plex Mono"}.tw{overflow-x:auto}
+.tabs{margin-top:25px}.tabbtns{display:flex;gap:8px;flex-wrap:wrap}button{font:600 15px "IBM Plex Sans";cursor:pointer}.tabbtn{padding:9px 13px;border:1px solid var(--border);background:var(--color-bg);border-radius:8px;color:var(--color-text);transition:.2s}.tabbtn:hover{border-color:var(--color-accent)}.tabbtn[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}.panel{display:none;border:1px solid var(--border);padding:17px;border-radius:0 0 10px 10px;margin-top:8px;background:var(--color-bg)}.panel.active{display:block}
+details{border-bottom:1px solid var(--border);padding:15px 0}summary{cursor:pointer;font-weight:700}details p{margin:10px 0 0;max-width:720px}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:25px 0}.step{border:1px solid var(--border);padding:13px;border-radius:10px;background:var(--color-bg)}.step b{color:var(--color-accent);font-family:"IBM Plex Mono"}.step span{display:block;font-size:.88rem;color:var(--muted);line-height:1.5;margin-top:4px}
+.code{position:relative;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--color-bg);overflow:hidden}.code pre{margin:0;padding:18px 18px 18px 18px;overflow-x:auto;font:400 .86rem/1.75 "IBM Plex Mono"}.code .cm{color:var(--muted)}.code .kw{color:var(--color-accent);font-weight:600}
+.code-h{display:flex;justify-content:space-between;align-items:center;padding:8px 12px 8px 18px;border-bottom:1px solid var(--border);background:var(--soft);font:600 .74rem "IBM Plex Mono";color:var(--muted)}.copy{padding:5px 11px;font-size:.78rem;border:1px solid var(--border);border-radius:7px;background:var(--color-bg);color:var(--color-text)}.copy:hover{border-color:var(--color-accent);color:var(--color-accent)}
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}.navbottom{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:35px}.next{text-align:right}
+.quiz{border:1px solid var(--border);border-radius:14px;background:var(--color-bg);padding:22px;margin-top:26px;max-width:720px}.qmeta{font:600 .78rem "IBM Plex Mono";color:var(--muted);margin-bottom:8px}.qq{font:700 1.15rem "Space Grotesk";margin:0 0 14px;line-height:1.4}.opts{display:grid;gap:8px}.opt{text-align:left;padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:var(--color-bg);color:var(--color-text);font-weight:400;transition:.2s}.opt:hover:not(:disabled){border-color:var(--color-accent)}.opt:disabled{cursor:default}.opt.ok{border-color:var(--color-accent);background:var(--soft);font-weight:600}.opt.ko{border-style:dashed;color:var(--muted)}
+.fb{margin-top:14px;min-height:1.5em;color:var(--muted)}.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:16px}.btn{padding:10px 16px;border:1px solid var(--color-accent);border-radius:8px;background:var(--color-accent);color:#fff;transition:.2s}.btn:hover{background:var(--color-text);border-color:var(--color-text)}.btn[hidden]{display:none}
+.back{position:fixed;right:18px;bottom:18px;width:45px;height:45px;border:1px solid var(--color-accent);border-radius:50%;background:var(--color-bg);color:var(--color-accent);opacity:0;pointer-events:none;z-index:40}.back.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);text-align:center;color:var(--muted);padding:26px}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.nav,.wrap{padding-inline:16px}.hero{padding:42px 16px}.grid,.keys,.navbottom,.tocgrid{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}section.lesson{padding:50px 0}.brand{font-size:.85rem}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><div class="nav"><div class="brand">Maintenance <b>&</b> Réseau Informatique</div><a href="#sommaire">Sommaire</a></div></header>
+
+<div class="hero">
+<div><div class="eyebrow">Module 6 · Administration systèmes & Cybersécurité</div><h1>Sauvegarde, PRA et PCA</h1>
+<p class="lead">Concevoir un plan de reprise et de continuité d'activité pour qu'un incident ne devienne pas une catastrophe.</p>
+<div class="badges"><span class="badge">Leçon <b>28</b></span><span class="badge">Niveau BAC</span><span class="badge">15 min</span></div></div>
+<div class="art"><svg viewBox="0 0 620 410" role="img" aria-label="Règle 3-2-1 : trois copies des données, sur deux supports, dont une hors site">
+<rect x="45" y="30" width="530" height="350" rx="24" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+<rect x="215" y="60" width="190" height="80" rx="14" fill="none" stroke="#1F6FEB" stroke-width="3"/><text x="310" y="108" text-anchor="middle" font-family="Space Grotesk" font-size="20" font-weight="700" fill="#10161D">DONNÉES</text>
+<rect x="80" y="230" width="160" height="70" rx="12" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="160" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">COPIE LOCALE</text>
+<rect x="380" y="230" width="160" height="70" rx="12" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="460" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">AUTRE SUPPORT</text>
+<rect x="230" y="310" width="160" height="50" rx="12" fill="none" stroke="#1F6FEB" stroke-width="3"/><text x="310" y="341" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">HORS SITE</text>
+<g fill="none" stroke="#1F6FEB" stroke-width="2"><path d="M260 140V185H160V230"/><path d="M360 140V185H460V230"/><path d="M310 140V310"/></g>
+<text x="310" y="200" text-anchor="middle" font-family="IBM Plex Mono" font-size="20" font-weight="600" fill="#1F6FEB">3-2-1</text></svg></div></div>
+
+<div class="wrap"><div class="toc" id="sommaire"><div class="eyebrow">Navigation</div><div class="tocgrid">
+<a href="#defs">01 · Définitions</a><a href="#sauvegarde">02 · Sauvegarde</a><a href="#rtorpo">03 · RTO et RPO</a><a href="#scenarios">04 · Scénarios de sinistre</a><a href="#plans">05 · PRA, PCA et tests</a><a href="#exercice">06 · Mini-exercice</a><a href="#synthese">07 · Synthèse</a>
+</div></div></div>
+
+<main>
+<section class="lesson" id="defs"><div class="wrap reveal"><div class="text"><div class="eyebrow">01 · Définitions</div><h2>Pourquoi anticiper ?</h2><p>Un <strong>sinistre</strong> est un événement qui interrompt ou détruit tout ou partie du système d'information : panne matérielle, erreur humaine, incendie, cyberattaque. On ne peut pas les empêcher tous, mais on peut décider à l'avance comment y répondre.</p></div>
+<div class="grid"><article class="card"><div class="icon">SAV</div><h3>Sauvegarde</h3><p>Copie des données à un instant donné, conservée séparément pour pouvoir les restaurer.</p></article><article class="card"><div class="icon">PRA</div><h3>Plan de reprise d'activité</h3><p>Procédures pour redémarrer les services <em>après</em> une interruption.</p></article><article class="card"><div class="icon">PCA</div><h3>Plan de continuité d'activité</h3><p>Dispositions pour maintenir les services essentiels <em>pendant</em> l'incident.</p></article></div>
+<div class="callout"><strong>💡 À retenir</strong>La sauvegarde est un outil. Le PRA et le PCA sont des plans : ils décrivent qui fait quoi, dans quel ordre et en combien de temps.</div></div></section>
+
+<section class="lesson" id="sauvegarde"><div class="wrap reveal"><div class="text"><div class="eyebrow">02 · Sauvegarde</div><h2>Sauvegarder correctement</h2><p>La règle <strong>3-2-1</strong> sert de base : <strong>3</strong> copies des données, sur <strong>2</strong> types de supports différents, dont <strong>1</strong> hors site. Reste à choisir comment copier.</p></div>
+<div class="tabs"><div class="tabbtns" role="tablist" aria-label="Types de sauvegarde"><button class="tabbtn" role="tab" id="t1" aria-selected="true" aria-controls="p1">Complète</button><button class="tabbtn" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Différentielle</button><button class="tabbtn" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Incrémentale</button></div>
+<div id="p1" class="panel active" role="tabpanel" aria-labelledby="t1"><strong>Tout est copié à chaque fois.</strong> Restauration simple et rapide (une seule sauvegarde), mais volume et durée maximums.</div>
+<div id="p2" class="panel" role="tabpanel" aria-labelledby="t2"><strong>Copie ce qui a changé depuis la dernière sauvegarde complète.</strong> Restauration avec 2 éléments (complète + dernière différentielle) ; le volume grossit jusqu'à la prochaine complète.</div>
+<div id="p3" class="panel" role="tabpanel" aria-labelledby="t3"><strong>Copie ce qui a changé depuis la dernière sauvegarde, quelle qu'elle soit.</strong> Très économe en espace et en temps, mais la restauration demande toute la chaîne : si un maillon manque, elle échoue.</div></div>
+<div class="code"><div class="code-h"><span>sauvegarde.sh — exemple Linux</span><button class="copy" type="button">Copier le code</button></div><pre><code><span class="cm"># Copie incrémentale vers un disque externe, avec historique</span>
+<span class="kw">rsync</span> -a --delete --backup --backup-dir=/mnt/backup/old/$(date +%F) \
+  /srv/donnees/ /mnt/backup/courant/
+
+<span class="cm"># Planification chaque nuit à 02h00 (crontab -e)</span>
+0 2 * * * /usr/local/bin/sauvegarde.sh</code></pre></div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Une sauvegarde jamais restaurée n'est pas une sauvegarde : c'est une hypothèse. Une copie toujours connectée au réseau peut aussi être chiffrée par un rançongiciel.</div></div></section>
+
+<section class="lesson" id="rtorpo"><div class="wrap reveal"><div class="text"><div class="eyebrow">03 · Objectifs de reprise</div><h2>RTO et RPO</h2><p>Deux durées fixent le niveau de protection nécessaire :</p><p><strong>RPO</strong> (<em>Recovery Point Objective</em>) : perte de données maximale acceptable, mesurée en temps. <strong>RTO</strong> (<em>Recovery Time Objective</em>) : durée maximale d'interruption acceptable avant la reprise du service.</p></div>
+<div class="visual"><svg viewBox="0 0 1000 280" role="img" aria-label="Frise : dernière sauvegarde, puis sinistre, puis reprise. RPO avant le sinistre, RTO après.">
+<path d="M40 150H960" stroke="#A9B4BE" stroke-width="3"/>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M180 120V180"/><path d="M500 105V195"/><path d="M820 120V180"/></g>
+<g fill="none" stroke="#1F6FEB" stroke-width="2"><path d="M180 90H500"/><path d="M180 82V98"/><path d="M500 82V98"/><path d="M500 210H820"/><path d="M500 202V218"/><path d="M820 202V218"/></g>
+<g fill="#10161D" text-anchor="middle" font-family="IBM Plex Mono" font-size="14"><text x="180" y="215">Dernière sauvegarde</text><text x="500" y="250" font-weight="600">SINISTRE</text><text x="820" y="250">Service rétabli</text></g>
+<g fill="#10161D" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="24"><text x="340" y="70">RPO : données perdues</text><text x="660" y="185" dy="0">RTO : arrêt de service</text></g>
+<text x="340" y="130" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="#10161D">Tout ce qui a été saisi ici est perdu</text></svg></div>
+<div class="callout"><strong>💡 À retenir</strong>Plus RPO et RTO sont courts, plus la solution coûte cher : sauvegardes fréquentes, réplication, site de secours. On les fixe selon l'impact de l'arrêt sur l'activité.</div>
+<div class="tw"><table><thead><tr><th>Service</th><th>RPO</th><th>RTO</th><th>Exemple de moyen</th></tr></thead><tbody><tr><td>Boutique en ligne</td><td class="mono">5 min</td><td class="mono">1 h</td><td>Réplication de la base + serveur de secours</td></tr><tr><td>Messagerie interne</td><td class="mono">24 h</td><td class="mono">8 h</td><td>Sauvegarde nocturne</td></tr><tr><td>Archives comptables</td><td class="mono">7 jours</td><td class="mono">72 h</td><td>Sauvegarde hebdomadaire hors site</td></tr></tbody></table></div></div></section>
+
+<section class="lesson" id="scenarios"><div class="wrap reveal"><div class="text"><div class="eyebrow">04 · Scénarios de sinistre</div><h2>Que peut-il arriver ?</h2><p>Un bon plan part de scénarios concrets. Pour chacun, on identifie ce qui est touché, puis la réponse prévue.</p></div>
+<div class="grid"><article class="card"><div class="icon">HW</div><h3>Panne matérielle</h3><p>Disque ou serveur hors service. Réponse : restauration sur matériel de rechange.</p></article><article class="card"><div class="icon">MAL</div><h3>Cyberattaque</h3><p>Rançongiciel, suppression malveillante. Réponse : isoler, puis restaurer une copie saine.</p></article><article class="card"><div class="icon">SITE</div><h3>Perte du site</h3><p>Incendie, inondation, coupure longue. Réponse : bascule vers un site de secours.</p></article></div>
+<details><summary>Exemple : un rançongiciel chiffre le serveur de fichiers</summary><p>On déconnecte immédiatement les machines touchées, on identifie la date de l'infection, puis on restaure la dernière sauvegarde saine sur un système reconstruit. Une copie hors ligne ou immuable est ici décisive.</p></details>
+<details><summary>Exemple : erreur humaine, un dossier est supprimé</summary><p>Le sinistre est petit mais très fréquent. La restauration ciblée d'un fichier depuis l'historique de sauvegarde suffit, sans déclencher le PRA complet.</p></details>
+<details><summary>Comment prioriser les scénarios ?</summary><p>On croise la <strong>probabilité</strong> (fréquent ou rare) et la <strong>gravité</strong> (gêne ou arrêt total). Les scénarios graves, même rares, doivent être planifiés.</p></details></div></section>
+
+<section class="lesson" id="plans"><div class="wrap reveal"><div class="text"><div class="eyebrow">05 · PRA, PCA et tests</div><h2>Construire et vérifier le plan</h2><p>PCA et PRA se complètent : le premier limite l'arrêt, le second organise le retour à la normale.</p></div>
+<div class="tw"><table><thead><tr><th>Critère</th><th>PCA</th><th>PRA</th></tr></thead><tbody><tr><td>Moment</td><td>Pendant l'incident</td><td>Après l'interruption</td></tr><tr><td>Objectif</td><td>Maintenir les activités vitales</td><td>Rétablir le fonctionnement normal</td></tr><tr><td>Exemple</td><td>Basculer sur un serveur de secours, travailler en mode dégradé</td><td>Restaurer les données et redémarrer les services</td></tr></tbody></table></div>
+<div class="text" style="margin-top:34px"><h3>Les étapes d'un plan de reprise</h3></div>
+<div class="steps"><div class="step"><b>01</b><br>Analyser<span>Services critiques, impacts</span></div><div class="step"><b>02</b><br>Définir<span>RTO, RPO, priorités</span></div><div class="step"><b>03</b><br>Documenter<span>Procédures, rôles, contacts</span></div><div class="step"><b>04</b><br>Tester<span>Simulation de sinistre</span></div><div class="step"><b>05</b><br>Améliorer<span>Corriger, mettre à jour</span></div></div>
+<div class="text"><p>Les <strong>tests de reprise</strong> prouvent que le plan fonctionne : restauration d'une sauvegarde sur une machine de test, exercice de bascule, simulation avec l'équipe. Chaque test mesure le RTO réel et le RPO réel, à comparer aux objectifs.</p></div>
+<div class="callout"><strong>🧪 Exercice pratique</strong>Choisissez un service de votre établissement. Notez ses RPO et RTO, puis listez les 3 premières actions de son plan de reprise.</div>
+<div class="callout"><strong>🔗 Pour aller plus loin</strong>Le guide de l'ANSSI sur la gestion de crise cyber et la norme ISO 22301 (continuité d'activité) détaillent la démarche.</div></div></section>
+
+<section class="lesson" id="exercice"><div class="wrap reveal"><div class="text"><div class="eyebrow">06 · Mini-exercice</div><h2>Testez-vous</h2><p>Trois questions, réponse immédiate.</p></div>
+<div class="quiz" id="quiz" aria-live="polite"></div></div></section>
+
+<section class="lesson" id="synthese"><div class="wrap reveal"><div class="text"><div class="eyebrow">07 · Synthèse</div><h2>Points clés à retenir</h2><p>Se préparer avant l'incident, mesurer, puis tester : la démarche tient en trois gestes.</p></div>
+<div class="keys"><div class="key"><b>Sauvegarde</b> — règle 3-2-1, restauration testée.</div><div class="key"><b>PRA</b> — redémarrer après l'interruption.</div><div class="key"><b>PCA</b> — maintenir l'essentiel pendant l'incident.</div><div class="key"><b>RPO</b> — perte de données maximale acceptée.</div><div class="key"><b>RTO</b> — durée d'arrêt maximale acceptée.</div><div class="key"><b>Tests</b> — seule preuve qu'un plan fonctionne.</div></div>
+<div class="callout"><strong>💡 À retenir</strong>Un plan non testé est un plan qui échouera le jour où l'on en a besoin.</div>
+<div class="navbottom"><div class="navcard"><div class="eyebrow">Précédente</div><a href="#"><strong>← Leçon 27 — Durcissement des systèmes</strong></a></div><div class="navcard next"><div class="eyebrow">Suivante</div><a href="#"><strong>Leçon 29 — Audit et bonnes pratiques →</strong></a></div></div>
+<p style="margin-top:22px"><a href="#">Retour au sommaire du module 6</a></p></div></section>
+</main>
+<button class="back" id="back" aria-label="Retour en haut">↑</button>
+<footer>Maintenance et Réseau Informatique · Module 6 · Leçon 28</footer>
+<script>
+const p=document.getElementById('progress'),b=document.getElementById('back');
+function scrollUI(){let h=document.documentElement.scrollHeight-innerHeight;p.style.width=(h?scrollY/h*100:0)+'%';b.classList.toggle('show',scrollY>500)}addEventListener('scroll',scrollUI,{passive:true});scrollUI();b.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+document.querySelectorAll('.tabs').forEach(t=>{const bs=[...t.querySelectorAll('[role=tab]')],ps=t.querySelectorAll('[role=tabpanel]');
+const sel=x=>{bs.forEach(q=>{q.setAttribute('aria-selected','false');q.tabIndex=-1});ps.forEach(q=>q.classList.remove('active'));x.setAttribute('aria-selected','true');x.tabIndex=0;document.getElementById(x.getAttribute('aria-controls')).classList.add('active')};
+bs.forEach((x,i)=>{x.onclick=()=>sel(x);x.onkeydown=e=>{let n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:null;if(n!==null){e.preventDefault();n=(n+bs.length)%bs.length;sel(bs[n]);bs[n].focus()}}})});
+document.querySelectorAll('.copy').forEach(c=>c.onclick=async()=>{const t=c.closest('.code').querySelector('code').innerText;try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}c.textContent='Copié';setTimeout(()=>c.textContent='Copier le code',1800)});
+const Q=[
+{q:"Un service peut perdre au maximum 1 heure de données. Quelle valeur définit cela ?",o:["RTO = 1 h","RPO = 1 h","PCA = 1 h"],a:1,e:"Le RPO mesure la perte de données acceptable. Le RTO mesure la durée d'arrêt acceptable."},
+{q:"Le serveur est tombé et le service doit redémarrer en moins de 4 h. De quoi s'agit-il ?",o:["Du RTO","Du RPO","De la règle 3-2-1"],a:0,e:"Le RTO fixe le délai maximal de remise en service."},
+{q:"Quelle pratique respecte la règle 3-2-1 ?",o:["Une copie sur le même disque que les données","Deux copies sur deux disques du même serveur","Trois copies, deux supports, dont une hors site"],a:2,e:"3 copies, 2 supports différents, 1 copie hors site : un incendie ou un rançongiciel ne peut pas tout détruire."}];
+const qz=document.getElementById('quiz');let i=0,score=0;
+function show(){const d=Q[i];qz.innerHTML=`<div class="qmeta">Question ${i+1} / ${Q.length}</div><p class="qq">${d.q}</p><div class="opts">${d.o.map((t,k)=>`<button type="button" class="opt" data-k="${k}">${t}</button>`).join('')}</div><div class="fb"></div><div class="qnav"><span class="mono">Score : ${score}</span><button type="button" class="btn" hidden>${i<Q.length-1?'Question suivante':'Voir le résultat'}</button></div>`;
+const os=qz.querySelectorAll('.opt'),fb=qz.querySelector('.fb'),nx=qz.querySelector('.btn');
+os.forEach(o=>o.onclick=()=>{const k=+o.dataset.k;os.forEach(x=>x.disabled=true);os[d.a].classList.add('ok');if(k===d.a){score++;fb.textContent='Correct. '+d.e}else{o.classList.add('ko');fb.textContent='Pas tout à fait. '+d.e}qz.querySelector('.mono').textContent='Score : '+score;nx.hidden=false;nx.focus()});
+nx.onclick=()=>{i++;i<Q.length?show():end()}}
+function end(){qz.innerHTML=`<div class="qmeta">Résultat</div><p class="qq">${score} / ${Q.length} — ${score===Q.length?'Excellent, vous maîtrisez les notions clés.':score>=2?'Bien. Relisez la section sur le point manqué.':'Reprenez les sections RTO / RPO et sauvegarde.'}</p><button type="button" class="btn" id="rs">Recommencer</button>`;document.getElementById('rs').onclick=()=>{i=0;score=0;show()}}
+show();
+const els=document.querySelectorAll('.reveal');if('IntersectionObserver'in window){let io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});els.forEach(e=>io.observe(e))}else els.forEach(e=>e.classList.add('visible'));
+</script>
+</body></html>

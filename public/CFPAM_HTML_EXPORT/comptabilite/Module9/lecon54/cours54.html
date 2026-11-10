@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 54 - Pilotage et amélioration continue | Comptabilité">
+  <title>Leçon 54 — Pilotage et amélioration continue</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-alt: #f6f8f6;
+      --color-text: #0b0f0d;
+      --color-text-muted: #5a6560;
+      --color-accent: #1f6f54;
+      --color-accent-soft: #e7f2ed;
+      --color-border: #e3e8e5;
+      --color-accent-alt: #b3541e;
+      --shadow-sm: 0 4px 18px rgba(11, 15, 13, 0.06);
+      --shadow-md: 0 12px 35px rgba(11, 15, 13, 0.08);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --max-width: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.7;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .025;
+      background-image:
+        linear-gradient(rgba(31,111,84,.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31,111,84,.15) 1px, transparent 1px);
+      background-size: 36px 36px;
+      z-index: -1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0;
+      background: var(--color-accent);
+      z-index: 1000;
+      transition: width .1s linear;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--color-border);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: var(--max-width);
+      margin: auto;
+      min-height: 72px;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--color-accent);
+      color: white;
+      font-family: "Roboto Mono", monospace;
+      font-weight: 600;
+    }
+
+    .brand-text {
+      font-size: .88rem;
+      line-height: 1.2;
+    }
+
+    .brand-text span {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: .72rem;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .header-meta {
+      color: var(--color-text-muted);
+      font-size: .82rem;
+      font-family: "Roboto Mono", monospace;
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .hero {
+      padding: 80px 0 65px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.12fr .88fr;
+      align-items: center;
+      gap: 65px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      border: 1px solid #d4e8df;
+      border-radius: 999px;
+      font-size: .74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-accent);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: "Sora", sans-serif;
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      letter-spacing: -.055em;
+      max-width: 800px;
+    }
+
+    .hero-description {
+      color: var(--color-text-muted);
+      font-size: 1.08rem;
+      max-width: 680px;
+      margin-top: 22px;
+    }
+
+    .hero-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 28px;
+    }
+
+    .badge {
+      border: 1px solid var(--color-border);
+      background: white;
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-size: .78rem;
+      color: var(--color-text-muted);
+    }
+
+    .hero-visual {
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .visual-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--color-text-muted);
+      font-family: "Roboto Mono", monospace;
+      font-size: .7rem;
+      margin-bottom: 12px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .toc-section {
+      padding: 34px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .toc a {
+      display: block;
+      padding: 15px;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      background: white;
+      font-size: .84rem;
+      transition: .2s ease;
+    }
+
+    .toc a:hover,
+    .toc a:focus-visible {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .toc-number {
+      display: block;
+      color: var(--color-accent);
+      font-family: "Roboto Mono", monospace;
+      font-size: .7rem;
+      margin-bottom: 6px;
+    }
+
+    main {
+      padding: 70px 0;
+    }
+
+    .section {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .section:first-child {
+      padding-top: 0;
+    }
+
+    .section-heading {
+      max-width: 760px;
+      margin-bottom: 36px;
+    }
+
+    .section-number {
+      font-family: "Roboto Mono", monospace;
+      font-size: .75rem;
+      color: var(--color-accent);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -.035em;
+    }
+
+    .section-intro {
+      color: var(--color-text-muted);
+      margin-top: 14px;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+
+    p {
+      margin-bottom: 14px;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .three-columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: white;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      transition: .2s ease;
+    }
+
+    .icon-box {
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      margin-bottom: 17px;
+    }
+
+    .icon-box svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .callout {
+      margin: 30px 0;
+      border-left: 4px solid var(--color-accent);
+      background: var(--color-accent-soft);
+      padding: 20px 22px;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout strong {
+      display: block;
+      color: var(--color-accent);
+      margin-bottom: 5px;
+    }
+
+    .definition {
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      padding: 25px;
+    }
+
+    .definition-label {
+      font-family: "Roboto Mono", monospace;
+      font-size: .7rem;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin-top: 30px;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .process-step {
+      padding: 24px 18px;
+      background: white;
+      border-right: 1px solid var(--color-border);
+      position: relative;
+    }
+
+    .process-step:last-child {
+      border-right: none;
+    }
+
+    .process-step::after {
+      content: "→";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: white;
+      color: var(--color-accent);
+      font-size: 11px;
+      z-index: 2;
+    }
+
+    .process-step:last-child::after {
+      display: none;
+    }
+
+    .step-number {
+      font-family: "Roboto Mono", monospace;
+      color: var(--color-accent);
+      font-size: .72rem;
+      margin-bottom: 12px;
+    }
+
+    .process-step h4 {
+      font-size: .95rem;
+      margin-bottom: 8px;
+    }
+
+    .process-step p {
+      font-size: .78rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .dashboard {
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dashboard-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .dashboard-title {
+      font-family: "Sora", sans-serif;
+      font-size: .95rem;
+    }
+
+    .period {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 6px 9px;
+      font-size: .7rem;
+      color: var(--color-text-muted);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .metric {
+      padding: 20px;
+      border-right: 1px solid var(--color-border);
+    }
+
+    .metric:last-child {
+      border-right: none;
+    }
+
+    .metric-label {
+      color: var(--color-text-muted);
+      font-size: .7rem;
+      margin-bottom: 7px;
+    }
+
+    .metric-value {
+      font-family: "Roboto Mono", monospace;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .metric-status {
+      color: var(--color-accent);
+      font-size: .68rem;
+      margin-top: 4px;
+    }
+
+    .chart {
+      padding: 24px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .chart-bars {
+      height: 190px;
+      display: flex;
+      align-items: end;
+      gap: 14px;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0 10px;
+    }
+
+    .bar-group {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .bar {
+      width: 18px;
+      border-radius: 4px 4px 0 0;
+      background: var(--color-accent);
+    }
+
+    .bar.secondary {
+      background: #aebbb5;
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 9px;
+      font-family: "Roboto Mono", monospace;
+      color: var(--color-text-muted);
+      font-size: .65rem;
+    }
+
+    .tabs {
+      margin-top: 30px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 20px;
+    }
+
+    .tab-button {
+      border: none;
+      background: transparent;
+      padding: 11px 15px;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-weight: 600;
+      font-size: .82rem;
+    }
+
+    .tab-button.active {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    .tab-button:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: var(--color-bg-alt);
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fade .25s ease;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .accounting-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      margin-top: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+      background: white;
+    }
+
+    th, td {
+      padding: 13px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+      font-size: .8rem;
+    }
+
+    th {
+      background: var(--color-bg-alt);
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    td.number {
+      text-align: right;
+      font-family: "Roboto Mono", monospace;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .total-row td {
+      font-weight: 700;
+      background: var(--color-accent-soft);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .kpi-card {
+      padding: 21px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .kpi-code {
+      font-family: "Roboto Mono", monospace;
+      font-size: .68rem;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+    }
+
+    .kpi-card strong {
+      font-family: "Sora", sans-serif;
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .kpi-card p {
+      font-size: .8rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .accordion {
+      margin-top: 25px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .accordion-item {
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      border: none;
+      background: white;
+      cursor: pointer;
+      padding: 17px 19px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .accordion-trigger span:last-child {
+      color: var(--color-accent);
+      font-size: 1.2rem;
+      transition: transform .2s ease;
+    }
+
+    .accordion-item.open .accordion-trigger span:last-child {
+      transform: rotate(45deg);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+
+    .accordion-content-inner {
+      padding: 0 19px 18px;
+      color: var(--color-text-muted);
+      font-size: .86rem;
+    }
+
+    .cycle {
+      max-width: 650px;
+      margin: 35px auto 0;
+    }
+
+    .cycle svg {
+      max-height: 430px;
+    }
+
+    .takeaways {
+      background: var(--color-text);
+      color: white;
+      border-radius: 20px;
+      padding: 38px;
+      margin-top: 20px;
+    }
+
+    .takeaways h3 {
+      color: white;
+      margin-bottom: 22px;
+    }
+
+    .takeaways-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px 30px;
+    }
+
+    .takeaway {
+      display: flex;
+      gap: 11px;
+      font-size: .88rem;
+      color: #e1e8e4;
+    }
+
+    .check {
+      flex: 0 0 auto;
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #6d8b7d;
+      border-radius: 50%;
+      color: #c9ded4;
+      font-size: .7rem;
+    }
+
+    .navigation {
+      padding: 40px 0 70px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .nav-card {
+      border: 1px solid var(--color-border);
+      border-radius: 13px;
+      padding: 20px;
+      transition: .2s ease;
+    }
+
+    .nav-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+
+    .nav-card.next {
+      text-align: right;
+    }
+
+    .nav-label {
+      font-family: "Roboto Mono", monospace;
+      font-size: .68rem;
+      color: var(--color-accent);
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .nav-title {
+      font-family: "Sora", sans-serif;
+      font-weight: 600;
+    }
+
+    footer {
+      border-top: 1px solid var(--color-border);
+      padding: 30px 0;
+      color: var(--color-text-muted);
+      font-size: .76rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .back-top {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--color-border);
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-top:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
+      }
+
+      .toc {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .three-columns,
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .process {
+        grid-template-columns: 1fr;
+      }
+
+      .process-step {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .process-step:last-child {
+        border-bottom: none;
+      }
+
+      .process-step::after {
+        content: "↓";
+        right: auto;
+        left: 50%;
+        top: auto;
+        bottom: -10px;
+        transform: translateX(-50%);
+      }
+
+      .process-step:last-child::after {
+        display: none;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .metric:nth-child(2) {
+        border-right: none;
+      }
+
+      .metric:nth-child(-n+2) {
+        border-bottom: 1px solid var(--color-border);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .container {
+        width: min(var(--max-width), calc(100% - 28px));
+      }
+
+      .header-inner {
+        min-height: 62px;
+        padding: 0 14px;
+      }
+
+      .header-meta {
+        display: none;
+      }
+
+      .hero {
+        padding: 55px 0 45px;
+      }
+
+      .hero-description {
+        font-size: .95rem;
+      }
+
+      .toc,
+      .two-columns,
+      .three-columns,
+      .kpi-grid,
+      .takeaways-list,
+      .navigation {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 50px 0;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .metric {
+        padding: 16px 13px;
+      }
+
+      .metric-value {
+        font-size: .95rem;
+      }
+
+      .takeaways {
+        padding: 26px 21px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+
+      .nav-card.next {
+        text-align: left;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="#" class="brand" aria-label="Retour au début de la leçon">
+        <div class="brand-mark">54</div>
+        <div class="brand-text">
+          COMPTABILITÉ
+          <span>Module 9 · Tableaux de bord</span>
+        </div>
+      </a>
+
+      <div class="header-meta">
+        LEÇON 54 / 15 MIN
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-grid">
+
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Module 9 · Tableaux de bord
+        </div>
+
+        <h1>Pilotage et amélioration continue</h1>
+
+        <p class="hero-description">
+          Transformer les données comptables et financières en décisions,
+          suivre les performances et installer une démarche d'amélioration
+          continue au sein de l'organisation.
+        </p>
+
+        <div class="hero-info">
+          <span class="badge">Leçon 54</span>
+          <span class="badge">Durée : 15 min</span>
+          <span class="badge">Comptabilité</span>
+          <span class="badge">Tableaux de bord</span>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="visual-label">
+          <span>TABLEAU DE PILOTAGE</span>
+          <span>PERFORMANCE</span>
+        </div>
+
+        <svg viewBox="0 0 600 430"
+             role="img"
+             aria-label="Illustration d'un tableau de bord financier permettant de suivre les indicateurs et d'améliorer les performances">
+
+          <rect x="20" y="20" width="560" height="390" rx="18" fill="#ffffff" stroke="#e3e8e5"/>
+
+          <rect x="45" y="48" width="510" height="42" rx="8" fill="#f6f8f6"/>
+          <rect x="62" y="62" width="110" height="10" rx="5" fill="#1f6f54"/>
+          <rect x="420" y="61" width="100" height="12" rx="6" fill="#e3e8e5"/>
+
+          <rect x="45" y="112" width="117" height="88" rx="10" fill="#e7f2ed"/>
+          <rect x="180" y="112" width="117" height="88" rx="10" fill="#f6f8f6"/>
+          <rect x="315" y="112" width="117" height="88" rx="10" fill="#f6f8f6"/>
+          <rect x="450" y="112" width="105" height="88" rx="10" fill="#f6f8f6"/>
+
+          <text x="60" y="137" font-size="10" fill="#5a6560">CA</text>
+          <text x="60" y="166" font-size="23" font-family="Roboto Mono" font-weight="600" fill="#0b0f0d">8.4M</text>
+          <text x="60" y="187" font-size="9" fill="#1f6f54">+8.2%</text>
+
+          <text x="195" y="137" font-size="10" fill="#5a6560">MARGE</text>
+          <text x="195" y="166" font-size="23" font-family="Roboto Mono" font-weight="600" fill="#0b0f0d">24.8%</text>
+          <text x="195" y="187" font-size="9" fill="#1f6f54">+2.1 pts</text>
+
+          <text x="330" y="137" font-size="10" fill="#5a6560">TRÉSORERIE</text>
+          <text x="330" y="166" font-size="23" font-family="Roboto Mono" font-weight="600" fill="#0b0f0d">1.9M</text>
+          <text x="330" y="187" font-size="9" fill="#1f6f54">Stable</text>
+
+          <text x="465" y="137" font-size="10" fill="#5a6560">DÉLAI</text>
+          <text x="465" y="166" font-size="23" font-family="Roboto Mono" font-weight="600" fill="#0b0f0d">31j</text>
+          <text x="465" y="187" font-size="9" fill="#b3541e">+4j</text>
+
+          <rect x="45" y="220" width="320" height="160" rx="10" fill="#ffffff" stroke="#e3e8e5"/>
+          <text x="63" y="245" font-size="11" font-weight="600" fill="#0b0f0d">Évolution de la performance</text>
+
+          <line x1="65" y1="350" x2="345" y2="350" stroke="#e3e8e5"/>
+          <line x1="65" y1="310" x2="345" y2="310" stroke="#e3e8e5"/>
+          <line x1="65" y1="270" x2="345" y2="270" stroke="#e3e8e5"/>
+
+          <polyline
+            points="70,330 105,315 140,320 175,292 210,300 245,270 280,282 315,248 340,255"
+            fill="none"
+            stroke="#1f6f54"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+
+          <circle cx="70" cy="330" r="4" fill="#1f6f54"/>
+          <circle cx="140" cy="320" r="4" fill="#1f6f54"/>
+          <circle cx="210" cy="300" r="4" fill="#1f6f54"/>
+          <circle cx="280" cy="282" r="4" fill="#1f6f54"/>
+          <circle cx="340" cy="255" r="4" fill="#1f6f54"/>
+
+          <rect x="385" y="220" width="170" height="160" rx="10" fill="#f6f8f6"/>
+          <text x="404" y="246" font-size="11" font-weight="600" fill="#0b0f0d">Actions</text>
+
+          <circle cx="408" cy="273" r="8" fill="#1f6f54"/>
+          <path d="M404 273 l3 3 l6 -7" fill="none" stroke="#fff" stroke-width="2"/>
+          <text x="425" y="277" font-size="9" fill="#0b0f0d">Réduire les coûts</text>
+
+          <circle cx="408" cy="306" r="8" fill="#1f6f54"/>
+          <path d="M404 306 l3 3 l6 -7" fill="none" stroke="#fff" stroke-width="2"/>
+          <text x="425" y="310" font-size="9" fill="#0b0f0d">Optimiser les délais</text>
+
+          <circle cx="408" cy="339" r="8" fill="#1f6f54"/>
+          <path d="M404 339 l3 3 l6 -7" fill="none" stroke="#fff" stroke-width="2"/>
+          <text x="425" y="343" font-size="9" fill="#0b0f0d">Suivre la trésorerie</text>
+
+          <text x="425" y="366" font-size="8" fill="#5a6560">Mise à jour mensuelle</text>
+        </svg>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="toc-section">
+    <div class="container">
+      <nav class="toc" aria-label="Sommaire de la leçon">
+        <a href="#pilotage">
+          <span class="toc-number">01</span>
+          Comprendre le pilotage
+        </a>
+        <a href="#indicateurs">
+          <span class="toc-number">02</span>
+          Indicateurs de performance
+        </a>
+        <a href="#dashboard">
+          <span class="toc-number">03</span>
+          Tableau de bord
+        </a>
+        <a href="#amelioration">
+          <span class="toc-number">04</span>
+          Amélioration continue
+        </a>
+      </nav>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- SECTION 1 -->
+    <section class="section" id="pilotage">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div class="section-number">01 — PILOTAGE</div>
+          <h2>Comprendre le pilotage de l'entreprise</h2>
+          <p class="section-intro">
+            Piloter consiste à utiliser des informations fiables pour
+            comprendre la situation de l'organisation, prendre des décisions
+            et orienter les actions vers les objectifs fixés.
+          </p>
+        </div>
+
+        <div class="two-columns">
+
+          <article class="definition reveal">
+            <div class="definition-label">Définition</div>
+            <h3>Le pilotage</h3>
+            <p>
+              Le pilotage est une démarche de suivi et d'analyse qui permet
+              aux responsables de comparer les résultats obtenus avec les
+              objectifs et d'engager les actions nécessaires.
+            </p>
+          </article>
+
+          <article class="card reveal">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 19V5"/>
+                <path d="M4 19h16"/>
+                <path d="M7 15l3-4 3 2 5-7"/>
+              </svg>
+            </div>
+            <h3>Pourquoi piloter ?</h3>
+            <p>
+              Un responsable ne doit pas uniquement constater les résultats.
+              Il doit identifier les écarts, comprendre leurs causes et
+              déterminer les mesures permettant d'améliorer la performance.
+            </p>
+          </article>
+
+        </div>
+
+        <div class="callout reveal">
+          <strong>À retenir</strong>
+          La comptabilité ne sert pas seulement à enregistrer les opérations.
+          Les informations produites constituent également une base essentielle
+          pour le pilotage économique et financier.
+        </div>
+
+        <div class="process reveal" aria-label="Cycle général du pilotage">
+
+          <div class="process-step">
+            <div class="step-number">01</div>
+            <h4>Objectifs</h4>
+            <p>Définir les résultats recherchés.</p>
+          </div>
+
+          <div class="process-step">
+            <div class="step-number">02</div>
+            <h4>Mesure</h4>
+            <p>Collecter les données pertinentes.</p>
+          </div>
+
+          <div class="process-step">
+            <div class="step-number">03</div>
+            <h4>Analyse</h4>
+            <p>Comparer les résultats aux objectifs.</p>
+          </div>
+
+          <div class="process-step">
+            <div class="step-number">04</div>
+            <h4>Décision</h4>
+            <p>Choisir les actions appropriées.</p>
+          </div>
+
+          <div class="process-step">
+            <div class="step-number">05</div>
+            <h4>Suivi</h4>
+            <p>Mesurer les effets des actions.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section class="section" id="indicateurs">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div class="section-number">02 — INDICATEURS</div>
+          <h2>Les indicateurs de performance</h2>
+          <p class="section-intro">
+            Un tableau de bord efficace repose sur un nombre limité
+            d'indicateurs pertinents, compréhensibles et régulièrement suivis.
+          </p>
+        </div>
+
+        <div class="three-columns">
+
+          <article class="card reveal">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 19V5"/>
+                <path d="M4 19h16"/>
+                <path d="M8 16v-5"/>
+                <path d="M12 16V8"/>
+                <path d="M16 16V6"/>
+              </svg>
+            </div>
+            <h3>Indicateurs financiers</h3>
+            <p>
+              Ils permettent de suivre le chiffre d'affaires, les charges,
+              la rentabilité, la marge, la trésorerie ou encore les délais
+              de paiement.
+            </p>
+          </article>
+
+          <article class="card reveal">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="8"/>
+                <path d="M12 8v5l3 2"/>
+              </svg>
+            </div>
+            <h3>Indicateurs opérationnels</h3>
+            <p>
+              Ils mesurent l'activité réelle : volumes produits, délais,
+              stocks, commandes, productivité ou niveau de service.
+            </p>
+          </article>
+
+          <article class="card reveal">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M5 5h14v14H5z"/>
+                <path d="M8 9h8"/>
+                <path d="M8 13h5"/>
+                <path d="M8 17h8"/>
+              </svg>
+            </div>
+            <h3>Indicateurs qualitatifs</h3>
+            <p>
+              Ils complètent les données financières par des informations
+              concernant la satisfaction, la qualité ou les dysfonctionnements.
+            </p>
+          </article>
+
+        </div>
+
+        <div class="kpi-grid">
+
+          <article class="kpi-card reveal">
+            <div class="kpi-code">KPI 01</div>
+            <strong>Chiffre d'affaires</strong>
+            <p>Mesure le niveau d'activité commerciale sur une période donnée.</p>
+          </article>
+
+          <article class="kpi-card reveal">
+            <div class="kpi-code">KPI 02</div>
+            <strong>Marge</strong>
+            <p>Permet d'apprécier la capacité de l'activité à générer une richesse.</p>
+          </article>
+
+          <article class="kpi-card reveal">
+            <div class="kpi-code">KPI 03</div>
+            <strong>Trésorerie</strong>
+            <p>Indique les ressources financières immédiatement disponibles.</p>
+          </article>
+
+          <article class="kpi-card reveal">
+            <div class="kpi-code">KPI 04</div>
+            <strong>Délai client</strong>
+            <p>Permet de surveiller la vitesse d'encaissement des créances.</p>
+          </article>
+
+          <article class="kpi-card reveal">
+            <div class="kpi-code">KPI 05</div>
+            <strong>Charges</strong>
+            <p>Permet d'identifier les postes de dépenses qui nécessitent une attention.</p>
+          </article>
+
+          <article class="kpi-card reveal">
+            <div class="kpi-code">KPI 06</div>
+            <strong>Rentabilité</strong>
+            <p>Évalue la capacité de l'organisation à générer un résultat positif.</p>
+          </article>
+
+        </div>
+
+        <div class="tabs">
+
+          <div class="tab-buttons" role="tablist" aria-label="Types d'indicateurs">
+
+            <button class="tab-button active"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="tab-financier"
+                    id="btn-financier">
+              Financier
+            </button>
+
+            <button class="tab-button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="tab-operationnel"
+                    id="btn-operationnel">
+              Opérationnel
+            </button>
+
+            <button class="tab-button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="tab-qualitatif"
+                    id="btn-qualitatif">
+              Qualitatif
+            </button>
+
+          </div>
+
+          <div class="tab-panel active"
+               id="tab-financier"
+               role="tabpanel"
+               aria-labelledby="btn-financier">
+            <h3>Les indicateurs financiers</h3>
+            <p>
+              Ils traduisent la situation économique et financière de
+              l'organisation. Ils sont particulièrement utiles pour suivre
+              les objectifs budgétaires, la rentabilité et la trésorerie.
+            </p>
+          </div>
+
+          <div class="tab-panel"
+               id="tab-operationnel"
+               role="tabpanel"
+               aria-labelledby="btn-operationnel">
+            <h3>Les indicateurs opérationnels</h3>
+            <p>
+              Ils permettent de comprendre comment l'activité fonctionne au
+              quotidien. Ils peuvent notamment porter sur les volumes,
+              les délais, les stocks ou la productivité.
+            </p>
+          </div>
+
+          <div class="tab-panel"
+               id="tab-qualitatif"
+               role="tabpanel"
+               aria-labelledby="btn-qualitatif">
+            <h3>Les indicateurs qualitatifs</h3>
+            <p>
+              Ils permettent de compléter les indicateurs chiffrés par des
+              informations relatives à la qualité, à la satisfaction ou aux
+              problèmes rencontrés dans les processus.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section class="section" id="dashboard">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div class="section-number">03 — TABLEAU DE BORD</div>
+          <h2>Construire un tableau de bord utile</h2>
+          <p class="section-intro">
+            Le tableau de bord rassemble les indicateurs essentiels dans un
+            format permettant une lecture rapide de la situation.
+          </p>
+        </div>
+
+        <div class="dashboard reveal">
+
+          <div class="dashboard-top">
+            <div class="dashboard-title">Synthèse financière</div>
+            <div class="period">Période : M-01</div>
+          </div>
+
+          <div class="metrics">
+
+            <div class="metric">
+              <div class="metric-label">CHIFFRE D'AFFAIRES</div>
+              <div class="metric-value">8 420 000</div>
+              <div class="metric-status">▲ +8,2 %</div>
+            </div>
+
+            <div class="metric">
+              <div class="metric-label">RÉSULTAT</div>
+              <div class="metric-value">1 760 000</div>
+              <div class="metric-status">▲ +12,4 %</div>
+            </div>
+
+            <div class="metric">
+              <div class="metric-label">TRÉSORERIE</div>
+              <div class="metric-value">1 940 000</div>
+              <div class="metric-status">Stable</div>
+            </div>
+
+            <div class="metric">
+              <div class="metric-label">CRÉANCES</div>
+              <div class="metric-value">2 180 000</div>
+              <div class="metric-status">▲ Surveillance</div>
+            </div>
+
+          </div>
+
+          <div class="chart">
+
+            <div class="chart-bars">
+
+              <div class="bar-group">
+                <div class="bar secondary" style="height:48%"></div>
+                <div class="bar" style="height:62%"></div>
+              </div>
+
+              <div class="bar-group">
+                <div class="bar secondary" style="height:55%"></div>
+                <div class="bar" style="height:68%"></div>
+              </div>
+
+              <div class="bar-group">
+                <div class="bar secondary" style="height:58%"></div>
+                <div class="bar" style="height:73%"></div>
+              </div>
+
+              <div class="bar-group">
+                <div class="bar secondary" style="height:63%"></div>
+                <div class="bar" style="height:79%"></div>
+              </div>
+
+              <div class="bar-group">
+                <div class="bar secondary" style="height:68%"></div>
+                <div class="bar" style="height:85%"></div>
+              </div>
+
+              <div class="bar-group">
+                <div class="bar secondary" style="height:72%"></div>
+                <div class="bar" style="height:91%"></div>
+              </div>
+
+            </div>
+
+            <div class="chart-labels">
+              <span>M-5</span>
+              <span>M-4</span>
+              <span>M-3</span>
+              <span>M-2</span>
+              <span>M-1</span>
+              <span>M</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="callout reveal">
+          <strong>Un bon tableau de bord doit rester lisible</strong>
+          Trop d'indicateurs peuvent rendre l'information difficile à exploiter.
+          Il faut sélectionner les indicateurs directement liés aux objectifs
+          de l'organisation.
+        </div>
+
+        <h3 style="margin-top:38px;">Exemple de suivi des résultats</h3>
+
+        <div class="accounting-table-wrap reveal">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Indicateur</th>
+                <th scope="col">Objectif</th>
+                <th scope="col">Réalisé</th>
+                <th scope="col">Écart</th>
+                <th scope="col">Lecture</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Chiffre d'affaires</td>
+                <td class="number">8 000 000</td>
+                <td class="number">8 420 000</td>
+                <td class="number">+420 000</td>
+                <td>Favorable</td>
+              </tr>
+
+              <tr>
+                <td>Charges</td>
+                <td class="number">6 300 000</td>
+                <td class="number">6 660 000</td>
+                <td class="number">+360 000</td>
+                <td>À surveiller</td>
+              </tr>
+
+              <tr>
+                <td>Résultat</td>
+                <td class="number">1 700 000</td>
+                <td class="number">1 760 000</td>
+                <td class="number">+60 000</td>
+                <td>Favorable</td>
+              </tr>
+
+              <tr>
+                <td>Créances clients</td>
+                <td class="number">1 900 000</td>
+                <td class="number">2 180 000</td>
+                <td class="number">+280 000</td>
+                <td>À surveiller</td>
+              </tr>
+
+              <tr class="total-row">
+                <td colspan="2">Synthèse</td>
+                <td colspan="3">
+                  Une performance globale favorable avec certains postes
+                  nécessitant une action corrective.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="section" id="amelioration">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div class="section-number">04 — AMÉLIORATION CONTINUE</div>
+          <h2>Mettre en place une démarche d'amélioration continue</h2>
+          <p class="section-intro">
+            L'amélioration continue consiste à rechercher régulièrement des
+            possibilités d'amélioration plutôt que d'attendre l'apparition
+            d'un problème important.
+          </p>
+        </div>
+
+        <div class="two-columns">
+
+          <article class="card reveal">
+            <h3>Identifier les écarts</h3>
+            <p>
+              La première étape consiste à comparer les objectifs avec les
+              résultats obtenus. Un écart peut être favorable ou défavorable.
+            </p>
+
+            <p>
+              L'analyse ne doit cependant pas s'arrêter au constat :
+              il faut rechercher les causes qui expliquent cet écart.
+            </p>
+          </article>
+
+          <article class="card reveal">
+            <h3>Agir sur les causes</h3>
+            <p>
+              Une action corrective doit cibler la cause du problème et non
+              seulement ses conséquences.
+            </p>
+
+            <p>
+              Les responsables doivent ensuite mesurer l'effet de l'action
+              afin de vérifier qu'elle produit réellement une amélioration.
+            </p>
+          </article>
+
+        </div>
+
+        <div class="cycle reveal">
+
+          <svg viewBox="0 0 700 430"
+               role="img"
+               aria-label="Cycle d'amélioration continue en quatre étapes : planifier, réaliser, vérifier, améliorer">
+
+            <circle cx="350" cy="215" r="150" fill="#f6f8f6" stroke="#e3e8e5" stroke-width="2"/>
+
+            <path d="M350 65 A150 150 0 0 1 500 215"
+                  fill="none"
+                  stroke="#1f6f54"
+                  stroke-width="10"
+                  stroke-linecap="round"/>
+
+            <path d="M500 215 A150 150 0 0 1 350 365"
+                  fill="none"
+                  stroke="#aebbb5"
+                  stroke-width="10"
+                  stroke-linecap="round"/>
+
+            <path d="M350 365 A150 150 0 0 1 200 215"
+                  fill="none"
+                  stroke="#1f6f54"
+                  stroke-width="10"
+                  stroke-linecap="round"/>
+
+            <path d="M200 215 A150 150 0 0 1 350 65"
+                  fill="none"
+                  stroke="#aebbb5"
+                  stroke-width="10"
+                  stroke-linecap="round"/>
+
+            <circle cx="350" cy="215" r="72" fill="#ffffff" stroke="#e3e8e5"/>
+
+            <text x="350" y="207"
+                  text-anchor="middle"
+                  font-family="Sora"
+                  font-size="18"
+                  font-weight="700"
+                  fill="#0b0f0d">
+              AMÉLIORATION
+            </text>
+
+            <text x="350" y="230"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="13"
+                  fill="#5a6560">
+              continue
+            </text>
+
+            <text x="350" y="42"
+                  text-anchor="middle"
+                  font-family="Roboto Mono"
+                  font-size="12"
+                  font-weight="600"
+                  fill="#1f6f54">
+              PLANIFIER
+            </text>
+
+            <text x="535" y="220"
+                  text-anchor="start"
+                  font-family="Roboto Mono"
+                  font-size="12"
+                  font-weight="600"
+                  fill="#5a6560">
+              RÉALISER
+            </text>
+
+            <text x="350" y="407"
+                  text-anchor="middle"
+                  font-family="Roboto Mono"
+                  font-size="12"
+                  font-weight="600"
+                  fill="#1f6f54">
+              VÉRIFIER
+            </text>
+
+            <text x="165" y="220"
+                  text-anchor="end"
+                  font-family="Roboto Mono"
+                  font-size="12"
+                  font-weight="600"
+                  fill="#5a6560">
+              AMÉLIORER
+            </text>
+
+            <circle cx="350" cy="65" r="5" fill="#1f6f54"/>
+            <circle cx="500" cy="215" r="5" fill="#aebbb5"/>
+            <circle cx="350" cy="365" r="5" fill="#1f6f54"/>
+            <circle cx="200" cy="215" r="5" fill="#aebbb5"/>
+
+          </svg>
+
+        </div>
+
+        <div class="accordion">
+
+          <div class="accordion-item reveal">
+            <button class="accordion-trigger"
+                    aria-expanded="false">
+              <span>1. Planifier</span>
+              <span>+</span>
+            </button>
+
+            <div class="accordion-content">
+              <div class="accordion-content-inner">
+                Définir les objectifs, les indicateurs, les ressources et les
+                résultats attendus. Cette étape donne une direction claire
+                aux actions de l'organisation.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item reveal">
+            <button class="accordion-trigger"
+                    aria-expanded="false">
+              <span>2. Réaliser</span>
+              <span>+</span>
+            </button>
+
+            <div class="accordion-content">
+              <div class="accordion-content-inner">
+                Mettre en œuvre les actions prévues et collecter les données
+                permettant d'en mesurer les résultats.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item reveal">
+            <button class="accordion-trigger"
+                    aria-expanded="false">
+              <span>3. Vérifier</span>
+              <span>+</span>
+            </button>
+
+            <div class="accordion-content">
+              <div class="accordion-content-inner">
+                Comparer les résultats obtenus avec les objectifs et analyser
+                les écarts. Les indicateurs du tableau de bord jouent ici
+                un rôle central.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item reveal">
+            <button class="accordion-trigger"
+                    aria-expanded="false">
+              <span>4. Améliorer</span>
+              <span>+</span>
+            </button>
+
+            <div class="accordion-content">
+              <div class="accordion-content-inner">
+                Mettre en place les actions correctives ou préventives,
+                puis recommencer le cycle afin de maintenir et d'améliorer
+                progressivement les performances.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SYNTHÈSE -->
+    <section class="section">
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div class="section-number">SYNTHÈSE</div>
+          <h2>Les points essentiels</h2>
+          <p class="section-intro">
+            Le pilotage transforme les données disponibles en décisions
+            et permet à l'organisation de progresser dans le temps.
+          </p>
+        </div>
+
+        <div class="takeaways reveal">
+
+          <h3>À retenir</h3>
+
+          <div class="takeaways-list">
+
+            <div class="takeaway">
+              <span class="check">✓</span>
+              <span>Le pilotage permet de comparer les résultats aux objectifs.</span>
+            </div>
+
+            <div class="takeaway">
+              <span class="check">✓</span>
+              <span>Les indicateurs doivent être pertinents, lisibles et régulièrement suivis.</span>
+            </div>
+
+            <div class="takeaway">
+              <span class="check">✓</span>
+              <span>Le tableau de bord facilite la lecture de la performance.</span>
+            </div>
+
+            <div class="takeaway">
+              <span class="check">✓</span>
+              <span>Les écarts doivent être analysés afin d'en rechercher les causes.</span>
+            </div>
+
+            <div class="takeaway">
+              <span class="check">✓</span>
+              <span>Une action corrective doit viser les causes et non uniquement les conséquences.</span>
+            </div>
+
+            <div class="takeaway">
+              <span class="check">✓</span>
+              <span>L'amélioration continue repose sur un cycle régulier de mesure, analyse et action.</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div class="container">
+    <nav class="navigation" aria-label="Navigation entre les leçons">
+
+      <a href="#" class="nav-card">
+        <span class="nav-label">← PRÉCÉDENTE</span>
+        <span class="nav-title">Leçon 53</span>
+      </a>
+
+      <a href="#" class="nav-card next">
+        <span class="nav-label">SUIVANTE →</span>
+        <span class="nav-title">Fin du module</span>
+      </a>
+
+    </nav>
+  </div>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>Comptabilité · Module 9 — Tableaux de bord</span>
+      <span>Leçon 54 · Pilotage et amélioration continue</span>
+    </div>
+  </footer>
+
+  <button class="back-top"
+          id="backTop"
+          aria-label="Revenir en haut de la page">
+    ↑
+  </button>
+
+  <script>
+    /* ================================
+       READING PROGRESS
+    ================================= */
+    const progressBar = document.getElementById("progressBar");
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const documentHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress =
+        documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
+
+      progressBar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+
+    /* ================================
+       BACK TO TOP
+    ================================= */
+    const backTop = document.getElementById("backTop");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 500) {
+        backTop.classList.add("visible");
+      } else {
+        backTop.classList.remove("visible");
+      }
+    }, { passive: true });
+
+    backTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+
+
+    /* ================================
+       TABS
+    ================================= */
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    tabButtons.forEach((button, index) => {
+
+      button.addEventListener("click", () => {
+
+        tabButtons.forEach(btn => {
+          btn.classList.remove("active");
+          btn.setAttribute("aria-selected", "false");
+        });
+
+        tabPanels.forEach(panel => {
+          panel.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        button.setAttribute("aria-selected", "true");
+
+        const panelId = button.getAttribute("aria-controls");
+        document.getElementById(panelId).classList.add("active");
+      });
+
+      button.addEventListener("keydown", event => {
+
+        let newIndex = index;
+
+        if (event.key === "ArrowRight") {
+          newIndex = (index + 1) % tabButtons.length;
+        }
+
+        if (event.key === "ArrowLeft") {
+          newIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+        }
+
+        if (newIndex !== index) {
+          event.preventDefault();
+          tabButtons[newIndex].focus();
+          tabButtons[newIndex].click();
+        }
+      });
+
+    });
+
+
+    /* ================================
+       ACCORDIONS
+    ================================= */
+    const accordionTriggers =
+      document.querySelectorAll(".accordion-trigger");
+
+    accordionTriggers.forEach(trigger => {
+
+      trigger.addEventListener("click", () => {
+
+        const item = trigger.closest(".accordion-item");
+        const content = item.querySelector(".accordion-content");
+
+        const isOpen = item.classList.contains("open");
+
+        document.querySelectorAll(".accordion-item").forEach(other => {
+          other.classList.remove("open");
+
+          const otherTrigger =
+            other.querySelector(".accordion-trigger");
+
+          const otherContent =
+            other.querySelector(".accordion-content");
+
+          otherTrigger.setAttribute("aria-expanded", "false");
+          otherContent.style.maxHeight = null;
+        });
+
+        if (!isOpen) {
+          item.classList.add("open");
+          trigger.setAttribute("aria-expanded", "true");
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+
+      });
+
+    });
+
+
+    /* ================================
+       REVEAL ON SCROLL
+    ================================= */
+    const revealElements =
+      document.querySelectorAll(".reveal");
+
+    const observer =
+      new IntersectionObserver((entries, observer) => {
+
+        entries.forEach(entry => {
+
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+
+        });
+
+      }, {
+        threshold: 0.12
+      });
+
+    revealElements.forEach(element => {
+      observer.observe(element);
+    });
+
+
+    /* ================================
+       KEYBOARD ACCESSIBILITY
+    ================================= */
+    document.addEventListener("keydown", event => {
+
+      if (event.key === "Escape") {
+
+        document.querySelectorAll(".accordion-item").forEach(item => {
+          item.classList.remove("open");
+
+          const trigger =
+            item.querySelector(".accordion-trigger");
+
+          const content =
+            item.querySelector(".accordion-content");
+
+          trigger.setAttribute("aria-expanded", "false");
+          content.style.maxHeight = null;
+        });
+
+      }
+
+    });
+  </script>
+
+</body>
+</html>

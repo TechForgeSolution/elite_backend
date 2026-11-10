@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 05 — Automatiser les échanges : accueil, absence et réponses rapides</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%2325D366'/%3E%3Cpath d='M18 44l3-9a14 14 0 1 1 6 6z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--bg-alt:#F5F8F6;--text:#0A0D0E;--muted:#66716D;--accent:#25D366;--soft:#E8F8EE;--dark:#128C7E;--teal:#075E54;--border:#DFE7E3}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--text);background:var(--bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.2;margin:0 0 .6em;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700}
+h2{font-size:clamp(1.55rem,3vw,2.1rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}
+a{color:var(--teal)}
+:focus-visible{outline:3px solid var(--dark);outline-offset:2px;border-radius:4px}
+#bar{position:fixed;top:0;left:0;height:4px;width:0;background:var(--accent);z-index:60}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.top .in{max-width:1040px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font:700 1rem Sora,sans-serif;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.dot{width:26px;height:26px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+.top nav{display:flex;gap:4px;flex-wrap:wrap}
+.top nav a{font-size:.88rem;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px}
+.top nav a:hover,.top nav a.on{background:var(--soft);color:var(--teal)}
+.wrap{max-width:1040px;margin:auto;padding:0 20px}
+.col{max-width:720px}
+.hero{padding:72px 0 56px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.badge{font-size:.85rem;font-weight:500;background:var(--soft);color:var(--teal);padding:4px 12px;border-radius:99px}
+.sub{color:var(--muted);font-size:1.15rem}
+.chat{background:var(--bg-alt);border:1px solid var(--border);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.chat .h{display:flex;align-items:center;gap:10px;font-weight:600;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.av{width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font:700 .9rem Sora}
+.chat small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+.b{max-width:88%;padding:9px 13px;border-radius:14px;font-size:.93rem;line-height:1.45;box-shadow:0 1px 1px rgba(0,0,0,.06)}
+.b.in{background:#fff;border-top-left-radius:4px}
+.b.out{background:#D9FDD3;align-self:flex-end;border-top-right-radius:4px}
+.b.tag{background:var(--soft);color:var(--teal);font-size:.8rem;align-self:center;padding:3px 10px;border-radius:99px}
+.b.sc{background:#fff;border:1px dashed var(--accent);align-self:flex-start;font-size:.88rem}
+.b.sc b{color:var(--teal)}
+.toc{background:var(--bg-alt);border-radius:16px;padding:24px 28px;margin-bottom:24px}
+.toc ol{margin:0;padding-left:1.2em;columns:2;column-gap:32px}
+.toc li{margin:.3em 0}
+section{padding:56px 0}
+section.alt{background:var(--bg-alt)}
+.obj{border-left:4px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 1em}
+.tabs [role=tablist]{display:flex;gap:6px;margin:20px 0 0;flex-wrap:wrap}
+.tabs [role=tab]{font:600 .95rem Inter;border:1px solid var(--border);background:#fff;color:var(--muted);padding:10px 18px;border-radius:10px 10px 0 0;cursor:pointer}
+.tabs [aria-selected=true]{background:var(--soft);color:var(--teal);border-color:var(--accent)}
+.tabs [role=tabpanel]{background:#fff;border:1px solid var(--border);border-radius:0 12px 12px 12px;padding:22px 24px}
+.tabs [role=tabpanel][hidden]{display:none}
+.tabs ul{margin:0;padding-left:1.2em}.tabs li{margin:.35em 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin:24px 0}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card .ic{width:40px;height:40px;border-radius:10px;background:var(--soft);display:grid;place-items:center;font-size:1.25rem;margin-bottom:12px}
+.card p{color:var(--muted);font-size:.96rem;margin:0}
+details{background:#fff;border:1px solid var(--border);border-radius:12px;margin:10px 0;padding:0 18px}
+summary{cursor:pointer;font-weight:600;padding:14px 0;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--dark);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+details p,details li{color:var(--muted)}
+.code{background:#0A0D0E;color:#E6F2EC;border-radius:12px;margin:20px 0;overflow:hidden}
+.code .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:#12191A;font-size:.82rem;color:#9DB0A8}
+.code button{background:var(--accent);color:#0A0D0E;border:0;font:600 .8rem Inter;padding:5px 12px;border-radius:7px;cursor:pointer}
+.code pre{margin:0;padding:16px;overflow-x:auto;font:.92rem/1.6 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
+.k{color:#25D366}
+.note{border-radius:12px;padding:16px 20px;margin:22px 0;background:var(--soft);border-left:4px solid var(--accent)}
+.note strong{display:block;margin-bottom:2px;color:var(--teal)}
+.note.warn{background:#F3F5F4;border-left-color:var(--teal)}
+.note p{margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);margin:28px 0;counter-reset:s}
+.step{padding:0 10px;text-align:center;position:relative}
+.step::before{counter-increment:s;content:counter(s);width:40px;height:40px;border-radius:50%;background:var(--accent);color:#0A0D0E;font:700 1rem Sora;display:grid;place-items:center;margin:0 auto 10px;position:relative;z-index:1}
+.step::after{content:"";position:absolute;top:19px;left:50%;width:100%;height:2px;background:var(--border)}
+.step:last-child::after{display:none}
+.step h3{font-size:1rem;margin-bottom:.3em}.step p{font-size:.9rem;color:var(--muted);margin:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.two>div{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.two ul{padding-left:1.1em;margin:0}.two li{margin:.4em 0}
+.fig{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px;margin:24px 0}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{font-size:.85rem;color:var(--muted);text-align:center;padding-top:6px}
+.key{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:24px}
+.key div{background:#fff;border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:12px;padding:16px 18px;font-size:.97rem}
+.pn{display:flex;justify-content:space-between;gap:16px;padding:40px 0;flex-wrap:wrap}
+.pn a{border:1px solid var(--border);border-radius:12px;padding:14px 20px;text-decoration:none;color:var(--text);max-width:48%}
+.pn a:hover{border-color:var(--accent);background:var(--soft)}
+.pn small{display:block;color:var(--muted)}
+footer{border-top:1px solid var(--border);padding:24px 0;color:var(--muted);font-size:.9rem;text-align:center}
+#up{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:0;background:var(--teal);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
+#up.show{opacity:1;pointer-events:auto}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
+.rv.on{opacity:1;transform:none}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:40px}.toc ol{columns:1}.two{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:18px}.step{text-align:left;display:grid;grid-template-columns:40px 1fr;column-gap:14px}.step::before{grid-row:span 2;margin:0}.step::after{display:none}.top nav{display:none}.pn a{max-width:100%;width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="in">
+<a class="brand" href="#haut"><span class="dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M3 21l1.6-5A9 9 0 1 1 8 19.4z"/></svg></span>WhatsApp Business · Vendre par conversation</a>
+<nav aria-label="Sommaire rapide"><a href="#accueil">Accueil</a><a href="#absence">Absence</a><a href="#rapides">Réponses rapides</a><a href="#redaction">Rédaction</a><a href="#delais">Délais</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="wrap">
+<div class="hero">
+<div>
+<div class="badges"><span class="badge">Module 1 — Fondamentaux</span><span class="badge">20 min de lecture</span><span class="badge">Niveau débutant</span></div>
+<h1>Automatiser les échanges : accueil, absence et réponses rapides</h1>
+<p class="sub">Leçon 05 · Répondez vite, bien et sans vous répéter grâce aux automatisations natives de WhatsApp Business.</p>
+</div>
+<div class="chat" role="img" aria-label="Exemple : un message d'accueil automatique puis une réponse rapide tapée avec un raccourci">
+<div class="h"><span class="av">AB</span><div>Atelier Bamboo<small>Compte professionnel</small></div></div>
+<div class="b in">Bonjour, vous livrez à domicile ?</div>
+<div class="b tag">Message d’accueil envoyé automatiquement</div>
+<div class="b sc">Vous tapez : <b>/livraison</b></div>
+<div class="b out">Oui ! Livraison à domicile en 48 h, 1 500 FCFA en ville. Voulez-vous commander ?</div>
+</div>
+</div>
+
+<nav class="toc col" aria-label="Sommaire de la leçon">
+<h2 style="font-size:1.2rem">Au programme</h2>
+<ol><li><a href="#accueil">Le message d’accueil</a></li><li><a href="#absence">Le message d’absence</a></li><li><a href="#rapides">Les réponses rapides</a></li><li><a href="#redaction">Règles de rédaction commerciale</a></li><li><a href="#delais">Délais de réponse et posture</a></li><li><a href="#retenir">Points clés à retenir</a></li></ol>
+</nav>
+</div>
+
+<section id="accueil" style="padding-top:8px"><div class="wrap col rv">
+<div class="obj"><strong>Objectif de la leçon :</strong> répondre rapidement, efficacement et de façon professionnelle grâce aux fonctions d’automatisation natives de WhatsApp Business.</div>
+<h2>1. Le message d’accueil</h2>
+<p>Le message d’accueil est envoyé automatiquement quand un client vous écrit pour la première fois, ou quand il revient après une longue pause. C’est votre poignée de main : il rassure et indique la suite.</p>
+<p>Pour le configurer, ouvrez les outils de l’entreprise dans les réglages de l’application, choisissez le message d’accueil, activez-le, puis rédigez votre texte et choisissez à qui l’envoyer.</p>
+<div class="code"><div class="bar"><span>Modèle de message d’accueil</span><button type="button" data-copy="c1">Copier</button></div>
+<pre id="c1">Bonjour et bienvenue chez Atelier Bamboo ! 👋
+Ravi de vous voir ici. Dites-moi ce que vous cherchez :
+lampes, rangements ou idées cadeaux ?
+Je vous réponds dans les minutes qui suivent.</pre></div>
+<div class="note"><strong>💬 Bonne pratique conversationnelle</strong><p>Un bon accueil fait trois choses : il salue chaleureusement, il nomme l’entreprise et il pose une question simple pour lancer l’échange.</p></div>
+</div></section>
+
+<section id="absence" class="alt"><div class="wrap rv">
+<div class="col"><h2>2. Le message d’absence</h2>
+<p>Quand vous êtes fermé, le message d’absence répond à votre place. Le client sait qu’il a bien été entendu et à quel moment il aura une réponse : cela évite la déception et l’impatience.</p></div>
+<div class="steps">
+<div class="step"><h3>Définir les horaires</h3><p>Indiquez vos jours et heures d’ouverture dans le profil et dans le message d’absence.</p></div>
+<div class="step"><h3>Choisir la période</h3><p>Envoyez-le toujours, hors horaires, ou sur une période précise comme des congés.</p></div>
+<div class="step"><h3>Rédiger le message</h3><p>Dites quand vous reviendrez, et proposez une alternative si c’est urgent.</p></div>
+</div>
+<div class="code col" style="max-width:720px"><div class="bar"><span>Modèle de message d’absence</span><button type="button" data-copy="c2">Copier</button></div>
+<pre id="c2">Merci pour votre message ! 🌙
+Nous sommes fermés pour le moment. Nous répondons
+du lundi au samedi, de 8h à 18h.
+Laissez votre demande, nous reviendrons vers vous
+dès l’ouverture.</pre></div>
+<div class="note warn col"><strong>⚠️ Erreur fréquente</strong><p>Promettre « une réponse tout de suite » dans un message d’absence. Donnez une heure réaliste, et tenez-la.</p></div>
+</div></section>
+
+<section id="rapides"><div class="wrap rv">
+<div class="col"><h2>3. Les réponses rapides</h2>
+<p>Une réponse rapide est un texte enregistré que vous appelez en tapant <code>/</code> suivi d’un raccourci. Elle sert à répondre en quelques secondes aux questions qui reviennent sans cesse.</p>
+<p>Commencez par repérer ces questions fréquentes dans vos conversations :</p></div>
+<div class="cards">
+<div class="card"><div class="ic">💰</div><h3>Tarifs</h3><p>« Combien ça coûte ? » Raccourci : <strong>/prix</strong></p></div>
+<div class="card"><div class="ic">🚚</div><h3>Livraison</h3><p>Délais, zones, frais. Raccourci : <strong>/livraison</strong></p></div>
+<div class="card"><div class="ic">💳</div><h3>Moyens de paiement</h3><p>Mobile money, virement, espèces. Raccourci : <strong>/paiement</strong></p></div>
+<div class="card"><div class="ic">📍</div><h3>Localisation</h3><p>Adresse et horaires. Raccourci : <strong>/adresse</strong></p></div>
+</div>
+<div class="col">
+<details open><summary>Créer un raccourci efficace</summary><ul><li>Choisissez un mot court et facile à retenir : /prix, /livraison.</li><li>Gardez les mêmes noms dans toute l’équipe.</li><li>Rédigez le message comme si vous l’écriviez à un seul client.</li></ul></details>
+<details><summary>Organiser sa bibliothèque</summary><ul><li>Regroupez par thème : informations, paiement, suivi de commande.</li><li>Relisez-la une fois par mois : retirez les réponses obsolètes, mettez à jour les prix.</li></ul></details>
+</div>
+<div class="code col" style="max-width:720px"><div class="bar"><span>Raccourci /paiement</span><button type="button" data-copy="c3">Copier</button></div>
+<pre id="c3"><span class="k">/paiement</span>
+Vous pouvez régler par Mobile Money ou en espèces
+à la livraison. Dites-moi ce qui vous convient et je
+vous envoie les détails. 😊</pre></div>
+<div class="note warn col"><strong>⚠️ Attention</strong><p>Ne placez jamais de numéro de carte ni de code secret dans une réponse rapide. Indiquez le moyen de paiement, puis transmettez les coordonnées utiles dans la conversation.</p></div>
+</div></section>
+
+<section id="redaction" class="alt"><div class="wrap rv">
+<div class="col"><h2>4. Règles de rédaction commerciale</h2>
+<p>Un message automatique reste une vraie conversation. Quatre règles le rendent efficace.</p></div>
+<div class="cards">
+<div class="card"><div class="ic">🙂</div><h3>Un ton chaleureux</h3><p>Saluez, remerciez, utilisez le prénom du client quand vous le connaissez.</p></div>
+<div class="card"><div class="ic">✂️</div><h3>La concision</h3><p>Trois à cinq lignes suffisent. Une idée par phrase.</p></div>
+<div class="card"><div class="ic">🔍</div><h3>La clarté</h3><p>Des mots simples, des chiffres précis, aucun jargon.</p></div>
+<div class="card"><div class="ic">👉</div><h3>Un appel à l’action net</h3><p>Terminez par une seule question ou invitation : « Souhaitez-vous commander ? »</p></div>
+</div>
+<div class="tabs col" style="max-width:720px">
+<div role="tablist" aria-label="Comparer deux réponses"><button role="tab" aria-selected="true" aria-controls="p1" id="t1">À éviter</button><button role="tab" aria-selected="false" aria-controls="p2" id="t2" tabindex="-1">À privilégier</button></div>
+<div role="tabpanel" id="p1" aria-labelledby="t1"><p style="margin:0">« Livraison possible. Voir conditions. Cordialement. » <br><span style="color:var(--muted)">Froid, vague, sans suite proposée.</span></p></div>
+<div role="tabpanel" id="p2" aria-labelledby="t2" hidden><p style="margin:0">« Bonjour ! Oui, nous livrons en 48 h pour 1 500 FCFA en ville. Souhaitez-vous que je réserve votre lampe ? » <br><span style="color:var(--muted)">Chaleureux, précis, avec une question à la fin.</span></p></div>
+</div>
+</div></section>
+
+<section id="delais"><div class="wrap rv">
+<div class="col"><h2>5. Délais de réponse et posture professionnelle</h2>
+<p>L’automatisation gagne du temps, mais elle ne remplace pas votre présence. Elle vous donne de l’air pour répondre personnellement aux questions importantes.</p></div>
+<figure class="fig"><svg viewBox="0 0 720 150" role="img" aria-label="Chronologie d'une réponse : message du client, accueil automatique immédiat, réponse personnelle rapide">
+<g font-family="Inter,sans-serif" font-size="14" text-anchor="middle">
+<line x1="60" y1="60" x2="660" y2="60" stroke="#DFE7E3" stroke-width="3"/>
+<circle cx="80" cy="60" r="12" fill="#F5F8F6" stroke="#128C7E" stroke-width="2"/><text x="80" y="100" fill="#0A0D0E">Le client écrit</text>
+<circle cx="300" cy="60" r="12" fill="#E8F8EE" stroke="#25D366" stroke-width="2"/><text x="300" y="100" fill="#0A0D0E">Accueil automatique</text><text x="300" y="120" fill="#66716D" font-size="12">immédiat</text>
+<circle cx="640" cy="60" r="12" fill="#25D366"/><text x="640" y="100" fill="#0A0D0E" font-weight="600">Votre réponse</text><text x="640" y="120" fill="#66716D" font-size="12">personnelle et rapide</text></g></svg>
+<figcaption>L’automatisation rassure tout de suite, la personne répond ensuite</figcaption></figure>
+<div class="two">
+<div><h3>✅ Postures à adopter</h3><ul><li>Répondre dans le délai annoncé.</li><li>Personnaliser dès que le client pose une question précise.</li><li>Remercier, même si la vente ne se fait pas.</li></ul></div>
+<div><h3>⚠️ Postures à éviter</h3><ul><li>Laisser un client sans réponse après l’accueil automatique.</li><li>Envoyer le même texte sans le relire.</li><li>Répondre sèchement à une réclamation.</li></ul></div>
+</div>
+<div class="note col"><strong>💡 À retenir</strong><p>Un message automatique ouvre la conversation. C’est votre réponse humaine qui fait la relation.</p></div>
+</div></section>
+
+<section id="retenir" class="alt"><div class="wrap rv">
+<h2>Points clés à retenir</h2>
+<div class="key">
+<div>Le message d’accueil salue, nomme l’entreprise et lance l’échange.</div>
+<div>Le message d’absence annonce vos horaires et une heure de retour réaliste.</div>
+<div>Les réponses rapides (<code>/raccourci</code>) couvrent tarifs, livraison, paiement et localisation.</div>
+<div>Un bon message est chaleureux, court, clair et finit par un appel à l’action.</div>
+<div>Respectez vos délais et personnalisez dès que la question devient précise.</div>
+</div>
+<div class="pn">
+<a href="lecon-04-organiser-contacts-etiquettes-listes.html"><small>Leçon précédente</small>Leçon 04 — Organiser ses contacts avec les étiquettes et les listes</a>
+<a href="lecon-06-accueillir-prospects-conversation-vente.html" style="text-align:right"><small>Leçon suivante</small>Leçon 06 — Accueillir les prospects et mener une conversation de vente</a>
+</div>
+<p style="text-align:center"><a href="#haut">Retour au sommaire du module</a></p>
+</div></section>
+</main>
+
+<footer><div class="wrap">Module 1 · Fondamentaux et configuration de WhatsApp Business · Leçon 05</div></footer>
+<button id="up" aria-label="Retour en haut de page" type="button">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('bar'),up=document.getElementById('up');
+function onScroll(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';up.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+up.onclick=function(){scrollTo({top:0})};
+document.querySelectorAll('.tabs').forEach(function(g){
+var tabs=g.querySelectorAll('[role=tab]');
+tabs.forEach(function(t,i){
+t.addEventListener('click',function(){sel(i)});
+t.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowLeft'){var n=(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length;sel(n);tabs[n].focus()}});
+});
+function sel(k){tabs.forEach(function(t,j){var on=j===k;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById(t.getAttribute('aria-controls')).hidden=!on})}
+});
+document.querySelectorAll('[data-copy]').forEach(function(b){b.onclick=function(){
+var el=document.getElementById(b.dataset.copy),txt=el.innerText;
+(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).catch(function(){var r=document.createRange();r.selectNode(el);getSelection().removeAllRanges();getSelection().addRange(r);document.execCommand('copy')});
+b.textContent='Copié !';setTimeout(function(){b.textContent='Copier'},1800)}});
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(el){io.observe(el)})}else{rv.forEach(function(el){el.classList.add('on')})}
+var links=document.querySelectorAll('.top nav a'),secs=[].map.call(links,function(a){return document.querySelector(a.getAttribute('href'))});
+addEventListener('scroll',function(){var y=scrollY+120,cur=-1;secs.forEach(function(s,i){if(s&&s.offsetTop<=y)cur=i});links.forEach(function(a,i){a.classList.toggle('on',i===cur)})},{passive:true});
+})();
+</script>
+</body>
+</html>

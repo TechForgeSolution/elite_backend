@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 19 — Gestion du temps | Secrétariat</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%232E4374'/%3E%3Cpath d='M50 18a32 32 0 1 0 32 32' fill='none' stroke='%23fff' stroke-width='7'/%3E%3Cpath d='M50 31v21l14 9' fill='none' stroke='%23fff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F7F9;--color-text:#101216;--color-text-muted:#5C6270;--color-accent:#2E4374;--color-accent-soft:#E8EBF3;--color-border:#E4E5EA;--color-accent-alt:#A6432B;--font-display:'Space Grotesk',sans-serif;--font-body:'Inter',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+body{margin:0;font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-.01em;margin:0 0 .5em}h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:700;line-height:1.1}h2{font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.25}h3{font-size:1.15rem;line-height:1.35}p{margin:0 0 1.1em}a{color:var(--color-accent)}.mono{font-family:var(--font-mono)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}.prose{max-width:720px}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:200;transition:width .1s linear}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:auto}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:600;font-size:1rem}.brand-mark{width:26px;height:26px;border-radius:6px;background:var(--color-accent);display:flex;align-items:center;justify-content:center}.brand-mark svg{width:15px;height:15px}
+.toc-toggle{position:relative}.toc-btn{font:500 .9rem var(--font-body);background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:8px 16px;cursor:pointer;display:flex;align-items:center;gap:6px}.toc-btn:hover{background:#d9dff0}.toc-panel{position:absolute;right:0;top:calc(100% + 10px);background:#fff;border:1px solid var(--color-border);border-radius:10px;box-shadow:0 12px 28px rgba(16,18,22,.1);padding:10px;width:360px;max-height:70vh;overflow:auto;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.15s}.toc-panel.open{opacity:1;visibility:visible;transform:translateY(0)}.toc-panel a{display:flex;gap:10px;padding:8px 10px;border-radius:6px;color:var(--color-text);text-decoration:none;font-size:.9rem}.toc-panel a:hover{background:var(--color-bg-alt)}.toc-panel .num{color:var(--color-accent);font-family:var(--font-mono);font-size:.82rem}
+.hero{padding:64px 0 48px;background-image:repeating-linear-gradient(to bottom,transparent,transparent 37px,var(--color-border) 38px);border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}.badge{font-size:.8rem;font-weight:500;color:var(--color-accent);background:var(--color-accent-soft);border-radius:100px;padding:5px 13px}.badge.muted{color:var(--color-text-muted);background:var(--color-bg-alt);border:1px solid var(--color-border)}.hero h1{max-width:820px}.hero .lede{font-size:1.1rem;color:var(--color-text-muted);max-width:700px;margin-top:14px}
+.objectives{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;margin-top:28px}.objective-list{margin:0;padding:0;list-style:none}.objective-list li{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--color-border);font-size:.92rem}.objective-list .n{font:500 .78rem var(--font-mono);color:var(--color-accent);min-width:24px}
+.sommaire{padding:44px 0;border-bottom:1px solid var(--color-border)}.sommaire h2{font:600 1rem var(--font-body);color:var(--color-text-muted);margin-bottom:18px}.sommaire ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:4px 32px}.sommaire li a{display:flex;gap:14px;align-items:baseline;text-decoration:none;color:var(--color-text);padding:10px 4px;border-bottom:1px solid var(--color-border)}.sommaire li a:hover{color:var(--color-accent)}.sommaire .num{font:.85rem var(--font-mono);color:var(--color-text-muted);width:2.4em;flex-shrink:0}
+.lesson-section{padding:56px 0}.lesson-section.alt{background:var(--color-bg-alt)}.section-head{display:flex;gap:16px;align-items:baseline;margin-bottom:20px}.section-head .num{font:1rem var(--font-mono);color:var(--color-accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+.callout{border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0;max-width:720px}.callout.warn{border-left-color:var(--color-accent-alt);background:#f8eeeb}.callout.norm{border-left-color:var(--color-accent);background:#eef0f6}.callout.case{border-left-color:var(--color-accent-alt);background:#fbf3f1}.callout-label{font-weight:600;font-size:.92rem;margin-bottom:6px}.callout p:last-child{margin-bottom:0}.callout p,.callout li{font-size:.95rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}.card{border:1px solid var(--color-border);border-radius:10px;padding:20px;background:#fff;transition:border-color .15s}.card:hover{border-color:var(--color-accent)}.card h3{font-size:1rem;margin-bottom:6px}.card p{font-size:.9rem;color:var(--color-text-muted);margin:0}
+.diagram-wrap{margin:28px 0;border:1px solid var(--color-border);border-radius:12px;padding:24px;background:var(--color-bg-alt);overflow-x:auto}.diagram-wrap svg{display:block;margin:auto;max-width:100%;height:auto}
+.stepper{display:flex;margin:32px 0;overflow-x:auto}.step{flex:1;min-width:150px;position:relative;padding:0 16px 0 0}.step:not(:last-child)::after{content:"";position:absolute;top:15px;left:calc(100% - 8px);width:calc(100% - 8px);height:1px;background:var(--color-border)}.step-index{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--color-accent);color:var(--color-accent);display:flex;align-items:center;justify-content:center;font:.85rem var(--font-mono);background:#fff;position:relative;z-index:1;margin-bottom:12px}.step h3{font-size:.95rem;margin-bottom:4px}.step p{font-size:.85rem;color:var(--color-text-muted)}
+.table-scroll{overflow-x:auto;margin:20px 0;border:1px solid var(--color-border);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:760px;font-size:.92rem}caption{text-align:left;font:600 .95rem var(--font-display);padding:14px 16px;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}th,td{padding:10px 16px;text-align:left;border-bottom:1px solid var(--color-border);vertical-align:top}thead th{background:var(--color-bg-alt);font-size:.82rem;color:var(--color-text-muted)}tbody tr:hover{background:var(--color-bg-alt)}tbody tr:last-child td{border-bottom:0}.bad{color:var(--color-accent-alt);font-weight:600}.good{color:var(--color-accent);font-weight:600}
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:12px;overflow:hidden;background:#fff}.tab-buttons{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--color-border);background:var(--color-bg-alt)}.tab-btn{flex:1 1 auto;min-width:130px;border:0;background:transparent;padding:13px 14px;font:600 .88rem var(--font-body);color:var(--color-text-muted);cursor:pointer;border-bottom:2px solid transparent}.tab-btn.active{background:#fff;color:var(--color-accent);box-shadow:inset 0 -2px 0 var(--color-accent)}.tab-panel{display:none;padding:22px}.tab-panel.active{display:block}.tab-panel h3{font-size:1rem}
+.accordion{border:1px solid var(--color-border);border-radius:12px;overflow:hidden;background:#fff;margin:24px 0}.accordion-item{border-bottom:1px solid var(--color-border)}.accordion-item:last-child{border-bottom:0}.accordion-item>summary{cursor:pointer;list-style:none;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px;font:600 .95rem var(--font-body);color:var(--color-text)}.accordion-item>summary::-webkit-details-marker{display:none}.accordion-item>summary .plus{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-accent);color:var(--color-accent);display:flex;align-items:center;justify-content:center;font-size:1rem;line-height:1}.accordion-item[open]>summary .plus::before{content:"–"}.accordion-item:not([open])>summary .plus::before{content:"+"}.accordion-body{padding:0 20px 20px;font-size:.92rem;color:var(--color-text-muted)}.accordion-body p:last-child{margin-bottom:0}
+.keypoints{padding:56px 0}.keypoints-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.kp-card{border:1px solid var(--color-border);border-radius:10px;padding:18px;display:flex;gap:12px;align-items:flex-start}.kp-card .num{font:.85rem var(--font-mono);color:var(--color-accent)}.kp-card p{margin:0;font-size:.92rem}
+.cta-final{padding:56px 0;border-top:1px solid var(--color-border);background:var(--color-accent-soft)}.cta-final .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px}.cta-final p{margin:0;color:var(--color-text-muted);max-width:560px}.cta-btn{display:inline-flex;align-items:center;gap:10px;color:#fff;background:var(--color-accent);border:0;border-radius:10px;padding:16px 26px;font-weight:600;text-decoration:none;box-shadow:0 8px 20px rgba(46,67,116,.25)}.cta-btn:hover{filter:brightness(.94)}
+.lesson-nav{border-top:1px solid var(--color-border);padding:40px 0}.lesson-nav-links{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.nav-card{flex:1;min-width:220px;border:1px solid var(--color-border);border-radius:10px;padding:18px 20px;text-decoration:none;color:var(--color-text)}.nav-card:hover{border-color:var(--color-accent)}.nav-card .dir{font-size:.78rem;color:var(--color-text-muted);display:block;margin-bottom:4px}.nav-card .dest{font:600 .98rem var(--font-display)}.nav-card.next{text-align:right}
+.back-to-module{display:block;text-align:center;margin-top:24px;font-size:.9rem;color:var(--color-text-muted);text-decoration:none}footer{border-top:1px solid var(--color-border);padding:28px 0;color:var(--color-text-muted);font-size:.85rem}footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+#back-top{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--color-accent);color:#fff;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(46,67,116,.3);opacity:0;visibility:hidden;transform:translateY(10px);transition:.2s;z-index:150}#back-top.show{opacity:1;visibility:visible;transform:none}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;justify-content:center}.legend-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--color-text-muted)}.legend-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.agenda{display:grid;grid-template-columns:120px 1fr;gap:0;border:1px solid var(--color-border);border-radius:10px;overflow:hidden;margin:20px 0}.agenda div{padding:12px 14px;border-bottom:1px solid var(--color-border)}.agenda div:nth-last-child(-n+2){border-bottom:0}.agenda .time{font-family:var(--font-mono);background:var(--color-bg-alt);color:var(--color-accent)}
+.pareto-label{font:600 12px var(--font-body)}.svg-muted{fill:var(--color-text-muted)}.svg-accent{fill:var(--color-accent)}.svg-alt{fill:var(--color-accent-alt)}
+@media(max-width:768px){.sommaire ol{grid-template-columns:1fr}.lesson-nav-links{flex-direction:column}.nav-card.next{text-align:left}.stepper{flex-direction:column}.step:not(:last-child)::after{display:none}.cta-final .wrap{flex-direction:column;align-items:flex-start}.objectives{grid-template-columns:1fr}.wrap{padding:0 18px}.hero{padding-top:44px}.tab-btn{text-align:left;min-width:100%}.agenda{grid-template-columns:95px 1fr}.toc-panel{width:min(92vw,360px)}}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#fff" stroke-width="1.5"/><path d="M12 7v5l3.5 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>Filière secrétariat</div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">Sommaire <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1L5 5 9 1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 4 — Assistante de Direction : réunions, protocole et relation client</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau BAC</span>
+    </div>
+    <h1>Gestion du temps</h1>
+    <p class="lede">Maîtriser son échéancier, éliminer les voleurs de temps, organiser les tâches par blocs de concentration, déléguer efficacement et sécuriser le respect des délais.</p>
+    <div class="objectives">
+      <div class="prose">
+        <h2>Objectifs pédagogiques</h2>
+        <p>À la fin de cette leçon, l'apprenant doit être capable d'organiser son temps avec méthode, d'arbitrer les priorités et de suivre les échéances sans perdre la maîtrise de sa charge de travail.</p>
+      </div>
+      <ol class="objective-list">
+        <li><span class="n">01</span><span>Éliminer les « voleurs de temps » et appliquer les lois scientifiques de gestion du temps.</span></li>
+        <li><span class="n">02</span><span>Construire un échéancier dynamique et regrouper les tâches par blocs de concentration.</span></li>
+        <li><span class="n">03</span><span>Déléguer efficacement les tâches secondaires et sécuriser le respect des délais.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap"><h2>Dans cette leçon</h2><ol id="sommaire-list"></ol></div>
+</nav>
+
+<main>
+<section class="lesson-section" id="s1" data-title="Les lois fondamentales du temps et le diagnostic" data-num="19.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">19.1</span><h2>Les lois fondamentales du temps et le diagnostic de son temps</h2></div>
+      <p>La gestion du temps commence par un diagnostic : identifier les activités à forte valeur, les interruptions, les tâches qui s'allongent inutilement et les habitudes qui fragmentent l'attention. Les lois du temps servent de repères pour comprendre ces mécanismes et agir.</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 1040 500" role="img" aria-label="Schéma de la loi de Pareto : une minorité de tâches produit une majorité des résultats">
+        <g font-family="Inter, sans-serif">
+          <text x="520" y="30" text-anchor="middle" font-size="17" font-weight="600" fill="#101216">Loi de Pareto — repérer les tâches à forte valeur</text>
+          <line x1="90" y1="420" x2="960" y2="420" stroke="#E4E5EA"/>
+          <line x1="90" y1="70" x2="90" y2="420" stroke="#E4E5EA"/>
+          <path d="M90 405 C180 395, 260 370, 350 320 S540 220, 670 160 S840 110, 960 85" fill="none" stroke="#2E4374" stroke-width="4"/>
+          <rect x="90" y="345" width="170" height="75" rx="7" fill="#E8EBF3"/>
+          <rect x="260" y="300" width="170" height="120" rx="7" fill="#E8EBF3"/>
+          <rect x="430" y="260" width="170" height="160" rx="7" fill="#F7F7F9"/>
+          <rect x="600" y="220" width="170" height="200" rx="7" fill="#F7F7F9"/>
+          <rect x="770" y="190" width="190" height="230" rx="7" fill="#F7F7F9"/>
+          <line x1="266" y1="70" x2="266" y2="420" stroke="#A6432B" stroke-dasharray="6 6"/>
+          <text x="266" y="58" text-anchor="middle" font-size="13" font-weight="600" fill="#A6432B">≈ 20 % des tâches</text>
+          <text x="680" y="105" text-anchor="middle" font-size="15" font-weight="600" fill="#2E4374">≈ 80 % des résultats</text>
+          <text x="175" y="454" text-anchor="middle" font-size="12" fill="#5C6270">Tâches classées par impact</text>
+          <text x="35" y="250" transform="rotate(-90 35 250)" text-anchor="middle" font-size="12" fill="#5C6270">Résultats cumulés</text>
+          <text x="175" y="392" text-anchor="middle" font-size="12" font-weight="600" fill="#2E4374">Priorité</text>
+          <text x="680" y="392" text-anchor="middle" font-size="12" fill="#5C6270">Tâches à faible impact relatif</text>
+        </g>
+      </svg>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#E8EBF3"></span>Zone à examiner en priorité</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#F8EEEB;border:1px solid #A6432B"></span>Seuil indicatif 20/80</span>
+      </div>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card"><h3>Voleurs de temps</h3><p>Sollicitations répétitives, recherches dispersées, réunions sans objectif, notifications et tâches à faible valeur.</p></div>
+      <div class="card"><h3>Diagnostic</h3><p>Observer pendant quelques jours les tâches, durées, interruptions et écarts entre prévu et réalisé.</p></div>
+      <div class="card"><h3>Arbitrage</h3><p>Distinguer l'urgent, l'important, le délégable et ce qui peut être supprimé ou regroupé.</p></div>
+    </div>
+
+    <div class="callout reveal"><div class="callout-label">💡 Loi de Carlson</div><p>Tout travail interrompu sera <strong>moins efficace et prendra plus de temps</strong> que s'il était exécuté sans interruption.</p></div>
+
+    <div class="callout warn reveal"><div class="callout-label">⚠️ Piège du multitâche</div><p>Diviser son attention augmente le <strong>taux d'erreur de 40 %</strong>. En pratique, une assistante de direction gagne à regrouper les activités comparables et à réserver des périodes sans interruption aux tâches qui demandent de la précision.</p></div>
+
+    <div class="accordion reveal">
+      <details class="accordion-item" open><summary><span>Loi de Parkinson</span><span class="plus"></span></summary><div class="accordion-body"><p>Le travail tend à occuper tout le temps qui lui est attribué. Pour limiter cet effet, fixer une durée réaliste et une échéance claire, puis travailler avec une limite explicite.</p></div></details>
+      <details class="accordion-item"><summary><span>Loi de Illich</span><span class="plus"></span></summary><div class="accordion-body"><p>Au-delà d'un certain niveau, l'efficacité décroît lorsque l'effort se prolonge sans récupération. Alterner concentration, pauses courtes et changement de type d'activité aide à maintenir la qualité.</p></div></details>
+      <details class="accordion-item"><summary><span>Loi de Murphy</span><span class="plus"></span></summary><div class="accordion-body"><p>Ce qui peut mal tourner risque de mal tourner. En gestion administrative, prévoir une marge pour les retards, validations, pannes, informations manquantes et urgences non prévues.</p></div></details>
+      <details class="accordion-item"><summary><span>Loi de Carlson — interruptions</span><span class="plus"></span></summary><div class="accordion-body"><p>Chaque reprise de tâche impose un coût de réorientation. Regrouper les appels, emails et demandes courantes dans des fenêtres dédiées réduit la fragmentation.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Méthodes d'optimisation de la planification" data-num="19.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">19.2</span><h2>Les méthodes d'optimisation de la planification</h2></div>
+      <p>Une bonne planification transforme une liste de tâches en système d'action : noter ce qui doit être fait, évaluer les contraintes, arbitrer les priorités, réserver des créneaux et contrôler l'avancement.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-buttons" role="tablist" aria-label="Méthodes d'organisation">
+        <button class="tab-btn active" data-tab="nerac" role="tab" aria-selected="true">Méthode NERAC</button>
+        <button class="tab-btn" data-tab="gtd" role="tab" aria-selected="false">Méthode GTD</button>
+      </div>
+      <div class="tab-panel active" id="tab-nerac" role="tabpanel">
+        <h3>Note → Évalue → Règle → Arbitre → Contrôle</h3>
+        <p>La méthode NERAC permet de passer d'une liste brute à une organisation contrôlée. Elle convient particulièrement au travail d'assistanat où les demandes arrivent par plusieurs canaux.</p>
+        <div class="card-grid">
+          <div class="card"><h3>1. Note</h3><p>Recenser toutes les tâches, demandes et échéances dans un même système.</p></div>
+          <div class="card"><h3>2. Évalue</h3><p>Estimer durée, urgence, importance, dépendances et ressources nécessaires.</p></div>
+          <div class="card"><h3>3. Règle</h3><p>Définir la règle de traitement : faire, planifier, déléguer, regrouper ou supprimer.</p></div>
+          <div class="card"><h3>4. Arbitre</h3><p>Comparer les priorités et réserver les créneaux disponibles.</p></div>
+          <div class="card"><h3>5. Contrôle</h3><p>Vérifier quotidiennement l'état des tâches et réajuster les échéances.</p></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-gtd" role="tabpanel">
+        <h3>Collecter → Traiter → Organiser → Revoir → Agir</h3>
+        <p>GTD vise à libérer l'attention en externalisant les engagements dans un système fiable. L'objectif est de savoir ce qui doit être fait, quand et dans quel contexte.</p>
+        <div class="card-grid">
+          <div class="card"><h3>Collecter</h3><p>Capturer toutes les demandes et idées dans une boîte d'entrée.</p></div>
+          <div class="card"><h3>Traiter</h3><p>Décider pour chaque élément : action, projet, attente, référence ou élimination.</p></div>
+          <div class="card"><h3>Organiser</h3><p>Placer l'action au bon endroit : agenda, liste, échéancier ou dossier.</p></div>
+          <div class="card"><h3>Revoir</h3><p>Faire une revue régulière des engagements et des échéances.</p></div>
+          <div class="card"><h3>Agir</h3><p>Choisir l'action suivante selon contexte, temps disponible et priorité.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal"><h3>Time-blocking et blocs de concentration</h3><p>Le time-blocking consiste à réserver des créneaux à une catégorie de travail plutôt qu'à passer continuellement d'une tâche à une autre. Pour les tâches sensibles, appliquer un cycle de concentration inspiré du Pomodoro : période de travail protégée, pause courte, puis reprise.</p></div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 1040 430" role="img" aria-label="Cycle de blocs de concentration appliqué au travail de secrétariat">
+        <g font-family="Inter, sans-serif">
+          <text x="520" y="30" text-anchor="middle" font-size="17" font-weight="600" fill="#101216">Cycle de concentration — time-blocking / Pomodoro</text>
+          <circle cx="520" cy="215" r="150" fill="#fff" stroke="#E4E5EA" stroke-width="2"/>
+          <circle cx="520" cy="215" r="104" fill="#E8EBF3"/>
+          <path d="M520 61 A154 154 0 0 1 666 166" fill="none" stroke="#2E4374" stroke-width="12" stroke-linecap="round"/>
+          <path d="M675 181 A154 154 0 0 1 604 347" fill="none" stroke="#A6432B" stroke-width="12" stroke-linecap="round"/>
+          <path d="M586 357 A154 154 0 0 1 375 310" fill="none" stroke="#2E4374" stroke-width="12" stroke-linecap="round"/>
+          <path d="M363 292 A154 154 0 0 1 381 111" fill="none" stroke="#A6432B" stroke-width="12" stroke-linecap="round"/>
+          <text x="520" y="200" text-anchor="middle" font-size="18" font-weight="700" fill="#101216">BLOC PROTÉGÉ</text>
+          <text x="520" y="224" text-anchor="middle" font-size="13" fill="#5C6270">une seule tâche</text>
+          <text x="520" y="246" text-anchor="middle" font-size="12" fill="#5C6270">notifications coupées</text>
+          <text x="520" y="282" text-anchor="middle" font-size="12" font-family="IBM Plex Mono, monospace" fill="#2E4374">25–50 min</text>
+          <text x="740" y="135" font-size="13" font-weight="600" fill="#2E4374">1. Concentrer</text>
+          <text x="740" y="157" font-size="12" fill="#5C6270">rédaction / dossier / analyse</text>
+          <text x="715" y="300" font-size="13" font-weight="600" fill="#A6432B">2. Pause</text>
+          <text x="715" y="322" font-size="12" fill="#5C6270">récupérer sans ouvrir un nouveau flux</text>
+          <text x="175" y="300" font-size="13" font-weight="600" fill="#2E4374">3. Reprendre</text>
+          <text x="175" y="322" font-size="12" fill="#5C6270">puis regrouper les tâches similaires</text>
+          <text x="155" y="135" font-size="13" font-weight="600" fill="#A6432B">4. Contrôler</text>
+          <text x="155" y="157" font-size="12" fill="#5C6270">marquer l'avancement et ajuster</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="agenda reveal" aria-label="Exemple de time-blocking quotidien">
+      <div class="time">08:00–08:30</div><div><strong>Tri & priorités</strong> — traiter les nouvelles demandes et fixer les 3 résultats essentiels.</div>
+      <div class="time">08:30–10:00</div><div><strong>Bloc concentré</strong> — dossiers nécessitant rédaction et vérification.</div>
+      <div class="time">10:00–10:20</div><div><strong>Flux entrant</strong> — appels, emails et sollicitations regroupées.</div>
+      <div class="time">10:20–12:00</div><div><strong>Bloc concentré</strong> — préparation de réunion / échéances prioritaires.</div>
+      <div class="time">14:00–15:00</div><div><strong>Délégation & suivi</strong> — transmettre, vérifier les consignes et actualiser l'échéancier.</div>
+      <div class="time">15:00–16:00</div><div><strong>Traitement groupé</strong> — courriers, appels, classement et tâches secondaires.</div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Délégation administrative et suivi des échéances" data-num="19.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">19.3</span><h2>La délégation administrative et le suivi des échéances</h2></div>
+      <p>Déléguer ne signifie pas abandonner le contrôle. Une délégation efficace précise le résultat attendu, la personne responsable de l'exécution, les moyens, la date limite et le point de contrôle.</p>
+    </div>
+
+    <div class="callout norm reveal"><div class="callout-label">📌 Règle de délégation</div><p><strong>Déléguer la réalisation en conservant la responsabilité du suivi et de la vérification.</strong></p></div>
+
+    <div class="card-grid reveal">
+      <div class="card"><h3>Préparer</h3><p>Choisir une tâche réellement délégable et vérifier les compétences et la disponibilité.</p></div>
+      <div class="card"><h3>Consigner</h3><p>Donner un objectif, un livrable, un délai, les critères de qualité et les ressources utiles.</p></div>
+      <div class="card"><h3>Suivre</h3><p>Fixer un point de contrôle avant l'échéance finale afin de détecter les écarts.</p></div>
+      <div class="card"><h3>Vérifier</h3><p>Contrôler le résultat, corriger si nécessaire et clôturer la tâche dans l'échéancier.</p></div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Grille d'évaluation de la charge de travail</caption>
+        <thead><tr><th>Tâche</th><th>Durée estimée</th><th>Urgence</th><th>Importance</th><th>Délégable</th><th>Charge</th></tr></thead>
+        <tbody>
+          <tr><td>Préparer une réunion de direction</td><td class="mono">90 min</td><td class="bad">Haute</td><td class="good">Haute</td><td>Partiellement</td><td class="mono">3/4</td></tr>
+          <tr><td>Classer des dossiers courants</td><td class="mono">45 min</td><td>Faible</td><td>Moyenne</td><td class="good">Oui</td><td class="mono">1/4</td></tr>
+          <tr><td>Répondre à une demande client sensible</td><td class="mono">60 min</td><td class="bad">Haute</td><td class="good">Haute</td><td>Non</td><td class="mono">4/4</td></tr>
+          <tr><td>Mettre à jour un tableau de suivi</td><td class="mono">30 min</td><td>Moyenne</td><td>Moyenne</td><td class="good">Oui</td><td class="mono">2/4</td></tr>
+          <tr><td>Préparer un dossier documentaire</td><td class="mono">75 min</td><td>Moyenne</td><td class="good">Haute</td><td>Oui</td><td class="mono">3/4</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Tableau de bord de suivi des échéances</caption>
+        <thead><tr><th>Projet</th><th>Tâche</th><th>Responsable</th><th>Date limite</th><th>Statut</th><th>Marge</th></tr></thead>
+        <tbody>
+          <tr><td>Réunion CODIR</td><td>Préparer dossier</td><td>Assistante</td><td class="mono">08/09/2026</td><td class="good">En cours</td><td class="mono">2 j</td></tr>
+          <tr><td>Client A</td><td>Compléter pièces</td><td>Collaborateur</td><td class="mono">09/09/2026</td><td>En attente</td><td class="mono">1 j</td></tr>
+          <tr><td>Déplacement DG</td><td>Confirmer réservations</td><td>Assistante</td><td class="mono">07/09/2026</td><td class="bad">Prioritaire</td><td class="mono">0 j</td></tr>
+          <tr><td>Projet B</td><td>Relance fournisseur</td><td>Assistante</td><td class="mono">11/09/2026</td><td>Planifié</td><td class="mono">3 j</td></tr>
+          <tr><td>Archives</td><td>Classement annuel</td><td>Équipe</td><td class="mono">18/09/2026</td><td>À planifier</td><td class="mono">5 j</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Maîtrise des interruptions et du stress" data-num="19.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">19.4</span><h2>La maîtrise des interruptions et du stress</h2></div>
+      <p>La maîtrise du temps dépend aussi de la gestion des sollicitations. L'objectif n'est pas de supprimer toute interruption, mais de distinguer les urgences réelles des demandes qui peuvent être regroupées, planifiées ou déléguées.</p>
+    </div>
+
+    <div class="stepper reveal" aria-label="Les 5 étapes du traitement quotidien d'un échéancier">
+      <div class="step"><div class="step-index">1</div><h3>Collecter</h3><p>Recenser les nouvelles demandes et échéances.</p></div>
+      <div class="step"><div class="step-index">2</div><h3>Qualifier</h3><p>Urgence, importance, durée et dépendances.</p></div>
+      <div class="step"><div class="step-index">3</div><h3>Planifier</h3><p>Réserver les créneaux et blocs de concentration.</p></div>
+      <div class="step"><div class="step-index">4</div><h3>Suivre</h3><p>Contrôler les écarts et relancer avant l'échéance.</p></div>
+      <div class="step"><div class="step-index">5</div><h3>Clôturer</h3><p>Vérifier le résultat et mettre à jour l'échéancier.</p></div>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card"><h3>Canaliser les appels</h3><p>Créer des plages de disponibilité et éviter les interruptions pendant les blocs sensibles.</p></div>
+      <div class="card"><h3>Regrouper les emails</h3><p>Traiter le flux entrant à des moments définis plutôt qu'à chaque notification.</p></div>
+      <div class="card"><h3>Dire non avec méthode</h3><p>Refuser ou reporter une demande en expliquant la contrainte et en proposant une alternative réaliste.</p></div>
+      <div class="card"><h3>Créer une marge</h3><p>Ne pas remplir 100 % de l'agenda : garder une capacité pour les imprévus.</p></div>
+    </div>
+
+    <div class="callout warn reveal"><div class="callout-label">⚠️ Technique de canalisation</div><p>Avant d'interrompre un bloc de travail, demander : <strong>« Est-ce réellement urgent ? Quelle est l'échéance ? Quel est l'impact si je traite cette demande plus tard ? »</strong></p></div>
+
+    <div class="callout reveal"><div class="callout-label">💡 Dire non sans bloquer la relation</div><p>Une réponse professionnelle peut reconnaître la demande, rappeler les priorités déjà engagées et proposer un créneau ou une autre ressource. Le refus porte sur <strong>le moment ou le périmètre</strong>, pas sur la personne.</p></div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Cas pratique — réorganiser une semaine désorganisée" data-num="19.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">19.5</span><h2>🧮 Cas pratique — réorganiser une semaine désorganisée</h2></div>
+      <p>Vous êtes assistante de direction. Votre semaine contient <strong>25 tâches concurrentes</strong> et <strong>4 urgences non prévues</strong>. Plusieurs demandes arrivent par téléphone, email et collègues, tandis que certaines échéances sont déjà proches.</p>
+    </div>
+
+    <div class="callout case reveal"><div class="callout-label">🧮 Mission</div><p>Réorganiser la semaine en justifiant les arbitrages : identifier les 20 % de tâches à plus forte valeur, isoler les urgences réelles, regrouper les tâches similaires, déléguer les tâches secondaires et créer une marge pour les imprévus.</p></div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Exemple de matrice d'arbitrage</caption>
+        <thead><tr><th>Catégorie</th><th>Traitement</th><th>Exemple</th><th>Décision</th></tr></thead>
+        <tbody>
+          <tr><td class="good">Urgent + important</td><td>Traiter immédiatement ou sécuriser le créneau</td><td>Dossier à échéance aujourd'hui</td><td class="good">Faire</td></tr>
+          <tr><td>Important non urgent</td><td>Bloquer un créneau de concentration</td><td>Préparation d'une réunion stratégique</td><td class="good">Planifier</td></tr>
+          <tr><td>Urgent peu important</td><td>Évaluer, regrouper ou déléguer</td><td>Demande administrative standard</td><td>Déléguer / regrouper</td></tr>
+          <tr><td class="bad">Peu urgent + peu important</td><td>Reporter, simplifier ou supprimer</td><td>Classement non critique</td><td class="bad">Réduire</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card"><h3>Étape 1 — Faire l'inventaire</h3><p>Mettre les 25 tâches et les 4 urgences dans une liste unique avec durée et échéance.</p></div>
+      <div class="card"><h3>Étape 2 — Arbitrer</h3><p>Prioriser l'impact et le délai plutôt que l'ordre d'arrivée des demandes.</p></div>
+      <div class="card"><h3>Étape 3 — Bloquer</h3><p>Réserver des blocs de concentration et des fenêtres de traitement des sollicitations.</p></div>
+      <div class="card"><h3>Étape 4 — Déléguer</h3><p>Transmettre les tâches secondaires avec consignes, responsable et point de contrôle.</p></div>
+      <div class="card"><h3>Étape 5 — Contrôler</h3><p>Revoir chaque jour l'échéancier et conserver une marge pour les nouvelles urgences.</p></div>
+    </div>
+
+    <div class="callout norm reveal"><div class="callout-label">📌 Justification attendue</div><p>Un bon arbitrage doit être <strong>traçable</strong> : expliquer pourquoi une tâche est faite maintenant, planifiée, regroupée, déléguée ou reportée, et indiquer le risque associé à chaque décision.</p></div>
+  </div>
+</section>
+
+<section class="keypoints" id="s6" data-title="Points clés à retenir" data-num="19.6">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">19.6</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>La gestion du temps commence par un <strong>diagnostic des voleurs de temps</strong> et des interruptions.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>La loi de Pareto aide à rechercher les <strong>tâches à forte valeur</strong> plutôt qu'à tout traiter de la même manière.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>NERAC et GTD permettent d'<strong>externaliser, organiser, prioriser et revoir</strong> les engagements.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Le <strong>time-blocking</strong> protège les périodes de concentration et limite le coût des interruptions.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>La délégation transfère l'exécution, mais le responsable conserve le <strong>suivi et la vérification</strong>.</p></div>
+      <div class="kp-card"><span class="num">06</span><p>Un échéancier fiable doit intégrer les <strong>dates limites, statuts, marges et points de contrôle</strong>.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#"><span class="dir">Leçon précédente</span><span class="dest">Leçon 18 — Protocole d'entreprise</span></a>
+      <a class="nav-card next" href="#"><span class="dir">Leçon suivante</span><span class="dest">Leçon 20 — Relation client</span></a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 4</a>
+  </div>
+</nav>
+
+<footer><div class="wrap"><span>Secrétariat — Module 4</span><span>Leçon 19</span></div></footer>
+<button id="back-top" aria-label="Retour en haut"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></button>
+
+<script>
+(function(){
+"use strict";
+var progress=document.getElementById('progress-bar');
+function updateProgress(){var y=window.scrollY||document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;progress.style.width=(h>0?(y/h)*100:0)+'%'}
+window.addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+
+var top=document.getElementById('back-top');
+window.addEventListener('scroll',function(){top.classList.toggle('show',(window.scrollY||0)>600)},{passive:true});
+top.addEventListener('click',function(){window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'})});
+
+var sections=[...document.querySelectorAll('main>section[id]')],list=document.getElementById('sommaire-list'),panel=document.getElementById('toc-panel');
+sections.forEach(function(sec){
+  var num=sec.dataset.num,title=sec.dataset.title,id=sec.id;
+  var li=document.createElement('li'),a=document.createElement('a');a.href='#'+id;a.innerHTML='<span class="num">'+num+'</span><span>'+title+'</span>';li.appendChild(a);list.appendChild(li);
+  var b=a.cloneNode(true);panel.appendChild(b);
+});
+
+var btn=document.getElementById('toc-btn');
+function closeToc(){panel.classList.remove('open');btn.setAttribute('aria-expanded','false')}
+btn.addEventListener('click',function(e){e.stopPropagation();var open=panel.classList.toggle('open');btn.setAttribute('aria-expanded',open?'true':'false')});
+document.addEventListener('click',function(e){if(!panel.contains(e.target)&&e.target!==btn)closeToc()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeToc()});panel.addEventListener('click',closeToc);
+
+document.querySelectorAll('.tab-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var group=b.closest('.tabs');
+    group.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-selected','false')});
+    group.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');b.setAttribute('aria-selected','true');group.querySelector('#tab-'+b.dataset.tab).classList.add('active');
+  });
+});
+
+var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches,els=document.querySelectorAll('.reveal');
+if(reduce||!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')})}
+else{var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})}
+})();
+</script>
+</body>
+</html>

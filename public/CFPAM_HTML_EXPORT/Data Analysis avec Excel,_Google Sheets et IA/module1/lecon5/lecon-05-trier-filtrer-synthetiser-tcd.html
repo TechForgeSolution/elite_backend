@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 05 — Trier, filtrer et synthétiser avec les tableaux croisés dynamiques</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+/* cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+/* encadrés */
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+/* figures */
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+/* stepper */
+.stepper{display:flex;gap:0;overflow-x:auto;margin:28px 0;padding-bottom:8px;counter-reset:s}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+/* tabs */
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+/* tableau */
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}td.l{text-align:left}
+/* code */
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+/* accordéon */
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+/* points clés */
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+/* nav */
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{color:var(--muted);background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+/* ===== Styles propres à la leçon 05 ===== */
+td.hl{background:var(--soft);font-weight:600}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">Tri &amp; filtres</a><a href="#s2">TCD</a><a href="#s4">Agrégations</a><a href="#s6">Statistiques</a><a href="#s7">Biais</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 1 — Fondamentaux : préparer et calculer avec les tableurs</span><span class="badge">⏱ 25 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Trier, filtrer et synthétiser avec les tableaux croisés dynamiques</h1>
+  <p class="sub">Leçon 05 — Vous apprenez à résumer rapidement de grands volumes de données et à répondre à des questions précises, sans écrire de formules.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>Trier et filtrer : préalables à l'exploration</a></li>
+<li><a href="#s2"><b>2</b>Les concepts du tableau croisé dynamique</a></li>
+<li><a href="#s3"><b>3</b>Regrouper intelligemment les données</a></li>
+<li><a href="#s4"><b>4</b>Modes d'agrégation et de calcul</a></li>
+<li><a href="#s5"><b>5</b>Garder un TCD à jour</a></li>
+<li><a href="#s6"><b>6</b>Statistiques descriptives de base</a></li>
+<li><a href="#s7"><b>7</b>Lecture critique et biais</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. Trier et filtrer : préalables à l'exploration</h2>
+<p>Avant de synthétiser, on <strong>explore</strong> : le tri ordonne les lignes, le filtre n'affiche que celles qui nous intéressent. Aucune donnée n'est supprimée.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Tri et filtres">
+    <button role="tab" aria-selected="true">Tri simple</button>
+    <button role="tab" aria-selected="false">Tri multi-critères</button>
+    <button role="tab" aria-selected="false">Filtre automatique</button>
+    <button role="tab" aria-selected="false">Filtre avancé</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>On ordonne selon <strong>une seule colonne</strong> : du plus petit au plus grand, de A à Z, ou du plus récent au plus ancien. Exemple : classer les ventes par montant décroissant pour repérer les plus importantes.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>On définit plusieurs niveaux : d'abord par <em>Région</em>, puis, à l'intérieur de chaque région, par <em>Montant</em> décroissant.</p>
+  <div class="tbl"><table><caption style="position:absolute;left:-9999px">Tri par région puis par montant</caption>
+  <tr><th>Région</th><th style="text-align:right">Montant (€)</th></tr>
+  <tr><td>Nord</td><td class="r">200</td></tr><tr><td>Nord</td><td class="r">120</td></tr>
+  <tr><td>Sud</td><td class="r">250</td></tr><tr><td>Sud</td><td class="r">150</td></tr></table></div>
+  <p>Excel : <em>Données › Trier</em>, puis « Ajouter un niveau ». Google Sheets : <em>Données › Trier la plage › Options avancées</em>.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Les flèches dans les en-têtes permettent de <strong>ne garder que certaines valeurs</strong> (une région, une période, un montant supérieur à un seuil). Les lignes masquées restent dans le fichier.</p>
+  <p>Excel : <em>Données › Filtrer</em> (Ctrl + Maj + L). Google Sheets : <em>Données › Créer un filtre</em>.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Le filtre avancé combine plusieurs conditions écrites dans une zone de critères, et peut copier le résultat ailleurs. Dans Google Sheets, la fonction <strong>FILTER</strong> joue ce rôle.</p>
+  <div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Google Sheets : ventes de la région Nord supérieures à 100 €</span>
+=<span class="fn">FILTER</span>(A2:C100; B2:B100="Nord"; C2:C100&gt;100)</code></pre></div></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Pour trier, sélectionnez tout le tableau (ou une seule cellule à l'intérieur) : trier une seule colonne dissocie ses valeurs des autres colonnes et mélange les enregistrements.</p></div>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. Les concepts du tableau croisé dynamique</h2>
+<p>Un <strong>tableau croisé dynamique</strong> (TCD, <em>Pivot Table</em>) résume une longue liste d'enregistrements en un petit tableau de synthèse. On le construit par glisser-déposer de champs (les colonnes de la source) dans quatre zones.</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Schéma d'un tableau croisé dynamique avec ses quatre zones : Filtres en haut à gauche, Colonnes en haut, Lignes à gauche, Valeurs au centre">
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="20" y="20" width="140" height="40" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="90" y="45">Filtres</text>
+<rect x="180" y="20" width="440" height="40" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="400" y="45">Colonnes</text>
+<rect x="20" y="75" width="140" height="140" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="90" y="150">Lignes</text>
+<rect x="180" y="75" width="440" height="140" rx="8" fill="#0A0F14"/><text x="400" y="150" fill="#fff">Valeurs (somme, moyenne, nombre…)</text>
+</g></svg>
+<figcaption>Les quatre zones : les champs placés en Lignes et en Colonnes « croisent » les Valeurs.</figcaption></figure>
+<div class="cards">
+  <div class="card"><div class="ic">☰</div><h4>Lignes</h4><p>Catégories listées verticalement (ex. régions).</p></div>
+  <div class="card"><div class="ic">⫴</div><h4>Colonnes</h4><p>Catégories étalées horizontalement (ex. trimestres).</p></div>
+  <div class="card"><div class="ic">🔢</div><h4>Valeurs</h4><p>Le calcul réalisé (ex. somme des montants).</p></div>
+  <div class="card"><div class="ic">🔽</div><h4>Filtres</h4><p>Restreint l'ensemble du TCD (ex. une année).</p></div>
+</div>
+<p>Sélectionnez une étape pour voir comment on crée un TCD.</p>
+<div class="stepper" role="list" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<div class="note"><strong>💡 À retenir</strong><p>Le TCD ne modifie jamais les données sources : il en offre une <em>vue</em> que l'on peut réorganiser en quelques clics.</p></div>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. Regrouper intelligemment les données</h2>
+<p>Regrouper permet de passer d'un niveau de détail (chaque jour, chaque ville) à un niveau plus lisible (chaque mois, chaque région).</p>
+<div class="cards">
+  <div class="card"><div class="ic">📅</div><h4>Par dates</h4><p>Jours regroupés en mois, trimestres ou années.</p></div>
+  <div class="card"><div class="ic">🏷️</div><h4>Par catégories</h4><p>Produits regroupés en familles (ex. papeterie, mobilier).</p></div>
+  <div class="card"><div class="ic">🗺️</div><h4>Par régions</h4><p>Villes regroupées en zones géographiques.</p></div>
+</div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Outil">
+    <button role="tab" aria-selected="true">Excel</button>
+    <button role="tab" aria-selected="false">Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Clic droit sur une date dans le TCD › <em>Grouper</em></li><li>Cocher Mois, Trimestres, Années (on peut en combiner plusieurs)</li><li>Pour des catégories : sélectionner les éléments, clic droit › <em>Grouper</em></li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Clic droit sur une date › <em>Créer un groupe de dates croisées</em> (mois, trimestre, année…)</li><li>Pour des catégories : sélectionner les éléments › <em>Créer un groupe manuel</em></li></ul></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Le regroupement par dates ne fonctionne que si la colonne est reconnue comme <strong>date</strong> (voir leçon 02). Une date stockée en texte ne sera pas regroupée.</p></div>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Modes d'agrégation et de calcul</h2>
+<p>La zone <em>Valeurs</em> peut calculer de plusieurs façons. Voici les mêmes sept ventes, résumées selon quatre modes :</p>
+<div class="tbl"><table>
+<caption style="position:absolute;left:-9999px">Quatre modes d'agrégation appliqués aux ventes par région</caption>
+<tr><th>Région</th><th style="text-align:right">Somme (€)</th><th style="text-align:right">Moyenne (€)</th><th style="text-align:right">Nombre</th><th style="text-align:right">% du total</th></tr>
+<tr><td>Nord</td><td class="r">400</td><td class="r">133,33</td><td class="r">3</td><td class="r">40 %</td></tr>
+<tr><td>Sud</td><td class="r">400</td><td class="r">200,00</td><td class="r">2</td><td class="r">40 %</td></tr>
+<tr><td>Ouest</td><td class="r">200</td><td class="r">100,00</td><td class="r">2</td><td class="r">20 %</td></tr>
+<tr><td><strong>Total</strong></td><td class="hl r">1 000</td><td class="hl r">142,86</td><td class="hl r">7</td><td class="hl r">100 %</td></tr>
+</table></div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Modes">
+    <button role="tab" aria-selected="true">Somme</button>
+    <button role="tab" aria-selected="false">Moyenne</button>
+    <button role="tab" aria-selected="false">Nombre</button>
+    <button role="tab" aria-selected="false">% du total</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>Additionne les valeurs : « Combien a-t-on vendu au total ? ». Idéal pour des montants ou des quantités.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Divise la somme par le nombre de lignes : « Quel est le montant typique d'une vente ? ».</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Compte les lignes : « Combien de ventes ? ». Utile aussi sur du texte, que l'on ne peut pas additionner.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Exprime chaque valeur en part du total : « Quelle part représente chaque région ? ». Excel : <em>Afficher les valeurs › % du total général</em>. Sheets : <em>Afficher sous la forme › % du total</em>.</p></div>
+</div>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Choisissez le mode d'après la question posée : la somme répond à « combien », la moyenne à « typiquement combien », le nombre à « combien de fois ».</p></div>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Garder un TCD à jour</h2>
+<p>Un TCD est <strong>dynamique</strong> mais il ne se met pas toujours à jour seul : il lit les données à un instant donné, puis attend une actualisation.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Actualisation">
+    <button role="tab" aria-selected="true">Excel</button>
+    <button role="tab" aria-selected="false">Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Clic droit dans le TCD › <em>Actualiser</em> (ou <em>Données › Actualiser tout</em>)</li><li>Si la source est un <strong>tableau structuré</strong> (leçon 02), les nouvelles lignes sont incluses automatiquement</li><li>Sinon, il faut modifier la plage source du TCD</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Le TCD se met à jour automatiquement quand la source change</li><li>Pour inclure les futures lignes, indiquer une plage ouverte (ex. A:F plutôt que A1:F200)</li></ul></div>
+</div>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Ajouter des lignes sous la plage source sans actualiser (ou sans plage étendue) donne un TCD qui ignore les nouvelles données : les chiffres paraissent corrects mais sont incomplets.</p></div>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. Statistiques descriptives de base</h2>
+<p>Un tableau de synthèse s'accompagne souvent d'indicateurs qui décrivent la <strong>forme</strong> des données :</p>
+<div class="cards">
+  <div class="card"><div class="ic">⚖️</div><h4>Moyenne</h4><p>Somme divisée par le nombre de valeurs. Sensible aux valeurs extrêmes.</p></div>
+  <div class="card"><div class="ic">🎯</div><h4>Médiane</h4><p>Valeur du milieu une fois les données triées. Résiste aux extrêmes.</p></div>
+  <div class="card"><div class="ic">↔️</div><h4>Écart</h4><p>Étendue (max − min) ou écart-type : mesure la dispersion.</p></div>
+</div>
+<figure>
+<svg viewBox="0 0 640 260" role="img" aria-label="Cinq ventes : 100, 110, 120, 130 et 540 euros. La moyenne vaut 200, la médiane 120 : la valeur extrême tire la moyenne vers le haut">
+<path d="M60 230H600" stroke="#E2E8F0"/>
+<g fill="#16A34A"><rect x="90" y="190" width="60" height="40"/><rect x="190" y="186" width="60" height="44"/><rect x="290" y="182" width="60" height="48"/><rect x="390" y="178" width="60" height="52"/></g>
+<rect x="490" y="14" width="60" height="216" fill="#0A0F14"/>
+<g font-size="12" text-anchor="middle" fill="#0A0F14"><text x="120" y="248">100</text><text x="220" y="248">110</text><text x="320" y="248">120</text><text x="420" y="248">130</text><text x="520" y="248">540</text></g>
+<path d="M60 150H600" stroke="#0A0F14" stroke-dasharray="6 4"/><text x="64" y="144" font-size="12" font-weight="600">Moyenne = 200</text>
+<path d="M60 182H600" stroke="#16A34A" stroke-dasharray="6 4"/><text x="64" y="176" font-size="12" font-weight="600" fill="#0F7A37">Médiane = 120</text>
+</svg>
+<figcaption>Une seule valeur extrême (540) fait grimper la moyenne bien au-dessus de la plupart des ventes.</figcaption></figure>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Indicateurs sur la plage B2:B6</span>
+=<span class="fn">MOYENNE</span>(B2:B6)
+=<span class="fn">MEDIANE</span>(B2:B6)
+=<span class="fn">MAX</span>(B2:B6)-<span class="fn">MIN</span>(B2:B6)   <span class="cm">// étendue</span>
+=<span class="fn">ECARTYPE.STANDARD</span>(B2:B6)   <span class="cm">// Sheets : ECARTYPE</span></code></pre></div>
+<div class="note"><strong>💡 À retenir</strong><p>Quand moyenne et médiane diffèrent nettement, c'est le signe de valeurs extrêmes : la médiane décrit alors mieux la situation « habituelle ».</p></div>
+<details><summary>Que dit l'écart-type ?</summary><div><p>Plus il est petit, plus les valeurs sont regroupées autour de la moyenne ; plus il est grand, plus elles sont dispersées. Il s'exprime dans la même unité que les données.</p></div></details>
+</div></section>
+
+<!-- ===== 7 ===== -->
+<section id="s7"><div class="wrap reveal">
+<h2>7. Analyse critique des résultats et détection des biais</h2>
+<p>Un tableau de synthèse est séduisant parce qu'il est net, mais il <strong>masque le détail</strong>. Lire un TCD, c'est aussi se demander ce qu'il ne montre pas.</p>
+<div class="cards">
+  <div class="card"><div class="ic">📍</div><h4>Valeurs extrêmes</h4><p>Une vente exceptionnelle peut dominer une moyenne.</p></div>
+  <div class="card"><div class="ic">🧮</div><h4>Petits effectifs</h4><p>Un pourcentage calculé sur 2 lignes est peu fiable.</p></div>
+  <div class="card"><div class="ic">🔽</div><h4>Filtre oublié</h4><p>Un filtre actif exclut des données sans que l'on y pense.</p></div>
+  <div class="card"><div class="ic">📋</div><h4>Source incomplète</h4><p>Lignes non actualisées, doublons ou périodes manquantes.</p></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Une moyenne de moyennes n'est pas la moyenne globale quand les groupes n'ont pas le même nombre de lignes. Dans la leçon, la moyenne générale vaut 142,86 €, et non la moyenne des trois moyennes régionales (≈ 144,44 €).</p></div>
+<details><summary>Quelques réflexes de lecture</summary><div><ul><li>Vérifier la période et les filtres actifs</li><li>Comparer le total du TCD au total de la source</li><li>Regarder le nombre de lignes derrière chaque chiffre</li><li>Associer moyenne et médiane</li><li>Rappeler qu'une corrélation n'est pas une explication</li></ul></div></details>
+<div class="note"><strong>🔗 Pour aller plus loin</strong><p>La leçon 06 montre comment représenter ces synthèses par des graphiques efficaces, avec les mêmes précautions de lecture.</p></div>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>Trier ordonne, filtrer masque : aucune donnée n'est supprimée.</li>
+<li>Un TCD se construit avec 4 zones : Lignes, Colonnes, Valeurs, Filtres.</li>
+<li>On peut regrouper par dates, catégories ou régions, à condition que les types de données soient corrects.</li>
+<li>Somme, moyenne, nombre et % du total répondent à des questions différentes.</li>
+<li>Un TCD doit être actualisé quand la source change ; un tableau structuré facilite cette mise à jour.</li>
+<li>Moyenne, médiane et écart décrivent le centre et la dispersion des données.</li>
+<li>Toujours contrôler extrêmes, effectifs, filtres et complétude de la source avant de conclure.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <a href="lecon-04-maitriser-formules-fonctions-essentielles.html">Leçon précédente<small>Leçon 04 — Maîtriser les formules et fonctions essentielles</small></a>
+    <a href="lecon-06-creer-graphiques-efficaces.html">Leçon suivante<small>Leçon 06 — Créer des graphiques efficaces (Module 2)</small></a>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 1 · Leçon 05</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Étapes de création d'un TCD (stepper) ===== */
+const steps=[
+["Source","Vérifier que les données sont bien structurées : une ligne d'en-têtes, un enregistrement par ligne, pas de cellule fusionnée."],
+["Insérer","Excel : Insertion › Tableau croisé dynamique. Google Sheets : Insertion › Tableau croisé dynamique."],
+["Placer","Glisser les champs dans Lignes, Colonnes, Valeurs et Filtres selon la question posée."],
+["Lire","Choisir le mode de calcul, puis interpréter le résumé obtenu en le comparant à la source."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Étape '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.setAttribute('role','listitem');
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

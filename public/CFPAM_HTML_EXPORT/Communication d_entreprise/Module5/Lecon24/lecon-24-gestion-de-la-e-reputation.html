@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 24 — Gestion de la e-réputation">
+<title>Leçon 24 — Gestion de la e-réputation | Communication d'Entreprise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F5F2;
+  --color-text:#1B1F2E;
+  --color-accent:#FF5A36;
+  --color-neutral:#9AA3B2;
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft-10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --max:1120px;
+  --reading:720px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:inherit}
+button{font:inherit}
+::selection{background:var(--color-accent);color:var(--color-bg)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:50;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(12px)}
+.header-inner{max-width:var(--max);margin:auto;padding:15px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk",sans-serif;font-weight:700;text-decoration:none;letter-spacing:-.02em}
+.brand small{display:block;font:500 11px "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.toc-link{border:1px solid var(--border);border-radius:999px;padding:8px 14px;text-decoration:none;font-size:14px;font-weight:600;transition:.2s}
+.toc-link:hover{border-color:var(--color-accent);color:var(--color-accent)}
+.container{max-width:var(--max);margin:auto;padding:0 24px}
+.hero{padding:74px 0 48px}
+.eyebrow,.kicker{font:600 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--color-accent)}
+.hero h1{max-width:850px;margin:12px 0 18px;font:700 clamp(42px,6vw,76px)/1.02 "Space Grotesk",sans-serif;letter-spacing:-.045em}
+.hero-lead{max-width:var(--reading);font-size:20px;color:var(--muted);margin:0 0 28px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.badge{border:1px solid var(--border);padding:8px 12px;border-radius:999px;font-size:13px;background:var(--soft)}
+.badge strong{font-family:"IBM Plex Mono",monospace;color:var(--color-text)}
+.toc{margin:0 0 54px;padding:22px;border:1px solid var(--border);background:var(--soft);border-radius:20px}
+.toc h2{font:600 20px "Space Grotesk",sans-serif;margin:0 0 14px}
+.toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px}
+.toc a{text-decoration:none;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px}
+.toc a:hover{color:var(--color-accent)}
+.section{padding:70px 0;scroll-margin-top:85px}
+.section.alt{background:var(--soft)}
+.section h2{font:700 clamp(30px,4vw,46px)/1.1 "Space Grotesk",sans-serif;letter-spacing:-.035em;margin:10px 0 22px}
+.section h3{font:600 22px "Space Grotesk",sans-serif;margin:28px 0 10px}
+.reading{max-width:var(--reading)}
+.reading p{margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:28px 0}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{border:1px solid var(--border);background:var(--color-bg);border-radius:18px;padding:22px;transition:.2s}
+.card:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.card .icon{font-size:26px;margin-bottom:8px}
+.card h3{margin:0 0 8px;font-size:19px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.visual{margin:30px 0;border:1px solid var(--border);border-radius:22px;background:var(--color-bg);padding:20px;overflow:hidden}
+.visual svg{display:block;width:100%;height:auto}
+.caption{font-size:12px;color:var(--muted);margin-top:10px}
+.callout{margin:28px 0;border:2px solid var(--color-accent);border-radius:18px;padding:20px;background:var(--soft-10)}
+.callout strong{font-family:"Space Grotesk",sans-serif}
+.callout .label{display:block;font:600 12px "IBM Plex Mono",monospace;color:var(--color-accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;margin:26px 0;font-size:14px;background:var(--color-bg)}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:18px;margin:26px 0}
+.table-wrap table{margin:0;min-width:680px}
+th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.04em}
+tr:hover td{background:var(--soft)}
+td:last-child,th:last-child{text-align:left}
+.mono{font:500 13px/1.7 "IBM Plex Mono",monospace;background:var(--soft-10);border-left:4px solid var(--color-accent);border-radius:12px;padding:18px;white-space:pre-wrap}
+.tabs{margin:28px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.tab-btn{border:1px solid var(--border);background:var(--color-bg);padding:10px 14px;border-radius:10px;cursor:pointer}
+.tab-btn[aria-selected="true"]{border-color:var(--color-accent);background:var(--soft-10);font-weight:700}
+.tab-panel{display:none;border:1px solid var(--border);border-radius:16px;padding:20px}
+.tab-panel.active{display:block}
+details{border-bottom:1px solid var(--border);padding:14px 0}
+details:first-of-type{border-top:1px solid var(--border)}
+summary{cursor:pointer;font-weight:700;font-family:"Space Grotesk",sans-serif}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:32px 0}
+.step{position:relative;border:1px solid var(--border);border-radius:16px;padding:17px;background:var(--color-bg)}
+.step b{display:flex;width:30px;height:30px;border-radius:50%;align-items:center;justify-content:center;background:var(--color-accent);color:var(--color-bg);font-family:"IBM Plex Mono",monospace;margin-bottom:12px}
+.step h3{font-size:16px;margin:0 0 7px}
+.step p{font-size:13px;color:var(--muted);margin:0}
+.summary{padding:36px 0}
+.key{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key .card{min-height:150px}
+.nav-bottom{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:stretch;padding:50px 0}
+.nav-card{border:1px solid var(--border);border-radius:18px;padding:18px;text-decoration:none;background:var(--color-bg)}
+.nav-card:hover{border-color:var(--color-accent)}
+.nav-card.next{text-align:right}
+.nav-card small{display:block;font:600 11px "IBM Plex Mono",monospace;color:var(--color-accent);text-transform:uppercase;margin-bottom:7px}
+.nav-card strong{font-family:"Space Grotesk",sans-serif}
+.back-top{border:1px solid var(--border);background:var(--color-bg);border-radius:999px;padding:0 17px;cursor:pointer}
+.back-top:hover{border-color:var(--color-accent);color:var(--color-accent)}
+.footer{border-top:1px solid var(--border);padding:28px 0 42px;color:var(--muted);font-size:13px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+  .container{padding:0 18px}.header-inner{padding:13px 18px}
+  .hero{padding:55px 0 35px}.hero h1{font-size:45px}
+  .toc-grid,.grid,.grid.three{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr}
+  .key{grid-template-columns:1fr 1fr}
+  .nav-bottom{grid-template-columns:1fr}.nav-card.next{text-align:left}.back-top{padding:10px}
+}
+@media(max-width:480px){.hero h1{font-size:38px}.hero-lead{font-size:17px}.key{grid-template-columns:1fr}.section{padding:52px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="brand" href="#top">Communication d’Entreprise<small>Module 5 · Communication de crise et gestion de la réputation</small></a>
+    <a class="toc-link" href="#sommaire">Sommaire</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">Leçon 24 · Niveau avancé</div>
+    <h1>Gestion de la e-réputation</h1>
+    <p class="hero-lead">Surveiller et protéger l'image de l'entreprise en ligne.</p>
+    <div class="meta">
+      <span class="badge"><strong>MODULE 5</strong> · Communication de crise et gestion de la réputation</span>
+      <span class="badge"><strong>20 MIN</strong> · durée estimée</span>
+      <span class="badge"><strong>OBJECTIF</strong> · surveiller & protéger</span>
+    </div>
+  </div>
+</section>
+
+<section class="container" id="sommaire">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2>Sommaire</h2>
+    <div class="toc-grid">
+      <a href="#eréputation">01 · Comprendre l’e-réputation</a>
+      <a href="#veille">02 · Organiser la veille en ligne</a>
+      <a href="#avis">03 · Lire et gérer les avis clients</a>
+      <a href="#badbuzz">04 · Prévenir et gérer un bad buzz</a>
+      <a href="#commentaires">05 · Répondre aux commentaires négatifs</a>
+      <a href="#outils">06 · Les outils de veille</a>
+      <a href="#synthese">07 · Points clés à retenir</a>
+    </div>
+  </nav>
+</section>
+
+<section class="section" id="eréputation">
+<div class="container reveal">
+  <div class="kicker">01 · Fondamentaux</div>
+  <h2>Comprendre l’e-réputation</h2>
+  <div class="reading">
+    <p>L’<strong>e-réputation</strong> désigne l’image et la perception d’une entreprise sur Internet. Elle se construit à partir de ce que l’organisation publie elle-même, mais aussi de ce que les clients, salariés, partenaires, médias et internautes disent, partagent ou évaluent.</p>
+    <p>Elle ne correspond donc pas uniquement aux comptes officiels de la marque. Une entreprise peut avoir une communication maîtrisée sur ses propres canaux tout en faisant l’objet de conversations défavorables sur d’autres espaces numériques.</p>
+  </div>
+
+  <div class="visual" aria-label="Schéma de construction de l’e-réputation">
+    <svg viewBox="0 0 900 330" role="img">
+      <title>Les quatre sources de l’e-réputation convergent vers la perception de la marque</title>
+      <rect x="40" y="35" width="190" height="78" rx="16" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="135" y="68" text-anchor="middle" font-family="Inter" font-size="16" fill="#1B1F2E">Canaux officiels</text>
+      <text x="135" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#9AA3B2">site · réseaux</text>
+      <rect x="40" y="215" width="190" height="78" rx="16" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="135" y="248" text-anchor="middle" font-family="Inter" font-size="16" fill="#1B1F2E">Avis & clients</text>
+      <text x="135" y="272" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#9AA3B2">notes · commentaires</text>
+      <rect x="670" y="35" width="190" height="78" rx="16" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="765" y="68" text-anchor="middle" font-family="Inter" font-size="16" fill="#1B1F2E">Médias & tiers</text>
+      <text x="765" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#9AA3B2">articles · posts</text>
+      <rect x="670" y="215" width="190" height="78" rx="16" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="765" y="248" text-anchor="middle" font-family="Inter" font-size="16" fill="#1B1F2E">Conversations</text>
+      <text x="765" y="272" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#9AA3B2">partages · mentions</text>
+      <line x1="230" y1="74" x2="430" y2="145" stroke="#FF5A36" stroke-width="3"/>
+      <line x1="230" y1="254" x2="430" y2="165" stroke="#FF5A36" stroke-width="3"/>
+      <line x1="670" y1="74" x2="470" y2="145" stroke="#FF5A36" stroke-width="3"/>
+      <line x1="670" y1="254" x2="470" y2="165" stroke="#FF5A36" stroke-width="3"/>
+      <rect x="330" y="112" width="240" height="86" rx="22" fill="#F6F5F2" stroke="#FF5A36" stroke-width="4"/>
+      <text x="450" y="148" text-anchor="middle" font-family="Space Grotesk" font-size="21" font-weight="700" fill="#1B1F2E">PERCEPTION DE LA</text>
+      <text x="450" y="174" text-anchor="middle" font-family="Space Grotesk" font-size="21" font-weight="700" fill="#1B1F2E">MARQUE</text>
+    </svg>
+    <div class="caption">L’e-réputation résulte de l’ensemble des signaux visibles et des conversations associées à l’entreprise.</div>
+  </div>
+
+  <div class="grid three">
+    <article class="card"><div class="icon">◎</div><h3>Visible</h3><p>Les contenus accessibles publiquement participent directement à l’image numérique.</p></article>
+    <article class="card"><div class="icon">↗</div><h3>Évolutive</h3><p>Une perception peut changer rapidement après un avis, un article ou une publication virale.</p></article>
+    <article class="card"><div class="icon">⌁</div><h3>Collective</h3><p>La réputation dépend de nombreuses voix, pas seulement du discours de l’entreprise.</p></article>
+  </div>
+</div>
+</section>
+
+<section class="section alt" id="veille">
+<div class="container reveal">
+  <div class="kicker">02 · Surveillance</div>
+  <h2>Organiser la veille en ligne</h2>
+  <div class="reading">
+    <p>La <strong>veille en ligne</strong> consiste à rechercher et suivre régulièrement les informations, mentions, avis et conversations qui concernent l’entreprise, ses produits, ses dirigeants ou son secteur.</p>
+    <p>Une veille efficace ne consiste pas à tout lire. Elle repose sur des mots-clés pertinents, des sources prioritaires, une fréquence définie et des critères permettant de distinguer un signal faible d’une situation nécessitant une réaction.</p>
+  </div>
+
+  <div class="stepper" aria-label="Processus de veille">
+    <div class="step"><b>01</b><h3>Définir</h3><p>Nom de marque, produits, dirigeants, campagnes et sujets sensibles.</p></div>
+    <div class="step"><b>02</b><h3>Collecter</h3><p>Mentions, avis, publications, forums et articles pertinents.</p></div>
+    <div class="step"><b>03</b><h3>Qualifier</h3><p>Nature, portée, crédibilité et niveau de risque du signal.</p></div>
+    <div class="step"><b>04</b><h3>Transmettre</h3><p>Partager les alertes utiles aux responsables concernés.</p></div>
+    <div class="step"><b>05</b><h3>Agir</h3><p>Répondre, corriger, expliquer ou simplement surveiller.</p></div>
+  </div>
+
+  <div class="callout"><span class="label">💡 À retenir</span><strong>Une alerte n’est pas automatiquement une crise.</strong> La veille sert d’abord à donner de la visibilité à l’organisation pour décider avec discernement.</div>
+
+  <div class="visual" aria-label="Matrice de qualification des signaux">
+    <svg viewBox="0 0 900 310" role="img">
+      <title>Matrice simple de qualification d’un signal numérique</title>
+      <line x1="130" y1="250" x2="800" y2="250" stroke="#1B1F2E" stroke-width="2"/>
+      <line x1="130" y1="250" x2="130" y2="45" stroke="#1B1F2E" stroke-width="2"/>
+      <text x="465" y="292" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#9AA3B2">PORTÉE / VISIBILITÉ →</text>
+      <text x="32" y="150" text-anchor="middle" transform="rotate(-90 32 150)" font-family="IBM Plex Mono" font-size="13" fill="#9AA3B2">RISQUE →</text>
+      <line x1="130" y1="190" x2="800" y2="190" stroke="#9AA3B2" stroke-width="1" stroke-dasharray="5 6"/>
+      <line x1="420" y1="250" x2="420" y2="45" stroke="#9AA3B2" stroke-width="1" stroke-dasharray="5 6"/>
+      <circle cx="245" cy="220" r="10" fill="#9AA3B2"/><text x="265" y="225" font-family="Inter" font-size="13" fill="#1B1F2E">mention isolée</text>
+      <circle cx="520" cy="145" r="10" fill="#FF5A36"/><text x="540" y="150" font-family="Inter" font-size="13" fill="#1B1F2E">avis critique visible</text>
+      <circle cx="700" cy="90" r="10" fill="#FF5A36"/><text x="720" y="95" font-family="Inter" font-size="13" fill="#1B1F2E">sujet à forte diffusion</text>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section class="section" id="avis">
+<div class="container reveal">
+  <div class="kicker">03 · Preuve sociale</div>
+  <h2>Lire et gérer les avis clients</h2>
+  <div class="reading">
+    <p>Les <strong>avis clients</strong> sont des signaux particulièrement visibles : ils influencent la confiance des prospects et peuvent révéler des problèmes récurrents dans l’expérience proposée.</p>
+    <p>Une entreprise ne doit pas chercher uniquement à obtenir des avis positifs. Elle doit surtout développer une capacité à écouter, analyser les motifs de satisfaction ou d’insatisfaction et traiter les causes lorsqu’elles sont réelles.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Signal</th><th scope="col">Ce qu’il peut révéler</th><th scope="col">Réflexe communication</th></tr></thead>
+      <tbody>
+        <tr><td>Éloge précis</td><td>Une expérience ou un bénéfice apprécié</td><td>Remercier et valoriser sans surjouer</td></tr>
+        <tr><td>Critique factuelle</td><td>Un dysfonctionnement réel ou perçu</td><td>Reconnaître, vérifier et expliquer la suite</td></tr>
+        <tr><td>Plainte répétée</td><td>Un problème structurel</td><td>Faire remonter le motif aux équipes concernées</td></tr>
+        <tr><td>Accusation non étayée</td><td>Une perception ou une information incertaine</td><td>Éviter l’escalade et demander les éléments utiles</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout"><span class="label">📐 Bonnes pratiques professionnelles</span>Répondre publiquement avec sobriété, puis déplacer les échanges nécessitant des données personnelles vers un canal privé approprié. La réponse visible doit surtout montrer que l’entreprise écoute et traite le sujet.</div>
+</div>
+</section>
+
+<section class="section alt" id="badbuzz">
+<div class="container reveal">
+  <div class="kicker">04 · Risque réputationnel</div>
+  <h2>Prévenir et gérer un bad buzz</h2>
+  <div class="reading">
+    <p>Un <strong>bad buzz</strong> correspond à une forte circulation de conversations négatives autour d’une marque, d’un contenu ou d’un événement. Sa diffusion peut être accélérée par les partages, commentaires, reprises médiatiques et algorithmes des plateformes.</p>
+    <p>Le risque augmente lorsque l’entreprise répond trop tard, nie des faits établis, efface systématiquement les critiques légitimes ou adopte un ton agressif. À l’inverse, une réaction rapide, factuelle et proportionnée peut limiter l’escalade.</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-buttons" role="tablist" aria-label="Avant et pendant un bad buzz">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-before" id="btn-before">Avant</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-during" id="btn-during">Pendant</button>
+    </div>
+    <div class="tab-panel active" id="tab-before" role="tabpanel" aria-labelledby="btn-before">
+      <strong>Préparer.</strong> Identifier les sujets sensibles, définir les responsables, formaliser les circuits d’alerte et surveiller régulièrement les conversations.
+    </div>
+    <div class="tab-panel" id="tab-during" role="tabpanel" aria-labelledby="btn-during">
+      <strong>Stabiliser.</strong> Vérifier les faits, coordonner la réponse, publier un message clair lorsque c’est nécessaire et suivre l’évolution des réactions.
+    </div>
+  </div>
+
+  <div class="visual" aria-label="Cycle de gestion d’un bad buzz">
+    <svg viewBox="0 0 900 280" role="img">
+      <title>Cycle de gestion : détecter, vérifier, répondre, suivre</title>
+      <rect x="55" y="95" width="160" height="78" rx="18" fill="none" stroke="#FF5A36" stroke-width="3"/>
+      <text x="135" y="128" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="18" fill="#1B1F2E">DÉTECTER</text>
+      <text x="135" y="151" text-anchor="middle" font-family="Inter" font-size="12" fill="#9AA3B2">voir le signal</text>
+      <rect x="270" y="95" width="160" height="78" rx="18" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="350" y="128" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="18" fill="#1B1F2E">VÉRIFIER</text>
+      <text x="350" y="151" text-anchor="middle" font-family="Inter" font-size="12" fill="#9AA3B2">établir les faits</text>
+      <rect x="485" y="95" width="160" height="78" rx="18" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="565" y="128" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="18" fill="#1B1F2E">RÉPONDRE</text>
+      <text x="565" y="151" text-anchor="middle" font-family="Inter" font-size="12" fill="#9AA3B2">message adapté</text>
+      <rect x="700" y="95" width="145" height="78" rx="18" fill="none" stroke="#FF5A36" stroke-width="3"/>
+      <text x="772" y="128" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="18" fill="#1B1F2E">SUIVRE</text>
+      <text x="772" y="151" text-anchor="middle" font-family="Inter" font-size="12" fill="#9AA3B2">mesurer l’évolution</text>
+      <path d="M215 134 H270 M430 134 H485 M645 134 H700" fill="none" stroke="#1B1F2E" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <div class="callout"><span class="label">⚠️ Attention / erreur fréquente</span>Ne pas confondre vitesse et précipitation : publier immédiatement une information non vérifiée peut aggraver la situation au lieu de la résoudre.</div>
+</div>
+</section>
+
+<section class="section" id="commentaires">
+<div class="container reveal">
+  <div class="kicker">05 · Réponse</div>
+  <h2>Répondre aux commentaires négatifs</h2>
+  <div class="reading">
+    <p>Une réponse professionnelle doit rester <strong>calme, précise, empathique et proportionnée</strong>. Elle ne cherche pas à gagner une dispute en public ; elle cherche à protéger la relation, clarifier les faits et orienter vers une résolution.</p>
+  </div>
+
+  <div class="mono" aria-label="Exemple de réponse professionnelle">NOUS AVONS BIEN PRIS CONNAISSANCE DE VOTRE RETOUR.
+Nous sommes désolés que votre expérience n’ait pas répondu à vos attentes.
+Nous vérifions les éléments signalés afin de comprendre précisément la situation.
+Pouvez-vous nous contacter en message privé avec les références nécessaires ?
+Nous reviendrons vers vous dès que possible.</div>
+
+  <div class="grid">
+    <article class="card"><div class="icon">01</div><h3>Reconnaître</h3><p>Montrer que le commentaire a été lu et que la préoccupation est prise au sérieux.</p></article>
+    <article class="card"><div class="icon">02</div><h3>Rester factuel</h3><p>Éviter les suppositions, accusations et promesses impossibles à tenir.</p></article>
+    <article class="card"><div class="icon">03</div><h3>Orienter</h3><p>Proposer un canal adapté lorsque des informations privées ou détaillées sont nécessaires.</p></article>
+    <article class="card"><div class="icon">04</div><h3>Apprendre</h3><p>Transformer les motifs récurrents en informations utiles pour améliorer l’expérience.</p></article>
+  </div>
+
+  <details>
+    <summary>Faut-il répondre à tous les commentaires négatifs ?</summary>
+    <p>Non. La priorité est de traiter les commentaires pertinents et les situations où une réponse apporte une information, une orientation ou une clarification. Les contenus manifestement provocateurs ou sans rapport doivent être gérés selon les règles de modération de la plateforme.</p>
+  </details>
+  <details>
+    <summary>Pourquoi éviter les longues justifications publiques ?</summary>
+    <p>Parce qu’elles peuvent déplacer la conversation vers un débat sans fin. Une réponse courte, claire et humaine est généralement plus maîtrisable, surtout lorsque les faits doivent encore être vérifiés.</p>
+  </details>
+</div>
+</section>
+
+<section class="section alt" id="outils">
+<div class="container reveal">
+  <div class="kicker">06 · Outils</div>
+  <h2>Les outils de veille</h2>
+  <div class="reading">
+    <p>Les outils de veille servent à centraliser ou faciliter la détection des mentions. Le choix dépend du volume de conversations, des plateformes à surveiller, des ressources disponibles et du niveau de précision recherché.</p>
+  </div>
+
+  <div class="grid three">
+    <article class="card"><div class="icon">⌕</div><h3>Moteurs de recherche</h3><p>Rechercher régulièrement le nom de l’entreprise, ses produits et les sujets associés.</p></article>
+    <article class="card"><div class="icon">#</div><h3>Alertes & mots-clés</h3><p>Automatiser la détection de certaines occurrences ou expressions importantes.</p></article>
+    <article class="card"><div class="icon">◫</div><h3>Réseaux sociaux</h3><p>Surveiller les mentions, commentaires, hashtags et conversations publiques.</p></article>
+    <article class="card"><div class="icon">▤</div><h3>Plateformes d’avis</h3><p>Observer les notes, tendances de satisfaction et motifs de réclamation.</p></article>
+    <article class="card"><div class="icon">◌</div><h3>Tableau de veille</h3><p>Centraliser date, source, sujet, portée, sentiment perçu et action engagée.</p></article>
+    <article class="card"><div class="icon">↺</div><h3>Reporting</h3><p>Comparer les évolutions dans le temps et faire remonter les signaux importants.</p></article>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Élément à suivre</th><th scope="col">Indicateur utile</th><th scope="col">Décision possible</th></tr></thead>
+      <tbody>
+        <tr><td>Mentions</td><td>Volume et évolution</td><td>Renforcer la surveillance si hausse soudaine</td></tr>
+        <tr><td>Avis</td><td>Note et motifs récurrents</td><td>Traiter les causes opérationnelles</td></tr>
+        <tr><td>Commentaires</td><td>Nature des critiques</td><td>Répondre, orienter ou modérer selon le cas</td></tr>
+        <tr><td>Partages</td><td>Propagation d’un contenu</td><td>Évaluer la portée et le risque réputationnel</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout"><span class="label">📋 Cas pratique</span>Une entreprise découvre plusieurs commentaires négatifs similaires en quelques heures. Avant de publier une réponse générale, l’équipe communication compare les commentaires, vérifie le problème auprès du service concerné, identifie les faits communs et prépare une réponse cohérente. La veille devient ainsi un outil d’aide à la décision, pas seulement un outil d’observation.</div>
+</div>
+</section>
+
+<section class="section" id="synthese">
+<div class="container reveal summary">
+  <div class="kicker">07 · Synthèse</div>
+  <h2>Points clés à retenir</h2>
+  <div class="key">
+    <article class="card"><div class="icon">01</div><h3>Surveiller</h3><p>L’e-réputation se construit partout où l’entreprise est mentionnée ou discutée.</p></article>
+    <article class="card"><div class="icon">02</div><h3>Qualifier</h3><p>Chaque signal doit être interprété selon sa nature, sa portée et son niveau de risque.</p></article>
+    <article class="card"><div class="icon">03</div><h3>Répondre</h3><p>Une réponse efficace combine empathie, faits vérifiés, sobriété et orientation vers une solution.</p></article>
+    <article class="card"><div class="icon">04</div><h3>Progresser</h3><p>Les avis et conversations sont aussi des sources d’apprentissage pour l’entreprise.</p></article>
+  </div>
+
+  <div class="visual" aria-label="Résumé visuel de la gestion de la e-réputation">
+    <svg viewBox="0 0 900 220" role="img">
+      <title>Résumé : écouter, comprendre, agir, apprendre</title>
+      <circle cx="120" cy="110" r="52" fill="none" stroke="#FF5A36" stroke-width="4"/>
+      <text x="120" y="106" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="17" fill="#1B1F2E">ÉCOUTER</text>
+      <text x="120" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#9AA3B2">veille</text>
+      <circle cx="335" cy="110" r="52" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="335" y="106" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="17" fill="#1B1F2E">COMPRENDRE</text>
+      <text x="335" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#9AA3B2">qualification</text>
+      <circle cx="565" cy="110" r="52" fill="none" stroke="#FF5A36" stroke-width="4"/>
+      <text x="565" y="106" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="17" fill="#1B1F2E">AGIR</text>
+      <text x="565" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#9AA3B2">réponse</text>
+      <circle cx="780" cy="110" r="52" fill="none" stroke="#9AA3B2" stroke-width="2"/>
+      <text x="780" y="106" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="17" fill="#1B1F2E">APPRENDRE</text>
+      <text x="780" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#9AA3B2">amélioration</text>
+      <path d="M172 110 H283 M387 110 H513 M617 110 H728" stroke="#1B1F2E" stroke-width="2"/>
+    </svg>
+  </div>
+</div>
+</section>
+
+<div class="container">
+  <nav class="nav-bottom" aria-label="Navigation entre les leçons">
+    <a class="nav-card" href="#" onclick="return false">
+      <small>← Leçon précédente</small>
+      <strong>23 — Prise de parole en situation sensible</strong>
+    </a>
+    <button class="back-top" type="button" id="topBtn" aria-label="Retour en haut">↑ Haut</button>
+    <a class="nav-card next" href="#" onclick="return false">
+      <small>Leçon suivante →</small>
+      <strong>25 — Sortie de crise et retour d'expérience</strong>
+    </a>
+  </nav>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="container">Communication d’Entreprise · Module 5 · Leçon 24</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('progressBar');
+  const topBtn=document.getElementById('topBtn');
+  function progress(){
+    const doc=document.documentElement;
+    const max=doc.scrollHeight-doc.clientHeight;
+    bar.style.width=(max>0?(doc.scrollTop/max)*100:0)+'%';
+  }
+  window.addEventListener('scroll',progress,{passive:true});
+  progress();
+
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  const buttons=[...document.querySelectorAll('.tab-btn')];
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+    });
+  });
+
+  const reveals=[...document.querySelectorAll('.reveal')];
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+    },{threshold:.08});
+    reveals.forEach(el=>io.observe(el));
+  }else reveals.forEach(el=>el.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

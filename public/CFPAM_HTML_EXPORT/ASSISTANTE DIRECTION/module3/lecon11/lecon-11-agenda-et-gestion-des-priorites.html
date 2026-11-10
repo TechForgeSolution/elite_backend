@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 11 — Agenda et gestion des priorités</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Matrix (urgent/important) */
+  .matrix{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:24px 0;}
+  @media(max-width:520px){ .matrix{grid-template-columns:1fr;} }
+  .matrix-cell{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .matrix-cell.q1{border-top:3px solid #8B4B4B;}
+  .matrix-cell.q2{border-top:3px solid var(--color-accent);}
+  .matrix-cell.q3{border-top:3px solid var(--color-brass);}
+  .matrix-cell.q4{border-top:3px solid var(--color-text-muted);}
+  .matrix-cell h3{margin:0 0 6px; font-size:0.98rem;}
+  .matrix-cell p{margin:0; font-size:0.86rem; color:var(--color-text-muted);}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel, .matrix-cell{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 11 — Agenda et gestion des priorités</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#agenda-partage">1. Agenda partagé</a>
+          <a href="#invitations-disponibilites">2. Invitations et disponibilités</a>
+          <a href="#fuseaux">3. Fuseaux horaires</a>
+          <a href="#urgent-important">4. Urgent et important</a>
+          <a href="#plages-protegees">5. Plages protégées</a>
+          <a href="#rappels">6. Rappels et anticipation</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 3 — Organisation, temps et réunions</span>
+      <span class="badge brass">Niveau intermédiaire</span>
+      <span class="badge">30 min</span>
+    </div>
+    <h1>Leçon 11 — Agenda et gestion des priorités</h1>
+    <p class="subtitle">Tenir l'agenda d'un responsable sans conflit ni oubli, en arbitrant en permanence entre urgence, importance et disponibilités réelles.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Tenir à jour un agenda partagé sans double réservation ni oubli.</li>
+      <li>Traiter une invitation et vérifier la disponibilité réelle avant toute confirmation.</li>
+      <li>Gérer des rendez-vous impliquant plusieurs fuseaux horaires.</li>
+      <li>Distinguer l'urgent de l'important pour arbitrer des demandes contradictoires.</li>
+      <li>Protéger des plages de travail en profondeur dans l'agenda d'un responsable.</li>
+      <li>Paramétrer des rappels adaptés à chaque type d'engagement.</li>
+    </ul>
+  </div>
+
+  <section id="agenda-partage">
+    <h2>1. Agenda partagé : Outlook et Google Agenda</h2>
+    <p>Dans une fonction d'assistance de direction, l'agenda n'est presque jamais tenu par la personne qui l'occupe : il est <strong>partagé</strong>, avec un ou plusieurs niveaux d'accès délégué. Outlook et Google Agenda sont les deux environnements les plus courants ; leurs logiques diffèrent légèrement mais reposent sur les mêmes principes.</p>
+    <p>Le rôle de l'assistant n'est pas seulement de recopier des rendez-vous : c'est de garantir qu'à tout moment, l'agenda reflète la réalité — aucun créneau annoncé disponible ne doit en fait être pris ailleurs, et aucun engagement confirmé ne doit manquer.</p>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Un agenda de direction fiable est un agenda où « disponible » veut vraiment dire disponible. La confiance du responsable dans son propre agenda repose entièrement sur cette rigueur.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fonction</th><th>Outlook</th><th>Google Agenda</th></tr></thead>
+        <tbody>
+          <tr><td>Délégation</td><td>Options de délégué (lecture, modification, réponse aux invitations)</td><td>Partage avec droit « Apporter des modifications et gérer le partage »</td></tr>
+          <tr><td>Codage couleur</td><td>Catégories de couleur personnalisables</td><td>Couleurs d'événement par calendrier ou par rendez-vous</td></tr>
+          <tr><td>Superposition</td><td>Affichage de plusieurs calendriers côte à côte ou superposés</td><td>Superposition de calendriers activable en un clic</td></tr>
+          <tr><td>Visio intégrée</td><td>Teams ajouté automatiquement à la réunion</td><td>Google Meet ajouté automatiquement à l'événement</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tabs" data-tabs="acces-delegue">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Accès délégué restreint</button>
+        <button class="tab-btn" role="tab" data-tab="b">Accès délégué complet</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>L'assistant voit l'agenda mais ne peut ni créer, ni modifier, ni répondre aux invitations. Ce niveau convient pour un simple suivi de disponibilité, mais oblige à repasser systématiquement par le responsable pour la moindre confirmation — ce qui ralentit fortement le traitement des demandes.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>L'assistant peut créer, déplacer, annuler des événements et répondre aux invitations au nom du responsable. C'est le niveau attendu pour une gestion d'agenda efficace, à condition d'avoir des règles claires sur ce qui peut être décidé seul et ce qui doit être validé au préalable.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Créer un rendez-vous directement dans l'agenda sans vérifier son statut de visibilité (privé/public) ni y joindre le lieu ou le lien de visioconférence : le responsable se retrouve alors devant un créneau bloqué sans savoir de quoi il s'agit.
+    </div>
+  </section>
+
+  <section id="invitations-disponibilites">
+    <h2>2. Invitations et disponibilités</h2>
+    <p>Chaque invitation reçue doit être confrontée à la disponibilité <em>réelle</em> du responsable — et non à ce que l'agenda affiche en apparence. Un créneau visuellement libre peut être en réalité indisponible : trajet non terminé, dossier à préparer juste avant, réunion précédente qui déborde habituellement.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Recevoir l'invitation</h3><p>Identifier l'objet, la durée réelle attendue et les participants.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Vérifier la disponibilité réelle</h3><p>Tenir compte des marges avant/après, pas seulement du créneau affiché.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Répondre ou proposer</h3><p>Confirmer, ou proposer deux à trois créneaux alternatifs précis.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Confirmer et bloquer</h3><p>Verrouiller le créneau dès accord, avec lieu ou lien joint.</p></div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Temps de trajet</h3><p>Toujours compter le déplacement réel entre deux lieux, jamais un enchaînement « collé ».</p></div>
+      <div class="card"><h3>Temps de préparation</h3><p>Une réunion à enjeu nécessite souvent 15 à 30 minutes de lecture ou de mise en forme juste avant.</p></div>
+      <div class="card"><h3>Temps de récupération</h3><p>Après une séquence dense (plusieurs rendez-vous d'affilée), prévoir une courte marge pour traiter l'urgent qui s'est accumulé.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Accepter une invitation uniquement parce que le créneau apparaît vide dans l'agenda, sans tenir compte du trajet entre deux lieux différents ou d'une réunion précédente qui dépasse régulièrement l'horaire prévu.
+    </div>
+  </section>
+
+  <section id="fuseaux">
+    <h2>3. Fuseaux horaires</h2>
+    <p>Dès qu'un rendez-vous implique un interlocuteur situé dans un autre fuseau horaire, une confusion d'horaire devient l'erreur la plus fréquente — et la plus visible pour l'extérieur. La règle de base : toujours raisonner et écrire l'heure avec son fuseau explicite, jamais une heure « nue ».</p>
+
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma d'une réunion à 14h Paris convertie dans deux autres fuseaux horaires" style="width:100%; max-width:560px; display:block; margin:20px auto;">
+      <rect x="10" y="20" width="185" height="160" rx="3" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1.5"/>
+      <text x="102" y="50" font-family="Inter" font-size="12" fill="#2F5D50" text-anchor="middle" font-weight="600">Paris</text>
+      <text x="102" y="105" font-family="Source Serif 4" font-size="26" fill="#16181C" text-anchor="middle">14:00</text>
+      <text x="102" y="130" font-family="Inter" font-size="11" fill="#5E5A54" text-anchor="middle">CET (UTC+1)</text>
+      <rect x="227" y="20" width="185" height="160" rx="3" fill="#F5F2EC" stroke="#E4DFD6" stroke-width="1.5"/>
+      <text x="319" y="50" font-family="Inter" font-size="12" fill="#5E5A54" text-anchor="middle" font-weight="600">New York</text>
+      <text x="319" y="105" font-family="Source Serif 4" font-size="26" fill="#16181C" text-anchor="middle">08:00</text>
+      <text x="319" y="130" font-family="Inter" font-size="11" fill="#5E5A54" text-anchor="middle">EST (UTC-5)</text>
+      <rect x="445" y="20" width="185" height="160" rx="3" fill="#F5F2EC" stroke="#E4DFD6" stroke-width="1.5"/>
+      <text x="537" y="50" font-family="Inter" font-size="12" fill="#5E5A54" text-anchor="middle" font-weight="600">Singapour</text>
+      <text x="537" y="105" font-family="Source Serif 4" font-size="26" fill="#16181C" text-anchor="middle">21:00</text>
+      <text x="537" y="130" font-family="Inter" font-size="11" fill="#5E5A54" text-anchor="middle">SGT (UTC+8)</text>
+    </svg>
+    <p class="caption">Une même réunion à 14h heure de Paris correspond à 8h à New York et 21h à Singapour : trois réalités très différentes pour les participants.</p>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Toujours préciser le fuseau dans l'invitation <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Mentionner explicitement le fuseau de référence dans l'objet ou le corps de l'invitation (« 14h Paris / 8h New York ») évite toute mauvaise interprétation, surtout pour les destinataires dont le logiciel n'affiche pas la conversion automatiquement.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Gérer les changements d'heure (été/hiver) <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Les dates de passage à l'heure d'été ou d'hiver ne sont pas identiques dans tous les pays. Une réunion récurrente fixée « 14h » avant un changement d'heure peut se décaler d'une heure pour certains participants et pas pour d'autres : vérifier systématiquement autour de ces périodes.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Choisir un horaire équitable <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Lorsque plusieurs fuseaux très éloignés sont impliqués, aucun horaire n'arrange tout le monde. Une bonne pratique consiste à faire tourner l'horaire pénalisant d'une réunion récurrente d'une session sur l'autre, plutôt que de toujours imposer la même contrainte au même fuseau.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Outlook et Google Agenda permettent d'afficher un second fuseau horaire en colonne dans la vue jour/semaine : un réglage utile dès qu'un responsable travaille régulièrement avec l'étranger.
+    </div>
+  </section>
+
+  <section id="urgent-important">
+    <h2>4. Urgent et important</h2>
+    <p>Les demandes reçues au fil de la journée sont rarement toutes de même nature. Les distinguer selon deux axes — l'urgence (le délai) et l'importance (l'enjeu réel) — permet d'arbitrer rapidement quand deux sollicitations arrivent en même temps.</p>
+
+    <div class="matrix">
+      <div class="matrix-cell q1">
+        <h3>Urgent et important</h3>
+        <p>Traiter immédiatement : incident client, document attendu par la direction générale dans l'heure.</p>
+      </div>
+      <div class="matrix-cell q2">
+        <h3>Important, non urgent</h3>
+        <p>Planifier un créneau dédié : préparation d'un rapport stratégique, réflexion sur l'organisation du trimestre.</p>
+      </div>
+      <div class="matrix-cell q3">
+        <h3>Urgent, peu important</h3>
+        <p>Déléguer ou traiter rapidement sans mobiliser le responsable : confirmation logistique, réservation simple.</p>
+      </div>
+      <div class="matrix-cell q4">
+        <h3>Ni urgent ni important</h3>
+        <p>Reporter ou écarter : sollicitations accessoires qui n'ont pas d'impact réel sur les priorités en cours.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      L'urgence se mesure au délai, l'importance se mesure à l'enjeu. Une demande peut être urgente sans être importante — et inversement : une préparation stratégique sans échéance immédiate reste souvent la plus importante de la semaine.
+    </div>
+
+    <p>En pratique, un responsable reçoit souvent plusieurs demandes contradictoires le même jour : une réunion de dernière minute proposée par un client, une échéance de rapport fixée depuis deux semaines, une plage personnelle déjà bloquée pour préparer un comité de direction. L'assistant doit pouvoir arbitrer une partie de ces conflits seul, selon des règles connues à l'avance, et ne remonter au responsable que les cas réellement ambigus.</p>
+  </section>
+
+  <section id="plages-protegees">
+    <h2>5. Plages protégées</h2>
+    <p>Une plage protégée est un créneau réservé dans l'agenda pour un travail de fond — préparation d'un dossier, rédaction d'un rapport, réflexion stratégique — et non pour un rendez-vous visible. Sans protection active, ces plages sont les premières à être « grignotées » par des demandes de réunion qui semblent, prises isolément, toujours légitimes.</p>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Bonnes pratiques pour défendre une plage protégée : la bloquer comme un rendez-vous à part entière, refuser par principe qu'elle soit déplacée pour une demande non urgente, proposer systématiquement une autre plage à la place de celle protégée.
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      Le motif exact d'une plage protégée n'a pas toujours à être visible de tous : un intitulé neutre (« Indisponible — travail en cours ») suffit souvent, sans détailler le dossier concerné aux autres participants du calendrier partagé.
+    </div>
+
+    <p>Le rôle de l'assistant n'est pas de refuser systématiquement toute demande sur ces plages, mais d'appliquer une règle claire : seule une demande réellement urgente et importante (quadrant 1 de la matrice précédente) justifie de déplacer une plage protégée — et dans ce cas, elle doit être immédiatement replanifiée ailleurs dans la semaine, jamais simplement supprimée.</p>
+  </section>
+
+  <section id="rappels">
+    <h2>6. Rappels et anticipation</h2>
+    <p>Un rappel bien réglé n'a pas pour seul but de ne pas oublier un rendez-vous : il doit laisser le temps matériel de s'y préparer. Le délai du rappel dépend donc du type d'engagement, pas d'un réglage unique appliqué à tout l'agenda.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type d'engagement</th><th>Rappel recommandé</th><th>Pourquoi</th></tr></thead>
+        <tbody>
+          <tr><td>Réunion interne courante</td><td>10 à 15 min avant</td><td>Le temps de rejoindre la salle ou la visio</td></tr>
+          <tr><td>Rendez-vous externe important</td><td>La veille, puis 1h avant</td><td>Vérifier documents, trajet et logistique</td></tr>
+          <tr><td>Déplacement avec transport</td><td>La veille au soir, puis le matin même</td><td>Anticiper un imprévu de trajet</td></tr>
+          <tr><td>Comité ou conseil</td><td>2 à 3 jours avant</td><td>Laisser le temps de préparer les documents attendus</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant de fermer une invitation confirmée : rappel programmé, documents nécessaires identifiés, lieu ou lien de connexion vérifié, temps de trajet ou de préparation réservé juste avant.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>En une même matinée, trois demandes arrivent pour la même semaine : un client basé à Singapour souhaite un point de 30 minutes « dès que possible » sur un dossier en cours ; la direction générale demande à avancer un comité déjà prévu ; et une plage protégée est déjà bloquée le jeudi après-midi pour la préparation du rapport trimestriel, échéance non négociable.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 3 à 5, déterminez l'ordre dans lequel vous traiteriez ces trois demandes, l'horaire que vous proposeriez pour l'appel avec Singapour, et ce que vous répondriez à la demande d'avancer le comité.</p>
+    </div>
+  </section>
+
+  <section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Un agenda partagé n'est fiable que si « disponible » correspond toujours à une disponibilité réelle.</li>
+      <li>Une invitation se confirme après vérification des marges de trajet et de préparation, pas seulement du créneau affiché.</li>
+      <li>Tout rendez-vous international se fixe et s'écrit avec un fuseau horaire explicite.</li>
+      <li>La matrice urgent/important permet d'arbitrer rapidement des demandes contradictoires.</li>
+      <li>Une plage protégée se défend comme un rendez-vous réel, sauf demande réellement urgente et importante.</li>
+      <li>Le délai d'un rappel dépend du type d'engagement, pas d'un réglage unique.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : un <strong>agenda hebdomadaire arbitré</strong> et une <strong>note justifiant les priorités retenues</strong>, fournis en <strong>.docx</strong> et en <strong>PDF</strong>.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Agenda hebdomadaire arbitré</span><button class="copy-btn" data-copy-target="model-1">Copier</button></div>
+      <pre id="model-1">Semaine du [date] au [date]
+
+LUNDI
+ 09h00–10h00   [Rendez-vous confirmé]
+ 10h00–12h00   Plage protégée — travail en cours
+ 14h00–15h00   [Rendez-vous confirmé]
+
+MARDI
+ [...]
+
+Créneaux non affectés, réservés en cas d'imprévu urgent :
+ - Mardi 16h–17h
+ - Jeudi 11h–12h
+
+Plages protégées de la semaine (à ne déplacer qu'en cas de demande
+urgente ET importante — voir note de priorités jointe) :
+ - Jeudi 14h–17h : préparation du rapport trimestriel
+
+Engagements en fuseau horaire différent :
+ - [Jour, heure Paris] = [heure locale destinataire, fuseau]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Note justifiant les priorités retenues</span><button class="copy-btn" data-copy-target="model-2">Copier</button></div>
+      <pre id="model-2">Note d'arbitrage — semaine du [date]
+
+Destinataire : [Nom du responsable]
+
+1. Demandes reçues cette semaine
+   - [Demande 1 — origine, échéance annoncée]
+   - [Demande 2 — origine, échéance annoncée]
+   - [Demande 3 — origine, échéance annoncée]
+
+2. Arbitrage retenu
+   - [Demande] : traitée en priorité car urgente ET importante
+   - [Demande] : planifiée au [créneau] car importante, non urgente
+   - [Demande] : déléguée / reportée car peu importante
+
+3. Plages protégées maintenues ou déplacées
+   - [Détail et justification]
+
+4. Points nécessitant une validation du responsable
+   - [Le cas échéant]</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Agenda de la semaine vérifié : aucun double engagement</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Chaque rendez-vous externe intègre trajet et préparation</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Fuseaux horaires vérifiés pour les rendez-vous internationaux</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Plages protégées maintenues, sauf arbitrage justifié par écrit</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Rappels programmés selon le type de chaque engagement</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Note de priorités rédigée et prête à transmettre au responsable</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 10 — Supports de présentation</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 12 — Organisation des réunions</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 3 — Organisation, temps et réunions · Leçon 11 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+
+})();
+</script>
+</body>
+</html>

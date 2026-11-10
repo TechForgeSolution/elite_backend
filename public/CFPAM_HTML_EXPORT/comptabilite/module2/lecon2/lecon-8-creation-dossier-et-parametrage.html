@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 8 — Création du dossier et paramétrage | Logiciels Comptables</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cpath d='M25 35h50M25 50h50M25 65h30' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F6F8F6;
+    --color-text: #0B0F0D;
+    --color-text-muted: #5A6560;
+    --color-accent: #1F6F54;
+    --color-accent-soft: #E7F2ED;
+    --color-border: #E3E8E5;
+    --color-accent-alt: #B3541E;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --measure: 720px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 0.6em 0;
+    letter-spacing: -0.01em;
+  }
+  h1{ font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; }
+  h2{ font-size: clamp(1.4rem, 2.6vw, 1.85rem); }
+  h3{ font-size: 1.15rem; }
+  p{ margin: 0 0 1.1em 0; color: var(--color-text); }
+  a{ color: var(--color-accent); text-decoration: none; border-bottom: 1px solid var(--color-accent-soft); }
+  a:hover{ border-bottom-color: var(--color-accent); }
+  .mono, .tabular{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  :focus-visible{ outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+  /* Reading progress bar */
+  #progress-bar{
+    position: fixed; top:0; left:0; height:3px; width:0%;
+    background: var(--color-accent); z-index: 1000; transition: width 0.1s linear;
+  }
+
+  /* Sticky header */
+  header.site-header{
+    position: sticky; top:0; z-index: 900;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 14px 24px;
+  }
+  .header-inner{
+    max-width: 1080px; margin: 0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap: 16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family: var(--font-display); font-weight:600; font-size: 1rem; }
+  .brand-mark{ width: 26px; height:26px; border-radius:6px; background: var(--color-accent); display:flex; align-items:center; justify-content:center; }
+  .brand-mark svg{ width:15px; height:15px; }
+  .header-meta{ font-size: 0.85rem; color: var(--color-text-muted); display:flex; gap:14px; }
+  .header-meta a{ color: var(--color-text-muted); border-bottom: none; }
+  .header-meta a:hover{ color: var(--color-accent); }
+
+  main{ max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero{ padding: 56px 0 40px 0; border-bottom: 1px solid var(--color-border); }
+  .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 20px; }
+  .badge{
+    font-size: 0.78rem; padding: 5px 12px; border-radius: 20px;
+    background: var(--color-accent-soft); color: var(--color-accent);
+    border: 1px solid transparent; font-weight: 500;
+  }
+  .badge.outline{ background: transparent; border-color: var(--color-border); color: var(--color-text-muted); }
+  .hero p.lede{ max-width: var(--measure); font-size: 1.08rem; color: var(--color-text-muted); }
+
+  /* Stepper (chronologie du dossier) */
+  .stepper{ display:flex; gap: 0; margin: 28px 0 8px 0; overflow-x:auto; padding-bottom: 6px; }
+  .step{
+    flex: 1 1 0; min-width: 130px; position:relative; padding: 14px 12px 10px 0;
+    border-top: 3px solid var(--color-border);
+  }
+  .step.is-current{ border-top-color: var(--color-accent); }
+  .step-index{ font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted); display:block; margin-bottom: 4px; }
+  .step.is-current .step-index{ color: var(--color-accent); }
+  .step-label{ font-size: 0.88rem; font-weight: 500; }
+
+  /* TOC */
+  nav.toc{
+    background: var(--color-bg-alt); border: 1px solid var(--color-border);
+    border-radius: 10px; padding: 20px 24px; margin: 32px 0;
+  }
+  nav.toc h2{ font-size: 0.95rem; text-transform: none; margin-bottom: 12px; color: var(--color-text-muted); font-family: var(--font-body); font-weight: 600; }
+  nav.toc ol{ margin:0; padding-left: 0; list-style:none; columns: 2; column-gap: 24px; }
+  nav.toc li{ break-inside: avoid; margin-bottom: 8px; }
+  nav.toc a{ border-bottom: none; color: var(--color-text); font-size: 0.94rem; }
+  nav.toc a:hover{ color: var(--color-accent); }
+  nav.toc li .num{ color: var(--color-accent); font-family: var(--font-mono); font-size: 0.82rem; margin-right: 6px; }
+
+  /* Sections */
+  section.lesson-section{ padding: 48px 0; border-bottom: 1px solid var(--color-border); opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  section.lesson-section.in-view{ opacity: 1; transform: translateY(0); }
+  section.lesson-section:last-of-type{ border-bottom:none; }
+  .section-eyebrow{ font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-accent); margin-bottom: 8px; }
+  section.lesson-section .prose{ max-width: var(--measure); }
+
+  /* Callouts */
+  .callout{ display:flex; gap: 14px; padding: 18px 20px; border-radius: 10px; margin: 24px 0; border: 1px solid var(--color-border); background: var(--color-bg-alt); max-width: var(--measure); }
+  .callout .icon{ font-size: 1.3rem; line-height:1; flex-shrink:0; }
+  .callout .body{ flex:1; }
+  .callout .body strong{ display:block; margin-bottom: 4px; font-family: var(--font-display); font-size: 0.95rem; }
+  .callout.retenir{ border-color: var(--color-accent); background: var(--color-accent-soft); }
+  .callout.attention .body strong{ color: var(--color-accent-alt); }
+  .callout.attention{ border-color: #E8D2C2; }
+  .callout p{ margin:0; font-size: 0.95rem; color: var(--color-text); }
+
+  /* Cards */
+  .card-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+  .card{ border: 1px solid var(--color-border); border-radius: 10px; padding: 20px; background: var(--color-bg); transition: border-color 0.2s ease, transform 0.2s ease; }
+  .card:hover{ border-color: var(--color-accent); transform: translateY(-2px); }
+  .card .card-icon{ width: 34px; height:34px; border-radius: 8px; background: var(--color-accent-soft); display:flex; align-items:center; justify-content:center; margin-bottom: 12px; }
+  .card .card-icon svg{ width:18px; height:18px; }
+  .card h3{ font-size: 1rem; margin-bottom: 6px; }
+  .card p{ font-size: 0.9rem; color: var(--color-text-muted); margin:0; }
+
+  /* Tables */
+  .table-wrap{ overflow-x:auto; margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; }
+  table{ border-collapse: collapse; width: 100%; min-width: 480px; font-size: 0.92rem; }
+  thead th{ text-align:left; background: var(--color-bg-alt); font-family: var(--font-display); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--color-border); font-size: 0.85rem; }
+  tbody td{ padding: 11px 16px; border-bottom: 1px solid var(--color-border); }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: var(--color-bg-alt); }
+  td.num, th.num{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  td.negative{ color: var(--color-accent-alt); }
+
+  /* Tabs */
+  .tabs{ margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; overflow: hidden; }
+  .tab-list{ display:flex; border-bottom: 1px solid var(--color-border); background: var(--color-bg-alt); }
+  .tab-btn{
+    flex:1; padding: 13px 16px; background:none; border:none; cursor:pointer;
+    font-family: var(--font-body); font-size: 0.92rem; font-weight: 500; color: var(--color-text-muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s ease;
+  }
+  .tab-btn.active{ color: var(--color-accent); border-bottom-color: var(--color-accent); background: var(--color-bg); }
+  .tab-btn:hover:not(.active){ color: var(--color-text); }
+  .tab-panel{ display:none; padding: 22px 22px; }
+  .tab-panel.active{ display:block; }
+  .tab-panel p:last-child{ margin-bottom:0; }
+
+  /* Accordion */
+  .accordion{ margin: 24px 0; border: 1px solid var(--color-border); border-radius: 10px; overflow:hidden; }
+  .accordion-item{ border-bottom: 1px solid var(--color-border); }
+  .accordion-item:last-child{ border-bottom:none; }
+  .accordion-trigger{
+    width:100%; text-align:left; background: var(--color-bg); border:none; cursor:pointer;
+    padding: 16px 20px; display:flex; justify-content:space-between; align-items:center; gap: 12px;
+    font-family: var(--font-body); font-size: 0.96rem; font-weight: 500; color: var(--color-text);
+  }
+  .accordion-trigger:hover{ background: var(--color-bg-alt); }
+  .accordion-trigger .plus{ font-family: var(--font-mono); color: var(--color-accent); transition: transform 0.2s ease; flex-shrink:0; }
+  .accordion-trigger[aria-expanded="true"] .plus{ transform: rotate(45deg); }
+  .accordion-panel{ max-height:0; overflow:hidden; transition: max-height 0.25s ease; background: var(--color-bg-alt); }
+  .accordion-panel .inner{ padding: 4px 20px 18px 20px; font-size: 0.93rem; color: var(--color-text-muted); }
+
+  /* Diagram wrap */
+  .diagram-wrap{ margin: 24px 0; padding: 20px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-bg-alt); overflow-x:auto; }
+  .diagram-wrap svg{ display:block; width:100%; height:auto; }
+  .diagram-caption{ font-size: 0.82rem; color: var(--color-text-muted); text-align:center; margin-top: 10px; }
+
+  /* Key points summary */
+  .keypoints{ background: var(--color-bg-alt); border-radius: 12px; padding: 32px; margin: 24px 0; }
+  .keypoints ul{ margin:0; padding-left: 0; list-style:none; display:grid; gap: 14px; }
+  .keypoints li{ display:flex; gap: 12px; align-items:flex-start; font-size: 0.96rem; }
+  .keypoints li .tick{ color: var(--color-accent); flex-shrink:0; font-family: var(--font-mono); margin-top: 2px; }
+
+  /* Lesson nav */
+  .lesson-nav{ display:flex; justify-content:space-between; gap: 16px; padding: 40px 0; flex-wrap:wrap; }
+  .nav-link{
+    border: 1px solid var(--color-border); border-radius: 10px; padding: 16px 20px; flex:1; min-width: 220px;
+    text-decoration:none; border-bottom: 1px solid var(--color-border); color: var(--color-text);
+    display:block; transition: border-color 0.2s ease;
+  }
+  .nav-link:hover{ border-color: var(--color-accent); }
+  .nav-link .dir{ font-size: 0.78rem; color: var(--color-text-muted); display:block; margin-bottom: 4px; font-family: var(--font-mono); }
+  .nav-link .title{ font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; }
+  .nav-link.next{ text-align:right; }
+
+  /* Back to top */
+  #back-to-top{
+    position: fixed; bottom: 24px; right: 24px; width: 44px; height:44px; border-radius: 50%;
+    background: var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 14px rgba(11,15,13,0.18);
+    opacity:0; pointer-events:none; transition: opacity 0.25s ease, transform 0.15s ease; z-index: 800;
+  }
+  #back-to-top.visible{ opacity:1; pointer-events:auto; }
+  #back-to-top:hover{ transform: translateY(-2px); }
+
+  footer.site-footer{ padding: 32px 0 48px 0; text-align:center; color: var(--color-text-muted); font-size: 0.85rem; }
+  footer.site-footer p{ margin:0; }
+
+  @media (max-width: 640px){
+    nav.toc ol{ columns: 1; }
+    .lesson-nav{ flex-direction:column; }
+    .nav-link.next{ text-align:left; }
+    .header-meta{ display:none; }
+    .stepper{ flex-wrap:nowrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    section.lesson-section{ transition:none; opacity:1; transform:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h9" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      Filière Comptabilité
+    </div>
+    <div class="header-meta">
+      <a href="#sommaire">Sommaire</a>
+      <span>Module : Logiciels comptables</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="badges">
+      <span class="badge">Module : Logiciels comptables (Sage, Ciel)</span>
+      <span class="badge outline">Niveau débutant / intermédiaire</span>
+      <span class="badge outline">⏱ 15 min de lecture</span>
+    </div>
+    <h1>Leçon 8 — Création du dossier et paramétrage</h1>
+    <p class="lede">Avant de saisir la moindre écriture, un dossier comptable doit être identifié, daté, chiffré dans la bonne devise, structuré par un plan de comptes et organisé en journaux. Cette leçon reprend, étape par étape, le paramétrage initial d'un dossier sur un logiciel comme Sage ou Ciel.</p>
+
+    <div class="stepper" aria-label="Étapes de création du dossier">
+      <div class="step is-current"><span class="step-index">01</span><span class="step-label">Identification</span></div>
+      <div class="step"><span class="step-index">02</span><span class="step-label">Exercice</span></div>
+      <div class="step"><span class="step-index">03</span><span class="step-label">Plan comptable</span></div>
+      <div class="step"><span class="step-index">04</span><span class="step-label">Journaux</span></div>
+      <div class="step"><span class="step-index">05</span><span class="step-label">Devises / TVA</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" id="sommaire" aria-label="Sommaire de la leçon">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><span class="num">01</span><a href="#identification">Identification de l'entreprise</a></li>
+      <li><span class="num">02</span><a href="#exercice">Exercice comptable</a></li>
+      <li><span class="num">03</span><a href="#devise">Devise de tenue</a></li>
+      <li><span class="num">04</span><a href="#plan-comptable">Plan comptable</a></li>
+      <li><span class="num">05</span><a href="#journaux">Journaux comptables</a></li>
+      <li><span class="num">06</span><a href="#tva">Taux de TVA</a></li>
+      <li><span class="num">07</span><a href="#retenir">Points clés à retenir</a></li>
+      <li><span class="num">08</span><a href="#faq">Questions fréquentes</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. IDENTIFICATION -->
+  <section class="lesson-section" id="identification">
+    <div class="section-eyebrow">Étape 01</div>
+    <h2>Identification de l'entreprise</h2>
+    <div class="prose">
+      <p>La création d'un dossier commence par une fiche d'identité : raison sociale, forme juridique, numéro d'identification, adresse et coordonnées. Ces informations ne sont pas de simples champs administratifs — elles apparaissent sur les documents édités par le logiciel (factures, journaux imprimés, déclarations) et conditionnent certains comportements du paramétrage, comme le régime de TVA proposé par défaut.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 220" role="img" aria-label="Schéma des paramètres composant un dossier comptable : identification, exercice, devise, plan comptable et journaux reliés à un dossier central">
+        <rect x="270" y="90" width="160" height="46" rx="8" fill="#1F6F54"/>
+        <text x="350" y="118" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="600">Dossier</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="12" fill="#0B0F0D">
+          <rect x="10" y="10" width="140" height="40" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="80" y="34" text-anchor="middle">Identification</text>
+          <rect x="180" y="10" width="140" height="40" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="250" y="34" text-anchor="middle">Exercice</text>
+          <rect x="380" y="10" width="140" height="40" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="450" y="34" text-anchor="middle">Devise</text>
+          <rect x="550" y="10" width="140" height="40" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="620" y="34" text-anchor="middle">Plan comptable</text>
+          <rect x="270" y="170" width="160" height="40" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="350" y="194" text-anchor="middle">Journaux</text>
+        </g>
+        <g stroke="#B7C7C0" stroke-width="1.5" fill="none">
+          <path d="M80 50 L 300 90"/>
+          <path d="M250 50 L 330 90"/>
+          <path d="M450 50 L 380 90"/>
+          <path d="M620 50 L 410 90"/>
+          <path d="M350 136 L 350 170"/>
+        </g>
+      </svg>
+      <p class="diagram-caption">Le dossier central regroupe cinq blocs de paramétrage, à renseigner dans un ordre logique.</p>
+    </div>
+
+    <div class="callout retenir">
+      <span class="icon">💡</span>
+      <div class="body">
+        <strong>À retenir</strong>
+        <p>Une identification incomplète ou erronée (SIREN, forme juridique) peut fausser l'édition de certains documents légaux générés automatiquement par le logiciel. Elle se corrige en général à tout moment dans les paramètres du dossier.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 21V5a2 2 0 0 1 2-2h6l6 4v14" stroke="#1F6F54" stroke-width="1.8"/><path d="M12 3v6h6" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Raison sociale</h3>
+        <p>Nom légal de l'entreprise, repris sur toutes les éditions.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h18M3 12h18M3 17h10" stroke="#1F6F54" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <h3>Forme juridique</h3>
+        <p>SARL, SA, entreprise individuelle... elle oriente certains modèles de comptes.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#1F6F54" stroke-width="1.8"/><path d="M3 9h18" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Identifiants</h3>
+        <p>Numéro d'immatriculation, régime d'imposition, code APE/NAF.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z" stroke="#1F6F54" stroke-width="1.8"/></svg></div>
+        <h3>Coordonnées</h3>
+        <p>Adresse, téléphone, e-mail — utiles pour les échanges avec les tiers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. EXERCICE -->
+  <section class="lesson-section" id="exercice">
+    <div class="section-eyebrow">Étape 02</div>
+    <h2>Exercice comptable</h2>
+    <div class="prose">
+      <p>L'exercice comptable définit la période de référence pour laquelle les comptes seront arrêtés, généralement douze mois. Il n'est pas obligatoirement calé sur l'année civile : une entreprise peut choisir un exercice décalé pour des raisons sectorielles (saisonnalité, date de clôture du groupe, etc.). Ce choix, une fois le dossier ouvert et des écritures saisies, est difficile à modifier — il mérite d'être validé avant toute saisie.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Types d'exercice comptable">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-civil" id="tab-civil">Exercice civil (Jan–Déc)</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-decale" id="tab-decale">Exercice décalé</button>
+      </div>
+      <div class="tab-panel active" id="panel-civil" role="tabpanel" aria-labelledby="tab-civil">
+        <p>L'exercice s'ouvre le 1ᵉʳ janvier et se clôture le 31 décembre. C'est le paramétrage par défaut proposé par la plupart des logiciels et le plus répandu chez les indépendants et petites structures, car il fait coïncider exercice comptable et année fiscale.</p>
+        <p>Avantage principal : simplicité de suivi et cohérence avec les échéances fiscales usuelles.</p>
+      </div>
+      <div class="tab-panel" id="panel-decale" role="tabpanel" aria-labelledby="tab-decale">
+        <p>L'exercice couvre douze mois glissants qui ne correspondent pas à l'année civile — par exemple du 1ᵉʳ juillet au 30 juin. Ce choix est fréquent dans le commerce saisonnier, la restauration collective ou les filiales alignées sur la clôture d'un groupe étranger.</p>
+        <p>Point de vigilance : le premier exercice du dossier peut être plus court ou plus long que douze mois (exercice de démarrage), ce que le logiciel doit gérer explicitement lors du paramétrage.</p>
+      </div>
+    </div>
+
+    <div class="callout attention">
+      <span class="icon">⚠️</span>
+      <div class="body">
+        <strong>Attention / erreur fréquente</strong>
+        <p>Modifier les dates d'un exercice après le début des saisies peut désynchroniser les à-nouveaux et les états déjà édités. Le paramétrage de l'exercice doit être vérifié avant la première écriture, pas après.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. DEVISE -->
+  <section class="lesson-section" id="devise">
+    <div class="section-eyebrow">Étape 03</div>
+    <h2>Devise de tenue</h2>
+    <div class="prose">
+      <p>La devise de tenue est la monnaie dans laquelle les comptes du dossier sont exprimés — l'euro dans la majorité des cas en zone francophone européenne, mais un dossier peut être ouvert dans une autre devise selon le pays d'exploitation. Certains logiciels permettent en complément une devise de saisie différente pour des opérations ponctuelles en devise étrangère, avec conversion automatique au taux du jour.</p>
+    </div>
+
+    <div class="callout">
+      <span class="icon">🧮</span>
+      <div class="body">
+        <strong>Cas pratique</strong>
+        <p>Un dossier est paramétré en euro. Une facture fournisseur de 1 000 dollars US arrive avec un taux de change de 0,92. Le montant à comptabiliser en devise de tenue est de 1 000 × 0,92, soit 920 euros. C'est ce calcul que le paramétrage de devise permet d'automatiser.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PLAN COMPTABLE -->
+  <section class="lesson-section" id="plan-comptable">
+    <div class="section-eyebrow">Étape 04</div>
+    <h2>Plan comptable</h2>
+    <div class="prose">
+      <p>Le plan comptable liste l'ensemble des comptes que le dossier pourra utiliser, classés en sept classes numérotées. Deux méthodes de mise en place s'opposent sur les logiciels comme Sage ou Ciel : reprendre le plan comptable général (PCG) standard fourni par défaut, ou saisir manuellement une sélection de comptes adaptée à l'activité.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 260" role="img" aria-label="Arborescence des sept classes du Plan Comptable Général, de la classe 1 capitaux à la classe 7 produits">
+        <g font-family="IBM Plex Mono, monospace" font-size="12">
+          <rect x="300" y="8" width="100" height="34" rx="6" fill="#1F6F54"/>
+          <text x="350" y="30" text-anchor="middle" fill="#fff">PCG</text>
+          <g fill="#0B0F0D">
+            <rect x="10" y="90" width="86" height="60" rx="6" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="53" y="112" text-anchor="middle" font-weight="600">Cl. 1</text>
+            <text x="53" y="130" text-anchor="middle" font-size="10.5">Capitaux</text>
+
+            <rect x="106" y="90" width="86" height="60" rx="6" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="149" y="112" text-anchor="middle" font-weight="600">Cl. 2</text>
+            <text x="149" y="130" text-anchor="middle" font-size="10.5">Immobilis.</text>
+
+            <rect x="202" y="90" width="86" height="60" rx="6" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="245" y="112" text-anchor="middle" font-weight="600">Cl. 3</text>
+            <text x="245" y="130" text-anchor="middle" font-size="10.5">Stocks</text>
+
+            <rect x="298" y="90" width="86" height="60" rx="6" fill="#E7F2ED" stroke="#1F6F54"/>
+            <text x="341" y="112" text-anchor="middle" font-weight="600" fill="#1F6F54">Cl. 4</text>
+            <text x="341" y="130" text-anchor="middle" font-size="10.5">Tiers</text>
+
+            <rect x="394" y="90" width="86" height="60" rx="6" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="437" y="112" text-anchor="middle" font-weight="600">Cl. 5</text>
+            <text x="437" y="130" text-anchor="middle" font-size="10.5">Financiers</text>
+
+            <rect x="490" y="90" width="86" height="60" rx="6" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="533" y="112" text-anchor="middle" font-weight="600">Cl. 6</text>
+            <text x="533" y="130" text-anchor="middle" font-size="10.5">Charges</text>
+
+            <rect x="586" y="90" width="86" height="60" rx="6" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="629" y="112" text-anchor="middle" font-weight="600">Cl. 7</text>
+            <text x="629" y="130" text-anchor="middle" font-size="10.5">Produits</text>
+          </g>
+          <g fill="#5A6560">
+            <rect x="298" y="180" width="86" height="60" rx="6" fill="#FFFFFF" stroke="#1F6F54" stroke-dasharray="3 3"/>
+            <text x="341" y="200" text-anchor="middle" font-size="10.5" fill="#1F6F54" font-weight="600">411000</text>
+            <text x="341" y="216" text-anchor="middle" font-size="9.5" fill="#5A6560">Clients</text>
+            <text x="341" y="228" text-anchor="middle" font-size="9.5" fill="#5A6560">génériques</text>
+          </g>
+        </g>
+        <g stroke="#B7C7C0" stroke-width="1.5" fill="none">
+          <path d="M350 42 L 53 90"/>
+          <path d="M350 42 L 149 90"/>
+          <path d="M350 42 L 245 90"/>
+          <path d="M350 42 L 341 90"/>
+          <path d="M350 42 L 437 90"/>
+          <path d="M350 42 L 533 90"/>
+          <path d="M350 42 L 629 90"/>
+          <path d="M341 150 L 341 180"/>
+        </g>
+      </svg>
+      <p class="diagram-caption">La classe 4 (comptes de tiers) se subdivise elle-même en comptes plus précis, comme 411000 pour les clients.</p>
+    </div>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Méthodes de mise en place du plan comptable">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-standard" id="tab-standard">Import du PCG standard</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-manuel" id="tab-manuel">Saisie manuelle</button>
+      </div>
+      <div class="tab-panel active" id="panel-standard" role="tabpanel" aria-labelledby="tab-standard">
+        <p>Le logiciel propose au moment de la création du dossier d'importer un modèle de plan comptable complet, conforme au PCG en vigueur. C'est l'option la plus rapide : tous les comptes usuels sont déjà présents, prêts à l'emploi.</p>
+        <p>Elle convient à la majorité des dossiers, y compris pour un utilisateur débutant, car elle limite le risque d'oubli d'un compte nécessaire.</p>
+      </div>
+      <div class="tab-panel" id="panel-manuel" role="tabpanel" aria-labelledby="tab-manuel">
+        <p>Le plan est construit compte par compte, en ne créant que ceux réellement utiles à l'activité. Cette approche demande une bonne connaissance du PCG et davantage de temps en amont.</p>
+        <p>Elle est utile pour un dossier très spécifique (activité réglementée, secteur avec plan comptable dérogatoire) où le modèle standard contiendrait trop de comptes inutiles.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th class="num">Compte</th><th>Intitulé</th><th>Classe</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">101000</td><td>Capital social</td><td>1 — Capitaux</td></tr>
+          <tr><td class="num">218300</td><td>Matériel informatique</td><td>2 — Immobilisations</td></tr>
+          <tr><td class="num">370000</td><td>Stocks de marchandises</td><td>3 — Stocks</td></tr>
+          <tr><td class="num">411000</td><td>Clients</td><td>4 — Tiers</td></tr>
+          <tr><td class="num">401000</td><td>Fournisseurs</td><td>4 — Tiers</td></tr>
+          <tr><td class="num">512000</td><td>Banque</td><td>5 — Financiers</td></tr>
+          <tr><td class="num">606400</td><td>Fournitures administratives</td><td>6 — Charges</td></tr>
+          <tr><td class="num">707000</td><td>Ventes de marchandises</td><td>7 — Produits</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="diagram-caption" style="text-align:left; max-width:var(--measure);">Extrait d'un plan comptable paramétré, tel qu'il apparaîtrait après import du PCG standard.</p>
+  </section>
+
+  <!-- 5. JOURNAUX -->
+  <section class="lesson-section" id="journaux">
+    <div class="section-eyebrow">Étape 05</div>
+    <h2>Journaux comptables</h2>
+    <div class="prose">
+      <p>Chaque écriture comptable est enregistrée dans un journal, qui regroupe les opérations de même nature : achats, ventes, banque, opérations diverses. Le paramétrage des journaux consiste à définir un code, un libellé et, souvent, un compte de contrepartie par défaut pour accélérer la saisie quotidienne.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 190" role="img" aria-label="Schéma reliant les codes journaux aux comptes généraux qu'ils mouvementent par défaut">
+        <g font-family="IBM Plex Mono, monospace" font-size="12">
+          <rect x="10" y="20" width="130" height="42" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+          <text x="75" y="46" text-anchor="middle" fill="#1F6F54" font-weight="600">AC — Achats</text>
+
+          <rect x="10" y="74" width="130" height="42" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+          <text x="75" y="100" text-anchor="middle" fill="#1F6F54" font-weight="600">VE — Ventes</text>
+
+          <rect x="10" y="128" width="130" height="42" rx="7" fill="#E7F2ED" stroke="#1F6F54"/>
+          <text x="75" y="154" text-anchor="middle" fill="#1F6F54" font-weight="600">BQ — Banque</text>
+
+          <rect x="480" y="20" width="210" height="42" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="585" y="46" text-anchor="middle">401000 · Fournisseurs</text>
+
+          <rect x="480" y="74" width="210" height="42" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="585" y="100" text-anchor="middle">411000 · Clients</text>
+
+          <rect x="480" y="128" width="210" height="42" rx="7" fill="#F6F8F6" stroke="#E3E8E5"/>
+          <text x="585" y="154" text-anchor="middle">512000 · Banque</text>
+        </g>
+        <g stroke="#B7C7C0" stroke-width="1.5" fill="none">
+          <path d="M140 41 C 300 41, 320 41, 480 41"/>
+          <path d="M140 95 C 300 95, 320 95, 480 95"/>
+          <path d="M140 149 C 300 149, 320 149, 480 149"/>
+        </g>
+      </svg>
+      <p class="diagram-caption">Chaque journal pointe vers un ou plusieurs comptes généraux qu'il mouvemente habituellement.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Code</th><th>Libellé</th><th>Compte de contrepartie usuel</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">AC</td><td>Achats</td><td class="num">401000</td></tr>
+          <tr><td class="mono">VE</td><td>Ventes</td><td class="num">411000</td></tr>
+          <tr><td class="mono">BQ</td><td>Banque</td><td class="num">512000</td></tr>
+          <tr><td class="mono">CA</td><td>Caisse</td><td class="num">530000</td></tr>
+          <tr><td class="mono">OD</td><td>Opérations diverses</td><td class="num">—</td></tr>
+          <tr><td class="mono">AN</td><td>À-nouveaux</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="icon">📌</span>
+      <div class="body">
+        <strong>Rappel normatif / légal</strong>
+        <p>La numérotation et le libellé des journaux ne sont pas imposés par la loi, mais la tenue d'un journal général et la conservation chronologique des écritures le sont. Le journal des opérations diverses (OD) sert notamment aux écritures de régularisation en fin d'exercice.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TVA -->
+  <section class="lesson-section" id="tva">
+    <div class="section-eyebrow">Étape 05 (suite)</div>
+    <h2>Taux de TVA</h2>
+    <div class="prose">
+      <p>Le paramétrage du dossier inclut enfin les taux de TVA applicables à l'activité, associés chacun à un compte de TVA collectée ou déductible. Ce paramétrage évite de ressaisir le taux à chaque facture et fiabilise le calcul automatique des montants hors taxe, de la taxe et du toutes taxes comprises.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Taux</th><th>Usage courant</th><th>Compte associé</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">20 %</td><td>Taux normal — majorité des biens et services</td><td class="num">445710</td></tr>
+          <tr><td class="num">10 %</td><td>Taux intermédiaire — restauration, transport</td><td class="num">445711</td></tr>
+          <tr><td class="num">5,5 %</td><td>Taux réduit — produits de première nécessité</td><td class="num">445712</td></tr>
+          <tr><td class="num">0 %</td><td>Exonération / hors champ</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- KEY POINTS -->
+  <section class="lesson-section" id="retenir">
+    <div class="section-eyebrow">Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <div class="keypoints">
+      <ul>
+        <li><span class="tick">→</span>La création d'un dossier suit un ordre logique : identification, exercice, devise, plan comptable, puis journaux.</li>
+        <li><span class="tick">→</span>Les dates d'exercice se vérifient avant la première saisie ; les corriger après coup est risqué.</li>
+        <li><span class="tick">→</span>Importer le PCG standard est l'option la plus sûre pour un dossier courant ; la saisie manuelle reste réservée aux cas particuliers.</li>
+        <li><span class="tick">→</span>Chaque journal est relié à un ou plusieurs comptes généraux pour accélérer la saisie quotidienne.</li>
+        <li><span class="tick">→</span>Les taux de TVA paramétrés en amont évitent les erreurs de calcul sur chaque facture.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="lesson-section" id="faq">
+    <div class="section-eyebrow">Pour aller plus loin</div>
+    <h2>Questions fréquentes</h2>
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-1">
+          <span>Peut-on changer de devise après la création du dossier ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-1">
+          <div class="inner">La plupart des logiciels déconseillent ou interdisent ce changement une fois des écritures saisies, car il faudrait reconvertir l'historique. Il est préférable de fixer la devise dès l'ouverture du dossier.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-2">
+          <span>Faut-il créer un journal par compte bancaire ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-2">
+          <div class="inner">C'est l'usage recommandé dès qu'il y a plusieurs comptes bancaires : un journal dédié par compte facilite le rapprochement bancaire et le suivi de trésorerie.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-3">
+          <span>Le plan comptable importé peut-il être complété plus tard ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-3">
+          <div class="inner">Oui, des comptes peuvent être ajoutés à tout moment du dossier, par exemple pour créer un compte client ou fournisseur individualisé au fil de l'activité.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-4">
+          <span>Quelle est la différence entre journal et compte ?</span>
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel" id="faq-4">
+          <div class="inner">Le journal classe les écritures par nature d'opération et par ordre chronologique ; le compte, lui, classe les mouvements par nature économique (client, fournisseur, banque...). Une même écriture apparaît dans un journal et mouvemente plusieurs comptes.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lesson-nav">
+    <a class="nav-link prev" href="#">
+      <span class="dir">← Leçon précédente</span>
+      <span class="title">Leçon 7 — Découverte d'un logiciel comptable</span>
+    </a>
+    <a class="nav-link next" href="#">
+      <span class="dir">Leçon suivante →</span>
+      <span class="title">Leçon 9 — Saisie des pièces comptables</span>
+    </a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Filière Comptabilité — Module Logiciels comptables (Sage, Ciel)</p>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  // Reading progress bar
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Back to top
+  var backBtn = document.getElementById('back-to-top');
+  function toggleBackBtn(){
+    if((window.scrollY || document.documentElement.scrollTop) > 500){
+      backBtn.classList.add('visible');
+    } else {
+      backBtn.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', toggleBackBtn, { passive: true });
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  toggleBackBtn();
+
+  // Section reveal on scroll
+  var sections = document.querySelectorAll('.lesson-section');
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function(s){ observer.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  }
+
+  // Tabs
+  document.querySelectorAll('[data-tabs]').forEach(function(tabGroup){
+    var buttons = tabGroup.querySelectorAll('.tab-btn');
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var panelId = btn.getAttribute('aria-controls');
+        var panel = document.getElementById(panelId);
+        buttons.forEach(function(b){
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        tabGroup.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        panel.classList.add('active');
+      });
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      if(!expanded){
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      } else {
+        panel.style.maxHeight = 0;
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 08 — Automatiser le suivi des clients et les processus métier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;
+  --color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-border:#E1E4E8;
+  --muted:#4B5563;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 var(--font-body)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);padding:56px 0 40px}
+.crumb{font:500 .9rem var(--font-body);color:var(--muted);margin:0 0 16px}
+h1{font:700 clamp(2rem,5vw,2.75rem)/1.12 var(--font-head);letter-spacing:-.02em;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.meta li{background:var(--color-bg);border:1px solid var(--color-border);border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:500}
+.meta li.lvl{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.goal{margin:28px 0 0;padding:16px 20px;background:var(--color-bg);border-left:4px solid var(--color-accent);border-radius:0 8px 8px 0}
+.goal strong{font-family:var(--font-head)}
+nav.toc{margin:32px 0 0;padding:20px 24px;border:1px solid var(--color-border);border-radius:10px}
+nav.toc p{margin:0 0 8px;font:700 1rem var(--font-head)}
+nav.toc ol{margin:0;padding-left:1.25rem;columns:1}
+nav.toc a{color:var(--color-text);text-decoration:none;border-bottom:1px solid var(--color-accent)}
+nav.toc a:hover{background:var(--color-accent-soft)}
+section{padding:48px 0 8px}
+h2{font:700 1.65rem/1.25 var(--font-head);letter-spacing:-.01em;margin:0 0 16px;display:flex;gap:12px;align-items:baseline}
+h2 .n{color:var(--color-accent)}
+h3{font:700 1.15rem var(--font-head);margin:28px 0 8px}
+p{margin:0 0 16px}
+ul,ol{padding-left:1.25rem;margin:0 0 16px}
+li{margin-bottom:6px}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:24px 0;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ic{font-size:1.4rem;line-height:1.4}
+.callout p{margin:0}
+.callout b{font-family:var(--font-head)}
+.callout.tip{background:var(--color-accent-soft);border-color:#99E6DA}
+.callout.warn{background:#FFF8E6;border-color:#F3D98B}
+.callout.link{background:var(--color-bg);border-left:4px solid var(--color-accent)}
+.criteria{display:grid;gap:12px;margin:20px 0;padding:0;list-style:none}
+.criteria li{margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.criteria b{font-family:var(--font-head);color:#0B6F66}
+figure{margin:28px 0}
+figure svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}
+.cards{display:grid;gap:12px;margin:20px 0}
+.card{border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);overflow:hidden}
+.card button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card button:hover{background:var(--color-bg-alt)}
+.card button:focus-visible{outline:3px solid var(--color-accent);outline-offset:-3px}
+.card .t{font:700 1.05rem var(--font-head);display:block}
+.card .s{font-size:.9rem;color:var(--muted)}
+.tag{font:600 .8rem var(--font-body);padding:2px 10px;border-radius:999px;border:1px solid var(--color-border);white-space:nowrap}
+.tag.yes{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.tag.mid{background:var(--color-bg-alt)}
+.card .chev{transition:transform .2s;color:var(--color-accent);font-weight:700}
+.card[data-open="true"] .chev{transform:rotate(90deg)}
+.card .body{display:none;padding:0 18px 16px;border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.card[data-open="true"] .body{display:block}
+.card .body p{margin:12px 0 6px}
+.flow{display:grid;gap:0;margin:24px 0;padding:0;list-style:none}
+.flow li{position:relative;margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.flow li+li{margin-top:22px}
+.flow li+li::before{content:"";position:absolute;left:28px;top:-23px;height:22px;border-left:2px solid var(--color-accent)}
+.flow b{font-family:var(--font-head)}
+.flow small{display:block;color:var(--muted)}
+.calc{border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-alt);padding:20px;margin:24px 0}
+.calc h3{margin-top:0}
+.fields{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media(max-width:560px){.fields{grid-template-columns:1fr}}
+label{display:block;font-size:.9rem;font-weight:500}
+input{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg)}
+.out{margin-top:18px;display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.out{grid-template-columns:1fr}}
+.out div{background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;padding:12px 14px}
+.out strong{display:block;font:700 1.4rem var(--font-head);color:#0B6F66}
+.out span{font-size:.85rem;color:var(--muted)}
+code{font:500 .92em ui-monospace,monospace;background:var(--color-bg-alt);padding:2px 6px;border-radius:4px}
+.formula{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:12px 16px;font-size:.95rem}
+.recap{margin:48px 0 0;padding:24px;border:2px solid var(--color-accent);border-radius:12px}
+.recap h2{font-size:1.3rem}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 64px}
+.pager a{display:block;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:500}
+.pager a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pager small{display:block;color:var(--muted);font-weight:400}
+.pager .next{text-align:right}
+@media(max-width:560px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}}
+
+.tabs [role=tablist]{display:flex;gap:6px;border-bottom:1px solid var(--color-border);margin-top:20px}
+.tabs [role=tab]{font:600 .95rem var(--font-body);padding:9px 14px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;background:none;cursor:pointer;color:var(--muted)}
+.tabs [role=tab]:hover{background:var(--color-bg-alt)}
+.tabs [role=tab][aria-selected=true]{background:var(--color-accent-soft);color:#065F56;border-color:var(--color-border)}
+.tabs [role=tabpanel]{padding:16px 0 0}
+.tabs [role=tabpanel][hidden]{display:none}
+.code{position:relative;margin:16px 0}
+.code pre{margin:0;padding:16px 18px;background:#0D1117;color:#F0F6FC;border-radius:10px;overflow-x:auto;font:400 .86rem/1.6 ui-monospace,monospace;white-space:pre-wrap;word-break:break-word}
+.code .k{color:#5EEAD4}.code .s{color:#A5D6FF}.code .c{color:#8B949E}
+.code button{position:absolute;top:8px;right:8px;font:600 .75rem var(--font-body);padding:4px 10px;border-radius:6px;border:1px solid #30363D;background:#161B22;color:#F0F6FC;cursor:pointer}
+.code button:hover{background:#0F766E}
+.code .lbl{display:block;font:600 .8rem var(--font-body);color:var(--muted);margin-bottom:4px}
+.grid5{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:20px 0;padding:0;list-style:none}
+.grid5 li{margin:0;padding:14px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);transition:transform .2s,border-color .2s}
+.grid5 li:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.grid5 b{display:block;font-family:var(--font-head);color:#0B6F66}
+.grid5 span{font-size:.9rem;color:var(--muted)}
+details{border:1px solid var(--color-border);border-radius:10px;margin:12px 0;background:var(--color-bg)}
+summary{cursor:pointer;padding:14px 18px;font:700 1rem var(--font-head)}
+summary:hover{background:var(--color-bg-alt)}
+details>div{padding:0 18px 12px}
+.sim textarea{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;min-height:80px}
+.btn{margin-top:12px;font:600 .95rem var(--font-body);padding:9px 18px;border-radius:8px;border:0;background:var(--color-accent);color:#fff;cursor:pointer}
+.btn:hover{background:#0F766E}
+.res{margin-top:14px;padding:12px 16px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+.res .tag{margin-right:6px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:9}
+#top{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-bg);cursor:pointer;font-size:1.1rem;display:none}
+#top:hover{background:var(--color-accent-soft)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+
+.chk{list-style:none;padding:0;margin:16px 0}
+.chk li{margin:0 0 8px}
+.chk label{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);cursor:pointer;font-weight:400}
+.chk label:hover{border-color:var(--color-accent)}
+.chk input{width:auto;margin:5px 0 0}
+.score{font:700 1.05rem var(--font-head);padding:12px 16px;border-radius:10px;background:var(--color-bg-alt);border:1px solid var(--color-border)}
+.score.ok{background:var(--color-accent-soft);border-color:var(--color-accent)}
+.code pre code{background:none;padding:0;border-radius:0;color:inherit;font:inherit}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">Module 2 — Automatiser avec l'IA, sécuriser et piloter</p>
+    <h1>Leçon 08 — Automatiser le suivi des clients et les processus métier</h1>
+    <ul class="meta">
+      <li class="lvl">Niveau : Intermédiaire</li>
+      <li>⏱ 30 min</li>
+      <li>5 parties</li>
+    </ul>
+    <p class="goal"><strong>Objectif :</strong> automatiser la relation client (prospects, relances, rendez-vous) et enchaîner plusieurs automatisations pour fluidifier vos processus métier.</p>
+    <nav class="toc" aria-label="Sommaire">
+      <p>Dans cette leçon</p>
+      <ol>
+        <li><a href="#prospects">Prospects et commandes</a></li>
+        <li><a href="#relances">Relances et rappels de rendez-vous</a></li>
+        <li><a href="#devis">Devis et circuits de validation</a></li>
+        <li><a href="#chainage">Enchaîner plusieurs automatisations</a></li>
+        <li><a href="#archi">Exemples d'architectures de workflows</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+
+<section id="prospects" class="fade">
+  <h2><span class="n">1.</span>Suivi automatisé des prospects et des commandes</h2>
+  <p>Un prospect qui attend une réponse pendant deux jours est souvent perdu. L'automatisation garantit que <b>chaque demande entrante est enregistrée, attribuée et accusée de réception en quelques secondes</b>, sans que personne n'ait à y penser.</p>
+  <figure>
+    <svg viewBox="0 0 640 130" role="img" aria-labelledby="a1t a1d">
+      <title id="a1t">Flux de suivi d'un nouveau prospect</title>
+      <desc id="a1d">Un formulaire déclenche la création d'une fiche dans le CRM, puis un e-mail d'accueil au prospect et une alerte au commercial.</desc>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="13" text-anchor="middle"><rect x="10" y="30" width="120" height="70" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="70.0" y="62" fill="#090D12">Formulaire</text><text x="70.0" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#4B5563">déclencheur</text><rect x="160" y="30" width="120" height="70" rx="10" fill="#0D9488" /><text x="220.0" y="62" fill="#fff">Fiche CRM</text><text x="220.0" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#fff">statut : nouveau</text><rect x="310" y="30" width="155" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="387.5" y="62" fill="#090D12">E-mail d'accueil</text><text x="387.5" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#4B5563">automatique</text><rect x="495" y="30" width="135" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="562.5" y="62" fill="#090D12">Alerte commercial</text><text x="562.5" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#4B5563">tâche + message</text><g stroke="#0D9488" stroke-width="2.5" fill="#0D9488"><line x1="132" y1="65" x2="152" y2="65"/><polygon points="158,65 148,59 148,71" stroke="none"/><line x1="282" y1="65" x2="302" y2="65"/><polygon points="308,65 298,59 298,71" stroke="none"/><line x1="467" y1="65" x2="487" y2="65"/><polygon points="493,65 483,59 483,71" stroke="none"/></g></g>
+    </svg>
+    <figcaption>Cinq secondes, trois actions, zéro saisie manuelle.</figcaption>
+  </figure>
+  <h3>Les données à transmettre</h3>
+  <p>Chaque étape reçoit les informations de la précédente. Voici ce que le formulaire envoie au scénario :</p>
+  <div class="code"><span class="lbl">Payload du formulaire (JSON)</span><pre><code>{
+  <span class="s">"nom"</span>: <span class="s">"Claire Martin"</span>,
+  <span class="s">"email"</span>: <span class="s">"claire@exemple.fr"</span>,
+  <span class="s">"entreprise"</span>: <span class="s">"Atelier Nova"</span>,
+  <span class="s">"besoin"</span>: <span class="s">"Devis pour 20 postes"</span>,
+  <span class="s">"source"</span>: <span class="s">"site_web"</span>,
+  <span class="s">"statut"</span>: <span class="s">"nouveau"</span>
+}</code></pre><button type="button" class="cp">Copier</button></div>
+  <h3>Traiter une commande</h3>
+  <p>Le principe est identique : un événement (paiement reçu) déclenche une suite d'actions. Cliquez pour voir ce qui est automatisable.</p>
+  <div class="cards" id="cards">
+    <div class="card">
+      <button type="button" aria-expanded="false"><span><span class="t">Enregistrement et confirmation</span><span class="s">Dès le paiement</span></span><span><span class="tag yes">Automatique</span> <span class="chev" aria-hidden="true">›</span></span></button>
+      <div class="body"><p>Création de la commande dans le tableur ou le logiciel de gestion, e-mail de confirmation avec récapitulatif, facture générée à partir d'un modèle.</p></div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false"><span><span class="t">Stock et préparation</span><span class="s">Mise à jour et alertes</span></span><span><span class="tag yes">Automatique</span> <span class="chev" aria-hidden="true">›</span></span></button>
+      <div class="body"><p>Décrémentation du stock, bon de préparation envoyé à l'équipe, alerte si un produit passe sous le seuil de réapprovisionnement.</p></div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false"><span><span class="t">Cas particuliers</span><span class="s">Adresse douteuse, remise exceptionnelle</span></span><span><span class="tag mid">Partiel</span> <span class="chev" aria-hidden="true">›</span></span></button>
+      <div class="body"><p>Le scénario repère l'anomalie et crée une tâche pour une personne, plutôt que de deviner.</p></div>
+    </div>
+  </div>
+  <div class="callout tip"><span class="ic">💡</span><p><b>À retenir.</b> Chaque prospect ou commande doit avoir un <b>statut</b> (<code>nouveau</code>, <code>contacté</code>, <code>devis envoyé</code>, <code>gagné</code>, <code>perdu</code>). Ce statut est le fil rouge qui relie toutes vos automatisations.</p></div>
+</section>
+
+<section id="relances" class="fade">
+  <h2><span class="n">2.</span>Relances automatiques et rappels de rendez-vous</h2>
+  <p>Relancer est essentiel mais ingrat : on oublie, ou on repousse. Une relance automatique est <b>déclenchée par le temps et par le statut</b> : si un devis est resté « envoyé » pendant 3 jours, un message part.</p>
+  <div class="tabs" id="tabs1">
+    <div role="tablist" aria-label="Types de messages">
+      <button role="tab" aria-selected="true" aria-controls="r1" id="tr1">Relance de devis</button>
+      <button role="tab" aria-selected="false" aria-controls="r2" id="tr2" tabindex="-1">Rappel de RDV</button>
+    </div>
+    <div role="tabpanel" id="r1" aria-labelledby="tr1"><div class="code"><span class="lbl">Relance J+3 : modèle d'e-mail</span><pre><code>Objet : Votre devis {{numero_devis}}
+Bonjour {{prenom}},
+Je me permets de revenir vers vous au sujet du devis envoyé le {{date_envoi}}.
+Avez-vous eu l'occasion de le consulter ? Je reste disponible pour l'ajuster.
+{{signature}}
+
+<span class="k">Condition</span> : statut = « devis envoyé » ET aucune réponse ET jours écoulés ≥ 3
+<span class="k">Arrêt</span> : dès que le statut change ou qu'une réponse arrive</code></pre><button type="button" class="cp">Copier</button></div></div>
+    <div role="tabpanel" id="r2" aria-labelledby="tr2" hidden><div class="code"><span class="lbl">Rappel de rendez-vous : planification</span><pre><code><span class="k">Déclencheur</span> : nouvelle ligne dans l'agenda
+<span class="k">J-1, 9 h</span> : « Rappel : rendez-vous demain à {{heure}} avec {{interlocuteur}}. Lien : {{lien_visio}} »
+<span class="k">H-2</span> : SMS court avec l'heure et le lieu
+<span class="k">Après le RDV</span> : e-mail de remerciement + passage du statut à « à relancer »
+<span class="k">Annulation</span> : un clic dans le message libère le créneau et prévient l'équipe</code></pre><button type="button" class="cp">Copier</button></div></div>
+  </div>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> Limitez le nombre de relances (2 ou 3 maximum), arrêtez-les dès qu'une réponse arrive, et évitez les envois la nuit ou le week-end. Trop de relances agacent et abîment la relation.</p></div>
+</section>
+
+<section id="devis" class="fade">
+  <h2><span class="n">3.</span>Demandes de devis et circuits de validation</h2>
+  <p>Un devis suit souvent un parcours : demande, préparation, validation interne, envoi. L'automatisation applique des <b>règles d'approbation</b> : selon le montant ou la remise, le devis part directement ou attend l'accord d'un responsable.</p>
+  <div class="calc sim">
+    <h3>🧪 Simulateur de circuit de validation</h3>
+    <div class="fields">
+      <label for="amt">Montant du devis (€)<input type="number" id="amt" min="0" value="2400"></label>
+      <label for="rem">Remise accordée (%)<input type="number" id="rem" min="0" max="100" value="5"></label>
+    </div>
+    <div class="res" id="vres" aria-live="polite"></div>
+  </div>
+  <p>La règle correspondante, lisible par n'importe quel outil No-Code :</p>
+  <div class="code"><span class="lbl">Règle d'approbation (JSON)</span><pre><code>{
+  <span class="s">"si"</span>: { <span class="s">"montant"</span>: "< 1000", <span class="s">"remise"</span>: "<= 10" },  <span class="c">// envoi direct</span>
+  <span class="s">"si"</span>: { <span class="s">"montant"</span>: "1000 à 5000" },                 <span class="c">// responsable</span>
+  <span class="s">"si"</span>: { <span class="s">"montant"</span>: "> 5000", <span class="s">"ou"</span>: <span class="s">"remise > 20"</span> },       <span class="c">// direction</span>
+  <span class="s">"delai_reponse"</span>: <span class="s">"24h"</span>,
+  <span class="s">"sinon"</span>: <span class="s">"alerter_remplacant"</span>
+}</code></pre><button type="button" class="cp">Copier</button></div>
+  <ol class="flow">
+    <li><b>Demande</b> — Le client remplit le formulaire ; la fiche passe en <code>devis demandé</code>.<small>Automatique.</small></li>
+    <li><b>Préparation</b> — Un modèle de devis est pré-rempli avec les données du client.<small>Automatique, complété par une personne si besoin.</small></li>
+    <li><b>Approbation</b> — Le responsable reçoit un message avec boutons « Valider » / « Refuser ».<small>Étape humaine : à conserver au-delà du seuil.</small></li>
+    <li><b>Envoi et suivi</b> — Le devis est envoyé ; les relances de la partie 2 prennent le relais.<small>Automatique.</small></li>
+  </ol>
+  <div class="callout tip"><span class="ic">💡</span><p><b>À retenir.</b> Prévoyez toujours un <b>délai limite</b> : si l'approbateur ne répond pas sous 24 h, le scénario le relance puis alerte son remplaçant. Sans cela, le devis reste bloqué.</p></div>
+</section>
+
+<section id="chainage" class="fade">
+  <h2><span class="n">4.</span>Enchaîner plusieurs automatisations</h2>
+  <p>Un processus complet dépasse souvent ce qu'un seul scénario gère proprement. Mieux vaut plusieurs scénarios <b>courts et spécialisés</b>, reliés entre eux, qu'un grand scénario de 40 étapes impossible à relire.</p>
+  <figure>
+    <svg viewBox="0 0 640 200" role="img" aria-labelledby="a2t a2d">
+      <title id="a2t">Trois scénarios enchaînés par un statut</title>
+      <desc id="a2d">Le scénario A crée la fiche prospect, le scénario B gère le devis et la validation, le scénario C traite la commande et la facture. Chacun déclenche le suivant en modifiant le statut dans une base commune.</desc>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="13" text-anchor="middle"><rect x="10" y="20" width="170" height="70" rx="10" fill="#0D9488" /><text x="95.0" y="52" fill="#fff">Scénario A</text><text x="95.0" y="72" font-family="Inter" font-weight="400" font-size="11" fill="#fff">Prospect → fiche</text><rect x="235" y="20" width="170" height="70" rx="10" fill="#0D9488" /><text x="320.0" y="52" fill="#fff">Scénario B</text><text x="320.0" y="72" font-family="Inter" font-weight="400" font-size="11" fill="#fff">Devis → validation</text><rect x="460" y="20" width="170" height="70" rx="10" fill="#0D9488" /><text x="545.0" y="52" fill="#fff">Scénario C</text><text x="545.0" y="72" font-family="Inter" font-weight="400" font-size="11" fill="#fff">Commande → facture</text><rect x="10" y="140" width="620" height="44" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="320" y="167" fill="#090D12">Base commune : nouveau → devis envoyé → gagné → facturé</text><g stroke="#0D9488" stroke-width="2.5" fill="#0D9488"><line x1="182" y1="55" x2="227" y2="55"/><polygon points="233,55 223,49 223,61" stroke="none"/><line x1="407" y1="55" x2="452" y2="55"/><polygon points="458,55 448,49 448,61" stroke="none"/></g><g stroke="#0D9488" stroke-width="1.5" stroke-dasharray="4 4"><line x1="95" y1="92" x2="95" y2="138"/><line x1="320" y1="92" x2="320" y2="138"/><line x1="545" y1="92" x2="545" y2="138"/></g></g>
+    </svg>
+    <figcaption>Chaque scénario fait une chose et passe le relais en changeant le statut dans la base commune.</figcaption>
+  </figure>
+  <h3>Trois façons de passer le relais</h3>
+  <ul class="grid5">
+    <li><b>Par le statut</b><span>Le scénario suivant surveille un changement dans le tableur.</span></li>
+    <li><b>Par webhook</b><span>Le premier appelle directement l'adresse du second.</span></li>
+    <li><b>Par le temps</b><span>Un scénario planifié vérifie ce qui est en attente.</span></li>
+  </ul>
+  <details><summary>Éviter les doublons et les boucles</summary><div>
+    <p>Un scénario qui modifie un statut peut en redéclencher un autre, qui modifie le premier… Pour l'éviter, n'utilisez que des changements de statut <b>à sens unique</b> et vérifiez que l'action n'a pas déjà été faite (« n'envoyer que si <code>relance_envoyee</code> est vide »).</p></div></details>
+  <details><summary>Que faire en cas d'erreur ?</summary><div>
+    <p>Prévoyez dans chaque scénario une branche d'erreur : message à un responsable avec le nom du scénario, la donnée concernée et l'heure. La Leçon 09 détaille les tests et la maintenance.</p></div></details>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Erreur fréquente.</b> Construire tout le processus d'un coup. Mettez en place un scénario, observez-le une semaine, puis ajoutez le suivant.</p></div>
+</section>
+
+<section id="archi" class="fade">
+  <h2><span class="n">5.</span>Exemples d'architectures de workflows</h2>
+  <p>Trois architectures courantes, à adapter à votre activité. Dans chacune, le <b>déclencheur</b>, les <b>actions</b> et la <b>validation humaine</b> sont identifiés.</p>
+  <div class="tabs" id="tabs2">
+    <div role="tablist" aria-label="Architectures">
+      <button role="tab" aria-selected="true" aria-controls="w1" id="tw1">Prospect → client</button>
+      <button role="tab" aria-selected="false" aria-controls="w2" id="tw2" tabindex="-1">Devis → commande</button>
+      <button role="tab" aria-selected="false" aria-controls="w3" id="tw3" tabindex="-1">Rendez-vous</button>
+    </div>
+    <div role="tabpanel" id="w1" aria-labelledby="tw1"><ol class="flow">
+      <li><b>Déclencheur</b> — Nouveau formulaire de contact.</li>
+      <li><b>Actions</b> — Fiche CRM, e-mail d'accueil, alerte commerciale, résumé de la demande par l'IA.</li>
+      <li><b>Humain</b> — Le commercial qualifie le prospect.<small>Statut : <code>contacté</code>.</small></li>
+    </ol></div>
+    <div role="tabpanel" id="w2" aria-labelledby="tw2" hidden><ol class="flow">
+      <li><b>Déclencheur</b> — Statut <code>devis demandé</code>.</li>
+      <li><b>Actions</b> — Devis pré-rempli, règle de montant, relances à J+3 et J+7.</li>
+      <li><b>Humain</b> — Approbation au-delà du seuil, puis signature client.<small>Statut : <code>gagné</code> → commande et facture.</small></li>
+    </ol></div>
+    <div role="tabpanel" id="w3" aria-labelledby="tw3" hidden><ol class="flow">
+      <li><b>Déclencheur</b> — Rendez-vous réservé dans l'agenda.</li>
+      <li><b>Actions</b> — Confirmation immédiate, rappel à J-1 et H-2, lien de visio, e-mail de remerciement après.</li>
+      <li><b>Humain</b> — Le rendez-vous lui-même, puis le compte rendu.<small>L'IA peut en proposer un brouillon (Leçon 06).</small></li>
+    </ol></div>
+  </div>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Pour aller plus loin.</b> Ces suivis manipulent des données personnelles de clients. Prévoyez la durée de conservation et les droits des personnes : sujet de la Leçon 09.</p></div>
+  <div class="recap">
+    <h2>Points clés à retenir</h2>
+    <ul>
+      <li>Chaque demande entrante est enregistrée, attribuée et accusée de réception automatiquement.</li>
+      <li>Un statut sur chaque fiche relie toutes les automatisations.</li>
+      <li>Relances limitées, arrêtées dès la réponse, à des horaires raisonnables.</li>
+      <li>Règles d'approbation selon le montant, avec un délai limite.</li>
+      <li>Plusieurs scénarios courts et chaînés plutôt qu'un seul géant.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Navigation entre leçons">
+  <a href="lecon-07.html"><small>Leçon précédente</small>Leçon 07 — Automatiser la création et la publication de contenus</a>
+  <a class="next" href="lecon-09.html"><small>Leçon suivante</small>Leçon 09 — Tester, sécuriser et maintenir ses automatisations</a>
+</nav>
+</main>
+<button id="top" type="button" aria-label="Retour en haut">↑</button>
+<script>
+document.querySelectorAll('.tabs').forEach(function(t){
+  var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+  function sel(i){tabs.forEach(function(b,j){
+    b.setAttribute('aria-selected',j===i);b.tabIndex=j===i?0:-1;
+    document.getElementById(b.getAttribute('aria-controls')).hidden=j!==i});tabs[i].focus()}
+  tabs.forEach(function(b,i){
+    b.addEventListener('click',function(){sel(i)});
+    b.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight')sel((i+1)%tabs.length);
+      if(e.key==='ArrowLeft')sel((i+tabs.length-1)%tabs.length)})})});
+document.querySelectorAll('.cp').forEach(function(b){
+  b.addEventListener('click',function(){
+    var txt=b.parentNode.querySelector('pre').innerText;
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){b.textContent='Copié ✓'},function(){b.textContent='Sélectionnez le texte'});
+    setTimeout(function(){b.textContent='Copier'},1800)})});
+document.querySelectorAll('#cards .card').forEach(function(card){
+  var btn=card.querySelector('button');
+  btn.addEventListener('click',function(){
+    var open=card.getAttribute('data-open')==='true';
+    card.setAttribute('data-open',String(!open));btn.setAttribute('aria-expanded',String(!open))})});
+var amt=document.getElementById('amt'),rem=document.getElementById('rem');
+function valid(){
+  var a=+amt.value||0,r=+rem.value||0,m;
+  if(a>5000||r>20)m='<span class="tag mid">Direction</span> Validation de la direction requise (montant supérieur à 5 000 € ou remise supérieure à 20 %).';
+  else if(a>=1000||r>10)m='<span class="tag yes">Responsable</span> Validation du responsable commercial avant envoi.';
+  else m='<span class="tag yes">Automatique</span> Envoi direct au client, sans validation.';
+  document.getElementById('vres').innerHTML=m}
+amt.addEventListener('input',valid);rem.addEventListener('input',valid);valid();
+var bar=document.getElementById('bar'),top_=document.getElementById('top');
+addEventListener('scroll',function(){
+  var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+  bar.style.width=(p*100)+'%';top_.style.display=h.scrollTop>600?'block':'none'});
+top_.addEventListener('click',function(){scrollTo({top:0})});
+var secs=document.querySelectorAll('.fade');
+if(window.IntersectionObserver&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
+  secs.forEach(function(s){io.observe(s)})}else{secs.forEach(function(s){s.classList.add('in')})}
+</script>
+</body>
+</html>

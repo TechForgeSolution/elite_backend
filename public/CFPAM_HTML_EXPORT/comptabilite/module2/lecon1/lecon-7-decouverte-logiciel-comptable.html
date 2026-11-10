@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 7 — Découverte d'un logiciel comptable</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cpath d='M25 35h50M25 50h50M25 65h30' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F6F8F6;
+    --color-text: #0B0F0D;
+    --color-text-muted: #5A6560;
+    --color-accent: #1F6F54;
+    --color-accent-soft: #E7F2ED;
+    --color-border: #E3E8E5;
+    --color-accent-alt: #B3541E;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --content-width: 720px;
+    --wide-width: 960px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-text);
+  }
+
+  a { color: var(--color-accent); }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* --- Progress bar --- */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--color-accent);
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* --- Header --- */
+  header.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(140%) blur(6px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .header-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .brand-mark {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--color-accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .brand-mark svg { width: 15px; height: 15px; }
+
+  nav.header-nav {
+    display: flex;
+    gap: 22px;
+    font-size: 14px;
+  }
+  nav.header-nav a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+  }
+  nav.header-nav a:hover, nav.header-nav a.active {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent);
+  }
+  .header-menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  @media (max-width: 760px) {
+    nav.header-nav { display: none; }
+    .header-menu-toggle { display: inline-block; }
+  }
+
+  /* --- Layout wrapper --- */
+  main { display: block; }
+  .measure {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .measure-wide {
+    max-width: var(--wide-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* --- Hero --- */
+  .hero {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .badge {
+    font-size: 12.5px;
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+    border: 1px solid var(--color-border);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 4.2vw, 40px);
+    margin: 0 0 14px;
+    max-width: 16ch;
+  }
+  .hero .subtitle {
+    font-size: 18px;
+    color: var(--color-text-muted);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  /* --- TOC --- */
+  .toc {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin: 36px 0 0;
+  }
+  .toc h2 {
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    margin: 0 0 12px;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+  .toc ol {
+    margin: 0; padding: 0;
+    list-style: none;
+    counter-reset: toc-counter;
+  }
+  .toc li {
+    counter-increment: toc-counter;
+    margin-bottom: 6px;
+  }
+  .toc a {
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 15px;
+    display: flex;
+    gap: 10px;
+    padding: 4px 0;
+  }
+  .toc a::before {
+    content: counter(toc-counter);
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    font-size: 13px;
+    width: 18px;
+  }
+  .toc a:hover { color: var(--color-accent); }
+
+  /* --- Sections --- */
+  section.lesson-section {
+    padding: 52px 0;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  section.lesson-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  section.lesson-section.alt {
+    background: var(--color-bg-alt);
+  }
+  section.lesson-section .measure-wide,
+  section.lesson-section .measure {
+    padding-top: 4px;
+  }
+  section.lesson-section h2 {
+    font-size: 26px;
+    margin: 0 0 6px;
+  }
+  section.lesson-section .section-kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+  }
+  section.lesson-section p {
+    margin: 0 0 16px;
+  }
+  section.lesson-section h3 {
+    font-size: 19px;
+    margin: 28px 0 10px;
+  }
+
+  /* --- Callout boxes --- */
+  .callout {
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    background: var(--color-bg);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 24px 0;
+    display: flex;
+    gap: 14px;
+  }
+  section.lesson-section.alt .callout { background: #FFFFFF; }
+  .callout .icon { font-size: 20px; line-height: 1.4; flex-shrink: 0; }
+  .callout .body strong.label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--color-accent);
+  }
+  .callout.warning { border-left-color: var(--color-accent-alt); }
+  .callout.warning .body strong.label { color: var(--color-accent-alt); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* --- Cards grid --- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .card {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 20px;
+    background: var(--color-bg);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  section.lesson-section.alt .card { background: #FFFFFF; }
+  .card:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+  .card .card-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: var(--color-accent-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .card .card-icon svg { width: 18px; height: 18px; stroke: var(--color-accent); }
+  .card h4 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  .card p { font-size: 14.5px; color: var(--color-text-muted); margin: 0; }
+
+  /* --- Tabs --- */
+  .tabs { margin: 28px 0; }
+  .tab-list {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--color-text); }
+  .tab-btn[aria-selected="true"] {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.is-active { display: block; }
+  .tab-panel ul { margin: 0; padding-left: 20px; }
+  .tab-panel li { margin-bottom: 8px; }
+
+  /* --- Accordion --- */
+  .accordion { border-top: 1px solid var(--color-border); margin: 24px 0; }
+  .accordion-item { border-bottom: 1px solid var(--color-border); }
+  .accordion-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 4px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .accordion-item summary::-webkit-details-marker { display: none; }
+  .accordion-item summary .plus {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    font-size: 18px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .accordion-item[open] summary .plus { transform: rotate(45deg); }
+  .accordion-item .accordion-body {
+    padding: 0 4px 18px;
+    color: var(--color-text-muted);
+    font-size: 15px;
+  }
+
+  /* --- Accounting tables --- */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+  }
+  table.ledger {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 520px;
+    font-size: 14.5px;
+  }
+  table.ledger caption {
+    text-align: left;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    padding: 12px 16px 0;
+  }
+  table.ledger th, table.ledger td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+  }
+  table.ledger thead th {
+    background: var(--color-bg-alt);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+  table.ledger td.amount, table.ledger th.amount {
+    font-family: var(--font-mono);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  table.ledger tbody tr:hover { background: var(--color-accent-soft); }
+  table.ledger tr.total td {
+    font-weight: 600;
+    color: var(--color-accent);
+    border-top: 2px solid var(--color-accent);
+    border-bottom: none;
+  }
+
+  /* --- Stepper --- */
+  .stepper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 32px 0 12px;
+  }
+  .step {
+    position: relative;
+    padding: 0 14px 0 0;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: -2px;
+    width: calc(100% - 8px);
+    height: 2px;
+    background: var(--color-border);
+  }
+  .step .step-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 2;
+  }
+  .step h4 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    margin: 0 0 4px;
+  }
+  .step p { font-size: 13.5px; color: var(--color-text-muted); margin: 0; }
+
+  @media (max-width: 700px) {
+    .stepper { grid-template-columns: 1fr; gap: 22px; }
+    .step:not(:last-child)::after { display: none; }
+  }
+
+  /* --- SVG diagram wrapper --- */
+  .diagram-wrap {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-bg);
+    padding: 20px;
+    margin: 24px 0;
+  }
+  section.lesson-section.alt .diagram-wrap { background: #FFFFFF; }
+  .diagram-wrap svg { width: 100%; height: auto; display: block; }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 10px;
+  }
+
+  /* --- Key takeaways --- */
+  .takeaways {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+  .takeaway {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--color-bg);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .takeaway svg { flex-shrink: 0; margin-top: 2px; width: 18px; height: 18px; stroke: var(--color-accent); }
+  .takeaway p { margin: 0; font-size: 14.5px; }
+
+  /* --- Prev/next nav --- */
+  .lesson-nav {
+    border-top: 1px solid var(--color-border);
+    padding: 40px 0 60px;
+  }
+  .lesson-nav-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .nav-card {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--color-text);
+    display: block;
+    transition: border-color 0.2s ease;
+  }
+  .nav-card:hover { border-color: var(--color-accent); }
+  .nav-card .dir {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .nav-card.next { text-align: right; }
+  .nav-card .title { font-family: var(--font-display); font-weight: 600; font-size: 15.5px; }
+  .nav-card.disabled { opacity: 0.45; pointer-events: none; }
+  .back-to-module {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .lesson-nav-grid { grid-template-columns: 1fr; }
+    .nav-card.next { text-align: left; }
+  }
+
+  /* --- Footer --- */
+  footer.site-footer {
+    border-top: 1px solid var(--color-border);
+    padding: 28px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+
+  /* --- Back to top --- */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    z-index: 800;
+  }
+  #back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  #back-to-top svg { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" role="presentation"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">C</span>
+      Filière Comptabilité
+    </div>
+    <nav class="header-nav" aria-label="Sommaire de la leçon">
+      <a href="#decouverte">Découverte</a>
+      <a href="#dossier">Dossier comptable</a>
+      <a href="#journaux">Journaux</a>
+      <a href="#comptes">Comptes</a>
+      <a href="#exercices">Exercices</a>
+      <a href="#saisie">Saisie sécurisée</a>
+      <a href="#points-cles">L'essentiel</a>
+    </nav>
+    <button class="header-menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu">Sommaire</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="measure">
+      <div class="badges">
+        <span class="badge">Module — Logiciels comptables (Sage, Ciel)</span>
+        <span class="badge">Niveau débutant / intermédiaire</span>
+        <span class="badge">15 min de lecture</span>
+      </div>
+      <h1>Découverte d'un logiciel comptable</h1>
+      <p class="subtitle">Leçon 7 — comprendre comment un logiciel comptable organise un dossier d'entreprise, structure ses journaux et ses comptes, et pourquoi la méthode de saisie doit rester rigoureuse et sécurisée.</p>
+
+      <nav class="toc" aria-label="Sommaire cliquable">
+        <h2>Dans cette leçon</h2>
+        <ol>
+          <li><a href="#decouverte">À quoi sert un logiciel comptable ?</a></li>
+          <li><a href="#dossier">Organisation d'un dossier comptable</a></li>
+          <li><a href="#journaux">Les journaux</a></li>
+          <li><a href="#comptes">Les comptes</a></li>
+          <li><a href="#exercices">Les exercices comptables</a></li>
+          <li><a href="#saisie">Méthode de saisie sécurisée</a></li>
+          <li><a href="#points-cles">Points clés à retenir</a></li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <section id="decouverte" class="lesson-section">
+    <div class="measure">
+      <span class="section-kicker">01 — Découverte</span>
+      <h2>À quoi sert un logiciel comptable ?</h2>
+      <p>Jusqu'ici, les leçons précédentes ont posé les mécanismes de la comptabilité générale — partie double, journaux, grand livre, balance — comme s'ils étaient tenus à la main. En pratique, ces opérations sont aujourd'hui réalisées via un logiciel comptable, qui automatise les reports et sécurise les enregistrements. Les plus répandus sur le marché francophone sont Sage 100, Ciel Compta et EBP.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg></div>
+          <h4>Automatiser les reports</h4>
+          <p>Une écriture saisie une seule fois dans un journal alimente automatiquement le grand livre et la balance, sans ressaisie ni risque de report erroné.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg></div>
+          <h4>Contrôler la cohérence</h4>
+          <p>Le logiciel refuse par construction toute écriture déséquilibrée : il impose que le total des débits égale le total des crédits avant validation.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg></div>
+          <h4>Sécuriser les données</h4>
+          <p>Il trace chaque saisie, chaque modification et chaque utilisateur, dans le respect de l'inaltérabilité imposée par la réglementation.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M9 13h6M9 17h6"/></svg></div>
+          <h4>Produire les états</h4>
+          <p>Bilan, compte de résultat, balance ou grand livre s'éditent en quelques clics, à jour de la dernière écriture saisie.</p>
+        </div>
+      </div>
+
+      <p>Malgré des interfaces différentes, tous ces logiciels reposent sur la même logique comptable : dossier, exercice, journaux, comptes. Comprendre cette logique permet de passer facilement de l'un à l'autre.</p>
+
+      <div class="tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Comparer les interfaces">
+          <button class="tab-btn" role="tab" id="tab-sage" aria-controls="panel-sage" aria-selected="true" data-tab="sage">Interface Sage 100</button>
+          <button class="tab-btn" role="tab" id="tab-ciel" aria-controls="panel-ciel" aria-selected="false" tabindex="-1" data-tab="ciel">Interface Ciel / EBP</button>
+        </div>
+        <div class="tab-panel is-active" id="panel-sage" role="tabpanel" aria-labelledby="tab-sage" data-panel="sage">
+          <ul>
+            <li>Environnement modulaire : comptabilité, immobilisations, trésorerie et paie peuvent être activés séparément selon les besoins.</li>
+            <li>Saisie guidée par grille de journal, avec numérotation automatique des pièces et lettrage assisté des comptes de tiers.</li>
+            <li>Interface pensée pour les structures moyennes à grandes, avec des droits d'accès finement paramétrables par utilisateur.</li>
+          </ul>
+        </div>
+        <div class="tab-panel" id="panel-ciel" role="tabpanel" aria-labelledby="tab-ciel" data-panel="ciel" hidden>
+          <ul>
+            <li>Prise en main plus directe, pensée pour les TPE et les cabinets qui gèrent de nombreux petits dossiers.</li>
+            <li>Assistants pas à pas pour la création du dossier, l'import des relevés bancaires et le rapprochement.</li>
+            <li>Saisie simplifiée avec modèles d'écritures préremplis pour les opérations courantes (achats, ventes, banque).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dossier" class="lesson-section alt">
+    <div class="measure-wide">
+      <span class="section-kicker">02 — Dossier comptable</span>
+      <h2>Organisation d'un dossier comptable</h2>
+      <p class="measure" style="padding:0;">Toute la comptabilité d'une entreprise est rassemblée dans un dossier comptable unique, créé une seule fois dans le logiciel puis réutilisé exercice après exercice. Ce dossier s'organise selon une arborescence toujours identique.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Arborescence d'un dossier comptable : dossier entreprise, puis exercices comptables, puis journaux, puis écritures et comptes">
+          <defs>
+            <marker id="arrow7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" fill="#1F6F54"></path>
+            </marker>
+          </defs>
+          <rect x="20" y="20" width="180" height="56" rx="8" fill="#E7F2ED" stroke="#1F6F54" stroke-width="1.5"></rect>
+          <text x="110" y="53" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="15" fill="#0B0F0D">Dossier entreprise</text>
+
+          <line x1="200" y1="48" x2="260" y2="48" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)"></line>
+
+          <rect x="260" y="20" width="180" height="56" rx="8" fill="#FFFFFF" stroke="#E3E8E5" stroke-width="1.5"></rect>
+          <text x="350" y="46" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="14" fill="#0B0F0D">Exercice 2025</text>
+          <text x="350" y="64" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#5A6560">01/01 → 31/12</text>
+
+          <rect x="260" y="100" width="180" height="56" rx="8" fill="#FFFFFF" stroke="#E3E8E5" stroke-width="1.5" opacity="0.6"></rect>
+          <text x="350" y="126" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="14" fill="#5A6560">Exercice 2026</text>
+          <text x="350" y="144" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#5A6560">en cours</text>
+
+          <line x1="440" y1="48" x2="500" y2="48" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)"></line>
+
+          <rect x="500" y="4" width="170" height="44" rx="8" fill="#FFFFFF" stroke="#E3E8E5" stroke-width="1.5"></rect>
+          <text x="585" y="30" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="#0B0F0D">Journal des Achats</text>
+
+          <rect x="500" y="56" width="170" height="44" rx="8" fill="#FFFFFF" stroke="#E3E8E5" stroke-width="1.5"></rect>
+          <text x="585" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="#0B0F0D">Journal des Ventes</text>
+
+          <rect x="500" y="108" width="170" height="44" rx="8" fill="#FFFFFF" stroke="#E3E8E5" stroke-width="1.5"></rect>
+          <text x="585" y="134" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="#0B0F0D">Journal de Banque</text>
+
+          <line x1="200" y1="48" x2="200" y2="26" stroke="none"></line>
+          <line x1="670" y1="26" x2="730" y2="66" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)"></line>
+          <line x1="670" y1="78" x2="730" y2="78" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)"></line>
+          <line x1="670" y1="130" x2="730" y2="90" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)"></line>
+
+          <rect x="730" y="50" width="150" height="56" rx="8" fill="#E7F2ED" stroke="#1F6F54" stroke-width="1.5"></rect>
+          <text x="805" y="76" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="14" fill="#0B0F0D">Comptes</text>
+          <text x="805" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#5A6560">plan comptable</text>
+
+          <rect x="260" y="190" width="420" height="56" rx="8" fill="#FFFFFF" stroke="#E3E8E5" stroke-width="1.5"></rect>
+          <text x="470" y="216" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="14" fill="#0B0F0D">Écritures comptables</text>
+          <text x="470" y="234" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#5A6560">chaque saisie relie un journal à un ou plusieurs comptes</text>
+
+          <line x1="350" y1="156" x2="350" y2="190" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)" opacity="0.35"></line>
+          <line x1="585" y1="152" x2="470" y2="190" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)" opacity="0.35"></line>
+          <line x1="805" y1="106" x2="620" y2="190" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow7)" opacity="0.35"></line>
+        </svg>
+        <p class="diagram-caption">Le dossier entreprise contient les exercices successifs ; chaque exercice regroupe des journaux, qui enregistrent des écritures reliées aux comptes du plan comptable.</p>
+      </div>
+
+      <div class="measure" style="padding:0;">
+        <div class="callout">
+          <span class="icon" aria-hidden="true">📌</span>
+          <div class="body">
+            <strong class="label">Rappel normatif</strong>
+            <p>Le dossier comptable doit être conservé sous une forme permettant l'export du Fichier des Écritures Comptables (FEC) en cas de contrôle fiscal. Les écritures validées ne peuvent plus être modifiées ni supprimées : seule une écriture de correction peut les compenser, garantissant l'inaltérabilité des données.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="journaux" class="lesson-section">
+    <div class="measure">
+      <span class="section-kicker">03 — Les journaux</span>
+      <h2>Les journaux du dossier</h2>
+      <p>Un journal regroupe les écritures d'une même famille d'opérations. Un dossier comptable comporte toujours plusieurs journaux, paramétrés dès la création du dossier, chacun identifié par un code court.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg></div>
+          <h4>Journal des Achats (AC)</h4>
+          <p>Enregistre les factures reçues des fournisseurs : charges, TVA déductible et dettes fournisseurs.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
+          <h4>Journal des Ventes (VE)</h4>
+          <p>Enregistre les factures émises aux clients : produits, TVA collectée et créances clients.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></div>
+          <h4>Journal de Banque (BQ)</h4>
+          <p>Enregistre les mouvements bancaires : règlements reçus, paiements effectués, frais et agios.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h4>Journal de Caisse (CA)</h4>
+          <p>Enregistre les opérations réglées en espèces, souvent pour les petites dépenses courantes.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h16"/></svg></div>
+          <h4>Journal des Opérations Diverses (OD)</h4>
+          <p>Regroupe les écritures qui ne relèvent d'aucun autre journal : salaires, dotations, régularisations.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+          <h4>Journal des À-Nouveaux (AN)</h4>
+          <p>Reprend les soldes de clôture de l'exercice précédent à l'ouverture du nouvel exercice.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger">
+          <caption>Extrait du journal des Achats — mars 2026</caption>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Pièce</th>
+              <th>Compte</th>
+              <th>Libellé</th>
+              <th class="amount">Débit</th>
+              <th class="amount">Crédit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num">05/03</td>
+              <td class="num">AC-0142</td>
+              <td class="num">6061</td>
+              <td>Fournitures d'entretien</td>
+              <td class="amount">85 000</td>
+              <td class="amount"></td>
+            </tr>
+            <tr>
+              <td class="num">05/03</td>
+              <td class="num">AC-0142</td>
+              <td class="num">44566</td>
+              <td>TVA déductible sur achat</td>
+              <td class="amount">15 300</td>
+              <td class="amount"></td>
+            </tr>
+            <tr>
+              <td class="num">05/03</td>
+              <td class="num">AC-0142</td>
+              <td class="num">401FOUR</td>
+              <td>Fournisseur Sotra Distribution</td>
+              <td class="amount"></td>
+              <td class="amount">100 300</td>
+            </tr>
+            <tr class="total">
+              <td colspan="4">Totaux de la pièce</td>
+              <td class="amount">100 300</td>
+              <td class="amount">100 300</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="comptes" class="lesson-section alt">
+    <div class="measure">
+      <span class="section-kicker">04 — Les comptes</span>
+      <h2>Les comptes du plan comptable</h2>
+      <p>Chaque écriture enregistrée dans un journal mouvemente au moins deux comptes, tirés du plan comptable paramétré dans le dossier. Ce plan reprend la numérotation par classes, identique d'un logiciel à l'autre.</p>
+
+      <div class="table-wrap">
+        <table class="ledger">
+          <caption>Classes principales du plan comptable</caption>
+          <thead>
+            <tr>
+              <th class="amount">Classe</th>
+              <th>Nature</th>
+              <th>Exemples de comptes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num amount">1</td>
+              <td>Comptes de capitaux</td>
+              <td>Capital, réserves, emprunts</td>
+            </tr>
+            <tr>
+              <td class="num amount">2</td>
+              <td>Comptes d'immobilisations</td>
+              <td>Matériel, mobilier, logiciels</td>
+            </tr>
+            <tr>
+              <td class="num amount">4</td>
+              <td>Comptes de tiers</td>
+              <td>Clients, fournisseurs, État</td>
+            </tr>
+            <tr>
+              <td class="num amount">5</td>
+              <td>Comptes financiers</td>
+              <td>Banque, caisse</td>
+            </tr>
+            <tr>
+              <td class="num amount">6</td>
+              <td>Comptes de charges</td>
+              <td>Achats, loyers, salaires</td>
+            </tr>
+            <tr>
+              <td class="num amount">7</td>
+              <td>Comptes de produits</td>
+              <td>Ventes, prestations, produits financiers</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">💡</span>
+        <div class="body">
+          <strong class="label">À retenir</strong>
+          <p>Dans le logiciel, chaque compte de tiers (client ou fournisseur) est en réalité un sous-compte individuel, ex. <span class="num">401SOTRA</span>, ce qui permet de suivre le solde de chaque partenaire séparément tout en le rattachant à la classe 4 pour la balance générale.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="exercices" class="lesson-section">
+    <div class="measure-wide">
+      <span class="section-kicker">05 — Exercices comptables</span>
+      <h2>Les exercices comptables</h2>
+      <p class="measure" style="padding:0;">Un exercice comptable est la période — généralement douze mois — sur laquelle le dossier enregistre les opérations avant de produire les états financiers et de clôturer les comptes. Dans le logiciel, ce cycle se répète à l'identique chaque année.</p>
+
+      <div class="stepper">
+        <div class="step">
+          <div class="step-dot">1</div>
+          <h4>Ouverture de l'exercice</h4>
+          <p>Le logiciel reprend les soldes de clôture de l'exercice précédent via le journal des À-Nouveaux.</p>
+        </div>
+        <div class="step">
+          <div class="step-dot">2</div>
+          <h4>Saisie courante</h4>
+          <p>Les écritures d'achats, de ventes et de banque sont enregistrées journal par journal, mois après mois.</p>
+        </div>
+        <div class="step">
+          <div class="step-dot">3</div>
+          <h4>Travaux de clôture</h4>
+          <p>Rapprochements bancaires, amortissements et régularisations sont saisis avant l'arrêté des comptes.</p>
+        </div>
+        <div class="step">
+          <div class="step-dot">4</div>
+          <h4>Clôture et report</h4>
+          <p>L'exercice est verrouillé, les états financiers édités, et les soldes reportés sur l'exercice suivant.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="saisie" class="lesson-section alt">
+    <div class="measure">
+      <span class="section-kicker">06 — Méthode de saisie</span>
+      <h2>Méthode de saisie sécurisée</h2>
+      <p>Le logiciel propose en général deux méthodes de saisie des écritures, qui coexistent selon le type d'opération et l'organisation du cabinet ou du service comptable.</p>
+
+      <div class="tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Méthodes de saisie">
+          <button class="tab-btn" role="tab" id="tab-km" aria-controls="panel-km" aria-selected="true" data-tab="km">Saisie au kilomètre</button>
+          <button class="tab-btn" role="tab" id="tab-piece" aria-controls="panel-piece" aria-selected="false" tabindex="-1" data-tab="piece">Saisie par pièce</button>
+        </div>
+        <div class="tab-panel is-active" id="panel-km" role="tabpanel" aria-labelledby="tab-km" data-panel="km">
+          <ul>
+            <li>Les lignes d'écriture s'enchaînent directement dans une grille, sans validation intermédiaire par pièce.</li>
+            <li>Rapide pour un grand volume d'opérations similaires, comme les relevés bancaires ou les notes de frais.</li>
+            <li>Demande une vigilance accrue : une erreur de compte ou de montant est moins visible qu'en saisie par pièce.</li>
+          </ul>
+        </div>
+        <div class="tab-panel" id="panel-piece" role="tabpanel" aria-labelledby="tab-piece" data-panel="piece" hidden>
+          <ul>
+            <li>Chaque facture ou justificatif fait l'objet d'une écriture isolée, validée et équilibrée avant de passer à la suivante.</li>
+            <li>Le numéro de pièce assure la traçabilité directe entre le document papier ou numérique et l'écriture saisie.</li>
+            <li>Recommandée pour les opérations complexes ou de montant élevé, où le contrôle unitaire prime sur la vitesse.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout warning">
+        <span class="icon" aria-hidden="true">⚠️</span>
+        <div class="body">
+          <strong class="label">Erreur fréquente</strong>
+          <p>Valider une écriture sans avoir vérifié l'équilibre débit/crédit affiché par le logiciel. Une fois l'écriture validée, elle devient inaltérable : toute correction nécessite une contre-passation, jamais une modification directe.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">🧮</span>
+        <div class="body">
+          <strong class="label">Cas pratique</strong>
+          <p>Avant de saisir une facture d'achat, identifiez d'abord le journal concerné (AC), puis le compte de charge (classe 6), le compte de TVA déductible (44566) et enfin le compte du fournisseur (classe 4) — dans cet ordre, la saisie reste rapide et l'équilibre se vérifie naturellement à la dernière ligne.</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <details class="accordion-item">
+          <summary>Peut-on modifier une écriture déjà validée ?<span class="plus" aria-hidden="true">+</span></summary>
+          <div class="accordion-body">
+            <p>Non. Une fois validée, une écriture est verrouillée par le logiciel pour garantir l'inaltérabilité des données. Toute erreur se corrige par une écriture complémentaire ou de contre-passation, jamais par une modification directe.</p>
+          </div>
+        </details>
+        <details class="accordion-item">
+          <summary>Que se passe-t-il si un journal n'est pas équilibré ?<span class="plus" aria-hidden="true">+</span></summary>
+          <div class="accordion-body">
+            <p>Le logiciel refuse la validation de l'écriture tant que le total des débits ne correspond pas au total des crédits. L'utilisateur doit corriger la saisie avant de pouvoir continuer.</p>
+          </div>
+        </details>
+        <details class="accordion-item">
+          <summary>Faut-il paramétrer les journaux avant toute saisie ?<span class="plus" aria-hidden="true">+</span></summary>
+          <div class="accordion-body">
+            <p>Oui. Les journaux et le plan comptable doivent être créés dès l'ouverture du dossier, avant la première écriture — c'est précisément l'objet de la prochaine leçon.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="measure" style="padding:0;">
+        <div class="callout">
+          <span class="icon" aria-hidden="true">🔗</span>
+          <div class="body">
+            <strong class="label">Pour aller plus loin</strong>
+            <p>La leçon suivante détaille pas à pas la création d'un dossier comptable dans le logiciel et son paramétrage initial : exercice, journaux, plan comptable et droits d'accès.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="points-cles" class="lesson-section">
+    <div class="measure">
+      <span class="section-kicker">Synthèse</span>
+      <h2>Points clés à retenir</h2>
+      <div class="takeaways">
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Un logiciel comptable automatise les reports du journal vers le grand livre et la balance, tout en sécurisant et traçant chaque écriture.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Le dossier comptable rassemble les exercices successifs, qui contiennent chacun des journaux, eux-mêmes liés aux comptes du plan comptable.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Les journaux (Achats, Ventes, Banque, Caisse, OD, À-Nouveaux) répartissent les écritures par famille d'opérations.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>L'exercice comptable suit un cycle fixe : ouverture, saisie courante, travaux de clôture, puis report sur l'exercice suivant.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Une écriture validée est inaltérable : toute erreur se corrige par contre-passation, jamais par modification directe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Navigation entre leçons">
+    <div class="measure">
+      <div class="lesson-nav-grid">
+        <span class="nav-card disabled">
+          <span class="dir">← Leçon précédente</span>
+          <span class="title">Fin du Module 1 — Comptabilité générale</span>
+        </span>
+        <a class="nav-card next" href="#" onclick="return false;">
+          <span class="dir">Leçon suivante →</span>
+          <span class="title">Leçon 8 — Création du dossier et paramétrage</span>
+        </a>
+      </div>
+      <p class="back-to-module"><a href="#top">↑ Retour au sommaire du module</a></p>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="site-footer">
+  Filière Comptabilité — Module Logiciels comptables (Sage, Ciel) · Leçon 7 sur le programme
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de la page">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Reading progress bar */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  /* Back to top button */
+  var backToTop = document.getElementById('back-to-top');
+  function toggleBackToTop() {
+    if (window.scrollY > 480) {
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  }
+  document.addEventListener('scroll', toggleBackToTop, { passive: true });
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  toggleBackToTop();
+
+  /* Mobile menu toggle: reveal the nav links inline below header */
+  var menuToggle = document.getElementById('menu-toggle');
+  var headerNav = document.querySelector('nav.header-nav');
+  menuToggle.addEventListener('click', function () {
+    var expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!expanded));
+    if (!expanded) {
+      headerNav.style.display = 'flex';
+      headerNav.style.flexDirection = 'column';
+      headerNav.style.position = 'absolute';
+      headerNav.style.top = '100%';
+      headerNav.style.left = '0';
+      headerNav.style.right = '0';
+      headerNav.style.background = '#FFFFFF';
+      headerNav.style.padding = '14px 24px';
+      headerNav.style.borderBottom = '1px solid var(--color-border)';
+      headerNav.style.gap = '14px';
+    } else {
+      headerNav.removeAttribute('style');
+    }
+  });
+  headerNav.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      if (window.innerWidth <= 760) {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        headerNav.removeAttribute('style');
+      }
+    });
+  });
+
+  /* Tabs */
+  document.querySelectorAll('[data-tabs]').forEach(function (tabGroup) {
+    var buttons = tabGroup.querySelectorAll('.tab-btn');
+    var panels = tabGroup.querySelectorAll('.tab-panel');
+
+    function activate(name) {
+      buttons.forEach(function (btn) {
+        var isMatch = btn.getAttribute('data-tab') === name;
+        btn.setAttribute('aria-selected', String(isMatch));
+        btn.tabIndex = isMatch ? 0 : -1;
+      });
+      panels.forEach(function (panel) {
+        var isMatch = panel.getAttribute('data-panel') === name;
+        panel.classList.toggle('is-active', isMatch);
+        if (isMatch) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+      });
+    }
+
+    buttons.forEach(function (btn, i) {
+      btn.addEventListener('click', function () {
+        activate(btn.getAttribute('data-tab'));
+      });
+      btn.addEventListener('keydown', function (e) {
+        var idx = Array.prototype.indexOf.call(buttons, btn);
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          var next = buttons[(idx + 1) % buttons.length];
+          next.focus(); activate(next.getAttribute('data-tab'));
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          var prev = buttons[(idx - 1 + buttons.length) % buttons.length];
+          prev.focus(); activate(prev.getAttribute('data-tab'));
+        }
+      });
+    });
+  });
+
+  /* Scroll-triggered fade-in for sections */
+  var sections = document.querySelectorAll('section.lesson-section');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function (s) { observer.observe(s); });
+  } else {
+    sections.forEach(function (s) { s.classList.add('is-visible'); });
+  }
+
+  /* Active TOC/header link highlighting on scroll */
+  var navLinks = document.querySelectorAll('nav.header-nav a');
+  var sectionIds = Array.prototype.map.call(sections, function (s) { return s.id; });
+  function highlightNav() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    sectionIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollPos) { currentId = id; }
+    });
+    navLinks.forEach(function (link) {
+      var match = link.getAttribute('href') === '#' + currentId;
+      link.classList.toggle('active', match);
+    });
+  }
+  document.addEventListener('scroll', highlightNav, { passive: true });
+  highlightNav();
+
+})();
+</script>
+
+</body>
+</html>

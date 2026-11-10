@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 09 — Suivre et analyser les performances de ses vidéos</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='9' y='2' width='14' height='28' rx='4' fill='%237C3AED'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F5FA;--color-text:#0A0A0F;--color-text-muted:#5B6472;--color-accent:#7C3AED;--color-accent-soft:#F0EAFE;--color-border:#E5E8EE;--accent-text:#6D28D9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.2;margin:0 0 .6em;letter-spacing:-.02em}
+h1{font-size:clamp(2rem,5vw,3.25rem);font-weight:700}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1em}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font:700 1rem Sora,sans-serif;display:flex;align-items:center;gap:8px}
+.logo i{width:12px;height:20px;border-radius:4px;background:var(--color-accent);display:inline-block}
+header.top a.menu{font-size:.9rem;text-decoration:none;color:var(--color-text);padding:6px 12px;border:1px solid var(--color-border);border-radius:99px;transition:.2s}
+header.top a.menu:hover{border-color:var(--color-accent);color:var(--accent-text)}
+.hero{padding:72px 0 48px;background:var(--color-bg-alt)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.85rem;padding:4px 12px;border-radius:99px;background:var(--color-accent-soft);color:var(--accent-text);font-weight:500}
+.badge.plain{background:#fff;border:1px solid var(--color-border);color:var(--color-text-muted)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.hero .lesson{color:var(--accent-text);font:600 .95rem Sora,sans-serif;margin-bottom:12px}
+.toc{padding:40px 0}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:block;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);transition:.2s}
+.toc a:hover{border-color:var(--color-accent);transform:translateX(4px)}
+section.s{padding:64px 0}
+section.s.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+.callout{display:flex;gap:14px;padding:16px 18px;margin:24px 0;border-left:4px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 12px 12px 0}
+.callout b{display:block;font-family:Sora,sans-serif}
+.callout p{margin:0}
+.fig{margin:28px 0;padding:16px;background:#fff;border:1px solid var(--color-border);border-radius:14px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{font-size:.875rem;color:var(--color-text-muted);margin-top:8px}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:24px 0}
+.card{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-3px)}
+.card .ic{font-size:1.5rem}
+.card h3{font-size:1.05rem;margin:.4em 0}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+.card em{display:block;margin-top:8px;font-size:.95rem;color:var(--color-text);font-style:normal;font-weight:500}
+.tabs [role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{font:600 .95rem Sora,sans-serif;padding:10px 16px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--accent-text);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:20px 0}
+.tabs [role=tabpanel][hidden]{display:none}
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));counter-reset:st}
+.stepper li{counter-increment:st;position:relative;padding:44px 14px 14px;background:#fff;border:1px solid var(--color-border);border-radius:12px;font-size:.95rem}
+.stepper li::before{content:counter(st);position:absolute;top:10px;left:14px;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .85rem/26px Sora,sans-serif;text-align:center}
+.stepper b{display:block;font-family:Sora,sans-serif}
+details{border:1px solid var(--color-border);border-radius:12px;background:#fff;margin:10px 0;padding:0 16px}
+summary{cursor:pointer;padding:14px 0;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--accent-text);font-weight:700}
+details[open] summary::after{content:"–"}
+details p{color:var(--color-text-muted)}
+.script{background:var(--color-text);color:#F3F1F8;border-radius:14px;padding:16px;margin:16px 0;position:relative}
+.script .cp{position:absolute;top:10px;right:10px;font:500 .8rem Inter,sans-serif;padding:4px 10px;border-radius:99px;border:1px solid #5B6472;background:none;color:#F3F1F8;cursor:pointer;transition:.2s}
+.script .cp:hover{border-color:#C4B5FD;color:#C4B5FD}
+.script .ttl{font:600 .85rem Sora,sans-serif;color:#C4B5FD;margin:0 0 10px;padding-right:80px}
+.script .ln{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:8px 0;border-top:1px solid #2A2D38;font-size:.95rem;line-height:1.55}
+.script .tc{font:600 .85rem Sora,sans-serif;color:#C4B5FD}
+.script .ln span b{display:block;font-size:.8rem;color:#A9B0BD;font-weight:500}
+.vs{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:24px 0}
+.vs .card.no{border-style:dashed}
+.vs .card.no p{text-decoration:line-through;text-decoration-color:#5B6472}
+.vs .card.yes{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.vs .card.yes p{color:var(--color-text)}
+.quiz .q{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;margin:14px 0}
+.quiz .q p{font-weight:500}
+.opts{display:grid;gap:8px}
+.opts button{font:inherit;text-align:left;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;background:#fff;cursor:pointer;transition:.2s}
+.opts button:hover:not(:disabled){border-color:var(--color-accent);background:var(--color-accent-soft)}
+.opts button.ok{border-color:var(--color-accent);background:var(--color-accent-soft);font-weight:500}
+.opts button.ko{border-style:dashed;color:var(--color-text-muted);text-decoration:line-through}
+.fb{font-size:.95rem;margin:10px 0 0;color:var(--color-text-muted);min-height:1.4em}
+.score{font:600 1.1rem Sora,sans-serif;margin-top:16px}
+.key ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.key li{padding:12px 16px 12px 44px;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:12px}
+.key li::before{content:"✓";position:absolute;left:14px;color:var(--color-accent);font-weight:700}
+.pager{display:grid;gap:12px;grid-template-columns:1fr 1fr;padding:48px 0 24px}
+.pager a{padding:16px;border:1px solid var(--color-border);border-radius:14px;text-decoration:none;color:var(--color-text);display:block;transition:.2s}
+.pager a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.pager small{display:block;color:var(--color-text-muted)}
+.pager .next{text-align:right}
+.back{text-align:center;padding-bottom:32px}
+footer{border-top:1px solid var(--color-border);padding:24px 0;color:var(--color-text-muted);font-size:.9rem;text-align:center}
+#top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:.3s}
+#top.show{opacity:1;pointer-events:auto}
+@media (max-width:520px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}.hero{padding:48px 0 32px}section.s{padding:48px 0}.script .ln{grid-template-columns:1fr;gap:2px}}
+.tl{margin:0;padding:0;list-style:none}
+.spec{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;margin:16px 0;padding:16px;background:#fff;border:1px solid var(--color-border);border-radius:14px;font-size:.95rem}
+.spec dt{font:600 .9rem Sora,sans-serif;color:var(--accent-text)}
+.spec dd{margin:0;color:var(--color-text)}
+@media (max-width:520px){.spec{grid-template-columns:1fr}.spec dd{margin-bottom:8px}}
+.tw{overflow-x:auto;margin:20px 0;border:1px solid var(--color-border);border-radius:14px;background:#fff}
+.tbl{width:100%;min-width:560px;border-collapse:collapse;font-size:.95rem}
+.tbl th{font:600 .9rem Sora,sans-serif;text-align:left;padding:12px 14px;background:var(--color-accent-soft);color:var(--accent-text)}
+.tbl td{padding:12px 14px;border-top:1px solid var(--color-border);vertical-align:top}
+.tbl td:first-child{font-weight:500;white-space:nowrap}
+.tbl tbody tr{transition:.2s}
+.tbl tbody tr:hover{background:var(--color-bg-alt)}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="logo"><i></i>Création de contenu vidéo court</span>
+  <a class="menu" href="#sommaire">Sommaire</a>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge">Module 2 — Publier, optimiser et développer sa présence</span><span class="badge plain">⏱ 15 min</span><span class="badge plain">Niveau débutant</span></div>
+  <p class="lesson">Leçon 09</p>
+  <h1>Suivre et analyser les performances de ses vidéos</h1>
+  <p class="sub">À la fin de cette leçon, vous saurez lire les statistiques de vos vidéos, repérer ce qui fonctionne et tester une amélioration à la fois.</p>
+</div></div>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire"><div class="wrap">
+  <h2>Sommaire</h2>
+  <ol>
+    <li><a href="#kpi">Les indicateurs clés</a></li>
+    <li><a href="#outils">Les outils de statistiques</a></li>
+    <li><a href="#top">Analyser vos meilleures vidéos</a></li>
+    <li><a href="#ab">Tester avec des A/B tests simples</a></li>
+    <li><a href="#quiz">Vérifiez vos acquis</a></li>
+    <li><a href="#cles">Points clés à retenir</a></li>
+  </ol>
+</div></nav>
+
+<section class="s alt reveal" id="kpi"><div class="wrap">
+  <h2>Les indicateurs clés</h2>
+  <p>Un <strong>indicateur clé</strong>, ou <strong>KPI</strong> (<em>Key Performance Indicator</em>), est un chiffre qui mesure un aspect précis de vos résultats. Plutôt que de regarder uniquement les vues, observez plusieurs indicateurs ensemble : ils racontent un parcours.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 600 220" role="img" aria-label="Entonnoir en quatre étapes : vues, visionnages complets, interactions, nouveaux abonnés. Chaque étape touche moins de personnes que la précédente.">
+      <rect x="60" y="14" width="480" height="38" rx="8" fill="#F0EAFE" stroke="#7C3AED"/>
+      <rect x="130" y="62" width="340" height="38" rx="8" fill="#F0EAFE" stroke="#7C3AED"/>
+      <rect x="200" y="110" width="200" height="38" rx="8" fill="#F0EAFE" stroke="#7C3AED"/>
+      <rect x="255" y="158" width="90" height="38" rx="8" fill="#7C3AED"/>
+      <text x="300" y="39" text-anchor="middle" font-family="Sora,sans-serif" font-size="14" font-weight="600" fill="#6D28D9">Vues</text>
+      <text x="300" y="87" text-anchor="middle" font-family="Sora,sans-serif" font-size="14" font-weight="600" fill="#6D28D9">Visionnages complets</text>
+      <text x="300" y="135" text-anchor="middle" font-family="Sora,sans-serif" font-size="14" font-weight="600" fill="#6D28D9">Interactions</text>
+      <text x="300" y="183" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#fff">Abonnés</text>
+    </svg>
+    <figcaption>Illustration de principe : à chaque étape, une partie du public s'arrête.</figcaption>
+  </figure>
+  <div class="tw"><table class="tbl">
+    <thead><tr><th>Indicateur</th><th>Ce qu'il mesure</th><th>Question à se poser</th></tr></thead>
+    <tbody>
+      <tr><td>Vues</td><td>Le nombre de fois où la vidéo a été lancée.</td><td>Mon sujet et mon accroche attirent-ils ?</td></tr>
+      <tr><td>Taux de rétention</td><td>La part de la vidéo regardée, en moyenne.</td><td>À quel moment les gens partent-ils ?</td></tr>
+      <tr><td>Partages</td><td>Les envois de la vidéo à d'autres personnes.</td><td>Mon contenu est-il assez utile ou drôle pour être transmis ?</td></tr>
+      <tr><td>Commentaires</td><td>Les réactions écrites du public.</td><td>Ma vidéo donne-t-elle envie de discuter ?</td></tr>
+      <tr><td>Conversion en abonnés</td><td>La part des spectateurs qui s'abonnent.</td><td>Mon appel à l'action est-il clair ?</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout" role="note"><span aria-hidden="true">💡</span><div><b>À retenir</b><p>Exemple de calcul : 5 abonnés gagnés pour 1 000 vues donnent une conversion de 0,5 % (5 ÷ 1 000 × 100). Comparez vos vidéos entre elles plutôt qu'à des chiffres trouvés ailleurs.</p></div></div>
+</div></section>
+
+<section class="s reveal" id="outils"><div class="wrap">
+  <h2>Les outils de statistiques</h2>
+  <p>Chaque plateforme propose ses propres statistiques, gratuites. Choisissez un onglet.</p>
+  <div class="tabs" id="tabs1">
+    <div role="tablist" aria-label="Outils de statistiques">
+      <button role="tab" id="t1" aria-controls="p1" aria-selected="true">TikTok Analytics</button>
+      <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Instagram Insights</button>
+      <button role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">YouTube Studio</button>
+    </div>
+    <div role="tabpanel" id="p1" aria-labelledby="t1"><ul>
+      <li><strong>Où le trouver :</strong> dans les outils de votre profil créateur ou professionnel.</li>
+      <li><strong>À regarder :</strong> les vues, le temps de visionnage moyen, l'évolution du nombre d'abonnés et l'origine des vues.</li>
+      <li><strong>Pour une vidéo :</strong> ouvrez ses statistiques pour voir la rétention et le public.</li></ul></div>
+    <div role="tabpanel" id="p2" aria-labelledby="t2" hidden><ul>
+      <li><strong>Où le trouver :</strong> avec un compte professionnel ou créateur, depuis votre profil.</li>
+      <li><strong>À regarder :</strong> la portée, les interactions, les partages, les enregistrements et le temps de visionnage.</li>
+      <li><strong>Pour un Reel :</strong> ouvrez ses statistiques pour comparer chaque vidéo.</li></ul></div>
+    <div role="tabpanel" id="p3" aria-labelledby="t3" hidden><ul>
+      <li><strong>Où le trouver :</strong> dans YouTube Studio, rubrique « Analyses ».</li>
+      <li><strong>À regarder :</strong> les vues, la durée de visionnage, la rétention de l'audience et les abonnés gagnés.</li>
+      <li><strong>Pour un Short :</strong> filtrez par contenu pour isoler vos Shorts.</li></ul></div>
+  </div>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Attention</b><p>Les noms de menus et les indicateurs disponibles changent selon les mises à jour et le type de compte. Si une option manque, vérifiez le type de compte et l'aide officielle de la plateforme.</p></div></div>
+</div></section>
+
+<section class="s alt reveal" id="top"><div class="wrap">
+  <h2>Analyser vos meilleures vidéos</h2>
+  <p>Les <strong>Top Performers</strong> sont vos vidéos qui obtiennent les meilleurs résultats. Les étudier en détail vous montre ce qui plaît à <em>votre</em> public.</p>
+  <ol class="stepper">
+    <li><b>Classer</b>Triez vos vidéos par vues, puis par rétention.</li>
+    <li><b>Choisir</b>Retenez les trois à cinq meilleures.</li>
+    <li><b>Décomposer</b>Notez le sujet, l'accroche, la durée, le format, le jour et l'heure.</li>
+    <li><b>Comparer</b>Cherchez ce qu'elles ont en commun.</li>
+    <li><b>Réutiliser</b>Appliquez ces points à vos prochaines vidéos.</li>
+  </ol>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Erreur fréquente</b><p>Avec peu de vidéos, un résultat peut venir du hasard. Cherchez des points communs qui se répètent plusieurs fois avant d'en faire une règle.</p></div></div>
+</div></section>
+
+<section class="s reveal" id="ab"><div class="wrap">
+  <h2>Tester avec des A/B tests simples</h2>
+  <p>Un <strong>test A/B</strong> compare deux versions d'une vidéo qui ne diffèrent que d'<strong>un seul élément</strong>. Si vous changez plusieurs choses à la fois, vous ne saurez pas laquelle a fait la différence.</p>
+  <div class="tw"><table class="tbl">
+    <thead><tr><th>Élément à tester</th><th>Version A</th><th>Version B</th><th>À comparer</th></tr></thead>
+    <tbody>
+      <tr><td>Accroche</td><td>Une question</td><td>Une promesse</td><td>Rétention</td></tr>
+      <tr><td>Durée</td><td>15 secondes</td><td>30 secondes</td><td>Visionnages complets</td></tr>
+      <tr><td>Couverture</td><td>Avec texte</td><td>Sans texte</td><td>Vues</td></tr>
+      <tr><td>Appel à l'action</td><td>Partager</td><td>Commenter</td><td>Partages, commentaires</td></tr>
+    </tbody>
+  </table></div>
+  <ol class="stepper">
+    <li><b>Hypothèse</b>« Une promesse retient mieux qu'une question. »</li>
+    <li><b>Test</b>Deux vidéos proches, un seul élément différent.</li>
+    <li><b>Mesure</b>Comparez l'indicateur choisi, à moment de publication comparable.</li>
+    <li><b>Décision</b>Gardez la meilleure version, puis testez autre chose.</li>
+  </ol>
+  <details><summary>Combien de vidéos faut-il pour conclure ?</summary><p>Un seul test ne prouve pas grand-chose. Répétez-le plusieurs fois avec des sujets différents : si la même version gagne régulièrement, vous pouvez l'adopter.</p></details>
+  <details><summary>Que faire si les deux versions donnent le même résultat ?</summary><p>C'est aussi une information : cet élément pèse peu. Passez à un autre élément, comme l'accroche ou la durée.</p></details>
+</div></section>
+
+<section class="s alt reveal quiz" id="quiz"><div class="wrap">
+  <h2>Vérifiez vos acquis</h2>
+  <p>Quatre questions. Cliquez sur une réponse pour voir la correction.</p>
+  <div id="qz"></div>
+  <div class="score" id="score" aria-live="polite"></div>
+</div></section>
+
+<section class="s reveal key" id="cles"><div class="wrap">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Observez plusieurs indicateurs ensemble : vues, rétention, partages, commentaires, abonnés.</li>
+    <li>Comparez vos vidéos entre elles, pas à des chiffres venus d'ailleurs.</li>
+    <li>Chaque plateforme a ses statistiques natives : TikTok Analytics, Instagram Insights, YouTube Studio.</li>
+    <li>Décomposez vos meilleures vidéos pour trouver des points communs qui se répètent.</li>
+    <li>Un test A/B ne change qu'un seul élément à la fois.</li>
+  </ul>
+  <div class="callout" role="note"><span aria-hidden="true">🔗</span><div><b>Pour aller plus loin</b><p>Notez chaque semaine vos trois meilleures vidéos et l'élément que vous testez ensuite. Dans la prochaine leçon, vous construisez votre plan de création sur 30 jours.</p></div></div>
+</div></section>
+
+<div class="wrap">
+  <nav class="pager" aria-label="Navigation entre leçons">
+    <a class="prev" href="lecon-08-produire-en-serie-et-planifier-sa-creation.html"><small>Leçon précédente</small>Leçon 08 — Produire en série et planifier sa création</a>
+    <a class="next" href="lecon-10-construire-son-plan-de-creation-sur-30-jours.html"><small>Leçon suivante</small>Leçon 10 — Construire son plan de création sur 30 jours</a>
+  </nav>
+  <p class="back"><a href="#sommaire">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer><div class="wide">Module 2 — Publier, optimiser et développer sa présence</div></footer>
+<button id="top" aria-label="Retour en haut de la page">↑</button>
+
+<script>
+// Barre de progression + bouton retour
+const bar=document.getElementById('bar'),topBtn=document.getElementById('top');
+function onScroll(){const h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';topBtn.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+// Apparition au scroll
+const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08}):null;
+document.querySelectorAll('.reveal').forEach(el=>io?io.observe(el):el.classList.add('in'));
+
+// Onglets accessibles (flèches, Début, Fin)
+document.querySelectorAll('.tabs').forEach(t=>{
+  const tabs=[...t.querySelectorAll('[role=tab]')];
+  const sel=i=>tabs.forEach((b,j)=>{const on=i===j;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on;if(on)b.focus()});
+  tabs.forEach((b,i)=>{b.onclick=()=>sel(i);b.onkeydown=e=>{const k={ArrowRight:(i+1)%tabs.length,ArrowLeft:(i-1+tabs.length)%tabs.length,Home:0,End:tabs.length-1}[e.key];if(k!==undefined){e.preventDefault();sel(k)}}});
+});
+
+// Bouton « Copier » des scripts
+document.querySelectorAll('.script .cp').forEach(b=>{b.onclick=async()=>{
+  const box=b.parentElement,txt=box.querySelector('.ttl').textContent+'\n'+[...box.querySelectorAll('.ln')].map(l=>l.querySelector('.tc').textContent+' ['+l.querySelector('b').textContent+'] '+l.querySelector('span:last-child').childNodes[1].textContent).join('\n');
+  let ok=true;try{await navigator.clipboard.writeText(txt)}catch(e){ok=false}
+  b.textContent=ok?'Copié !':'Copie impossible';setTimeout(()=>b.textContent='Copier',1800)}});
+
+// Mini-quiz
+const Q=[
+ {q:"Que mesure le taux de rétention ?",o:["Le nombre d'abonnés total","La part de la vidéo regardée en moyenne","Le nombre de hashtags utilisés"],a:1,f:"Il montre à quel moment les spectateurs quittent la vidéo."},
+ {q:"5 abonnés gagnés pour 1 000 vues : quelle est la conversion ?",o:["0,5 %","5 %","50 %"],a:0,f:"5 ÷ 1 000 × 100 = 0,5 %."},
+ {q:"Que faut-il faire pour identifier ce qui marche chez vous ?",o:["Copier les chiffres d'un autre compte","Décomposer vos meilleures vidéos et chercher des points communs","Supprimer vos vidéos les moins vues"],a:1,f:"Ce sont vos propres résultats qui vous renseignent sur votre public."},
+ {q:"Dans un test A/B, combien d'éléments change-t-on entre les deux versions ?",o:["Un seul","Tous les éléments","Trois ou quatre"],a:0,f:"Avec un seul changement, vous savez ce qui explique la différence."}
+];
+const qz=document.getElementById('qz'),sc=document.getElementById('score');let done=0,good=0;
+Q.forEach((it,i)=>{
+  const d=document.createElement('div');d.className='q';
+  d.innerHTML='<p>'+(i+1)+'. '+it.q+'</p><div class="opts"></div><p class="fb"></p>';
+  const box=d.querySelector('.opts'),fb=d.querySelector('.fb');
+  it.o.forEach((t,j)=>{const b=document.createElement('button');b.type='button';b.textContent=t;
+    b.onclick=()=>{[...box.children].forEach((x,k)=>{x.disabled=true;if(k===it.a)x.classList.add('ok');else if(k===j)x.classList.add('ko')});
+      const ok=j===it.a;if(ok)good++;fb.textContent=(ok?'Correct. ':'Pas tout à fait. ')+it.f;
+      if(++done===Q.length)sc.textContent='Résultat : '+good+' / '+Q.length};
+    box.appendChild(b)});
+  qz.appendChild(d);
+});
+</script>
+</body>
+</html>

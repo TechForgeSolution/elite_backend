@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 02 — Créer et gérer des mots de passe solides | Filière Cybersécurité</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232563EB' d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identiques sur tous les cours de la filière) ===== */
+:root{
+  --color-bg:#FFFFFF; --color-bg-alt:#F4F8FC; --color-text:#0A0F14; --color-text-muted:#5B6472;
+  --color-accent:#2563EB; --color-accent-soft:#EAF2FF; --color-border:#E2E8F0;
+  --font-display:'Sora','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font-body);font-size:1.0625rem;line-height:1.7;color:var(--color-text);background:var(--color-bg)}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.2;margin:0 0 .6em}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+.muted{color:var(--color-text-muted)}
+
+/* ===== Barre de progression + header ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:.95rem;text-decoration:none;color:var(--color-text)}
+.brand svg{width:22px;height:22px}
+.menu-btn{font:500 .9rem var(--font-body);background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--color-text);transition:border-color .2s}
+.menu-btn:hover{border-color:var(--color-accent)}
+#drawer{display:none;position:absolute;right:20px;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(10,15,20,.08)}
+#drawer.open{display:block}
+#drawer a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#drawer a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+
+/* ===== Hero ===== */
+.hero{padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.82rem;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent)}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted);border:1px solid var(--color-border)}
+.hero .lead{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.course{font-size:.95rem;color:var(--color-text-muted);margin-bottom:12px}
+
+/* ===== Sommaire ===== */
+.toc{background:var(--color-bg-alt);border-radius:var(--radius);padding:24px 28px;margin:40px auto}
+.toc ol{margin:0;padding-left:1.2em}
+.toc li{padding:3px 0}
+.toc a{text-decoration:none;color:var(--color-text);transition:color .2s}
+.toc a:hover{color:var(--color-accent)}
+
+/* ===== Sections ===== */
+section.lesson{padding:64px 0}
+section.lesson.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ===== Cartes ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;transition:border-color .2s,transform .2s}
+.alt .card{background:#fff}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card svg{width:28px;height:28px;stroke:var(--color-accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin-bottom:.3em}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+
+/* ===== Encadrés ===== */
+.note{display:flex;gap:14px;border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:28px 0}
+.note .ic{font-size:1.3rem;line-height:1.5}
+.note strong{display:block;font-family:var(--font-display);margin-bottom:2px}
+.note p{margin:0;font-size:.98rem}
+
+/* ===== Tabs ===== */
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;overflow:hidden}
+.tablist{display:flex;overflow-x:auto;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.tablist button{flex:1 0 auto;font:500 .95rem var(--font-body);padding:12px 18px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent;transition:color .2s}
+.tablist button:hover{color:var(--color-text)}
+.tablist button[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent);background:#fff}
+.tabpanel{padding:20px 22px}
+.tabpanel[hidden]{display:none}
+.tabpanel p:last-child{margin:0}
+
+/* ===== Accordéons ===== */
+details{border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;margin:10px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details>div{padding:0 18px 16px;color:var(--color-text-muted);font-size:.98rem}
+
+/* ===== Schémas ===== */
+figure{margin:32px 0}
+figure svg{width:100%;height:auto;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius)}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--font-body)}
+
+/* ===== Stepper ===== */
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;counter-reset:s}
+.stepper li{counter-increment:s;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:44px 14px 14px;font-size:.92rem}
+.stepper li::before{content:counter(s);position:absolute;top:12px;left:14px;width:24px;height:24px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem/24px var(--font-display);text-align:center}
+.stepper b{display:block;font-family:var(--font-display);margin-bottom:2px}
+.stepper span{color:var(--color-text-muted)}
+
+/* ===== Points clés, nav, footer ===== */
+.keys{list-style:none;padding:0;margin:24px 0;display:grid;gap:12px}
+.keys li{display:flex;gap:12px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:14px 18px}
+.keys li::before{content:"✓";color:var(--color-accent);font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding:48px 0}
+.nav a,.nav span{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px 20px;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}
+.nav small{display:block;color:var(--color-text-muted)}
+.nav .next{text-align:right}
+.nav span{color:var(--color-text-muted);background:var(--color-bg-alt)}
+.modlink{text-align:center;margin-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:28px 0;font-size:.9rem;color:var(--color-text-muted);text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,border-color .2s}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{border-color:var(--color-accent)}
+.pwd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1rem;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:nowrap}
+.bad{border-left:3px solid #5B6472}.good{border-left:3px solid var(--color-accent)}
+@media (max-width:600px){.hero{padding:48px 0 40px}section.lesson{padding:44px 0}.toc{padding:20px}}
+</style>
+</head>
+<body>
+<div id="progress" role="presentation"></div>
+
+<header class="top">
+  <div class="wide">
+    <a class="brand" href="#debut">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#2563EB" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="M8.5 12l2.4 2.4L15.5 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Filière Cybersécurité
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="drawer">Sommaire</button>
+  </div>
+  <nav id="drawer" aria-label="Sommaire rapide">
+    <a href="#criteres">1. Critères d'un mot de passe solide</a>
+    <a href="#passphrases">2. Les phrases de passe</a>
+    <a href="#erreurs">3. Erreurs courantes</a>
+    <a href="#piratages">4. Comment surviennent les piratages</a>
+    <a href="#gestionnaire">5. Le gestionnaire de mots de passe</a>
+    <a href="#recuperation">6. Stockage et récupération</a>
+    <a href="#cles">Points clés à retenir</a>
+  </nav>
+</header>
+
+<main id="debut">
+<div class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 1 — Fondamentaux de la sécurité numérique</span>
+      <span class="badge plain">⏱ 15 min de lecture</span>
+      <span class="badge plain">Niveau débutant</span>
+    </div>
+    <p class="course">Leçon 02</p>
+    <h1>Créer et gérer des mots de passe solides</h1>
+    <p class="lead">Objectif : construire des mots de passe robustes et les gérer de manière sûre grâce à de bonnes pratiques et à un gestionnaire.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2 style="font-size:1.1rem">Dans cette leçon</h2>
+    <ol>
+      <li><a href="#criteres">Les critères d'un mot de passe solide</a></li>
+      <li><a href="#passphrases">Les phrases de passe (passphrases)</a></li>
+      <li><a href="#erreurs">Erreurs courantes</a></li>
+      <li><a href="#piratages">Comment les piratages surviennent</a></li>
+      <li><a href="#gestionnaire">Le rôle d'un gestionnaire de mots de passe</a></li>
+      <li><a href="#recuperation">Stockage sécurisé et récupération de compte</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============ 1. Critères ============ -->
+<section class="lesson" id="criteres">
+  <div class="wrap reveal">
+    <h2>1. Les critères d'un mot de passe solide</h2>
+    <p>Un mot de passe est la première barrière entre un attaquant et vos comptes. Il est solide quand il est difficile à deviner, même pour un programme qui essaie des millions de combinaisons par seconde. Trois critères comptent, et le premier pèse le plus.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg><h3>Longueur</h3><p>Chaque caractère ajouté multiplie le nombre de combinaisons possibles. Visez 14 caractères ou plus.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h4v4H4zM10 7h4v4h-4zM16 7h4v4h-4zM4 14h4v4H4zM10 14h4v4h-4z"/></svg><h3>Complexité</h3><p>Mélanger majuscules, minuscules, chiffres et symboles élargit l'éventail de caractères possibles.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg><h3>Imprévisibilité</h3><p>Pas de mot du dictionnaire, de date ni d'information personnelle : rien qu'on puisse deviner à votre sujet.</p></div>
+    </div>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-labelledby="f1t f1d">
+        <title id="f1t">Résistance relative de quatre types de mots de passe</title>
+        <desc id="f1d">Schéma qualitatif : un mot court est très faible, un mot avec chiffre à peine meilleur, un mot de passe long aléatoire est solide et une phrase de passe de plusieurs mots est solide.</desc>
+        <g font-size="14" fill="#0A0F14"><text x="10" y="40">Mot court (8 caractères)</text><text x="10" y="90">Mot + date de naissance</text><text x="10" y="140">Phrase de passe (5 mots)</text><text x="10" y="190">Long et aléatoire (20 car.)</text></g>
+        <g fill="#EAF2FF"><rect x="230" y="22" width="390" height="24" rx="6"/><rect x="230" y="72" width="390" height="24" rx="6"/><rect x="230" y="122" width="390" height="24" rx="6"/><rect x="230" y="172" width="390" height="24" rx="6"/></g>
+        <g fill="#2563EB"><rect x="230" y="22" width="40" height="24" rx="6"/><rect x="230" y="72" width="70" height="24" rx="6"/><rect x="230" y="122" width="300" height="24" rx="6"/><rect x="230" y="172" width="370" height="24" rx="6"/></g>
+      </svg>
+      <figcaption>Illustration qualitative : plus la barre est longue, plus le mot de passe résiste aux essais automatisés.</figcaption>
+    </figure>
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>La longueur et l'imprévisibilité comptent plus que les caractères spéciaux. « P@ssw0rd! » est complexe en apparence, mais figure parmi les premières combinaisons testées.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 2. Passphrases ============ -->
+<section class="lesson alt" id="passphrases">
+  <div class="wrap reveal">
+    <h2>2. Les phrases de passe (passphrases)</h2>
+    <p>Une <strong>phrase de passe</strong> est une suite de plusieurs mots, choisis au hasard, qui forment un secret long mais facile à mémoriser. Notre cerveau retient mieux des images et des mots que des suites de symboles.</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Mot de passe classique et phrase de passe">
+        <button role="tab">Mot de passe classique</button><button role="tab">Phrase de passe</button>
+      </div>
+      <div class="tabpanel" role="tabpanel">
+        <p>Exemple : <code>Tr0ub4dor&amp;3</code></p>
+        <p>Court, difficile à retenir, et sa structure suit des habitudes connues (lettre remplacée par un chiffre, symbole à la fin). Les programmes de test ont appris ces habitudes.</p>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <p>Exemple : <code>cheval-lampe-orage-tricot-sable</code></p>
+        <p>Longue, facile à visualiser, et très difficile à casser parce que le nombre de combinaisons croît avec chaque mot. Les mots doivent être <strong>tirés au hasard</strong>, pas une citation, un proverbe ou une phrase de chanson.</p>
+      </div>
+    </div>
+    <details><summary>Comment choisir les mots ?</summary><div>Choisissez-les au hasard (liste de mots, dés ou générateur d'un gestionnaire), pas parce qu'ils vous plaisent. Quatre à six mots sans rapport entre eux suffisent pour un secret important. Les exemples de cette leçon ne doivent jamais être réutilisés tels quels.</div></details>
+    <details><summary>Où utiliser une phrase de passe ?</summary><div>Pour les rares secrets qu'il faut retenir par cœur : le mot de passe principal d'un gestionnaire, le code de déverrouillage d'un ordinateur, la messagerie principale.</div></details>
+  </div>
+</section>
+
+<!-- ============ 3. Erreurs ============ -->
+<section class="lesson" id="erreurs">
+  <div class="wrap reveal">
+    <h2>3. Erreurs courantes</h2>
+    <p>La plupart des comptes piratés ne tombent pas à cause d'une faille sophistiquée, mais à cause d'habitudes simples à corriger.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h6M13 12h1"/><rect x="3" y="7" width="18" height="10" rx="2"/></svg><h3>Mots de passe trop courts</h3><p>« azerty », « 123456 » ou un prénom : ils cèdent en quelques instants.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><h3>Informations personnelles</h3><p>Prénom, date de naissance, animal, équipe préférée : autant d'éléments qu'on peut trouver sur vos réseaux sociaux.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><h3>Réutilisation</h3><p>Un même mot de passe sur plusieurs services : si l'un est compromis, tous le sont.</p></div>
+    </div>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Erreur fréquente</strong><p>Changer un seul caractère d'un service à l'autre (« Monchat1 », « Monchat2 ») revient à réutiliser le même mot de passe : une fois le modèle repéré, il est facile à prolonger.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 4. Piratages ============ -->
+<section class="lesson alt" id="piratages">
+  <div class="wrap reveal">
+    <h2>4. Comment les piratages surviennent</h2>
+    <p>Comprendre ces mécanismes montre pourquoi les règles de la leçon existent. Voici trois situations, expliquées du point de vue de la défense.</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Mécanismes courants">
+        <button role="tab">Force brute</button><button role="tab">Dictionnaire</button><button role="tab">Fuites de données</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Un programme essaie <strong>toutes les combinaisons</strong> possibles, l'une après l'autre. Contre un mot de passe court, il aboutit vite ; chaque caractère supplémentaire rend l'opération exponentiellement plus longue. C'est pourquoi la longueur est le critère n°1.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Au lieu de tout tester, le programme essaie d'abord une <strong>liste de mots courants</strong>, de prénoms, de mots de passe fréquents et leurs variantes (« Soleil2024! »). Un mot de passe « malin » mais prévisible tombe vite.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Quand un service est piraté, ses données (adresses e-mail, mots de passe) sont parfois <strong>publiées ou revendues</strong>. Les attaquants testent ensuite ces identifiants sur d'autres sites : c'est efficace contre qui réutilise ses mots de passe.</p></div>
+    </div>
+    <figure>
+      <svg viewBox="0 0 640 150" role="img" aria-labelledby="f2t f2d">
+        <title id="f2t">Effet domino d'une fuite de données</title>
+        <desc id="f2d">Une fuite sur un site A expose un mot de passe réutilisé, qui permet ensuite d'accéder à la messagerie et à la banque.</desc>
+        <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l7 4-7 4z" fill="#2563EB"/></marker></defs>
+        <g fill="#fff" stroke="#2563EB" stroke-width="2"><rect x="10" y="45" width="130" height="60" rx="10"/><rect x="190" y="45" width="130" height="60" rx="10"/><rect x="370" y="45" width="120" height="60" rx="10"/><rect x="535" y="45" width="95" height="60" rx="10"/></g>
+        <g stroke="#2563EB" stroke-width="2" marker-end="url(#ar)"><line x1="142" y1="75" x2="186" y2="75"/><line x1="322" y1="75" x2="366" y2="75"/><line x1="492" y1="75" x2="531" y2="75"/></g>
+        <g font-size="13" text-anchor="middle" fill="#0A0F14"><text x="75" y="70">Fuite sur</text><text x="75" y="88">un petit site</text><text x="255" y="70">Mot de passe</text><text x="255" y="88">réutilisé</text><text x="430" y="70">Messagerie</text><text x="430" y="88">compromise</text><text x="582" y="80">Banque</text></g>
+      </svg>
+      <figcaption>Un seul mot de passe réutilisé suffit à propager l'incident d'un compte à l'autre.</figcaption>
+    </figure>
+    <details><summary>Comment savoir si mes données ont fuité ?</summary><div>Des services de notification de fuites (comme Have I Been Pwned) permettent de vérifier si une adresse e-mail apparaît dans des fuites connues. Si c'est le cas, changez le mot de passe du service concerné et de tout compte où il a été réutilisé.</div></details>
+  </div>
+</section>
+
+<!-- ============ 5. Gestionnaire ============ -->
+<section class="lesson" id="gestionnaire">
+  <div class="wrap reveal">
+    <h2>5. Le rôle d'un gestionnaire de mots de passe</h2>
+    <p>Retenir des dizaines de mots de passe longs et uniques est impossible. Un <strong>gestionnaire de mots de passe</strong> le fait à votre place : vous retenez un seul secret solide, et il protège tous les autres.</p>
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-labelledby="f3t f3d">
+        <title id="f3t">Principe d'un gestionnaire de mots de passe</title>
+        <desc id="f3d">Un mot de passe principal déverrouille un coffre chiffré qui contient les identifiants de chaque site.</desc>
+        <defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l7 4-7 4z" fill="#2563EB"/></marker></defs>
+        <g fill="#fff" stroke="#2563EB" stroke-width="2"><rect x="10" y="50" width="150" height="70" rx="10"/><rect x="230" y="30" width="180" height="110" rx="12" fill="#EAF2FF"/><rect x="480" y="25" width="150" height="34" rx="8"/><rect x="480" y="68" width="150" height="34" rx="8"/><rect x="480" y="111" width="150" height="34" rx="8"/></g>
+        <g stroke="#2563EB" stroke-width="2" marker-end="url(#ar2)"><line x1="162" y1="85" x2="226" y2="85"/><line x1="412" y1="70" x2="476" y2="45"/><line x1="412" y1="85" x2="476" y2="85"/><line x1="412" y1="100" x2="476" y2="128"/></g>
+        <g fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"><rect x="300" y="78" width="40" height="30" rx="5"/><path d="M308 78v-8a12 12 0 0 1 24 0v8"/></g>
+        <g font-size="13" text-anchor="middle" fill="#0A0F14"><text x="85" y="82">Mot de passe</text><text x="85" y="100">principal</text><text x="320" y="130">Coffre chiffré (vault)</text><text x="555" y="47">Messagerie</text><text x="555" y="90">Banque</text><text x="555" y="133">Réseau social</text></g>
+      </svg>
+      <figcaption>Un secret à retenir, un coffre chiffré, un mot de passe unique par compte.</figcaption>
+    </figure>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+      <div class="card"><h3>Coffre (vault)</h3><p>L'espace qui regroupe vos identifiants et notes sensibles.</p></div>
+      <div class="card"><h3>Chiffrement</h3><p>Le contenu du coffre est illisible sans votre mot de passe principal.</p></div>
+      <div class="card"><h3>Génération automatique</h3><p>Crée des mots de passe longs, aléatoires et uniques pour chaque site.</p></div>
+    </div>
+    <details><summary>Est-ce risqué de tout mettre au même endroit ?</summary><div>Un coffre chiffré avec un mot de passe principal solide est bien plus sûr que des mots de passe faibles ou réutilisés. Le risque principal est de perdre ce mot de passe principal : choisissez-le avec soin et prévoyez un moyen de récupération.</div></details>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Choisissez un gestionnaire reconnu, protégez-le avec une phrase de passe longue, et ne partagez jamais ce secret principal.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 6. Récupération ============ -->
+<section class="lesson alt" id="recuperation">
+  <div class="wrap reveal">
+    <h2>6. Stockage sécurisé et récupération de compte</h2>
+    <p>Un mot de passe solide ne sert à rien si la procédure de récupération est le maillon faible. L'attaquant peut passer par là plutôt que de deviner le mot de passe.</p>
+  </div>
+  <div class="wide reveal">
+    <ol class="stepper" aria-label="Déroulé d'une réinitialisation de compte">
+      <li><b>Demande</b><span>Vous indiquez avoir oublié le mot de passe.</span></li>
+      <li><b>Vérification</b><span>Le service contrôle votre identité (e-mail, téléphone).</span></li>
+      <li><b>Lien envoyé</b><span>Un lien temporaire arrive sur l'e-mail de secours.</span></li>
+      <li><b>Nouveau secret</b><span>Vous définissez un nouveau mot de passe unique.</span></li>
+    </ol>
+  </div>
+  <div class="wrap reveal">
+    <p>Cette chaîne dépend de votre <strong>e-mail de secours</strong> : s'il est piraté, tous les comptes liés le sont. Il mérite donc la protection la plus forte.</p>
+    <details><summary>Questions de sécurité : pourquoi les éviter ?</summary><div>Leurs réponses (nom de jeune fille, ville de naissance, animal) sont souvent publiques ou devinables. Mieux vaut traiter la réponse comme un mot de passe : une valeur aléatoire, enregistrée dans le gestionnaire, sans lien avec la vraie réponse.</div></details>
+    <details><summary>Que faire de ses codes de secours ?</summary><div>Certains services fournissent des codes de récupération à usage unique. Conservez-les dans le gestionnaire ou sur papier, dans un endroit sûr, jamais dans un fichier non protégé.</div></details>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Gardez à jour votre e-mail et votre numéro de secours, et utilisez pour l'e-mail de secours un mot de passe unique et solide.</p></div></div>
+    <div class="note"><span class="ic">🔗</span><div><strong>Pour aller plus loin</strong><p>La leçon suivante ajoute une seconde barrière : l'authentification à deux facteurs.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ Points clés ============ -->
+<section class="lesson" id="cles">
+  <div class="wrap reveal">
+    <h2>Points clés à retenir</h2>
+    <ul class="keys">
+      <li>La longueur et l'imprévisibilité font la solidité d'un mot de passe.</li>
+      <li>Une phrase de passe de mots aléatoires est longue, mémorisable et robuste.</li>
+      <li>Évitez les mots courts, les informations personnelles et la réutilisation.</li>
+      <li>Force brute, dictionnaire et fuites de données expliquent la majorité des piratages.</li>
+      <li>Un gestionnaire génère, chiffre et retient un mot de passe unique par compte.</li>
+      <li>La récupération de compte et l'e-mail de secours doivent être aussi bien protégés.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="nav">
+    <a href="lecon-01-comprendre-les-menaces-numeriques.html" rel="prev"><small>Leçon précédente</small>Leçon 01 — Comprendre les menaces numériques et les risques du quotidien</a>
+    <a class="next" href="lecon-03-activer-lauthentification-a-deux-facteurs.html" rel="next"><small>Leçon suivante</small>Leçon 03 — Activer l'authentification à deux facteurs et protéger ses comptes</a>
+  </div>
+  <p class="modlink"><a href="module-1.html">Retour au sommaire du module 1</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière Cybersécurité · Module 1 · Leçon 02</div></footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* Barre de progression, bouton retour haut */
+const bar=document.getElementById('progress'),topBtn=document.getElementById('top');
+function onScroll(){
+  const h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+  bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+  topBtn.classList.toggle('show',h.scrollTop>600);
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+/* Menu sommaire */
+const mb=document.getElementById('menuBtn'),dr=document.getElementById('drawer');
+mb.onclick=()=>{const o=dr.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+dr.addEventListener('click',e=>{if(e.target.tagName==='A'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+
+/* Onglets accessibles (flèches, Home, End) */
+document.querySelectorAll('[data-tabs]').forEach((box,n)=>{
+  const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+  tabs.forEach((t,i)=>{t.id=`t${n}-${i}`;panels[i].setAttribute('aria-labelledby',t.id);panels[i].tabIndex=0});
+  function select(i){tabs.forEach((t,j)=>{const on=i===j;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[j].hidden=!on})}
+  tabs.forEach((t,i)=>{
+    t.onclick=()=>select(i);
+    t.onkeydown=e=>{
+      let k=null;
+      if(e.key==='ArrowRight')k=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft')k=(i-1+tabs.length)%tabs.length;
+      if(e.key==='Home')k=0;if(e.key==='End')k=tabs.length-1;
+      if(k!==null){e.preventDefault();select(k);tabs[k].focus()}
+    };
+  });
+  select(0);
+});
+
+/* Apparition douce des sections (désactivée si prefers-reduced-motion) */
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+  els.forEach(el=>io.observe(el));
+}else els.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>

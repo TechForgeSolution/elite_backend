@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Leçon 14 — Effets visuels : masques, incrustation, tracking, stabilisation, transitions et compositing simple.">
+<title>Leçon 14 — Effets visuels | Montage vidéo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#fff;--bg-alt:#f6f8f6;--text:#0b0f0d;--muted:#5a6560;
+ --accent:#1f6f54;--soft:#e7f2ed;--border:#e3e8e5;--danger:#b3541e;
+ --shadow:0 10px 35px rgba(11,15,13,.07);--radius:18px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;line-height:1.68}
+a{color:inherit}button{font:inherit}
+.progress{position:fixed;top:0;left:0;width:0;height:3px;background:var(--accent);z-index:99}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:15px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-weight:700;letter-spacing:.08em;font-size:.85rem}.brand small{display:block;color:var(--muted);font-weight:500;letter-spacing:0;font-size:.7rem}
+.nav a{text-decoration:none;font-size:.86rem;color:var(--muted);margin-left:18px}.nav a:hover{color:var(--accent)}
+.container{max-width:1180px;margin:auto;padding:0 24px}
+.hero{padding:58px 0 36px;display:grid;grid-template-columns:1.35fr .65fr;gap:42px;align-items:center}
+.eyebrow{color:var(--accent);font-size:.76rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.18;margin:0 0 16px}
+h1{font-size:clamp(2.1rem,5vw,4.2rem);letter-spacing:-.045em;max-width:780px}
+h2{font-size:clamp(1.45rem,2.6vw,2.15rem);margin-top:12px}
+h3{font-size:1.05rem}.lead{font-size:1.08rem;color:var(--muted);max-width:720px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badge{border:1px solid var(--border);background:var(--bg-alt);padding:7px 11px;border-radius:999px;font-size:.78rem}
+.badge.green{background:var(--soft);border-color:#cfe4da;color:var(--accent);font-weight:700}
+.hero-visual{background:var(--bg-alt);border:1px solid var(--border);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
+section{padding:38px 0;border-top:1px solid var(--border)}
+.section-head{display:flex;justify-content:space-between;gap:25px;align-items:end;margin-bottom:22px}
+.section-head p{color:var(--muted);max-width:620px;margin:0}
+.toc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 20px}
+.toc a{padding:12px 14px;border:1px solid var(--border);border-radius:12px;text-decoration:none;font-size:.84rem;background:#fff}
+.toc a:hover{border-color:var(--accent);color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid.two{grid-template-columns:repeat(2,1fr)}
+.card{border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:#fff;box-shadow:0 5px 22px rgba(11,15,13,.035)}
+.card h3{margin-bottom:8px}.card p{color:var(--muted);margin:0}
+.icon{width:44px;height:44px;border-radius:12px;background:var(--soft);display:grid;place-items:center;color:var(--accent);margin-bottom:14px}
+.visual{border:1px solid var(--border);background:var(--bg-alt);border-radius:18px;padding:15px;margin:18px 0}
+.caption{font-size:.76rem;color:var(--muted);margin-top:8px}
+.callout{padding:18px 20px;border-left:4px solid var(--accent);background:var(--soft);border-radius:0 14px 14px 0;margin:20px 0}
+.callout.warn{border-left-color:var(--danger);background:#fbf3ee}
+.callout strong{display:block;margin-bottom:4px}
+.stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:22px 0}
+.step{position:relative;border:1px solid var(--border);border-radius:12px;padding:13px 9px;background:#fff;text-align:center;font-size:.76rem}
+.step b{display:block;color:var(--accent);font-family:"Roboto Mono",monospace;margin-bottom:5px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+th,td{text-align:left;padding:13px;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--bg-alt);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}td{font-size:.88rem}
+tr:last-child td{border-bottom:0}
+.tabs{margin-top:20px}.tab-buttons{display:flex;gap:8px;flex-wrap:wrap}.tab-buttons button{border:1px solid var(--border);background:#fff;padding:10px 14px;border-radius:10px;cursor:pointer}.tab-buttons button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-panel{display:none;margin-top:12px}.tab-panel.active{display:block}
+footer{padding:35px 0 55px;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem}
+.back{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid var(--border);background:#fff;border-radius:50%;cursor:pointer;box-shadow:var(--shadow);display:none}.back.show{display:block}
+.reveal{opacity:0;transform:translateY(12px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+svg{display:block;width:100%;height:auto}.svg-label{font-family:Inter,sans-serif;font-size:12px;fill:#0b0f0d}.svg-muted{font-family:Inter,sans-serif;font-size:10px;fill:#5a6560}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid,.grid.two{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.container{padding:0 17px}.nav{padding:12px 17px}.nav nav{display:none}.hero{padding-top:38px}.grid,.grid.two,.toc{grid-template-columns:1fr}.stepper{grid-template-columns:repeat(2,1fr)}section{padding:30px 0}h1{font-size:2.15rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+:focus-visible{outline:3px solid #8fc6b1;outline-offset:3px}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand">MONTAGE VIDÉO <small>Module 3 · Fondamentaux</small></div>
+    <nav>
+      <a href="#plan">Plan</a><a href="#masques">Masques</a><a href="#incrustation">Incrustation</a>
+      <a href="#tracking">Tracking</a><a href="#compositing">Compositing</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="container">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Module 3 · Montage vidéo : Fondamentaux</div>
+      <h1>Leçon 14 — Effets visuels</h1>
+      <p class="lead">Intégrer des effets utiles sans distraire du message : masques, incrustation, tracking, stabilisation, transitions et compositing simple.</p>
+      <div class="badges">
+        <span class="badge green">Débutant</span><span class="badge">15 min</span><span class="badge">Effets & compositing</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <svg viewBox="0 0 520 310" role="img" aria-label="Schéma d'une chaîne d'effets vidéo">
+        <rect x="25" y="35" width="470" height="240" rx="22" fill="#fff" stroke="#e3e8e5"/>
+        <rect x="52" y="68" width="105" height="70" rx="12" fill="#e7f2ed"/>
+        <rect x="207" y="68" width="105" height="70" rx="12" fill="#f6f8f6" stroke="#e3e8e5"/>
+        <rect x="363" y="68" width="105" height="70" rx="12" fill="#e7f2ed"/>
+        <text x="104" y="97" text-anchor="middle" class="svg-label" font-weight="700">PLAN</text>
+        <text x="104" y="116" text-anchor="middle" class="svg-muted">image source</text>
+        <text x="259" y="97" text-anchor="middle" class="svg-label" font-weight="700">EFFET</text>
+        <text x="259" y="116" text-anchor="middle" class="svg-muted">contrôle ciblé</text>
+        <text x="415" y="97" text-anchor="middle" class="svg-label" font-weight="700">RÉSULTAT</text>
+        <text x="415" y="116" text-anchor="middle" class="svg-muted">message intact</text>
+        <path d="M158 103h43m-8-7 8 7-8 7M313 103h43m-8-7 8 7-8 7" fill="none" stroke="#1f6f54" stroke-width="3"/>
+        <rect x="70" y="180" width="380" height="52" rx="13" fill="#0b0f0d"/>
+        <rect x="82" y="194" width="130" height="24" rx="5" fill="#1f6f54"/>
+        <rect x="218" y="194" width="78" height="24" rx="5" fill="#e7f2ed"/>
+        <rect x="302" y="194" width="64" height="24" rx="5" fill="#b3541e"/>
+        <rect x="372" y="194" width="66" height="24" rx="5" fill="#e7f2ed"/>
+        <text x="260" y="254" text-anchor="middle" class="svg-muted">timeline · couches · effets · transitions</text>
+      </svg>
+    </div>
+  </div>
+
+  <section id="plan" class="reveal">
+    <div class="section-head">
+      <div><div class="eyebrow">01 · Vue d'ensemble</div><h2>Un effet doit servir l'image</h2></div>
+      <p>Un bon effet renforce la lisibilité, la continuité ou l'intention narrative. Il devient problématique lorsqu'il attire plus l'attention que le contenu.</p>
+    </div>
+    <div class="toc">
+      <a href="#masques">01 · Masques</a><a href="#incrustation">02 · Incrustation</a><a href="#tracking">03 · Tracking</a>
+      <a href="#stabilisation">04 · Stabilisation</a><a href="#transitions">05 · Transitions</a><a href="#compositing">06 · Compositing</a>
+    </div>
+    <div class="stepper">
+      <div class="step"><b>01</b>Isoler</div><div class="step"><b>02</b>Incruster</div><div class="step"><b>03</b>Suivre</div>
+      <div class="step"><b>04</b>Stabiliser</div><div class="step"><b>05</b>Relier</div><div class="step"><b>06</b>Composer</div>
+    </div>
+  </section>
+
+  <section id="masques" class="reveal">
+    <div class="section-head"><div><div class="eyebrow">02 · Masques</div><h2>Cibler une zone de l'image</h2></div><p>Le masque définit une zone visible ou invisible pour appliquer un effet avec précision.</p></div>
+    <div class="grid two">
+      <div class="card">
+        <div class="icon">◩</div><h3>Principe</h3>
+        <p>Une forme — rectangle, ellipse ou tracé libre — agit comme une fenêtre. Elle peut être animée par des images clés.</p>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 520 190" role="img" aria-label="Schéma du fonctionnement d'un masque">
+          <rect x="20" y="20" width="480" height="150" rx="15" fill="#0b0f0d"/>
+          <rect x="40" y="40" width="170" height="110" rx="10" fill="#e7f2ed"/>
+          <path d="M255 43 C315 28 408 45 450 94 C407 144 312 157 255 139 C226 119 226 64 255 43Z" fill="#fff"/>
+          <path d="M255 43 C315 28 408 45 450 94 C407 144 312 157 255 139 C226 119 226 64 255 43Z" fill="none" stroke="#1f6f54" stroke-width="4"/>
+          <text x="125" y="101" text-anchor="middle" fill="#0b0f0d" font-size="14" font-family="Inter">zone masquée</text>
+          <text x="352" y="98" text-anchor="middle" class="svg-label" font-weight="700">ZONE VISIBLE</text>
+          <text x="260" y="182" class="svg-muted">Le masque limite l'effet à une zone précise.</text>
+        </svg>
+      </div>
+    </div>
+    <div class="callout"><strong>💡 À retenir</strong>Un masque est particulièrement utile pour flouter un élément, corriger localement une zone ou faire apparaître progressivement une image.</div>
+  </section>
+
+  <section id="incrustation" class="reveal">
+    <div class="section-head"><div><div class="eyebrow">03 · Incrustation</div><h2>Remplacer un fond proprement</h2></div><p>L'incrustation sépare un sujet d'une couleur ou d'une zone de fond afin de le placer dans un autre environnement.</p></div>
+    <div class="grid">
+      <div class="card"><div class="icon">▣</div><h3>Fond uni</h3><p>Un fond vert ou bleu facilite la séparation du sujet lorsqu'il est bien éclairé.</p></div>
+      <div class="card"><div class="icon">◇</div><h3>Keying</h3><p>La couleur sélectionnée devient transparente et laisse apparaître la couche située dessous.</p></div>
+      <div class="card"><div class="icon">▤</div><h3>Nettoyage</h3><p>Les contours et les zones résiduelles doivent être corrigés pour éviter un détourage artificiel.</p></div>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 820 205" role="img" aria-label="Workflow d'incrustation">
+        <rect x="18" y="35" width="210" height="125" rx="16" fill="#e7f2ed"/>
+        <rect x="305" y="35" width="210" height="125" rx="16" fill="#f6f8f6" stroke="#e3e8e5"/>
+        <rect x="592" y="35" width="210" height="125" rx="16" fill="#fff" stroke="#1f6f54" stroke-width="2"/>
+        <circle cx="123" cy="98" r="38" fill="#1f6f54"/><rect x="102" y="65" width="42" height="66" rx="10" fill="#fff"/>
+        <text x="123" y="151" text-anchor="middle" class="svg-label">SUJET + FOND</text>
+        <text x="410" y="88" text-anchor="middle" class="svg-label" font-weight="700">KEY</text>
+        <text x="410" y="108" text-anchor="middle" class="svg-muted">couleur → transparence</text>
+        <rect x="617" y="65" width="160" height="66" rx="9" fill="#0b0f0d"/>
+        <circle cx="697" cy="98" r="27" fill="#1f6f54"/><rect x="683" y="75" width="28" height="45" rx="7" fill="#fff"/>
+        <text x="697" y="151" text-anchor="middle" class="svg-label">COMPOSITION</text>
+        <path d="M235 98h65m-9-7 9 7-9 7M522 98h65m-9-7 9 7-9 7" fill="none" stroke="#1f6f54" stroke-width="3"/>
+      </svg>
+    </div>
+  </section>
+
+  <section id="tracking" class="reveal">
+    <div class="section-head"><div><div class="eyebrow">04 · Tracking</div><h2>Faire suivre un mouvement</h2></div><p>Le tracking analyse le déplacement d'un élément pour synchroniser un texte, un graphique, un masque ou un autre objet.</p></div>
+    <div class="grid two">
+      <div class="visual">
+        <svg viewBox="0 0 520 250" role="img" aria-label="Tracking d'un objet en mouvement">
+          <rect x="25" y="25" width="470" height="175" rx="16" fill="#f6f8f6" stroke="#e3e8e5"/>
+          <path d="M75 155 C150 80 220 150 300 88 S420 105 455 58" fill="none" stroke="#e3e8e5" stroke-width="4"/>
+          <circle cx="300" cy="88" r="25" fill="#1f6f54"/><circle cx="300" cy="88" r="8" fill="#fff"/>
+          <circle cx="300" cy="88" r="40" fill="none" stroke="#1f6f54" stroke-width="2" stroke-dasharray="5 6"/>
+          <text x="300" y="225" text-anchor="middle" class="svg-muted">point suivi → position → objet attaché</text>
+        </svg>
+      </div>
+      <div>
+        <div class="card"><h3>Point de suivi</h3><p>Choisir une zone suffisamment contrastée et identifiable pendant le mouvement.</p></div>
+        <div class="card" style="margin-top:12px"><h3>Application</h3><p>Associer le mouvement analysé à un élément graphique ou à un masque.</p></div>
+      </div>
+    </div>
+    <div class="callout warn"><strong>⚠️ Attention</strong>Un tracking fiable dépend d'un élément réellement visible et suffisamment distinct. Si le point disparaît ou change fortement, le suivi peut dériver.</div>
+  </section>
+
+  <section id="stabilisation" class="reveal">
+    <div class="section-head"><div><div class="eyebrow">05 · Stabilisation</div><h2>Réduire les mouvements indésirables</h2></div><p>La stabilisation analyse les mouvements du plan et applique une correction. Une légère perte de cadrage peut être nécessaire.</p></div>
+    <div class="grid">
+      <div class="card"><h3>Avant</h3><p>Micro-tremblements ou mouvement involontaire qui gêne la lecture.</p></div>
+      <div class="card"><h3>Analyse</h3><p>Le logiciel identifie le déplacement du cadre image par image.</p></div>
+      <div class="card"><h3>Après</h3><p>Le mouvement parasite est réduit et le plan paraît plus stable.</p></div>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 820 160" role="img" aria-label="Avant et après stabilisation">
+        <rect x="25" y="25" width="330" height="105" rx="15" fill="#fff" stroke="#e3e8e5"/>
+        <rect x="465" y="25" width="330" height="105" rx="15" fill="#e7f2ed" stroke="#cfe4da"/>
+        <path d="M60 105 L105 70 L145 91 L190 58 L235 82 L280 50 L325 73" fill="none" stroke="#b3541e" stroke-width="4"/>
+        <path d="M500 83 L550 80 L600 82 L650 79 L700 81 L750 79" fill="none" stroke="#1f6f54" stroke-width="4"/>
+        <text x="190" y="48" text-anchor="middle" class="svg-label" font-weight="700">AVANT</text>
+        <text x="630" y="48" text-anchor="middle" class="svg-label" font-weight="700">APRÈS</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="transitions" class="reveal">
+    <div class="section-head"><div><div class="eyebrow">06 · Transitions</div><h2>Relier deux plans avec intention</h2></div><p>La coupe reste souvent la transition la plus discrète. Une transition visible doit avoir une raison narrative ou graphique.</p></div>
+    <table>
+      <thead><tr><th>Transition</th><th>Usage pertinent</th><th>Risque</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Coupe</strong></td><td>Continuité, rythme, changement de plan.</td><td>Peu de risque visuel.</td></tr>
+        <tr><td><strong>Fondu</strong></td><td>Passage temporel ou changement d'ambiance.</td><td>Peut ralentir inutilement le rythme.</td></tr>
+        <tr><td><strong>Glissement</strong></td><td>Univers graphique, présentation, contenu dynamique.</td><td>Peut devenir décoratif.</td></tr>
+        <tr><td><strong>Transition stylisée</strong></td><td>Identité visuelle ou effet volontaire.</td><td>Distrait si utilisée systématiquement.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="compositing" class="reveal">
+    <div class="section-head"><div><div class="eyebrow">07 · Compositing simple</div><h2>Assembler plusieurs couches</h2></div><p>Le compositing combine des éléments vidéo, graphiques et effets pour produire une image finale cohérente.</p></div>
+    <div class="visual">
+      <svg viewBox="0 0 820 300" role="img" aria-label="Couches d'un compositing simple">
+        <rect x="35" y="30" width="750" height="225" rx="18" fill="#f6f8f6" stroke="#e3e8e5"/>
+        <rect x="80" y="55" width="650" height="42" rx="9" fill="#0b0f0d"/>
+        <rect x="80" y="106" width="650" height="42" rx="9" fill="#1f6f54"/>
+        <rect x="80" y="157" width="650" height="42" rx="9" fill="#e7f2ed"/>
+        <rect x="80" y="208" width="650" height="20" rx="6" fill="#fff" stroke="#e3e8e5"/>
+        <text x="105" y="82" fill="#fff" font-family="Inter" font-size="13">Texte / graphique</text>
+        <text x="105" y="133" fill="#fff" font-family="Inter" font-size="13">Sujet détouré / incrusté</text>
+        <text x="105" y="184" class="svg-label">Plan principal</text>
+        <text x="105" y="223" class="svg-muted">Fond / texture / couleur</text>
+        <path d="M748 76v134" stroke="#1f6f54" stroke-width="3"/><path d="M740 202l8 9 8-9" fill="none" stroke="#1f6f54" stroke-width="3"/>
+        <text x="765" y="148" class="svg-muted" transform="rotate(90 765 148)">couches</text>
+      </svg>
+    </div>
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button class="active" data-tab="tab1">Ordre des couches</button>
+        <button data-tab="tab2">Règle visuelle</button>
+        <button data-tab="tab3">Contrôle final</button>
+      </div>
+      <div id="tab1" class="tab-panel active card"><strong>De l'arrière vers l'avant :</strong> fond → plan principal → sujet incrusté → graphiques et textes → effets finaux.</div>
+      <div id="tab2" class="tab-panel card"><strong>La lisibilité prime :</strong> contraste, hiérarchie et cohérence doivent rester maîtrisés après l'ajout des effets.</div>
+      <div id="tab3" class="tab-panel card"><strong>Vérifier :</strong> contours, mouvements, transitions, synchronisation, cadrage et absence d'effets inutiles.</div>
+    </div>
+    <div class="callout"><strong>📌 Principe professionnel</strong>Un effet réussi est souvent celui que le spectateur remarque peu. L'objectif n'est pas de montrer ce que le logiciel sait faire, mais de renforcer le message de la vidéo.</div>
+  </section>
+
+  <section class="reveal">
+    <div class="section-head"><div><div class="eyebrow">Synthèse</div><h2>Points clés à retenir</h2></div><p>Les effets sont des outils de narration et de finition, pas une décoration automatique.</p></div>
+    <div class="grid">
+      <div class="card"><h3>Masques</h3><p>Isoler une zone pour contrôler précisément la visibilité ou un effet.</p></div>
+      <div class="card"><h3>Incrustation</h3><p>Supprimer un fond et intégrer proprement un sujet dans une nouvelle scène.</p></div>
+      <div class="card"><h3>Tracking</h3><p>Faire suivre un objet graphique ou un masque au mouvement du plan.</p></div>
+      <div class="card"><h3>Stabilisation</h3><p>Réduire les tremblements sans dégrader inutilement le cadrage.</p></div>
+      <div class="card"><h3>Transitions</h3><p>Relier les plans selon le rythme et l'intention du montage.</p></div>
+      <div class="card"><h3>Compositing</h3><p>Assembler plusieurs couches pour construire une image finale cohérente.</p></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="section-head"><div><div class="eyebrow">Navigation</div><h2>Suite du parcours</h2></div><p>La prochaine étape porte sur l'équilibre et la cohérence des couleurs.</p></div>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:20px">
+      <span><strong>Leçon suivante</strong><br><span style="color:var(--muted)">Leçon 15 — Correction colorimétrique</span></span>
+      <span class="badge green">→</span>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    Filière audiovisuelle · Module 3 — Montage vidéo : Fondamentaux · Leçon 14 — Effets visuels
+  </div>
+</footer>
+
+<button class="back" id="back" aria-label="Retour en haut">↑</button>
+<script>
+const progress=document.getElementById('progress'),back=document.getElementById('back');
+window.addEventListener('scroll',()=>{
+ const h=document.documentElement.scrollHeight-innerHeight;
+ progress.style.width=(h>0?(scrollY/h)*100:0)+'%';
+ back.classList.toggle('show',scrollY>500);
+});
+back.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+document.querySelectorAll('.tab-buttons button').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-buttons button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+ });
+});
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

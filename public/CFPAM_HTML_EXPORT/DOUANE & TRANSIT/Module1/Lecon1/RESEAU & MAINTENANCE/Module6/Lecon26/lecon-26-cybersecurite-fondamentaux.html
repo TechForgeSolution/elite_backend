@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 26 — Cybersécurité fondamentaux">
+<title>Leçon 26 — Cybersécurité fondamentaux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+--soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));--soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));--border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000}.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:20;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;justify-content:space-between;align-items:center}.brand{font:700 1rem "Space Grotesk";letter-spacing:-.02em}.brand small{display:block;font:500 .68rem "IBM Plex Mono";color:var(--muted)}
+.menu{border:1px solid var(--border);background:var(--color-bg);padding:8px 12px;border-radius:8px;cursor:pointer}
+main{max-width:1180px;margin:auto;padding:0 22px}.hero{padding:72px 0 45px;display:grid;grid-template-columns:1fr 380px;gap:42px;align-items:center}
+.eyebrow{display:flex;gap:8px;flex-wrap:wrap}.badge{border:1px solid var(--border);border-radius:999px;padding:5px 10px;background:var(--soft);font:500 .72rem "IBM Plex Mono"}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.15;letter-spacing:-.03em}h1{font-size:clamp(2.5rem,6vw,4.8rem);margin:18px 0}h2{font-size:clamp(1.8rem,3vw,2.7rem)}h3{font-size:1.15rem}
+.lead,.intro{max-width:720px;color:var(--muted);font-size:1.08rem}.hero-art,.diagram{border:1px solid var(--border);background:var(--soft);border-radius:16px;padding:18px;overflow:auto}.hero-art svg,.diagram svg{display:block;width:100%;min-width:620px}
+.caption{font-size:.82rem;color:var(--muted);margin-top:9px}.toc{padding:24px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.toc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.toc-grid a{border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--color-bg)}
+section{padding:68px 0;border-bottom:1px solid var(--border)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card,.key,.panel{border:1px solid var(--border);border-radius:13px;padding:20px;background:var(--color-bg)}.card{transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font:700 1.4rem "IBM Plex Mono";color:var(--color-accent)}.callout{border:2px solid var(--color-accent);border-radius:12px;padding:17px 19px;margin:24px 0}.callout strong{display:block;margin-bottom:5px}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:12px}table{width:100%;min-width:650px;border-collapse:collapse}th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--border)}th{font:600 .78rem "IBM Plex Mono";background:var(--soft2)}tr:hover td{background:var(--soft)}
+.tabs{margin:28px 0}.tab-buttons{display:flex;gap:8px;flex-wrap:wrap}.tab-buttons button{border:1px solid var(--border);background:var(--color-bg);padding:9px 14px;border-radius:8px;cursor:pointer}.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);background:var(--soft2)}
+.tab-panel{display:none;margin-top:10px}.tab-panel.active{display:block}.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.step{border-top:3px solid var(--color-accent);padding:12px}.step b{font:500 .75rem "IBM Plex Mono"}
+details{padding:15px 0;border-bottom:1px solid var(--border)}summary{cursor:pointer;font-weight:600}.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);cursor:pointer;display:none}
+.footer-nav{display:flex;justify-content:space-between;gap:20px;padding:25px 0;border-top:1px solid var(--border)}footer{padding:38px 0;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(12px);transition:.5s}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.toc-grid,.grid,.keys{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr}}
+@media(max-width:520px){main{padding:0 15px}.nav{padding:12px 15px}.hero{padding-top:50px}.toc-grid,.grid,.keys{grid-template-columns:1fr}h1{font-size:2.5rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="progress"><span id="bar"></span></div>
+<header class="header"><nav class="nav" aria-label="Navigation principale">
+<div class="brand">MAINTENANCE & RÉSEAU INFORMATIQUE<small>MODULE 6 · SÉCURITÉ ET PROJET</small></div>
+<button class="menu" onclick="document.querySelector('#sommaire').scrollIntoView()">☰ Sommaire</button>
+</nav></header>
+
+<main>
+<section class="hero reveal">
+<div><div class="eyebrow"><span class="badge">MODULE 6</span><span class="badge">15 MIN</span><span class="badge">AVANCÉ</span></div>
+<h1>Cybersécurité<br>fondamentaux</h1>
+<p class="lead">Identifier les menaces courantes et les principes de base de la sécurité.</p></div>
+<div class="hero-art">
+<svg viewBox="0 0 420 300" role="img" aria-label="Bouclier de cybersécurité avec menaces autour">
+<rect x="10" y="10" width="400" height="280" rx="16" fill="none" stroke="#A9B4BE"/>
+<path d="M210 48l82 30v64c0 56-36 90-82 111-46-21-82-55-82-111V78z" fill="none" stroke="#1F6FEB" stroke-width="7"/>
+<path d="M174 145l25 25 49-60" fill="none" stroke="#10161D" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="#F4F7FA" stroke="#10161D" stroke-width="2"><rect x="28" y="58" width="86" height="38" rx="7"/><rect x="306" y="58" width="86" height="38" rx="7"/><rect x="28" y="205" width="86" height="38" rx="7"/><rect x="306" y="205" width="86" height="38" rx="7"/></g>
+<g font-family="IBM Plex Mono" font-size="10" fill="#10161D" text-anchor="middle"><text x="71" y="82">PHISHING</text><text x="349" y="82">MALWARE</text><text x="71" y="229">SOCIAL</text><text x="349" y="229">ACCÈS</text></g>
+<g stroke="#A9B4BE" stroke-width="2" stroke-dasharray="5 5"><path d="M114 77l27 27"/><path d="M306 77l-27 27"/><path d="M114 224l35-28"/><path d="M306 224l-35-28"/></g>
+</svg><div class="caption">La sécurité combine prévention, protection, vigilance et contrôle.</div>
+</div></section>
+
+<section id="sommaire" class="toc reveal"><h2>Sommaire</h2><div class="toc-grid">
+<a href="#menaces">01 · Menaces courantes</a><a href="#social">02 · Ingénierie sociale</a><a href="#cia">03 · Principes CIA</a><a href="#mots">04 · Mots de passe</a><a href="#sensibilisation">05 · Sensibilisation</a>
+</div></section>
+
+<section id="menaces" class="reveal"><h2>01 · Menaces courantes</h2><p class="intro">Les menaces peuvent cibler les systèmes, les données ou les personnes. Une faiblesse technique ou humaine peut être exploitée et provoquer un impact sur l'organisation.</p>
+<div class="grid"><article class="card"><div class="icon">▣</div><h3>Malware</h3><p>Logiciel malveillant destiné à perturber, espionner, détruire ou obtenir un accès non autorisé.</p></article>
+<article class="card"><div class="icon">✉</div><h3>Phishing</h3><p>Message trompeur destiné à provoquer une action ou à obtenir une information sensible.</p></article>
+<article class="card"><div class="icon">◈</div><h3>Accès non autorisé</h3><p>Accès à un compte, un poste ou un service sans autorisation légitime.</p></article></div>
+<div class="diagram"><svg viewBox="0 0 900 260" role="img" aria-label="Chaîne menace faiblesse exploitation impact">
+<g fill="#F4F7FA" stroke="#10161D" stroke-width="2"><rect x="25" y="75" width="175" height="105" rx="12"/><rect x="245" y="75" width="175" height="105" rx="12"/><rect x="465" y="75" width="175" height="105" rx="12"/><rect x="685" y="75" width="175" height="105" rx="12"/></g>
+<g fill="#1F6FEB" font-family="Space Grotesk" font-size="20" font-weight="700" text-anchor="middle"><text x="112" y="115">MENACE</text><text x="332" y="115">FAIBLESSE</text><text x="552" y="115">EXPLOITATION</text><text x="772" y="115">IMPACT</text></g>
+<g fill="#10161D" font-family="IBM Plex Sans" font-size="14" text-anchor="middle"><text x="112" y="145">acteur / logiciel</text><text x="332" y="145">erreur / défaut</text><text x="552" y="145">action hostile</text><text x="772" y="145">perte / panne</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M200 128h45M420 128h45M640 128h45"/></g><g fill="#1F6FEB"><path d="M245 128l-12-8v16z"/><path d="M465 128l-12-8v16z"/><path d="M685 128l-12-8v16z"/></g></svg></div>
+<div class="callout"><strong>⚠️ Attention</strong>La sécurité ne concerne pas uniquement les logiciels : une mauvaise configuration, un compte trop permissif ou une erreur humaine peuvent aussi constituer une faiblesse.</div></section>
+
+<section id="social" class="reveal"><h2>02 · Ingénierie sociale</h2><p class="intro">L'ingénierie sociale exploite le comportement humain. L'attaquant peut créer une situation d'urgence, de confiance, de peur ou de curiosité pour provoquer une action.</p>
+<div class="diagram"><svg viewBox="0 0 900 330" role="img" aria-label="Cycle d'une attaque par ingénierie sociale">
+<circle cx="450" cy="165" r="70" fill="none" stroke="#1F6FEB" stroke-width="6"/><text x="450" y="160" text-anchor="middle" font-family="Space Grotesk" font-size="20" font-weight="700" fill="#10161D">UTILISATEUR</text><text x="450" y="183" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#10161D">décision</text>
+<g fill="#F4F7FA" stroke="#10161D" stroke-width="2"><rect x="50" y="30" width="210" height="72" rx="12"/><rect x="640" y="30" width="210" height="72" rx="12"/><rect x="50" y="228" width="210" height="72" rx="12"/><rect x="640" y="228" width="210" height="72" rx="12"/></g>
+<g fill="#1F6FEB" font-family="Space Grotesk" font-size="17" font-weight="700" text-anchor="middle"><text x="155" y="73">1 · CONTACT</text><text x="745" y="73">2 · PRESSION</text><text x="745" y="271">3 · ACTION</text><text x="155" y="271">4 · EXPLOITATION</text></g>
+<g stroke="#A9B4BE" stroke-width="2" fill="none"><path d="M260 66l125 70"/><path d="M640 66l-125 70"/><path d="M640 264l-125-70"/><path d="M260 264l125-70"/></g></svg></div>
+<div class="grid"><article class="card"><h3>Phishing</h3><p>Imitation d'un service ou d'un interlocuteur pour déclencher une action.</p></article><article class="card"><h3>Prétexting</h3><p>Création d'une histoire crédible afin d'obtenir une information ou une action.</p></article><article class="card"><h3>Usurpation</h3><p>Se faire passer pour une personne ou un service de confiance.</p></article></div>
+<div class="callout"><strong>💡 À retenir</strong>Avant toute action sensible, vérifier l'identité de l'interlocuteur et le canal utilisé. L'urgence ne doit pas supprimer la vérification.</div></section>
+
+<section id="cia" class="reveal"><h2>03 · Principes CIA</h2><p class="intro">Le triptyque CIA fournit un cadre fondamental pour analyser les objectifs de la sécurité de l'information.</p>
+<div class="grid"><article class="card"><div class="icon">C</div><h3>Confidentialité</h3><p>Seules les personnes ou entités autorisées accèdent à l'information.</p></article><article class="card"><div class="icon">I</div><h3>Intégrité</h3><p>L'information reste exacte et ne subit pas de modification non autorisée.</p></article><article class="card"><div class="icon">A</div><h3>Disponibilité</h3><p>Les systèmes et informations restent accessibles lorsque nécessaire.</p></article></div>
+<div class="diagram"><svg viewBox="0 0 900 320" role="img" aria-label="Triangle de la confidentialité, intégrité et disponibilité">
+<path d="M450 35L170 265H730z" fill="none" stroke="#1F6FEB" stroke-width="5"/><circle cx="450" cy="35" r="12" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/><circle cx="170" cy="265" r="12" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/><circle cx="730" cy="265" r="12" fill="#F4F7FA" stroke="#10161D" stroke-width="3"/>
+<g fill="#10161D" font-family="Space Grotesk" font-size="21" font-weight="700" text-anchor="middle"><text x="450" y="18">CONFIDENTIALITÉ</text><text x="170" y="305">INTÉGRITÉ</text><text x="730" y="305">DISPONIBILITÉ</text></g><text x="450" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="#1F6FEB">SÉCURITÉ DE L'INFORMATION</text></svg></div>
+<div class="table-wrap"><table><thead><tr><th scope="col">Principe</th><th scope="col">Question</th><th scope="col">Exemple de contrôle</th></tr></thead><tbody>
+<tr><td>Confidentialité</td><td>Qui peut voir l'information ?</td><td class="mono">droits d'accès</td></tr><tr><td>Intégrité</td><td>Les données ont-elles été altérées ?</td><td class="mono">journalisation</td></tr><tr><td>Disponibilité</td><td>Le service est-il accessible ?</td><td class="mono">sauvegarde</td></tr>
+</tbody></table></div></section>
+
+<section id="mots" class="reveal"><h2>04 · Gestion des mots de passe</h2><p class="intro">La protection des comptes repose sur une bonne gestion des secrets d'authentification et, lorsque possible, sur un mécanisme d'authentification supplémentaire.</p>
+<div class="steps"><div class="step"><b>01</b><h3>Unique</h3><p>Éviter la réutilisation.</p></div><div class="step"><b>02</b><h3>Robuste</h3><p>Choisir un secret difficile à deviner.</p></div><div class="step"><b>03</b><h3>Protégé</h3><p>Ne pas le partager.</p></div><div class="step"><b>04</b><h3>Géré</h3><p>Utiliser un gestionnaire si disponible.</p></div><div class="step"><b>05</b><h3>Renforcé</h3><p>Activer le multifacteur si possible.</p></div></div>
+<div class="tabs" data-tabs><div class="tab-buttons" role="tablist"><button role="tab" aria-selected="true" aria-controls="faire" id="b1">À faire</button><button role="tab" aria-selected="false" aria-controls="eviter" id="b2">À éviter</button></div>
+<div id="faire" class="tab-panel panel active" role="tabpanel" aria-labelledby="b1"><ul><li>Utiliser des secrets différents selon les services.</li><li>Activer l'authentification multifacteur lorsque disponible.</li><li>Limiter l'accès aux informations d'authentification.</li></ul></div>
+<div id="eviter" class="tab-panel panel" role="tabpanel" aria-labelledby="b2"><ul><li>Réutiliser le même secret partout.</li><li>Laisser un mot de passe visible.</li><li>Communiquer des identifiants par un canal non vérifié.</li></ul></div></div>
+<div class="callout"><strong>🔒 Sécurité / bonne pratique</strong>Les comptes d'administration doivent bénéficier d'une protection renforcée et d'un contrôle d'accès strict.</div></section>
+
+<section id="sensibilisation" class="reveal"><h2>05 · Sensibilisation</h2><p class="intro">La sécurité devient plus efficace lorsqu'elle s'intègre aux habitudes quotidiennes : vérifier, signaler, maintenir et respecter les procédures.</p>
+<div class="grid"><article class="card"><div class="icon">01</div><h3>Vérifier</h3><p>Contrôler l'origine d'une demande, d'un lien ou d'une pièce jointe.</p></article><article class="card"><div class="icon">02</div><h3>Signaler</h3><p>Faire remonter rapidement une situation suspecte.</p></article><article class="card"><div class="icon">03</div><h3>Maintenir</h3><p>Appliquer les mises à jour et conserver des configurations maîtrisées.</p></article></div>
+<details><summary>Pourquoi sensibiliser les utilisateurs ?</summary><p>Une protection technique peut être contournée par une action humaine non maîtrisée. La sensibilisation complète donc les mécanismes techniques.</p></details>
+<details><summary>Quel réflexe face à une demande urgente ?</summary><p>Ralentir, vérifier l'identité et utiliser un canal de confiance avant toute action sensible.</p></details>
+<details><summary>Quel rôle pour le technicien ?</summary><p>Respecter les droits d'accès, protéger les informations manipulées, signaler les anomalies et éviter les modifications non documentées.</p></details></section>
+
+<section class="reveal"><h2>Points clés à retenir</h2><div class="keys">
+<div class="key"><strong>01 · Menaces</strong><br>Malware, phishing et accès non autorisés peuvent compromettre un système.</div>
+<div class="key"><strong>02 · Humain</strong><br>L'ingénierie sociale exploite la confiance, l'urgence et les erreurs humaines.</div>
+<div class="key"><strong>03 · CIA</strong><br>Confidentialité, intégrité et disponibilité structurent l'analyse de sécurité.</div>
+<div class="key"><strong>04 · Accès</strong><br>Des mots de passe uniques, robustes et une authentification renforcée réduisent les risques.</div>
+</div><div class="callout"><strong>🔗 Synthèse</strong>Identifier les menaces, protéger les accès, préserver les données et rester vigilant constituent les bases de la cybersécurité.</div></section>
+
+<footer><div class="footer-nav"><a href="#"><span>← LEÇON PRÉCÉDENTE</span><br><strong>LEÇON 25 · Scripting et automatisation</strong></a><a href="#" style="text-align:right"><span>LEÇON SUIVANTE →</span><br><strong>LEÇON 27 · Durcissement des systèmes</strong></a></div>
+<p>Maintenance & Réseau Informatique · Module 6 · Support pédagogique autonome</p></footer>
+</main>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+<script>
+const bar=document.getElementById("bar"),topBtn=document.getElementById("top");
+function scrollUI(){const max=document.documentElement.scrollHeight-innerHeight;bar.style.width=(max?scrollY/max*100:0)+"%";topBtn.style.display=scrollY>500?"block":"none"}addEventListener("scroll",scrollUI,{passive:true});topBtn.onclick=()=>scrollTo({top:0,behavior:"smooth"});
+document.querySelectorAll("[data-tabs]").forEach(g=>{const bs=g.querySelectorAll('[role="tab"]'),ps=g.querySelectorAll('[role="tabpanel"]');bs.forEach((b,i)=>{b.onclick=()=>{bs.forEach(x=>x.setAttribute("aria-selected","false"));ps.forEach(x=>x.classList.remove("active"));b.setAttribute("aria-selected","true");ps[i].classList.add("active")};b.onkeydown=e=>{if(e.key==="ArrowRight"){bs[(i+1)%bs.length].focus()}if(e.key==="ArrowLeft"){bs[(i-1+bs.length)%bs.length].focus()}}})});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");io.unobserve(e.target)}}),{threshold:.08});document.querySelectorAll(".reveal").forEach(x=>io.observe(x));scrollUI();
+</script>
+</body></html>

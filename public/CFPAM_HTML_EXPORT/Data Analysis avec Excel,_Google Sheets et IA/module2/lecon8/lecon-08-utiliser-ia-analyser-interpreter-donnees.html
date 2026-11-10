@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 08 — Utiliser l'IA pour analyser et interpréter les données</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+/* cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+/* encadrés */
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+/* figures */
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+/* stepper */
+.stepper{display:flex;gap:0;overflow-x:auto;margin:28px 0;padding-bottom:8px;counter-reset:s}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+/* tabs */
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+/* tableau */
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}td.l{text-align:left}
+/* code */
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+/* accordéon */
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+/* points clés */
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+/* nav */
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{color:var(--muted);background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">Outils</a><a href="#s2">Prompt</a><a href="#s3">Usages</a><a href="#s4">Limites</a><a href="#s5">Confidentialité</a><a href="#s6">Contrôle</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 2 — Visualiser, analyser avec l'IA et présenter</span><span class="badge">⏱ 20 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Utiliser l'IA pour analyser et interpréter les données</h1>
+  <p class="sub">Leçon 08 — Vous découvrez comment employer l'IA comme assistante d'analyse, tout en gardant votre esprit critique et en protégeant vos données.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>Panorama des outils d'IA pour l'analyse</a></li>
+<li><a href="#s2"><b>2</b>Écrire un prompt efficace</a></li>
+<li><a href="#s3"><b>3</b>L'IA au quotidien : formules, explications, pistes</a></li>
+<li><a href="#s4"><b>4</b>Limites, risques et pièges de l'IA</a></li>
+<li><a href="#s5"><b>5</b>Protéger les données sensibles</a></li>
+<li><a href="#s6"><b>6</b>Contrôler et vérifier les résultats</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. Panorama des outils d'IA pour l'analyse</h2>
+<p>Un <strong>assistant d'IA</strong> est un programme qui comprend une demande écrite en langage courant et produit une réponse : un texte, une formule, un résumé. Pour analyser des données, on rencontre deux grandes familles d'outils.</p>
+<div class="cards">
+  <div class="card"><div class="ic">🟩</div><h4>Copilot dans Excel</h4><p>Intégré au classeur : il propose des formules, des graphiques et des résumés sur les données ouvertes.</p></div>
+  <div class="card"><div class="ic">📗</div><h4>Gemini dans Google Sheets</h4><p>Intégré à la feuille : il aide à rédiger des formules et à synthétiser un tableau.</p></div>
+  <div class="card"><div class="ic">💬</div><h4>Assistants conversationnels</h4><p>ChatGPT, Claude, Gemini : on dialogue avec eux dans une fenêtre de discussion, en dehors du tableur.</p></div>
+</div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Familles d'outils">
+    <button role="tab" aria-selected="true">Outils intégrés au tableur</button>
+    <button role="tab" aria-selected="false">Assistants externes</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul>
+    <li>Travaillent directement dans le classeur, au plus près des données.</li>
+    <li>Évitent de copier des données dans un autre service.</li>
+    <li>La disponibilité dépend de l'abonnement et de la version utilisée.</li>
+  </ul></div>
+  <div class="panel" role="tabpanel" hidden><ul>
+    <li>Très souples : explication, reformulation, rédaction de formules, idées d'analyse.</li>
+    <li>Les données doivent être décrites ou collées dans la conversation.</li>
+    <li>Demandent une vigilance particulière sur la confidentialité (section 5).</li>
+  </ul></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>Les noms et fonctions de ces outils évoluent vite. Les bonnes pratiques de cette leçon restent valables quel que soit l'outil choisi.</p></div>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. Écrire un prompt efficace</h2>
+<p>Un <strong>prompt</strong> est la consigne écrite que l'on donne à l'IA. Plus il est précis, plus la réponse est utile. Pour l'analyse de données, une structure en quatre blocs donne de bons résultats.</p>
+<figure>
+<svg viewBox="0 0 640 170" role="img" aria-label="Structure d'un prompt en quatre blocs : contexte, données et structure, tâche précise, format de réponse, menant à une réponse exploitable">
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="10" y="30" width="116" height="60" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="68" y="56" fill="#0A0F14">Contexte</text><text x="68" y="75" font-size="11" font-weight="400" fill="#5B6472">qui, pourquoi</text>
+<rect x="144" y="30" width="116" height="60" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="202" y="56" fill="#0A0F14">Données</text><text x="202" y="75" font-size="11" font-weight="400" fill="#5B6472">colonnes, types</text>
+<rect x="278" y="30" width="116" height="60" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="336" y="56" fill="#0A0F14">Tâche</text><text x="336" y="75" font-size="11" font-weight="400" fill="#5B6472">demande précise</text>
+<rect x="412" y="30" width="116" height="60" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="470" y="56" fill="#0A0F14">Format</text><text x="470" y="75" font-size="11" font-weight="400" fill="#5B6472">forme attendue</text>
+<rect x="546" y="30" width="84" height="60" rx="8" fill="#0A0F14"/><text x="588" y="65" fill="#fff">Réponse</text>
+</g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M126 60h16"/><path d="M260 60h16"/><path d="M394 60h16"/><path d="M528 60h16"/></g>
+<text x="320" y="135" font-size="12" fill="#5B6472" text-anchor="middle">Plus les blocs sont clairs, moins l'IA doit deviner.</text>
+</svg>
+<figcaption>Les quatre blocs d'un prompt d'analyse de données.</figcaption></figure>
+<div class="tbl"><table>
+<tr><th>Bloc</th><th>Rôle</th><th>Exemple</th></tr>
+<tr><td>Contexte</td><td>Situer la demande</td><td>« Je suis responsable d'une petite boutique de papeterie. »</td></tr>
+<tr><td>Données / structure</td><td>Décrire le tableau</td><td>« Colonnes : Date, Produit, Quantité, Prix. 1 200 lignes. »</td></tr>
+<tr><td>Tâche précise</td><td>Dire ce qu'on attend</td><td>« Propose une formule du total des ventes par produit. »</td></tr>
+<tr><td>Format de réponse</td><td>Cadrer la forme</td><td>« Réponds en trois puces, avec la formule puis une explication courte. »</td></tr>
+</table></div>
+<p>Voici un prompt complet qui assemble les quatre blocs.</p>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Exemple de prompt structuré</span>
+<span class="fn">Contexte :</span> je gère les ventes d'une boutique de papeterie.
+<span class="fn">Données :</span> colonnes A Date, B Produit, C Quantité, D Prix unitaire (€).
+<span class="fn">Tâche :</span> donne une formule Excel qui calcule le chiffre d'affaires
+par produit, en tenant compte de la quantité et du prix.
+<span class="fn">Format :</span> la formule, puis une explication en deux phrases.</code></pre></div>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Un prompt trop vague, comme « analyse mes ventes », oblige l'IA à deviner l'objectif et la structure du tableau. La réponse sera générale, parfois à côté du besoin.</p></div>
+<details><summary>Peut-on corriger une réponse en poursuivant la conversation ?</summary><div><p>Oui. Un assistant conversationnel garde le fil de l'échange : on peut préciser une consigne, signaler une erreur ou demander une autre présentation. Un prompt clair dès le départ reste cependant le plus efficace.</p></div></details>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. L'IA au quotidien : formules, explications, pistes</h2>
+<p>Pour un analyste débutant, trois usages sont particulièrement utiles et peu risqués, à condition de vérifier les résultats.</p>
+<div class="cards">
+  <div class="card"><div class="ic">🧮</div><h4>Générer une formule</h4><p>Décrire le calcul voulu en français et obtenir la formule correspondante.</p></div>
+  <div class="card"><div class="ic">📖</div><h4>Expliquer</h4><p>Faire expliquer une formule complexe ou la structure d'un tableau, étape par étape.</p></div>
+  <div class="card"><div class="ic">🧭</div><h4>Proposer des pistes</h4><p>Obtenir des idées d'analyses, de graphiques ou de questions à explorer.</p></div>
+</div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Usages">
+    <button role="tab" aria-selected="true">Générer une formule</button>
+    <button role="tab" aria-selected="false">Expliquer des données</button>
+    <button role="tab" aria-selected="false">Pistes d'analyse</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>On décrit le résultat attendu et la position des colonnes. L'IA répond avec une formule que l'on copie dans la cellule. On compare ensuite le résultat à un calcul simple fait à la main.</p>
+    <div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Formule proposée : total des ventes du produit « Stylo bleu »</span>
+=<span class="fn">SOMME.SI</span>(B2:B1201; "Stylo bleu"; C2:C1201)</code></pre></div></div>
+  <div class="panel" role="tabpanel" hidden><p>On peut demander : « Explique cette formule comme à un débutant », ou « Décris ce que contient ce tableau et repère les colonnes utiles ». L'IA reformule en langage simple, ce qui aide à comprendre un fichier hérité d'un collègue.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>À partir de la description d'un tableau et d'un objectif, l'IA suggère des comparaisons possibles : évolution par mois, produits les plus vendus, écarts entre magasins. Ces pistes restent des hypothèses à tester dans les données.</p></div>
+</div>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Utilisez l'IA pour gagner du temps sur la rédaction et l'explication. La question d'analyse et l'interprétation finale restent l'affaire de l'analyste.</p></div>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Limites, risques et pièges de l'IA</h2>
+<p>Une IA génère des réponses qui <em>paraissent</em> convaincantes, même quand elles sont fausses. Connaître ses limites permet de l'utiliser sans se laisser piéger.</p>
+<div class="cards">
+  <div class="card"><div class="ic">➗</div><h4>Erreurs de calcul</h4><p>Un assistant conversationnel peut se tromper sur une somme ou un pourcentage, surtout sur de gros volumes.</p></div>
+  <div class="card"><div class="ic">🌀</div><h4>Hallucinations</h4><p>Elle peut inventer une fonction, un chiffre ou une source qui n'existe pas, avec beaucoup d'assurance.</p></div>
+  <div class="card"><div class="ic">⚖️</div><h4>Biais</h4><p>Ses réponses reflètent les données et textes qui l'ont formée : elles peuvent être partielles ou orientées.</p></div>
+  <div class="card"><div class="ic">🔒</div><h4>Confidentialité</h4><p>Des données envoyées à un service externe quittent le cadre de l'organisation.</p></div>
+</div>
+<div class="tbl"><table>
+<tr><th>Piège</th><th>À quoi cela ressemble</th><th>Réflexe à adopter</th></tr>
+<tr><td>Erreur de calcul</td><td>Un total qui ne correspond pas à la somme réelle</td><td>Refaire le calcul dans le tableur</td></tr>
+<tr><td>Hallucination</td><td>Une fonction introuvable dans Excel ou Sheets</td><td>Vérifier dans l'aide officielle de l'outil</td></tr>
+<tr><td>Biais</td><td>Une conclusion qui généralise à partir de peu de données</td><td>Se demander si l'échantillon est représentatif</td></tr>
+<tr><td>Fuite de données</td><td>Des noms de clients collés dans une conversation</td><td>Anonymiser avant tout envoi</td></tr>
+</table></div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Le ton assuré d'une réponse n'est pas une preuve de justesse. L'IA ne sait pas toujours quand elle se trompe : la responsabilité du résultat reste celle de l'analyste.</p></div>
+<details><summary>Pourquoi l'IA se trompe-t-elle sur les calculs ?</summary><div><p>Un assistant conversationnel produit du texte en prédisant la suite la plus probable. Il ne calcule pas comme un tableur. C'est pourquoi les calculs importants se font dans le tableur, et l'IA sert surtout à proposer la formule.</p></div></details>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Protéger les données sensibles</h2>
+<p>Une <strong>donnée sensible</strong> est une information qui identifie une personne ou dont la divulgation causerait un tort : noms, adresses, numéros de téléphone, coordonnées bancaires, salaires, données de santé, chiffres internes confidentiels. Avant d'envoyer des données à un outil d'IA, il faut les <strong>anonymiser</strong>, c'est-à-dire retirer ou remplacer ce qui permet d'identifier quelqu'un.</p>
+<figure>
+<svg viewBox="0 0 640 210" role="img" aria-label="Avant anonymisation, un tableau contient noms et téléphones ; après anonymisation, les noms sont remplacés par des codes et les colonnes inutiles retirées ; seul le tableau anonymisé est envoyé à l'IA">
+<defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="12">
+<text x="20" y="22" font-weight="600">Avant (ne pas envoyer)</text>
+<rect x="20" y="30" width="250" height="110" rx="8" fill="#fff" stroke="#E2E8F0"/>
+<rect x="20" y="30" width="250" height="26" rx="8" fill="#EAF7EF"/>
+<text x="30" y="48" font-weight="600">Client</text><text x="110" y="48" font-weight="600">Téléphone</text><text x="200" y="48" font-weight="600">Achat</text>
+<g fill="#0A0F14"><text x="30" y="78">Marie Dupont</text><text x="110" y="78">06 12 34 56 78</text><text x="200" y="78">120 €</text>
+<text x="30" y="102">Paul Martin</text><text x="110" y="102">06 98 76 54 32</text><text x="200" y="102">45 €</text>
+<text x="30" y="126">Awa Nkou</text><text x="110" y="126">07 11 22 33 44</text><text x="200" y="126">80 €</text></g>
+<path d="M280 85H350" stroke="#16A34A" stroke-width="2" marker-end="url(#ar3)" fill="none"/>
+<text x="315" y="75" text-anchor="middle" fill="#16A34A" font-weight="600">Anonymiser</text>
+<text x="370" y="22" font-weight="600">Après (peut être envoyé)</text>
+<rect x="370" y="30" width="250" height="110" rx="8" fill="#fff" stroke="#16A34A"/>
+<rect x="370" y="30" width="250" height="26" rx="8" fill="#EAF7EF"/>
+<text x="380" y="48" font-weight="600">Client</text><text x="470" y="48" font-weight="600">Achat</text>
+<g fill="#0A0F14"><text x="380" y="78">Client_001</text><text x="470" y="78">120 €</text>
+<text x="380" y="102">Client_002</text><text x="470" y="102">45 €</text>
+<text x="380" y="126">Client_003</text><text x="470" y="126">80 €</text></g>
+</g>
+<text x="320" y="180" font-size="12" fill="#5B6472" text-anchor="middle">Les noms deviennent des codes ; les colonnes inutiles à l'analyse sont supprimées.</text>
+</svg>
+<figcaption>Anonymisation d'un tableau avant son envoi à un outil d'IA.</figcaption></figure>
+<h3>Règles d'anonymisation</h3>
+<ul class="keys">
+<li>Supprimer les colonnes d'identité qui ne servent pas à l'analyse : nom, adresse, téléphone, e-mail.</li>
+<li>Remplacer les identifiants nécessaires par des codes (Client_001, Magasin_A).</li>
+<li>Ne jamais envoyer de coordonnées bancaires, de mots de passe ni de données de santé.</li>
+<li>Envoyer la structure du tableau et quelques lignes fictives plutôt que le fichier complet, quand c'est suffisant.</li>
+<li>Respecter la politique de l'organisation sur les outils d'IA autorisés.</li>
+</ul>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Remplacer un nom par une initiale ne suffit pas toujours : la combinaison d'une ville, d'une date et d'un montant peut permettre de reconnaître une personne. En cas de doute, retirez l'information.</p></div>
+<details><summary>Et si l'outil d'IA est fourni par l'organisation ?</summary><div><p>Certains outils validés par l'entreprise offrent des garanties de confidentialité. La règle d'or reste de connaître la politique en vigueur et de ne transmettre que les données nécessaires à la tâche.</p></div></details>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. Contrôler et vérifier les résultats</h2>
+<p>Un résultat produit par l'IA n'est jamais utilisé tel quel : il est <strong>contrôlé</strong>. Une méthode systématique en six étapes évite la plupart des erreurs. Sélectionnez une étape pour en voir le détail.</p>
+<div class="stepper" role="list" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<div class="tbl"><table>
+<tr><th>Type de résultat</th><th>Contrôle manuel possible</th></tr>
+<tr><td>Formule</td><td>Appliquer la formule à 2 ou 3 lignes dont on connaît le résultat</td></tr>
+<tr><td>Total ou moyenne</td><td>Comparer avec la fonction SOMME ou MOYENNE du tableur</td></tr>
+<tr><td>Fonction inconnue</td><td>Rechercher son nom dans l'aide officielle d'Excel ou de Sheets</td></tr>
+<tr><td>Interprétation</td><td>Croiser avec un graphique ou un tableau croisé dynamique</td></tr>
+</table></div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Approches">
+    <button role="tab" aria-selected="true">Résultat non vérifié</button>
+    <button role="tab" aria-selected="false">Résultat vérifié</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Le résultat est repris tel quel dans un rapport.</li><li>Une erreur de calcul ou une information inventée peut passer inaperçue.</li><li>La crédibilité de l'analyste est engagée si l'erreur est découverte plus tard.</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Le résultat est comparé à un calcul indépendant.</li><li>Les écarts sont repérés et corrigés avant diffusion.</li><li>L'analyste peut expliquer d'où vient chaque chiffre.</li></ul></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>L'IA propose, l'analyste dispose. Un chiffre que l'on ne sait pas vérifier ni expliquer ne doit pas être présenté comme un fait.</p></div>
+<div class="note"><strong>🔗 Pour aller plus loin</strong><p>La prochaine leçon montre comment automatiser des tâches répétitives pour gagner du temps, en conservant les mêmes réflexes de vérification.</p></div>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>Copilot, Gemini et les assistants conversationnels aident à analyser, mais ne remplacent pas l'analyste.</li>
+<li>Un bon prompt comporte quatre blocs : contexte, données et structure, tâche précise, format de réponse.</li>
+<li>L'IA est utile pour générer des formules, expliquer des données et proposer des pistes d'analyse.</li>
+<li>Elle peut se tromper : erreurs de calcul, hallucinations, biais, avec un ton toujours assuré.</li>
+<li>Les données sensibles se retirent ou s'anonymisent avant tout envoi à un outil d'IA.</li>
+<li>Tout résultat est contrôlé manuellement avant d'être utilisé ou diffusé.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <a href="lecon-07-construire-tableau-de-bord-interactif.html">Leçon précédente<small>Leçon 07 — Construire un tableau de bord interactif</small></a>
+    <a href="lecon-09-automatiser-gagner-temps.html">Leçon suivante<small>Leçon 09 — Automatiser et gagner du temps</small></a>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 2 · Leçon 08</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Étapes (stepper) : méthode de contrôle ===== */
+const steps=[
+["Relire","Lire la réponse en entier et vérifier qu'elle répond bien à la question posée, sans généralité vague."],
+["Comprendre","S'assurer de comprendre chaque étape de la formule ou du raisonnement. Sinon, demander une explication simple."],
+["Tester","Appliquer la formule sur quelques lignes dont le résultat est connu, ou sur un petit extrait de données."],
+["Comparer","Recalculer le résultat autrement : fonction du tableur, tableau croisé dynamique, calcul à la main."],
+["Sourcer","Vérifier dans l'aide officielle qu'une fonction existe, et contrôler l'origine de toute information citée."],
+["Valider","Décider de retenir, corriger ou rejeter le résultat, puis noter comment il a été vérifié."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Étape '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.setAttribute('role','listitem');
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

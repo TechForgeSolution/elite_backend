@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 28 — Gestion administrative et RH dans un restaurant">
+<title>Restauration — Leçon 28 | Gestion administrative et RH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#FDF3E7;
+ --color-text:#3B2314;
+ --color-accent:#E8752C;
+ --color-neutral:#8A6E5C;
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --shadow:0 12px 30px color-mix(in srgb,var(--color-text) 8%,transparent);
+ --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.7}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:0;height:4px;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.brand{font-weight:700;letter-spacing:.08em;font-size:.86rem}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:.76rem;color:var(--color-neutral)}
+.badge.accent{color:var(--color-accent);border-color:color-mix(in srgb,var(--color-accent) 45%,transparent)}
+main{max-width:var(--max);margin:auto;padding:42px 24px 70px}
+.hero{display:grid;grid-template-columns:1.55fr .7fr;gap:42px;align-items:end;padding:42px 0 32px}
+.eyebrow{font-size:.76rem;text-transform:uppercase;letter-spacing:.14em;color:var(--color-accent);font-weight:700}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;line-height:1.15}
+h1{font-size:clamp(2.35rem,5vw,4.4rem);margin:10px 0 18px}
+h2{font-size:clamp(1.75rem,3vw,2.6rem);margin:0 0 18px}
+h3{font-size:1.3rem;margin:0 0 9px}
+.lead{max-width:760px;color:var(--muted);font-size:1.08rem}
+.meta{border:1px solid var(--border);border-radius:16px;padding:22px;background:var(--soft);box-shadow:var(--shadow)}
+.meta strong{display:block;font-family:"IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:7px}
+.toc{margin:12px 0 58px;padding:20px;border-left:3px solid var(--color-accent);background:var(--soft);border-radius:0 14px 14px 0}
+.toc strong{display:block;margin-bottom:8px}
+.toc ul{margin:0;padding-left:20px;columns:2}
+.toc a{text-decoration:none}.toc a:hover{color:var(--color-accent)}
+section{margin:72px 0;scroll-margin-top:105px}
+.section-head{max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.card{padding:22px;border:1px solid var(--border);border-radius:16px;background:color-mix(in srgb,var(--color-bg) 95%,var(--color-neutral));transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.55rem;margin-bottom:8px}
+.callout{margin:24px 0;padding:19px 21px;border-left:4px solid var(--color-accent);border-radius:0 13px 13px 0;background:var(--soft2)}
+.callout .label{display:block;color:var(--color-accent);font-weight:700;margin-bottom:4px}
+.steps{display:flex;gap:8px;overflow:auto;margin:28px 0;padding-bottom:8px}
+.step{min-width:165px;padding:15px;border:1px solid var(--border);border-radius:12px;background:var(--color-bg)}
+.step b{font-family:"IBM Plex Mono",monospace;color:var(--color-accent)}
+.table-wrap{overflow-x:auto}
+.protocol{width:100%;border-collapse:collapse;margin:22px 0;font-size:.94rem}
+.protocol th,.protocol td{border:1px solid var(--border);padding:13px 14px;text-align:left;vertical-align:top}
+.protocol th{background:var(--soft);font-family:"IBM Plex Mono",monospace;font-size:.8rem}
+.protocol tr:hover td{background:color-mix(in srgb,var(--color-accent) 4%,transparent)}
+.mono{font-family:"IBM Plex Mono",monospace}
+.contract{font-family:"IBM Plex Mono",monospace;border:1px dashed var(--color-neutral);border-radius:14px;padding:20px;background:var(--soft);font-size:.86rem;line-height:1.55}
+.svgbox{border:1px solid var(--border);border-radius:16px;padding:14px;background:var(--soft);overflow:hidden}
+svg{width:100%;height:auto}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.tab{cursor:pointer;background:transparent;color:var(--color-text);border:1px solid var(--border);border-radius:10px;padding:9px 13px;font:inherit}
+.tab[aria-selected="true"],.tab:hover{border-color:var(--color-accent);color:var(--color-accent)}
+.tabpanel{display:none}.tabpanel.active{display:block}
+details{border-top:1px solid var(--border);padding:16px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-weight:700}
+summary:focus-visible,.tab:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.navlinks{display:flex;justify-content:space-between;gap:18px;margin-top:62px}
+.navlink{max-width:48%;padding:17px 20px;border:1px solid var(--border);border-radius:13px;text-decoration:none}
+.navlink:hover{border-color:var(--color-accent)}
+footer{text-align:center;border-top:1px solid var(--border);padding:28px 20px;color:var(--muted);font-size:.88rem}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-text);cursor:pointer;box-shadow:var(--shadow)}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+ .hero,.two{grid-template-columns:1fr}.grid{grid-template-columns:1fr}
+ .toc ul{columns:1}.nav{padding:12px 16px}main{padding:28px 16px 55px}
+ section{margin:52px 0}.navlinks{flex-direction:column}.navlink{max-width:none}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+ <div class="nav">
+  <div class="brand">FILIÈRE RESTAURATION</div>
+  <div class="badges">
+   <span class="badge accent">MODULE 6</span>
+   <span class="badge">BTS</span>
+   <span class="badge">25 min</span>
+  </div>
+ </div>
+</header>
+
+<main>
+<section class="hero reveal">
+ <div>
+  <div class="eyebrow">Gestion de Restaurant — management, marketing et performance</div>
+  <h1>Gestion administrative et RH</h1>
+  <p class="lead">Assurer le suivi administratif du personnel : contrats, plannings, congés, obligations légales de base et dossiers du personnel.</p>
+ </div>
+ <aside class="meta">
+  <strong>LEÇON 28</strong>
+  <div>Objectif : assurer un suivi administratif rigoureux du personnel.</div>
+ </aside>
+</section>
+
+<nav class="toc reveal" aria-label="Sommaire">
+ <strong>Sommaire</strong>
+ <ul>
+  <li><a href="#role">1. Rôle de la gestion RH</a></li>
+  <li><a href="#contrat">2. Contrats de travail</a></li>
+  <li><a href="#dossier">3. Dossier du personnel</a></li>
+  <li><a href="#planning">4. Plannings et organisation</a></li>
+  <li><a href="#conges">5. Congés et absences</a></li>
+  <li><a href="#obligations">6. Obligations administratives</a></li>
+  <li><a href="#processus">7. Processus de suivi RH</a></li>
+  <li><a href="#resume">8. Points clés</a></li>
+ </ul>
+</nav>
+
+<section id="role" class="reveal">
+ <div class="section-head">
+  <div class="eyebrow">01 — Fondamentaux</div>
+  <h2>La gestion RH au cœur du fonctionnement du restaurant</h2>
+  <p>La gestion administrative des ressources humaines regroupe les opérations qui permettent de suivre la relation entre l’établissement et ses salariés, depuis l’embauche jusqu’au départ.</p>
+ </div>
+ <div class="grid">
+  <article class="card"><div class="icon">👥</div><h3>Personnel</h3><p>Identifier les salariés, leurs fonctions, leurs horaires et les informations nécessaires au suivi administratif.</p></article>
+  <article class="card"><div class="icon">📋</div><h3>Administration</h3><p>Organiser les contrats, documents, absences, congés et éléments nécessaires au fonctionnement du service.</p></article>
+  <article class="card"><div class="icon">⚖️</div><h3>Conformité</h3><p>Appliquer les obligations prévues par le droit du travail et les règles internes de l’établissement.</p></article>
+ </div>
+ <div class="callout"><span class="label">💡 À retenir</span>Une bonne gestion RH doit être organisée, traçable, confidentielle et cohérente avec les obligations légales applicables à l’établissement.</div>
+</section>
+
+<section id="contrat" class="reveal">
+ <div class="eyebrow">02 — Contrats de travail</div>
+ <h2>Formaliser correctement la relation de travail</h2>
+ <p>Le contrat de travail fixe les principales conditions de la relation professionnelle. Son contenu exact dépend de la législation applicable et de la situation du salarié.</p>
+
+ <div class="two">
+  <div>
+   <h3>Éléments à identifier</h3>
+   <table class="protocol">
+    <thead><tr><th scope="col">Élément</th><th scope="col">Contenu à vérifier</th></tr></thead>
+    <tbody>
+     <tr><td>Parties</td><td>Employeur et salarié</td></tr>
+     <tr><td>Fonction</td><td>Poste et principales missions</td></tr>
+     <tr><td>Début</td><td>Date de prise de fonction</td></tr>
+     <tr><td>Organisation</td><td>Temps de travail et organisation prévue</td></tr>
+     <tr><td>Rémunération</td><td>Conditions de rémunération convenues</td></tr>
+     <tr><td>Congés</td><td>Règles applicables et modalités</td></tr>
+    </tbody>
+   </table>
+  </div>
+  <div>
+   <h3>Modèle pédagogique de contrat</h3>
+   <div class="contract">CONTRAT DE TRAVAIL — MODÈLE
+
+EMPLOYEUR
+Nom / établissement : __________
+Représentant : ________________
+
+SALARIÉ
+Nom : _________________________
+Poste : _______________________
+
+PRISE DE FONCTION
+Date : ____ / ____ / ______
+
+ORGANISATION DU TRAVAIL
+Horaires / durée : ____________
+
+RÉMUNÉRATION
+Modalités : ___________________
+
+CONGÉS ET ABSENCES
+Selon dispositions applicables.
+
+SIGNATURES
+Employeur : ______  Salarié : ______</div>
+  </div>
+ </div>
+
+ <div class="callout"><span class="label">⚠️ Attention / erreur fréquente</span>Un modèle pédagogique ne remplace pas un contrat juridiquement validé. Les clauses et mentions obligatoires doivent être vérifiées selon la législation, la convention collective et la situation concernée.</div>
+</section>
+
+<section id="dossier" class="reveal">
+ <div class="eyebrow">03 — Dossier du personnel</div>
+ <h2>Conserver les informations utiles avec méthode</h2>
+ <p>Le dossier du personnel regroupe les documents nécessaires au suivi administratif du salarié. Son accès doit être limité aux personnes autorisées et les informations doivent être traitées avec confidentialité.</p>
+
+ <div class="svgbox" role="img" aria-label="Organisation schématique d'un dossier du personnel">
+  <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+   <rect x="315" y="25" width="270" height="75" rx="15" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+   <text x="450" y="70" text-anchor="middle" fill="#3B2314" font-size="23" font-family="Inter">DOSSIER PERSONNEL</text>
+   <path d="M390 100v38M450 100v38M510 100v38" stroke="#E8752C" stroke-width="3"/>
+   <rect x="210" y="138" width="170" height="82" rx="14" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+   <text x="295" y="170" text-anchor="middle" fill="#3B2314" font-size="17" font-family="Inter">Contrat</text>
+   <text x="295" y="196" text-anchor="middle" fill="#8A6E5C" font-size="14" font-family="Inter">documents</text>
+   <rect x="365" y="138" width="170" height="82" rx="14" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+   <text x="450" y="170" text-anchor="middle" fill="#3B2314" font-size="17" font-family="Inter">Suivi</text>
+   <text x="450" y="196" text-anchor="middle" fill="#8A6E5C" font-size="14" font-family="Inter">congés / absences</text>
+   <rect x="520" y="138" width="170" height="82" rx="14" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+   <text x="605" y="170" text-anchor="middle" fill="#3B2314" font-size="17" font-family="Inter">Organisation</text>
+   <text x="605" y="196" text-anchor="middle" fill="#8A6E5C" font-size="14" font-family="Inter">planning / poste</text>
+   <text x="450" y="260" text-anchor="middle" fill="#8A6E5C" font-size="14" font-family="IBM Plex Mono">accès contrôlé • informations à jour • conservation maîtrisée</text>
+  </svg>
+ </div>
+
+ <div class="grid" style="margin-top:22px">
+  <article class="card"><h3>Identifier</h3><p>Chaque document doit pouvoir être rattaché au bon salarié et à la bonne période.</p></article>
+  <article class="card"><h3>Mettre à jour</h3><p>Les changements de poste, d’horaires ou de situation doivent être enregistrés selon la procédure interne.</p></article>
+  <article class="card"><h3>Protéger</h3><p>Les données personnelles ne doivent être accessibles qu’aux personnes habilitées.</p></article>
+ </div>
+ <div class="callout"><span class="label">📌 Rappel</span>La confidentialité est une règle essentielle de la gestion des dossiers du personnel.</div>
+</section>
+
+<section id="planning" class="reveal">
+ <div class="eyebrow">04 — Planning</div>
+ <h2>Construire un planning lisible et cohérent</h2>
+ <p>Dans un restaurant, le planning doit tenir compte des besoins du service, des disponibilités, des fonctions et des contraintes de temps de travail applicables.</p>
+
+ <table class="protocol">
+  <thead><tr><th scope="col">Jour</th><th scope="col">Service</th><th scope="col">Personnel</th><th scope="col">Point de contrôle</th></tr></thead>
+  <tbody>
+   <tr><td>Lundi</td><td class="mono">Midi</td><td>Salle + cuisine</td><td>Effectif adapté à l’activité prévue</td></tr>
+   <tr><td>Lundi</td><td class="mono">Soir</td><td>Salle + cuisine</td><td>Répartition des postes</td></tr>
+   <tr><td>Mardi</td><td class="mono">Midi</td><td>Salle + cuisine</td><td>Disponibilités vérifiées</td></tr>
+   <tr><td>Mardi</td><td class="mono">Soir</td><td>Salle + cuisine</td><td>Repos et continuité du service</td></tr>
+  </tbody>
+ </table>
+
+ <div class="two">
+  <div class="card">
+   <h3>Checklist du responsable</h3>
+   <ul>
+    <li>connaître les besoins prévisionnels ;</li>
+    <li>tenir compte des disponibilités ;</li>
+    <li>répartir les fonctions ;</li>
+    <li>vérifier les contraintes légales applicables ;</li>
+    <li>communiquer le planning suffisamment tôt selon les règles internes.</li>
+   </ul>
+  </div>
+  <div class="card">
+   <h3>Planning = outil de coordination</h3>
+   <p>Un planning efficace ne sert pas seulement à indiquer les horaires : il permet d’anticiper les besoins, de répartir les responsabilités et de sécuriser l’organisation du service.</p>
+  </div>
+ </div>
+</section>
+
+<section id="conges" class="reveal">
+ <div class="eyebrow">05 — Congés et absences</div>
+ <h2>Organiser les demandes et assurer la continuité</h2>
+
+ <div class="tabs" role="tablist" aria-label="Gestion des absences">
+  <button class="tab" role="tab" aria-selected="true" aria-controls="tabconges" id="btnconges">Congés</button>
+  <button class="tab" role="tab" aria-selected="false" aria-controls="tababsences" id="btnabsences">Absences</button>
+  <button class="tab" role="tab" aria-selected="false" aria-controls="tabretour" id="btnretour">Retour</button>
+ </div>
+
+ <div id="tabconges" class="tabpanel active" role="tabpanel" aria-labelledby="btnconges">
+  <div class="card"><h3>Demande de congé</h3><p>La demande doit suivre le circuit prévu par l’établissement. Le responsable vérifie les dates, l’impact sur l’effectif et les règles applicables avant validation.</p></div>
+ </div>
+ <div id="tababsences" class="tabpanel" role="tabpanel" aria-labelledby="btnabsences">
+  <div class="card"><h3>Absence</h3><p>L’absence doit être signalée et enregistrée selon la procédure interne. Le responsable organise ensuite la continuité du service lorsque cela est nécessaire.</p></div>
+ </div>
+ <div id="tabretour" class="tabpanel" role="tabpanel" aria-labelledby="btnretour">
+  <div class="card"><h3>Retour au travail</h3><p>Mettre à jour le suivi administratif et le planning afin de rétablir une organisation cohérente de l’équipe.</p></div>
+ </div>
+
+ <div class="callout"><span class="label">👨‍🍳 Astuce professionnelle</span>Anticiper les congés et absences permet de limiter les désorganisations de dernière minute, particulièrement pendant les périodes de forte activité.</div>
+</section>
+
+<section id="obligations" class="reveal">
+ <div class="eyebrow">06 — Obligations de base</div>
+ <h2>Mettre en place une veille administrative</h2>
+ <p>Le responsable doit connaître les principales obligations qui concernent son établissement et vérifier régulièrement leur évolution. Les règles exactes dépendent du pays, du secteur, de la convention collective et du statut des salariés.</p>
+
+ <div class="grid">
+  <article class="card"><div class="icon">📑</div><h3>Documents</h3><p>Tenir les documents administratifs nécessaires et assurer leur mise à jour.</p></article>
+  <article class="card"><div class="icon">🕐</div><h3>Temps de travail</h3><p>Suivre les horaires et appliquer les règles relatives au temps de travail et aux repos.</p></article>
+  <article class="card"><div class="icon">🔒</div><h3>Données</h3><p>Protéger les informations personnelles et limiter leur accès aux personnes autorisées.</p></article>
+ </div>
+
+ <div class="callout"><span class="label">⚠️ Attention</span>Les obligations légales ne sont pas identiques dans tous les pays. Cette leçon présente une méthode de gestion administrative et non un avis juridique : les seuils, délais et documents obligatoires doivent être vérifiés dans le cadre réglementaire applicable.</div>
+
+ <details>
+  <summary>Pourquoi effectuer une veille ?</summary>
+  <p>Parce que les règles sociales et administratives peuvent évoluer. Une veille permet de mettre à jour les pratiques internes et d’éviter de travailler avec des informations devenues obsolètes.</p>
+ </details>
+ <details>
+  <summary>Qui doit accéder aux dossiers du personnel ?</summary>
+  <p>Uniquement les personnes dont les fonctions justifient cet accès, selon l’organisation et les règles de confidentialité applicables.</p>
+ </details>
+</section>
+
+<section id="processus" class="reveal">
+ <div class="eyebrow">07 — Processus de suivi RH</div>
+ <h2>Une méthode simple pour garder les dossiers à jour</h2>
+ <div class="svgbox" role="img" aria-label="Frise du processus administratif RH">
+  <svg viewBox="0 0 1000 190" xmlns="http://www.w3.org/2000/svg">
+   <line x1="90" y1="85" x2="910" y2="85" stroke="#8A6E5C" stroke-width="2"/>
+   <g font-family="Inter" text-anchor="middle">
+    <circle cx="90" cy="85" r="28" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+    <text x="90" y="92" fill="#3B2314" font-size="18">1</text>
+    <text x="90" y="140" fill="#3B2314" font-size="15">Embaucher</text>
+    <circle cx="295" cy="85" r="28" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+    <text x="295" y="92" fill="#3B2314" font-size="18">2</text>
+    <text x="295" y="140" fill="#3B2314" font-size="15">Documenter</text>
+    <circle cx="500" cy="85" r="28" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+    <text x="500" y="92" fill="#3B2314" font-size="18">3</text>
+    <text x="500" y="140" fill="#3B2314" font-size="15">Planifier</text>
+    <circle cx="705" cy="85" r="28" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+    <text x="705" y="92" fill="#3B2314" font-size="18">4</text>
+    <text x="705" y="140" fill="#3B2314" font-size="15">Suivre</text>
+    <circle cx="910" cy="85" r="28" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+    <text x="910" y="92" fill="#3B2314" font-size="18">5</text>
+    <text x="910" y="140" fill="#3B2314" font-size="15">Mettre à jour</text>
+   </g>
+  </svg>
+ </div>
+
+ <table class="protocol">
+  <thead><tr><th scope="col">Moment</th><th scope="col">Action administrative</th><th scope="col">Contrôle</th></tr></thead>
+  <tbody>
+   <tr><td>Embauche</td><td>Constituer et vérifier les documents requis</td><td>Dossier complet selon les règles applicables</td></tr>
+   <tr><td>Chaque période</td><td>Mettre à jour planning et suivi</td><td>Horaires et absences cohérents</td></tr>
+   <tr><td>Changement</td><td>Actualiser les informations concernées</td><td>Documents concordants</td></tr>
+   <tr><td>Fin de relation</td><td>Effectuer les formalités prévues</td><td>Sortie tracée et documents remis selon les règles</td></tr>
+  </tbody>
+ </table>
+
+ <div class="callout"><span class="label">💡 À retenir</span>La gestion RH est un processus continu : <strong>préparer → enregistrer → planifier → suivre → actualiser</strong>.</div>
+</section>
+
+<section id="resume" class="reveal">
+ <div class="eyebrow">08 — Synthèse</div>
+ <h2>Points clés à retenir</h2>
+ <div class="grid">
+  <article class="card"><h3>Contrats</h3><p>Formaliser clairement la relation de travail et vérifier les mentions nécessaires.</p></article>
+  <article class="card"><h3>Plannings</h3><p>Répartir les équipes en tenant compte de l’activité, des disponibilités et des règles applicables.</p></article>
+  <article class="card"><h3>Dossiers</h3><p>Conserver des informations organisées, à jour et protégées.</p></article>
+  <article class="card"><h3>Congés</h3><p>Traiter les demandes et absences selon une procédure claire afin d’assurer la continuité du service.</p></article>
+  <article class="card"><h3>Obligations</h3><p>Maintenir une veille sur les règles sociales et administratives applicables à l’établissement.</p></article>
+  <article class="card"><h3>Suivi</h3><p>Tracer les changements et actualiser régulièrement les informations RH.</p></article>
+ </div>
+ <div class="callout"><span class="label">📌 Synthèse professionnelle</span>Une administration RH efficace apporte de la visibilité au responsable, sécurise l’organisation du personnel et contribue à la performance globale du restaurant.</div>
+</section>
+
+<div class="navlinks">
+ <a class="navlink" href="#"><strong>← Leçon 27</strong><br>Marketing et fidélisation client</a>
+ <a class="navlink" href="#"><strong>Leçon 29 →</strong><br>Analyse financière et tableaux de bord</a>
+</div>
+</main>
+
+<footer>Filière Restauration · Module 6 · Leçon 28 · Gestion administrative et RH</footer>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+ const d=document.documentElement,max=d.scrollHeight-d.clientHeight;
+ progress.style.width=(max>0?(d.scrollTop/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+document.getElementById('top').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+
+const tabs=document.querySelectorAll('.tab');
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+ tabs.forEach(t=>t.setAttribute('aria-selected','false'));
+ document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+ tab.setAttribute('aria-selected','true');
+ document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Leçon 10 — Mesure de la communication interne">
+<title>Leçon 10 — Mesure de la communication interne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--color-bg:#F6F5F2;--color-text:#1B1F2E;--color-accent:#FF5A36;--color-neutral:#9AA3B2;
+--alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+--soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+--line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+--max:1120px;--reading:760px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12;letter-spacing:-.025em}
+h1{font-size:clamp(2.4rem,5vw,4.7rem);margin:.1em 0 .3em}
+h2{font-size:clamp(1.8rem,3.2vw,2.6rem);margin:0 0 1rem}
+h3{font-size:1.15rem;margin:.2rem 0 .5rem}
+p{max-width:var(--reading);margin:0 0 1rem}
+a{color:var(--color-text);text-decoration-color:var(--color-accent);text-decoration-thickness:2px;text-underline-offset:3px}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;z-index:100;background:transparent}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{max-width:var(--max);margin:auto;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font:700 14px "Space Grotesk";letter-spacing:.04em}.brand b{color:var(--color-accent)}
+.navlinks{display:flex;gap:18px;flex-wrap:wrap}.navlinks a{text-decoration:none;font-size:13px;font-weight:600}
+main{max-width:var(--max);margin:auto}
+.hero{padding:88px 22px 64px;display:grid;grid-template-columns:1.35fr .65fr;gap:55px;align-items:end}
+.kicker,.eyebrow{font:600 11px "JetBrains Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.badge{border:1px solid var(--line);background:var(--soft);padding:6px 10px;border-radius:999px;font:500 11px "JetBrains Mono"}
+.hero-card{border-left:4px solid var(--color-accent);background:var(--soft);padding:24px}
+.hero-card strong{font:700 1.2rem "Space Grotesk"}
+.hero-card .mono{margin-top:18px}
+.mono{font-family:"JetBrains Mono";font-size:.82rem}
+.toc{margin:0 22px 42px;padding:28px;background:var(--alt);border:1px solid var(--line)}
+.toc h2{font-size:1.25rem}.toc ol{margin:0;padding-left:22px}.toc li{margin:.35rem 0}
+section{padding:76px 22px;scroll-margin-top:75px}.alt{background:var(--alt)}
+.section-intro{margin-bottom:30px}
+.diagram{margin:30px 0;padding:16px;border:1px solid var(--line);background:var(--color-bg);overflow:auto}
+.diagram svg{display:block;width:100%;min-width:760px;height:auto}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.card{padding:22px;background:var(--color-bg);border:1px solid var(--line);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.45rem;margin-bottom:8px}
+.callout{border:2px solid var(--color-accent);background:var(--soft);padding:21px;margin:28px 0}
+.callout b{font-family:"Space Grotesk"}
+.table-wrap{overflow-x:auto;margin:28px 0}
+table{width:100%;min-width:680px;border-collapse:collapse;background:var(--color-bg);font-size:14px}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left}
+th{font:600 11px "JetBrains Mono";text-transform:uppercase}
+tbody tr:hover{background:var(--soft)}
+.kpi{font:600 15px "JetBrains Mono"}
+.tabs{margin:28px 0}.tabbar{display:flex;gap:8px;flex-wrap:wrap}
+.tabbar button{border:1px solid var(--line);background:var(--color-bg);padding:10px 14px;cursor:pointer;font:600 13px Inter;color:var(--color-text)}
+.tabbar button[aria-selected=true]{border-color:var(--color-accent);box-shadow:inset 0 -3px var(--color-accent)}
+.panel{display:none;border:1px solid var(--line);padding:22px}.panel.active{display:block}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:30px 0}
+.step{border-top:3px solid var(--color-accent);padding:16px;background:var(--color-bg)}
+.step small{font:500 10px "JetBrains Mono";color:var(--muted)}
+.quote{font:500 .83rem/1.7 "JetBrains Mono";background:var(--soft);border-left:4px solid var(--color-accent);padding:20px;margin:25px 0}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.key{background:var(--color-bg);border:1px solid var(--line);padding:20px}.key strong{font-family:"Space Grotesk";display:block;margin-bottom:5px}
+details{border-bottom:1px solid var(--line);padding:16px 0}summary{cursor:pointer;font:600 1rem "Space Grotesk"}
+.lesson-nav{padding:38px 22px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lesson-nav a{padding:22px;border:1px solid var(--line);text-decoration:none}.lesson-nav a:hover{border-color:var(--color-accent)}
+.lesson-nav small{display:block;color:var(--muted);font:500 10px "JetBrains Mono";margin-bottom:7px}
+footer{max-width:var(--max);margin:auto;border-top:1px solid var(--line);padding:27px 22px;display:flex;justify-content:space-between;gap:15px;color:var(--muted);font-size:13px}
+.top{position:fixed;right:18px;bottom:18px;border:1px solid var(--line);background:var(--color-bg);color:var(--color-text);padding:9px 13px;cursor:pointer;font-weight:700}.top:hover{border-color:var(--color-accent)}
+.reveal{opacity:0;transform:translateY(15px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){.hero{grid-template-columns:1fr;gap:25px;padding-top:65px}.grid{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.navlinks{display:none}}
+@media(max-width:500px){body{font-size:15px}.hero,section{padding-left:16px;padding-right:16px}.toc{margin-left:16px;margin-right:16px}.steps,.keys,.lesson-nav{grid-template-columns:1fr}footer{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span></span></div>
+<header><nav class="nav" aria-label="Navigation principale">
+<div class="brand">COMMUNICATION <b>D'ENTREPRISE</b></div>
+<div class="navlinks"><a href="#sommaire">Sommaire</a><a href="#barometre">Baromètre</a><a href="#indicateurs">Indicateurs</a><a href="#enquetes">Enquêtes</a><a href="#engagement">Engagement</a></div>
+</nav></header>
+
+<main>
+<section class="hero">
+<div>
+<div class="kicker">MODULE 2 · COMMUNICATION INTERNE</div>
+<h1>Mesure de la communication interne</h1>
+<p>Évaluer l'efficacité de la communication interne grâce à des indicateurs quantitatifs et qualitatifs.</p>
+<div class="badges"><span class="badge">LEÇON 10</span><span class="badge">INTERMÉDIAIRE</span><span class="badge">18 MIN</span></div>
+</div>
+<div class="hero-card">
+<strong>Objectif pédagogique</strong>
+<p>Évaluer l'efficacité de la communication interne.</p>
+<div class="mono">ÉCOUTER → MESURER → ANALYSER → AMÉLIORER</div>
+</div>
+</section>
+
+<nav id="sommaire" class="toc reveal" aria-label="Sommaire">
+<h2>Sommaire</h2>
+<ol>
+<li><a href="#pourquoi">Pourquoi mesurer la communication interne ?</a></li>
+<li><a href="#barometre">Le baromètre social</a></li>
+<li><a href="#enquetes">Les enquêtes de satisfaction</a></li>
+<li><a href="#indicateurs">Indicateurs quantitatifs et qualitatifs</a></li>
+<li><a href="#engagement">Taux d'ouverture et d'engagement</a></li>
+<li><a href="#synthese">Points clés à retenir</a></li>
+</ol>
+</nav>
+
+<section id="pourquoi" class="reveal">
+<div class="section-intro"><div class="eyebrow">01 · Donner du sens à la mesure</div><h2>Pourquoi mesurer la communication interne ?</h2>
+<p>Mesurer la communication interne consiste à vérifier si les informations diffusées sont réellement accessibles, comprises, utiles et mobilisatrices pour les collaborateurs. La mesure ne se limite donc pas à compter des clics : elle associe données chiffrées et perception des publics internes.</p></div>
+<div class="diagram" role="img" aria-label="Chaîne de mesure de la communication interne">
+<svg viewBox="0 0 900 290" xmlns="http://www.w3.org/2000/svg">
+<rect x="25" y="95" width="155" height="100" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/>
+<text x="102" y="132" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="17">ÉCOUTER</text><text x="102" y="160" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="12">perceptions</text>
+<path d="M180 145H250" stroke="#FF5A36" stroke-width="4"/><path d="M240 135l12 10-12 10" fill="none" stroke="#FF5A36" stroke-width="4"/>
+<rect x="255" y="95" width="155" height="100" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/>
+<text x="332" y="132" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="17">MESURER</text><text x="332" y="160" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="12">indicateurs</text>
+<path d="M410 145H480" stroke="#FF5A36" stroke-width="4"/><path d="M470 135l12 10-12 10" fill="none" stroke="#FF5A36" stroke-width="4"/>
+<rect x="485" y="95" width="155" height="100" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/>
+<text x="562" y="132" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="17">ANALYSER</text><text x="562" y="160" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="12">écarts &amp; tendances</text>
+<path d="M640 145H710" stroke="#FF5A36" stroke-width="4"/><path d="M700 135l12 10-12 10" fill="none" stroke="#FF5A36" stroke-width="4"/>
+<rect x="715" y="95" width="160" height="100" rx="12" fill="#FF5A36"/>
+<text x="795" y="132" text-anchor="middle" fill="#F6F5F2" font-family="Inter" font-size="17">AMÉLIORER</text><text x="795" y="160" text-anchor="middle" fill="#F6F5F2" font-family="Inter" font-size="12">actions correctives</text>
+</svg></div>
+<div class="callout"><b>💡 À retenir</b><p>Un indicateur n'a de valeur que s'il aide à comprendre une situation ou à prendre une décision. Mesurer pour mesurer ne suffit pas.</p></div>
+</section>
+
+<section id="barometre" class="alt reveal">
+<div class="section-intro"><div class="eyebrow">02 · Écouter le climat interne</div><h2>Le baromètre social</h2>
+<p>Le baromètre social est un dispositif périodique permettant de recueillir la perception des collaborateurs sur différents aspects de leur vie professionnelle et de l'information interne.</p></div>
+<div class="grid">
+<div class="card"><div class="icon">◉</div><h3>Perception</h3><p>Comment les collaborateurs jugent-ils la qualité, la clarté et la disponibilité de l'information ?</p></div>
+<div class="card"><div class="icon">↔</div><h3>Climat</h3><p>Quels signaux apparaissent concernant la confiance, l'écoute et la circulation de l'information ?</p></div>
+<div class="card"><div class="icon">⌁</div><h3>Évolution</h3><p>Comment les résultats changent-ils entre deux mesures successives ?</p></div>
+</div>
+<div class="diagram" role="img" aria-label="Cycle du baromètre social">
+<svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+<circle cx="450" cy="140" r="72" fill="#FF5A36"/>
+<text x="450" y="135" text-anchor="middle" fill="#F6F5F2" font-family="Space Grotesk" font-size="21">BAROMÈTRE</text><text x="450" y="160" text-anchor="middle" fill="#F6F5F2" font-family="Inter" font-size="12">mesure périodique</text>
+<rect x="50" y="85" width="180" height="110" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/><text x="140" y="125" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="16">QUESTIONNER</text><text x="140" y="153" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="12">recueillir les avis</text>
+<rect x="670" y="85" width="180" height="110" rx="12" fill="#F6F5F2" stroke="#9AA3B2"/><text x="760" y="125" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="16">AGIR</text><text x="760" y="153" text-anchor="middle" fill="#1B1F2E" font-family="Inter" font-size="12">améliorer les pratiques</text>
+<path d="M230 140H375" stroke="#FF5A36" stroke-width="4"/><path d="M660 140H525" stroke="#FF5A36" stroke-width="4"/>
+</svg></div>
+</section>
+
+<section id="enquetes" class="reveal">
+<div class="section-intro"><div class="eyebrow">03 · Recueillir la satisfaction</div><h2>Les enquêtes de satisfaction</h2>
+<p>Une enquête de satisfaction permet de recueillir directement l'avis des collaborateurs sur une action, un canal, un dispositif ou un contenu de communication interne.</p></div>
+<div class="grid">
+<div class="card"><h3>Avant</h3><p>Définir ce que l'on souhaite comprendre et les publics concernés.</p></div>
+<div class="card"><h3>Pendant</h3><p>Formuler des questions simples, neutres et directement liées à l'objet étudié.</p></div>
+<div class="card"><h3>Après</h3><p>Analyser les réponses, identifier les tendances et traduire les résultats en pistes d'amélioration.</p></div>
+</div>
+<div class="tabs" data-tabs>
+<div class="tabbar" role="tablist" aria-label="Types de mesure">
+<button role="tab" aria-selected="true" data-panel="qual">Qualitatif</button>
+<button role="tab" aria-selected="false" data-panel="quant">Quantitatif</button>
+</div>
+<div id="qual" class="panel active" role="tabpanel"><h3>Indicateurs qualitatifs</h3><p>Ils cherchent à comprendre le <strong>pourquoi</strong> : perceptions, commentaires, compréhension du message, satisfaction exprimée, freins ou suggestions.</p></div>
+<div id="quant" class="panel" role="tabpanel"><h3>Indicateurs quantitatifs</h3><p>Ils permettent de mesurer le <strong>combien</strong> : volumes, taux, fréquences, progressions ou écarts entre périodes.</p></div>
+</div>
+<div class="callout"><b>📐 Bonnes pratiques professionnelles</b><p>Associer questions fermées et espaces d'expression permet de disposer à la fois d'une mesure comparable et d'éléments de compréhension.</p></div>
+</section>
+
+<section id="indicateurs" class="alt reveal">
+<div class="section-intro"><div class="eyebrow">04 · Lire les résultats</div><h2>Indicateurs quantitatifs et qualitatifs</h2>
+<p>Une évaluation solide croise plusieurs familles d'indicateurs. Les données chiffrées décrivent les comportements observables ; les données qualitatives éclairent les perceptions et les raisons qui les expliquent.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Famille</th><th scope="col">Exemple</th><th scope="col">Question éclairée</th><th scope="col">Utilité</th></tr></thead>
+<tbody>
+<tr><td><span class="kpi">Quantitatif</span></td><td>Taux d'ouverture</td><td>Combien de destinataires ont ouvert ?</td><td>Suivre la portée effective</td></tr>
+<tr><td><span class="kpi">Quantitatif</span></td><td>Taux d'engagement</td><td>Combien ont interagi ?</td><td>Observer la mobilisation</td></tr>
+<tr><td><span class="kpi">Qualitatif</span></td><td>Commentaires</td><td>Qu'ont-ils compris ou ressenti ?</td><td>Interpréter les résultats</td></tr>
+<tr><td><span class="kpi">Qualitatif</span></td><td>Satisfaction</td><td>Le dispositif répond-il aux attentes ?</td><td>Identifier les améliorations</td></tr>
+</tbody></table></div>
+<div class="quote">LECTURE EFFICACE = DONNÉES CHIFFRÉES + PERCEPTIONS + CONTEXTE</div>
+</section>
+
+<section id="engagement" class="reveal">
+<div class="section-intro"><div class="eyebrow">05 · Mesurer l'attention et l'action</div><h2>Taux d'ouverture et d'engagement</h2>
+<p>Dans les outils numériques internes, les taux d'ouverture et d'engagement fournissent des signaux utiles sur l'attention portée aux contenus et sur les interactions qu'ils suscitent.</p></div>
+<div class="diagram" role="img" aria-label="Entonnoir simplifié de mesure de l'engagement">
+<svg viewBox="0 0 900 390" xmlns="http://www.w3.org/2000/svg">
+<path d="M90 55H810L675 330H225Z" fill="#F6F5F2" stroke="#9AA3B2" stroke-width="2"/>
+<path d="M155 110H745L680 235H220Z" fill="#FF5A36" opacity=".12"/>
+<line x1="125" y1="105" x2="775" y2="105" stroke="#9AA3B2"/><line x1="190" y1="185" x2="710" y2="185" stroke="#9AA3B2"/><line x1="225" y1="265" x2="675" y2="265" stroke="#9AA3B2"/>
+<text x="450" y="88" text-anchor="middle" fill="#1B1F2E" font-family="Space Grotesk" font-size="18">DESTINATAIRES</text>
+<text x="450" y="145" text-anchor="middle" fill="#1B1F2E" font-family="Space Grotesk" font-size="18">OUVERTURE</text>
+<text x="450" y="225" text-anchor="middle" fill="#1B1F2E" font-family="Space Grotesk" font-size="18">INTERACTION</text>
+<text x="450" y="305" text-anchor="middle" fill="#1B1F2E" font-family="Space Grotesk" font-size="18">ENGAGEMENT</text>
+</svg></div>
+<div class="grid">
+<div class="card"><h3>Taux d'ouverture</h3><p>Indique la proportion de destinataires ayant ouvert un contenu lorsque la mesure est disponible.</p></div>
+<div class="card"><h3>Taux d'engagement</h3><p>Regroupe les interactions pertinentes selon le canal : clics, réactions, commentaires ou autres actions.</p></div>
+<div class="card"><h3>Attention à l'interprétation</h3><p>Un taux élevé ne signifie pas automatiquement que le message a été compris ou qu'il a produit l'effet recherché.</p></div>
+</div>
+<div class="callout"><b>⚠️ Attention / erreur fréquente</b><p>Ne pas confondre activité et efficacité. Une communication peut générer beaucoup d'ouvertures ou de réactions sans atteindre son objectif initial.</p></div>
+</section>
+
+<section id="synthese" class="alt reveal">
+<div class="section-intro"><div class="eyebrow">Synthèse</div><h2>Points clés à retenir</h2><p>La mesure de la communication interne repose sur une lecture croisée des données et des perceptions.</p></div>
+<div class="steps">
+<div class="step"><small>01</small><br><strong>Écouter</strong><br>Recueillir les perceptions.</div>
+<div class="step"><small>02</small><br><strong>Mesurer</strong><br>Choisir des indicateurs.</div>
+<div class="step"><small>03</small><br><strong>Comparer</strong><br>Observer les écarts.</div>
+<div class="step"><small>04</small><br><strong>Interpréter</strong><br>Comprendre les causes.</div>
+<div class="step"><small>05</small><br><strong>Améliorer</strong><br>Ajuster la communication.</div>
+</div>
+<div class="keys">
+<div class="key"><strong>Baromètre social</strong>Mesure périodique de la perception et du climat interne.</div>
+<div class="key"><strong>Enquête de satisfaction</strong>Recueil structuré de l'avis des collaborateurs.</div>
+<div class="key"><strong>Quantitatif</strong>Données chiffrées : taux, volumes, fréquences et évolutions.</div>
+<div class="key"><strong>Qualitatif</strong>Perceptions, commentaires, compréhension et satisfaction.</div>
+</div>
+<details><summary>Pourquoi croiser plusieurs indicateurs ?</summary><p>Parce qu'un chiffre isolé décrit seulement une partie de la situation. Le croisement des indicateurs quantitatifs et qualitatifs permet une lecture plus complète de l'efficacité de la communication interne.</p></details>
+</section>
+
+<div class="lesson-nav">
+<a href="#"><small>← LEÇON PRÉCÉDENTE</small><b>Leçon 09 — Communication de changement en interne</b></a>
+<a href="#"><small>LEÇON SUIVANTE →</small><b>Leçon 11 — Communication corporate et image de marque</b></a>
+</div>
+</main>
+<footer><span>Filière Communication d'Entreprise · Module 2</span><span>Leçon 10 · Mesure de la communication interne</span></footer>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const bar=document.querySelector(".progress span");
+const update=()=>{const max=document.documentElement.scrollHeight-innerHeight;bar.style.width=(max>0?scrollY/max*100:0)+"%"};
+addEventListener("scroll",update,{passive:true});update();
+
+document.querySelectorAll("[data-tabs]").forEach(box=>{
+ const tabs=box.querySelectorAll('[role="tab"]'), panels=box.querySelectorAll('[role="tabpanel"]');
+ tabs.forEach(tab=>tab.addEventListener("click",()=>{
+   tabs.forEach(t=>t.setAttribute("aria-selected",t===tab));
+   panels.forEach(p=>p.classList.toggle("active",p.id===tab.dataset.panel));
+ }));
+});
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")});
+},{threshold:.08});
+document.querySelectorAll(".reveal").forEach(e=>observer.observe(e));
+
+document.querySelector("#top").addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+</script>
+</body>
+</html>

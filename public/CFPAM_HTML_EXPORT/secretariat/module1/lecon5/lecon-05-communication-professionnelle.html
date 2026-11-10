@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 5 — Communication professionnelle | Bureautique</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%232E4374'/%3E%3Cpath d='M25 35h35a8 8 0 018 8v10a8 8 0 01-8 8H45l-12 10v-10h-8a8 8 0 01-8-8V43a8 8 0 018-8z' fill='none' stroke='%23fff' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F7F7F9;
+    --color-text:#101216;
+    --color-text-muted:#5C6270;
+    --color-accent:#2E4374;
+    --color-accent-soft:#E8EBF3;
+    --color-border:#E4E5EA;
+    --color-accent-alt:#A6432B;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  kbd{
+    display:inline-block; font-family:var(--font-mono); font-size:0.82em; line-height:1;
+    background:var(--color-bg-alt); color:var(--color-text); border:1px solid var(--color-border);
+    border-bottom:2px solid var(--color-border); border-radius:5px; padding:4px 7px 3px; margin:0 1px;
+  }
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:720px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9dff0;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(16,18,22,0.1);
+    padding:10px; width:300px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:720px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#F7EAE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:480px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border); vertical-align:middle;}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .email-sample{
+    border:1px solid var(--color-border); border-radius:12px; background:var(--color-bg);
+    margin:28px 0; overflow:hidden;
+  }
+  .email-sample .email-head{
+    background:var(--color-bg-alt); border-bottom:1px solid var(--color-border);
+    padding:14px 20px; font-family:var(--font-mono); font-size:0.85rem; color:var(--color-text-muted);
+  }
+  .email-sample .email-head div{display:flex; gap:8px; margin-bottom:4px;}
+  .email-sample .email-head div:last-child{margin-bottom:0;}
+  .email-sample .email-head strong{color:var(--color-text); font-weight:600; min-width:56px; flex-shrink:0;}
+  .email-sample .email-body{padding:20px; font-size:0.94rem;}
+  .email-sample .email-body p{margin:0 0 0.9em; font-size:0.94rem;}
+  .email-sample .email-body p:last-child{margin-bottom:0;}
+  .email-sample .email-sig{color:var(--color-text-muted); font-size:0.88rem; border-top:1px dashed var(--color-border); padding-top:12px; margin-top:12px;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .cta-final{padding:56px 0; border-top:1px solid var(--color-border); background:var(--color-accent-soft);}
+  .cta-final .wrap{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px;}
+  .cta-final h2{margin-bottom:6px;}
+  .cta-final p{margin:0; color:var(--color-text-muted); max-width:520px;}
+  .cta-btn{
+    flex-shrink:0; display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:#fff; background:var(--color-accent);
+    border:none; border-radius:10px; padding:16px 26px; cursor:pointer; text-decoration:none;
+    box-shadow:0 8px 20px rgba(46,67,116,0.25); transition:background 0.15s ease, transform 0.15s ease;
+  }
+  .cta-btn:hover{background:#25355c; transform:translateY(-1px);}
+  .cta-btn svg{flex-shrink:0;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(46,67,116,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+    .cta-final .wrap{flex-direction:column; align-items:flex-start; text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="#fff" stroke-width="1.6"/><circle cx="7.5" cy="12" r="0.9" fill="#fff"/><circle cx="12" cy="12" r="0.9" fill="#fff"/><circle cx="16.5" cy="12" r="0.9" fill="#fff"/></svg>
+      </span>
+      Filière bureautique
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 1 — Bureautique : production de documents et saisie</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau BEPC</span>
+    </div>
+    <h1>Communication professionnelle</h1>
+    <p class="lede">Leçon 5 — communiquer avec clarté à l'écrit et à l'oral : registres de langue, écoute active, e-mails, téléphone et gestion des situations délicates.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Fondamentaux de la communication" data-num="5.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">5.1</span><h2>Fondamentaux de la communication en entreprise</h2></div>
+      <p>Communiquer, ce n'est pas seulement choisir les bons mots. Toute interaction professionnelle combine trois canaux qui doivent rester cohérents entre eux : ce que l'on dit, comment on le dit, et ce que le corps exprime pendant qu'on le dit.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+        <h3>Communication verbale</h3>
+        <p>Les mots choisis, la structure des phrases, la précision du vocabulaire professionnel employé.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"></circle><path d="M5 20c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+        <h3>Communication non-verbale</h3>
+        <p>Posture, regard, gestes, distance et expressions du visage, qui appuient ou contredisent le discours.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.6"></circle></svg>
+        <h3>Communication para-verbale</h3>
+        <p>Le ton, le débit, le volume et les silences : la façon dont le message est porté par la voix.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0114.9-4M20 12a8 8 0 01-14.9 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><path d="M14.5 4.5L19 8M9.5 19.5L5 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+        <h3>Cohérence des trois canaux</h3>
+        <p>Un message clair suppose l'alignement du fond, du ton et de l'attitude physique qui l'accompagne.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <p>Ce schéma classique de la communication permet de repérer où un message peut se déformer entre l'émission et la réception, et pourquoi la boucle de retour (feedback) est indispensable pour vérifier qu'il a bien été compris.</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 780 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema du circuit de communication : emetteur, message, canal avec filtres et parasites, recepteur, et boucle de feedback retournant vers l'emetteur">
+        <g font-family="Inter, sans-serif">
+          <!-- Émetteur -->
+          <rect x="20" y="80" width="150" height="70" rx="10" fill="#E8EBF3" stroke="#2E4374" stroke-width="1.8"></rect>
+          <text x="95" y="110" text-anchor="middle" font-weight="600" font-size="15" fill="#2E4374">Émetteur</text>
+          <text x="95" y="130" text-anchor="middle" font-size="11" fill="#5C6270">Formule le message</text>
+
+          <!-- flèche émetteur -> canal -->
+          <path d="M170 115 H255" stroke="#5C6270" stroke-width="1.6" marker-end="url(#arrow5)"></path>
+          <text x="212" y="103" text-anchor="middle" font-size="10.5" fill="#5C6270">message</text>
+
+          <!-- Canal -->
+          <rect x="255" y="80" width="150" height="70" rx="10" fill="#FFFFFF" stroke="#E4E5EA" stroke-width="1.6"></rect>
+          <text x="330" y="110" text-anchor="middle" font-weight="600" font-size="15" fill="#101216">Canal</text>
+          <text x="330" y="130" text-anchor="middle" font-size="11" fill="#5C6270">Oral, écrit, e-mail…</text>
+
+          <!-- Filtre / parasites au-dessus du canal -->
+          <rect x="275" y="20" width="110" height="34" rx="8" fill="#F7EAE6" stroke="#A6432B" stroke-width="1.4"></rect>
+          <text x="330" y="41" text-anchor="middle" font-size="11" fill="#A6432B" font-weight="600">Filtres / parasites</text>
+          <path d="M330 54 V78" stroke="#A6432B" stroke-width="1.4" stroke-dasharray="3,3" marker-end="url(#arrowRed5)"></path>
+
+          <!-- flèche canal -> récepteur -->
+          <path d="M405 115 H490" stroke="#5C6270" stroke-width="1.6" marker-end="url(#arrow5)"></path>
+
+          <!-- Récepteur -->
+          <rect x="490" y="80" width="150" height="70" rx="10" fill="#E8EBF3" stroke="#2E4374" stroke-width="1.8"></rect>
+          <text x="565" y="110" text-anchor="middle" font-weight="600" font-size="15" fill="#2E4374">Récepteur</text>
+          <text x="565" y="130" text-anchor="middle" font-size="11" fill="#5C6270">Interprète le message</text>
+
+          <!-- Interprétation box en dessous du récepteur -->
+          <rect x="510" y="180" width="110" height="34" rx="8" fill="#F7F7F9" stroke="#E4E5EA" stroke-width="1.4"></rect>
+          <text x="565" y="201" text-anchor="middle" font-size="11" fill="#5C6270">Décodage / vécu propre</text>
+          <path d="M565 178 V150" stroke="#5C6270" stroke-width="1.4" stroke-dasharray="3,3"></path>
+
+          <!-- Feedback loop -->
+          <path d="M565 150 V225 H95 V150" stroke="#2E4374" stroke-width="1.6" fill="none" marker-end="url(#arrow5)"></path>
+          <text x="330" y="242" text-anchor="middle" font-size="11.5" fill="#2E4374" font-weight="600">Feedback — retour / reformulation</text>
+
+          <defs>
+            <marker id="arrow5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#5C6270"></path>
+            </marker>
+            <marker id="arrowRed5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#A6432B"></path>
+            </marker>
+          </defs>
+        </g>
+      </svg>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Un message bien construit peut être mal reçu à cause d'un filtre (bruit, stress, préjugé, mauvaise interprétation). Le feedback — reformulation, question, accusé de réception — est ce qui permet de vérifier et de corriger l'écart entre ce qui a été dit et ce qui a été compris.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Registres de langue et posture" data-num="5.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">5.2</span><h2>Registres de langue et posture</h2></div>
+      <p>Le même message se formule différemment selon l'interlocuteur. Adapter son registre de langue n'est pas une question de politesse superficielle : c'est ce qui rend le message crédible et adapté au contexte professionnel.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Adapter son discours selon l'interlocuteur</caption>
+        <thead><tr><th scope="col">Interlocuteur</th><th scope="col">Registre attendu</th><th scope="col">Points de vigilance</th></tr></thead>
+        <tbody>
+          <tr><td>Collègue proche</td><td>Courant, direct</td><td>Rester correct même en cas de familiarité installée</td></tr>
+          <tr><td>Supérieur hiérarchique</td><td>Soutenu, structuré</td><td>Aller à l'essentiel, éviter les tournures trop familières</td></tr>
+          <tr><td>Client</td><td>Soutenu, chaleureux</td><td>Valoriser sa demande, éviter le jargon interne</td></tr>
+          <tr><td>Fournisseur</td><td>Courant à soutenu, factuel</td><td>Précision des références, délais et conditions</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Utiliser le même registre familier avec un client qu'avec un collègue proche. Ce décalage peut être perçu comme un manque de sérieux, même si l'intention était simplement d'être sympathique.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Écoute active et reformulation" data-num="5.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">5.3</span><h2>Écoute active et reformulation</h2></div>
+      <p>L'écoute active consiste à se concentrer pleinement sur ce que dit l'interlocuteur, sans préparer sa réponse pendant qu'il parle. La reformulation est l'outil qui permet de vérifier sa compréhension avant d'agir.</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Se concentrer pleinement</h3>
+        <p>Suspendre ses propres pensées et éviter toute distraction pendant que l'autre s'exprime.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Manifester son écoute</h3>
+        <p>Hochements, silences attentifs, brèves relances (« je vous écoute », « d'accord »).</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Reformuler avant de répondre</h3>
+        <p>« Si je comprends bien, vous souhaitez… » permet de lever toute ambiguïté avant d'agir.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Faire valider</h3>
+        <p>Attendre la confirmation explicite de l'interlocuteur avant de passer à l'action.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">📌 Formules utiles</div>
+        <p>« Si je résume, votre demande porte sur… », « Vous voulez dire que… ? », « Puis-je reformuler pour être sûr(e) d'avoir bien compris ? » — ces formules évitent des malentendus qui coûtent souvent plus de temps qu'ils n'en font gagner.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Rédaction d'e-mails professionnels" data-num="5.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">5.4</span><h2>Rédaction d'e-mails professionnels</h2></div>
+      <p>Un e-mail professionnel se lit souvent en diagonale : l'objet et les premières lignes doivent porter l'essentiel. La structure compte autant que la politesse des formules employées.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Règles essentielles de l'étiquette e-mail</caption>
+        <thead><tr><th scope="col">Élément</th><th scope="col">Bonne pratique</th></tr></thead>
+        <tbody>
+          <tr><td>Objet</td><td>Court, précis, annonçant le sujet et l'action attendue si besoin</td></tr>
+          <tr><td>Corps du message</td><td>Une idée par paragraphe, phrases courtes, ton neutre et courtois</td></tr>
+          <tr><td>Pièces jointes</td><td>Toujours annoncées dans le texte avant d'être envoyées</td></tr>
+          <tr><td>Signature</td><td>Nom, fonction, service, coordonnées, sur un modèle normalisé</td></tr>
+          <tr><td>Délai de réponse</td><td>Accuser réception rapidement, même sans réponse complète immédiate</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="email-sample reveal">
+      <div class="email-head">
+        <div><strong>Objet :</strong> Confirmation de la livraison du 12 septembre — commande n°4521</div>
+        <div><strong>À :</strong> service-achats@client.exemple</div>
+        <div><strong>PJ :</strong> bon-de-livraison-4521.pdf</div>
+      </div>
+      <div class="email-body">
+        <p>Madame, Monsieur,</p>
+        <p>Je vous confirme la livraison de votre commande n°4521, prévue le 12 septembre entre 9 h et 12 h.</p>
+        <p>Vous trouverez ci-joint le bon de livraison correspondant. N'hésitez pas à revenir vers moi pour toute question.</p>
+        <p>Cordialement,</p>
+        <div class="email-sig">Awa NDIAYE<br>Assistante administrative — Service Logistique<br>a.ndiaye@entreprise.exemple · 01 23 45 67 89</div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Un e-mail professionnel se relit toujours avant envoi : objet, orthographe, pièce jointe réellement attachée, et destinataires corrects en copie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Communication téléphonique professionnelle" data-num="5.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">5.5</span><h2>Communication téléphonique professionnelle</h2></div>
+      <p>Au téléphone, la voix porte seule tout le message : sourire, articulation et débit remplacent le regard et les gestes. Chaque appel suit une structure simple qui rassure l'interlocuteur dès les premiers mots.</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Prise d'appel</h3>
+        <p>Décrocher rapidement, se présenter (structure, nom, formule d'accueil), sourire audible dans la voix.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Filtrage courtois</h3>
+        <p>Identifier l'appelant et l'objet de l'appel avec tact, sans donner l'impression d'un interrogatoire.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Prise de note structurée</h3>
+        <p>Noter nom, société, motif, coordonnées et degré d'urgence pour transmettre un message exploitable.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Transfert ou message</h3>
+        <p>Transmettre à la bonne personne ou confirmer un rappel avec un délai précis et tenu.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Informations minimales d'une fiche de message téléphonique</caption>
+        <thead><tr><th scope="col">Champ</th><th scope="col">Exemple</th></tr></thead>
+        <tbody>
+          <tr><td>Date et heure</td><td>03/09 — 14h20</td></tr>
+          <tr><td>Nom et société de l'appelant</td><td>M. Kamdem — Fournitures Sahel</td></tr>
+          <tr><td>Motif de l'appel</td><td>Retard de livraison à signaler</td></tr>
+          <tr><td>Coordonnées de rappel</td><td>06 12 34 56 78</td></tr>
+          <tr><td>Urgence / suite à donner</td><td>Rappel souhaité avant 17h</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Gestion des situations délicates" data-num="5.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">5.6</span><h2>Gestion des situations délicates</h2></div>
+      <p>Réclamation, agressivité, refus à formuler : ces situations reviennent régulièrement dans un poste administratif. Elles se désamorcent par la méthode, jamais par la confrontation directe.</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Comment désamorcer un interlocuteur agressif ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Garder un ton calme et posé quel que soit le ton employé en face. Laisser l'interlocuteur exprimer son mécontentement sans l'interrompre, puis reformuler sa demande pour montrer qu'elle a été entendue. Ne jamais répondre à l'agressivité par l'agressivité : cela ferme immédiatement le dialogue.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Comment traiter une réclamation client ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Écouter jusqu'au bout sans se justifier immédiatement, reformuler les faits, présenter des excuses pour la gêne occasionnée (sans nécessairement admettre une faute), puis proposer une solution concrète ou un délai précis pour la trouver. Toujours conclure en indiquant la prochaine étape.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Comment formuler un refus avec diplomatie ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Remercier pour la demande, expliquer brièvement la raison objective du refus, puis proposer une alternative ou une piste quand c'est possible. Un refus formulé sans justification ni ouverture est perçu comme cassant, même lorsqu'il est légitime.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Vouloir résoudre une réclamation avant d'avoir laissé l'interlocuteur terminer son propos. Couper la parole trop tôt donne l'impression que la plainte n'a pas été prise au sérieux, même si la solution proposée était la bonne.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="5.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">5.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Une communication claire aligne verbal, non-verbal et para-verbal ; la boucle de feedback vérifie la bonne réception du message.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>Le registre de langue s'adapte à l'interlocuteur : collègue, hiérarchie, client ou fournisseur n'attendent pas le même ton.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>L'écoute active et la reformulation évitent les malentendus avant même de commencer à agir.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Un e-mail professionnel repose sur un objet clair, un message concis, une signature normalisée et des pièces jointes annoncées.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Au téléphone, la prise d'appel, le filtrage courtois et une prise de note structurée garantissent un message transmis exploitable.</p></div>
+      <div class="kp-card"><span class="num">06</span><p>Face à l'agressivité, une réclamation ou un refus à formuler, la méthode (écoute, reformulation, solution) prime toujours sur la confrontation.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Leçon 4 — Rédaction administrative</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante</span>
+        <span class="dest">Fin du Module 1 / Quiz de validation</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 1</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Bureautique — Module 1</span>
+    <span>Leçon 5</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- barre de progression ----------
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  // ---------- retour en haut ----------
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  // ---------- sommaire généré depuis les sections ----------
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  // ---------- toggle du panneau sommaire (header) ----------
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  // ---------- accordéons ----------
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // ---------- animations au scroll ----------
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 3 — Comptes, débit, crédit et partie double | Comptabilité générale</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Georgia,serif' fill='white' text-anchor='middle'%3E%C2%A2%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F6F8F6;
+    --color-text: #0B0F0D;
+    --color-text-muted: #5A6560;
+    --color-accent: #1F6F54;
+    --color-accent-soft: #E7F2ED;
+    --color-border: #E3E8E5;
+    --color-accent-alt: #B3541E;
+    --color-accent-alt-soft: #F5E9E1;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --max-text: 700px;
+    --radius: 6px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text);
+    margin: 0 0 0.5em;
+  }
+  h1{ font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 600; }
+  h2{ font-size: clamp(1.4rem, 2.6vw, 1.85rem); margin-top: 0; }
+  h3{ font-size: 1.15rem; }
+  p{ margin: 0 0 1.1em; color: var(--color-text); }
+  a{ color: var(--color-accent); text-decoration-thickness: 1.5px; text-underline-offset: 2px; }
+  a:hover{ color: #164f3c; }
+
+  .num{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- progress bar ---------- */
+  #progress-bar{
+    position: fixed; top:0; left:0; height:3px; width:0%;
+    background: var(--color-accent); z-index: 1000; transition: width 80ms linear;
+  }
+
+  /* ---------- header ---------- */
+  header.site-header{
+    position: sticky; top:0; z-index: 900;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.85rem 1.5rem;
+  }
+  .header-inner{
+    max-width: 1100px; margin: 0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap: 1rem;
+  }
+  .brand{ display:flex; align-items:center; gap:0.6rem; font-family: var(--font-display); font-weight:700; font-size:1rem; }
+  .brand .mark{
+    width: 26px; height:26px; border-radius:5px; background: var(--color-accent);
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-family: var(--font-mono);
+  }
+  .brand span.sub{ color: var(--color-text-muted); font-weight:500; font-family: var(--font-body); font-size: 0.85rem; }
+
+  nav.toc-menu{ position: relative; }
+  .toc-btn{
+    font-family: var(--font-body); font-size:0.9rem; font-weight:600; color: var(--color-text);
+    background: var(--color-bg-alt); border:1px solid var(--color-border); border-radius: var(--radius);
+    padding: 0.45rem 0.9rem; cursor:pointer;
+  }
+  .toc-btn:hover{ border-color: var(--color-accent); }
+  .toc-dropdown{
+    display:none; position:absolute; right:0; top: calc(100% + 8px);
+    background: #fff; border:1px solid var(--color-border); border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(11,15,13,0.08); min-width: 280px; padding: 0.5rem;
+  }
+  .toc-dropdown.open{ display:block; }
+  .toc-dropdown a{
+    display:block; padding: 0.5rem 0.6rem; border-radius: 4px; color: var(--color-text);
+    font-size: 0.9rem; text-decoration:none;
+  }
+  .toc-dropdown a:hover{ background: var(--color-accent-soft); color: var(--color-accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ max-width: 1100px; margin: 0 auto; padding: 2.6rem 1.5rem 1.6rem; }
+  .badges{ display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom: 1.1rem; }
+  .badge{
+    font-size: 0.78rem; font-weight:600; padding: 0.3rem 0.65rem; border-radius: 999px;
+    background: var(--color-accent-soft); color: var(--color-accent); border:1px solid transparent;
+  }
+  .badge.outline{ background:#fff; border-color: var(--color-border); color: var(--color-text-muted); }
+  .hero h1{ max-width: 780px; }
+  .hero .lesson-tag{ font-family: var(--font-mono); color: var(--color-accent); font-size:0.9rem; font-weight:500; margin-bottom:0.5rem; display:block; }
+  .hero .subtitle{ max-width: var(--max-text); color: var(--color-text-muted); font-size:1.05rem; }
+
+  /* ---------- toc inline (sommaire) ---------- */
+  .sommaire{
+    max-width: 1100px; margin: 0 auto 2.2rem; padding: 0 1.5rem;
+  }
+  .sommaire-card{
+    background: var(--color-bg-alt); border:1px solid var(--color-border); border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+  }
+  .sommaire-card h2{ font-size:0.85rem; text-transform: none; letter-spacing:0; color: var(--color-text-muted); font-family: var(--font-body); font-weight:600; margin-bottom:0.7rem; }
+  .sommaire-list{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns: repeat(2, 1fr); gap: 0.35rem 1.2rem; }
+  .sommaire-list li a{
+    display:flex; gap:0.6rem; align-items:baseline; text-decoration:none; color: var(--color-text); font-size:0.92rem; padding: 0.25rem 0;
+    border-bottom: 1px dashed transparent;
+  }
+  .sommaire-list li a:hover{ border-bottom-color: var(--color-accent); color: var(--color-accent); }
+  .sommaire-list li a .n{ font-family: var(--font-mono); color: var(--color-text-muted); font-size:0.82rem; }
+  @media (max-width: 640px){ .sommaire-list{ grid-template-columns: 1fr; } }
+
+  /* ---------- main layout ---------- */
+  main{ max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+  section.lesson-section{ padding: 2.6rem 0; border-top: 1px solid var(--color-border); scroll-margin-top: 90px; }
+  section.lesson-section:first-of-type{ border-top: none; }
+  .section-body{ max-width: var(--max-text); }
+  .section-eyebrow{ font-family: var(--font-mono); font-size:0.78rem; color: var(--color-accent); margin-bottom:0.4rem; }
+
+  .reveal{ opacity: 0; transform: translateY(14px); transition: opacity 500ms ease, transform 500ms ease; }
+  .reveal.in{ opacity:1; transform: translateY(0); }
+
+  /* ---------- callouts ---------- */
+  .callout{
+    display:flex; gap:0.8rem; padding: 1rem 1.15rem; border-radius: var(--radius);
+    margin: 1.4rem 0; border:1px solid var(--color-border); background: var(--color-bg-alt);
+    max-width: var(--max-text);
+  }
+  .callout .icon{ font-size:1.15rem; line-height:1.4; flex-shrink:0; }
+  .callout .content strong{ display:block; font-family: var(--font-display); font-size:0.95rem; margin-bottom:0.15rem; color: var(--color-text); }
+  .callout.retenir{ background: var(--color-accent-soft); border-color: #cfe6dc; }
+  .callout.attention{ background: var(--color-accent-alt-soft); border-color: #ecd3c0; }
+  .callout.pratique{ background: #fff; border: 1px solid var(--color-accent); border-left-width: 4px; }
+  .callout.normatif{ background: #fff; border-left: 4px solid var(--color-text-muted); }
+  .callout.plus-loin{ background: #fff; border: 1px dashed var(--color-border); }
+
+  /* ---------- tables ---------- */
+  .table-wrap{ overflow-x:auto; margin: 1.4rem 0; border:1px solid var(--color-border); border-radius: var(--radius); }
+  table{ border-collapse: collapse; width:100%; min-width: 480px; font-size:0.92rem; }
+  thead th{
+    text-align:left; font-family: var(--font-body); font-weight:600; font-size:0.82rem; color: var(--color-text-muted);
+    background: var(--color-bg-alt); padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--color-border);
+  }
+  tbody td{ padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: var(--color-bg-alt); }
+  td.amount, th.amount{ text-align:right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .total-row td{ font-weight:600; background: var(--color-accent-soft); }
+  .total-row td.amount{ color: var(--color-accent); }
+  .debit-col{ border-right: 1px solid var(--color-border); }
+
+  /* ---------- T-account / SVG ---------- */
+  figure{ margin: 1.6rem 0; max-width: var(--max-text); }
+  figure svg{ width:100%; height:auto; display:block; }
+  figcaption{ font-size:0.85rem; color: var(--color-text-muted); margin-top:0.5rem; }
+
+  /* ---------- tabs ---------- */
+  .tabs{ margin: 1.6rem 0; max-width: var(--max-text); }
+  .tab-list{ display:flex; gap:0.4rem; border-bottom: 1px solid var(--color-border); }
+  .tab-btn{
+    font-family: var(--font-body); font-size:0.92rem; font-weight:600; color: var(--color-text-muted);
+    background:none; border:none; padding: 0.7rem 0.2rem; margin-right:1.2rem; cursor:pointer;
+    border-bottom: 2px solid transparent; margin-bottom:-1px;
+  }
+  .tab-btn:hover{ color: var(--color-text); }
+  .tab-btn[aria-selected="true"]{ color: var(--color-accent); border-bottom-color: var(--color-accent); }
+  .tab-btn:focus-visible, .accordion-trigger:focus-visible, .toc-btn:focus-visible, a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--color-accent); outline-offset: 2px;
+  }
+  .tab-panel{ display:none; padding-top: 1.1rem; }
+  .tab-panel.active{ display:block; }
+
+  /* ---------- accordion ---------- */
+  .accordion{ max-width: var(--max-text); margin: 1.4rem 0; border-top:1px solid var(--color-border); }
+  .accordion-item{ border-bottom:1px solid var(--color-border); }
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding: 1rem 0.1rem; display:flex; justify-content:space-between; align-items:center; gap:1rem;
+    font-family: var(--font-body); font-weight:600; font-size:0.98rem; color: var(--color-text);
+  }
+  .accordion-trigger .chevron{ transition: transform 200ms ease; color: var(--color-accent); flex-shrink:0; }
+  .accordion-trigger[aria-expanded="true"] .chevron{ transform: rotate(45deg); }
+  .accordion-panel{ max-height:0; overflow:hidden; transition: max-height 250ms ease; }
+  .accordion-panel .inner{ padding: 0 0.1rem 1.1rem; color: var(--color-text-muted); }
+
+  /* ---------- cards ---------- */
+  .card-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap: 1rem; margin: 1.6rem 0; max-width: 900px; }
+  .card{
+    border:1px solid var(--color-border); border-radius: var(--radius); padding: 1.1rem;
+    background:#fff; transition: border-color 150ms ease, transform 150ms ease;
+  }
+  .card:hover{ border-color: var(--color-accent); transform: translateY(-2px); }
+  .card .icon{ width:34px; height:34px; border-radius:7px; background: var(--color-accent-soft); color: var(--color-accent);
+    display:flex; align-items:center; justify-content:center; margin-bottom:0.7rem; font-size:1.05rem; }
+  .card h3{ font-size:1rem; margin-bottom:0.3rem; }
+  .card p{ font-size:0.88rem; color: var(--color-text-muted); margin:0; }
+
+  /* ---------- stepper ---------- */
+  .stepper{ display:flex; flex-wrap:wrap; gap: 0; margin: 1.8rem 0; max-width: 900px; counter-reset: step; }
+  .step{ flex:1 1 160px; position:relative; padding: 1rem 1rem 1rem 0; }
+  .step .step-num{
+    font-family: var(--font-mono); width:28px; height:28px; border-radius:50%; background: var(--color-accent);
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; margin-bottom:0.6rem;
+  }
+  .step:not(:last-child)::after{
+    content:''; position:absolute; top:14px; left: calc(100% - 0.6rem); width: calc(1rem); height:1px;
+    background: var(--color-border);
+  }
+  .step h3{ font-size:0.92rem; margin-bottom:0.25rem; }
+  .step p{ font-size:0.84rem; color: var(--color-text-muted); margin:0; }
+  @media (max-width: 760px){
+    .stepper{ flex-direction:column; }
+    .step:not(:last-child)::after{ display:none; }
+  }
+
+  /* ---------- key takeaways ---------- */
+  .takeaways{
+    background: var(--color-text); color:#fff; border-radius: 10px; padding: 2rem 1.8rem; margin-top: 1rem;
+  }
+  .takeaways h2{ color:#fff; }
+  .takeaways ul{ margin:0; padding-left:1.2rem; }
+  .takeaways li{ margin-bottom:0.6rem; color: #E7ECEA; }
+  .takeaways li::marker{ color: #6FBF9C; }
+
+  /* ---------- footer nav ---------- */
+  .lesson-nav{
+    display:flex; justify-content:space-between; gap:1rem; margin-top: 2.6rem; padding-top: 1.6rem; border-top:1px solid var(--color-border);
+  }
+  .nav-link{
+    flex:1; max-width: 47%; text-decoration:none; color: var(--color-text); border:1px solid var(--color-border);
+    border-radius: var(--radius); padding: 0.9rem 1rem; transition: border-color 150ms ease;
+  }
+  .nav-link:hover{ border-color: var(--color-accent); }
+  .nav-link .dir{ display:block; font-size:0.75rem; color: var(--color-text-muted); margin-bottom:0.2rem; font-family: var(--font-mono); }
+  .nav-link.next{ text-align:right; }
+  .nav-link .title{ font-weight:600; font-size:0.92rem; }
+  .back-to-module{ display:block; text-align:center; margin: 1.3rem 0 0; font-size:0.88rem; color: var(--color-text-muted); }
+
+  footer.site-footer{
+    border-top:1px solid var(--color-border); padding: 1.6rem 1.5rem; text-align:center;
+    color: var(--color-text-muted); font-size:0.85rem;
+  }
+
+  #back-to-top{
+    position: fixed; bottom: 1.4rem; right: 1.4rem; width:42px; height:42px; border-radius:50%;
+    background: var(--color-text); color:#fff; border:none; cursor:pointer; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden;
+    transition: opacity 200ms ease, visibility 200ms ease; z-index: 800;
+  }
+  #back-to-top.show{ opacity:1; visibility:visible; }
+  #back-to-top:hover{ background: var(--color-accent); }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="mark">C</span>
+      Filière Comptabilité <span class="sub">— parcours en ligne</span>
+    </div>
+    <nav class="toc-menu">
+      <button class="toc-btn" id="toc-toggle" aria-haspopup="true" aria-expanded="false">Sommaire</button>
+      <div class="toc-dropdown" id="toc-dropdown" role="menu">
+        <a href="#c1">1. Qu'est-ce qu'un compte ?</a>
+        <a href="#c2">2. Débit et crédit</a>
+        <a href="#c3">3. Le principe de la partie double</a>
+        <a href="#c4">4. Exemple pratique</a>
+        <a href="#c5">5. Les comptes en pratique</a>
+        <a href="#c6">6. Points clés à retenir</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="badges">
+    <span class="badge">Module — Comptabilité générale</span>
+    <span class="badge outline">15 min</span>
+    <span class="badge outline">Niveau débutant</span>
+  </div>
+  <span class="lesson-tag">Leçon 3</span>
+  <h1>Comptes, débit, crédit et partie double</h1>
+  <p class="subtitle">Comment fonctionne un compte, pourquoi certaines opérations se notent au débit et d'autres au crédit, et pourquoi chaque écriture comptable garde toujours son équilibre.</p>
+</div>
+
+<div class="sommaire">
+  <div class="sommaire-card">
+    <h2>Dans cette leçon</h2>
+    <ul class="sommaire-list">
+      <li><a href="#c1"><span class="n">01</span> Qu'est-ce qu'un compte ?</a></li>
+      <li><a href="#c2"><span class="n">02</span> Débit et crédit</a></li>
+      <li><a href="#c3"><span class="n">03</span> Le principe de la partie double</a></li>
+      <li><a href="#c4"><span class="n">04</span> Exemple pratique</a></li>
+      <li><a href="#c5"><span class="n">05</span> Les comptes en pratique</a></li>
+      <li><a href="#c6"><span class="n">06</span> Points clés à retenir</a></li>
+    </ul>
+  </div>
+</div>
+
+<main>
+
+  <!-- SECTION 1 -->
+  <section class="lesson-section reveal" id="c1">
+    <div class="section-body">
+      <span class="section-eyebrow">01 — Les fondations</span>
+      <h2>Qu'est-ce qu'un compte ?</h2>
+      <p>Un <strong>compte</strong> est un tableau qui enregistre toutes les variations d'un élément du patrimoine ou de l'activité de l'entreprise : une banque, un client, un fournisseur, un stock de marchandises, une dépense de salaire… Chaque élément suivi par la comptabilité a son propre compte.</p>
+      <p>Un compte se présente traditionnellement en forme de <strong>T</strong> : une colonne de gauche appelée <strong>débit</strong>, une colonne de droite appelée <strong>crédit</strong>. C'est cette forme qui donne son nom à l'expression « compte en T ».</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 640 220" role="img" aria-label="Schéma d'un compte en T avec les colonnes débit et crédit">
+        <rect x="0" y="0" width="640" height="220" fill="var(--color-bg)"/>
+        <text x="320" y="26" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="16" fill="var(--color-text)">Compte : 512 — Banque</text>
+        <line x1="60" y1="46" x2="580" y2="46" stroke="var(--color-text)" stroke-width="1.5"/>
+        <line x1="320" y1="46" x2="320" y2="206" stroke="var(--color-text)" stroke-width="1.5"/>
+        <line x1="60" y1="46" x2="60" y2="206" stroke="var(--color-border)" stroke-width="1.5"/>
+        <line x1="580" y1="46" x2="580" y2="206" stroke="var(--color-border)" stroke-width="1.5"/>
+        <line x1="60" y1="76" x2="580" y2="76" stroke="var(--color-border)" stroke-width="1"/>
+        <text x="190" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-accent)">DÉBIT</text>
+        <text x="450" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-accent-alt)">CRÉDIT</text>
+        <text x="80" y="100" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--color-text-muted)">05/03  Apport</text>
+        <text x="300" y="100" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--color-text)">1 000 000</text>
+        <text x="80" y="128" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--color-text-muted)">18/03  Client</text>
+        <text x="300" y="128" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--color-text)">300 000</text>
+        <text x="340" y="100" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--color-text-muted)">10/03  Loyer</text>
+        <text x="560" y="100" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--color-text)">150 000</text>
+        <line x1="60" y1="178" x2="580" y2="178" stroke="var(--color-text)" stroke-width="1"/>
+        <text x="80" y="198" font-family="Inter, sans-serif" font-weight="600" font-size="12" fill="var(--color-text)">Total débit</text>
+        <text x="300" y="198" text-anchor="end" font-family="IBM Plex Mono, monospace" font-weight="600" font-size="12" fill="var(--color-accent)">1 300 000</text>
+        <text x="340" y="198" font-family="Inter, sans-serif" font-weight="600" font-size="12" fill="var(--color-text)">Total crédit</text>
+        <text x="560" y="198" text-anchor="end" font-family="IBM Plex Mono, monospace" font-weight="600" font-size="12" fill="var(--color-accent)">150 000</text>
+      </svg>
+      <figcaption>Un compte en T : les opérations qui augmentent la banque sont inscrites au débit, celles qui la diminuent au crédit. Le solde (1 150 000) est la différence entre les deux colonnes.</figcaption>
+    </figure>
+
+    <div class="callout retenir">
+      <span class="icon">💡</span>
+      <div class="content"><strong>À retenir</strong>Débit et crédit ne veulent pas dire « gain » ou « perte ». Ce sont simplement les deux côtés d'un compte : leur signification dépend de la nature du compte concerné, comme on le verra dans la section suivante.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="lesson-section reveal" id="c2">
+    <div class="section-body">
+      <span class="section-eyebrow">02 — La règle centrale</span>
+      <h2>Débit et crédit : les deux colonnes du compte</h2>
+      <p>La règle du débit/crédit dépend de la <strong>nature du compte</strong>. Il existe deux grandes familles :</p>
+      <ul>
+        <li>Les comptes qui augmentent au débit : les comptes d'<strong>actif</strong> (ce que l'entreprise possède) et les comptes de <strong>charges</strong> (ce qu'elle dépense).</li>
+        <li>Les comptes qui augmentent au crédit : les comptes de <strong>passif</strong> (ce qu'elle doit) et les comptes de <strong>produits</strong> (ce qu'elle gagne).</li>
+      </ul>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <caption class="sr-only">Règles d'augmentation et de diminution par type de compte</caption>
+        <thead>
+          <tr>
+            <th scope="col">Type de compte</th>
+            <th scope="col">Exemples</th>
+            <th scope="col">Augmente au</th>
+            <th scope="col">Diminue au</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Actif</td>
+            <td>Banque, caisse, clients, stocks, matériel</td>
+            <td>Débit</td>
+            <td>Crédit</td>
+          </tr>
+          <tr>
+            <td>Charges</td>
+            <td>Achats, salaires, loyers, électricité</td>
+            <td>Débit</td>
+            <td>Crédit</td>
+          </tr>
+          <tr>
+            <td>Passif</td>
+            <td>Fournisseurs, emprunts, capital</td>
+            <td>Crédit</td>
+            <td>Débit</td>
+          </tr>
+          <tr>
+            <td>Produits</td>
+            <td>Ventes, prestations, produits financiers</td>
+            <td>Crédit</td>
+            <td>Débit</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout attention">
+      <span class="icon">⚠️</span>
+      <div class="content"><strong>Erreur fréquente</strong>Confondre « débiter un compte » avec « retirer de l'argent ». Débiter le compte Banque augmente son solde (il s'agit d'un compte d'actif) alors que débiter le compte Fournisseurs le diminue (compte de passif). C'est toujours la nature du compte qui détermine le sens.</div>
+    </div>
+
+    <div class="tabs" id="tabs-comptes">
+      <div class="tab-list" role="tablist" aria-label="Catégories de comptes">
+        <button class="tab-btn" role="tab" id="tab-bilan" aria-controls="panel-bilan" aria-selected="true">Comptes de bilan</button>
+        <button class="tab-btn" role="tab" id="tab-gestion" aria-controls="panel-gestion" aria-selected="false" tabindex="-1">Comptes de gestion</button>
+      </div>
+      <div class="tab-panel active" id="panel-bilan" role="tabpanel" aria-labelledby="tab-bilan">
+        <p>Les comptes de bilan (classes 1 à 5 du plan comptable) enregistrent le <strong>patrimoine</strong> de l'entreprise à un instant donné : ce qu'elle possède (actif) et ce qu'elle doit (passif). Leur solde se reporte d'un exercice à l'autre.</p>
+      </div>
+      <div class="tab-panel" id="panel-gestion" role="tabpanel" aria-labelledby="tab-gestion" hidden>
+        <p>Les comptes de gestion (classes 6 et 7) enregistrent l'<strong>activité</strong> de la période : les charges consommées et les produits générés. Ils sont remis à zéro à la clôture de chaque exercice pour déterminer le résultat.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="lesson-section reveal" id="c3">
+    <div class="section-body">
+      <span class="section-eyebrow">03 — L'équilibre</span>
+      <h2>Le principe de la partie double</h2>
+      <p>En comptabilité, une opération n'est jamais enregistrée dans un seul compte. Chaque écriture affecte <strong>au moins deux comptes</strong> : un ou plusieurs comptes débités, un ou plusieurs comptes crédités — et le total des débits est toujours strictement égal au total des crédits.</p>
+      <p>C'est le <strong>principe de la partie double</strong>. Il traduit une idée simple : dans une entreprise, rien ne se crée sans contrepartie. Un achat en espèces enrichit le stock de marchandises, mais appauvrit la caisse d'autant.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Schéma du principe de la partie double : une écriture répartie entre un compte débité et un compte crédité de montants égaux">
+        <rect x="0" y="0" width="640" height="260" fill="var(--color-bg)"/>
+        <rect x="220" y="10" width="200" height="46" rx="6" fill="var(--color-accent-soft)" stroke="var(--color-accent)"/>
+        <text x="320" y="38" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="14" fill="var(--color-accent)">Écriture comptable</text>
+
+        <line x1="290" y1="56" x2="140" y2="100" stroke="var(--color-border)" stroke-width="1.5"/>
+        <line x1="350" y1="56" x2="500" y2="100" stroke="var(--color-border)" stroke-width="1.5"/>
+
+        <rect x="40" y="100" width="220" height="120" rx="6" fill="#fff" stroke="var(--color-text)"/>
+        <text x="150" y="126" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-text)">Compte A — Débit</text>
+        <line x1="60" y1="140" x2="240" y2="140" stroke="var(--color-border)"/>
+        <text x="150" y="170" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="20" font-weight="600" fill="var(--color-accent)">500 000</text>
+        <text x="150" y="195" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">ex. 601 Achats</text>
+
+        <rect x="380" y="100" width="220" height="120" rx="6" fill="#fff" stroke="var(--color-text)"/>
+        <text x="490" y="126" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-text)">Compte B — Crédit</text>
+        <line x1="400" y1="140" x2="580" y2="140" stroke="var(--color-border)"/>
+        <text x="490" y="170" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="20" font-weight="600" fill="var(--color-accent-alt)">500 000</text>
+        <text x="490" y="195" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">ex. 401 Fournisseurs</text>
+
+        <text x="320" y="248" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="var(--color-text)">Total débit = Total crédit</text>
+      </svg>
+      <figcaption>Chaque écriture répartit un même montant entre au moins un compte débité et un compte crédité : la balance reste toujours équilibrée.</figcaption>
+    </figure>
+
+    <div class="callout normatif">
+      <span class="icon">📌</span>
+      <div class="content"><strong>Rappel normatif</strong>Le principe de la partie double est une obligation légale du droit comptable : toute écriture déséquilibrée (débit ≠ crédit) rend la comptabilité irrecevable et doit être corrigée avant toute clôture.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section class="lesson-section reveal" id="c4">
+    <div class="section-body">
+      <span class="section-eyebrow">04 — Mise en pratique</span>
+      <h2>Exemple pratique : enregistrer une écriture</h2>
+      <p>Reprenons la démarche à partir d'une opération réelle et vérifions que le débit égale toujours le crédit.</p>
+    </div>
+
+    <div class="callout pratique">
+      <span class="icon">🧮</span>
+      <div class="content"><strong>Cas pratique</strong>L'entreprise achète des marchandises à crédit auprès d'un fournisseur pour 500 000 FCFA. Quels comptes sont concernés, et dans quel sens ?</div>
+    </div>
+
+    <div class="section-body">
+      <p>Deux comptes sont concernés : le compte <strong>601 — Achats de marchandises</strong> (une charge) et le compte <strong>401 — Fournisseurs</strong> (un passif). L'achat augmente la charge, donc on la débite. La dette envers le fournisseur augmente, donc on crédite ce compte.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">N° compte</th>
+            <th scope="col">Intitulé</th>
+            <th scope="col" class="amount">Débit</th>
+            <th scope="col" class="amount">Crédit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">601</td>
+            <td>Achats de marchandises</td>
+            <td class="amount">500 000</td>
+            <td class="amount">—</td>
+          </tr>
+          <tr>
+            <td class="num">401</td>
+            <td>Fournisseurs</td>
+            <td class="amount">—</td>
+            <td class="amount">500 000</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Totaux</td>
+            <td class="amount">500 000</td>
+            <td class="amount">500 000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-body">
+      <p>Autre exemple : un client règle une facture de 300 000 FCFA par virement bancaire. La banque (actif) augmente, on la débite ; la créance sur le client (actif également) disparaît, on la crédite.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">N° compte</th>
+            <th scope="col">Intitulé</th>
+            <th scope="col" class="amount">Débit</th>
+            <th scope="col" class="amount">Crédit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">512</td>
+            <td>Banque</td>
+            <td class="amount">300 000</td>
+            <td class="amount">—</td>
+          </tr>
+          <tr>
+            <td class="num">411</td>
+            <td>Clients</td>
+            <td class="amount">—</td>
+            <td class="amount">300 000</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Totaux</td>
+            <td class="amount">300 000</td>
+            <td class="amount">300 000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-body">
+      <h3>La démarche en 5 étapes</h3>
+    </div>
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Identifier les comptes</h3>
+        <p>Quels comptes sont touchés par l'opération ?</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Qualifier leur nature</h3>
+        <p>Actif, passif, charge ou produit ?</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Appliquer la règle</h3>
+        <p>Augmentation ou diminution : débit ou crédit ?</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Vérifier l'équilibre</h3>
+        <p>Le total débit doit égaler le total crédit.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <h3>Enregistrer au journal</h3>
+        <p>L'écriture est reportée dans le journal comptable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section class="lesson-section reveal" id="c5">
+    <div class="section-body">
+      <span class="section-eyebrow">05 — Repères</span>
+      <h2>Les comptes en pratique</h2>
+      <p>Le plan comptable organise l'ensemble des comptes par classes, ce qui permet de retrouver rapidement la nature d'un compte et donc la règle débit/crédit à appliquer.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon">1–5</div>
+        <h3>Comptes de bilan</h3>
+        <p>Capitaux, immobilisations, stocks, tiers, comptes financiers — actif et passif.</p>
+      </div>
+      <div class="card">
+        <div class="icon">6</div>
+        <h3>Comptes de charges</h3>
+        <p>Achats, services extérieurs, charges de personnel, charges financières.</p>
+      </div>
+      <div class="card">
+        <div class="icon">7</div>
+        <h3>Comptes de produits</h3>
+        <p>Ventes, prestations de services, produits financiers, subventions.</p>
+      </div>
+      <div class="card">
+        <div class="icon">↔</div>
+        <h3>Partie double</h3>
+        <p>Chaque écriture relie au moins deux comptes de familles parfois différentes.</p>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <h3>Questions fréquentes</h3>
+    </div>
+    <div class="accordion" id="faq">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Pourquoi le débit n'est-il pas toujours une augmentation ?
+          <span class="chevron">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">Le débit augmente les comptes d'actif et de charges, mais diminue les comptes de passif et de produits. Le sens dépend donc entièrement de la nature du compte, jamais du mot « débit » seul.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Un même compte peut-il être débité et crédité dans une écriture ?
+          <span class="chevron">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">Oui, dans certains cas particuliers (par exemple des écritures de correction), mais pour une opération courante, chaque compte n'apparaît en général qu'une seule fois, soit au débit, soit au crédit.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Que faire si le débit ne correspond pas au crédit ?
+          <span class="chevron">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">L'écriture est incorrecte et doit être revue avant tout enregistrement définitif : un compte oublié, un montant mal reporté ou une inversion débit/crédit en est presque toujours la cause.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Comment retenir facilement la règle débit/crédit ?
+          <span class="chevron">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">Une astuce courante : « Ce que je possède ou dépense grandit au débit ; ce que je dois ou gagne grandit au crédit. » Elle couvre l'actif, les charges, le passif et les produits.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout plus-loin">
+      <span class="icon">🔗</span>
+      <div class="content"><strong>Pour aller plus loin</strong>La leçon suivante montre comment ces écritures s'enchaînent : du journal au grand livre, puis jusqu'à la balance des comptes.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section class="lesson-section reveal" id="c6">
+    <div class="section-body">
+      <span class="section-eyebrow">06 — Synthèse</span>
+      <h2>Points clés à retenir</h2>
+    </div>
+    <div class="takeaways">
+      <ul>
+        <li>Un compte se présente en deux colonnes : le débit à gauche, le crédit à droite.</li>
+        <li>Les comptes d'actif et de charges augmentent au débit et diminuent au crédit.</li>
+        <li>Les comptes de passif et de produits augmentent au crédit et diminuent au débit.</li>
+        <li>Le principe de la partie double impose qu'à chaque écriture, le total des débits égale le total des crédits.</li>
+        <li>Vérifier cet équilibre est le premier réflexe avant d'enregistrer toute opération.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="lesson-nav">
+    <a class="nav-link prev" href="lecon2-Patrimoine-bilan-equation-comptable.html">
+      <span class="dir">← Leçon précédente</span>
+      <span class="title">Patrimoine, bilan et équation comptable</span>
+    </a>
+    <a class="nav-link next" href="lecon4-Journal-grand-livre-balance.html">
+      <span class="dir">Leçon suivante →</span>
+      <span class="title">Journal, grand livre et balance</span>
+    </a>
+  </div>
+  <a class="back-to-module" href="#">Retour au sommaire du module</a>
+</main>
+
+<footer class="site-footer">
+  Module Comptabilité générale — Parcours en ligne · Leçon 3 sur 8
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+(function(){
+  // ---- reading progress bar ----
+  var bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop || document.body.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    var pct = height > 0 ? (scrolled / height) * 100 : 0;
+    bar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // ---- toc dropdown ----
+  var tocBtn = document.getElementById('toc-toggle');
+  var tocDropdown = document.getElementById('toc-dropdown');
+  tocBtn.addEventListener('click', function(){
+    var open = tocDropdown.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocDropdown.contains(e.target) && e.target !== tocBtn){
+      tocDropdown.classList.remove('open');
+      tocBtn.setAttribute('aria-expanded','false');
+    }
+  });
+  tocDropdown.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      tocDropdown.classList.remove('open');
+      tocBtn.setAttribute('aria-expanded','false');
+    });
+  });
+
+  // ---- tabs ----
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = tabGroup.querySelectorAll('.tab-btn');
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){
+        tabs.forEach(function(t){
+          t.setAttribute('aria-selected','false');
+          t.tabIndex = -1;
+          document.getElementById(t.getAttribute('aria-controls')).classList.remove('active');
+          document.getElementById(t.getAttribute('aria-controls')).hidden = true;
+        });
+        tab.setAttribute('aria-selected','true');
+        tab.tabIndex = 0;
+        var panel = document.getElementById(tab.getAttribute('aria-controls'));
+        panel.classList.add('active');
+        panel.hidden = false;
+      });
+      tab.addEventListener('keydown', function(e){
+        var idx = Array.prototype.indexOf.call(tabs, tab);
+        if(e.key === 'ArrowRight'){ tabs[(idx+1) % tabs.length].focus(); tabs[(idx+1) % tabs.length].click(); }
+        if(e.key === 'ArrowLeft'){ tabs[(idx-1+tabs.length) % tabs.length].focus(); tabs[(idx-1+tabs.length) % tabs.length].click(); }
+      });
+    });
+  });
+
+  // ---- accordion ----
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = trigger.nextElementSibling;
+      trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      panel.style.maxHeight = expanded ? null : panel.scrollHeight + 'px';
+    });
+  });
+
+  // ---- back to top ----
+  var backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', function(){
+    if(window.scrollY > 500){ backBtn.classList.add('show'); } else { backBtn.classList.remove('show'); }
+  }, {passive:true});
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+
+  // ---- reveal on scroll ----
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if('IntersectionObserver' in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.12});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>

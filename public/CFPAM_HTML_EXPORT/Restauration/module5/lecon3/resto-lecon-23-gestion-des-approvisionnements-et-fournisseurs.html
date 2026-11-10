@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 23 — Gestion des approvisionnements et fournisseurs en restauration.">
+<title>Leçon 23 — Gestion des approvisionnements et fournisseurs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#FDF3E7;--color-text:#3B2314;--color-accent:#E8752C;--color-neutral:#8A6E5C;
+ --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --display:"Playfair Display",Georgia,serif;--body:"Inter",Arial,sans-serif;--mono:"IBM Plex Mono",monospace;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--body);line-height:1.65}
+a{color:var(--color-text);text-decoration:none}a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:0;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:1160px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+.brand{font:700 1.05rem var(--display)}.brand span{color:var(--color-accent)}
+.container{max-width:1100px;margin:auto;padding:0 24px}
+.hero{padding:62px 0 40px}.eyebrow,.kicker,.toc-title{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+.eyebrow{font-size:.72rem;color:var(--color-neutral);margin:0 0 12px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0}
+h1{font-size:clamp(2.25rem,5.5vw,4.15rem);max-width:900px}
+h2{font-size:clamp(1.65rem,3vw,2.35rem);margin-bottom:16px}
+h3{font-size:1.18rem;margin-bottom:7px}
+.lead{max-width:730px;color:var(--muted);font-size:1.04rem;margin:18px 0 24px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}.badge{padding:7px 11px;border:1px solid var(--border);border-radius:999px;background:var(--bg-alt);font-size:.77rem;font-weight:600}.badge.accent{color:var(--color-accent);border-color:var(--color-accent)}
+.toc{padding:17px 0;margin-bottom:44px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.toc-title{font-size:.68rem;color:var(--color-neutral);margin-bottom:10px}.toc nav{display:flex;flex-wrap:wrap;gap:7px}.toc a{padding:7px 10px;border:1px solid var(--border);border-radius:5px;font-size:.8rem}.toc a:hover{border-color:var(--color-accent)}
+section{padding:50px 0;border-bottom:1px solid var(--border)}.section-inner{max-width:950px}
+.kicker{font-size:.7rem;color:var(--color-accent);margin-bottom:7px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;padding:20px;transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.35rem;margin-bottom:8px}.card p{margin:0;color:var(--muted);font-size:.88rem}
+.callout{margin:22px 0;padding:17px 19px;background:var(--accent-soft);border-left:4px solid var(--color-accent);border-radius:4px}.callout strong{display:block;margin-bottom:5px}
+.process{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:24px 0}.step{padding:15px 11px;background:var(--bg-alt);border:1px solid var(--border);min-height:135px}.step b{font:600 .68rem var(--mono);color:var(--color-accent)}.step h3{font-size:.98rem;margin:7px 0}.step p{font-size:.76rem;color:var(--muted);margin:0}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}table{width:100%;min-width:700px;border-collapse:collapse;background:var(--bg-alt)}th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}th{font:600 .69rem var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--color-neutral)}td{font-size:.87rem}tr:last-child td{border:0}tr:hover td{background:var(--accent-soft)}
+.diagram{margin:25px 0;padding:20px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px}.diagram svg{width:100%;height:auto;display:block}
+.tabs{margin-top:24px}.tab-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px}.tab-buttons button{cursor:pointer;background:var(--bg-alt);border:1px solid var(--border);padding:9px 12px;border-radius:5px;font-size:.8rem;font-weight:600}.tab-buttons button[aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.tab-panel{display:none;background:var(--bg-alt);border:1px solid var(--border);border-radius:7px;padding:19px}.tab-panel.active{display:block}.tab-panel p{color:var(--muted);margin-bottom:0}
+details{border-top:1px solid var(--border);padding:14px 0}details:last-child{border-bottom:1px solid var(--border)}summary{cursor:pointer;font-weight:700}summary::marker{color:var(--color-accent)}details p{color:var(--muted);max-width:720px;margin:9px 0 0}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.key{padding:17px;background:var(--bg-alt);border-top:3px solid var(--color-accent)}.key b{font:600 .68rem var(--mono);color:var(--color-accent)}.key p{font-size:.82rem;margin:7px 0 0}
+.bottom{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;padding:34px 0}.navbox,.top{border:1px solid var(--border);background:var(--bg-alt);padding:15px}.navbox small{display:block;color:var(--muted);font-size:.7rem;margin-bottom:4px}.navbox strong{font:600 1rem var(--display)}.next{text-align:right}.top{border-radius:5px}
+footer{border-top:1px solid var(--border);padding:27px 0 40px;color:var(--muted);font-size:.78rem}
+.reveal{opacity:0;transform:translateY(13px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:850px){.grid{grid-template-columns:1fr 1fr}.process{grid-template-columns:repeat(3,1fr)}.keys{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.container{padding:0 17px}.nav{padding:12px 17px}.hero{padding:43px 0 28px}.grid,.process,.keys{grid-template-columns:1fr}.step{min-height:auto}.bottom{grid-template-columns:1fr}.next{text-align:left}.toc nav{display:grid;grid-template-columns:1fr 1fr}section{padding:38px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+<header><div class="nav"><a class="brand" href="#top">Filière <span>Restauration</span></a><a href="#sommaire">Sommaire</a></div></header>
+
+<main id="top"><div class="container">
+<section class="hero" style="border-bottom:0">
+<p class="eyebrow">Module 5 · Leçon 23</p>
+<h1>Gestion des approvisionnements et fournisseurs</h1>
+<p class="lead">Organiser les achats et sélectionner les fournisseurs grâce à un cahier des charges précis, une comparaison structurée, une négociation maîtrisée et un contrôle rigoureux à la réception.</p>
+<div class="badges"><span class="badge accent">BTS</span><span class="badge">25 min</span><span class="badge">Achats &amp; gestion</span></div>
+</section>
+
+<div class="toc" id="sommaire">
+<div class="toc-title">Sommaire</div>
+<nav aria-label="Sommaire"><a href="#objectif">Objectif</a><a href="#vocabulaire">Définitions</a><a href="#processus">Processus d'achat</a><a href="#selection">Sélection</a><a href="#negociation">Négociation</a><a href="#controle">Réception</a><a href="#cles">Synthèse</a></nav>
+</div>
+
+<section id="objectif" class="reveal"><div class="section-inner">
+<div class="kicker">01 · Objectif</div><h2>Acheter juste, au bon moment</h2>
+<p>Dans un restaurant, l'approvisionnement doit garantir la disponibilité des produits nécessaires au fonctionnement de l'établissement tout en maîtrisant les coûts et la qualité. L'acheteur définit ses besoins, consulte les fournisseurs, compare les offres et contrôle la conformité des livraisons.</p>
+<div class="callout"><strong>💡 À retenir</strong>Un bon achat ne se limite pas au prix : il recherche le meilleur équilibre entre qualité, quantité, coût, délai, fiabilité et conditions de livraison.</div>
+</div></section>
+
+<section id="vocabulaire" class="reveal"><div class="section-inner">
+<div class="kicker">02 · Définitions essentielles</div><h2>Le vocabulaire des approvisionnements</h2>
+<div class="grid">
+<article class="card"><div class="icon">📋</div><h3>Cahier des charges</h3><p>Document qui précise les besoins, caractéristiques, quantités, exigences de qualité et conditions attendues.</p></article>
+<article class="card"><div class="icon">📨</div><h3>Appel d'offres</h3><p>Consultation de plusieurs fournisseurs afin de recevoir et comparer leurs propositions selon des critères définis.</p></article>
+<article class="card"><div class="icon">🤝</div><h3>Négociation</h3><p>Échange permettant de rechercher des conditions d'achat satisfaisantes pour l'établissement et le fournisseur.</p></article>
+<article class="card"><div class="icon">🧾</div><h3>Bon de commande</h3><p>Document qui formalise la demande d'achat : produits, quantités, prix et conditions convenues.</p></article>
+<article class="card"><div class="icon">🚚</div><h3>Bon de livraison</h3><p>Document accompagnant la livraison et permettant de vérifier les produits et quantités reçus.</p></article>
+<article class="card"><div class="icon">✓</div><h3>Contrôle qualité</h3><p>Vérification de la conformité des produits reçus par rapport aux exigences prévues.</p></article>
+</div>
+</div></section>
+
+<section id="processus" class="reveal"><div class="section-inner">
+<div class="kicker">03 · Processus d'approvisionnement</div><h2>De l'expression du besoin à la livraison</h2>
+<div class="process" aria-label="Étapes du processus d'achat">
+<div class="step"><b>01</b><h3>Besoin</h3><p>Identifier ce qui doit être acheté et en quelle quantité.</p></div>
+<div class="step"><b>02</b><h3>Cahier</h3><p>Formaliser les spécifications et critères attendus.</p></div>
+<div class="step"><b>03</b><h3>Consultation</h3><p>Solliciter des fournisseurs et recueillir leurs offres.</p></div>
+<div class="step"><b>04</b><h3>Choix</h3><p>Comparer les propositions et sélectionner l'offre adaptée.</p></div>
+<div class="step"><b>05</b><h3>Commande</h3><p>Formaliser l'achat et convenir des conditions.</p></div>
+<div class="step"><b>06</b><h3>Réception</h3><p>Contrôler quantité, qualité et documents.</p></div>
+</div>
+<div class="diagram">
+<svg viewBox="0 0 900 180" role="img" aria-labelledby="flowTitle flowDesc">
+<title id="flowTitle">Circuit d'approvisionnement</title><desc id="flowDesc">Le besoin devient une commande puis une livraison contrôlée.</desc>
+<g fill="var(--bg-alt)" stroke="var(--color-accent)" stroke-width="2">
+<rect x="25" y="65" width="120" height="50" rx="6"/><rect x="180" y="65" width="120" height="50" rx="6"/>
+<rect x="335" y="65" width="120" height="50" rx="6"/><rect x="490" y="65" width="120" height="50" rx="6"/>
+<rect x="645" y="65" width="120" height="50" rx="6"/>
+</g>
+<g stroke="var(--color-neutral)" stroke-width="2"><line x1="145" y1="90" x2="180" y2="90"/><line x1="300" y1="90" x2="335" y2="90"/><line x1="455" y1="90" x2="490" y2="90"/><line x1="610" y1="90" x2="645" y2="90"/></g>
+<g font-size="12" text-anchor="middle" font-weight="600">
+<text x="85" y="95">Besoin</text><text x="240" y="95">Cahier des charges</text><text x="395" y="95">Consultation</text><text x="550" y="95">Commande</text><text x="705" y="95">Réception</text>
+</g><text x="450" y="32" text-anchor="middle" font-size="13" font-weight="700" fill="var(--color-accent)">CYCLE D'APPROVISIONNEMENT</text>
+</svg>
+</div>
+</div></section>
+
+<section id="selection" class="reveal"><div class="section-inner">
+<div class="kicker">04 · Sélection des fournisseurs</div><h2>Comparer avant de décider</h2>
+<p>La sélection doit reposer sur des critères connus à l'avance. Une offre moins chère n'est pas automatiquement la meilleure si elle entraîne une qualité insuffisante, des délais irréguliers ou des conditions défavorables.</p>
+<div class="table-wrap">
+<table><thead><tr><th scope="col">Critère</th><th scope="col">Ce qu'on vérifie</th><th scope="col">Objectif</th></tr></thead>
+<tbody>
+<tr><td><strong>Qualité</strong></td><td>Conformité, fraîcheur, régularité des produits</td><td>Garantir le niveau attendu</td></tr>
+<tr><td><strong>Prix</strong></td><td>Tarifs, remises, frais et conditions</td><td>Maîtriser le coût d'achat</td></tr>
+<tr><td><strong>Délais</strong></td><td>Fréquence et respect des délais de livraison</td><td>Éviter les ruptures</td></tr>
+<tr><td><strong>Fiabilité</strong></td><td>Régularité et capacité à répondre aux besoins</td><td>Sécuriser l'approvisionnement</td></tr>
+<tr><td><strong>Conditions</strong></td><td>Minimum de commande, paiement, livraison</td><td>Adapter le contrat au restaurant</td></tr>
+</tbody></table>
+</div>
+<div class="callout"><strong>👨‍🍳 Conseil professionnel</strong>Conservez une grille de comparaison identique pour tous les fournisseurs consultés : la décision devient plus objective et plus facile à justifier.</div>
+</div></section>
+
+<section id="negociation" class="reveal"><div class="section-inner">
+<div class="kicker">05 · Négociation</div><h2>Rechercher un accord équilibré</h2>
+<div class="tabs" role="tablist" aria-label="Techniques de négociation">
+<div class="tab-buttons">
+<button role="tab" aria-selected="true" aria-controls="tab-prix" data-tab="tab-prix">Prix &amp; volumes</button>
+<button role="tab" aria-selected="false" aria-controls="tab-services" data-tab="tab-services">Services</button>
+<button role="tab" aria-selected="false" aria-controls="tab-conditions" data-tab="tab-conditions">Conditions</button>
+</div>
+<div id="tab-prix" class="tab-panel active" role="tabpanel"><h3>Prix et volumes</h3><p>Discuter du tarif en tenant compte des quantités commandées, de la fréquence et de la régularité des achats.</p></div>
+<div id="tab-services" class="tab-panel" role="tabpanel"><h3>Services associés</h3><p>Comparer les services qui accompagnent le produit : fréquence de livraison, disponibilité, réactivité et suivi.</p></div>
+<div id="tab-conditions" class="tab-panel" role="tabpanel"><h3>Conditions commerciales</h3><p>Clarifier les délais, modalités de paiement, minimums de commande et conditions de livraison avant de s'engager.</p></div>
+</div>
+<div class="callout"><strong>⚠️ Attention — erreur fréquente</strong>Négocier uniquement le prix. Une réduction tarifaire peut perdre son intérêt si elle s'accompagne de contraintes incompatibles avec les besoins du restaurant.</div>
+</div></section>
+
+<section id="controle" class="reveal"><div class="section-inner">
+<div class="kicker">06 · Bon de livraison &amp; contrôle</div><h2>Contrôler ce qui est réellement livré</h2>
+<p>À la réception, le bon de livraison sert de référence pour vérifier la conformité de la livraison. Le contrôle doit porter sur les quantités, les références, l'état des produits et leur conformité avec la commande.</p>
+<div class="table-wrap">
+<table><thead><tr><th scope="col">Contrôle</th><th scope="col">Question</th><th scope="col">Action</th></tr></thead>
+<tbody>
+<tr><td>Quantité</td><td>La quantité livrée correspond-elle à la commande ?</td><td>Compter, peser ou vérifier les unités.</td></tr>
+<tr><td>Référence</td><td>Le bon produit a-t-il été livré ?</td><td>Comparer avec la commande.</td></tr>
+<tr><td>Qualité</td><td>Le produit répond-il aux exigences prévues ?</td><td>Vérifier l'état et la conformité.</td></tr>
+<tr><td>Documents</td><td>Les documents correspondent-ils à la livraison ?</td><td>Comparer bon de commande et bon de livraison.</td></tr>
+</tbody></table>
+</div>
+<div class="callout"><strong>📌 Rappel hygiène &amp; sécurité</strong>Le contrôle à la réception participe à la maîtrise de la qualité des approvisionnements. Toute non-conformité doit être identifiée et traitée selon les procédures de l'établissement.</div>
+<details><summary>Pourquoi conserver les documents d'achat ?</summary><p>Ils permettent de suivre les commandes, de vérifier les livraisons et de disposer d'une trace des conditions d'achat et des éventuelles anomalies.</p></details>
+</div></section>
+
+<section id="cles" class="reveal"><div class="section-inner">
+<div class="kicker">07 · Synthèse</div><h2>Points clés à retenir</h2>
+<div class="keys">
+<div class="key"><b>01</b><p>Définir précisément le besoin avant de consulter.</p></div>
+<div class="key"><b>02</b><p>Comparer les fournisseurs sur plusieurs critères.</p></div>
+<div class="key"><b>03</b><p>Négocier le prix mais aussi les conditions.</p></div>
+<div class="key"><b>04</b><p>Contrôler quantité et qualité à la réception.</p></div>
+</div>
+<div class="callout"><strong>📌 Idée essentielle</strong>Une gestion efficace des approvisionnements relie planification, sélection des fournisseurs, négociation, commande et contrôle de réception.</div>
+</div></section>
+
+<nav class="bottom" aria-label="Navigation des leçons">
+<a class="navbox" href="resto-lecon-22-elaboration-de-la-carte-et-fixation-des-prix.html"><small>← Leçon précédente</small><strong>Leçon 22 — Élaboration de la carte et fixation des prix</strong></a>
+<a class="top" href="#top">↑ Haut</a>
+<a class="navbox next" href="resto-lecon-24-legislation-et-normes-en-restauration.html"><small>Leçon suivante →</small><strong>Leçon 24 — Législation et normes en restauration</strong></a>
+</nav>
+</div></main>
+
+<footer><div class="container">Filière Restauration · Module 5 · Leçon 23 · Support pédagogique — Gestion des approvisionnements et fournisseurs.</div></footer>
+
+<script>
+(function(){
+ const progress=document.getElementById('progress');
+ function update(){const d=document.documentElement,m=d.scrollHeight-d.clientHeight;progress.style.width=(m>0?scrollY/m*100:0)+'%'}
+ addEventListener('scroll',update,{passive:true});update();
+ const buttons=[...document.querySelectorAll('.tab-buttons button')],panels=[...document.querySelectorAll('.tab-panel')];
+ buttons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+   buttons.forEach(b=>b.setAttribute('aria-selected','false'));panels.forEach(p=>p.classList.remove('active'));
+   btn.setAttribute('aria-selected','true');document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+  btn.addEventListener('keydown',e=>{
+   const i=buttons.indexOf(btn);
+   if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();buttons[(i+1)%buttons.length].focus()}
+   if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();buttons[(i-1+buttons.length)%buttons.length].focus()}
+  });
+ });
+ const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.08});
+ document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+})();
+</script>
+</body>
+</html>

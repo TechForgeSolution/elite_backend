@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 19 — Encaissement et facturation en restauration">
+<title>Restauration — Leçon 19 | Encaissement et facturation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#FDF3E7;
+ --color-text:#3B2314;
+ --color-accent:#E8752C;
+ --color-neutral:#8A6E5C;
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --shadow:0 12px 30px color-mix(in srgb,var(--color-text) 8%,transparent);
+ --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.7}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:0;height:4px;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.brand{font-weight:700;letter-spacing:.08em;font-size:.86rem}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:.76rem;color:var(--neutral)}
+.badge.accent{color:var(--color-accent);border-color:color-mix(in srgb,var(--color-accent) 45%,transparent)}
+main{max-width:var(--max);margin:auto;padding:42px 24px 70px}
+.hero{display:grid;grid-template-columns:1.55fr .7fr;gap:42px;align-items:end;padding:42px 0 32px}
+.eyebrow{font-size:.76rem;text-transform:uppercase;letter-spacing:.14em;color:var(--color-accent);font-weight:700}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;line-height:1.15}
+h1{font-size:clamp(2.35rem,5vw,4.4rem);margin:10px 0 18px}
+h2{font-size:clamp(1.75rem,3vw,2.6rem);margin:0 0 18px}
+h3{font-size:1.3rem;margin:0 0 9px}
+.lead{max-width:760px;color:var(--muted);font-size:1.08rem}
+.meta{border:1px solid var(--border);border-radius:16px;padding:22px;background:var(--soft);box-shadow:var(--shadow)}
+.meta strong{display:block;font-family:"IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:7px}
+.toc{margin:12px 0 58px;padding:20px;border-left:3px solid var(--color-accent);background:var(--soft);border-radius:0 14px 14px 0}
+.toc strong{display:block;margin-bottom:8px}
+.toc ul{margin:0;padding-left:20px;columns:2}
+.toc a{text-decoration:none}.toc a:hover{color:var(--color-accent)}
+section{margin:72px 0;scroll-margin-top:105px}
+.section-head{max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.card{padding:22px;border:1px solid var(--border);border-radius:16px;background:color-mix(in srgb,var(--color-bg) 95%,var(--color-neutral));transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.55rem;margin-bottom:8px}
+.callout{margin:24px 0;padding:19px 21px;border-left:4px solid var(--color-accent);border-radius:0 13px 13px 0;background:var(--soft2)}
+.callout .label{display:block;color:var(--color-accent);font-weight:700;margin-bottom:4px}
+.steps{display:flex;gap:8px;overflow:auto;margin:28px 0;padding-bottom:8px}
+.step{min-width:165px;padding:15px;border:1px solid var(--border);border-radius:12px;background:var(--color-bg)}
+.step b{font-family:"IBM Plex Mono",monospace;color:var(--color-accent)}
+.table-wrap{overflow-x:auto}
+.protocol{width:100%;border-collapse:collapse;margin:22px 0;font-size:.94rem}
+.protocol th,.protocol td{border:1px solid var(--border);padding:13px 14px;text-align:left;vertical-align:top}
+.protocol th{background:var(--soft);font-family:"IBM Plex Mono",monospace;font-size:.8rem}
+.protocol tr:hover td{background:color-mix(in srgb,var(--color-accent) 4%,transparent)}
+.mono{font-family:"IBM Plex Mono",monospace}
+.invoice{font-family:"IBM Plex Mono",monospace;border:1px dashed var(--color-neutral);border-radius:14px;padding:20px;background:var(--soft);white-space:pre-wrap;font-size:.88rem;line-height:1.55}
+.svgbox{border:1px solid var(--border);border-radius:16px;padding:14px;background:var(--soft);overflow:hidden}
+svg{width:100%;height:auto}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.tab{cursor:pointer;background:transparent;color:var(--color-text);border:1px solid var(--border);border-radius:10px;padding:9px 13px;font:inherit}
+.tab[aria-selected="true"],.tab:hover{border-color:var(--color-accent);color:var(--color-accent)}
+.tabpanel{display:none}.tabpanel.active{display:block}
+details{border-top:1px solid var(--border);padding:16px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-weight:700}
+summary:focus-visible,.tab:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.navlinks{display:flex;justify-content:space-between;gap:18px;margin-top:62px}
+.navlink{max-width:48%;padding:17px 20px;border:1px solid var(--border);border-radius:13px;text-decoration:none}
+.navlink:hover{border-color:var(--color-accent)}
+footer{text-align:center;border-top:1px solid var(--border);padding:28px 20px;color:var(--muted);font-size:.88rem}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-text);cursor:pointer;box-shadow:var(--shadow)}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+ .hero,.two{grid-template-columns:1fr}.grid{grid-template-columns:1fr}
+ .toc ul{columns:1}.nav{padding:12px 16px}main{padding:28px 16px 55px}
+ section{margin:52px 0}.navlinks{flex-direction:column}.navlink{max-width:none}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+ <div class="nav">
+  <div class="brand">FILIÈRE RESTAURATION</div>
+  <div class="badges">
+   <span class="badge accent">MODULE 4</span>
+   <span class="badge">BAC Pro</span>
+   <span class="badge">20 min</span>
+  </div>
+ </div>
+</header>
+
+<main>
+<section class="hero reveal">
+ <div>
+  <div class="eyebrow">Service en salle — organisation, événementiel et encaissement</div>
+  <h1>Encaissement et facturation</h1>
+  <p class="lead">Réaliser l’encaissement et établir une facture correcte en maîtrisant les moyens de paiement, l’addition, les remises, la TVA, la caisse et sa clôture.</p>
+ </div>
+ <aside class="meta">
+  <strong>LEÇON 19</strong>
+  <div>Durée estimée : <span class="mono">20 min</span></div>
+ </aside>
+</section>
+
+<nav class="toc reveal" aria-label="Sommaire">
+ <strong>Sommaire</strong>
+ <ul>
+  <li><a href="#definitions">1. Définitions essentielles</a></li>
+  <li><a href="#addition">2. Préparer l’addition</a></li>
+  <li><a href="#tva">3. Comprendre la TVA</a></li>
+  <li><a href="#remises">4. Remises et calculs</a></li>
+  <li><a href="#paiements">5. Moyens de paiement</a></li>
+  <li><a href="#caisse">6. Procédure de caisse</a></li>
+  <li><a href="#cloture">7. Clôture de caisse</a></li>
+  <li><a href="#resume">8. Points clés</a></li>
+ </ul>
+</nav>
+
+<section id="definitions" class="reveal">
+ <div class="section-head">
+  <div class="eyebrow">01 — Définitions</div>
+  <h2>Les notions à maîtriser</h2>
+  <p>Un encaissement réussi repose d’abord sur la compréhension des documents, des montants et des opérations effectuées.</p>
+ </div>
+ <div class="grid">
+  <article class="card"><div class="icon">🧾</div><h3>Addition</h3><p>Document présentant les consommations du client et le montant total à régler.</p></article>
+  <article class="card"><div class="icon">📄</div><h3>Facture</h3><p>Document commercial qui formalise la vente et indique notamment les prestations, les montants et les informations nécessaires.</p></article>
+  <article class="card"><div class="icon">💶</div><h3>Encaissement</h3><p>Opération par laquelle l’établissement reçoit le règlement correspondant à une addition ou une facture.</p></article>
+ </div>
+ <div class="callout"><span class="label">💡 À retenir</span>Avant de demander le règlement, le professionnel doit vérifier que l’addition correspond réellement aux consommations du client.</div>
+</section>
+
+<section id="addition" class="reveal">
+ <div class="eyebrow">02 — Addition et facture</div>
+ <h2>Vérifier avant de faire payer</h2>
+ <div class="steps" aria-label="Procédure de préparation de l'addition">
+  <div class="step"><b>01</b><br>Identifier la table</div>
+  <div class="step"><b>02</b><br>Contrôler les consommations</div>
+  <div class="step"><b>03</b><br>Vérifier les tarifs</div>
+  <div class="step"><b>04</b><br>Appliquer les remises autorisées</div>
+  <div class="step"><b>05</b><br>Présenter l’addition</div>
+ </div>
+ <div class="two">
+  <div class="card">
+   <h3>Contrôles indispensables</h3>
+   <ul>
+    <li>table et nombre de couverts ;</li>
+    <li>plats et boissons réellement servis ;</li>
+    <li>quantités et prix unitaires ;</li>
+    <li>remise ou avantage éventuel ;</li>
+    <li>total à payer.</li>
+   </ul>
+  </div>
+  <div class="invoice">ADDITION — TABLE 08
+2 COUVERTS
+
+1 × MENU DU JOUR .......... 18,00 €
+1 × BOISSON ................ 4,00 €
+1 × DESSERT ................ 6,00 €
+--------------------------------
+SOUS-TOTAL ................ 28,00 €
+REMISE ...................... 0,00 €
+TOTAL À PAYER ............. 28,00 €</div>
+ </div>
+ <div class="callout"><span class="label">⚠️ Attention / erreur fréquente</span>Ne jamais encaisser un montant sans avoir contrôlé les lignes de l’addition. Une erreur de facturation peut entraîner une réclamation et une différence de caisse.</div>
+</section>
+
+<section id="tva" class="reveal">
+ <div class="eyebrow">03 — TVA</div>
+ <h2>Lire et calculer la TVA</h2>
+ <p>La TVA est une taxe intégrée au prix de vente selon les règles fiscales applicables. Pour établir correctement une facture, il faut distinguer le montant hors taxe, le taux de TVA et le montant toutes taxes comprises.</p>
+
+<div class="svgbox" role="img" aria-label="Schéma du calcul de la TVA">
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg">
+ <rect x="30" y="60" width="210" height="105" rx="16" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+ <text x="135" y="101" text-anchor="middle" fill="#3B2314" font-size="22" font-family="Inter">HT</text>
+ <text x="135" y="130" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">prix hors taxe</text>
+ <path d="M240 112H325" stroke="#E8752C" stroke-width="3"/>
+ <path d="M315 104l12 8-12 8" fill="none" stroke="#E8752C" stroke-width="3"/>
+ <rect x="325" y="45" width="250" height="135" rx="16" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+ <text x="450" y="88" text-anchor="middle" fill="#3B2314" font-size="22" font-family="Inter">TVA</text>
+ <text x="450" y="118" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">HT × taux</text>
+ <text x="450" y="148" text-anchor="middle" fill="#8A6E5C" font-size="14" font-family="IBM Plex Mono">100 × 10 % = 10</text>
+ <path d="M575 112H660" stroke="#E8752C" stroke-width="3"/>
+ <path d="M650 104l12 8-12 8" fill="none" stroke="#E8752C" stroke-width="3"/>
+ <rect x="660" y="60" width="210" height="105" rx="16" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+ <text x="765" y="101" text-anchor="middle" fill="#3B2314" font-size="22" font-family="Inter">TTC</text>
+ <text x="765" y="130" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">HT + TVA</text>
+</svg>
+</div>
+
+<table class="protocol">
+ <thead><tr><th scope="col">Élément</th><th scope="col">Formule</th><th scope="col">Exemple</th></tr></thead>
+ <tbody>
+  <tr><td>Montant de TVA</td><td class="mono">HT × taux</td><td class="mono">100 × 10 % = 10</td></tr>
+  <tr><td>Total TTC</td><td class="mono">HT + TVA</td><td class="mono">100 + 10 = 110</td></tr>
+  <tr><td>Retrouver HT à partir du TTC</td><td class="mono">TTC ÷ (1 + taux)</td><td class="mono">110 ÷ 1,10 = 100</td></tr>
+ </tbody>
+</table>
+<div class="callout"><span class="label">📌 Rappel professionnel</span>Le taux applicable dépend de la réglementation en vigueur et de la nature de l’opération. Sur une facture réelle, utiliser le taux autorisé par l’établissement et la réglementation locale.</div>
+</section>
+
+<section id="remises" class="reveal">
+ <div class="eyebrow">04 — Remises</div>
+ <h2>Appliquer une remise sans fausser le total</h2>
+ <div class="tabs" role="tablist" aria-label="Types de calcul">
+  <button class="tab" role="tab" aria-selected="true" aria-controls="tab1" id="tabbtn1">Remise en pourcentage</button>
+  <button class="tab" role="tab" aria-selected="false" aria-controls="tab2" id="tabbtn2">Remise fixe</button>
+ </div>
+ <div id="tab1" class="tabpanel active" role="tabpanel" aria-labelledby="tabbtn1">
+  <div class="card">
+   <h3>Exemple : remise de 10 %</h3>
+   <p>Pour une addition de <span class="mono">80 €</span> :</p>
+   <p class="mono">80 × 10 % = 8 €</p>
+   <p>Montant après remise :</p>
+   <p class="mono">80 − 8 = 72 €</p>
+  </div>
+ </div>
+ <div id="tab2" class="tabpanel" role="tabpanel" aria-labelledby="tabbtn2">
+  <div class="card">
+   <h3>Exemple : remise de 5 €</h3>
+   <p>Pour une addition de <span class="mono">80 €</span> :</p>
+   <p class="mono">80 − 5 = 75 €</p>
+  </div>
+ </div>
+ <div class="callout"><span class="label">⚠️ Attention</span>Une remise ne doit être appliquée que lorsqu’elle est autorisée. Vérifiez son motif, ses conditions et son enregistrement dans le système de caisse.</div>
+</section>
+
+<section id="paiements" class="reveal">
+ <div class="eyebrow">05 — Moyens de paiement</div>
+ <h2>Adapter la procédure au mode de règlement</h2>
+ <div class="grid">
+  <article class="card"><div class="icon">💵</div><h3>Espèces</h3><p>Compter le montant reçu, annoncer clairement la somme et rendre la monnaie exacte.</p></article>
+  <article class="card"><div class="icon">💳</div><h3>Carte bancaire</h3><p>Vérifier le montant affiché, faire réaliser le paiement et confirmer que la transaction est acceptée.</p></article>
+  <article class="card"><div class="icon">📱</div><h3>Paiement électronique</h3><p>Suivre la procédure prévue par l’établissement et vérifier la confirmation du règlement.</p></article>
+ </div>
+ <table class="protocol">
+  <thead><tr><th scope="col">Étape</th><th scope="col">Action</th><th scope="col">Point de contrôle</th></tr></thead>
+  <tbody>
+   <tr><td>1</td><td>Annoncer le total</td><td>Le montant correspond à l’addition</td></tr>
+   <tr><td>2</td><td>Recevoir le paiement</td><td>Mode de paiement identifié</td></tr>
+   <tr><td>3</td><td>Enregistrer l’opération</td><td>Montant correct dans la caisse</td></tr>
+   <tr><td>4</td><td>Remettre justificatif / monnaie</td><td>Règlement correctement finalisé</td></tr>
+  </tbody>
+ </table>
+ <div class="callout"><span class="label">👨‍🍳 Conseil professionnel</span>Avec les espèces, comptez la somme reçue avant de la ranger et annoncez la monnaie rendue. Cela sécurise l’opération et limite les contestations.</div>
+</section>
+
+<section id="caisse" class="reveal">
+ <div class="eyebrow">06 — Procédure de caisse</div>
+ <h2>Enregistrer chaque opération avec rigueur</h2>
+ <p>La caisse permet de suivre les encaissements et de comparer les montants théoriquement attendus avec les montants réellement présents.</p>
+ <div class="steps">
+  <div class="step"><b>01</b><br>Ouvrir la caisse</div>
+  <div class="step"><b>02</b><br>Enregistrer les ventes</div>
+  <div class="step"><b>03</b><br>Enregistrer les remises</div>
+  <div class="step"><b>04</b><br>Contrôler les paiements</div>
+  <div class="step"><b>05</b><br>Préparer la clôture</div>
+ </div>
+ <div class="two">
+  <div class="card">
+   <h3>Bonnes pratiques</h3>
+   <ul>
+    <li>ne pas mélanger les opérations personnelles et professionnelles ;</li>
+    <li>conserver les justificatifs nécessaires ;</li>
+    <li>corriger les erreurs selon la procédure de l’établissement ;</li>
+    <li>signaler rapidement une anomalie ;</li>
+    <li>ne pas supprimer une opération sans traçabilité.</li>
+   </ul>
+  </div>
+  <div class="card">
+   <h3>Une différence de caisse ?</h3>
+   <p>Comparer les tickets, les moyens de paiement et les montants enregistrés. Rechercher l’origine de l’écart avant de clôturer définitivement la caisse.</p>
+   <div class="callout"><span class="label">💡 À retenir</span>Une caisse fiable dépend d’un enregistrement régulier et d’un contrôle systématique.</div>
+  </div>
+ </div>
+</section>
+
+<section id="cloture" class="reveal">
+ <div class="eyebrow">07 — Clôture de caisse</div>
+ <h2>Terminer le service en contrôlant les écarts</h2>
+ <table class="protocol">
+  <thead><tr><th scope="col">Ordre</th><th scope="col">Opération</th><th scope="col">Résultat attendu</th></tr></thead>
+  <tbody>
+   <tr><td class="mono">01</td><td>Arrêter les encaissements</td><td>Plus aucune opération en attente</td></tr>
+   <tr><td class="mono">02</td><td>Éditer / consulter le récapitulatif</td><td>Total théorique connu</td></tr>
+   <tr><td class="mono">03</td><td>Compter les espèces</td><td>Montant réel déterminé</td></tr>
+   <tr><td class="mono">04</td><td>Contrôler les autres paiements</td><td>Cartes et paiements électroniques vérifiés</td></tr>
+   <tr><td class="mono">05</td><td>Comparer théorie et réalité</td><td>Écart identifié ou caisse équilibrée</td></tr>
+   <tr><td class="mono">06</td><td>Signaler et tracer l’anomalie</td><td>Procédure interne respectée</td></tr>
+  </tbody>
+ </table>
+ <div class="callout"><span class="label">📌 Rappel</span>La clôture ne consiste pas seulement à compter l’argent : elle permet de vérifier la cohérence de l’ensemble des opérations de la journée.</div>
+ <details>
+  <summary>Que faire en cas d’écart ?</summary>
+  <p>Reprendre les opérations, vérifier les justificatifs et les différents moyens de paiement, puis suivre la procédure prévue par l’établissement pour déclarer l’écart.</p>
+ </details>
+ <details>
+  <summary>Pourquoi conserver les justificatifs ?</summary>
+  <p>Ils permettent de retrouver l’origine d’une opération et facilitent les contrôles en cas de différence ou de demande d’explication.</p>
+ </details>
+</section>
+
+<section id="resume" class="reveal">
+ <div class="eyebrow">08 — Synthèse</div>
+ <h2>Points clés à retenir</h2>
+ <div class="grid">
+  <article class="card"><h3>Avant l’encaissement</h3><p>Contrôler l’addition, les consommations, les remises et le total.</p></article>
+  <article class="card"><h3>Pendant le paiement</h3><p>Identifier le moyen de paiement, enregistrer le montant et finaliser correctement la transaction.</p></article>
+  <article class="card"><h3>Après le service</h3><p>Contrôler la caisse, comparer les montants et tracer les éventuelles anomalies.</p></article>
+ </div>
+ <div class="callout"><span class="label">💡 À retenir</span><strong>Contrôler → calculer → encaisser → enregistrer → vérifier → clôturer.</strong><br>La rigueur à chaque étape garantit une facturation correcte et une caisse fiable.</div>
+</section>
+
+<div class="navlinks">
+ <a class="navlink" href="#"><strong>← Leçon 18</strong><br>Banquets et événements</a>
+ <a class="navlink" href="#"><strong>Leçon 20 →</strong><br>Communication professionnelle en restauration</a>
+</div>
+</main>
+
+<footer>Filière Restauration · Module 4 · Leçon 19 · Encaissement et facturation</footer>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+ const d=document.documentElement, max=d.scrollHeight-d.clientHeight;
+ progress.style.width=(max>0?(d.scrollTop/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true}); updateProgress();
+
+document.getElementById('top').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+
+const tabs=document.querySelectorAll('.tab');
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+ tabs.forEach(t=>t.setAttribute('aria-selected','false'));
+ document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+ tab.setAttribute('aria-selected','true');
+ document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+}));
+</script>
+</body>
+</html>

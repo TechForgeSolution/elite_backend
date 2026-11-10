@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 09 — Tester, sécuriser et maintenir ses automatisations</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230D9488'/><path d='M8 16h6l3-6 3 12 2-6h2' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--alt:#F6F8FA;--text:#090D12;--muted:#57606A;--accent:#0D9488;--soft:#CCFBF1;--dark:#0F766E;--border:#E1E4E8}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--text);background:var(--bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.2;letter-spacing:-.02em;margin:0 0 .6em}
+h1{font-size:clamp(2rem,5vw,3.25rem)}h2{font-size:clamp(1.5rem,3vw,2rem)}h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1.1em}a{color:var(--accent)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:960px;margin:0 auto;padding:0 1.25rem}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font:600 .95rem Sora,sans-serif;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+header.top a.menu{font-size:.9rem;font-weight:500;text-decoration:none;color:var(--muted)}
+header.top a.menu:hover{color:var(--accent)}
+.hero{padding:4.5rem 0 3rem}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.badge{font-size:.82rem;font-weight:500;padding:.25rem .75rem;border-radius:99px;background:var(--alt);color:var(--muted);border:1px solid var(--border)}
+.badge.k{background:var(--soft);color:#134E4A;border-color:transparent}
+.lead{font-size:1.25rem;color:var(--muted)}
+.toc{background:var(--alt);border-radius:14px;padding:1.5rem 1.75rem;margin:2rem 0 0}
+.toc strong{font-family:Sora,sans-serif}
+.toc ol{margin:.75rem 0 0;padding-left:1.25rem}
+.toc li{margin:.3rem 0}.toc a{text-decoration:none;color:var(--text)}.toc a:hover{color:var(--accent);text-decoration:underline}
+section.s{padding:4rem 0}section.s:nth-of-type(even){background:var(--alt)}
+.num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font:600 .95rem Sora,sans-serif;margin-bottom:1rem}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+.call{border-left:4px solid var(--accent);background:var(--soft);border-radius:0 10px 10px 0;padding:1rem 1.25rem;margin:1.5rem 0;color:#134E4A}
+.call b{display:block;font-family:Sora,sans-serif;margin-bottom:.25rem}.call p{margin:0}
+.call.warn{background:#fff;border:1px solid var(--accent);border-left-width:4px;color:var(--text)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card .ic{font-size:1.6rem}.card h3{margin:.4rem 0 .3rem}.card p{margin:0;font-size:.95rem;color:var(--muted)}
+.steps{list-style:none;display:flex;gap:.75rem;padding:0;margin:1.5rem 0;overflow-x:auto;counter-reset:s}
+.steps li{counter-increment:s;flex:1 0 130px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;font-size:.9rem;position:relative}
+.steps li::before{content:counter(s);display:block;font:700 1.3rem Sora,sans-serif;color:var(--accent);margin-bottom:.25rem}
+.steps b{display:block;font-family:Sora,sans-serif;font-size:.95rem}.steps span{color:var(--muted)}
+.tabs [role=tablist]{display:flex;gap:.25rem;border-bottom:1px solid var(--border);overflow-x:auto}
+.tabs [role=tab]{font:500 .95rem Inter,sans-serif;background:none;border:0;border-bottom:3px solid transparent;padding:.7rem 1rem;cursor:pointer;color:var(--muted);white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tabs [role=tabpanel]{padding:1.25rem 0}.tabs [role=tabpanel][hidden]{display:none}
+.code{position:relative;background:#0D1117;color:#F0F6FC;border-radius:12px;margin:1.25rem 0}
+.code pre{margin:0;padding:1.25rem;overflow-x:auto;font:.88rem/1.65 ui-monospace,Menlo,Consolas,monospace}
+.code button{position:absolute;top:.6rem;right:.6rem;font:500 .78rem Inter,sans-serif;background:#161B22;color:#F0F6FC;border:1px solid #30363D;border-radius:6px;padding:.3rem .7rem;cursor:pointer}
+.code button:hover{background:var(--dark);border-color:var(--dark)}
+.k1{color:#14B8A6}.k2{color:#8B949E}.k3{color:#F0F6FC;font-weight:600}
+code.i{background:var(--alt);padding:.1em .4em;border-radius:5px;font-size:.9em}
+details{background:var(--bg);border:1px solid var(--border);border-radius:12px;margin:.6rem 0}
+details[open]{border-color:var(--accent)}
+summary{cursor:pointer;padding:1rem 1.25rem;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::-webkit-details-marker{display:none}summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}details>div{padding:0 1.25rem 1rem;color:var(--muted)}
+.tw{overflow-x:auto;margin:1.5rem 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.92rem}
+th,td{text-align:left;padding:.8rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:Sora,sans-serif;background:var(--alt)}tr:last-child td{border:0}
+.fig{margin:1.5rem 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem}
+.fig svg{width:100%;height:auto;display:block}.fig figcaption{font-size:.85rem;color:var(--muted);text-align:center;margin-top:.5rem}
+.key{background:var(--text);color:#F0F6FC;padding:4rem 0}
+.key h2{color:#fff}.key ul{list-style:none;padding:0;display:grid;gap:.75rem}
+.key li{padding-left:1.8rem;position:relative}.key li::before{content:"✓";position:absolute;left:0;color:#14B8A6;font-weight:700}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:3rem 0 1rem}
+.nav a{display:block;border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.nav a:hover{border-color:var(--accent);transform:translateY(-2px)}.nav small{display:block;color:var(--muted)}.nav .n{text-align:right}
+.back{text-align:center;padding:.5rem 0 2rem}
+.btn{display:inline-block;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:.6rem 1.2rem;font:500 .95rem Inter,sans-serif;cursor:pointer;text-decoration:none;transition:background .2s}
+.btn:hover{background:var(--dark)}
+footer{border-top:1px solid var(--border);padding:1.5rem 0;text-align:center;font-size:.85rem;color:var(--muted)}
+#up{position:fixed;right:1rem;bottom:1rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,background .2s}
+#up.show{opacity:1;pointer-events:auto}#up:hover{background:var(--dark)}
+@media(max-width:600px){.nav{grid-template-columns:1fr}.nav .n{text-align:left}.hero{padding-top:3rem}section.s{padding:3rem 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.fade{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<header class="top"><div class="wide">
+<a class="logo" href="#top"><i></i>Automatisation &amp; IA</a>
+<a class="menu" href="#sommaire">Sommaire</a></div></header>
+
+<main id="top">
+<div class="hero"><div class="wrap">
+<div class="badges"><span class="badge k">Module 2 — Automatiser avec l'IA, sécuriser et piloter</span><span class="badge">25 min de lecture</span><span class="badge">Intermédiaire / Avancé</span></div>
+<p style="color:var(--muted);margin-bottom:.5rem">Leçon 09</p>
+<h1>Tester, sécuriser et maintenir ses automatisations</h1>
+<p class="lead">Une automatisation qui tourne n'est pas une automatisation fiable. Apprenez à la tester, à la protéger et à la garder en bonne santé dans la durée.</p>
+<nav class="toc" id="sommaire" aria-label="Sommaire"><strong>Dans cette leçon</strong>
+<ol><li><a href="#s1">Tester et gérer les erreurs</a></li><li><a href="#s2">Limites techniques et coûts</a></li><li><a href="#s3">Sécuriser les accès et les clés API</a></li><li><a href="#s4">Protéger les données personnelles</a></li><li><a href="#s5">Documenter et surveiller</a></li><li><a href="#s6">Grille de tests et maintenance</a></li></ol></nav>
+</div></div>
+
+<section class="s" id="s1"><div class="wrap fade">
+<span class="num">1</span><h2>Tester et gérer les erreurs</h2>
+<p>Un bon plan de tests suit toujours le même ordre : on valide d'abord que tout fonctionne, puis on cherche volontairement à casser le flux.</p>
+<ol class="steps"><li><b>Cas nominal</b><span>Données normales, résultat attendu.</span></li><li><b>Cas limites</b><span>Champ vide, texte très long, accents.</span></li><li><b>Erreurs</b><span>API en panne, clé expirée, timeout.</span></li><li><b>Alerte</b><span>Vous êtes prévenu en quelques minutes.</span></li><li><b>Rejeu</b><span>On relance sans doublon.</span></li></ol>
+<figure class="fig"><svg viewBox="0 0 640 170" role="img" aria-label="Schéma : un déclencheur mène à une action ; en cas de succès le flux continue, en cas d'erreur une alerte est envoyée et l'exécution est mise en file de reprise.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#57606A"/></marker></defs>
+<g font-family="Inter,sans-serif" font-size="14" text-anchor="middle">
+<rect x="10" y="55" width="120" height="56" rx="10" fill="#0D9488"/><text x="70" y="88" fill="#fff" font-weight="600">Déclencheur</text>
+<rect x="190" y="55" width="120" height="56" rx="10" fill="#fff" stroke="#090D12" stroke-width="1.5"/><text x="250" y="88" fill="#090D12">Action / IA</text>
+<rect x="400" y="14" width="130" height="50" rx="10" fill="#CCFBF1"/><text x="465" y="44" fill="#134E4A">Suite du flux ✓</text>
+<rect x="400" y="102" width="130" height="50" rx="10" fill="#fff" stroke="#0D9488" stroke-width="2"/><text x="465" y="132" fill="#090D12">Alerte + reprise</text>
+<g stroke="#57606A" stroke-width="2" fill="none" marker-end="url(#a)"><path d="M130 83H188"/><path d="M310 75C350 75 360 40 398 40"/><path d="M310 91C350 91 360 127 398 127"/></g>
+<text x="355" y="30" fill="#57606A" font-size="12">succès</text><text x="355" y="158" fill="#57606A" font-size="12">erreur</text></g></svg>
+<figcaption>Chaque action doit avoir une branche « erreur » prévue.</figcaption></figure>
+<div class="tabs">
+<div role="tablist" aria-label="Gestion des erreurs par outil"><button role="tab" aria-selected="true" aria-controls="p1" id="t1">Make</button><button role="tab" aria-selected="false" aria-controls="p2" id="t2" tabindex="-1">n8n</button></div>
+<div role="tabpanel" id="p1" aria-labelledby="t1"><p>Ajoutez un <b>gestionnaire d'erreurs</b> (clic droit sur le module) puis choisissez <em>Break</em> pour mettre l'exécution en attente et la relancer, ou <em>Ignore</em> uniquement pour les erreurs sans conséquence.</p></div>
+<div role="tabpanel" id="p2" aria-labelledby="t2" hidden><p>Créez un second workflow qui démarre par un <b>Error Trigger</b>, puis désignez-le dans les réglages du workflow principal. Il reçoit le nom du flux, le nœud en échec et le message.</p></div></div>
+<div class="call"><b>💡 À retenir</b><p>Testez avec de fausses données, jamais avec de vrais clients. Les cas d'erreur se testent aussi : coupez volontairement une connexion pour vérifier que l'alerte part.</p></div>
+</div></section>
+
+<section class="s" id="s2"><div class="wrap fade">
+<span class="num">2</span><h2>Limites techniques et coûts</h2>
+<p>Chaque service impose des plafonds. Les ignorer provoque des échecs en pleine journée, ou une facture inattendue en fin de mois.</p>
+<div class="cards"><div class="card"><div class="ic">⏱️</div><h3>Quotas</h3><p>Nombre de requêtes par minute, jour ou mois selon l'offre.</p></div><div class="card"><div class="ic">🔁</div><h3>Boucles</h3><p>Un flux qui se déclenche lui-même peut consommer tout un quota en minutes.</p></div><div class="card"><div class="ic">🪙</div><h3>Jetons IA</h3><p>Le coût dépend de la taille du texte envoyé et reçu.</p></div></div>
+<p>Fixez un budget mensuel dans la console du fournisseur, activez les alertes de consommation et limitez la longueur des réponses demandées à l'IA.</p>
+<div class="call warn"><b>⚠️ Erreur fréquente</b><p>Brancher un déclencheur « nouvelle ligne » sur une feuille que le flux modifie lui-même : il se relance à l'infini.</p></div>
+</div></section>
+
+<section class="s" id="s3"><div class="wrap fade">
+<span class="num">3</span><h2>Sécuriser les accès et les clés API</h2>
+<p>Une clé API donne les mêmes droits que son propriétaire. Elle se traite comme un mot de passe.</p>
+<div class="code"><button type="button" data-copy>Copier</button><pre><code><span class="k2">// Mauvais : clé écrite en clair dans le flux</span>
+{ <span class="k1">"Authorization"</span>: <span class="k3">"Bearer sk-abc123..."</span> }
+
+<span class="k2">// Bon : la clé vient du coffre de secrets de l'outil</span>
+{ <span class="k1">"Authorization"</span>: <span class="k3">"Bearer {{ $secrets.OPENAI_KEY }}"</span> }</code></pre></div>
+<div class="cards"><div class="card"><div class="ic">🔑</div><h3>Moindre privilège</h3><p>Une clé par flux, avec les seules permissions nécessaires.</p></div><div class="card"><div class="ic">🔄</div><h3>Rotation</h3><p>Renouvelez les clés régulièrement et après tout départ d'un collaborateur.</p></div><div class="card"><div class="ic">🛡️</div><h3>Double authentification</h3><p>Activez-la sur chaque compte qui gère les flux.</p></div></div>
+<div class="call warn"><b>⚠️ Attention</b><p>Ne collez jamais une clé dans un e-mail, un chat ou une capture d'écran. Si elle fuite, révoquez-la immédiatement.</p></div>
+</div></section>
+
+<section class="s" id="s4"><div class="wrap fade">
+<span class="num">4</span><h2>Protéger les données personnelles</h2>
+<p>Dès qu'un flux manipule des noms, e-mails ou commandes, le RGPD s'applique. Envoyer ces données à une IA externe est un transfert à part entière.</p>
+<details><summary>Minimiser les données envoyées</summary><div>N'envoyez à l'IA que le nécessaire : retirez noms, adresses et numéros avant le traitement, ou remplacez-les par un identifiant.</div></details>
+<details><summary>Choisir ses prestataires</summary><div>Vérifiez où sont hébergées les données, si elles servent à entraîner des modèles, et si un contrat de traitement (DPA) est proposé.</div></details>
+<details><summary>Limiter la durée de conservation</summary><div>Purgez les journaux d'exécution qui contiennent des données clients, par exemple après 30 jours.</div></details>
+<div class="call"><b>🔗 Pour aller plus loin</b><p>Le site de la CNIL propose des guides pratiques sur le RGPD à destination des petites structures.</p></div>
+</div></section>
+
+<section class="s" id="s5"><div class="wrap fade">
+<span class="num">5</span><h2>Documenter et surveiller</h2>
+<p>Dans six mois, vous aurez oublié pourquoi ce filtre existe. Une fiche courte par automatisation suffit à éviter de tout redécouvrir.</p>
+<div class="cards"><div class="card"><div class="ic">📝</div><h3>Objectif</h3><p>Ce que fait le flux et qui l'utilise.</p></div><div class="card"><div class="ic">🔌</div><h3>Connexions</h3><p>Outils branchés, comptes utilisés, clés concernées.</p></div><div class="card"><div class="ic">🚨</div><h3>Procédure de panne</h3><p>Qui prévenir et comment relancer.</p></div></div>
+<details><summary>À quelle fréquence surveiller ?</summary><div>Flux critique : alerte immédiate et revue quotidienne. Flux secondaire : revue hebdomadaire de l'historique d'exécutions.</div></details>
+<details><summary>Que consigner dans un journal ?</summary><div>Date, nom du flux, statut et message d'erreur. Évitez d'y copier des données personnelles.</div></details>
+</div></section>
+
+<section class="s" id="s6"><div class="wide fade">
+<span class="num">6</span><h2>Grille de tests et maintenance</h2>
+<p style="max-width:720px">Copiez cette grille pour chaque nouveau flux et cochez-la avant la mise en production.</p>
+<div class="tw"><table><thead><tr><th>Test</th><th>Action</th><th>Résultat attendu</th></tr></thead><tbody>
+<tr><td>Cas nominal</td><td>Envoyer une donnée valide</td><td>Flux complet, sans erreur</td></tr>
+<tr><td>Champ vide</td><td>Retirer l'e-mail du client</td><td>Rejet propre ou valeur par défaut</td></tr>
+<tr><td>API indisponible</td><td>Désactiver la connexion</td><td>Alerte reçue, exécution en attente</td></tr>
+<tr><td>Doublon</td><td>Envoyer deux fois la même donnée</td><td>Une seule action effectuée</td></tr>
+<tr><td>Quota atteint</td><td>Simuler un excès de requêtes</td><td>Pause puis reprise, pas de perte</td></tr></tbody></table></div>
+<div class="wrap" style="padding:0"><p><b>Routine de maintenance :</b> chaque semaine, relisez les erreurs ; chaque mois, vérifiez les coûts et les accès ; chaque trimestre, renouvelez les clés et mettez à jour la documentation.</p></div>
+</div></section>
+
+<div class="key"><div class="wrap"><h2>Points clés à retenir</h2><ul>
+<li>Testez le cas normal, les cas limites et les pannes avant la mise en production.</li>
+<li>Prévoyez une alerte et une reprise pour chaque erreur possible.</li>
+<li>Surveillez quotas et coûts, et fixez un budget maximal.</li>
+<li>Rangez les clés API dans un coffre, une par flux, avec des droits minimaux.</li>
+<li>N'envoyez à l'IA que les données personnelles indispensables.</li>
+<li>Documentez chaque flux et planifiez une revue régulière.</li></ul></div></div>
+
+<div class="wrap"><nav class="nav" aria-label="Navigation entre leçons">
+<a href="#"><small>← Leçon précédente</small>Leçon 08 — Automatiser le suivi des clients et les processus métier</a>
+<a class="n" href="#"><small>Leçon suivante →</small>Leçon 10 — Construire son plan d'automatisation</a></nav>
+<div class="back"><a class="btn" href="#">Retour au sommaire du module</a></div></div>
+</main>
+<footer>Automatisation &amp; IA — Module 2, Leçon 09</footer>
+<button id="up" aria-label="Retour en haut de page">↑</button>
+
+<script>
+const bar=document.getElementById('bar'),up=document.getElementById('up');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);bar.style.width=p*100+'%';up.classList.toggle('show',h.scrollTop>600)},{passive:true});
+up.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+document.querySelectorAll('.tabs').forEach(t=>{
+const tabs=[...t.querySelectorAll('[role=tab]')];
+const sel=tb=>{tabs.forEach(x=>{const on=x===tb;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;t.querySelector('#'+x.getAttribute('aria-controls')).hidden=!on});tb.focus()};
+tabs.forEach((tb,i)=>{tb.onclick=()=>sel(tb);tb.onkeydown=e=>{if(e.key==='ArrowRight')sel(tabs[(i+1)%tabs.length]);if(e.key==='ArrowLeft')sel(tabs[(i-1+tabs.length)%tabs.length])}})});
+document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{
+const txt=b.parentElement.querySelector('code').innerText;
+(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{b.textContent='Copié ✓'},()=>{b.textContent='Copie impossible'});
+setTimeout(()=>b.textContent='Copier',1800)});
+</script>
+</body>
+</html>

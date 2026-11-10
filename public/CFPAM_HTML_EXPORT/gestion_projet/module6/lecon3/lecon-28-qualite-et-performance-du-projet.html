@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 28 — Qualité et performance du projet">
+<title>Leçon 28 — Qualité et performance du projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --shadow:0 12px 35px rgba(20,33,61,.08);
+  --radius:16px;
+  --max:1160px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-text);text-decoration:none}
+a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+.header{position:sticky;top:0;z-index:900;background:rgba(244,246,248,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:Manrope;font-weight:700;letter-spacing:-.02em}
+.brand span{color:var(--color-accent)}
+.header-meta{font:500 12px "JetBrains Mono";letter-spacing:.03em;color:var(--muted)}
+.container{max-width:var(--max);margin:auto;padding:0 24px}
+.hero{padding:78px 0 54px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px}
+.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--border);border-radius:999px;background:var(--color-bg);font:500 12px "JetBrains Mono";text-transform:uppercase;letter-spacing:.04em}
+.badge.accent{border-color:var(--color-accent);background:var(--accent-soft)}
+h1,h2,h3{font-family:Manrope;line-height:1.15;letter-spacing:-.035em;margin:0 0 18px}
+h1{font-size:clamp(38px,6vw,72px);max-width:900px}
+h2{font-size:clamp(28px,4vw,42px)}
+h3{font-size:21px}
+.lead{font-size:20px;max-width:720px;color:var(--muted);margin:0 0 28px}
+.meta-row{display:flex;flex-wrap:wrap;gap:14px;font:500 13px "JetBrains Mono"}
+.meta-item{padding:9px 12px;background:var(--accent-soft);border-radius:9px}
+.toc{margin:10px 0 54px;padding:24px;background:var(--accent-soft);border-left:4px solid var(--color-accent);border-radius:0 var(--radius) var(--radius) 0}
+.toc-title{font-family:Manrope;font-weight:700;margin-bottom:10px}
+.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px}
+.toc li{break-inside:avoid;margin:5px 0}
+main section{padding:72px 0;border-top:1px solid var(--border)}
+.section-head{max-width:720px;margin-bottom:30px}
+.section-number{font:600 12px "JetBrains Mono";color:var(--color-accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.prose{max-width:720px}
+.prose p{margin:0 0 18px}
+.prose ul{padding-left:22px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:30px 0}
+.card{background:rgba(244,246,248,.75);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:.2s ease}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card-icon{font-size:24px;margin-bottom:12px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.callout{margin:30px 0;padding:22px 24px;border:2px solid var(--color-accent);border-radius:var(--radius);background:var(--accent-soft)}
+.callout strong{font-family:Manrope;display:block;margin-bottom:5px}
+.mono{font-family:"JetBrains Mono";font-size:.88em;background:var(--accent-soft);padding:2px 6px;border-radius:5px}
+.diagram{margin:34px 0;padding:22px;border:1px solid var(--border);border-radius:var(--radius);overflow:auto;background:var(--color-bg)}
+svg{display:block;width:100%;min-width:680px;height:auto}
+svg text{font-family:Inter,sans-serif;fill:var(--color-text)}
+svg .mono-text{font-family:"JetBrains Mono",monospace}
+.table-wrap{overflow-x:auto;margin:30px 0;border:1px solid var(--border);border-radius:var(--radius)}
+table{width:100%;min-width:720px;border-collapse:collapse;background:var(--color-bg)}
+th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:Manrope;font-size:13px;background:var(--accent-soft)}
+td{font-size:14px}
+tr:hover td{background:var(--accent-soft)}
+.numeric{font-family:"JetBrains Mono";font-variant-numeric:tabular-nums}
+.tabs{margin:30px 0}
+.tab-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab-btn{border:1px solid var(--border);background:var(--color-bg);padding:10px 14px;border-radius:9px;cursor:pointer;font-weight:600}
+.tab-btn[aria-selected="true"]{border-color:var(--color-accent);background:var(--accent-soft)}
+.tab-panel{display:none;padding:22px;border:1px solid var(--border);border-radius:var(--radius)}
+.tab-panel.active{display:block}
+.accordion{border-top:1px solid var(--border);margin:30px 0}
+details{border-bottom:1px solid var(--border);padding:18px 0}
+summary{cursor:pointer;font-family:Manrope;font-weight:700}
+details p{max-width:720px;color:var(--muted);margin:12px 0 0}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);margin:34px 0;position:relative;gap:10px}
+.step{position:relative;text-align:center}
+.step:not(:last-child)::after{content:"";position:absolute;top:18px;left:60%;width:80%;height:1px;background:var(--color-neutral)}
+.dot{position:relative;z-index:1;margin:0 auto 12px;width:36px;height:36px;border:2px solid var(--color-accent);background:var(--color-bg);border-radius:50%;display:grid;place-items:center;font:600 12px "JetBrains Mono"}
+.step h3{font-size:15px;margin-bottom:5px}
+.step p{font-size:12px;color:var(--muted);margin:0}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0}
+.kpi{padding:18px;border:1px solid var(--border);border-radius:12px}
+.kpi-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.kpi-value{font:600 25px "JetBrains Mono"}
+.bar{height:9px;margin-top:12px;border:1px solid var(--color-neutral);border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--color-accent)}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}
+.key{padding:18px 20px;border-left:3px solid var(--color-accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
+.key strong{font-family:Manrope}
+.nav-bottom{padding:34px 0 60px;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch}
+.nav-card{border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:.2s}
+.nav-card:hover{border-color:var(--color-accent);background:var(--accent-soft)}
+.nav-card.next{text-align:right}
+.nav-label{font:500 11px "JetBrains Mono";color:var(--muted);text-transform:uppercase}
+.nav-title{font-family:Manrope;font-weight:700;margin-top:5px}
+footer{border-top:1px solid var(--border);padding:30px 0 45px;color:var(--muted);font-size:13px}
+.top{align-self:center;border:1px solid var(--border);border-radius:9px;padding:10px 14px;background:var(--color-bg)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+  .grid,.kpi-grid{grid-template-columns:1fr 1fr}
+  .stepper{grid-template-columns:1fr;gap:18px}
+  .step{text-align:left;display:grid;grid-template-columns:46px 1fr;column-gap:12px}
+  .step .dot{grid-row:1 / span 2;margin:0}
+  .step:not(:last-child)::after{display:none}
+  .step h3{margin-top:5px}
+  .step p{grid-column:2}
+  .toc ol{columns:1}
+}
+@media(max-width:520px){
+  .container{padding:0 17px}
+  .header-inner{padding:12px 17px}
+  .header-meta{display:none}
+  .hero{padding:52px 0 38px}
+  .lead{font-size:17px}
+  .grid,.kpi-grid,.keys{grid-template-columns:1fr}
+  main section{padding:52px 0}
+  .nav-bottom{grid-template-columns:1fr}
+  .top{order:-1}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*:before,*:after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">GESTION <span>DE PROJET</span></div>
+    <div class="header-meta">MODULE 06 · MANAGEMENT / PERFORMANCE / CLÔTURE</div>
+  </div>
+</header>
+
+<div class="container">
+  <header class="hero reveal">
+    <div class="eyebrow">
+      <span class="badge accent">Module 6</span>
+      <span class="badge">Avancé / Professionnel</span>
+      <span class="badge">18 min</span>
+    </div>
+    <h1>Qualité et performance du projet</h1>
+    <p class="lead">Mesurer et améliorer la qualité des résultats grâce à des critères d’acceptation clairs, des indicateurs pertinents, un contrôle qualité structuré et une logique d’amélioration continue.</p>
+    <div class="meta-row">
+      <span class="meta-item">LEÇON 28</span>
+      <span class="meta-item">OBJECTIF · MESURER & AMÉLIORER</span>
+    </div>
+  </header>
+
+  <nav class="toc reveal" aria-label="Sommaire">
+    <div class="toc-title">Sommaire de la leçon</div>
+    <ol>
+      <li><a href="#qualite">Comprendre la qualité</a></li>
+      <li><a href="#acceptation">Critères d’acceptation</a></li>
+      <li><a href="#kpi">Indicateurs clés — KPI</a></li>
+      <li><a href="#performance">Performance du projet</a></li>
+      <li><a href="#controle">Contrôle qualité</a></li>
+      <li><a href="#amelioration">Amélioration continue</a></li>
+      <li><a href="#synthese">Points clés à retenir</a></li>
+    </ol>
+  </nav>
+
+<main>
+<section id="qualite" class="reveal">
+  <div class="section-head">
+    <div class="section-number">01 · Fondamentaux</div>
+    <h2>Comprendre la qualité du projet</h2>
+  </div>
+  <div class="prose">
+    <p>La qualité d’un projet correspond à la capacité de ses résultats à répondre aux exigences définies et aux attentes des parties prenantes. Elle ne se limite donc pas à l’absence de défauts : elle repose sur des exigences mesurables, des critères explicites et une vérification régulière.</p>
+    <p>La qualité doit être pensée dès la préparation du projet. Lorsque les attentes sont transformées en critères observables, l’équipe dispose d’une référence commune pour décider si un livrable est acceptable.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Schéma reliant exigences, critères, livrable et acceptation">
+    <svg viewBox="0 0 1040 270">
+      <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#14213D" stroke-width="1.5"/></marker></defs>
+      <rect x="35" y="78" width="200" height="105" rx="14" fill="#F4F6F8" stroke="#8D99AE"/>
+      <text x="135" y="112" text-anchor="middle" font-size="17" font-weight="700">EXIGENCES</text>
+      <text x="135" y="140" text-anchor="middle" font-size="13">Besoin · règles · attentes</text>
+      <text x="135" y="164" text-anchor="middle" font-size="12" class="mono-text">référence</text>
+
+      <line x1="235" y1="130" x2="330" y2="130" stroke="#14213D" marker-end="url(#arrow)"/>
+      <rect x="330" y="78" width="200" height="105" rx="14" fill="#FFF4E3" stroke="#FF9F1C" stroke-width="2"/>
+      <text x="430" y="112" text-anchor="middle" font-size="17" font-weight="700">CRITÈRES</text>
+      <text x="430" y="140" text-anchor="middle" font-size="13">Mesurables · vérifiables</text>
+      <text x="430" y="164" text-anchor="middle" font-size="12" class="mono-text">seuils / conditions</text>
+
+      <line x1="530" y1="130" x2="625" y2="130" stroke="#14213D" marker-end="url(#arrow)"/>
+      <rect x="625" y="78" width="200" height="105" rx="14" fill="#F4F6F8" stroke="#8D99AE"/>
+      <text x="725" y="112" text-anchor="middle" font-size="17" font-weight="700">LIVRABLE</text>
+      <text x="725" y="140" text-anchor="middle" font-size="13">Résultat produit</text>
+      <text x="725" y="164" text-anchor="middle" font-size="12" class="mono-text">mesure réelle</text>
+
+      <line x1="825" y1="130" x2="920" y2="130" stroke="#14213D" marker-end="url(#arrow)"/>
+      <circle cx="970" cy="130" r="43" fill="#FFF4E3" stroke="#FF9F1C" stroke-width="2"/>
+      <text x="970" y="125" text-anchor="middle" font-size="14" font-weight="700">ACCEPTÉ</text>
+      <text x="970" y="145" text-anchor="middle" font-size="11">ou à corriger</text>
+    </svg>
+  </div>
+
+  <div class="grid">
+    <article class="card"><div class="card-icon">⌁</div><h3>Conformité</h3><p>Le résultat respecte les exigences, normes et contraintes définies.</p></article>
+    <article class="card"><div class="card-icon">◈</div><h3>Adéquation</h3><p>Le livrable répond réellement au besoin auquel le projet devait apporter une réponse.</p></article>
+    <article class="card"><div class="card-icon">✓</div><h3>Mesurabilité</h3><p>La qualité est associée à des critères observables plutôt qu’à une impression générale.</p></article>
+  </div>
+
+  <div class="callout"><strong>💡 À retenir</strong>La qualité se construit en définissant ce qui est attendu, comment cela sera vérifié et à partir de quel seuil le résultat peut être accepté.</div>
+</section>
+
+<section id="acceptation" class="reveal">
+  <div class="section-head">
+    <div class="section-number">02 · Référentiel</div>
+    <h2>Les critères d’acceptation</h2>
+  </div>
+  <div class="prose">
+    <p>Un critère d’acceptation décrit une condition qui doit être satisfaite pour considérer un livrable comme acceptable. Il permet de transformer une attente parfois vague en une règle vérifiable.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Type de critère</th><th scope="col">Ce qu’il vérifie</th><th scope="col">Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>Fonctionnel</td><td>Le résultat réalise correctement la fonction attendue.</td><td>Une opération demandée produit le résultat prévu.</td></tr>
+        <tr><td>Qualitatif</td><td>Le niveau de qualité attendu est atteint.</td><td>Le taux d’erreur reste inférieur au seuil défini.</td></tr>
+        <tr><td>Performance</td><td>Le résultat respecte une cible de performance.</td><td>Le temps de réponse reste sous la limite fixée.</td></tr>
+        <tr><td>Conformité</td><td>Les règles et contraintes applicables sont respectées.</td><td>Le livrable respecte les exigences contractuelles.</td></tr>
+        <tr><td>Livraison</td><td>Le livrable est complet et disponible dans les conditions prévues.</td><td>Les éléments attendus sont remis à la date prévue.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Critères d'acceptation">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-clair" id="btn-clair">Critère clair</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-vague" id="btn-vague">Formulation vague</button>
+    </div>
+    <div class="tab-panel active" role="tabpanel" id="tab-clair" aria-labelledby="btn-clair">
+      <h3>Une référence vérifiable</h3>
+      <p>« Le rapport final contient toutes les sections prévues dans le modèle de référence et est remis avant l’échéance définie. »</p>
+    </div>
+    <div class="tab-panel" role="tabpanel" id="tab-vague" aria-labelledby="btn-vague">
+      <h3>Une attente difficile à contrôler</h3>
+      <p>« Le rapport doit être de bonne qualité et livré rapidement. »</p>
+    </div>
+  </div>
+
+  <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Un critère qui utilise des termes comme « rapidement », « correctement » ou « bonne qualité » sans seuil ni définition commune peut créer des interprétations différentes au moment de l’acceptation.</div>
+</section>
+
+<section id="kpi" class="reveal">
+  <div class="section-head">
+    <div class="section-number">03 · Mesure</div>
+    <h2>Les indicateurs clés — KPI</h2>
+  </div>
+  <div class="prose">
+    <p>Les KPI (<span class="mono">Key Performance Indicators</span>) servent à suivre de manière synthétique une dimension importante du projet. Un bon indicateur doit être utile à la décision : il doit permettre de détecter un écart, d’en suivre l’évolution et, lorsque cela est possible, d’orienter une action.</p>
+  </div>
+
+  <div class="kpi-grid">
+    <article class="kpi"><div class="kpi-label">Conformité des livrables</div><div class="kpi-value">94 %</div><div class="bar"><span style="width:94%"></span></div></article>
+    <article class="kpi"><div class="kpi-label">Respect des jalons</div><div class="kpi-value">88 %</div><div class="bar"><span style="width:88%"></span></div></article>
+    <article class="kpi"><div class="kpi-label">Défauts détectés</div><div class="kpi-value">06</div><div class="bar"><span style="width:60%"></span></div></article>
+    <article class="kpi"><div class="kpi-label">Satisfaction</div><div class="kpi-value">4,4/5</div><div class="bar"><span style="width:88%"></span></div></article>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">KPI</th><th scope="col">Formule / lecture</th><th scope="col">Utilité de pilotage</th></tr></thead>
+      <tbody>
+        <tr><td>Taux de conformité</td><td class="numeric">livrables conformes ÷ livrables contrôlés × 100</td><td>Mesurer la proportion de résultats acceptables.</td></tr>
+        <tr><td>Taux de respect des délais</td><td class="numeric">jalons tenus ÷ jalons prévus × 100</td><td>Suivre la maîtrise des échéances.</td></tr>
+        <tr><td>Taux de défauts</td><td class="numeric">défauts constatés ÷ éléments contrôlés × 100</td><td>Identifier une dérive de qualité.</td></tr>
+        <tr><td>Satisfaction</td><td class="numeric">score moyen des évaluations</td><td>Suivre la perception de la valeur produite.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong>Limiter le tableau de bord aux indicateurs réellement utiles. Un grand nombre de KPI ne garantit pas un meilleur pilotage : l’enjeu est de relier chaque indicateur à une décision ou à un objectif du projet.</div>
+</section>
+
+<section id="performance" class="reveal">
+  <div class="section-head">
+    <div class="section-number">04 · Pilotage</div>
+    <h2>Évaluer la performance du projet</h2>
+  </div>
+  <div class="prose">
+    <p>La performance ne correspond pas à une seule mesure. Elle s’observe à travers plusieurs dimensions : qualité des résultats, respect des délais, maîtrise des ressources et capacité à répondre aux objectifs fixés.</p>
+    <p>Une performance satisfaisante implique donc de mettre en relation les résultats obtenus avec les références prévues. L’analyse des écarts permet ensuite d’identifier les causes et de décider des ajustements nécessaires.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Tableau de pilotage de la performance">
+    <svg viewBox="0 0 1000 390">
+      <line x1="90" y1="75" x2="910" y2="75" stroke="#8D99AE"/>
+      <line x1="90" y1="145" x2="910" y2="145" stroke="#8D99AE"/>
+      <line x1="90" y1="215" x2="910" y2="215" stroke="#8D99AE"/>
+      <line x1="90" y1="285" x2="910" y2="285" stroke="#8D99AE"/>
+      <line x1="90" y1="355" x2="910" y2="355" stroke="#8D99AE"/>
+      <text x="90" y="48" font-size="15" font-weight="700">DIMENSION</text>
+      <text x="400" y="48" font-size="15" font-weight="700">RÉFÉRENCE</text>
+      <text x="650" y="48" font-size="15" font-weight="700">MESURE</text>
+      <text x="90" y="118" font-size="14">Qualité</text><text x="400" y="118" class="mono-text" font-size="13">≥ 95 %</text><text x="650" y="118" class="mono-text" font-size="13">94 %</text>
+      <text x="90" y="188" font-size="14">Délais</text><text x="400" y="188" class="mono-text" font-size="13">100 % jalons</text><text x="650" y="188" class="mono-text" font-size="13">88 %</text>
+      <text x="90" y="258" font-size="14">Ressources</text><text x="400" y="258" class="mono-text" font-size="13">budget prévu</text><text x="650" y="258" class="mono-text" font-size="13">écart à analyser</text>
+      <text x="90" y="328" font-size="14">Satisfaction</text><text x="400" y="328" class="mono-text" font-size="13">≥ 4 / 5</text><text x="650" y="328" class="mono-text" font-size="13">4,4 / 5</text>
+      <rect x="835" y="91" width="55" height="35" rx="7" fill="#FFF4E3" stroke="#FF9F1C"/><text x="862" y="114" text-anchor="middle" font-size="12" font-weight="700">ÉCART</text>
+      <rect x="835" y="161" width="55" height="35" rx="7" fill="#FFF4E3" stroke="#FF9F1C"/><text x="862" y="184" text-anchor="middle" font-size="12" font-weight="700">ÉCART</text>
+      <rect x="835" y="301" width="55" height="35" rx="7" fill="#F4F6F8" stroke="#8D99AE"/><text x="862" y="324" text-anchor="middle" font-size="12" font-weight="700">OK</text>
+    </svg>
+  </div>
+
+  <div class="stepper" aria-label="Cycle de pilotage de la performance">
+    <div class="step"><div class="dot">01</div><div><h3>Référence</h3><p>Définir la cible</p></div></div>
+    <div class="step"><div class="dot">02</div><div><h3>Mesure</h3><p>Collecter les données</p></div></div>
+    <div class="step"><div class="dot">03</div><div><h3>Écart</h3><p>Comparer au prévu</p></div></div>
+    <div class="step"><div class="dot">04</div><div><h3>Analyse</h3><p>Identifier les causes</p></div></div>
+    <div class="step"><div class="dot">05</div><div><h3>Action</h3><p>Ajuster et suivre</p></div></div>
+  </div>
+
+  <div class="accordion">
+    <details>
+      <summary>Pourquoi distinguer mesure et analyse ?</summary>
+      <p>Une mesure indique une situation ; elle n’explique pas à elle seule pourquoi cette situation existe. L’analyse transforme donc l’information en compréhension, puis en décision de pilotage.</p>
+    </details>
+    <details>
+      <summary>Pourquoi suivre les tendances ?</summary>
+      <p>Une valeur isolée donne une photographie. L’évolution de l’indicateur permet de détecter une amélioration, une stagnation ou une dérive avant que l’écart ne devienne critique.</p>
+    </details>
+  </div>
+</section>
+
+<section id="controle" class="reveal">
+  <div class="section-head">
+    <div class="section-number">05 · Assurance du résultat</div>
+    <h2>Le contrôle qualité</h2>
+  </div>
+  <div class="prose">
+    <p>Le contrôle qualité consiste à examiner les résultats produits afin de vérifier leur conformité aux exigences et aux critères définis. Il s’appuie sur des vérifications organisées : revue, inspection, mesure, test ou contrôle documentaire selon la nature du livrable.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Circuit du contrôle qualité">
+    <svg viewBox="0 0 1000 300">
+      <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#14213D" stroke-width="1.5"/></marker></defs>
+      <rect x="30" y="95" width="170" height="90" rx="12" fill="#F4F6F8" stroke="#8D99AE"/>
+      <text x="115" y="130" text-anchor="middle" font-weight="700">PRODUCTION</text><text x="115" y="153" text-anchor="middle" font-size="12">livrable</text>
+      <line x1="200" y1="140" x2="295" y2="140" stroke="#14213D" marker-end="url(#arr2)"/>
+      <rect x="295" y="95" width="170" height="90" rx="12" fill="#FFF4E3" stroke="#FF9F1C" stroke-width="2"/>
+      <text x="380" y="130" text-anchor="middle" font-weight="700">CONTRÔLE</text><text x="380" y="153" text-anchor="middle" font-size="12">vérification</text>
+      <line x1="465" y1="140" x2="560" y2="140" stroke="#14213D" marker-end="url(#arr2)"/>
+      <rect x="560" y="95" width="170" height="90" rx="12" fill="#F4F6F8" stroke="#8D99AE"/>
+      <text x="645" y="130" text-anchor="middle" font-weight="700">COMPARAISON</text><text x="645" y="153" text-anchor="middle" font-size="12">critères / mesure</text>
+      <line x1="730" y1="140" x2="825" y2="140" stroke="#14213D" marker-end="url(#arr2)"/>
+      <rect x="825" y="95" width="145" height="90" rx="12" fill="#FFF4E3" stroke="#FF9F1C" stroke-width="2"/>
+      <text x="897" y="130" text-anchor="middle" font-weight="700">DÉCISION</text><text x="897" y="153" text-anchor="middle" font-size="12">accepter / corriger</text>
+      <path d="M897 185 C897 245 380 250 380 185" fill="none" stroke="#8D99AE" marker-end="url(#arr2)"/>
+      <text x="640" y="246" text-anchor="middle" font-size="12" class="mono-text">retour vers production si correction nécessaire</text>
+    </svg>
+  </div>
+
+  <div class="grid">
+    <article class="card"><div class="card-icon">⌕</div><h3>Revue</h3><p>Examen structuré d’un document, d’une conception ou d’un résultat par rapport aux exigences.</p></article>
+    <article class="card"><div class="card-icon">▣</div><h3>Inspection</h3><p>Vérification méthodique visant à détecter les écarts ou défauts d’un livrable.</p></article>
+    <article class="card"><div class="card-icon">≋</div><h3>Mesure</h3><p>Collecte d’une donnée objective permettant de comparer le résultat à une référence.</p></article>
+  </div>
+
+  <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Contrôler uniquement à la fin du projet peut rendre les corrections coûteuses. Les contrôles doivent être positionnés à des moments pertinents du cycle de production.</div>
+</section>
+
+<section id="amelioration" class="reveal">
+  <div class="section-head">
+    <div class="section-number">06 · Progression</div>
+    <h2>L’amélioration continue</h2>
+  </div>
+  <div class="prose">
+    <p>L’amélioration continue consiste à utiliser les résultats des contrôles et les retours d’expérience pour faire évoluer les pratiques, les processus ou les livrables. Elle transforme les écarts constatés en sources d’apprentissage.</p>
+  </div>
+
+  <div class="stepper" aria-label="Boucle d'amélioration continue">
+    <div class="step"><div class="dot">01</div><div><h3>Observer</h3><p>Mesurer les résultats</p></div></div>
+    <div class="step"><div class="dot">02</div><div><h3>Comprendre</h3><p>Analyser les écarts</p></div></div>
+    <div class="step"><div class="dot">03</div><div><h3>Décider</h3><p>Choisir une action</p></div></div>
+    <div class="step"><div class="dot">04</div><div><h3>Améliorer</h3><p>Modifier la pratique</p></div></div>
+    <div class="step"><div class="dot">05</div><div><h3>Re-mesurer</h3><p>Vérifier l’effet</p></div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Élément</th><th scope="col">Question de pilotage</th><th scope="col">Résultat attendu</th></tr></thead>
+      <tbody>
+        <tr><td>Observation</td><td>Que montrent les données ?</td><td>Une situation objectivée.</td></tr>
+        <tr><td>Analyse</td><td>Pourquoi l’écart existe-t-il ?</td><td>Des causes identifiées.</td></tr>
+        <tr><td>Action</td><td>Que peut-on améliorer ?</td><td>Une mesure d’amélioration définie.</td></tr>
+        <tr><td>Vérification</td><td>L’action a-t-elle produit l’effet attendu ?</td><td>Une nouvelle mesure permettant de confirmer ou d’ajuster.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout"><strong>💡 À retenir</strong>L’amélioration continue n’est pas une action ponctuelle. C’est une boucle de pilotage : mesurer, comprendre, agir, puis mesurer à nouveau.</div>
+
+  <div class="accordion">
+    <details>
+      <summary>Le rôle du retour d’expérience</summary>
+      <p>Le retour d’expérience permet de conserver les enseignements issus du projet : pratiques efficaces, difficultés rencontrées, causes d’écarts et améliorations possibles. Il contribue à rendre les projets futurs plus maîtrisés.</p>
+    </details>
+    <details>
+      <summary>Qualité et performance sont-elles identiques ?</summary>
+      <p>Non. La qualité porte principalement sur la conformité et l’adéquation des résultats aux exigences. La performance est plus large et considère notamment les résultats obtenus au regard des objectifs, des délais et des ressources mobilisées.</p>
+    </details>
+  </div>
+</section>
+
+<section id="synthese" class="reveal">
+  <div class="section-head">
+    <div class="section-number">07 · Synthèse</div>
+    <h2>Points clés à retenir</h2>
+  </div>
+  <div class="keys">
+    <div class="key"><strong>01 · Définir la qualité</strong><br>La qualité repose sur des exigences et des critères vérifiables.</div>
+    <div class="key"><strong>02 · Formaliser l’acceptation</strong><br>Un livrable est accepté lorsqu’il satisfait les conditions définies.</div>
+    <div class="key"><strong>03 · Mesurer avec des KPI</strong><br>Les indicateurs donnent une vision objective de la situation du projet.</div>
+    <div class="key"><strong>04 · Analyser les écarts</strong><br>La comparaison entre cible et mesure permet d’orienter le pilotage.</div>
+    <div class="key"><strong>05 · Contrôler au bon moment</strong><br>Les contrôles réguliers facilitent la détection précoce des défauts.</div>
+    <div class="key"><strong>06 · Améliorer en continu</strong><br>Les enseignements du projet doivent alimenter les actions d’amélioration.</div>
+  </div>
+</section>
+</main>
+
+<nav class="nav-bottom" aria-label="Navigation entre les leçons">
+  <a class="nav-card" href="#top" aria-label="Leçon précédente">
+    <div class="nav-label">← Leçon précédente</div>
+    <div class="nav-title">Leçon 27 · Gestion des conflits et négociation</div>
+  </a>
+  <a class="top" href="#top">↑ Sommaire</a>
+  <a class="nav-card next" href="#top" aria-label="Leçon suivante">
+    <div class="nav-label">Leçon suivante →</div>
+    <div class="nav-title">Leçon 29 · Clôture et bilan du projet</div>
+  </a>
+</nav>
+
+<footer>
+  <div>Filière Gestion de Projet · Module 6 · Leçon 28</div>
+</footer>
+</div>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+  const doc=document.documentElement;
+  const max=doc.scrollHeight-doc.clientHeight;
+  progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+updateProgress();
+
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  const buttons=group.querySelectorAll('.tab-btn');
+  const panels=group.querySelectorAll('.tab-panel');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.setAttribute('aria-selected','true');
+      const panel=document.getElementById(btn.getAttribute('aria-controls'));
+      if(panel) panel.classList.add('active');
+    });
+    btn.addEventListener('keydown',e=>{
+      const i=[...buttons].indexOf(btn);
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault();
+        const next=(i+(e.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;
+        buttons[next].focus();buttons[next].click();
+      }
+    });
+  });
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting) entry.target.classList.add('visible');
+  });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+</script>
+</body>
+</html>

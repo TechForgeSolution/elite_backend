@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 08 — Observer, alerter et réagir face aux urgences</title>
+<meta name="description" content="Leçon 08 du Module 2 — Observer, alerter et réagir face aux urgences.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231F6F6B'/%3E%3Cpath d='M32 9 54 49H10z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M32 23v13m0 7h.01' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:wght@600;700&display=swap');
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F8F6F1;--color-text:#14201F;--color-text-muted:#55625F;--color-accent:#1F6F6B;--color-accent-strong:#15524F;--color-accent-soft:#E4F1EF;--color-border:#E3E6E1;--color-warn:#8A5A00;--color-warn-soft:#FBF1DC;--color-urgent:#9B2C2C;--color-urgent-soft:#FBEAEA;--max:720px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:18px;line-height:1.7}a{color:var(--color-accent-strong);font-weight:700}button,summary,a{outline-offset:3px}button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--color-accent)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.progress{position:fixed;z-index:1000;left:0;top:0;width:100%;height:5px}.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+header{position:sticky;top:5px;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--color-border);backdrop-filter:blur(8px)}.header-inner{max-width:1160px;margin:auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:700}.brand small{display:block;color:var(--color-text-muted);font-size:.84rem}.menu{min-width:46px;min-height:46px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg-alt);cursor:pointer}
+.hero{background:var(--color-bg-alt);padding:58px 22px 52px}.hero-inner{max-width:920px;margin:auto}.eyebrow{font-weight:700;color:var(--color-accent-strong);text-transform:uppercase;letter-spacing:.06em;font-size:.88rem}h1,h2,h3{font-family:Fraunces,Georgia,"Times New Roman",serif;line-height:1.2}h1{font-size:clamp(2.1rem,6vw,3.65rem);margin:12px 0 18px;max-width:900px}h2{font-size:clamp(1.75rem,4vw,2.4rem);margin:0 0 18px}h3{font-size:1.28rem;margin:24px 0 8px}.objective{font-size:1.16rem;max-width:760px}.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.badge{min-height:40px;padding:7px 13px;border-radius:999px;border:1px solid var(--color-border);background:#fff;font-weight:700;font-size:.92rem}
+.page{max-width:1160px;margin:auto;padding:45px 22px;display:grid;grid-template-columns:250px minmax(0,720px);gap:55px}.toc{position:sticky;top:84px;align-self:start;border:1px solid var(--color-border);border-radius:16px;padding:18px;background:#fff}.toc ol{padding-left:22px;margin:9px 0}.toc li{margin:6px 0}.toc a{text-decoration:none;font-size:.94rem}.mobile-toc{display:none}main{min-width:0}.section{padding:10px 0 52px}.section.alt{background:var(--color-bg-alt);padding:44px 22px;margin-left:calc((720px - 100vw)/2);margin-right:calc((720px - 100vw)/2);padding-left:max(22px,calc((100vw - 720px)/2));padding-right:max(22px,calc((100vw - 720px)/2))}
+.lead{font-size:1.08rem}.muted{color:var(--color-text-muted)}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}.card{border:1px solid var(--color-border);border-radius:15px;padding:18px;background:#fff}.card h3{margin:0 0 6px;font-size:1.16rem}.card p{margin:0;font-size:.97rem}.icon{width:40px;height:40px;color:var(--color-accent);margin-bottom:8px}.icon svg{width:38px;height:38px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.callout{margin:24px 0;padding:18px 20px;border:1px solid var(--color-border);border-radius:15px;background:#fff}.callout .label{display:flex;align-items:center;gap:9px;font-weight:700;margin-bottom:7px}.callout .label svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}.keep{background:var(--color-accent-soft);border-color:#c6dfdb}.warn{background:var(--color-warn-soft);border-color:#ead9ae}.warn .label{color:var(--color-warn)}.urgent{background:var(--color-urgent-soft);border-color:#e8c5c5}.urgent .label{color:var(--color-urgent)}.limit{border-left:6px solid var(--color-text);background:var(--color-bg-alt)}.bien{border-left:6px solid var(--color-accent)}.more{background:var(--color-bg-alt)}
+.visual{border:1px solid var(--color-border);border-radius:16px;padding:18px;background:#fff;margin:25px 0}.visual svg{width:100%;height:auto;display:block}.caption{font-size:.9rem;color:var(--color-text-muted);margin:9px 2px 0}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:24px 0}.step{border:1px solid var(--color-border);border-radius:15px;padding:17px;background:#fff}.step-num{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent-strong);font-weight:700}.step h3{margin:10px 0 6px;font-size:1.12rem}.step p{margin:0;font-size:.95rem}
+.tabs{margin:25px 0}.tab-buttons{display:flex;gap:6px;overflow:auto;border-bottom:1px solid var(--color-border)}.tab-buttons button{min-height:48px;border:0;background:transparent;padding:8px 14px;border-bottom:3px solid transparent;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--color-text)}.tab-buttons button[aria-selected=true]{color:var(--color-accent-strong);border-bottom-color:var(--color-accent)}.tab-panel{padding:19px;background:var(--color-bg-alt);border-radius:0 0 14px 14px}.tab-panel h3{margin-top:0}
+details{border:1px solid var(--color-border);border-radius:14px;margin:11px 0;background:#fff}summary{min-height:52px;display:flex;align-items:center;cursor:pointer;padding:15px 18px;font-weight:700}details>div{padding:0 18px 17px}.situation{border:1px solid var(--color-border);border-radius:16px;padding:19px;background:var(--color-bg-alt);margin:24px 0}.situation strong{color:var(--color-accent-strong)}
+.keypoints{display:grid;gap:10px;list-style:none;padding:0}.keypoints li{display:flex;gap:11px;border:1px solid var(--color-border);border-radius:13px;padding:12px 14px;background:#fff}.keypoints li:before{content:"✓";color:var(--color-accent);font-weight:700;font-size:1.2rem}
+.checklist{border:1px solid var(--color-border);border-radius:16px;padding:19px;background:#fff}.check-item{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--color-border)}.check-item:last-child{border-bottom:0}.check-item input{width:22px;height:22px;margin-top:4px;accent-color:var(--color-accent)}.check-item label{cursor:pointer}.check-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.action{min-height:46px;border:1px solid var(--color-accent);border-radius:11px;background:#fff;color:var(--color-accent-strong);font:inherit;font-weight:700;padding:8px 13px;cursor:pointer}.action.primary{background:var(--color-accent);color:#fff}.local-numbers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.number{border:1px dashed var(--color-border);border-radius:13px;padding:14px;background:var(--color-bg-alt)}.number strong{display:block}.placeholder{display:inline-block;margin-top:4px;padding:3px 8px;border-radius:8px;background:#fff;border:1px solid var(--color-border);font-weight:700;color:var(--color-text-muted)}
+.table-wrap{overflow:auto;border:1px solid var(--color-border);border-radius:16px}.med-table{width:100%;border-collapse:collapse;min-width:560px;background:#fff}.med-table th,.med-table td{text-align:left;padding:14px;border-bottom:1px solid var(--color-border);vertical-align:top}.med-table th{background:var(--color-bg-alt);font-family:Fraunces,Georgia,serif}.med-table tr:last-child td{border-bottom:0}.yes{color:var(--color-accent-strong);font-weight:700}.no{color:var(--color-text);font-weight:700}
+.bottom-nav{max-width:720px;margin:0 auto 45px;display:flex;gap:12px}.nav{flex:1;min-height:52px;border:1px solid var(--color-accent);border-radius:12px;padding:8px 12px;text-decoration:none;color:var(--color-accent-strong);font-weight:700}.nav small{display:block;color:var(--color-text-muted);font-weight:400}.top{position:fixed;right:18px;bottom:18px;width:48px;height:48px;border:0;border-radius:50%;background:var(--color-accent);color:#fff;font-weight:700;cursor:pointer;opacity:0;pointer-events:none;box-shadow:0 5px 18px rgba(20,32,31,.16)}.top.show{opacity:1;pointer-events:auto}.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}footer{border-top:1px solid var(--color-border);padding:30px 20px;text-align:center;color:var(--color-text-muted);font-size:.9rem}
+@media(max-width:1099px){.page{display:block;max-width:760px}.toc{display:none}.mobile-toc{display:block;max-width:760px;margin:0 auto;padding:20px 22px 0}.mobile-toc details{margin:0}.section.alt{margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px}}
+@media(max-width:760px){.steps{grid-template-columns:1fr 1fr}.local-numbers{grid-template-columns:1fr}}
+@media(max-width:600px){body{font-size:18px}.hero{padding:40px 18px}.page{padding:28px 18px}.mobile-toc{padding-left:18px;padding-right:18px}.cards,.steps{grid-template-columns:1fr}.section.alt{margin-left:-18px;margin-right:-18px;padding-left:18px;padding-right:18px}.bottom-nav{flex-direction:column;margin-left:18px;margin-right:18px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+@media print{header,.progress,.top,.toc,.mobile-toc,.bottom-nav,footer,.check-actions{display:none!important}body{font-size:12pt;line-height:1.45}.hero{padding:20px;background:#fff}.page{display:block;padding:0}.section,.section.alt{margin:0;padding:20px 0;background:#fff}.callout,.card,.visual,details,.step,.checklist,.table-wrap{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+<header><div class="header-inner"><div class="brand">Auxiliaire de vie<small>Module 2 · Sécuriser, organiser et coordonner l’accompagnement</small></div><button class="menu" id="menu" aria-expanded="false" aria-controls="mobileToc">☰ <span class="sr-only">Ouvrir le sommaire</span></button></div></header>
+
+<section class="hero"><div class="hero-inner"><div class="eyebrow">Leçon 08</div><h1>Observer, alerter et réagir face aux urgences</h1><p class="objective"><strong>Objectif :</strong> repérer un changement de l'état de la personne, alerter correctement et réagir par les gestes de premiers secours adaptés à votre rôle.</p><div class="badges"><span class="badge">Module 2</span><span class="badge">30 min</span><span class="badge">Débutant</span></div></div></section>
+
+<nav class="mobile-toc" id="mobileToc" aria-label="Sommaire mobile"><details><summary>Sommaire de la leçon</summary><ol>
+<li><a href="#observer">Observer et comparer avec l'habituel</a></li><li><a href="#signes">Les signes d'alerte</a></li><li><a href="#alerter">Qui alerter et comment</a></li><li><a href="#transmettre">Transmettre des faits</a></li><li><a href="#numeros">Numéros utiles</a></li><li><a href="#secours">Premiers secours</a></li><li><a href="#medicaments">Les médicaments</a></li><li><a href="#fiche">Fiche d'alerte et de transmission</a></li><li><a href="#faq">Questions que l'on se pose</a></li><li><a href="#reperes">Repères professionnels</a></li><li><a href="#cles">Points clés</a></li>
+</ol></details></nav>
+
+<div class="page"><aside class="toc" aria-label="Sommaire"><strong>Dans cette leçon</strong><ol>
+<li><a href="#observer">Observer</a></li><li><a href="#signes">Signes d'alerte</a></li><li><a href="#alerter">Alerter</a></li><li><a href="#transmettre">Transmettre</a></li><li><a href="#numeros">Numéros utiles</a></li><li><a href="#secours">Premiers secours</a></li><li><a href="#medicaments">Médicaments</a></li><li><a href="#fiche">Fiche de transmission</a></li><li><a href="#faq">FAQ</a></li><li><a href="#reperes">Repères professionnels</a></li><li><a href="#cles">Points clés</a></li>
+</ol></aside>
+
+<main>
+<section class="section reveal" id="observer">
+<h2>1. Observer : repérer ce qui change</h2>
+<p class="lead">L'auxiliaire de vie est souvent bien placée pour remarquer un changement, car elle connaît les habitudes de la personne.</p>
+<div class="visual">
+<svg viewBox="0 0 720 290" role="img" aria-labelledby="obsTitle obsDesc">
+<title id="obsTitle">Les domaines à observer</title><desc id="obsDesc">Sept domaines d'observation autour de la personne accompagnée.</desc>
+<circle cx="360" cy="145" r="54" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="3"/><text x="360" y="140" text-anchor="middle" font-size="18">Personne</text><text x="360" y="162" text-anchor="middle" font-size="18">accompagnée</text>
+<g font-size="16"><line x1="320" y1="110" x2="145" y2="55" stroke="var(--color-border)" stroke-width="2"/><line x1="340" y1="95" x2="300" y2="45" stroke="var(--color-border)" stroke-width="2"/><line x1="400" y1="110" x2="565" y2="55" stroke="var(--color-border)" stroke-width="2"/><line x1="414" y1="143" x2="615" y2="135" stroke="var(--color-border)" stroke-width="2"/><line x1="400" y1="180" x2="560" y2="230" stroke="var(--color-border)" stroke-width="2"/><line x1="320" y1="180" x2="155" y2="230" stroke="var(--color-border)" stroke-width="2"/><line x1="305" y1="145" x2="105" y2="140" stroke="var(--color-border)" stroke-width="2"/>
+<text x="125" y="48">État général</text><text x="270" y="32">Comportement</text><text x="570" y="48">Alimentation / boissons</text><text x="625" y="130">Sommeil</text><text x="565" y="252">Peau / douleur</text><text x="125" y="252">Mobilité</text><text x="75" y="135">Humeur</text></g>
+</svg>
+<p class="caption">Observez ce qui est différent de l'habitude de la personne, sans poser de diagnostic.</p>
+</div>
+<div class="cards">
+<article class="card"><div class="icon"><svg viewBox="0 0 40 40" role="img" aria-labelledby="i1t i1d"><title id="i1t">Comparer</title><desc id="i1d">Deux repères comparés.</desc><path d="M8 12h24M8 28h24"/><path d="M14 8v8m12 8v8"/></svg></div><h3>Comparer</h3><p>Comparez avec ce que vous observez habituellement chez cette personne.</p></article>
+<article class="card"><div class="icon"><svg viewBox="0 0 40 40" role="img" aria-labelledby="i2t i2d"><title id="i2t">Noter</title><desc id="i2d">Carnet stylisé.</desc><path d="M10 6h20v28H10zM14 12h12M14 18h12M14 24h8"/></svg></div><h3>Noter</h3><p>Retenez les faits importants, leur moment d'apparition et leur évolution.</p></article>
+<article class="card"><div class="icon"><svg viewBox="0 0 40 40" role="img" aria-labelledby="i3t i3d"><title id="i3t">Rester factuel</title><desc id="i3d">Œil stylisé.</desc><path d="M5 20s6-9 15-9 15 9 15 9-6 9-15 9S5 20 5 20z"/><circle cx="20" cy="20" r="4"/></svg></div><h3>Rester factuel</h3><p>Décrivez ce que vous voyez ou entendez. Ne concluez pas sur la maladie.</p></article>
+</div>
+<div class="callout keep"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="k1t k1d"><title id="k1t">À retenir</title><desc id="k1d">Symbole d'information.</desc><circle cx="12" cy="12" r="9"/><path d="M12 10v6m0-9h.01"/></svg>💡 À retenir</div><div>Un changement inhabituel mérite votre attention. En cas de doute, observez et alertez plutôt que d'attendre.</div></div>
+</section>
+
+<section class="section alt reveal" id="signes">
+<h2>2. Les signes d'alerte</h2>
+<p>Certains changements nécessitent une transmission rapide. Leur importance dépend de la situation de la personne.</p>
+<div class="cards">
+<article class="card"><h3>Douleur inhabituelle</h3><p>Une douleur nouvelle, intense ou différente de l'habitude.</p></article>
+<article class="card"><h3>Fièvre</h3><p>Une température inhabituelle ou un état général qui change.</p></article>
+<article class="card"><h3>Confusion soudaine</h3><p>Un changement brutal du comportement, de l'orientation ou de la vigilance.</p></article>
+<article class="card"><h3>Déshydratation</h3><p>Une diminution inhabituelle des boissons ou des signes préoccupants à transmettre.</p></article>
+<article class="card"><h3>Chute</h3><p>Une personne retrouvée au sol, même sans plainte immédiate.</p></article>
+<article class="card"><h3>Difficulté à respirer</h3><p>Une gêne respiratoire, une respiration inhabituelle ou une aggravation rapide.</p></article>
+<article class="card"><h3>Malaise</h3><p>Une faiblesse soudaine, une perte de connaissance ou un état inhabituel.</p></article>
+<article class="card"><h3>Refus prolongé</h3><p>Un refus inhabituel de boire ou de manger doit être transmis.</p></article>
+<article class="card"><h3>Saignement</h3><p>Un saignement important ou qui ne s'arrête pas nécessite une alerte adaptée.</p></article>
+</div>
+<div class="callout warn"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="w1t w1d"><title id="w1t">Attention</title><desc id="w1d">Triangle d'avertissement.</desc><path d="M12 4 21 20H3zM12 9v5m0 3h.01"/></svg>⚠️ Attention / erreur fréquente</div><div>Ne cherchez pas à expliquer seul(e) la cause d'un signe. Votre rôle est d'observer, transmettre et alerter.</div></div>
+</section>
+
+<section class="section reveal" id="alerter">
+<h2>3. Qui alerter et comment ?</h2>
+<p>La première décision est de distinguer une situation nécessitant un professionnel ou une situation de danger immédiat.</p>
+<div class="tabs">
+<div class="tab-buttons" role="tablist" aria-label="Choisir le niveau d'alerte"><button role="tab" aria-selected="true" aria-controls="pro" id="tab-pro">J'alerte un professionnel de santé</button><button role="tab" aria-selected="false" aria-controls="secoursTab" id="tab-secours">J'appelle les secours</button></div>
+<div class="tab-panel" id="pro" role="tabpanel" aria-labelledby="tab-pro"><h3>Quand prévenir un professionnel</h3><ul><li>Un changement inhabituel apparaît sans danger immédiat.</li><li>La personne présente un signe nouveau qui doit être évalué.</li><li>Vous avez un doute sur l'évolution de son état.</li><li>La situation nécessite une décision qui dépasse votre rôle.</li></ul><div class="callout keep"><div class="label">💡 Principe</div><div>Si vous n'êtes pas sûr(e) que la situation soit grave, transmettez votre doute. Ne restez pas seul(e) avec l'incertitude.</div></div></div>
+<div class="tab-panel" id="secoursTab" role="tabpanel" aria-labelledby="tab-secours" hidden><h3>Quand appeler les secours</h3><ul><li>La personne est en danger immédiat.</li><li>Elle ne respire pas ou sa respiration est absente.</li><li>Elle présente un trouble grave de la conscience.</li><li>Une détresse respiratoire importante apparaît.</li><li>Un saignement important ou une autre situation urgente exige une intervention immédiate.</li></ul><div class="callout urgent"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="u1t u1d"><title id="u1t">Urgence</title><desc id="u1d">Triangle d'alerte.</desc><path d="M12 4 21 20H3zM12 9v5m0 3h.01"/></svg>🚨 Urgence / danger</div><div>En cas de danger immédiat, appelez les secours adaptés au pays de diffusion et suivez les instructions de l'opérateur.</div></div></div>
+</div>
+<div class="visual">
+<svg viewBox="0 0 720 310" role="img" aria-labelledby="treeTitle treeDesc">
+<title id="treeTitle">Arbre de décision pour l'alerte</title><desc id="treeDesc">Un signe inhabituel conduit à une question sur le danger immédiat, puis vers le professionnel ou les secours.</desc>
+<rect x="260" y="20" width="200" height="52" rx="15" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="2"/><text x="360" y="52" text-anchor="middle" font-size="18">Signe inhabituel</text>
+<path d="M360 72v40M360 112H185v45M360 112h175v45" fill="none" stroke="var(--color-border)" stroke-width="3"/>
+<rect x="95" y="157" width="180" height="52" rx="15" fill="#fff" stroke="var(--color-border)" stroke-width="2"/><text x="185" y="188" text-anchor="middle" font-size="17">Danger immédiat ?</text>
+<rect x="445" y="157" width="180" height="52" rx="15" fill="#fff" stroke="var(--color-border)" stroke-width="2"/><text x="535" y="188" text-anchor="middle" font-size="17">Pas de danger immédiat</text>
+<path d="M185 209v34M535 209v34" fill="none" stroke="var(--color-border)" stroke-width="3"/>
+<rect x="70" y="243" width="230" height="50" rx="15" fill="var(--color-urgent-soft)" stroke="var(--color-urgent)" stroke-width="2"/><text x="185" y="273" text-anchor="middle" font-size="17">Appeler les secours</text>
+<rect x="420" y="243" width="230" height="50" rx="15" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="2"/><text x="535" y="273" text-anchor="middle" font-size="17">Alerter un professionnel</text>
+<text x="207" y="235" font-size="14">oui</text><text x="553" y="235" font-size="14">non</text>
+</svg>
+<p class="caption">Arbre de principe : en cas de doute, l'alerte est préférable à l'attente.</p>
+</div>
+</section>
+
+<section class="section alt reveal" id="transmettre">
+<h2>4. Transmettre : décrire les faits</h2>
+<p>Une transmission utile permet au professionnel de comprendre rapidement ce qui s'est passé.</p>
+<div class="steps">
+<div class="step"><div class="step-num">1</div><h3>Qui ?</h3><p>Identifiez la personne concernée et votre rôle auprès d'elle.</p></div>
+<div class="step"><div class="step-num">2</div><h3>Quand ?</h3><p>Indiquez l'heure ou le moment où vous avez remarqué le changement.</p></div>
+<div class="step"><div class="step-num">3</div><h3>Quoi ?</h3><p>Décrivez précisément ce que vous avez observé.</p></div>
+<div class="step"><div class="step-num">4</div><h3>État actuel</h3><p>Précisez ce que vous constatez maintenant et ce qui a déjà été fait.</p></div>
+</div>
+<div class="cards">
+<article class="card"><h3>Oral</h3><p>Transmission directe à un professionnel ou à la personne responsable selon l'organisation.</p></article>
+<article class="card"><h3>Écrit</h3><p>Cahier de liaison ou fiche d'alerte selon les outils de la structure.</p></article>
+</div>
+<div class="callout limit"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="l1t l1d"><title id="l1t">Mes limites</title><desc id="l1d">Symbole de document.</desc><path d="M5 5h14v14H5zM8 9h8M8 12h8M8 15h5"/></svg>🛑 Mes limites</div><div>Ne transformez pas votre observation en diagnostic. Dites ce que vous avez vu, entendu ou constaté.</div></div>
+</section>
+
+<section class="section reveal" id="numeros">
+<h2>5. Numéros utiles</h2>
+<p>Les numéros d'urgence dépendent du pays de diffusion. Ils doivent être renseignés avant la diffusion du cours.</p>
+<div class="local-numbers">
+<div class="number"><strong>Secours médicaux</strong><span class="placeholder">À COMPLÉTER</span></div>
+<div class="number"><strong>Pompiers</strong><span class="placeholder">À COMPLÉTER</span></div>
+<div class="number"><strong>Police / gendarmerie</strong><span class="placeholder">À COMPLÉTER</span></div>
+<div class="number"><strong>Centre antipoison</strong><span class="placeholder">À COMPLÉTER</span></div>
+</div>
+<div class="callout"><div class="label">ℹ️ À adapter à votre pays et à votre structure</div><div>Ne renseignez aucun numéro sans vérification locale. Cette page affiche volontairement « à compléter » lorsque le paramètre n'est pas fourni.</div></div>
+<div class="visual">
+<svg viewBox="0 0 720 240" role="img" aria-labelledby="callTitle callDesc">
+<title id="callTitle">Informations à donner pendant un appel d'urgence</title>
+<desc id="callDesc">Quatre éléments à communiquer : qui, où, quoi et état de la personne.</desc>
+<circle cx="90" cy="100" r="36" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="2"/><circle cx="270" cy="100" r="36" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="2"/><circle cx="450" cy="100" r="36" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="2"/><circle cx="630" cy="100" r="36" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+<text x="90" y="107" text-anchor="middle" font-size="18">Qui ?</text><text x="270" y="107" text-anchor="middle" font-size="18">Où ?</text><text x="450" y="107" text-anchor="middle" font-size="18">Quoi ?</text><text x="630" y="96" text-anchor="middle" font-size="16">État de la</text><text x="630" y="117" text-anchor="middle" font-size="16">personne</text>
+<path d="M126 100h108M306 100h108M486 100h108" stroke="var(--color-border)" stroke-width="3"/>
+</svg>
+<p class="caption">Ne raccrochez pas le premier. Suivez les instructions de l'opérateur.</p>
+</div>
+</section>
+
+<section class="section alt reveal" id="secours">
+<h2>6. Premiers secours : principes généraux</h2>
+<p>Les gestes ci-dessous sont des principes généraux. Une formation pratique encadrée reste indispensable.</p>
+<div class="steps">
+<div class="step"><div class="step-num">1</div><h3>Protéger</h3><p>Évitez de vous exposer ou d'exposer la personne à un danger supplémentaire.</p></div>
+<div class="step"><div class="step-num">2</div><h3>Alerter</h3><p>Prévenez le professionnel compétent ou appelez les secours selon la situation.</p></div>
+<div class="step"><div class="step-num">3</div><h3>Secourir</h3><p>Réalisez seulement les gestes appris et adaptés à votre niveau de formation.</p></div>
+<div class="step"><div class="step-num">4</div><h3>Suivre les consignes</h3><p>Écoutez l'opérateur et appliquez ses instructions jusqu'à l'arrivée des secours.</p></div>
+</div>
+
+<h3>Position latérale de sécurité</h3>
+<p>Pour une personne inconsciente qui respire, la position latérale de sécurité peut être indiquée selon les recommandations de secourisme apprises en formation.</p>
+<div class="visual">
+<svg viewBox="0 0 720 300" role="img" aria-labelledby="plsTitle plsDesc">
+<title id="plsTitle">Principe visuel de la position latérale de sécurité</title>
+<desc id="plsDesc">Silhouette habillée en position latérale, avec repères simples. Le schéma ne remplace pas une formation pratique.</desc>
+<ellipse cx="360" cy="235" rx="250" ry="18" fill="var(--color-bg-alt)"/>
+<circle cx="275" cy="105" r="30" fill="none" stroke="var(--color-accent)" stroke-width="3"/><path d="M300 125c45 5 90 25 135 65M310 145l-60 65M345 160l-35 80M435 190l55-25" fill="none" stroke="var(--color-accent)" stroke-width="10" stroke-linecap="round"/><path d="M250 110c30 15 65 20 95 12" fill="none" stroke="var(--color-accent-strong)" stroke-width="4" stroke-linecap="round"/>
+<path d="M95 65h115M95 65v28M210 65v28" stroke="var(--color-border)" stroke-width="2"/><text x="152" y="50" text-anchor="middle" font-size="17">Silhouette habillée</text>
+<text x="520" y="75" font-size="17">Tête et respiration</text><path d="M500 82l-100 25" stroke="var(--color-border)" stroke-width="2"/>
+</svg>
+<p class="caption">Schéma simplifié. Apprenez et entraînez ce geste avec un formateur en secourisme.</p>
+</div>
+
+<div class="cards">
+<article class="card"><h3>Étouffement</h3><p>Suivez les recommandations de secourisme reconnues et les instructions des secours. N'improvisez pas un geste appris nulle part.</p></article>
+<article class="card"><h3>Saignement</h3><p>En cas de saignement important, exercez une compression directe avec un linge propre et alertez.</p></article>
+<article class="card"><h3>Chute</h3><p>Ne relevez pas brutalement la personne. Rassurez-la, couvrez-la, alertez et notez les faits.</p></article>
+<article class="card"><h3>Arrêt de la respiration</h3><p>Alertez immédiatement et suivez les instructions des secours. Utilisez les gestes appris en formation.</p></article>
+</div>
+<div class="callout urgent"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="u2t u2d"><title id="u2t">Urgence</title><desc id="u2d">Triangle d'alerte.</desc><path d="M12 4 21 20H3zM12 9v5m0 3h.01"/></svg>🚨 Urgence / danger</div><div>Une personne qui ne respire pas nécessite une alerte immédiate. Suivez sans délai les instructions de l'opérateur.</div></div>
+</section>
+
+<section class="section reveal" id="medicaments">
+<h2>7. Les médicaments : rester dans son cadre</h2>
+<p>Les possibilités d'aide dépendent du cadre de votre structure et de la réglementation locale.</p>
+<div class="table-wrap">
+<table class="med-table">
+<thead><tr><th>Je peux, dans mon cadre</th><th>Je ne fais jamais</th></tr></thead>
+<tbody>
+<tr><td><span class="yes">✓</span> Rappeler l'heure de prise selon l'ordonnance, si cela fait partie de mon cadre.</td><td><span class="no">✕</span> Choisir un médicament ou décider qu'il faut le prendre.</td></tr>
+<tr><td><span class="yes">✓</span> Aider à un geste simple lorsque le cadre de la structure l'autorise.</td><td><span class="no">✕</span> Modifier, arrêter ou doubler une dose.</td></tr>
+<tr><td><span class="yes">✓</span> Observer et transmettre un oubli, un refus ou une réaction inhabituelle.</td><td><span class="no">✕</span> Donner un médicament non prescrit.</td></tr>
+<tr><td><span class="yes">✓</span> Alerter un professionnel de santé en cas de doute.</td><td><span class="no">✕</span> Faire une injection.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout limit"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="l2t l2d"><title id="l2t">Mes limites</title><desc id="l2d">Symbole de document.</desc><path d="M5 5h14v14H5zM8 9h8M8 12h8M8 15h5"/></svg>🛑 Mes limites</div><div>En cas d'oubli ou d'erreur de médicament, alertez un professionnel de santé. Ne corrigez pas vous-même la dose et ne donnez pas une dose supplémentaire.</div></div>
+<div class="callout"><div class="label">ℹ️ À adapter à votre pays et à votre structure</div><div>Les actes autorisés et l'aide possible peuvent varier selon le cadre d'emploi, la structure et la réglementation locale.</div></div>
+</section>
+
+<section class="section alt reveal" id="fiche">
+<h2>8. Fiche pratique — alerte et transmission</h2>
+<p>Cette fiche est un outil de référence à imprimer ou à utiliser hors ligne. Ce n'est pas un exercice noté.</p>
+<div class="checklist" id="checklist">
+<div class="check-item"><input type="checkbox" id="c1"><label for="c1"><strong>Qui ?</strong> J'ai identifié la personne et mon rôle auprès d'elle.</label></div>
+<div class="check-item"><input type="checkbox" id="c2"><label for="c2"><strong>Quand ?</strong> J'ai noté le moment où le changement a été constaté.</label></div>
+<div class="check-item"><input type="checkbox" id="c3"><label for="c3"><strong>Quoi ?</strong> J'ai décrit les faits sans poser de diagnostic.</label></div>
+<div class="check-item"><input type="checkbox" id="c4"><label for="c4"><strong>État actuel :</strong> J'ai décrit l'état observé au moment de la transmission.</label></div>
+<div class="check-item"><input type="checkbox" id="c5"><label for="c5"><strong>Alerte :</strong> J'ai prévenu le professionnel ou les secours selon la situation.</label></div>
+<div class="check-item"><input type="checkbox" id="c6"><label for="c6"><strong>Consignes :</strong> J'ai suivi les instructions reçues et ne suis pas resté(e) seul(e) avec un doute.</label></div>
+<div class="check-actions"><button class="action primary" id="printBtn" type="button">Imprimer / Enregistrer en PDF</button><button class="action" id="txtBtn" type="button">Télécharger en .txt</button></div>
+</div>
+</section>
+
+<section class="section reveal" id="faq">
+<h2>9. Questions que l'on se pose</h2>
+<details><summary>La personne refuse que j'appelle quelqu'un. Que faire ?</summary><div><p>Restez calme et expliquez ce que vous observez et pourquoi vous êtes inquiet(e). Si la situation est dangereuse, alertez malgré votre hésitation et suivez le cadre prévu.</p></div></details>
+<details><summary>Et si je ne suis pas sûr(e) que ce soit grave ?</summary><div><p>Alertez quand même. Décrivez vos observations et votre doute. Un professionnel pourra apprécier la situation.</p></div></details>
+<details><summary>Dois-je dire ce que je pense que la personne a ?</summary><div><p>Non. Décrivez les faits. L'auxiliaire de vie n'évalue pas une maladie et ne pose pas de diagnostic.</p></div></details>
+<details><summary>Que dire au téléphone aux secours ?</summary><div><p>Dites qui vous êtes, où vous êtes, ce qui s'est passé et quel est l'état de la personne. Ne raccrochez pas le premier et suivez les instructions.</p></div></details>
+<details><summary>Une chute sans douleur apparente est-elle à transmettre ?</summary><div><p>Oui. Une chute constitue un changement important. Ne relevez pas brutalement la personne et transmettez les faits selon le cadre prévu.</p></div></details>
+</section>
+
+<section class="section alt reveal" id="reperes">
+<h2>10. Repères professionnels</h2>
+<div class="callout limit"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="r1t r1d"><title id="r1t">Mes limites</title><desc id="r1d">Symbole de document.</desc><path d="M5 5h14v14H5zM8 9h8M8 12h8M8 15h5"/></svg>🛑 Mes limites</div><div>L'auxiliaire de vie n'évalue pas une maladie et ne prescrit rien. En cas de doute, elle alerte. La lecture de ce cours ne remplace pas une formation pratique de secourisme dispensée par un organisme habilité.</div></div>
+<div class="callout bien"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="r2t r2d"><title id="r2t">Posture bientraante</title><desc id="r2d">Deux silhouettes en relation.</desc><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M3 19c1-4 9-4 10 0m-2 0c1-4 9-4 10 0"/></svg>🤝 Posture bientraante</div><div>Rassurez la personne et tenez-la informée de ce qui se passe. Préservez son intimité pendant l'attente des secours. Ne partagez les informations de santé qu'avec les personnes concernées.</div></div>
+<div class="callout"><div class="label">ℹ️ À adapter à votre pays et à votre structure</div><div>Les numéros d'urgence, les procédures internes et le cadre d'aide aux médicaments doivent être vérifiés localement avant diffusion.</div></div>
+<div class="callout warn"><div class="label"><svg viewBox="0 0 24 24" role="img" aria-labelledby="r3t r3d"><title id="r3t">Attention</title><desc id="r3d">Triangle d'avertissement.</desc><path d="M12 4 21 20H3zM12 9v5m0 3h.01"/></svg>⚠️ Attention / erreur fréquente</div><div>Ne restez pas seul(e) face à un doute. Observez, ne décidez pas seul(e), alertez et appuyez-vous sur un professionnel de santé.</div></div>
+</section>
+
+<section class="section reveal" id="cles">
+<h2>11. Points clés à retenir</h2>
+<ul class="keypoints">
+<li>Comparez l'état de la personne avec son fonctionnement habituel.</li>
+<li>Observez l'état général, le comportement, les boissons, le sommeil, la peau, la douleur, la mobilité et l'humeur.</li>
+<li>Un signe inhabituel doit être transmis, même si vous n'en connaissez pas la cause.</li>
+<li>En cas de danger immédiat, appelez les secours adaptés au pays.</li>
+<li>Transmettez des faits : qui, quand, quoi et état actuel.</li>
+<li>Pour les premiers secours, protégez, alertez, puis secourez dans les limites de votre formation.</li>
+<li>Pour les médicaments, respectez strictement votre cadre et alertez en cas d'oubli ou d'erreur.</li>
+</ul>
+</section>
+
+<nav class="bottom-nav" aria-label="Navigation des leçons">
+<a class="nav" href="lecon-07-accompagner-dependance-alzheimer-handicap.html"><small>← Leçon précédente</small>Leçon 07 — Accompagner la dépendance, la maladie d'Alzheimer et le handicap</a>
+<a class="nav" href="index.html"><small>Sommaire</small>Module 2</a>
+<a class="nav" href="lecon-09-ethique-droits-confidentialite.html"><small>Leçon suivante →</small>Leçon 09 — Respecter l'éthique, les droits de la personne et la confidentialité</a>
+</nav>
+</main></div>
+
+<footer>Auxiliaire de vie · Module 2 · Leçon 08 · Support théorique</footer>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const progress=$("#progress"),topBtn=$("#top"),menu=$("#menu"),mobileToc=$("#mobileToc");
+function scrollState(){const d=document.documentElement,max=d.scrollHeight-d.clientHeight;progress.style.width=(max>0?(scrollY/max)*100:0)+"%";topBtn.classList.toggle("show",scrollY>500)}
+addEventListener("scroll",scrollState,{passive:true});scrollState();
+topBtn.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+menu.addEventListener("click",()=>{mobileToc.open=!mobileToc.open;menu.setAttribute("aria-expanded",String(mobileToc.open))});
+$$(".mobile-toc a").forEach(a=>a.addEventListener("click",()=>mobileToc.open=false));
+$$(".tabs").forEach(group=>{
+ const tabs=$$("[role=tab]",group),panels=$$("[role=tabpanel]",group);
+ tabs.forEach((tab,i)=>{
+  tab.addEventListener("click",()=>{tabs.forEach(t=>t.setAttribute("aria-selected","false"));tab.setAttribute("aria-selected","true");panels.forEach((p,j)=>p.hidden=i!==j)});
+  tab.addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft"].includes(e.key))return;e.preventDefault();let n=(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;tabs[n].focus();tabs[n].click()});
+ });
+});
+$$(".reveal").forEach(el=>new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08}).observe(el));
+$("#printBtn").addEventListener("click",()=>print());
+$("#txtBtn").addEventListener("click",()=>{
+ const text=[
+ "LEÇON 08 — OBSERVER, ALERTER ET RÉAGIR FACE AUX URGENCES",
+ "Fiche d'alerte et de transmission",
+ "",
+ "□ Qui ? Identifier la personne et mon rôle.",
+ "□ Quand ? Noter le moment du changement.",
+ "□ Quoi ? Décrire les faits sans diagnostic.",
+ "□ État actuel : Décrire l'état observé.",
+ "□ Alerte : Prévenir le professionnel ou les secours selon la situation.",
+ "□ Consignes : Suivre les instructions reçues.",
+ "",
+ "Numéros utiles — à compléter localement :",
+ "Secours médicaux : À COMPLÉTER",
+ "Pompiers : À COMPLÉTER",
+ "Police / gendarmerie : À COMPLÉTER",
+ "Centre antipoison : À COMPLÉTER"
+ ].join("\\n");
+ const blob=new Blob([text],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="fiche-alerte-transmission-lecon-08.txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
+});
+})();
+</script>
+</body>
+</html>

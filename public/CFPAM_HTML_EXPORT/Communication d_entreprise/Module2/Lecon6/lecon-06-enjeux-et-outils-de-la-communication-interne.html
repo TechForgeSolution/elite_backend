@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 06 — Enjeux et outils de la communication interne">
+<title>Leçon 06 — Enjeux et outils de la communication interne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F5F2;
+  --color-text:#1B1F2E;
+  --color-accent:#FF5A36;
+  --color-neutral:#9AA3B2;
+  --soft-accent:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --soft-section:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --shadow:0 14px 40px rgba(27,31,46,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.68}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:50;background:rgba(246,245,242,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.03em;text-decoration:none}
+.brand small{display:block;font:500 10px "IBM Plex Mono";letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.menu{display:flex;gap:16px;flex-wrap:wrap;font-size:13px}
+.menu a{text-decoration:none;color:var(--muted)}
+.menu a:hover,.menu a:focus{color:var(--color-accent)}
+.container{max-width:1040px;margin:auto;padding:0 24px}
+.hero{padding:72px 0 44px}
+.eyebrow{font:600 12px "IBM Plex Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.1;letter-spacing:-.035em}
+h1{font-size:clamp(38px,6vw,68px);max-width:880px;margin:16px 0}
+h2{font-size:clamp(28px,4vw,40px);margin:0 0 18px}
+h3{font-size:21px;margin:0 0 9px}
+.lead{font-size:18px;max-width:720px;color:var(--muted)}
+.badges{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+.badge{font:500 11px "IBM Plex Mono";padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:var(--bg)}
+.badge.accent{border-color:var(--color-accent);background:var(--soft-accent)}
+.toc{border:1px solid var(--border);border-radius:18px;padding:20px;background:var(--soft-section);box-shadow:var(--shadow)}
+.toc strong{font-family:"Space Grotesk"}
+.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:13px}
+.toc a{text-decoration:none;font-size:13px;padding:11px;border:1px solid var(--border);border-radius:10px;background:var(--color-bg)}
+.toc a:hover{border-color:var(--color-accent)}
+section{padding:58px 0;scroll-margin-top:80px}
+.section-alt{background:var(--soft-section);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.kicker{font:500 11px "IBM Plex Mono";color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.measure{max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:var(--color-bg);border:1px solid var(--border);border-radius:16px;padding:20px;transition:.2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent);box-shadow:var(--shadow)}
+.icon{width:42px;height:42px;border:1.5px solid var(--color-accent);border-radius:12px;display:grid;place-items:center;margin-bottom:15px}
+.icon svg{width:22px;height:22px;fill:none;stroke:var(--color-accent);stroke-width:1.8}
+.callout{margin:24px 0;padding:18px 20px;border-left:5px solid var(--color-accent);background:var(--soft-accent);border-radius:0 14px 14px 0}
+.callout .label{font:600 11px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.1em;color:var(--color-accent);margin-bottom:5px}
+.diagram{background:var(--color-bg);border:1px solid var(--border);border-radius:18px;padding:16px;margin:24px 0;overflow:auto}
+.diagram svg{display:block;width:100%;min-width:620px;height:auto}
+.tabs{margin-top:24px}
+.tab-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.tab-btn{border:1px solid var(--border);background:var(--color-bg);padding:10px 14px;border-radius:10px;cursor:pointer}
+.tab-btn[aria-selected="true"]{border-color:var(--color-accent);background:var(--soft-accent)}
+.tab-panel{display:none;padding:20px;margin-top:10px;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+.tab-panel.active{display:block}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:16px;margin-top:20px}
+table{width:100%;min-width:700px;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:14px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font:600 11px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.07em}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:var(--soft-accent)}
+.mono{font-family:"IBM Plex Mono";font-size:.88em;background:var(--soft-accent);padding:2px 6px;border-radius:5px}
+.quote{font:500 14px/1.7 "IBM Plex Mono";background:var(--soft-accent);border:1px solid var(--border);border-left:4px solid var(--color-accent);padding:18px;border-radius:12px}
+.stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:25px}
+.step{position:relative;padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+.step-num{font:600 12px "IBM Plex Mono";color:var(--color-accent)}
+details{border-bottom:1px solid var(--border);padding:15px 0}
+summary{cursor:pointer;font-weight:600}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+.key b{display:block;font-family:"Space Grotesk";margin-bottom:5px}
+.nav-bottom{display:flex;justify-content:space-between;gap:12px;padding:38px 0}
+.nav-btn{display:block;text-decoration:none;border:1px solid var(--border);border-radius:12px;padding:14px 16px;flex:1;background:var(--color-bg)}
+.nav-btn:hover{border-color:var(--color-accent)}
+.nav-btn.next{text-align:right}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--color-accent);background:var(--color-bg);border-radius:50%;cursor:pointer;display:none}
+footer{border-top:1px solid var(--border);padding:25px 0;color:var(--muted);font-size:12px}
+.reveal{opacity:0;transform:translateY(16px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:850px){
+ .toc-grid,.cards,.summary-grid{grid-template-columns:repeat(2,1fr)}
+ .stepper{grid-template-columns:repeat(2,1fr)}
+ .menu{display:none}
+}
+@media(max-width:560px){
+ .container{padding:0 17px}
+ .hero{padding-top:48px}
+ .grid,.toc-grid,.cards,.summary-grid,.stepper{grid-template-columns:1fr}
+ h1{font-size:40px}
+ section{padding:44px 0}
+ .header-inner{padding:12px 17px}
+ .lead{font-size:16px}
+ .nav-bottom{flex-direction:column}
+ .nav-btn.next{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="brand" href="#top">COMMUNICATION D’ENTREPRISE<small>studio ardoise & corail signal</small></a>
+    <nav class="menu" aria-label="Navigation du cours">
+      <a href="#sens">Enjeux</a><a href="#flux">Flux</a><a href="#outils">Outils</a><a href="#culture">Culture</a><a href="#cles">Points clés</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="container">
+<section class="hero">
+  <div class="eyebrow">MODULE 2 · COMMUNICATION INTERNE</div>
+  <h1>Enjeux et outils de la communication interne</h1>
+  <p class="lead">Comprendre comment l’information circule dans l’entreprise, comment elle soutient l’engagement des salariés et quels outils permettent d’installer une culture commune.</p>
+  <div class="badges">
+    <span class="badge accent">LEÇON 06</span>
+    <span class="badge">NIVEAU · INTERMÉDIAIRE</span>
+    <span class="badge">18 MIN</span>
+    <span class="badge">OBJECTIF · COMPRENDRE LES OBJECTIFS</span>
+  </div>
+</section>
+
+<div class="toc" aria-label="Sommaire">
+  <strong>Sommaire</strong>
+  <div class="toc-grid">
+    <a href="#sens">01 · Pourquoi communiquer en interne ?</a>
+    <a href="#flux">02 · Les trois flux d’information</a>
+    <a href="#outils">03 · Les outils</a>
+    <a href="#culture">04 · Culture & engagement</a>
+    <a href="#cas">05 · Exemple professionnel</a>
+    <a href="#cles">06 · Points clés</a>
+  </div>
+</div>
+</div>
+
+<section id="sens">
+<div class="container reveal">
+  <div class="kicker">01 · Finalité</div>
+  <h2>La communication interne : donner du sens à l’action collective</h2>
+  <div class="measure">
+    <p>La communication interne regroupe les échanges d’informations entre les membres d’une organisation. Elle permet de transmettre les orientations, de coordonner les activités, de faire remonter les réalités du terrain et de maintenir une compréhension commune des priorités.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Schéma des finalités de la communication interne">
+  <svg viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg">
+    <rect x="330" y="105" width="240" height="110" rx="18" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="3"/>
+    <text x="450" y="145" text-anchor="middle" font-family="Space Grotesk" font-size="24" font-weight="700" fill="var(--color-text)">ENTREPRISE</text>
+    <text x="450" y="175" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-neutral)">communication interne</text>
+    <line x1="330" y1="145" x2="165" y2="75" stroke="var(--color-neutral)" stroke-width="2"/>
+    <line x1="330" y1="185" x2="165" y2="255" stroke="var(--color-neutral)" stroke-width="2"/>
+    <line x1="570" y1="145" x2="735" y2="75" stroke="var(--color-neutral)" stroke-width="2"/>
+    <line x1="570" y1="185" x2="735" y2="255" stroke="var(--color-neutral)" stroke-width="2"/>
+    <g font-family="Inter" font-size="15" fill="var(--color-text)">
+      <text x="120" y="65" text-anchor="middle" font-weight="700">INFORMER</text>
+      <text x="120" y="85" text-anchor="middle" fill="var(--color-neutral)">donner les repères</text>
+      <text x="120" y="245" text-anchor="middle" font-weight="700">COORDONNER</text>
+      <text x="120" y="265" text-anchor="middle" fill="var(--color-neutral)">aligner les équipes</text>
+      <text x="780" y="65" text-anchor="middle" font-weight="700">MOBILISER</text>
+      <text x="780" y="85" text-anchor="middle" fill="var(--color-neutral)">favoriser l’engagement</text>
+      <text x="780" y="245" text-anchor="middle" font-weight="700">VALORISER</text>
+      <text x="780" y="265" text-anchor="middle" fill="var(--color-neutral)">renforcer l’appartenance</text>
+    </g>
+    <circle cx="165" cy="75" r="7" fill="var(--color-accent)"/><circle cx="165" cy="255" r="7" fill="var(--color-accent)"/>
+    <circle cx="735" cy="75" r="7" fill="var(--color-accent)"/><circle cx="735" cy="255" r="7" fill="var(--color-accent)"/>
+  </svg>
+  </div>
+
+  <div class="callout">
+    <div class="label">💡 À retenir</div>
+    <div>Une communication interne efficace ne consiste pas seulement à « envoyer des informations ». Elle crée des repères communs et facilite l’action collective.</div>
+  </div>
+</div>
+</section>
+
+<section id="flux" class="section-alt">
+<div class="container reveal">
+  <div class="kicker">02 · Circulation</div>
+  <h2>Trois directions pour faire circuler l’information</h2>
+  <div class="tabs">
+    <div class="tab-buttons" role="tablist" aria-label="Flux de communication">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-down" id="btn-down">Descendante</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-up" id="btn-up">Ascendante</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-cross" id="btn-cross">Transversale</button>
+    </div>
+    <div class="tab-panel active" id="tab-down" role="tabpanel" aria-labelledby="btn-down">
+      <h3>De la direction vers les équipes</h3>
+      <p>Elle transmet les orientations, décisions, consignes, objectifs et informations nécessaires à l’exécution du travail. Elle donne une direction commune.</p>
+      <span class="mono">DIRECTION → MANAGERS → ÉQUIPES</span>
+    </div>
+    <div class="tab-panel" id="tab-up" role="tabpanel" aria-labelledby="btn-up">
+      <h3>Du terrain vers la hiérarchie</h3>
+      <p>Elle permet aux salariés de faire remonter besoins, difficultés, propositions, alertes et retours d’expérience. Elle aide l’organisation à rester connectée à la réalité opérationnelle.</p>
+      <span class="mono">ÉQUIPES → MANAGERS → DIRECTION</span>
+    </div>
+    <div class="tab-panel" id="tab-cross" role="tabpanel" aria-labelledby="btn-cross">
+      <h3>Entre services et collaborateurs</h3>
+      <p>Elle facilite la coopération entre fonctions ou équipes situées au même niveau hiérarchique : projets, coordination, partage d’informations et résolution de problèmes.</p>
+      <span class="mono">SERVICE A ↔ SERVICE B ↔ SERVICE C</span>
+    </div>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Diagramme des trois flux d'information">
+  <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+    <rect x="355" y="30" width="190" height="55" rx="12" fill="var(--soft-accent)" stroke="var(--color-accent)"/>
+    <text x="450" y="64" text-anchor="middle" font-family="Space Grotesk" font-size="18" font-weight="700" fill="var(--color-text)">DIRECTION</text>
+    <rect x="80" y="210" width="190" height="55" rx="12" fill="var(--color-bg)" stroke="var(--border)"/>
+    <rect x="355" y="210" width="190" height="55" rx="12" fill="var(--color-bg)" stroke="var(--border)"/>
+    <rect x="630" y="210" width="190" height="55" rx="12" fill="var(--color-bg)" stroke="var(--border)"/>
+    <text x="175" y="244" text-anchor="middle" font-family="Inter" font-size="15" fill="var(--color-text)">ÉQUIPE A</text>
+    <text x="450" y="244" text-anchor="middle" font-family="Inter" font-size="15" fill="var(--color-text)">ÉQUIPE B</text>
+    <text x="725" y="244" text-anchor="middle" font-family="Inter" font-size="15" fill="var(--color-text)">ÉQUIPE C</text>
+    <line x1="390" y1="85" x2="175" y2="205" stroke="var(--color-accent)" stroke-width="3"/>
+    <line x1="450" y1="85" x2="450" y2="205" stroke="var(--color-accent)" stroke-width="3"/>
+    <line x1="510" y1="85" x2="725" y2="205" stroke="var(--color-accent)" stroke-width="3"/>
+    <path d="M175 200 C280 130 350 130 445 195" fill="none" stroke="var(--color-neutral)" stroke-width="2" stroke-dasharray="6 5"/>
+    <path d="M455 195 C550 130 620 130 725 200" fill="none" stroke="var(--color-neutral)" stroke-width="2" stroke-dasharray="6 5"/>
+    <text x="450" y="135" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-neutral)">DESCENDANTE</text>
+    <text x="450" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-neutral)">TRANSVERSALE</text>
+    <text x="450" y="290" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--color-accent)">ASCENDANTE : les retours remontent vers la direction</text>
+  </svg>
+  </div>
+</div>
+</section>
+
+<section id="outils">
+<div class="container reveal">
+  <div class="kicker">03 · Boîte à outils</div>
+  <h2>Choisir le bon outil selon le besoin</h2>
+  <p class="measure">Un outil n’est pertinent que s’il correspond au type d’information, à l’urgence, au public interne et au niveau d’interaction recherché.</p>
+  <div class="cards">
+    <article class="card">
+      <div class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h7M7 16h9"/></svg></div>
+      <h3>Intranet</h3><p>Référentiel interne pour retrouver actualités, documents, procédures et ressources utiles.</p>
+    </article>
+    <article class="card">
+      <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H7l-3 3z"/><path d="M7 9h10M7 13h7"/></svg></div>
+      <h3>Newsletter</h3><p>Format périodique pour sélectionner et synthétiser les informations importantes.</p>
+    </article>
+    <article class="card">
+      <div class="icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+      <h3>Affichage</h3><p>Support visible et rapide pour signaler une information pratique dans les espaces de travail.</p>
+    </article>
+    <article class="card">
+      <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 6h16v10H4z"/><path d="M8 20h8M12 16v4"/></svg></div>
+      <h3>Réunions</h3><p>Espace d’échange pour expliquer, coordonner, décider et recueillir des réactions.</p>
+    </article>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th scope="col">Outil</th><th scope="col">Force principale</th><th scope="col">Usage adapté</th><th scope="col">Point de vigilance</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">INTRANET</td><td>Centraliser</td><td>Documents, actualités, procédures</td><td>Actualisation régulière</td></tr>
+      <tr><td class="mono">NEWSLETTER</td><td>Synthétiser</td><td>Rendez-vous d’information</td><td>Éviter la surcharge</td></tr>
+      <tr><td class="mono">AFFICHAGE</td><td>Rendre visible</td><td>Informations courtes et pratiques</td><td>Lisibilité et emplacement</td></tr>
+      <tr><td class="mono">RÉUNION</td><td>Interagir</td><td>Décision, coordination, échanges</td><td>Ordre du jour et suivi</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <div class="label">📐 Bonnes pratiques professionnelles</div>
+    <div>Commencer par le besoin de communication, puis choisir le canal. Un outil sophistiqué ne compense pas un message mal ciblé.</div>
+  </div>
+</div>
+</section>
+
+<section id="culture" class="section-alt">
+<div class="container reveal">
+  <div class="kicker">04 · Engagement</div>
+  <h2>Communication interne et culture d’entreprise</h2>
+  <div class="grid">
+    <div class="measure">
+      <p>La communication interne contribue à faire connaître les valeurs, les comportements attendus, les réussites collectives et les priorités de l’organisation. Elle participe ainsi à la construction d’une culture partagée.</p>
+      <p>Elle peut également soutenir l’engagement en donnant aux salariés une meilleure compréhension de leur rôle, de l’impact de leur travail et des objectifs communs.</p>
+    </div>
+    <div class="quote">MESSAGE → COMPRÉHENSION → ADHÉSION → ACTION<br><br>La communication devient utile lorsqu’elle permet aux collaborateurs de comprendre ce qui est attendu et pourquoi cela compte.</div>
+  </div>
+
+  <div class="stepper" aria-label="Chaîne de construction de l'engagement">
+    <div class="step"><div class="step-num">01</div><h3>Informer</h3><p>Partager les faits et les décisions.</p></div>
+    <div class="step"><div class="step-num">02</div><h3>Expliquer</h3><p>Donner du contexte et du sens.</p></div>
+    <div class="step"><div class="step-num">03</div><h3>Écouter</h3><p>Recueillir les retours du terrain.</p></div>
+    <div class="step"><div class="step-num">04</div><h3>Mobiliser</h3><p>Relier chacun aux priorités communes.</p></div>
+  </div>
+
+  <details><summary>Pourquoi la communication descendante ne suffit-elle pas ?</summary><p>Parce qu’une organisation a également besoin de retours, de questions et de coopération. Les flux ascendants et transversaux permettent de compléter l’information venue de la direction.</p></details>
+  <details><summary>Quel rôle jouent les managers ?</summary><p>Ils traduisent les orientations dans le quotidien des équipes, répondent aux questions et font remonter les difficultés ou propositions.</p></details>
+</div>
+</section>
+
+<section id="cas">
+<div class="container reveal">
+  <div class="kicker">05 · Exemple professionnel</div>
+  <h2>Un lancement interne : du message à l’appropriation</h2>
+  <div class="callout">
+    <div class="label">📋 Cas pratique</div>
+    <div>Une entreprise déploie une nouvelle procédure de travail. Le service communication doit aider les salariés à comprendre la décision, savoir où trouver la procédure et savoir à qui poser leurs questions.</div>
+  </div>
+  <div class="diagram" role="img" aria-label="Parcours d'une communication interne lors d'un changement">
+  <svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg">
+    <line x1="110" y1="115" x2="790" y2="115" stroke="var(--color-neutral)" stroke-width="3"/>
+    <g font-family="Inter" fill="var(--color-text)" text-anchor="middle">
+      <circle cx="110" cy="115" r="28" fill="var(--soft-accent)" stroke="var(--color-accent)" stroke-width="3"/><text x="110" y="120" font-size="14" font-weight="700">01</text>
+      <text x="110" y="65" font-size="15" font-weight="700">Décider</text><text x="110" y="160" font-size="12" fill="var(--color-neutral)">direction</text>
+      <circle cx="337" cy="115" r="28" fill="var(--soft-accent)" stroke="var(--color-accent)" stroke-width="3"/><text x="337" y="120" font-size="14" font-weight="700">02</text>
+      <text x="337" y="65" font-size="15" font-weight="700">Expliquer</text><text x="337" y="160" font-size="12" fill="var(--color-neutral)">message clair</text>
+      <circle cx="563" cy="115" r="28" fill="var(--soft-accent)" stroke="var(--color-accent)" stroke-width="3"/><text x="563" y="120" font-size="14" font-weight="700">03</text>
+      <text x="563" y="65" font-size="15" font-weight="700">Diffuser</text><text x="563" y="160" font-size="12" fill="var(--color-neutral)">canaux internes</text>
+      <circle cx="790" cy="115" r="28" fill="var(--soft-accent)" stroke="var(--color-accent)" stroke-width="3"/><text x="790" y="120" font-size="14" font-weight="700">04</text>
+      <text x="790" y="65" font-size="15" font-weight="700">Écouter</text><text x="790" y="160" font-size="12" fill="var(--color-neutral)">questions & retours</text>
+    </g>
+  </svg>
+  </div>
+  <p class="measure">Le dispositif combine par exemple une information de référence sur l’intranet, une synthèse dans la newsletter et un temps d’échange avec les équipes. Les retours permettent ensuite d’identifier les points qui nécessitent une clarification.</p>
+</div>
+</section>
+
+<section id="cles" class="section-alt">
+<div class="container reveal">
+  <div class="kicker">06 · Synthèse</div>
+  <h2>Points clés à retenir</h2>
+  <div class="summary-grid">
+    <div class="key"><b>01 · Informer</b>Transmettre les informations utiles, au bon moment.</div>
+    <div class="key"><b>02 · Faire circuler</b>Combiner flux descendants, ascendants et transversaux.</div>
+    <div class="key"><b>03 · Choisir</b>Adapter l’outil au besoin : intranet, newsletter, affichage ou réunion.</div>
+    <div class="key"><b>04 · Engager</b>Donner du sens, écouter les salariés et construire une culture commune.</div>
+  </div>
+  <div class="callout">
+    <div class="label">💡 À retenir</div>
+    <div><strong>Une communication interne performante = information claire + circulation dans les deux sens + outils adaptés + culture partagée.</strong></div>
+  </div>
+</div>
+</section>
+
+<div class="container">
+  <div class="nav-bottom">
+    <a class="nav-btn" href="#"><span class="eyebrow">← Leçon précédente</span><br><strong>Leçon 05 — Plan de communication et objectifs</strong></a>
+    <a class="nav-btn next" href="#"><span class="eyebrow">Leçon suivante →</span><br><strong>Leçon 07 — Rédaction de contenus internes</strong></a>
+  </div>
+</div>
+</main>
+
+<footer>
+<div class="container">Communication d’Entreprise · Module 2 · Leçon 06 — Support pédagogique autonome</div>
+</footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progressBar=document.getElementById('progressBar');
+const topBtn=document.getElementById('topBtn');
+function updateScroll(){
+ const h=document.documentElement.scrollHeight-window.innerHeight;
+ const p=h>0?(window.scrollY/h)*100:0;
+ progressBar.style.width=p+'%';
+ topBtn.style.display=window.scrollY>500?'block':'none';
+}
+window.addEventListener('scroll',updateScroll,{passive:true});
+updateScroll();
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+const buttons=document.querySelectorAll('.tab-btn');
+buttons.forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.setAttribute('aria-selected','true');
+  document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+ });
+ btn.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+   const arr=[...buttons],i=arr.indexOf(btn),n=e.key==='ArrowRight'?(i+1)%arr.length:(i-1+arr.length)%arr.length;
+   arr[n].focus();arr[n].click();
+  }
+ });
+});
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

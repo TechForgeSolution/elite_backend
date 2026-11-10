@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 10 — Présenter ses conclusions et réaliser un projet d'analyse complet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+/* cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+/* encadrés */
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+/* figures */
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+/* stepper */
+.stepper{display:flex;gap:0;overflow-x:auto;margin:28px 0;padding-bottom:8px;counter-reset:s}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+/* tabs */
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+/* tableau */
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}td.l{text-align:left}
+/* code */
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+/* accordéon */
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+/* points clés */
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+/* nav */
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{color:var(--muted);background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">Storytelling</a><a href="#s2">Rapport</a><a href="#s3">Public</a><a href="#s4">Supports</a><a href="#s5">Éthique</a><a href="#s6">Projet</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 2 — Visualiser, analyser avec l'IA et présenter</span><span class="badge">⏱ 25 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Présenter ses conclusions et réaliser un projet d'analyse complet</h1>
+  <p class="sub">Leçon 10 — Vous apprenez à transformer une analyse en recommandations claires pour un public non technique, puis à relier toutes les étapes du parcours.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>Les principes du data storytelling</a></li>
+<li><a href="#s2"><b>2</b>La structure d'un rapport d'analyse</a></li>
+<li><a href="#s3"><b>3</b>Adapter son discours au public</a></li>
+<li><a href="#s4"><b>4</b>Choisir le bon support de restitution</a></li>
+<li><a href="#s5"><b>5</b>Éthique de la donnée et responsabilité</a></li>
+<li><a href="#s6"><b>6</b>Vue d'ensemble d'un projet d'analyse complet</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. Les principes du data storytelling</h2>
+<p>Une analyse n'a de valeur que si elle est comprise et suivie d'effet. Le <strong>data storytelling</strong> consiste à raconter ses données comme une histoire courte : on ne montre pas tous les calculs, on guide le lecteur vers la conclusion qui compte. Une structure simple en trois temps suffit.</p>
+<div class="cards">
+  <div class="card"><div class="ic">🎯</div><h4>Message clé</h4><p>La conclusion principale, énoncée en une phrase, dès le début.</p></div>
+  <div class="card"><div class="ic">📊</div><h4>Preuve chiffrée</h4><p>Un ou deux chiffres, ou un graphique, qui appuient le message.</p></div>
+  <div class="card"><div class="ic">✅</div><h4>Recommandation concrète</h4><p>L'action proposée, précise et réalisable.</p></div>
+</div>
+<figure>
+<svg viewBox="0 0 640 150" role="img" aria-label="Exemple de structure narrative : message clé, preuve chiffrée, recommandation concrète">
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="12" text-anchor="middle">
+<rect x="10" y="20" width="190" height="90" rx="10" fill="#EAF7EF" stroke="#16A34A"/><text x="105" y="44" font-weight="600" font-size="13">Message clé</text><text x="105" y="68" fill="#0A0F14">Le samedi concentre</text><text x="105" y="86" fill="#0A0F14">la plus forte part des ventes.</text>
+<rect x="225" y="20" width="190" height="90" rx="10" fill="#fff" stroke="#E2E8F0"/><text x="320" y="44" font-weight="600" font-size="13">Preuve chiffrée</text><rect x="270" y="82" width="14" height="18" fill="#E2E8F0"/><rect x="292" y="74" width="14" height="26" fill="#E2E8F0"/><rect x="314" y="64" width="14" height="36" fill="#E2E8F0"/><rect x="336" y="54" width="14" height="46" fill="#16A34A"/><rect x="358" y="70" width="14" height="30" fill="#E2E8F0"/>
+<rect x="440" y="20" width="190" height="90" rx="10" fill="#0A0F14"/><text x="535" y="44" font-weight="600" font-size="13" fill="#fff">Recommandation</text><text x="535" y="68" fill="#fff">Renforcer le stock et</text><text x="535" y="86" fill="#fff">l'équipe le samedi.</text>
+</g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M200 65h23"/><path d="M415 65h23"/></g>
+<text x="320" y="138" font-size="12" fill="#5B6472" text-anchor="middle">Exemple illustratif d'une histoire en trois temps</text>
+</svg>
+<figcaption>Du constat à l'action : chaque élément prépare le suivant.</figcaption></figure>
+<div class="note"><strong>💡 À retenir</strong><p>Commencez par la conclusion, pas par la méthode. Un lecteur pressé doit pouvoir retenir l'essentiel en lisant uniquement la première phrase.</p></div>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. La structure d'un rapport d'analyse</h2>
+<p>Un rapport synthétique suit un ordre constant, ce qui permet au lecteur de s'y repérer rapidement. Sélectionnez une partie pour en voir le contenu.</p>
+<div class="stepper" role="list" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Visez une à deux pages. Le détail des calculs peut être placé en annexe : il reste disponible sans alourdir le message principal.</p></div>
+<details><summary>Pourquoi placer le résumé au début ?</summary><div><p>Les décideurs lisent souvent seulement le début d'un document. Un résumé initial (le message clé et la recommandation) garantit que l'essentiel est vu, même en lecture rapide.</p></div></details>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. Adapter son discours au public</h2>
+<p>Les mêmes données ne se présentent pas de la même façon à tous. Le public détermine le vocabulaire, le niveau de détail (la <strong>granularité</strong>) et le type de preuve à privilégier.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Publics">
+    <button role="tab" aria-selected="true">Direction</button>
+    <button role="tab" aria-selected="false">Collègues</button>
+    <button role="tab" aria-selected="false">Clients</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Besoin : décider vite, avec peu de temps.</li><li>Données agrégées : totaux, tendances, quelques indicateurs clés.</li><li>Accent sur l'impact et la recommandation, pas sur la méthode.</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Besoin : comprendre, vérifier et réutiliser l'analyse.</li><li>Données détaillées : tableaux, formules, étapes de nettoyage.</li><li>Accent sur la méthode et la reproductibilité.</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Besoin : voir ce qui les concerne, dans un langage clair.</li><li>Données ciblées : seulement ce qui est utile à leur situation.</li><li>Accent sur la lisibilité, sans jargon, et sur la confidentialité des autres données.</li></ul></div>
+</div>
+<div class="tbl"><table>
+<caption class="sr" style="position:absolute;left:-9999px">Granularité des données selon le public</caption>
+<tr><th>Public</th><th>Granularité</th><th>Format privilégié</th></tr>
+<tr><td>Direction</td><td>Synthèse, indicateurs clés</td><td>Une page ou quelques diapositives</td></tr>
+<tr><td>Collègues</td><td>Détaillée, avec la méthode</td><td>Classeur, rapport complet</td></tr>
+<tr><td>Clients</td><td>Ciblée et simplifiée</td><td>Visuels clairs, note courte</td></tr>
+</table></div>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Choisir le bon support de restitution</h2>
+<p>Le support dépend de l'usage : faut-il explorer les données, informer par écrit ou convaincre lors d'une réunion ?</p>
+<div class="cards">
+  <div class="card"><div class="ic">📈</div><h4>Tableau de bord interactif</h4><p>Pour suivre des indicateurs dans le temps et explorer par filtres.</p></div>
+  <div class="card"><div class="ic">📝</div><h4>Note de synthèse</h4><p>Pour informer par écrit, avec message clé et recommandation en tête.</p></div>
+  <div class="card"><div class="ic">🖼️</div><h4>Présentation visuelle</h4><p>Pour convaincre en réunion, une idée par diapositive.</p></div>
+</div>
+<div class="tbl"><table>
+<tr><th>Support</th><th>Usage idéal</th><th>Point de vigilance</th></tr>
+<tr><td>Tableau de bord</td><td>Suivi régulier, exploration</td><td>Éviter la surcharge d'indicateurs</td></tr>
+<tr><td>Note de synthèse</td><td>Décision, archivage</td><td>Rester court et structuré</td></tr>
+<tr><td>Diapositives</td><td>Réunion, soutenance</td><td>Un message par diapositive</td></tr>
+</table></div>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Choisir un graphique ou un support « parce qu'il est impressionnant ». Un visuel doit d'abord rendre le message plus facile à comprendre, pas plus spectaculaire.</p></div>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Éthique de la donnée et responsabilité</h2>
+<p>Présenter des conclusions engage la responsabilité de l'analyste. Trois réflexes renforcent la confiance accordée à l'analyse.</p>
+<div class="cards">
+  <div class="card"><div class="ic">🔗</div><h4>Citer les sources</h4><p>Indiquer l'origine des données et la période couverte.</p></div>
+  <div class="card"><div class="ic">⚖️</div><h4>Dire les limites</h4><p>Mentionner explicitement ce que l'analyse ne permet pas de conclure.</p></div>
+  <div class="card"><div class="ic">🔒</div><h4>Protéger la confidentialité</h4><p>Ne montrer que ce qui est nécessaire, sans identifier de personnes.</p></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Une corrélation n'est pas une preuve de cause. Deux courbes qui évoluent ensemble ne signifient pas que l'une provoque l'autre : formulez vos conclusions avec prudence.</p></div>
+<details><summary>Exemples de limites à mentionner</summary><div><p>Un échantillon réduit, une période courte, des données manquantes ou estimées, une source non vérifiée. Les citer n'affaiblit pas l'analyse : cela la rend crédible.</p></div></details>
+<details><summary>Que faire des données personnelles ?</summary><div><p>Privilégiez les données agrégées (par groupe, par région) plutôt que nominatives, et limitez la diffusion du fichier aux personnes concernées. Lorsqu'une IA est utilisée, évitez de lui transmettre des informations confidentielles.</p></div></details>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. Vue d'ensemble d'un projet d'analyse complet</h2>
+<p>Un projet d'analyse relie toutes les compétences du parcours en un flux unique, de la donnée brute à la recommandation. Chaque étape alimente la suivante.</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Flux global d'un projet d'analyse : collecte, nettoyage, calculs, tableau croisé dynamique, tableau de bord, IA, recommandations">
+<defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="10" y="20" width="130" height="46" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="75" y="48">Collecte</text>
+<rect x="170" y="20" width="130" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="235" y="48">Nettoyage</text>
+<rect x="330" y="20" width="130" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="395" y="48">Calculs</text>
+<rect x="490" y="20" width="140" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="560" y="48">Tableau croisé</text>
+<rect x="90" y="140" width="140" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="160" y="168">Tableau de bord</text>
+<rect x="260" y="140" width="130" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="325" y="168">IA</text>
+<rect x="420" y="140" width="150" height="46" rx="8" fill="#0A0F14"/><text x="495" y="168" fill="#fff">Recommandations</text>
+</g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar3)"><path d="M140 43h28"/><path d="M300 43h28"/><path d="M460 43h28"/><path d="M560 68V100H160V138"/><path d="M230 163h28"/><path d="M390 163h28"/></g>
+<text x="320" y="214" font-size="12" fill="#5B6472" text-anchor="middle">Les automatisations (leçon 09) accélèrent chacune de ces étapes</text>
+</svg>
+<figcaption>Le flux global : de la collecte à la recommandation.</figcaption></figure>
+<div class="cards">
+  <div class="card"><div class="ic">🧱</div><h4>Préparer</h4><p>Collecte et nettoyage rendent les données fiables.</p></div>
+  <div class="card"><div class="ic">🔍</div><h4>Analyser</h4><p>Calculs et tableaux croisés dynamiques font ressortir les tendances.</p></div>
+  <div class="card"><div class="ic">🖥️</div><h4>Visualiser</h4><p>Le tableau de bord et l'IA aident à explorer et interpréter.</p></div>
+  <div class="card"><div class="ic">🗣️</div><h4>Recommander</h4><p>Le storytelling transforme les résultats en décision.</p></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>Le projet complet n'est pas une suite d'outils, mais une démarche : chaque étape sert la question de départ et mène à une recommandation utile.</p></div>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>Le data storytelling suit trois temps : message clé, preuve chiffrée, recommandation concrète.</li>
+<li>Un rapport synthétique place le résumé en premier et reste court, avec le détail en annexe.</li>
+<li>Le niveau de détail dépend du public : synthèse pour la direction, détail pour les collègues, ciblage pour les clients.</li>
+<li>Le support (tableau de bord, note, diapositives) se choisit selon l'usage, pas selon l'effet visuel.</li>
+<li>Citer ses sources, annoncer les limites et protéger la confidentialité font partie de la responsabilité de l'analyste.</li>
+<li>Un projet complet relie collecte, nettoyage, calculs, tableau croisé, tableau de bord, IA et recommandations.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <a href="lecon-09-automatiser-gagner-du-temps.html">Leçon précédente<small>Leçon 09 — Automatiser et gagner du temps</small></a>
+    <span>Leçon suivante<small>Aucune (dernière leçon du parcours)</small></span>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 2 · Leçon 10</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Étapes (stepper) : structure d'un rapport ===== */
+const steps=[
+["Résumé","Le message clé et la recommandation en deux ou trois phrases : l'essentiel pour le lecteur pressé."],
+["Contexte","La question posée et l'enjeu : pourquoi cette analyse a été menée et pour qui."],
+["Données","Les sources utilisées, la période couverte et les principales préparations effectuées."],
+["Résultats","Les constats appuyés par un graphique ou un tableau lisible, un message par visuel."],
+["Limites","Ce que l'analyse ne permet pas de conclure : échantillon, période, données manquantes."],
+["Actions","Les recommandations concrètes, classées par priorité, avec les prochaines étapes."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Partie '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.setAttribute('role','listitem');
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

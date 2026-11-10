@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 24 — Outils numériques de gestion de projet.">
+<title>Leçon 24 — Outils numériques de gestion de projet | Gestion de Projet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+  --bg-soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --max:1180px;
+  --reading:720px;
+  --shadow:0 14px 34px rgba(20,33,61,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.68}
+a{color:inherit}
+button{font:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:var(--color-bg)}
+.progress i{display:block;height:100%;width:0;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.brand{font-family:Manrope,sans-serif;font-weight:800;letter-spacing:-.02em}
+.brand small{display:block;font:500 11px "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.nav a{text-decoration:none;font-size:14px;font-weight:600}
+.container{max-width:var(--max);margin:auto;padding:0 24px}
+.hero{padding:76px 0 48px;display:grid;grid-template-columns:1.25fr .75fr;gap:44px;align-items:end}
+.kicker{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.12em;color:var(--color-accent)}
+h1,h2,h3{font-family:Manrope,sans-serif;line-height:1.12;letter-spacing:-.035em}
+h1{font-size:clamp(38px,6vw,68px);margin:12px 0 20px}
+h2{font-size:clamp(26px,4vw,38px);margin:0 0 18px}
+h3{font-size:19px;margin:0 0 10px}
+.lead{max-width:var(--reading);font-size:18px;color:var(--text-muted)}
+.meta{border:1px solid var(--border);background:var(--accent-soft);padding:22px;border-radius:18px}
+.meta-row{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid var(--border)}
+.meta-row:last-child{border-bottom:0}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.badge{display:inline-flex;align-items:center;border:1px solid var(--color-accent);padding:6px 10px;border-radius:999px;font:600 11px "IBM Plex Mono";text-transform:uppercase}
+.toc{margin:0 0 42px;padding:22px;border:1px solid var(--border);border-radius:18px;background:var(--color-bg)}
+.toc-title{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.toc ol{margin:0;padding-left:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px 28px}
+.toc a{text-decoration:none}
+.toc a:hover{color:var(--color-accent)}
+main{padding-bottom:60px}
+.section{padding:70px 0;border-top:1px solid var(--border)}
+.section.alt{background:var(--bg-soft)}
+.section-inner{max-width:var(--max);margin:auto;padding:0 24px}
+.section-head{display:grid;grid-template-columns:130px 1fr;gap:30px;margin-bottom:30px}
+.num{font:600 14px "IBM Plex Mono";color:var(--color-accent);padding-top:5px}
+.content{max-width:var(--reading)}
+.content p{margin:0 0 17px}
+.content ul{padding-left:22px}
+.content li{margin:8px 0}
+.diagram{margin:30px 0;padding:20px;border:1px solid var(--border);border-radius:18px;background:var(--color-bg);overflow:auto}
+svg{display:block;width:100%;min-width:640px;height:auto}
+svg text{font-family:Inter,Arial,sans-serif;fill:var(--color-text)}
+svg .mono-svg{font-family:"IBM Plex Mono",monospace}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:28px 0}
+.card{padding:22px;border:1px solid var(--border);border-radius:16px;background:var(--color-bg);transition:.2s ease}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .icon{font-size:22px;margin-bottom:10px}
+.card p{margin:0;color:var(--text-muted)}
+.callout{margin:28px 0;padding:20px 22px;border-left:5px solid var(--color-accent);background:var(--accent-soft);border-radius:0 14px 14px 0}
+.callout strong{display:block;margin-bottom:6px;font-family:Manrope}
+table{width:100%;border-collapse:collapse;margin:28px 0;min-width:720px}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:16px;margin:28px 0}
+.table-wrap table{margin:0;border:0}
+th,td{padding:14px 15px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:Manrope;font-size:13px}
+td{font-size:14px}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--accent-soft)}
+.tabs{margin:30px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border)}
+.tab-btn{border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);padding:10px 14px;border-radius:10px 10px 0 0;cursor:pointer}
+.tab-btn[aria-selected="true"]{border-color:var(--color-accent);background:var(--accent-soft);font-weight:700}
+.tab-panel{display:none;padding:22px;border:1px solid var(--border);border-top:0;border-radius:0 0 14px 14px}
+.tab-panel.active{display:block}
+details{border-top:1px solid var(--border);padding:16px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-family:Manrope;font-weight:700}
+.pilot{margin:30px 0;padding:22px;border-radius:16px;background:var(--accent-soft);border:1px solid var(--color-accent);font-family:"IBM Plex Mono",monospace}
+.pilot-title{font-weight:600;margin-bottom:14px}
+.pilot-line{display:flex;justify-content:space-between;gap:20px;border-bottom:1px dashed var(--border);padding:9px 0}
+.pilot-line:last-child{border-bottom:0}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:30px 0}
+.step{position:relative;padding:18px 14px;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+.step b{display:block;color:var(--color-accent);font:600 12px "IBM Plex Mono";margin-bottom:8px}
+.key-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.key{padding:20px;border-top:4px solid var(--color-accent);background:var(--color-bg);border-radius:12px;border-left:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.key p{margin:8px 0 0;color:var(--text-muted);font-size:14px}
+.nav-bottom{padding:38px 0 60px;border-top:1px solid var(--border)}
+.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.nav-card{display:block;text-decoration:none;border:1px solid var(--border);border-radius:16px;padding:20px;background:var(--color-bg)}
+.nav-card:hover{border-color:var(--color-accent)}
+.nav-card span{display:block;font:500 11px "IBM Plex Mono";color:var(--color-neutral);text-transform:uppercase;margin-bottom:7px}
+footer{border-top:1px solid var(--border);padding:25px 24px;color:var(--text-muted);font-size:13px}
+.footer-in{max-width:var(--max);margin:auto;display:flex;justify-content:space-between;gap:20px}
+.top{position:fixed;right:22px;bottom:22px;z-index:800;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);width:44px;height:44px;border-radius:50%;cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(16px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--color-accent) 70%,transparent);outline-offset:3px}
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;padding-top:50px}
+  .toc ol{grid-template-columns:1fr}
+  .section-head{grid-template-columns:1fr;gap:8px}
+  .grid,.key-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  .container,.section-inner{padding-left:16px;padding-right:16px}
+  .nav{padding:12px 16px}
+  .hero{padding-top:38px}
+  h1{font-size:38px}
+  .steps,.nav-grid{grid-template-columns:1fr}
+  .footer-in{flex-direction:column}
+  .meta-row{flex-direction:column;gap:4px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
+<header class="header">
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">GESTION DE PROJET<small>Module 5 · Méthodes Agile et outils de gestion</small></div>
+    <a href="#sommaire">Sommaire</a>
+  </nav>
+</header>
+
+<section class="hero container" aria-labelledby="titre">
+  <div>
+    <div class="kicker">Leçon 24 · Module 5</div>
+    <h1 id="titre">Outils numériques de gestion de projet</h1>
+    <p class="lead">Les outils numériques permettent de structurer l’information, suivre l’avancement, organiser les tâches et faciliter la collaboration. Le choix doit rester cohérent avec le besoin du projet.</p>
+  </div>
+  <aside class="meta" aria-label="Informations sur la leçon">
+    <div class="meta-row"><span>Module</span><strong>05</strong></div>
+    <div class="meta-row"><span>Niveau</span><strong>Avancé</strong></div>
+    <div class="meta-row"><span>Durée</span><strong class="mono">20 min</strong></div>
+    <div class="meta-row"><span>Objectif</span><strong>Utiliser des outils numériques adaptés.</strong></div>
+  </aside>
+</section>
+
+<div id="sommaire" class="container toc" aria-label="Sommaire">
+  <div class="toc-title">Sommaire de la leçon</div>
+  <ol>
+    <li><a href="#s1">Les familles d’outils numériques</a></li>
+    <li><a href="#s2">Les tableurs</a></li>
+    <li><a href="#s3">Trello et la visualisation du flux</a></li>
+    <li><a href="#s4">Asana et le pilotage des tâches</a></li>
+    <li><a href="#s5">Jira et le suivi des travaux</a></li>
+    <li><a href="#s6">Microsoft Project et la planification</a></li>
+    <li><a href="#s7">Notion et les espaces de travail</a></li>
+    <li><a href="#s8">Les outils collaboratifs</a></li>
+    <li><a href="#s9">Choisir l’outil adapté</a></li>
+    <li><a href="#keys">Points clés à retenir</a></li>
+  </ol>
+</div>
+
+<main>
+<section id="s1" class="section reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">01 / FAMILLES</div><div><h2>Les familles d’outils numériques</h2><div class="content">
+    <p>Un outil numérique de gestion de projet sert à rendre l’information du projet plus accessible, structurée et exploitable. Il ne remplace pas la méthode de gestion : il la soutient.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Schéma des grandes familles d'outils numériques de gestion de projet">
+    <svg viewBox="0 0 1000 390">
+      <rect x="40" y="150" width="210" height="90" rx="16" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="145" y="185" text-anchor="middle" font-size="19" font-weight="700">Projet</text>
+      <text x="145" y="215" text-anchor="middle" font-size="13">besoins · données · décisions</text>
+      <line x1="250" y1="195" x2="360" y2="195" stroke="var(--color-neutral)" stroke-width="2"/>
+      <polygon points="360,195 346,187 346,203" fill="var(--color-neutral)"/>
+      <g>
+        <rect x="390" y="35" width="230" height="70" rx="14" fill="var(--color-bg)" stroke="var(--color-neutral)"/>
+        <text x="505" y="63" text-anchor="middle" font-size="16" font-weight="700">Données</text><text x="505" y="86" text-anchor="middle" font-size="12">tableurs</text>
+        <rect x="390" y="135" width="230" height="70" rx="14" fill="var(--color-bg)" stroke="var(--color-neutral)"/>
+        <text x="505" y="163" text-anchor="middle" font-size="16" font-weight="700">Tâches</text><text x="505" y="186" text-anchor="middle" font-size="12">Trello · Asana · Jira</text>
+        <rect x="390" y="235" width="230" height="70" rx="14" fill="var(--color-bg)" stroke="var(--color-neutral)"/>
+        <text x="505" y="263" text-anchor="middle" font-size="16" font-weight="700">Planning</text><text x="505" y="286" text-anchor="middle" font-size="12">Microsoft Project</text>
+      </g>
+      <line x1="620" y1="170" x2="730" y2="170" stroke="var(--color-neutral)" stroke-width="2"/>
+      <polygon points="730,170 716,162 716,178" fill="var(--color-neutral)"/>
+      <rect x="760" y="125" width="200" height="90" rx="16" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="860" y="160" text-anchor="middle" font-size="17" font-weight="700">Pilotage</text>
+      <text x="860" y="187" text-anchor="middle" font-size="12">visibilité · coordination</text>
+    </svg>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong>Le bon outil est celui qui rend une activité du projet plus claire, plus traçable ou plus collaborative, sans ajouter une complexité inutile.</div>
+</div>
+</section>
+
+<section id="s2" class="section alt reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">02 / TABLEURS</div><div><h2>Les tableurs</h2><div class="content">
+    <p>Un tableur peut servir à construire un budget, suivre des indicateurs, établir une liste de tâches, enregistrer des échéances ou consolider des informations. Sa force est sa souplesse.</p>
+    <p>Pour un projet, il devient particulièrement utile lorsque les données doivent être calculées, filtrées, triées ou présentées sous forme de tableau.</p>
+  </div></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Usage</th><th scope="col">Information suivie</th><th scope="col">Résultat attendu</th></tr></thead>
+      <tbody>
+        <tr><td>Budget</td><td>Postes, montants, écarts</td><td>Vision financière structurée</td></tr>
+        <tr><td>Planning simple</td><td>Tâches, dates, responsables</td><td>Calendrier lisible</td></tr>
+        <tr><td>KPI</td><td>Valeurs, objectifs, tendances</td><td>Tableau de bord</td></tr>
+        <tr><td>Suivi fournisseurs</td><td>Offres, statuts, échéances</td><td>Comparaison et traçabilité</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pilot">
+    <div class="pilot-title">FICHE DE PILOTAGE · TABLEUR</div>
+    <div class="pilot-line"><span>Échéance</span><strong>15/10</strong></div>
+    <div class="pilot-line"><span>Budget prévu</span><strong>1 250 000</strong></div>
+    <div class="pilot-line"><span>Budget consommé</span><strong>875 000</strong></div>
+    <div class="pilot-line"><span>Avancement</span><strong>70 %</strong></div>
+  </div>
+  <details><summary>Point de vigilance</summary><p>Plus le nombre d’informations, de personnes et de mises à jour augmente, plus il faut vérifier la cohérence des données et la gestion des versions.</p></details>
+</div>
+</section>
+
+<section id="s3" class="section reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">03 / TRELLO</div><div><h2>Trello et la visualisation du flux</h2><div class="content">
+    <p>Trello organise le travail sous forme de tableaux, listes et cartes. Cette logique permet de visualiser les éléments à faire, en cours ou terminés.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Kanban simplifié en trois colonnes">
+    <svg viewBox="0 0 1000 330">
+      <text x="160" y="35" text-anchor="middle" font-size="18" font-weight="700">À faire</text>
+      <text x="500" y="35" text-anchor="middle" font-size="18" font-weight="700">En cours</text>
+      <text x="840" y="35" text-anchor="middle" font-size="18" font-weight="700">Terminé</text>
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)">
+        <rect x="50" y="60" width="220" height="210" rx="14"/><rect x="390" y="60" width="220" height="210" rx="14"/><rect x="730" y="60" width="220" height="210" rx="14"/>
+      </g>
+      <g fill="var(--accent-soft)" stroke="var(--color-accent)">
+        <rect x="70" y="85" width="180" height="48" rx="9"/><rect x="70" y="148" width="180" height="48" rx="9"/>
+        <rect x="410" y="85" width="180" height="48" rx="9"/>
+        <rect x="750" y="85" width="180" height="48" rx="9"/><rect x="750" y="148" width="180" height="48" rx="9"/>
+      </g>
+      <text x="160" y="115" text-anchor="middle" font-size="13">Cadrage</text><text x="160" y="178" text-anchor="middle" font-size="13">Collecte</text>
+      <text x="500" y="115" text-anchor="middle" font-size="13">Développement</text>
+      <text x="840" y="115" text-anchor="middle" font-size="13">Contrôle</text><text x="840" y="178" text-anchor="middle" font-size="13">Livraison</text>
+    </svg>
+  </div>
+  <div class="grid">
+    <article class="card"><div class="icon">▦</div><h3>Visualiser</h3><p>La position d’une carte rend visible l’état du travail et facilite la lecture collective du flux.</p></article>
+    <article class="card"><div class="icon">→</div><h3>Déplacer</h3><p>Le passage d’une colonne à l’autre matérialise l’évolution d’un élément du travail.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="s4" class="section alt reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">04 / ASANA</div><div><h2>Asana et le pilotage des tâches</h2><div class="content">
+    <p>Asana permet d’organiser les tâches, leurs responsables, leurs échéances et leurs relations. L’intérêt principal est de disposer d’une vue structurée du travail à accomplir.</p>
+  </div></div></div>
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Vues de pilotage">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="asana-list" id="tab-list">Liste</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="asana-timeline" id="tab-timeline">Chronologie</button>
+    </div>
+    <div class="tab-panel active" id="asana-list" role="tabpanel" aria-labelledby="tab-list">
+      <strong>Vue liste :</strong> utile pour suivre précisément les tâches, responsables, statuts et dates.
+    </div>
+    <div class="tab-panel" id="asana-timeline" role="tabpanel" aria-labelledby="tab-timeline">
+      <strong>Vue chronologique :</strong> utile pour comprendre l’enchaînement temporel des travaux et les dépendances.
+    </div>
+  </div>
+  <div class="callout"><strong>📐 Bonne pratique professionnelle</strong>Une tâche doit rester suffisamment précise pour qu’un responsable sache ce qui est attendu, tout en évitant de transformer l’outil en inventaire illisible de micro-actions.</div>
+</div>
+</section>
+
+<section id="s5" class="section reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">05 / JIRA</div><div><h2>Jira et le suivi des travaux</h2><div class="content">
+    <p>Jira est adapté au suivi structuré du travail, notamment dans des environnements où les demandes, éléments à traiter, priorités et statuts doivent être tracés.</p>
+    <p>Dans une organisation Agile, l’outil peut soutenir la gestion du backlog et la visibilité sur les travaux en cours.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Flux de suivi des éléments de travail">
+    <svg viewBox="0 0 1000 250">
+      <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+        <rect x="35" y="80" width="190" height="80" rx="14"/><rect x="275" y="80" width="190" height="80" rx="14"/>
+        <rect x="515" y="80" width="190" height="80" rx="14"/><rect x="755" y="80" width="190" height="80" rx="14"/>
+      </g>
+      <g font-size="15" font-weight="700" text-anchor="middle"><text x="130" y="113">Backlog</text><text x="370" y="113">Priorisé</text><text x="610" y="113">En cours</text><text x="850" y="113">Terminé</text></g>
+      <g font-size="12" text-anchor="middle"><text x="130" y="137">éléments à traiter</text><text x="370" y="137">ordre de traitement</text><text x="610" y="137">travail actif</text><text x="850" y="137">résultat livré</text></g>
+      <g stroke="var(--color-neutral)" stroke-width="2"><line x1="225" y1="120" x2="275" y2="120"/><line x1="465" y1="120" x2="515" y2="120"/><line x1="705" y1="120" x2="755" y2="120"/></g>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section id="s6" class="section alt reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">06 / PROJECT</div><div><h2>Microsoft Project et la planification</h2><div class="content">
+    <p>Microsoft Project est orienté vers la planification et le suivi du calendrier du projet. Il permet notamment de représenter les tâches, durées, dépendances et jalons.</p>
+  </div></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Élément</th><th scope="col">Rôle dans le planning</th><th scope="col">Lecture</th></tr></thead>
+      <tbody>
+        <tr><td>Tâche</td><td>Travail à réaliser</td><td>Unité du planning</td></tr>
+        <tr><td>Durée</td><td>Temps prévu</td><td>Charge temporelle</td></tr>
+        <tr><td>Dépendance</td><td>Lien entre travaux</td><td>Ordre d’enchaînement</td></tr>
+        <tr><td>Jalon</td><td>Point significatif</td><td>Repère de pilotage</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="steps" aria-label="Construction d'un planning numérique">
+    <div class="step"><b>01</b><strong>Structurer</strong><br>Découper les travaux.</div>
+    <div class="step"><b>02</b><strong>Planifier</strong><br>Attribuer durées et dates.</div>
+    <div class="step"><b>03</b><strong>Lier</strong><br>Définir les dépendances.</div>
+    <div class="step"><b>04</b><strong>Suivre</strong><br>Comparer prévu et réalisé.</div>
+  </div>
+</div>
+</section>
+
+<section id="s7" class="section reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">07 / NOTION</div><div><h2>Notion et les espaces de travail</h2><div class="content">
+    <p>Notion peut servir à centraliser des informations de projet dans un espace organisé : documentation, pages, bases de données, notes et éléments de suivi.</p>
+    <p>Son intérêt est particulièrement visible lorsqu’une équipe doit réunir dans un même environnement des informations provenant de plusieurs activités du projet.</p>
+  </div></div></div>
+  <div class="grid">
+    <article class="card"><div class="icon">▤</div><h3>Documenter</h3><p>Centraliser les informations utiles au projet et leur organisation.</p></article>
+    <article class="card"><div class="icon">▥</div><h3>Structurer</h3><p>Relier pages et données pour créer un espace de travail cohérent.</p></article>
+    <article class="card"><div class="icon">◫</div><h3>Suivre</h3><p>Présenter des éléments de pilotage dans des vues adaptées au besoin.</p></article>
+    <article class="card"><div class="icon">↗</div><h3>Partager</h3><p>Faciliter l’accès collectif aux informations nécessaires.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="s8" class="section alt reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">08 / COLLABORATION</div><div><h2>Les outils collaboratifs</h2><div class="content">
+    <p>Les outils collaboratifs facilitent les échanges, le partage de documents, les réunions à distance et la coordination des membres du projet. Leur objectif est de réduire les ruptures d’information.</p>
+  </div></div></div>
+  <div class="diagram" role="img" aria-label="Écosystème collaboratif autour de l'équipe projet">
+    <svg viewBox="0 0 1000 360">
+      <circle cx="500" cy="180" r="75" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="3"/>
+      <text x="500" y="176" text-anchor="middle" font-size="18" font-weight="700">Équipe</text>
+      <text x="500" y="200" text-anchor="middle" font-size="12">projet</text>
+      <g fill="var(--color-bg)" stroke="var(--color-neutral)">
+        <rect x="90" y="55" width="190" height="62" rx="13"/><rect x="720" y="55" width="190" height="62" rx="13"/>
+        <rect x="90" y="245" width="190" height="62" rx="13"/><rect x="720" y="245" width="190" height="62" rx="13"/>
+      </g>
+      <g text-anchor="middle" font-size="14" font-weight="700">
+        <text x="185" y="82">Messagerie</text><text x="815" y="82">Réunions</text>
+        <text x="185" y="272">Documents</text><text x="815" y="272">Coédition</text>
+      </g>
+      <g stroke="var(--color-neutral)" stroke-width="2">
+        <line x1="280" y1="86" x2="425" y2="155"/><line x1="720" y1="86" x2="575" y2="155"/>
+        <line x1="280" y1="276" x2="425" y2="205"/><line x1="720" y1="276" x2="575" y2="205"/>
+      </g>
+    </svg>
+  </div>
+  <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Multiplier les outils sans règle d’usage peut disperser l’information. L’équipe doit savoir où se trouve l’information de référence et quel outil utiliser pour chaque type d’échange.</div>
+</div>
+</section>
+
+<section id="s9" class="section reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">09 / CHOIX</div><div><h2>Choisir l’outil adapté</h2><div class="content">
+    <p>Le choix d’un outil numérique doit partir du besoin du projet : type d’information à gérer, niveau de planification, mode de collaboration, taille de l’équipe et degré de traçabilité recherché.</p>
+  </div></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Outil</th><th scope="col">Point fort</th><th scope="col">Usage pertinent</th></tr></thead>
+      <tbody>
+        <tr><td>Tableur</td><td>Données et calculs</td><td>Budget, indicateurs, listes structurées</td></tr>
+        <tr><td>Trello</td><td>Visualisation du flux</td><td>Suivi visuel des tâches</td></tr>
+        <tr><td>Asana</td><td>Organisation des tâches</td><td>Responsables, échéances, coordination</td></tr>
+        <tr><td>Jira</td><td>Suivi structuré du travail</td><td>Backlog, éléments de travail, statuts</td></tr>
+        <tr><td>Microsoft Project</td><td>Planification</td><td>Durées, dépendances, jalons</td></tr>
+        <tr><td>Notion</td><td>Centralisation</td><td>Documentation et espace de travail</td></tr>
+        <tr><td>Outils collaboratifs</td><td>Communication</td><td>Échanges, réunions, partage et coédition</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pilot">
+    <div class="pilot-title">FICHE DE PILOTAGE · CRITÈRES DE CHOIX</div>
+    <div class="pilot-line"><span>Besoin principal</span><strong>__________</strong></div>
+    <div class="pilot-line"><span>Type de données</span><strong>__________</strong></div>
+    <div class="pilot-line"><span>Équipe</span><strong>__________</strong></div>
+    <div class="pilot-line"><span>Planification requise</span><strong>__________</strong></div>
+    <div class="pilot-line"><span>Collaboration requise</span><strong>__________</strong></div>
+  </div>
+  <div class="callout"><strong>📐 Bonne pratique professionnelle</strong>Ne choisissez pas un outil parce qu’il possède le plus de fonctionnalités. Choisissez celui dont les fonctions répondent réellement au mode de gestion du projet.</div>
+</div>
+</section>
+
+<section id="keys" class="section alt reveal">
+<div class="section-inner">
+  <div class="section-head"><div class="num">SYNTHÈSE</div><div><h2>Points clés à retenir</h2></div></div>
+  <div class="key-grid">
+    <article class="key"><h3>01 · Structurer</h3><p>Les outils numériques rendent les données, tâches et échéances plus visibles.</p></article>
+    <article class="key"><h3>02 · Visualiser</h3><p>Les tableaux et vues graphiques facilitent la lecture de l’état du projet.</p></article>
+    <article class="key"><h3>03 · Collaborer</h3><p>Les outils partagés réduisent les ruptures d’information entre les membres.</p></article>
+    <article class="key"><h3>04 · Planifier</h3><p>Les outils de planning permettent de suivre durées, dépendances et jalons.</p></article>
+    <article class="key"><h3>05 · Centraliser</h3><p>Un espace structuré aide à retrouver les informations utiles au projet.</p></article>
+    <article class="key"><h3>06 · Adapter</h3><p>Le choix doit rester aligné sur le besoin réel, la méthode et l’équipe.</p></article>
+  </div>
+  <div class="diagram" role="img" aria-label="Résumé visuel : besoin vers outil vers pilotage">
+    <svg viewBox="0 0 1000 230">
+      <rect x="55" y="65" width="220" height="95" rx="16" fill="var(--color-bg)" stroke="var(--color-neutral)"/>
+      <rect x="390" y="65" width="220" height="95" rx="16" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+      <rect x="725" y="65" width="220" height="95" rx="16" fill="var(--color-bg)" stroke="var(--color-neutral)"/>
+      <text x="165" y="102" text-anchor="middle" font-size="17" font-weight="700">Besoin</text><text x="165" y="127" text-anchor="middle" font-size="12">ce qu’il faut gérer</text>
+      <text x="500" y="102" text-anchor="middle" font-size="17" font-weight="700">Outil adapté</text><text x="500" y="127" text-anchor="middle" font-size="12">fonction + usage</text>
+      <text x="835" y="102" text-anchor="middle" font-size="17" font-weight="700">Pilotage</text><text x="835" y="127" text-anchor="middle" font-size="12">visibilité + coordination</text>
+      <g stroke="var(--color-neutral)" stroke-width="2"><line x1="275" y1="112" x2="390" y2="112"/><line x1="610" y1="112" x2="725" y2="112"/></g>
+    </svg>
+  </div>
+</div>
+</section>
+</main>
+
+<div class="nav-bottom container">
+  <div class="nav-grid">
+    <a class="nav-card" href="#">
+      <span>← Leçon précédente</span>
+      <strong>Leçon 23 — User Stories et backlog</strong>
+    </a>
+    <a class="nav-card" href="#">
+      <span>Leçon suivante →</span>
+      <strong>Leçon 25 — Collaboration et travail à distance</strong>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <span>Gestion de Projet · Module 5</span>
+    <span class="mono">LEÇON 24 · 20 MIN · AVANCÉ</span>
+  </div>
+</footer>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const progress=document.getElementById('progress');
+  const topBtn=document.getElementById('topBtn');
+  function update(){
+    const h=document.documentElement;
+    const max=h.scrollHeight-h.clientHeight;
+    progress.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    topBtn.classList.toggle('show',h.scrollTop>500);
+  }
+  addEventListener('scroll',update,{passive:true}); update();
+  topBtn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=[...group.querySelectorAll('[role="tab"]')];
+    const panels=[...group.querySelectorAll('[role="tabpanel"]')];
+    buttons.forEach((btn,i)=>{
+      btn.addEventListener('click',()=>{
+        buttons.forEach((b,j)=>{
+          const active=i===j;
+          b.setAttribute('aria-selected',active);
+          b.tabIndex=active?0:-1;
+          panels[j].classList.toggle('active',active);
+        });
+      });
+      btn.addEventListener('keydown',e=>{
+        if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+          e.preventDefault();
+          const dir=e.key==='ArrowRight'?1:-1;
+          const next=(i+dir+buttons.length)%buttons.length;
+          buttons[next].focus(); buttons[next].click();
+        }
+      });
+    });
+  });
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+  },{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 17 — Suivi de l'avancement — Module 4 : Exécution, suivi et contrôle.">
+<title>Leçon 17 — Suivi de l'avancement | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314213D'/%3E%3Cpath d='M12 44h40M20 36V20m12 16V14m12 22V24' stroke='%23FF9F1C' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F6F8;
+  --color-text:#14213D;
+  --color-accent:#FF9F1C;
+  --color-neutral:#8D99AE;
+  --shadow:0 12px 30px rgba(20,33,61,.08);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-text);text-decoration-thickness:2px;text-decoration-color:var(--color-accent);text-underline-offset:3px}
+button{font:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:color-mix(in srgb,var(--color-neutral) 20%,var(--color-bg))}
+.progress i{display:block;height:100%;width:0;background:var(--color-accent)}
+header.site{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg))}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font-family:Manrope;font-weight:700;letter-spacing:-.02em}
+.mark{width:34px;height:34px;border:2px solid var(--color-text);border-radius:9px;display:grid;place-items:center;position:relative}
+.mark:after{content:"";width:8px;height:8px;background:var(--color-accent);border-radius:50%}
+.menu{display:flex;gap:16px;align-items:center}
+.menu a{font-size:.86rem;text-decoration:none}
+.menu a:hover{color:var(--color-accent)}
+.hero{max-width:1180px;margin:auto;padding:76px 24px 52px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.badge{display:inline-flex;align-items:center;border:1px solid var(--color-neutral);padding:6px 10px;border-radius:999px;font-size:.78rem;font-family:"JetBrains Mono";letter-spacing:.02em}
+.badge.accent{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+h1,h2,h3{font-family:Manrope;margin:0 0 16px;line-height:1.15;letter-spacing:-.035em}
+h1{font-size:clamp(2.4rem,6vw,5rem);max-width:920px}
+h2{font-size:clamp(1.7rem,3vw,2.5rem)}
+h3{font-size:1.2rem}
+.lead{font-size:clamp(1.05rem,2vw,1.25rem);max-width:720px;color:color-mix(in srgb,var(--color-text) 70%,var(--color-bg))}
+.mono{font-family:"JetBrains Mono";font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));border-radius:7px;padding:.1em .35em}
+.toc{max-width:920px;margin:0 auto 36px;padding:20px 24px;border-left:4px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.toc strong{font-family:Manrope}
+.toc ol{margin:10px 0 0;padding-left:22px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 24px}
+main{overflow:hidden}
+section{padding:74px 24px}
+section:nth-child(even){background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.wrap{max-width:1100px;margin:auto}
+.prose{max-width:720px}
+.prose p{margin:0 0 18px}
+.section-head{margin-bottom:34px;max-width:760px}
+.kicker{font:600 .78rem "JetBrains Mono";text-transform:uppercase;letter-spacing:.12em;color:var(--color-neutral);margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{padding:22px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:var(--radius);background:var(--color-bg);transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card .icon{font-size:1.5rem;margin-bottom:8px}
+.card p{margin:0;color:color-mix(in srgb,var(--color-text) 70%,var(--color-bg))}
+.callout{margin:26px 0;padding:20px 22px;border:1px solid var(--color-accent);border-left-width:5px;border-radius:12px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.callout h3{font-size:1rem;margin-bottom:5px}
+.callout p{margin:0}
+svg{width:100%;height:auto;display:block}
+.diagram{margin:30px 0;padding:18px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:var(--radius);background:var(--color-bg)}
+.diagram text{font-family:Inter, sans-serif;fill:var(--color-text)}
+.diagram .m{fill:var(--color-text)}
+.diagram .a{fill:var(--color-accent)}
+.diagram .n{fill:var(--color-neutral)}
+.diagram .stroke{stroke:var(--color-text)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+.table-wrap{overflow-x:auto;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:var(--radius);background:var(--color-bg)}
+th,td{padding:13px 14px;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));vertical-align:top}
+th{font-family:Manrope;background:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg))}
+td.num,th.num{font-family:"JetBrains Mono";font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.tabs{border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:var(--radius);overflow:hidden}
+.tablist{display:flex;gap:0;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));overflow:auto}
+.tab{border:0;background:transparent;padding:13px 17px;cursor:pointer;color:var(--color-text);white-space:nowrap}
+.tab[aria-selected=true]{background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));box-shadow:inset 0 -3px 0 var(--color-accent);font-weight:600}
+.tabpanel{padding:22px}
+.accordion{display:grid;gap:10px}
+details{border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:12px;background:var(--color-bg);overflow:hidden}
+summary{cursor:pointer;padding:17px 20px;font-family:Manrope;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";float:right;color:var(--color-accent);font-family:"JetBrains Mono"}
+details[open] summary:after{content:"−"}
+details>div{padding:0 20px 18px;max-width:760px}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:30px 0;position:relative}
+.timeline:before{content:"";position:absolute;left:10%;right:10%;top:18px;height:2px;background:var(--color-neutral)}
+.step{position:relative;text-align:center;padding:0 8px}
+.dot{width:36px;height:36px;border:2px solid var(--color-text);border-radius:50%;background:var(--color-bg);display:grid;place-items:center;margin:auto;font:600 .78rem "JetBrains Mono";position:relative;z-index:1}
+.step.active .dot{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+.step strong{display:block;margin-top:12px;font-family:Manrope;font-size:.9rem}
+.step span{display:block;font-size:.78rem;color:color-mix(in srgb,var(--color-text) 65%,var(--color-bg));margin-top:4px}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.column{padding:12px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:12px;background:color-mix(in srgb,var(--color-neutral) 8%,var(--color-bg))}
+.column h3{font-size:.95rem;margin:4px 4px 12px}
+.task{padding:13px;margin-bottom:10px;border:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));border-radius:10px;background:var(--color-bg)}
+.task:last-child{margin-bottom:0}
+.task b{font-size:.88rem}
+.task small{display:block;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));margin-top:5px}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi-card{padding:18px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:14px;background:var(--color-bg)}
+.kpi-card span{display:block;font-size:.78rem;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+.kpi-card strong{display:block;font:600 1.55rem "JetBrains Mono";margin-top:5px}
+.meter{height:8px;border-radius:99px;background:color-mix(in srgb,var(--color-neutral) 25%,var(--color-bg));margin-top:12px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--color-accent)}
+.note{font-size:.88rem;color:color-mix(in srgb,var(--color-text) 65%,var(--color-bg));margin-top:12px}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.key{display:flex;gap:14px;padding:18px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:14px;background:var(--color-bg)}
+.key b{font-family:"JetBrains Mono";color:var(--color-accent)}
+.nav-bottom{max-width:1100px;margin:auto;padding:42px 24px;display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+.nav-card{border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));border-radius:14px;padding:17px;text-decoration:none;background:var(--color-bg)}
+.nav-card.next{text-align:right}
+.nav-card:hover{border-color:var(--color-accent)}
+.nav-card small{display:block;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));font-size:.75rem}
+.nav-card strong{font-family:Manrope}
+footer{border-top:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));padding:28px 24px;text-align:center;font-size:.82rem;color:color-mix(in srgb,var(--color-text) 65%,var(--color-bg))}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--color-neutral);border-radius:50%;background:var(--color-bg);color:var(--color-text);cursor:pointer;opacity:0;transform:translateY(8px);transition:.2s;z-index:60}
+.top.show{opacity:1;transform:none}
+.top:hover{border-color:var(--color-accent)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){
+ .nav{padding:12px 18px}.menu{display:none}.hero{padding:54px 18px 36px}
+ section{padding:56px 18px}.toc{margin-left:18px;margin-right:18px}.toc ol{grid-template-columns:1fr}
+ .grid{grid-template-columns:1fr}.timeline{grid-template-columns:1fr;gap:18px}.timeline:before{left:18px;top:18px;bottom:18px;width:2px;height:auto;right:auto}
+ .step{text-align:left;display:grid;grid-template-columns:44px 1fr;align-items:center}.step .dot{grid-row:span 2;margin:0}.step strong{margin:0}.step span{margin:2px 0 0}
+ .board{grid-template-columns:1fr}.kpi{grid-template-columns:repeat(2,1fr)}.key-grid{grid-template-columns:1fr}
+ .nav-bottom{grid-template-columns:1fr}.nav-card.next{text-align:left}
+}
+@media(max-width:430px){.hero h1{font-size:2.45rem}.kpi{grid-template-columns:1fr}.badge{font-size:.7rem}}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}.top{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<header class="site">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top" aria-label="Gestion de Projet — retour au début">
+      <span class="mark" aria-hidden="true"></span><span>Gestion de Projet</span>
+    </a>
+    <div class="menu">
+      <a href="#sommaire">Sommaire</a>
+      <a href="#avancement">Avancement</a>
+      <a href="#indicateurs">Indicateurs</a>
+      <a href="#suivi">Suivi hebdomadaire</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="eyebrow">
+    <span class="badge accent">MODULE 4 · Exécution, suivi et contrôle</span>
+    <span class="badge">LEÇON 17</span>
+    <span class="badge">AVANCÉ</span>
+    <span class="badge mono">18 min</span>
+  </div>
+  <h1>Suivi de l'avancement</h1>
+  <p class="lead">Mesurer l'état réel d'avancement pour piloter le projet à partir de faits observables, de tâches, de jalons et d'indicateurs.</p>
+</section>
+
+<nav id="sommaire" class="toc" aria-label="Sommaire">
+  <strong>Sommaire de la leçon</strong>
+  <ol>
+    <li><a href="#avancement">Comprendre l'avancement</a></li>
+    <li><a href="#taches">Tâches terminées et en cours</a></li>
+    <li><a href="#jalons">Jalons et rythme du projet</a></li>
+    <li><a href="#indicateurs">Indicateurs d'avancement</a></li>
+    <li><a href="#hebdo">Tableau de suivi hebdomadaire</a></li>
+    <li><a href="#synthese">Points clés à retenir</a></li>
+  </ol>
+</nav>
+
+<section id="avancement">
+<div class="wrap reveal">
+  <div class="section-head">
+    <div class="kicker">01 · Avancement</div>
+    <h2>Mesurer l'état réel du projet</h2>
+    <p class="prose">L'avancement décrit la situation réelle d'un projet à un instant donné. Il ne consiste pas seulement à constater qu'une activité a commencé : il s'agit de rapprocher ce qui était prévu de ce qui est effectivement réalisé.</p>
+  </div>
+
+  <div class="timeline" aria-label="Cycle de mesure de l'avancement">
+    <div class="step active"><div class="dot">01</div><strong>Prévoir</strong><span>référence</span></div>
+    <div class="step"><div class="dot">02</div><strong>Observer</strong><span>réalité</span></div>
+    <div class="step"><div class="dot">03</div><strong>Mesurer</strong><span>écart</span></div>
+    <div class="step"><div class="dot">04</div><strong>Analyser</strong><span>cause</span></div>
+    <div class="step"><div class="dot">05</div><strong>Piloter</strong><span>action</span></div>
+  </div>
+
+  <div class="callout">
+    <h3>💡 À retenir</h3>
+    <p>Un pourcentage d'avancement n'a de sens que s'il repose sur une règle de mesure explicite et appliquée de façon cohérente.</p>
+  </div>
+
+  <div class="grid">
+    <article class="card"><div class="icon">◷</div><h3>Avancement temporel</h3><p>Compare la période écoulée ou consommée avec la période planifiée.</p></article>
+    <article class="card"><div class="icon">✓</div><h3>Avancement physique</h3><p>Observe les livrables ou travaux effectivement réalisés, indépendamment du seul temps écoulé.</p></article>
+    <article class="card"><div class="icon">▦</div><h3>Avancement des tâches</h3><p>Consolide les états des activités pour obtenir une vision structurée du projet.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="taches">
+<div class="wrap reveal">
+  <div class="section-head">
+    <div class="kicker">02 · Tâches</div>
+    <h2>Lire les tâches terminées et en cours</h2>
+    <p class="prose">Le suivi distingue au minimum les tâches terminées, les tâches en cours et les tâches qui restent à démarrer. Cette lecture évite de confondre activité visible et progression réelle.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Schéma de classification des tâches selon leur état">
+    <svg viewBox="0 0 1000 330" xmlns="http://www.w3.org/2000/svg">
+      <line x1="500" y1="52" x2="500" y2="105" stroke="#8D99AE" stroke-width="2"/>
+      <line x1="180" y1="105" x2="820" y2="105" stroke="#8D99AE" stroke-width="2"/>
+      <line x1="180" y1="105" x2="180" y2="150" stroke="#8D99AE" stroke-width="2"/>
+      <line x1="500" y1="105" x2="500" y2="150" stroke="#8D99AE" stroke-width="2"/>
+      <line x1="820" y1="105" x2="820" y2="150" stroke="#8D99AE" stroke-width="2"/>
+      <rect x="360" y="18" width="280" height="64" rx="12" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+      <text x="500" y="47" text-anchor="middle" class="m" font-size="18" font-weight="700">État des tâches</text>
+      <text x="500" y="69" text-anchor="middle" class="m" font-size="13">photographie à la date de suivi</text>
+      <rect x="60" y="150" width="240" height="110" rx="12" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+      <rect x="380" y="150" width="240" height="110" rx="12" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/>
+      <rect x="700" y="150" width="240" height="110" rx="12" fill="#F4F6F8" stroke="#8D99AE" stroke-width="2"/>
+      <text x="180" y="185" text-anchor="middle" class="m" font-size="17" font-weight="700">Terminées</text>
+      <text x="180" y="211" text-anchor="middle" class="m" font-size="13">résultat accepté</text>
+      <text x="180" y="233" text-anchor="middle" class="m" font-size="13">état stabilisé</text>
+      <text x="500" y="185" text-anchor="middle" class="m" font-size="17" font-weight="700">En cours</text>
+      <text x="500" y="211" text-anchor="middle" class="m" font-size="13">travail engagé</text>
+      <text x="500" y="233" text-anchor="middle" class="m" font-size="13">reste à produire</text>
+      <text x="820" y="185" text-anchor="middle" class="m" font-size="17" font-weight="700">À démarrer</text>
+      <text x="820" y="211" text-anchor="middle" class="m" font-size="13">travail non engagé</text>
+      <text x="820" y="233" text-anchor="middle" class="m" font-size="13">dépendances à vérifier</text>
+      <text x="500" y="300" text-anchor="middle" class="m" font-size="14">La qualité du suivi dépend de critères d'état partagés.</text>
+    </svg>
+  </div>
+
+  <div class="tabs" data-tabs>
+    <div class="tablist" role="tablist" aria-label="Deux lectures de l'avancement">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="tab-physique" id="btn-physique">Avancement physique</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-tache" id="btn-tache">Avancement par tâche</button>
+    </div>
+    <div id="tab-physique" class="tabpanel" role="tabpanel" aria-labelledby="btn-physique">
+      <h3>Ce qui est réellement produit</h3>
+      <p>On observe les livrables, quantités, composants ou résultats obtenus. Cette approche est particulièrement utile lorsque le temps passé ne traduit pas directement le résultat produit.</p>
+    </div>
+    <div id="tab-tache" class="tabpanel" role="tabpanel" aria-labelledby="btn-tache" hidden>
+      <h3>Ce qui est terminé dans le planning</h3>
+      <p>On suit l'état de chaque activité selon les règles du planning : démarrée, en cours, terminée ou non démarrée. La consolidation donne une vision globale, à condition que les tâches soient suffisamment définies.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>⚠️ Attention / erreur fréquente</h3>
+    <p>Déclarer une tâche « terminée » parce qu'elle a consommé tout son temps prévu peut masquer un résultat incomplet. Le statut doit être lié à un résultat ou à un critère de fin identifiable.</p>
+  </div>
+</div>
+</section>
+
+<section id="jalons">
+<div class="wrap reveal">
+  <div class="section-head">
+    <div class="kicker">03 · Jalons</div>
+    <h2>Les jalons donnent le rythme</h2>
+    <p class="prose">Un jalon est un repère important du calendrier du projet. Le suivi de son atteinte permet de vérifier que les étapes structurantes se réalisent dans le rythme prévu.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Frise de jalons d'un projet">
+    <svg viewBox="0 0 1000 250" xmlns="http://www.w3.org/2000/svg">
+      <line x1="90" y1="105" x2="910" y2="105" stroke="#8D99AE" stroke-width="4"/>
+      <g>
+        <circle cx="130" cy="105" r="17" fill="#FF9F1C"/><text x="130" y="111" text-anchor="middle" class="m" font-size="12" font-weight="700">J1</text>
+        <text x="130" y="70" text-anchor="middle" class="m" font-size="14" font-weight="700">Cadrage</text>
+        <text x="130" y="145" text-anchor="middle" class="m" font-size="12">Semaine 1</text>
+      </g>
+      <g>
+        <circle cx="335" cy="105" r="17" fill="#F4F6F8" stroke="#14213D" stroke-width="3"/><text x="335" y="111" text-anchor="middle" class="m" font-size="12" font-weight="700">J2</text>
+        <text x="335" y="70" text-anchor="middle" class="m" font-size="14" font-weight="700">Conception</text>
+        <text x="335" y="145" text-anchor="middle" class="m" font-size="12">Semaine 3</text>
+      </g>
+      <g>
+        <circle cx="540" cy="105" r="17" fill="#FF9F1C"/><text x="540" y="111" text-anchor="middle" class="m" font-size="12" font-weight="700">J3</text>
+        <text x="540" y="70" text-anchor="middle" class="m" font-size="14" font-weight="700">Livrable</text>
+        <text x="540" y="145" text-anchor="middle" class="m" font-size="12">Semaine 5</text>
+      </g>
+      <g>
+        <circle cx="745" cy="105" r="17" fill="#F4F6F8" stroke="#14213D" stroke-width="3"/><text x="745" y="111" text-anchor="middle" class="m" font-size="12" font-weight="700">J4</text>
+        <text x="745" y="70" text-anchor="middle" class="m" font-size="14" font-weight="700">Validation</text>
+        <text x="745" y="145" text-anchor="middle" class="m" font-size="12">Semaine 7</text>
+      </g>
+      <g>
+        <circle cx="870" cy="105" r="17" fill="#FF9F1C"/><text x="870" y="111" text-anchor="middle" class="m" font-size="12" font-weight="700">J5</text>
+        <text x="870" y="70" text-anchor="middle" class="m" font-size="14" font-weight="700">Clôture</text>
+        <text x="870" y="145" text-anchor="middle" class="m" font-size="12">Semaine 8</text>
+      </g>
+      <text x="500" y="205" text-anchor="middle" class="m" font-size="14">Chaque jalon sert de point de contrôle sur la trajectoire du projet.</text>
+    </svg>
+  </div>
+
+  <div class="accordion">
+    <details>
+      <summary>Pourquoi suivre les jalons ?</summary>
+      <div><p>Ils condensent l'information de calendrier en quelques repères structurants. Un jalon atteint confirme qu'un résultat attendu ou une étape importante a été franchi.</p></div>
+    </details>
+    <details>
+      <summary>Que faire lorsqu'un jalon n'est pas atteint ?</summary>
+      <div><p>Le retard doit être constaté, qualifié et relié aux activités concernées. Le suivi devient alors un support de décision : comprendre l'écart et ajuster la trajectoire.</p></div>
+    </details>
+    <details>
+      <summary>Pourquoi éviter trop de jalons ?</summary>
+      <div><p>Un nombre excessif de repères dilue leur valeur de signal. Les jalons doivent rester suffisamment significatifs pour structurer le pilotage.</p></div>
+    </details>
+  </div>
+</div>
+</section>
+
+<section id="indicateurs">
+<div class="wrap reveal">
+  <div class="section-head">
+    <div class="kicker">04 · Indicateurs</div>
+    <h2>Transformer l'avancement en indicateurs lisibles</h2>
+    <p class="prose">Les indicateurs permettent de condenser une situation complexe sans remplacer son analyse. Ils doivent être définis, datés et comparables d'une période à l'autre.</p>
+  </div>
+
+  <div class="kpi">
+    <article class="kpi-card"><span>Tâches terminées</span><strong>18 / 24</strong><div class="meter" aria-label="75 pour cent"><i style="width:75%"></i></div></article>
+    <article class="kpi-card"><span>Avancement physique</span><strong>72 %</strong><div class="meter" aria-label="72 pour cent"><i style="width:72%"></i></div></article>
+    <article class="kpi-card"><span>Jalons atteints</span><strong>4 / 5</strong><div class="meter" aria-label="80 pour cent"><i style="width:80%"></i></div></article>
+    <article class="kpi-card"><span>Écart de calendrier</span><strong>+ 3 j</strong><div class="meter" aria-label="écart de trois jours"><i style="width:38%"></i></div></article>
+  </div>
+  <p class="note">Exemple pédagogique de tableau de bord : les valeurs servent à illustrer la lecture conjointe de plusieurs dimensions de l'avancement.</p>
+
+  <div class="table-wrap" style="margin-top:28px">
+    <table>
+      <caption style="text-align:left;padding:14px 16px;font-family:Manrope">Exemple de lecture d'indicateurs</caption>
+      <thead><tr><th scope="col">Indicateur</th><th scope="col">Mesure</th><th scope="col">Référence</th><th scope="col">Lecture</th></tr></thead>
+      <tbody>
+        <tr><td>Tâches terminées</td><td class="num">18 / 24</td><td class="num">75 %</td><td>La majorité des tâches prévues est achevée.</td></tr>
+        <tr><td>Avancement physique</td><td class="num">72 %</td><td class="num">75 %</td><td>L'avancement produit est légèrement inférieur à la référence.</td></tr>
+        <tr><td>Jalons atteints</td><td class="num">4 / 5</td><td class="num">5 / 5</td><td>Un jalon structurant reste à sécuriser.</td></tr>
+        <tr><td>Écart de calendrier</td><td class="num">+ 3 j</td><td class="num">0 j</td><td>Le projet présente un décalage à analyser.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <h3>📐 Bonnes pratiques professionnelles</h3>
+    <p>Conserver la même définition des indicateurs dans le temps, afficher la date de mesure, expliciter la référence utilisée et compléter le chiffre par une interprétation.</p>
+  </div>
+</div>
+</section>
+
+<section id="hebdo">
+<div class="wrap reveal">
+  <div class="section-head">
+    <div class="kicker">05 · Suivi hebdomadaire</div>
+    <h2>Structurer un tableau de suivi hebdomadaire</h2>
+    <p class="prose">Le tableau hebdomadaire met en relation les activités, leur état, les responsables, les échéances et les observations utiles au pilotage. Il constitue une photographie périodique et comparable de la progression.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Flux de suivi hebdomadaire">
+    <svg viewBox="0 0 1000 180" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <rect x="35" y="50" width="175" height="80" rx="12" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+        <text x="122" y="82" text-anchor="middle" class="m" font-size="16" font-weight="700">Plan prévu</text>
+        <text x="122" y="106" text-anchor="middle" class="m" font-size="12">semaine N</text>
+      </g>
+      <path d="M220 90h95" stroke="#8D99AE" stroke-width="3"/><path d="m305 82 12 8-12 8" fill="#8D99AE"/>
+      <g>
+        <rect x="325" y="50" width="175" height="80" rx="12" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/>
+        <text x="412" y="82" text-anchor="middle" class="m" font-size="16" font-weight="700">Situation réelle</text>
+        <text x="412" y="106" text-anchor="middle" class="m" font-size="12">faits observés</text>
+      </g>
+      <path d="M510 90h95" stroke="#8D99AE" stroke-width="3"/><path d="m595 82 12 8-12 8" fill="#8D99AE"/>
+      <g>
+        <rect x="615" y="50" width="150" height="80" rx="12" fill="#F4F6F8" stroke="#14213D" stroke-width="2"/>
+        <text x="690" y="82" text-anchor="middle" class="m" font-size="16" font-weight="700">Écarts</text>
+        <text x="690" y="106" text-anchor="middle" class="m" font-size="12">mesure + analyse</text>
+      </g>
+      <path d="M775 90h70" stroke="#8D99AE" stroke-width="3"/><path d="m835 82 12 8-12 8" fill="#8D99AE"/>
+      <g>
+        <rect x="855" y="50" width="110" height="80" rx="12" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="3"/>
+        <text x="910" y="82" text-anchor="middle" class="m" font-size="16" font-weight="700">Décisions</text>
+        <text x="910" y="106" text-anchor="middle" class="m" font-size="12">suite à donner</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Tâche</th><th scope="col">Responsable</th><th scope="col">Échéance</th><th scope="col">État</th><th scope="col">Avancement</th><th scope="col">Observation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Conception</td><td>Équipe projet</td><td class="num">S03</td><td>Terminée</td><td class="num">100 %</td><td>Livrable disponible.</td></tr>
+        <tr><td>Développement</td><td>Équipe technique</td><td class="num">S05</td><td>En cours</td><td class="num">70 %</td><td>Reste à produire identifié.</td></tr>
+        <tr><td>Validation</td><td>Référent métier</td><td class="num">S06</td><td>À démarrer</td><td class="num">0 %</td><td>Dépend de la fin du développement.</td></tr>
+        <tr><td>Documentation</td><td>Équipe projet</td><td class="num">S06</td><td>En cours</td><td class="num">40 %</td><td>Travail poursuivi en parallèle.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <h3>⚠️ Attention / erreur fréquente</h3>
+    <p>Un tableau de suivi ne doit pas devenir une simple liste administrative. Sa valeur vient du rapprochement entre prévu, réalisé, écart et décision de pilotage.</p>
+  </div>
+
+  <div class="accordion" style="margin-top:22px">
+    <details>
+      <summary>Quelles informations conserver chaque semaine ?</summary>
+      <div><p>Les informations utiles sont celles qui permettent de comparer les périodes : état des tâches, avancement, échéances, jalons, écarts observés et éléments nécessaires à la compréhension de la situation.</p></div>
+    </details>
+    <details>
+      <summary>Pourquoi dater les mesures ?</summary>
+      <div><p>Une mesure sans date est difficile à interpréter. La date permet de reconstruire l'évolution et de comparer les photographies successives du projet.</p></div>
+    </details>
+  </div>
+</div>
+</section>
+
+<section id="synthese">
+<div class="wrap reveal">
+  <div class="section-head">
+    <div class="kicker">06 · Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <p class="prose">Le suivi de l'avancement transforme l'exécution du projet en information de pilotage régulière, comparable et exploitable.</p>
+  </div>
+  <div class="key-grid">
+    <article class="key"><b>01</b><div><h3>Mesurer le réel</h3><p>Comparer systématiquement la situation observée à la référence prévue.</p></div></article>
+    <article class="key"><b>02</b><div><h3>Qualifier les tâches</h3><p>Distinguer clairement terminé, en cours et à démarrer avec des critères partagés.</p></div></article>
+    <article class="key"><b>03</b><div><h3>Surveiller les jalons</h3><p>Utiliser les repères structurants pour lire le rythme global du projet.</p></div></article>
+    <article class="key"><b>04</b><div><h3>Choisir des indicateurs</h3><p>Associer chiffres, référence, date de mesure et interprétation.</p></div></article>
+    <article class="key"><b>05</b><div><h3>Répéter le suivi</h3><p>Comparer les situations hebdomadaires pour rendre les évolutions visibles.</p></div></article>
+    <article class="key"><b>06</b><div><h3>Piloter les écarts</h3><p>Faire du suivi un support d'analyse et de décision, pas seulement un reporting.</p></div></article>
+  </div>
+  <div class="callout">
+    <h3>💡 À retenir</h3>
+    <p>Le suivi de l'avancement est une boucle : <span class="mono">prévoir → observer → mesurer → analyser → piloter</span>. La régularité et la cohérence des mesures rendent cette boucle utile au chef de projet.</p>
+  </div>
+</div>
+</section>
+</main>
+
+<nav class="nav-bottom" aria-label="Navigation entre les leçons">
+  <a class="nav-card" href="#" aria-label="Leçon précédente : Lancement et exécution du projet">
+    <small>← Leçon précédente</small>
+    <strong>Leçon 16 — Lancement et exécution du projet</strong>
+  </a>
+  <a class="nav-card" href="#sommaire" aria-label="Retour au sommaire du module">
+    <small>Module 4</small>
+    <strong>↑ Sommaire</strong>
+  </a>
+  <a class="nav-card next" href="#" aria-label="Leçon suivante : Gestion des délais et des écarts">
+    <small>Leçon suivante →</small>
+    <strong>Leçon 18 — Gestion des délais et des écarts</strong>
+  </a>
+</nav>
+
+<footer>
+  <div>Gestion de Projet · Module 4 · Leçon 17 — Suivi de l'avancement</div>
+</footer>
+
+<button class="top" id="backTop" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const progress=document.getElementById('progressBar');
+  const topBtn=document.getElementById('backTop');
+
+  function update(){
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    const pct=max>0?(window.scrollY/max)*100:0;
+    progress.style.width=pct+'%';
+    topBtn.classList.toggle('show',window.scrollY>600);
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const tabs=[...group.querySelectorAll('[role="tab"]')];
+    const panels=[...group.querySelectorAll('[role="tabpanel"]')];
+    function activate(index){
+      tabs.forEach((tab,i)=>{
+        const on=i===index;
+        tab.setAttribute('aria-selected',String(on));
+        tab.tabIndex=on?0:-1;
+        const panel=document.getElementById(tab.getAttribute('aria-controls'));
+        if(panel) panel.hidden=!on;
+      });
+    }
+    tabs.forEach((tab,i)=>{
+      tab.addEventListener('click',()=>activate(i));
+      tab.addEventListener('keydown',e=>{
+        let next=i;
+        if(e.key==='ArrowRight') next=(i+1)%tabs.length;
+        if(e.key==='ArrowLeft') next=(i-1+tabs.length)%tabs.length;
+        if(e.key==='Home') next=0;
+        if(e.key==='End') next=tabs.length-1;
+        if(next!==i){e.preventDefault();tabs[next].focus();activate(next);}
+      });
+    });
+    activate(0);
+  });
+
+  const items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');io.unobserve(entry.target);}});
+    },{threshold:.12});
+    items.forEach(x=>io.observe(x));
+  }else items.forEach(x=>x.classList.add('visible'));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const id=a.getAttribute('href');
+      if(id && id!=='#'){
+        const el=document.querySelector(id);
+        if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});}
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

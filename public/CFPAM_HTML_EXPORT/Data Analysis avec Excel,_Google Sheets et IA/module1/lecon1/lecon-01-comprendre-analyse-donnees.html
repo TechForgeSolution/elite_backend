@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 01 — Comprendre l'analyse de données et prendre en main Excel et Google Sheets</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+/* cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+/* encadrés */
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+/* figures */
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+/* stepper */
+.stepper{display:flex;gap:0;overflow-x:auto;margin:28px 0;padding-bottom:8px;counter-reset:s}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+/* tabs */
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+/* tableau */
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}td.l{text-align:left}
+/* code */
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+/* accordéon */
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+/* points clés */
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+/* nav */
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{color:var(--muted);background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">Analyse</a><a href="#s2">Étapes</a><a href="#s3">Données</a><a href="#s4">Interfaces</a><a href="#s6">IA</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 1 — Fondamentaux : préparer et calculer avec les tableurs</span><span class="badge">⏱ 15 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Comprendre l'analyse de données et prendre en main Excel et Google Sheets</h1>
+  <p class="sub">Leçon 01 — Vous découvrez le rôle de l'analyste, le processus d'analyse en 6 étapes, et vous vous repérez dans les deux tableurs.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>L'analyse de données et le rôle de l'analyste</a></li>
+<li><a href="#s2"><b>2</b>Les 6 étapes d'une analyse</a></li>
+<li><a href="#s3"><b>3</b>Les types de données fondamentaux</a></li>
+<li><a href="#s4"><b>4</b>Prendre en main Excel et Google Sheets</a></li>
+<li><a href="#s5"><b>5</b>Excel ou Google Sheets : comparaison</a></li>
+<li><a href="#s6"><b>6</b>L'IA, assistante de l'analyste</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. L'analyse de données et le rôle de l'analyste</h2>
+<p><strong>Analyser des données</strong>, c'est transformer des chiffres et des informations brutes en réponses utiles pour décider. Une boutique qui note ses ventes chaque jour possède des données ; elle fait de l'analyse quand elle découvre quel produit se vend le mieux le samedi et pourquoi.</p>
+<p>Dans une organisation, l'<strong>analyste de données</strong> est le lien entre les données et les décisions : il pose les bonnes questions, prépare l'information, la calcule, la met en forme et l'explique à ceux qui doivent agir.</p>
+<div class="cards">
+  <div class="card"><div class="ic">❓</div><h4>Cadrer</h4><p>Traduire un besoin métier en question précise.</p></div>
+  <div class="card"><div class="ic">🧹</div><h4>Préparer</h4><p>Rendre les données propres et fiables.</p></div>
+  <div class="card"><div class="ic">📈</div><h4>Révéler</h4><p>Calculer, comparer, repérer des tendances.</p></div>
+  <div class="card"><div class="ic">🗣️</div><h4>Communiquer</h4><p>Présenter des résultats clairs et utiles.</p></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>L'analyste ne produit pas des chiffres pour eux-mêmes : il produit de la compréhension au service d'une décision.</p></div>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. Les 6 étapes d'une analyse de données</h2>
+<p>Toute analyse suit le même chemin, du besoin à la décision. Sélectionnez une étape pour en voir le détail.</p>
+<div class="stepper" role="list" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<figure>
+<svg viewBox="0 0 640 190" role="img" aria-label="Cycle d'analyse : question, collecte, nettoyage, analyse, visualisation, décision, puis retour à une nouvelle question">
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="10" y="30" width="90" height="46" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="55" y="58" fill="#0A0F14">Question</text>
+<rect x="115" y="30" width="90" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="160" y="58" fill="#0A0F14">Collecte</text>
+<rect x="220" y="30" width="90" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="265" y="58" fill="#0A0F14">Nettoyage</text>
+<rect x="325" y="30" width="90" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="370" y="58" fill="#0A0F14">Analyse</text>
+<rect x="430" y="30" width="100" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="480" y="58" fill="#0A0F14">Visualisation</text>
+<rect x="545" y="30" width="85" height="46" rx="8" fill="#0A0F14"/><text x="587" y="58" fill="#fff">Décision</text>
+</g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M100 53h13"/><path d="M205 53h13"/><path d="M310 53h13"/><path d="M415 53h13"/><path d="M530 53h13"/></g>
+<path d="M587 78V140H55V80" stroke="#16A34A" stroke-width="1.8" stroke-dasharray="5 4" fill="none" marker-end="url(#ar)"/>
+<text x="320" y="165" font-size="12" fill="#5B6472" text-anchor="middle">Une décision soulève souvent une nouvelle question</text>
+</svg>
+<figcaption>Le processus d'analyse est un cycle, pas une ligne droite.</figcaption></figure>
+<details><summary>Pourquoi le nettoyage prend-il tant de temps ?</summary><div><p>Les données réelles contiennent des doublons, des cases vides, des fautes de frappe ou des formats mélangés. Une analyse construite sur des données sales donne des résultats faux, d'où l'importance de cette étape.</p></div></details>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. Les types de données fondamentaux</h2>
+<p>Un tableur reconnaît chaque contenu de cellule comme un nombre, du texte ou une date. Ce type détermine ce que l'on peut calculer.</p>
+<div class="cards">
+  <div class="card"><div class="ic">🔢</div><h4>Nombres</h4><p>Alignés à droite par défaut. On peut les additionner, moyenner, comparer.</p></div>
+  <div class="card"><div class="ic">🔤</div><h4>Texte</h4><p>Aligné à gauche. Noms, catégories, codes : non calculable.</p></div>
+  <div class="card"><div class="ic">📅</div><h4>Dates</h4><p>Stockées comme des nombres. On peut calculer un écart entre deux dates.</p></div>
+</div>
+<div class="tbl"><table>
+<caption class="sr" style="position:absolute;left:-9999px">Exemple de tableau de ventes avec les trois types de données</caption>
+<tr><th>Date</th><th>Produit</th><th style="text-align:right">Quantité</th><th style="text-align:right">Prix (€)</th></tr>
+<tr><td class="l">03/03/2025</td><td>Cahier A5</td><td class="r">12</td><td class="r">2,50</td></tr>
+<tr><td class="l">04/03/2025</td><td>Stylo bleu</td><td class="r">30</td><td class="r">1,20</td></tr>
+<tr><td class="l">05/03/2025</td><td>Classeur</td><td class="r">8</td><td class="r">4,90</td></tr>
+</table></div>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Un nombre saisi avec un espace ou une lettre (par exemple « 12 pcs ») devient du texte : il ne sera plus pris en compte dans les calculs. Un tableur affiche souvent ce texte aligné à gauche, signe qu'il ne l'a pas reconnu comme nombre.</p></div>
+<details><summary>Les dates sont-elles vraiment des nombres ?</summary><div><p>Oui. Excel et Google Sheets comptent les jours écoulés depuis une date de référence. C'est pourquoi une soustraction entre deux dates donne un nombre de jours.</p>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Nombre de jours entre deux dates (A2 et B2)</span>
+=<span class="fn">B2</span>-<span class="fn">A2</span></code></pre></div></div></details>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Prendre en main Excel et Google Sheets</h2>
+<p>Les deux outils partagent la même organisation. Un <strong>classeur</strong> (fichier) contient des <strong>feuilles</strong> ; chaque feuille est une grille de <strong>cellules</strong> repérées par une colonne (lettre) et une ligne (numéro).</p>
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="Schéma d'une feuille de calcul : barre de menus, barre de formule, grille de cellules avec la cellule B2 sélectionnée, plage B2 à C4 en surbrillance, onglets de feuilles en bas">
+<rect x="1" y="1" width="638" height="248" rx="10" fill="#fff" stroke="#E2E8F0"/>
+<rect x="1" y="1" width="638" height="30" rx="10" fill="#0A0F14"/><text x="16" y="21" font-size="12" fill="#fff">Ruban / Menus : Fichier · Accueil · Insertion · Données</text>
+<rect x="12" y="40" width="50" height="22" rx="4" fill="#F4F8F7" stroke="#E2E8F0"/><text x="22" y="56" font-size="12" font-weight="600">B2</text>
+<rect x="70" y="40" width="558" height="22" rx="4" fill="#F4F8F7" stroke="#E2E8F0"/><text x="80" y="56" font-size="12" fill="#5B6472">Barre de formule : contenu de la cellule active</text>
+<g font-size="12" fill="#5B6472" text-anchor="middle"><text x="140" y="85">A</text><text x="240" y="85">B</text><text x="340" y="85">C</text><text x="440" y="85">D</text></g>
+<g stroke="#E2E8F0"><path d="M90 92h400M90 120h400M90 148h400M90 176h400M90 204h400"/><path d="M90 92v112M190 92v112M290 92v112M390 92v112M490 92v112"/></g>
+<rect x="190" y="120" width="200" height="56" fill="#EAF7EF" stroke="#16A34A" stroke-width="1.5"/>
+<rect x="190" y="120" width="100" height="28" fill="none" stroke="#16A34A" stroke-width="3"/>
+<g font-size="12" fill="#5B6472" text-anchor="end"><text x="80" y="110">1</text><text x="80" y="138">2</text><text x="80" y="166">3</text><text x="80" y="194">4</text></g>
+<text x="500" y="108" font-size="12" fill="#0A0F14">← Colonne, ligne, cellule</text>
+<text x="500" y="146" font-size="12" fill="#16A34A" font-weight="600">Plage B2:C3</text>
+<text x="500" y="164" font-size="12" fill="#0A0F14">(groupe de cellules)</text>
+<rect x="12" y="218" width="70" height="24" rx="5" fill="#16A34A"/><text x="47" y="234" font-size="12" fill="#fff" text-anchor="middle">Feuille1</text>
+<rect x="88" y="218" width="70" height="24" rx="5" fill="#fff" stroke="#E2E8F0"/><text x="123" y="234" font-size="12" text-anchor="middle">Feuille2</text>
+</svg>
+<figcaption>Anatomie d'une feuille de calcul (valable pour Excel comme pour Google Sheets).</figcaption></figure>
+<div class="cards">
+  <div class="card"><div class="ic">📁</div><h4>Classeur</h4><p>Le fichier complet, composé d'une ou plusieurs feuilles.</p></div>
+  <div class="card"><div class="ic">📄</div><h4>Feuille</h4><p>Une grille de lignes et de colonnes, accessible par un onglet.</p></div>
+  <div class="card"><div class="ic">▫️</div><h4>Cellule</h4><p>L'intersection d'une colonne et d'une ligne, par exemple B2.</p></div>
+  <div class="card"><div class="ic">▦</div><h4>Plage</h4><p>Un groupe de cellules contiguës, noté B2:C4.</p></div>
+</div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Interface">
+    <button role="tab" aria-selected="true">Excel : le ruban</button>
+    <button role="tab" aria-selected="false">Google Sheets : les menus</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>Excel regroupe ses commandes dans un <strong>ruban</strong> organisé en onglets : <em>Accueil</em> (mise en forme), <em>Insertion</em> (graphiques, tableaux croisés), <em>Formules</em>, <em>Données</em> (tri, filtres)…</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Google Sheets utilise une <strong>barre de menus</strong> classique : <em>Fichier</em>, <em>Édition</em>, <em>Insertion</em>, <em>Format</em>, <em>Données</em>… et un bouton <em>Partager</em> bien visible en haut à droite.</p></div>
+</div>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Utilisez un nom parlant pour chaque feuille (par exemple « Ventes_2025 ») plutôt que « Feuille1 » : un classeur lisible est plus facile à analyser et à partager.</p></div>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Somme d'une plage de cellules</span>
+=<span class="fn">SOMME</span>(B2:B4)</code></pre></div>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Excel ou Google Sheets : comparaison</h2>
+<p>Les deux outils couvrent les mêmes besoins de base. Leurs différences portent surtout sur la puissance de calcul et sur le travail collaboratif.</p>
+<div class="tbl"><table>
+<tr><th>Critère</th><th>Excel</th><th>Google Sheets</th></tr>
+<tr><td>Installation</td><td>Application (et version web)</td><td>100 % en ligne, dans le navigateur</td></tr>
+<tr><td>Grands volumes</td><td>Très performant</td><td>Plus limité sur les fichiers lourds</td></tr>
+<tr><td>Fonctions avancées</td><td>Très riches (Power Query, macros VBA)</td><td>Solides (Apps Script, import de données web)</td></tr>
+<tr><td>Collaboration</td><td>Possible via le cloud</td><td>Native et en temps réel</td></tr>
+<tr><td>Partage</td><td>Fichier ou lien OneDrive/SharePoint</td><td>Lien avec droits (lecture, commentaire, édition)</td></tr>
+</table></div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Forces">
+    <button role="tab" aria-selected="true">Forces d'Excel</button>
+    <button role="tab" aria-selected="false">Forces de Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Traitement de gros fichiers et calculs complexes</li><li>Outils d'analyse poussés (tableaux croisés dynamiques, Power Query)</li><li>Standard très répandu en entreprise</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Plusieurs personnes éditent en même temps</li><li>Historique des versions automatique</li><li>Accessible depuis n'importe quel appareil connecté</li></ul></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>Ce cours utilise les deux outils : les notions apprises (cellules, formules, types de données) sont transposables de l'un à l'autre.</p></div>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. L'IA, assistante de l'analyste</h2>
+<p>Des assistants d'intelligence artificielle sont intégrés ou associés aux tableurs : <strong>Copilot</strong> dans Excel, <strong>Gemini</strong> dans Google Sheets, ou encore <strong>ChatGPT</strong> en complément. Ils aident à expliquer une formule, proposer un graphique, résumer un tableau ou suggérer une piste d'analyse.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Approches">
+    <button role="tab" aria-selected="true">Analyse manuelle</button>
+    <button role="tab" aria-selected="false">Analyse assistée par IA</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>L'analyste écrit lui-même formules et graphiques</li><li>Contrôle total de chaque étape</li><li>Demande plus de temps et de maîtrise technique</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>L'analyste décrit son besoin en langage courant</li><li>L'IA propose une formule, un graphique ou un résumé</li><li>L'analyste vérifie et valide le résultat</li></ul></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>L'IA peut se tromper ou mal interpréter un tableau. C'est l'analyste qui reste responsable de vérifier les résultats et de les expliquer : l'IA assiste, elle ne remplace pas le jugement.</p></div>
+<details><summary>Que fait l'IA dans les 6 étapes ?</summary><div><p>Elle peut aider à reformuler la question, suggérer des méthodes de nettoyage, expliquer des calculs et proposer des types de graphiques. La décision, elle, reste humaine.</p></div></details>
+<div class="note"><strong>🔗 Pour aller plus loin</strong><p>Les prochaines leçons détaillent chaque étape ; l'IA sera réintroduite avec des cas concrets dans les modules suivants.</p></div>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>L'analyste de données transforme des données brutes en informations utiles à la décision.</li>
+<li>Une analyse suit 6 étapes : question, collecte, nettoyage, analyse, visualisation, décision.</li>
+<li>Les trois types fondamentaux sont les nombres, le texte et les dates ; le type conditionne les calculs.</li>
+<li>Un classeur contient des feuilles, une feuille contient des cellules, et un groupe de cellules forme une plage.</li>
+<li>Excel excelle sur la puissance de calcul ; Google Sheets sur la collaboration en temps réel.</li>
+<li>L'IA assiste l'analyste, qui garde la responsabilité de vérifier les résultats.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <span>Leçon précédente<small>Aucune (première leçon)</small></span>
+    <a href="lecon-02-saisir-organiser-structurer.html">Leçon suivante<small>Leçon 02 — Saisir, organiser et structurer ses données</small></a>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 1 · Leçon 01</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Étapes (stepper) ===== */
+const steps=[
+["Question","Définir précisément ce que l'on veut savoir. Exemple : « Quel produit a généré le plus de ventes ce trimestre ? »"],
+["Collecte","Rassembler les données nécessaires : exports de logiciels, fichiers internes, formulaires, bases en ligne."],
+["Nettoyage","Corriger les erreurs : supprimer les doublons, traiter les cases vides, harmoniser les formats."],
+["Analyse","Calculer et comparer : totaux, moyennes, pourcentages, tris, regroupements."],
+["Visualisation","Représenter les résultats par un graphique ou un tableau de bord lisible."],
+["Décision","Interpréter les résultats et recommander une action concrète à l'équipe ou à la direction."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Étape '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.setAttribute('role','listitem');
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

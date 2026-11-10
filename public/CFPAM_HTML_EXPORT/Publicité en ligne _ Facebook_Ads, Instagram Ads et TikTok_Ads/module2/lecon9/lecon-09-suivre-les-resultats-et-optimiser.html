@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 09 — Suivre les résultats et optimiser ses campagnes</title>
+<meta name="description" content="Lire les statistiques d'une campagne et décider des ajustements à apporter.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F5F7FA;--color-text:#0A0D14;
+  --color-text-muted:#626A78;--color-accent:#2563EB;--color-accent-soft:#EAF1FF;
+  --color-cyan:#06B6D4;--color-pink:#EC4899;--color-border:#E2E6ED;
+  --radius:10px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:Inter,system-ui,sans-serif;font-weight:400;line-height:1.7;color:var(--color-text);background:var(--color-bg);font-size:1.0625rem}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.25;margin:0 0 .6em;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3rem)}
+h2{font-size:clamp(1.5rem,3vw,2rem)}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1em} a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-bottom:1px solid var(--color-border)}
+.top-in{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.brand{font-family:Sora,sans-serif;font-weight:700;color:var(--color-text);text-decoration:none}
+.brand span{color:var(--color-accent)}
+.menu-btn{font:inherit;font-size:.95rem;font-weight:500;background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+.menu{position:absolute;right:20px;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);box-shadow:0 8px 24px rgba(10,13,20,.08);padding:8px;display:none;min-width:290px}
+.menu.open{display:block}
+.menu a{display:block;padding:8px 12px;text-decoration:none;color:var(--color-text);border-radius:6px;font-size:.95rem}
+.menu a:hover{background:var(--color-bg-alt)}
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--color-border);background:var(--color-bg)}
+.hero .sub{font-size:1.2rem;color:var(--color-text-muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.875rem;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--color-bg-alt);border:1px solid var(--color-border)}
+.badge.mod{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
+.course{color:var(--color-text-muted);font-size:.95rem;margin-bottom:12px}
+.toc{background:var(--color-bg-alt);padding:40px 0}
+.toc ol{margin:0;padding-left:1.2em}
+.toc li{margin:.35em 0}
+section.s{padding:56px 0}
+section.alt{background:var(--color-bg-alt)}
+section.s .wrap>h2{padding-left:14px;border-left:4px solid var(--color-accent)}
+.callout{border-radius:var(--radius);padding:16px 20px;margin:24px 0;border:1px solid var(--color-border);background:#fff;border-left:4px solid var(--color-accent)}
+.callout strong{display:block;margin-bottom:4px}
+.callout.warn{border-left-color:var(--color-pink)}
+.callout.good{border-left-color:var(--color-cyan)}
+.callout.more{border-left-color:var(--color-text)}
+.callout p:last-child{margin:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:20px}
+.card .ic{font-size:1.6rem;display:block;margin-bottom:8px}
+.card h3{font-size:1.05rem;margin-bottom:.3em}
+.card p{margin:0;font-size:.97rem;color:var(--color-text-muted)}
+figure{margin:28px 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:.9rem;color:var(--color-text-muted);margin-top:8px}
+.tabs [role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{font:inherit;font-weight:500;background:none;border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;color:var(--color-text-muted);white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+.tabs [role=tabpanel]{background:#fff;border:1px solid var(--color-border);border-top:0;padding:20px;border-radius:0 0 var(--radius) var(--radius)}
+.tabs [role=tabpanel][hidden]{display:none}
+.tabs ul{margin:.5em 0 0;padding-left:1.2em}
+details{background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);margin:10px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+details>div{padding:0 18px 14px}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.metric{background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:18px}
+.metric .label{font-weight:600;color:var(--color-accent);font-family:Sora,sans-serif}
+.metric .formula{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88rem;margin:8px 0;color:var(--color-text)}
+.metric p{font-size:.92rem;color:var(--color-text-muted);margin:0}
+.code{position:relative;background:var(--color-text);color:#E6EAF2;border-radius:var(--radius);margin:20px 0}
+.code pre{margin:0;padding:18px;overflow-x:auto;font:.92rem/1.7 ui-monospace,Menlo,Consolas,monospace}
+.code .c{color:#8A93A6}.code .k{color:#67E8F9}.code .n{color:#F9A8D4}.code .v{color:#93B4FF}
+.copy{position:absolute;top:8px;right:8px;font:inherit;font-size:.82rem;background:#fff;color:var(--color-text);border:0;border-radius:6px;padding:4px 10px;cursor:pointer}
+.stepper{list-style:none;margin:28px 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:st}
+.stepper li{counter-increment:st;position:relative;padding-top:44px;font-size:.95rem}
+.stepper li::before{content:counter(st);position:absolute;top:0;left:0;width:32px;height:32px;border-radius:50%;background:var(--color-accent);color:#fff;font-weight:600;display:grid;place-items:center}
+.stepper li::after{content:"";position:absolute;top:15px;left:40px;right:-12px;height:2px;background:var(--color-border)}
+.stepper li:last-child::after{display:none}
+.stepper strong{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.table-wrap{overflow-x:auto;margin:24px 0}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);overflow:hidden}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--color-border);vertical-align:top}
+th{font-family:Sora,sans-serif;font-size:.9rem;background:var(--color-bg-alt)}
+tr:last-child td{border-bottom:0}
+.key{background:var(--color-accent);color:#fff;padding:56px 0}
+.key h2{border:0!important;padding:0!important}
+.key ul{padding-left:1.2em;margin:0}
+.key li{margin:.6em 0}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:40px 0}
+.btn{display:inline-block;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:var(--radius);border:1px solid var(--color-border);color:var(--color-text);background:#fff}
+.btn.primary{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
+footer{border-top:1px solid var(--color-border);padding:24px 0;color:var(--color-text-muted);font-size:.9rem;text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;display:none;z-index:60}
+#top.show{display:block}
+@media(max-width:768px){
+  .two{grid-template-columns:1fr}
+  .metric-grid{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr 1fr}
+  .stepper li::after{display:none}
+  .hero{padding:40px 0 32px}
+}
+@media(max-width:480px){
+  .stepper{grid-template-columns:1fr}
+  .menu{left:20px;right:20px;min-width:0}
+}
+@media(min-width:768px){.toc ol{columns:2}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wide top-in">
+    <a class="brand" href="#debut">Social Ads <span>Academy</span></a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+    <nav class="menu" id="menu" aria-label="Sommaire rapide">
+      <a href="#kpis">1. Lire les KPI principaux</a>
+      <a href="#dashboard">2. Lire un tableau de bord</a>
+      <a href="#ab-testing">3. Comprendre les A/B tests</a>
+      <a href="#optimisation">4. Optimiser les dépenses</a>
+      <a href="#decision">5. Couper, ajuster ou scaler</a>
+      <a href="#points-cles">Points clés à retenir</a>
+    </nav>
+  </div>
+</header>
+
+<main id="debut">
+  <div class="hero">
+    <div class="wrap">
+      <p class="course">Publicité sur les réseaux sociaux — Module 2 : Lancer, optimiser et piloter ses campagnes</p>
+      <div class="badges">
+        <span class="badge mod">Module 2</span>
+        <span class="badge">Leçon 09</span>
+        <span class="badge">15 min de lecture</span>
+        <span class="badge">Niveau débutant</span>
+      </div>
+      <h1>Suivre les résultats et optimiser ses campagnes</h1>
+      <p class="sub">À la fin de cette leçon, vous saurez lire les statistiques d'une campagne et décider des ajustements à apporter.</p>
+    </div>
+  </div>
+
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <div class="wrap">
+      <h2>Au programme</h2>
+      <ol>
+        <li><a href="#kpis">Analyse des indicateurs de performance principaux (KPI)</a></li>
+        <li><a href="#dashboard">Lecture et personnalisation des tableaux de bord</a></li>
+        <li><a href="#ab-testing">Principes des A/B testing</a></li>
+        <li><a href="#optimisation">Stratégies d'optimisation et réallocation des budgets</a></li>
+        <li><a href="#decision">Quand couper, ajuster ou scaler une publicité</a></li>
+        <li><a href="#points-cles">Points clés à retenir</a></li>
+      </ol>
+    </div>
+  </nav>
+
+  <section class="s reveal" id="kpis">
+    <div class="wrap">
+      <h2>1. Lire les indicateurs de performance principaux</h2>
+      <p>Une campagne produit beaucoup de chiffres. Pour débuter, il est essentiel de savoir à quoi sert chaque <strong>KPI</strong> et de les lire ensemble. Un indicateur ne raconte jamais toute l'histoire à lui seul.</p>
+
+      <div class="cards">
+        <div class="card"><span class="ic" aria-hidden="true">👁️</span><h3>Portée</h3><p>Nombre de personnes différentes ayant vu l'annonce au moins une fois. Elle indique l'étendue de la diffusion.</p></div>
+        <div class="card"><span class="ic" aria-hidden="true">🔁</span><h3>Impressions</h3><p>Nombre total d'affichages. Une même personne peut générer plusieurs impressions.</p></div>
+        <div class="card"><span class="ic" aria-hidden="true">🖱️</span><h3>CTR</h3><p>Pourcentage d'impressions ayant généré un clic. Il aide à évaluer l'attractivité du message.</p></div>
+        <div class="card"><span class="ic" aria-hidden="true">💳</span><h3>CPC</h3><p>Coût moyen d'un clic. Il permet de suivre l'efficacité du budget consacré à l'acquisition de clics.</p></div>
+        <div class="card"><span class="ic" aria-hidden="true">🎯</span><h3>CPR</h3><p>Coût par résultat. Il relie la dépense au résultat choisi comme objectif de campagne.</p></div>
+        <div class="card"><span class="ic" aria-hidden="true">📈</span><h3>ROAS</h3><p>Retour sur les dépenses publicitaires. Il compare le chiffre d'affaires attribué aux dépenses publicitaires.</p></div>
+      </div>
+
+      <figure>
+        <svg viewBox="0 0 720 220" role="img" aria-labelledby="kpiTitle kpiDesc">
+          <title id="kpiTitle">Chaîne de lecture des principaux KPI</title>
+          <desc id="kpiDesc">La portée et les impressions décrivent la diffusion, le CTR et le CPC décrivent l'interaction et le coût du clic, le CPR et le ROAS relient la dépense au résultat.</desc>
+          <g font-family="Inter,sans-serif">
+            <rect x="12" y="35" width="140" height="70" rx="10" fill="#EAF1FF" stroke="#2563EB"/>
+            <text x="82" y="64" text-anchor="middle" fill="#0A0D14" font-weight="600">Diffusion</text>
+            <text x="82" y="87" text-anchor="middle" fill="#626A78" font-size="13">Portée · Impressions</text>
+
+            <rect x="190" y="35" width="140" height="70" rx="10" fill="#fff" stroke="#06B6D4"/>
+            <text x="260" y="64" text-anchor="middle" fill="#0A0D14" font-weight="600">Interaction</text>
+            <text x="260" y="87" text-anchor="middle" fill="#626A78" font-size="13">CTR · CPC</text>
+
+            <rect x="368" y="35" width="140" height="70" rx="10" fill="#fff" stroke="#EC4899"/>
+            <text x="438" y="64" text-anchor="middle" fill="#0A0D14" font-weight="600">Résultat</text>
+            <text x="438" y="87" text-anchor="middle" fill="#626A78" font-size="13">CPR · conversions</text>
+
+            <rect x="546" y="35" width="162" height="70" rx="10" fill="#0A0D14" stroke="#0A0D14"/>
+            <text x="627" y="64" text-anchor="middle" fill="#fff" font-weight="600">Rentabilité</text>
+            <text x="627" y="87" text-anchor="middle" fill="#E6EAF2" font-size="13">ROAS</text>
+
+            <g stroke="#0A0D14" stroke-width="2" fill="none">
+              <path d="M154 70h30M332 70h30M510 70h30"/>
+            </g>
+            <g fill="#0A0D14">
+              <path d="M184 70l-8-5v10zM362 70l-8-5v10zM540 70l-8-5v10z"/>
+            </g>
+
+            <text x="360" y="145" text-anchor="middle" fill="#626A78" font-size="13">Lecture logique : combien de personnes ? → combien réagissent ? → combien cela coûte ? → quel retour ?</text>
+            <line x1="100" y1="175" x2="620" y2="175" stroke="#E2E6ED"/>
+            <text x="360" y="202" text-anchor="middle" fill="#2563EB" font-size="14" font-weight="600">Les KPI doivent être interprétés ensemble.</text>
+          </g>
+        </svg>
+        <figcaption>Les indicateurs se complètent : diffusion, interaction, coût, résultat et rentabilité.</figcaption>
+      </figure>
+
+      <div class="callout"><strong>💡 À retenir</strong><p>Un bon KPI dépend de l'objectif de la campagne. Une campagne orientée conversion ne se pilote pas avec le CTR seul : il faut regarder le coût par résultat et, lorsque cela est pertinent, le ROAS.</p></div>
+
+      <div class="metric-grid">
+        <div class="metric"><div class="label">CTR</div><div class="formula">clics ÷ impressions × 100</div><p>Mesure la proportion d'impressions qui génèrent un clic.</p></div>
+        <div class="metric"><div class="label">CPC</div><div class="formula">dépense ÷ clics</div><p>Indique le coût moyen obtenu pour chaque clic.</p></div>
+        <div class="metric"><div class="label">ROAS</div><div class="formula">revenus attribués ÷ dépense pub</div><p>Indique combien de revenus sont générés pour une unité monétaire dépensée.</p></div>
+      </div>
+
+      <div class="callout warn"><strong>⚠️ Attention</strong><p>Ne confondez pas <strong>portée</strong> et <strong>impressions</strong>. La portée compte des personnes différentes ; les impressions comptent les affichages, y compris plusieurs fois pour une même personne.</p></div>
+    </div>
+  </section>
+
+  <section class="s alt reveal" id="dashboard">
+    <div class="wrap">
+      <h2>2. Lire et personnaliser un tableau de bord</h2>
+      <p>Le tableau de bord statistique rassemble les résultats de la campagne. Pour le lire efficacement, commencez par l'objectif, puis observez les indicateurs qui permettent de vérifier si cet objectif est atteint.</p>
+
+      <div class="tabs" id="tabsDashboard">
+        <div role="tablist" aria-label="Niveaux de lecture du tableau de bord">
+          <button role="tab" id="tab-lecture" aria-selected="true" aria-controls="p-lecture">1. Lecture rapide</button>
+          <button role="tab" id="tab-diagnostic" aria-selected="false" aria-controls="p-diagnostic" tabindex="-1">2. Diagnostic</button>
+          <button role="tab" id="tab-decide" aria-selected="false" aria-controls="p-decide" tabindex="-1">3. Décision</button>
+        </div>
+        <div role="tabpanel" id="p-lecture" aria-labelledby="tab-lecture">
+          <p><strong>Commencer par les essentiels.</strong> Regardez la dépense, le volume de résultats et le coût par résultat. Ajoutez ensuite les indicateurs de diffusion et d'interaction.</p>
+          <ul><li>Objectif de campagne</li><li>Dépenses et résultats</li><li>CPR ou coût principal associé à l'objectif</li><li>CTR, CPC, portée et impressions pour comprendre le contexte</li></ul>
+        </div>
+        <div role="tabpanel" id="p-diagnostic" aria-labelledby="tab-diagnostic" hidden>
+          <p><strong>Chercher où se situe le problème.</strong> Comparez les niveaux du parcours : diffusion, interaction puis résultat. Un écart entre deux niveaux indique la zone à examiner.</p>
+          <ul><li>Beaucoup d'impressions mais peu de clics : regarder le message et le visuel.</li><li>Des clics mais peu de résultats : regarder la cohérence entre l'annonce et la destination.</li><li>Des résultats mais trop coûteux : regarder les coûts, le ciblage et l'allocation budgétaire.</li></ul>
+        </div>
+        <div role="tabpanel" id="p-decide" aria-labelledby="tab-decide" hidden>
+          <p><strong>Transformer les données en décision.</strong> Le tableau de bord sert à décider s'il faut conserver la diffusion, modifier un élément ou déplacer une partie du budget.</p>
+          <ul><li>Conserver ce qui fonctionne.</li><li>Ajuster ce qui peut être amélioré.</li><li>Réduire ou arrêter ce qui consomme du budget sans résultat satisfaisant.</li></ul>
+        </div>
+      </div>
+
+      <figure>
+        <svg viewBox="0 0 720 235" role="img" aria-labelledby="dashTitle dashDesc">
+          <title id="dashTitle">Structure simplifiée d'un tableau de bord publicitaire</title>
+          <desc id="dashDesc">Un tableau de bord présente d'abord les dépenses et résultats, puis les indicateurs de diffusion, de clics et de rentabilité pour permettre un diagnostic.</desc>
+          <g font-family="Inter,sans-serif">
+            <rect x="20" y="20" width="680" height="46" rx="8" fill="#0A0D14"/>
+            <text x="360" y="49" text-anchor="middle" fill="#fff" font-weight="600">Objectif · Dépense · Résultats · Coût par résultat</text>
+
+            <rect x="20" y="88" width="210" height="65" rx="8" fill="#EAF1FF" stroke="#2563EB"/>
+            <text x="125" y="116" text-anchor="middle" fill="#0A0D14" font-weight="600">Diffusion</text>
+            <text x="125" y="138" text-anchor="middle" fill="#626A78" font-size="13">Portée · Impressions</text>
+
+            <rect x="255" y="88" width="210" height="65" rx="8" fill="#fff" stroke="#06B6D4"/>
+            <text x="360" y="116" text-anchor="middle" fill="#0A0D14" font-weight="600">Interaction</text>
+            <text x="360" y="138" text-anchor="middle" fill="#626A78" font-size="13">CTR · CPC</text>
+
+            <rect x="490" y="88" width="210" height="65" rx="8" fill="#fff" stroke="#EC4899"/>
+            <text x="595" y="116" text-anchor="middle" fill="#0A0D14" font-weight="600">Rentabilité</text>
+            <text x="595" y="138" text-anchor="middle" fill="#626A78" font-size="13">CPR · ROAS</text>
+
+            <path d="M125 153v30M360 153v30M595 153v30" stroke="#E2E6ED" stroke-width="2"/>
+            <text x="125" y="207" text-anchor="middle" fill="#626A78" font-size="12">Combien de personnes ?</text>
+            <text x="360" y="207" text-anchor="middle" fill="#626A78" font-size="12">Réagissent-elles ?</text>
+            <text x="595" y="207" text-anchor="middle" fill="#626A78" font-size="12">Le coût est-il acceptable ?</text>
+          </g>
+        </svg>
+        <figcaption>Personnaliser un tableau de bord consiste surtout à faire remonter les colonnes qui servent réellement à la décision.</figcaption>
+      </figure>
+
+      <details>
+        <summary>Pourquoi personnaliser les colonnes du tableau de bord ?</summary>
+        <div><p>Un tableau trop chargé ralentit la lecture. Un tableau personnalisé permet de mettre en évidence les indicateurs directement liés à l'objectif de campagne et de comparer plus facilement les annonces, ensembles de publicités ou campagnes.</p></div>
+      </details>
+
+      <div class="callout good"><strong>📊 Bonne pratique</strong><p>Gardez une logique de lecture stable : <strong>objectif → résultat → coût → indicateurs explicatifs</strong>. Vous évitez ainsi de vous laisser guider par le chiffre le plus élevé ou le plus spectaculaire.</p></div>
+    </div>
+  </section>
+
+  <section class="s reveal" id="ab-testing">
+    <div class="wrap">
+      <h2>3. Comprendre les principes de l'A/B testing</h2>
+      <p>Un <strong>A/B test</strong> compare deux variantes afin d'identifier celle qui produit de meilleurs résultats selon un même objectif. Le principe est de faire varier un élément de manière contrôlée pour pouvoir attribuer plus clairement la différence de performance.</p>
+
+      <div class="cards">
+        <div class="card"><span class="ic" aria-hidden="true">🖼️</span><h3>Visuel A / B</h3><p>Comparer deux images ou deux vidéos pour observer laquelle attire davantage l'attention ou génère davantage de résultats.</p></div>
+        <div class="card"><span class="ic" aria-hidden="true">✍️</span><h3>Accroche A / B</h3><p>Comparer deux formulations du message tout en conservant les autres paramètres aussi proches que possible.</p></div>
+        <div class="card"><span class="ic" aria-hidden="true">🎯</span><h3>Ciblage A / B</h3><p>Comparer deux audiences pour déterminer laquelle répond le mieux à l'objectif défini.</p></div>
+      </div>
+
+      <figure>
+        <svg viewBox="0 0 720 190" role="img" aria-labelledby="abTitle abDesc">
+          <title id="abTitle">Principe d'un test A/B</title>
+          <desc id="abDesc">Une même campagne est divisée en deux variantes A et B. Les résultats sont mesurés avec le même objectif puis comparés.</desc>
+          <g font-family="Inter,sans-serif">
+            <rect x="20" y="60" width="150" height="62" rx="10" fill="#EAF1FF" stroke="#2563EB"/>
+            <text x="95" y="88" text-anchor="middle" fill="#0A0D14" font-weight="600">Même objectif</text>
+            <text x="95" y="108" text-anchor="middle" fill="#626A78" font-size="12">même cadre</text>
+
+            <path d="M170 91h70M240 91L224 82M240 91L224 100" stroke="#0A0D14" stroke-width="2" fill="none"/>
+
+            <rect x="250" y="25" width="150" height="62" rx="10" fill="#fff" stroke="#06B6D4"/>
+            <text x="325" y="53" text-anchor="middle" fill="#0A0D14" font-weight="600">Variante A</text>
+            <text x="325" y="73" text-anchor="middle" fill="#626A78" font-size="12">visuel / accroche / cible</text>
+
+            <rect x="250" y="105" width="150" height="62" rx="10" fill="#fff" stroke="#EC4899"/>
+            <text x="325" y="133" text-anchor="middle" fill="#0A0D14" font-weight="600">Variante B</text>
+            <text x="325" y="153" text-anchor="middle" fill="#626A78" font-size="12">un élément différent</text>
+
+            <path d="M400 56h55M400 136h55" stroke="#0A0D14" stroke-width="2"/>
+            <path d="M455 56l-8-5v10zM455 136l-8-5v10z" fill="#0A0D14"/>
+
+            <rect x="470" y="60" width="230" height="62" rx="10" fill="#0A0D14"/>
+            <text x="585" y="87" text-anchor="middle" fill="#fff" font-weight="600">Comparer les résultats</text>
+            <text x="585" y="107" text-anchor="middle" fill="#E6EAF2" font-size="12">selon le KPI pertinent</text>
+          </g>
+        </svg>
+        <figcaption>L'A/B test cherche une différence interprétable : une variable change, le reste reste aussi comparable que possible.</figcaption>
+      </figure>
+
+      <div class="callout"><strong>💡 À retenir</strong><p>Un test A/B utile ne consiste pas à changer plusieurs éléments en même temps. Si le visuel, l'accroche et le ciblage changent simultanément, il devient difficile de savoir ce qui explique la différence.</p></div>
+
+      <details>
+        <summary>Les trois familles de variables à comparer</summary>
+        <div>
+          <p><strong>Visuels :</strong> composition, image, vidéo, format ou angle créatif.</p>
+          <p><strong>Accroches :</strong> promesse, formulation, bénéfice mis en avant ou appel à l'action.</p>
+          <p><strong>Ciblages :</strong> audiences ou segments différents, en fonction de la stratégie de campagne.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="s alt reveal" id="optimisation">
+    <div class="wrap">
+      <h2>4. Optimiser les dépenses et réallouer les budgets</h2>
+      <p>Optimiser une campagne ne signifie pas simplement « dépenser moins ». Il s'agit de <strong>réduire les dépenses inutilement coûteuses</strong> et de donner davantage de ressources aux éléments qui contribuent réellement à l'objectif.</p>
+
+      <ol class="stepper">
+        <li><strong>Observer</strong>Lire les coûts et résultats par élément.</li>
+        <li><strong>Comparer</strong>Repérer les écarts de performance.</li>
+        <li><strong>Identifier</strong>Localiser la source du coût inutile.</li>
+        <li><strong>Réallouer</strong>Déplacer progressivement le budget.</li>
+        <li><strong>Surveiller</strong>Vérifier l'effet du changement.</li>
+      </ol>
+
+      <div class="two">
+        <div class="card">
+          <span class="ic" aria-hidden="true">↘️</span>
+          <h3>Réduire les dépenses inutiles</h3>
+          <p>Lorsqu'un élément consomme du budget sans produire un résultat satisfaisant, la première question est de comprendre pourquoi : créatif peu attractif, audience peu adaptée, coût élevé ou problème dans le parcours après le clic.</p>
+        </div>
+        <div class="card">
+          <span class="ic" aria-hidden="true">↗️</span>
+          <h3>Réallouer les budgets</h3>
+          <p>Lorsque certains éléments obtiennent de meilleurs résultats, une partie du budget peut être orientée vers eux, progressivement, tout en continuant à surveiller les performances.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Signal observé</th>
+              <th>Ce qu'il peut indiquer</th>
+              <th>Direction d'optimisation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CTR faible</td>
+              <td>Le message ou le visuel attire peu l'attention.</td>
+              <td>Examiner le créatif ou l'accroche.</td>
+            </tr>
+            <tr>
+              <td>CPC élevé</td>
+              <td>Les clics coûtent cher par rapport au niveau attendu.</td>
+              <td>Comparer créatifs, audiences et contexte de diffusion.</td>
+            </tr>
+            <tr>
+              <td>CPR élevé</td>
+              <td>Le résultat recherché coûte trop cher.</td>
+              <td>Analyser le parcours complet et les éléments les plus coûteux.</td>
+            </tr>
+            <tr>
+              <td>ROAS faible</td>
+              <td>Les revenus attribués ne compensent pas suffisamment la dépense publicitaire.</td>
+              <td>Examiner l'offre, la campagne, les coûts et l'allocation budgétaire.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn"><strong>⚠️ Attention</strong><p>Une optimisation trop rapide peut brouiller la lecture des données. Les changements de budget ou de configuration doivent être interprétés avec les résultats observés, et non à partir d'une seule valeur isolée.</p></div>
+    </div>
+  </section>
+
+  <section class="s reveal" id="decision">
+    <div class="wrap">
+      <h2>5. Savoir quand couper, ajuster ou scaler</h2>
+      <p>Le pilotage d'une campagne consiste à transformer les données en décisions. Trois grandes actions reviennent souvent : <strong>couper</strong>, <strong>ajuster</strong> ou <strong>scaler</strong>.</p>
+
+      <div class="tabs" id="tabsDecision">
+        <div role="tablist" aria-label="Décisions d'optimisation">
+          <button role="tab" id="tab-cut" aria-selected="true" aria-controls="p-cut">Couper</button>
+          <button role="tab" id="tab-adjust" aria-selected="false" aria-controls="p-adjust" tabindex="-1">Ajuster</button>
+          <button role="tab" id="tab-scale" aria-selected="false" aria-controls="p-scale" tabindex="-1">Scaler</button>
+        </div>
+        <div role="tabpanel" id="p-cut" aria-labelledby="tab-cut">
+          <p><strong>Couper</strong> signifie arrêter ou réduire fortement la diffusion d'un élément qui consomme du budget sans produire un niveau de résultat acceptable.</p>
+          <ul><li>Résultats insuffisants malgré une dépense significative.</li><li>Coût par résultat durablement trop élevé.</li><li>Absence de signal permettant de justifier la poursuite de la dépense.</li></ul>
+        </div>
+        <div role="tabpanel" id="p-adjust" aria-labelledby="tab-adjust" hidden>
+          <p><strong>Ajuster</strong> consiste à modifier un élément lorsque la campagne présente un potentiel d'amélioration.</p>
+          <ul><li>Tester un nouveau visuel ou une nouvelle accroche.</li><li>Modifier le ciblage ou la répartition du budget.</li><li>Corriger un point du parcours lorsque les clics ne se transforment pas en résultats.</li></ul>
+        </div>
+        <div role="tabpanel" id="p-scale" aria-labelledby="tab-scale" hidden>
+          <p><strong>Scaler</strong> signifie augmenter progressivement les ressources d'un élément qui obtient des résultats satisfaisants et cohérents avec l'objectif.</p>
+          <ul><li>Les résultats sont réguliers.</li><li>Le coût reste acceptable.</li><li>L'augmentation du budget reste compatible avec la rentabilité recherchée.</li></ul>
+        </div>
+      </div>
+
+      <figure>
+        <svg viewBox="0 0 720 210" role="img" aria-labelledby="decisionTitle decisionDesc">
+          <title id="decisionTitle">Arbre simplifié de décision publicitaire</title>
+          <desc id="decisionDesc">On observe les résultats et le coût. Selon leur qualité, on choisit de couper, ajuster ou scaler.</desc>
+          <g font-family="Inter,sans-serif">
+            <rect x="260" y="15" width="200" height="55" rx="10" fill="#EAF1FF" stroke="#2563EB"/>
+            <text x="360" y="48" text-anchor="middle" fill="#0A0D14" font-weight="600">Résultats + coûts</text>
+
+            <path d="M360 70v25M360 95H130M360 95H590M360 95v0" stroke="#0A0D14" stroke-width="2"/>
+            <path d="M130 95v20M590 95v20M360 95v20" stroke="#0A0D14" stroke-width="2"/>
+
+            <rect x="30" y="125" width="200" height="60" rx="10" fill="#fff" stroke="#EC4899"/>
+            <text x="130" y="153" text-anchor="middle" fill="#0A0D14" font-weight="600">Couper</text>
+            <text x="130" y="173" text-anchor="middle" fill="#626A78" font-size="12">coût trop élevé / faible résultat</text>
+
+            <rect x="260" y="125" width="200" height="60" rx="10" fill="#fff" stroke="#06B6D4"/>
+            <text x="360" y="153" text-anchor="middle" fill="#0A0D14" font-weight="600">Ajuster</text>
+            <text x="360" y="173" text-anchor="middle" fill="#626A78" font-size="12">potentiel d'amélioration</text>
+
+            <rect x="490" y="125" width="200" height="60" rx="10" fill="#0A0D14"/>
+            <text x="590" y="153" text-anchor="middle" fill="#fff" font-weight="600">Scaler</text>
+            <text x="590" y="173" text-anchor="middle" fill="#E6EAF2" font-size="12">résultats satisfaisants</text>
+          </g>
+        </svg>
+        <figcaption>La décision dépend de la combinaison entre résultats obtenus, coût et cohérence avec l'objectif.</figcaption>
+      </figure>
+
+      <div class="callout more"><strong>🔗 Pour aller plus loin</strong><p>La prochaine leçon rassemble les différents éléments étudiés dans le module pour construire un plan publicitaire complet.</p></div>
+    </div>
+  </section>
+
+  <section class="s alt">
+    <div class="wrap">
+      <h2>Le cycle d'optimisation en bref</h2>
+      <ol class="stepper">
+        <li><strong>Mesurer</strong>Lire les KPI principaux.</li>
+        <li><strong>Diagnostiquer</strong>Comprendre l'écart.</li>
+        <li><strong>Tester</strong>Comparer une variante.</li>
+        <li><strong>Optimiser</strong>Réduire ou réallouer.</li>
+        <li><strong>Piloter</strong>Couper, ajuster ou scaler.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<section class="key" id="points-cles">
+  <div class="wrap">
+    <h2>Points clés à retenir</h2>
+    <ul>
+      <li>La portée et les impressions mesurent la diffusion ; le CTR et le CPC aident à comprendre l'interaction et son coût.</li>
+      <li>Le CPR relie la dépense au résultat recherché et le ROAS permet d'apprécier le retour des dépenses publicitaires lorsqu'un revenu est attribué à la campagne.</li>
+      <li>Un tableau de bord efficace met en avant les indicateurs directement liés à l'objectif de la campagne.</li>
+      <li>Un A/B test compare des variantes de manière contrôlée, notamment sur les visuels, les accroches ou les ciblages.</li>
+      <li>Optimiser consiste à réduire les dépenses inutilement coûteuses et à réallouer progressivement le budget vers les éléments les plus performants.</li>
+      <li>Une campagne peut être coupée, ajustée ou scalée selon la combinaison entre résultats, coûts et objectif.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="nav">
+    <a class="btn" href="lecon-08.html">← Leçon précédente — Leçon 08</a>
+    <a class="btn primary" href="lecon-10-construire-son-plan-publicitaire-complet.html">Leçon suivante — Leçon 10 : Construire son plan publicitaire complet →</a>
+  </div>
+  <p><a href="#debut">Retour au sommaire</a></p>
+</div>
+
+<footer>
+  <div class="wrap">Social Ads Academy · Module 2 · Leçon 09</div>
+</footer>
+
+<button id="top" type="button" aria-label="Retour en haut de la page">↑</button>
+
+<script>
+(function(){
+  var bar=document.getElementById('progress'), topBtn=document.getElementById('top');
+  function onScroll(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+    topBtn.classList.toggle('show',h.scrollTop>600);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+
+  topBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+
+  var mb=document.getElementById('menuBtn'),menu=document.getElementById('menu');
+  function closeMenu(){menu.classList.remove('open');mb.setAttribute('aria-expanded','false');}
+  mb.addEventListener('click',function(){
+    var open=menu.classList.toggle('open');
+    mb.setAttribute('aria-expanded',open);
+  });
+  menu.addEventListener('click',closeMenu);
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){closeMenu();mb.focus();}
+  });
+
+  function setupTabs(containerId){
+    var root=document.getElementById(containerId);
+    if(!root) return;
+    var tabs=[].slice.call(root.querySelectorAll('[role=tab]'));
+    function select(t){
+      tabs.forEach(function(x){
+        var on=x===t;
+        x.setAttribute('aria-selected',on?'true':'false');
+        x.tabIndex=on?0:-1;
+        document.getElementById(x.getAttribute('aria-controls')).hidden=!on;
+      });
+      t.focus();
+    }
+    tabs.forEach(function(t,i){
+      t.addEventListener('click',function(){select(t);});
+      t.addEventListener('keydown',function(e){
+        var n=null;
+        if(e.key==='ArrowRight') n=tabs[(i+1)%tabs.length];
+        if(e.key==='ArrowLeft') n=tabs[(i-1+tabs.length)%tabs.length];
+        if(e.key==='Home') n=tabs[0];
+        if(e.key==='End') n=tabs[tabs.length-1];
+        if(n){e.preventDefault();select(n);}
+      });
+    });
+  }
+  setupTabs('tabsDashboard');
+  setupTabs('tabsDecision');
+
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var code=b.parentNode.querySelector('code');
+      if(!code) return;
+      var txt=code.innerText;
+      function ok(){
+        b.textContent='Copié';
+        setTimeout(function(){b.textContent='Copier';},1500);
+      }
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(txt).then(ok);
+      }else{
+        var t=document.createElement('textarea');
+        t.value=txt;document.body.appendChild(t);t.select();
+        try{document.execCommand('copy');ok();}catch(e){}
+        document.body.removeChild(t);
+      }
+    });
+  });
+
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced && 'IntersectionObserver' in window){
+    var observer=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:.08});
+    document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
+  }else{
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('visible');});
+  }
+})();
+</script>
+</body>
+</html>

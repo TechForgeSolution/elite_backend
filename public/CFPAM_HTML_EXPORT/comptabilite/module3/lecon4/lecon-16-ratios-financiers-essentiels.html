@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 16 — Ratios financiers essentiels | Module 3 — Gestion financière</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+  td.neg, tr.total td.neg{color:var(--color-accent-alt);}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filiere comptabilite
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 3 — Gestion financière</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau intermédiaire</span>
+    </div>
+    <h1>Leçon 16-Ratios financiers essentiels</h1>
+    <p class="lede">Leçon 16 — calculer et interpréter les ratios de liquidité, d'endettement et de rentabilité, et apprendre à les comparer dans le temps pour juger la trajectoire d'une entreprise.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Pourquoi utiliser des ratios financiers" data-num="16.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">16.1</span><h2>Pourquoi utiliser des ratios financiers</h2></div>
+      <p>Un montant isolé — 150 000 € de capitaux propres, 30 000 € de résultat net — ne dit rien à lui seul. Un <strong>ratio financier</strong> rapporte deux grandeurs du bilan ou du compte de résultat l'une à l'autre, pour obtenir un chiffre comparable : dans le temps, d'un exercice à l'autre, ou dans l'espace, face à d'autres entreprises du même secteur.</p>
+      <p>Les ratios se regroupent classiquement en trois familles, qui reprennent les équilibres vus dans les leçons précédentes du module : liquidité, endettement et rentabilité.</p>
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Un ratio seul, calculé sur un seul exercice, n'a qu'une valeur limitée. C'est sa comparaison dans le temps ou face à une norme sectorielle qui lui donne du sens.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 820 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Le bilan et le compte de résultat alimentent les ratios financiers, dont la comparaison dans le temps et face au secteur éclaire la décision">
+        <defs>
+          <marker id="arrow5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#1F6F54"></path>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif" font-size="13" fill="#0B0F0D">
+          <rect x="20" y="20" width="150" height="50" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="95" y="42" text-anchor="middle" font-weight="600" font-size="12">Bilan</text>
+          <text x="95" y="58" text-anchor="middle" fill="#5A6560" font-size="11">actif, passif</text>
+
+          <rect x="20" y="120" width="150" height="50" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="95" y="142" text-anchor="middle" font-weight="600" font-size="12">Compte de résultat</text>
+          <text x="95" y="158" text-anchor="middle" fill="#5A6560" font-size="11">produits, charges</text>
+
+          <rect x="250" y="70" width="150" height="50" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="325" y="92" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Ratios</text>
+          <text x="325" y="108" text-anchor="middle" fill="#1F6F54" font-size="11">liquidité, dette, rentabilité</text>
+
+          <line x1="170" y1="45" x2="246" y2="88" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow5)"></line>
+          <line x1="170" y1="145" x2="246" y2="102" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow5)"></line>
+
+          <rect x="480" y="20" width="150" height="50" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="555" y="42" text-anchor="middle" font-weight="600" font-size="12">Comparaison N / N-1</text>
+          <text x="555" y="58" text-anchor="middle" fill="#5A6560" font-size="11">tendance</text>
+
+          <rect x="480" y="120" width="150" height="50" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="555" y="142" text-anchor="middle" font-weight="600" font-size="12">Comparaison au secteur</text>
+          <text x="555" y="158" text-anchor="middle" fill="#5A6560" font-size="11">benchmark</text>
+
+          <line x1="400" y1="88" x2="476" y2="47" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow5)"></line>
+          <line x1="400" y1="102" x2="476" y2="143" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow5)"></line>
+
+          <rect x="700" y="70" width="100" height="50" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="750" y="92" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Décision</text>
+          <text x="750" y="108" text-anchor="middle" fill="#1F6F54" font-size="11">financière</text>
+
+          <line x1="630" y1="47" x2="696" y2="88" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow5)"></line>
+          <line x1="630" y1="143" x2="696" y2="102" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow5)"></line>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Les ratios de liquidité" data-num="16.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">16.2</span><h2>Les ratios de liquidité</h2></div>
+      <p>Ils mesurent la capacité de l'entreprise à faire face à ses dettes à court terme avec les actifs qu'elle peut mobiliser rapidement. Trois niveaux, du plus large au plus strict :</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Ratios de liquidité</caption>
+        <thead>
+          <tr><th scope="col">Ratio</th><th scope="col">Formule</th><th scope="col" class="num">Seuil de vigilance</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Liquidité générale</td><td class="mono">Actif circulant / Dettes à court terme</td><td class="num">&lt; 1</td></tr>
+          <tr><td>Liquidité réduite</td><td class="mono">(Actif circulant − Stocks) / Dettes CT</td><td class="num">&lt; 0,8</td></tr>
+          <tr><td>Liquidité immédiate</td><td class="mono">Trésorerie / Dettes à court terme</td><td class="num">&lt; 0,2</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <p>Un ratio de liquidité générale inférieur à 1 signifie que les dettes à court terme dépassent les actifs mobilisables à court terme : un signal à surveiller, sans être automatiquement alarmant si les échéances sont bien réparties dans le temps.</p>
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Se fier au seul ratio de liquidité générale sans regarder la composition de l'actif circulant : un stock difficile à écouler gonfle le ratio sans pour autant garantir la capacité réelle à payer les dettes à temps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Les ratios d'endettement" data-num="16.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">16.3</span><h2>Les ratios d'endettement</h2></div>
+      <p>Ils mesurent le poids de la dette dans le financement de l'entreprise, et sa capacité à la rembourser dans un délai raisonnable.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Deux ratios d'endettement">
+        <button class="tab-btn" role="tab" id="tab-end-1" aria-controls="panel-end-1" aria-selected="true">Ratio d'endettement</button>
+        <button class="tab-btn" role="tab" id="tab-end-2" aria-controls="panel-end-2" aria-selected="false" tabindex="-1">Capacité de remboursement</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-end-1" role="tabpanel" aria-labelledby="tab-end-1" tabindex="0">
+        <div class="prose">
+          <p><span class="mono">Dettes financières / Capitaux propres</span>. Il indique combien d'euros de dette pèsent sur chaque euro apporté par les associés. Un ratio proche ou supérieur à 1 signale une dépendance croissante au financement externe.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-end-2" role="tabpanel" aria-labelledby="tab-end-2" tabindex="0" hidden>
+        <div class="prose">
+          <p><span class="mono">Dettes financières / Capacité d'autofinancement (CAF)</span>. Il exprime, en nombre d'années, le temps nécessaire pour rembourser l'ensemble des dettes financières avec les ressources internes dégagées par l'activité. Au-delà de 3 à 4 ans, les banques deviennent généralement plus prudentes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">📌 Rappel normatif</div>
+        <p>La capacité de remboursement fait partie des ratios les plus regardés par les banques lors de l'instruction d'un dossier de crédit, aux côtés du ratio d'autonomie financière étudié à la leçon 13.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Les ratios de rentabilité" data-num="16.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">16.4</span><h2>Les ratios de rentabilité</h2></div>
+      <p>Ils rapportent le résultat aux moyens engagés pour l'obtenir — chiffre d'affaires, actif économique ou capitaux propres — selon l'angle de lecture recherché.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Ratios de rentabilité</caption>
+        <thead>
+          <tr><th scope="col">Ratio</th><th scope="col">Formule</th><th scope="col">Ce qu'il éclaire</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Taux de marge nette</td><td class="mono">Résultat net / Chiffre d'affaires</td><td>La part du chiffre d'affaires qui devient bénéfice</td></tr>
+          <tr><td>Rentabilité économique</td><td class="mono">Résultat d'exploitation / Actif économique</td><td>L'efficacité des moyens d'exploitation mobilisés</td></tr>
+          <tr><td>Rentabilité financière (ROE)</td><td class="mono">Résultat net / Capitaux propres</td><td>Le rendement offert aux associés sur leur apport</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <p>La rentabilité financière peut être supérieure à la rentabilité économique lorsque l'entreprise utilise la dette pour financer une partie de son activité : c'est l'effet de levier, à manier avec prudence puisqu'il fonctionne aussi en sens inverse en cas de baisse de performance.</p>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Cas pratique : une batterie de ratios" data-num="16.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">16.5</span><h2>Cas pratique : une batterie de ratios</h2></div>
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Une entreprise affiche : chiffre d'affaires <span class="mono">500 000 €</span>, résultat net <span class="mono">30 000 €</span>, capitaux propres <span class="mono">150 000 €</span>, dettes financières <span class="mono">120 000 €</span>, CAF <span class="mono">45 000 €</span>, actif circulant <span class="mono">220 000 €</span>, dettes à court terme <span class="mono">160 000 €</span>, trésorerie <span class="mono">40 000 €</span>.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Ratios calculés à partir du cas</caption>
+        <thead>
+          <tr><th scope="col">Ratio</th><th scope="col">Calcul</th><th scope="col" class="num">Résultat</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Taux de marge nette</td><td class="mono">30 000 / 500 000</td><td class="num">6,0 %</td></tr>
+          <tr><td>Rentabilité financière (ROE)</td><td class="mono">30 000 / 150 000</td><td class="num">20,0 %</td></tr>
+          <tr><td>Ratio d'endettement</td><td class="mono">120 000 / 150 000</td><td class="num">0,80</td></tr>
+          <tr><td>Capacité de remboursement</td><td class="mono">120 000 / 45 000</td><td class="num">2,7 ans</td></tr>
+          <tr><td>Liquidité générale</td><td class="mono">220 000 / 160 000</td><td class="num">1,38</td></tr>
+          <tr><td>Liquidité immédiate</td><td class="mono">40 000 / 160 000</td><td class="num">0,25</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <p>Pris isolément, chaque ratio est correct : endettement modéré, capacité de remboursement rapide, liquidité générale supérieure à 1. C'est en les lisant ensemble qu'apparaît le profil complet de l'entreprise — ici, une structure plutôt saine, à confirmer par une comparaison avec les exercices précédents et le secteur.</p>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Comparer les ratios dans le temps et dans l'espace" data-num="16.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">16.6</span><h2>Comparer les ratios dans le temps et dans l'espace</h2></div>
+      <p>Un ratio ne prend tout son sens que comparé. Une méthode simple pour structurer cette comparaison :</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Calculer sur plusieurs exercices</h3>
+        <p>Recalculer chaque ratio sur au moins trois exercices pour dégager une tendance, pas un instantané.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Comparer au secteur</h3>
+        <p>Situer l'entreprise face à des ratios moyens ou médians publiés pour son secteur d'activité.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Croiser les familles de ratios</h3>
+        <p>Ne jamais interpréter un ratio isolément : une bonne rentabilité doit être lue avec le niveau d'endettement et de liquidité.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Fixer des seuils d'alerte</h3>
+        <p>Définir à l'avance les niveaux qui déclenchent une action corrective, plutôt que de les découvrir après coup.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Où trouver des ratios sectoriels de référence pour comparer une entreprise ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Les greffes des tribunaux de commerce, les fédérations professionnelles et certains cabinets d'expertise comptable publient des statistiques sectorielles. Elles doivent être utilisées comme repère, pas comme une norme rigide applicable à l'identique à toute entreprise du secteur.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Un même ratio peut-il se lire différemment selon le secteur d'activité ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Oui : un ratio de liquidité générale plus faible est habituel dans la grande distribution, qui encaisse ses ventes au comptant, alors qu'il serait préoccupant dans une activité de services à cycle de facturation long.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🔗 Pour aller plus loin</div>
+        <p>La prochaine leçon du module aborde la trésorerie et le plan de financement, où plusieurs de ces ratios servent directement à évaluer la faisabilité d'un projet d'investissement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="16.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">16.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Un ratio financier compare deux grandeurs du bilan ou du compte de résultat pour rendre un chiffre interprétable.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>Les ratios de liquidité mesurent la capacité à faire face aux dettes à court terme avec les actifs mobilisables rapidement.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Les ratios d'endettement mesurent le poids de la dette et le délai réaliste pour la rembourser via la CAF.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Les ratios de rentabilité rapportent le résultat au chiffre d'affaires, à l'actif économique ou aux capitaux propres.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Un ratio ne prend son sens que comparé dans le temps et face au secteur, jamais lu isolément sur un seul exercice.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Analyse du compte de résultat</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante</span>
+        <span class="dest">Trésorerie et plan de financement</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 3</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 3 : Gestion financière</span>
+    <span>Leçon 16</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

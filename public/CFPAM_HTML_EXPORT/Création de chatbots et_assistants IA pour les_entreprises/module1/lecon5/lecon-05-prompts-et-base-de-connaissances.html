@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 5 — Rédiger les consignes (prompts) et la base de connaissances de l’assistant</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235B4BDB'/%3E%3Cpath d='M8 11h16v9H15l-4 4v-4H8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F7FB;--color-text:#0A0A0F;--color-text-muted:#5F6370;--color-accent:#5B4BDB;--color-accent-soft:#EEECFF;--color-border:#E4E3EC;--r:12px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.25;margin:0 0 .6em}
+h1{font-size:clamp(1.9rem,5vw,2.9rem)}h2{font-size:clamp(1.5rem,3.5vw,2rem)}h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1.1em}a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:960px;margin:0 auto;padding:0 1.25rem}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px;gap:1rem}
+.brand{font:600 .9rem Sora,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu-btn{background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:.45rem .9rem;font:600 .9rem Inter;cursor:pointer}
+#menu{display:none;position:absolute;right:1.25rem;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:.5rem;width:min(320px,calc(100vw - 2.5rem));box-shadow:0 8px 30px rgba(10,10,15,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:.5rem .75rem;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#menu a:hover{background:var(--color-accent-soft)}
+.hero{background:var(--color-bg-alt);padding:4rem 0 3rem;border-bottom:1px solid var(--color-border)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.badge{font-size:.82rem;font-weight:600;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--color-border);background:#fff;color:var(--color-text-muted)}
+.badge.mod{background:var(--color-accent-soft);color:#4536c4;border-color:transparent}
+.toc{padding:2.5rem 0}
+.toc ol{margin:0;padding-left:1.2rem;columns:1;color:var(--color-text-muted)}
+.toc li{padding:.15rem 0}.toc a{text-decoration:none;color:var(--color-text)}.toc a:hover{color:var(--color-accent)}
+section.s{padding:3.5rem 0}section.s:nth-of-type(even){background:var(--color-bg-alt)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+.callout{border-radius:var(--r);padding:1rem 1.25rem;margin:1.5rem 0;border:1px solid var(--color-border);background:#fff;border-left:4px solid var(--color-accent)}
+.callout strong{display:block;margin-bottom:.25rem}.callout.warn{border-left-color:#0A0A0F}.callout.more{background:var(--color-accent-soft);border-color:transparent}
+.callout p:last-child{margin:0}
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:1.5rem 0}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1.25rem;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .ic{width:40px;height:40px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;font-size:1.3rem;margin-bottom:.75rem}
+.card h3{font-size:1.05rem;margin-bottom:.3rem}.card p{margin:0;color:var(--color-text-muted);font-size:.95rem;line-height:1.55}
+.tabs [role=tablist]{display:flex;gap:.25rem;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{background:none;border:0;padding:.7rem 1rem;font:600 .95rem Inter;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:1.25rem 0}.tabs [role=tabpanel][hidden]{display:none}
+.acc{border:1px solid var(--color-border);border-radius:var(--r);background:#fff;margin:.75rem 0}
+.acc button{width:100%;text-align:left;background:none;border:0;padding:1rem 1.25rem;font:600 1rem Inter;cursor:pointer;display:flex;justify-content:space-between;gap:1rem;color:var(--color-text)}
+.acc button::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+.acc button[aria-expanded=true]::after{content:"−"}
+.acc .body{padding:0 1.25rem 1rem}.acc .body[hidden]{display:none}.acc .body p:last-child{margin:0}
+.stepper{list-style:none;padding:0;margin:1.5rem 0;display:grid;gap:.75rem;counter-reset:st}
+.stepper li{counter-increment:st;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem;position:relative;font-size:.95rem;line-height:1.5}
+.stepper li::before{content:counter(st);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem Sora;margin-bottom:.5rem}
+.stepper b{display:block}
+.fig{margin:1.5rem 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem}
+.fig svg{width:100%;height:auto;display:block}.fig figcaption{font-size:.85rem;color:var(--color-text-muted);margin-top:.5rem}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.95rem;line-height:1.5}
+th,td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--color-border);vertical-align:top}th{font-family:Sora;font-size:.9rem}
+.pros-cons{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pros-cons ul{margin:0;padding-left:1.1rem}.pros-cons li{margin:.4rem 0}
+.key{background:var(--color-text);color:#fff;padding:4rem 0}.key h2{color:#fff}
+.key ul{padding-left:1.2rem;margin:0}.key li{margin:.7rem 0}.key li::marker{color:#a99fff}
+.nav{display:flex;justify-content:space-between;gap:1rem;padding:2.5rem 0;flex-wrap:wrap}
+.nav a{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem 1.25rem;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}.nav small{display:block;color:var(--color-text-muted)}.nav .next{text-align:right}
+.nav .off{opacity:.45;pointer-events:none}
+footer{border-top:1px solid var(--color-border);padding:1.5rem 0;color:var(--color-text-muted);font-size:.85rem;text-align:center}
+#top{position:fixed;right:1.25rem;bottom:1.25rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+#top.show{opacity:1;pointer-events:auto}
+@media(min-width:768px){.toc ol{columns:2}.stepper{grid-template-columns:repeat(4,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade{opacity:1;transform:none;transition:none}.card{transition:none}.card:hover{transform:none}}
+pre{margin:0;background:#0B0D12;color:#E9E8F2;border-radius:var(--r);padding:1rem 1.1rem;overflow-x:auto;font:.86rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word}
+.code{position:relative;margin:1.25rem 0}.code .lbl{font-size:.8rem;color:var(--color-text-muted);margin-bottom:.35rem}
+.code button{position:absolute;top:2rem;right:.6rem;background:#1c1f2b;color:#cfcbff;border:1px solid #34385a;border-radius:8px;padding:.25rem .65rem;font:600 .78rem Inter;cursor:pointer;transition:background .2s}
+.code button:hover{background:#2a2d45}.code pre{padding-top:1rem}
+pre .k{color:#a99fff;font-weight:700}pre .c{color:#8b8fa3}
+.cmp{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="brand">Création de chatbots et assistants IA pour les entreprises</span>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire de la leçon">
+    <a href="#prompt-systeme">1. Le prompt système</a><a href="#base">2. La base de connaissances</a><a href="#exemples">3. Exemples concrets</a><a href="#maintenance">4. Mise à jour et maintenance</a><a href="#synthese">Synthèse</a>
+  </nav>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge mod">Module 1 — Fondamentaux et conception d’un assistant IA</span><span class="badge">⏱ 45 min</span><span class="badge">Niveau : Débutant</span></div>
+  <p class="sub" style="margin-bottom:.5rem">Leçon 5</p>
+  <h1>Rédiger les consignes (prompts) et la base de connaissances de l’assistant</h1>
+  <p class="sub">Dire à l’assistant comment se comporter, et lui fournir des informations fiables sur l’entreprise.</p>
+  <p style="margin:0"><b>Objectif :</b> donner à l’assistant des consignes précises et des informations fiables sur l’entreprise.</p>
+</div></div>
+
+<div class="toc"><div class="wrap">
+  <h2 style="font-size:1.2rem">Dans cette leçon</h2>
+  <ol>
+    <li><a href="#prompt-systeme">Principes d’un bon prompt système</a></li>
+    <li><a href="#base">Constituer une base de connaissances</a></li>
+    <li><a href="#exemples">Exemples concrets de prompts et de questions-réponses</a></li>
+    <li><a href="#maintenance">Mise à jour, enrichissement et maintenance</a></li>
+  </ol>
+</div></div>
+
+<section class="s" id="prompt-systeme"><div class="wrap fade">
+  <h2>1. Les principes d’un bon prompt système</h2>
+  <p>Un <b>prompt</b> est un texte d’instructions donné à un modèle d’IA. Le <b>prompt système</b> est le texte permanent, rédigé par vous, que l’assistant reçoit avant toute conversation : il fixe qui il est, ce qu’il sait, ce qu’il doit faire et ne pas faire. Le client ne le voit jamais, mais il influence chaque réponse.</p>
+  <p>Un prompt solide se construit en cinq blocs :</p>
+  <div class="cards">
+    <div class="card"><div class="ic">🎭</div><h3>Rôle</h3><p>Qui est l’assistant et pour qui travaille-t-il ? Ex. : conseiller virtuel d’une boutique.</p></div>
+    <div class="card"><div class="ic">🏢</div><h3>Contexte</h3><p>L’entreprise, son activité, le public visé, le ton attendu.</p></div>
+    <div class="card"><div class="ic">📋</div><h3>Règles</h3><p>Ce qu’il doit toujours faire : s’appuyer sur la base, poser une question si la demande est floue.</p></div>
+    <div class="card"><div class="ic">🚧</div><h3>Limites</h3><p>Ce qu’il ne doit jamais faire : inventer, promettre, donner un avis médical ou juridique.</p></div>
+    <div class="card"><div class="ic">🧾</div><h3>Format</h3><p>Longueur, structure, langue, et façon de conclure ou de passer la main.</p></div>
+  </div>
+  <figure class="fig">
+    <svg viewBox="0 0 640 230" role="img" aria-labelledby="t1 d1"><title id="t1">Anatomie d’un prompt système</title><desc id="d1">Les cinq blocs rôle, contexte, règles, limites et format s’assemblent dans le prompt système, qui guide l’assistant lors de chaque réponse.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="15" width="170" height="38" rx="9" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="95" y="39">Rôle</text>
+      <rect x="10" y="63" width="170" height="38" rx="9" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="95" y="87">Contexte</text>
+      <rect x="10" y="111" width="170" height="38" rx="9" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="95" y="135">Règles</text>
+      <rect x="10" y="159" width="170" height="38" rx="9" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="95" y="183">Limites</text>
+      <rect x="10" y="207" width="170" height="20" rx="9" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="95" y="222" font-size="11">Format de réponse</text>
+      <rect x="260" y="60" width="150" height="100" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="335" y="105">Prompt</text><text x="335" y="125">système</text>
+      <rect x="490" y="60" width="140" height="100" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="560" y="105">Réponse</text><text x="560" y="125">de l’assistant</text></g>
+      <path d="M180 34L260 90M180 82L260 100M180 130h80M180 178L260 130M180 217L260 140M410 110h80" stroke="#5B4BDB" stroke-width="2" fill="none"/>
+    </svg>
+    <figcaption>Cinq blocs assemblés guident chaque réponse de l’assistant.</figcaption>
+  </figure>
+  <h3>Un exemple complet</h3>
+  <p>Voici un prompt système pour une boutique de vélos fictive, « Aurore Cycles ». Chaque bloc est repérable.</p>
+  <div class="code"><div class="lbl">Prompt système — Aurore Cycles</div><button type="button">Copier</button><pre><code><span class="k"># RÔLE</span>
+Tu es Léa, conseillère virtuelle d'Aurore Cycles, une boutique de vélos.
+
+<span class="k"># CONTEXTE</span>
+Tu aides les clients particuliers : informations sur les produits,
+les horaires, les réparations et les retours. Ton ton est chaleureux,
+clair et professionnel. Tu vouvoies le client.
+
+<span class="k"># RÈGLES</span>
+- Réponds uniquement à partir de la BASE DE CONNAISSANCES fournie.
+- Si la demande est floue, pose UNE question de précision.
+- Si le client est mécontent ou la demande est complexe, propose
+  de le mettre en relation avec un conseiller.
+
+<span class="k"># LIMITES</span>
+- N'invente jamais un prix, un délai ou une politique.
+- Si l'information est absente de la base, dis-le simplement et
+  oriente vers l'équipe (contact@aurore-cycles.example).
+- Ne demande jamais de données bancaires.
+
+<span class="k"># FORMAT</span>
+- Réponses de 2 à 4 phrases, en français.
+- Utilise une liste à puces si tu énumères plus de trois éléments.
+- Termine par : « Puis-je vous aider sur autre chose ? »</code></pre></div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Écrire un prompt vague (« Sois utile et gentil ») ou trop long et contradictoire. Des consignes courtes, concrètes et sans conflit donnent de meilleurs résultats.</p></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a1">Pourquoi dire ce qu’il faut faire quand l’information manque ?</button>
+    <div class="body" id="a1" hidden><p>Un modèle de langage cherche toujours à répondre. Sans consigne explicite, il peut combler un vide par une réponse plausible mais fausse. Prévoir la conduite à tenir (« dis que tu ne sais pas et oriente ») évite ce risque.</p></div></div>
+</div></section>
+
+<section class="s" id="base"><div class="wrap fade">
+  <h2>2. Constituer une base de connaissances</h2>
+  <p>La <b>base de connaissances</b> est l’ensemble des informations de l’entreprise que l’assistant peut consulter pour répondre : FAQ, tarifs, horaires, services, politiques. Le prompt dit <i>comment</i> répondre ; la base fournit <i>avec quoi</i>.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 640 170" role="img" aria-labelledby="t2 d2"><title id="t2">Du contenu brut à la réponse</title><desc id="d2">Les sources de l’entreprise sont rassemblées, structurées en fiches, puis consultées par l’assistant pour répondre au client.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="45" width="140" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="80" y="82">Sources</text><text x="80" y="102" font-size="11" fill="#5F6370" font-weight="400">sites, PDF, e-mails</text>
+      <rect x="180" y="45" width="140" height="80" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="250" y="82">Structuration</text><text x="250" y="102" font-size="11" fill="#5F6370" font-weight="400">fiches claires</text>
+      <rect x="350" y="45" width="140" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="420" y="82">Base de</text><text x="420" y="102">connaissances</text>
+      <rect x="520" y="45" width="110" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="575" y="82">Assistant</text><text x="575" y="102" font-size="11" fill="#5F6370" font-weight="400">répond</text></g>
+      <path d="M150 85h30M320 85h30M490 85h30" stroke="#5B4BDB" stroke-width="2"/>
+    </svg>
+    <figcaption>Une information utile mais mal organisée reste difficile à exploiter.</figcaption>
+  </figure>
+  <h3>Les grandes catégories de contenu</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Catégorie</th><th>Exemples</th><th>Précaution</th></tr></thead>
+    <tbody>
+    <tr><td>FAQ</td><td>Questions fréquentes des clients</td><td>Partir des vraies questions reçues</td></tr>
+    <tr><td>Tarifs</td><td>Prix, forfaits, frais de livraison</td><td>Indiquer la date et la devise</td></tr>
+    <tr><td>Horaires</td><td>Ouverture, jours fériés, délais de réponse</td><td>Mentionner les exceptions</td></tr>
+    <tr><td>Services</td><td>Prestations, conditions, public concerné</td><td>Une fiche par service</td></tr>
+    <tr><td>Politiques</td><td>Retours, garanties, confidentialité</td><td>Reprendre le texte officiel</td></tr>
+    </tbody></table></div>
+  <h3>Comment structurer une information</h3>
+  <p>Une bonne fiche est <b>courte, autonome et datée</b> : un sujet par fiche, un titre explicite, une réponse complète sans renvoi vague à « voir plus haut », et une date de dernière vérification.</p>
+  <div class="tabs">
+    <div role="tablist" aria-label="Extraits de base de connaissances">
+      <button role="tab" id="tb1" aria-selected="true" aria-controls="tp1">FAQ</button>
+      <button role="tab" id="tb2" aria-selected="false" aria-controls="tp2" tabindex="-1">Tarifs</button>
+      <button role="tab" id="tb3" aria-selected="false" aria-controls="tp3" tabindex="-1">Horaires</button>
+      <button role="tab" id="tb4" aria-selected="false" aria-controls="tp4" tabindex="-1">Politique</button>
+    </div>
+    <div role="tabpanel" id="tp1" aria-labelledby="tb1"><div class="code"><button type="button">Copier</button><pre><code><span class="k">Thème :</span> Retours
+<span class="k">Question :</span> Puis-je retourner un vélo acheté en ligne ?
+<span class="k">Réponse :</span> Oui, sous 14 jours après réception, vélo non utilisé
+et dans son emballage d'origine.
+<span class="k">Mis à jour le :</span> 02/09/2026</code></pre></div></div>
+    <div role="tabpanel" id="tp2" aria-labelledby="tb2" hidden><div class="code"><button type="button">Copier</button><pre><code><span class="k">Service :</span> Révision standard
+<span class="k">Prix :</span> 79 € TTC (pièces non comprises)
+<span class="k">Durée :</span> 3 jours ouvrés
+<span class="k">Inclus :</span> réglage freins, dérailleur, contrôle des roues
+<span class="k">Mis à jour le :</span> 02/09/2026</code></pre></div></div>
+    <div role="tabpanel" id="tp3" aria-labelledby="tb3" hidden><div class="code"><button type="button">Copier</button><pre><code><span class="k">Horaires du magasin</span>
+Lundi au vendredi : 9h00 - 18h30
+Samedi : 10h00 - 17h00
+Dimanche et jours fériés : fermé
+<span class="k">Exception :</span> fermeture à 16h00 le 24 décembre
+<span class="k">Mis à jour le :</span> 02/09/2026</code></pre></div></div>
+    <div role="tabpanel" id="tp4" aria-labelledby="tb4" hidden><div class="code"><button type="button">Copier</button><pre><code><span class="k">Politique :</span> Garantie
+Les vélos neufs sont garantis 2 ans (pièces et main-d'œuvre).
+L'usure normale (pneus, freins) n'est pas couverte.
+<span class="k">Contact :</span> service-client@aurore-cycles.example
+<span class="k">Mis à jour le :</span> 02/09/2026</code></pre></div></div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><p>L’assistant ne peut pas être plus fiable que sa base. Une information absente, périmée ou contradictoire produira des réponses du même niveau.</p></div>
+</div></section>
+
+<section class="s" id="exemples"><div class="wrap fade">
+  <h2>3. Exemples concrets</h2>
+  <h3>Un prompt faible, un prompt solide</h3>
+  <div class="cmp">
+    <div class="card"><h3>❌ Prompt faible</h3><p><i>« Tu es un assistant de vente de vélos. Réponds aux clients. »</i></p><p style="margin-top:.6rem">Pas de ton, pas de limites, pas de format : l’assistant devine, et peut inventer des prix ou des délais.</p></div>
+    <div class="card"><h3>✅ Prompt solide</h3><p><i>« Tu es Léa, conseillère d’Aurore Cycles. Réponds uniquement avec la base fournie, en 2 à 4 phrases. Si l’information manque, dis-le et oriente vers l’équipe. »</i></p><p style="margin-top:.6rem">Rôle, règle, limite et format sont posés en trois phrases.</p></div>
+  </div>
+  <h3>Associer questions et réponses</h3>
+  <p>Une même information doit pouvoir être retrouvée sous plusieurs formulations. On associe donc à <b>une réponse validée</b> plusieurs <b>variantes de question</b>.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Variantes de questions</th><th>Réponse validée</th></tr></thead>
+    <tbody>
+    <tr><td>« Vous ouvrez le samedi ? » · « Horaires du week-end ? » · « Magasin ouvert dimanche ? »</td><td>Ouvert le samedi de 10h à 17h ; fermé le dimanche et les jours fériés.</td></tr>
+    <tr><td>« Je peux rendre mon vélo ? » · « Comment me faire rembourser ? »</td><td>Retour possible sous 14 jours, vélo non utilisé et dans son emballage d’origine.</td></tr>
+    <tr><td>« Combien coûte une révision ? » · « Prix entretien vélo »</td><td>Révision standard : 79 € TTC, pièces non comprises, délai de 3 jours ouvrés.</td></tr>
+    </tbody></table></div>
+  <div class="callout warn"><strong>⚠️ Attention</strong><p>Ne copiez pas un document interne tel quel : jargon, abréviations et phrases ambiguës seront répétés au client. Reformulez en langage simple.</p></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a2">Que faire quand le client pose une question hors sujet ?</button>
+    <div class="body" id="a2" hidden><p>Prévoyez la conduite dans le prompt : l’assistant rappelle poliment son périmètre (« Je peux vous renseigner sur nos produits, horaires et services ») puis propose un contact humain si nécessaire.</p></div></div>
+</div></section>
+
+<section class="s" id="maintenance"><div class="wrap fade">
+  <h2>4. Mise à jour, enrichissement et maintenance</h2>
+  <p>Prompt et base de connaissances ne sont jamais « terminés » : les prix changent, de nouveaux services apparaissent, les clients posent des questions inattendues. La maintenance suit un cycle continu.</p>
+  <ol class="stepper" aria-label="Cycle de maintenance">
+    <li><b>Observer</b>Lire les conversations, repérer les questions sans réponse.</li>
+    <li><b>Corriger</b>Mettre à jour les fiches périmées et préciser le prompt.</li>
+    <li><b>Enrichir</b>Ajouter les nouveaux sujets et variantes de questions.</li>
+    <li><b>Vérifier</b>Tester les cas modifiés avant de publier.</li>
+  </ol>
+  <h3>Bonnes pratiques</h3>
+  <div class="cards">
+    <div class="card"><div class="ic">👤</div><h3>Un responsable</h3><p>Une personne désignée valide chaque modification.</p></div>
+    <div class="card"><div class="ic">📆</div><h3>Une cadence</h3><p>Revue mensuelle, et immédiate à chaque changement de prix ou de politique.</p></div>
+    <div class="card"><div class="ic">🗂️</div><h3>Un historique</h3><p>Noter la date, l’auteur et la raison de chaque changement.</p></div>
+    <div class="card"><div class="ic">📣</div><h3>Les retours</h3><p>Exploiter les retours des clients et des conseillers.</p></div>
+  </div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a3">Exemple de journal de modifications</button>
+    <div class="body" id="a3" hidden><div class="code"><button type="button">Copier</button><pre><code><span class="k">02/09/2026</span> | Tarifs | Révision standard : 69 € → 79 € | Validé par : M. Diallo
+<span class="k">15/09/2026</span> | FAQ | Ajout « Réparation de crevaison » | Validé par : Mme Nkoulou</code></pre></div></div></div>
+  <div class="callout more"><strong>🔗 Pour aller plus loin</strong><p>La leçon 6 met ces principes en pratique en construisant un premier assistant de réponse aux questions fréquentes.</p></div>
+</div></section>
+
+<section class="s" id="synthese"><div class="wide fade">
+  <h2 style="max-width:720px">Synthèse visuelle</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 800 200" role="img" aria-labelledby="t3 d3"><title id="t3">Synthèse de la leçon</title><desc id="d3">Le prompt système et la base de connaissances alimentent l’assistant, puis la maintenance les améliore en continu.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="60" width="160" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="90" y="98">Prompt</text><text x="90" y="118">système</text>
+      <rect x="220" y="60" width="160" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="300" y="98">Base de</text><text x="300" y="118">connaissances</text>
+      <rect x="430" y="60" width="160" height="80" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="510" y="105">Assistant fiable</text>
+      <rect x="640" y="60" width="150" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="715" y="98">Maintenance</text><text x="715" y="118">continue</text></g>
+      <path d="M170 100h50M380 100h50M590 100h50" stroke="#5B4BDB" stroke-width="2"/>
+    </svg>
+    <figcaption>Fil conducteur de la leçon.</figcaption>
+  </figure>
+</div></section>
+
+<section class="key" id="points-cles"><div class="wrap fade">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Le prompt système fixe le comportement de l’assistant en cinq blocs : rôle, contexte, règles, limites, format.</li>
+    <li>Des consignes courtes, concrètes et sans contradiction valent mieux qu’un texte long et vague.</li>
+    <li>Prévoir la conduite à tenir quand l’information manque évite les réponses inventées.</li>
+    <li>La base de connaissances regroupe FAQ, tarifs, horaires, services et politiques, en fiches courtes et datées.</li>
+    <li>Associer plusieurs variantes de questions à une réponse validée facilite la recherche.</li>
+    <li>Prompt et base se maintiennent : observer, corriger, enrichir, vérifier, avec un responsable désigné.</li>
+  </ul>
+</div></section>
+
+<div class="wrap"><nav class="nav" aria-label="Navigation entre leçons">
+  <a href="lecon-04.html"><small>Leçon précédente</small>Leçon 4 — Concevoir le parcours conversationnel et la personnalité de l’assistant</a>
+  <a class="next" href="lecon-06.html"><small>Leçon suivante</small>Leçon 6 — Construire un premier assistant de réponse aux questions fréquentes</a>
+</nav></div>
+</main>
+<footer><div class="wrap">Création de chatbots et assistants IA pour les entreprises — Module 1, Leçon 5</div></footer>
+<button id="top" aria-label="Retour en haut">↑</button>
+<script>
+(function(){
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);bar.style.width=(p*100)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.onclick=function(){scrollTo({top:0})};
+var mb=document.getElementById('menuBtn'),m=document.getElementById('menu');
+mb.onclick=function(){var o=m.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+m.addEventListener('click',function(e){if(e.target.tagName==='A'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('.acc button').forEach(function(b){b.onclick=function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',!o);document.getElementById(b.getAttribute('aria-controls')).hidden=o}});
+document.querySelectorAll('.tabs').forEach(function(t){var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+function sel(x){tabs.forEach(function(y){var on=y===x;y.setAttribute('aria-selected',on);y.tabIndex=on?0:-1;document.getElementById(y.getAttribute('aria-controls')).hidden=!on});x.focus()}
+tabs.forEach(function(x,i){x.onclick=function(){sel(x)};x.onkeydown=function(e){if(e.key==='ArrowRight')sel(tabs[(i+1)%tabs.length]);if(e.key==='ArrowLeft')sel(tabs[(i-1+tabs.length)%tabs.length])}})});
+var els=document.querySelectorAll('.fade');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
+document.querySelectorAll(".code button").forEach(function(b){b.onclick=function(){var t=b.parentNode.querySelector("code").textContent;function ok(){b.textContent="Copié ✓";setTimeout(function(){b.textContent="Copier"},1800)}if(navigator.clipboard){navigator.clipboard.writeText(t).then(ok,ok)}else{ok()}}});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 03 — Activer l'authentification à deux facteurs et protéger ses comptes</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3l11 4v8c0 7-5 12-11 14C10 27 5 22 5 15V7z' fill='%232563EB'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Charte de la filière (identique sur toutes les leçons) ===== */
+:root{
+  --color-bg:#FFFFFF; --color-bg-alt:#F4F8FC; --color-text:#0A0F14; --color-text-muted:#5B6472;
+  --color-accent:#2563EB; --color-accent-soft:#EAF2FF; --color-border:#E2E8F0;
+  --font-title:'Sora','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font-body);font-size:1.0625rem;line-height:1.7;color:var(--color-text);background:var(--color-bg)}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--font-title);line-height:1.2;margin:0 0 .6em;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3rem)}
+h2{font-size:clamp(1.5rem,3.2vw,2rem)}
+h3{font-size:1.2rem}
+p{margin:0 0 1.1em}
+.caption{font-size:.85rem;color:var(--color-text-muted);line-height:1.5}
+
+/* Barre de progression + header */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+.top-in{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-title);font-weight:600;font-size:.95rem;text-decoration:none;color:var(--color-text)}
+.top nav a{font-size:.9rem;color:var(--color-text-muted);text-decoration:none;margin-left:18px;transition:color .2s}
+.top nav a:hover{color:var(--color-accent)}
+
+/* Hero */
+.hero{padding:72px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.badge{background:var(--color-accent-soft);color:var(--color-accent);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:999px}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted)}
+.hero .lead{font-size:1.2rem;color:var(--color-text-muted)}
+.goal{border-left:3px solid var(--color-accent);padding:4px 0 4px 16px;margin-top:28px}
+
+/* Sommaire */
+.toc{background:var(--color-bg-alt);border-radius:14px;padding:24px 28px;margin-bottom:24px}
+.toc h2{font-size:1.1rem;margin-bottom:.8em}
+.toc ol{margin:0;padding-left:1.3em}
+.toc li{margin:.35em 0}
+.toc a{text-decoration:none;color:var(--color-text);transition:color .2s}
+.toc a:hover{color:var(--color-accent)}
+
+/* Sections */
+section.lesson{padding:64px 0}
+section.lesson:nth-of-type(even){background:var(--color-bg-alt)}
+.fig{margin:28px auto;max-width:960px;padding:0 20px}
+.fig svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:14px}
+.fig .caption{margin-top:8px;text-align:center}
+
+/* Cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:12px;padding:20px;transition:transform .2s,border-color .2s}
+section:nth-of-type(odd) .card{background:var(--color-bg-alt)}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card .ico{width:40px;height:40px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;margin-bottom:12px}
+.card .ico svg{width:22px;height:22px;stroke:var(--color-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card h3{font-size:1.02rem;margin-bottom:.4em}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0;line-height:1.55}
+
+/* Encadrés */
+.callout{display:flex;gap:14px;background:var(--color-accent-soft);border-left:4px solid var(--color-accent);border-radius:0 12px 12px 0;padding:16px 20px;margin:26px 0}
+.callout .ci{font-size:1.3rem;line-height:1.5}
+.callout strong{display:block;font-family:var(--font-title);font-size:.98rem;margin-bottom:2px}
+.callout p{margin:0;font-size:.98rem}
+
+/* Onglets */
+.tabs{margin:26px 0}
+[role=tablist]{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--color-border)}
+[role=tab]{font:inherit;font-weight:600;font-size:.95rem;background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;cursor:pointer;color:var(--color-text-muted);transition:color .2s}
+[role=tab]:hover{color:var(--color-accent)}
+[role=tab][aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+[role=tabpanel]{background:var(--color-bg);border:1px solid var(--color-border);border-top:0;border-radius:0 0 12px 12px;padding:22px}
+[role=tabpanel][hidden]{display:none}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 0}
+.pc div{font-size:.95rem}
+.pc b{display:block;font-family:var(--font-title);margin-bottom:4px}
+.pc ul{margin:0;padding-left:1.1em}
+.level{display:inline-block;font-size:.82rem;font-weight:600;background:var(--color-accent-soft);color:var(--color-accent);padding:2px 10px;border-radius:999px}
+@media(max-width:560px){.pc{grid-template-columns:1fr}}
+
+/* Accordéons */
+details{background:var(--color-bg);border:1px solid var(--color-border);border-radius:12px;margin:10px 0;transition:border-color .2s}
+details:hover,details[open]{border-color:var(--color-accent)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details .body{padding:0 18px 16px;font-size:.98rem;color:var(--color-text-muted)}
+details .body p:last-child{margin:0}
+
+/* Stepper */
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;counter-reset:s;position:relative}
+.stepper li{counter-increment:s;background:var(--color-bg);border:1px solid var(--color-border);border-radius:12px;padding:16px 14px;font-size:.92rem;line-height:1.5;transition:border-color .2s}
+.stepper li:hover{border-color:var(--color-accent)}
+.stepper li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--color-accent);color:#fff;font-weight:700;font-size:.85rem;margin-bottom:10px}
+.stepper b{display:block;font-family:var(--font-title);font-size:.98rem;margin-bottom:3px}
+.stepper span{color:var(--color-text-muted)}
+
+/* Points clés */
+.keys{background:var(--color-text);color:#F1F5F9;border-radius:18px;padding:36px 32px;margin:0}
+.keys h2{color:#fff}
+.keys ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.keys li{display:flex;gap:12px;font-size:1rem}
+.keys li::before{content:"✓";color:#7FA8FF;font-weight:700}
+
+/* Navigation */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:48px 0 16px}
+.pager a{display:block;border:1px solid var(--color-border);border-radius:12px;padding:16px 18px;text-decoration:none;color:var(--color-text);transition:border-color .2s,transform .2s}
+.pager a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.pager small{display:block;color:var(--color-text-muted);font-size:.8rem}
+.pager .next{text-align:right}
+.back-mod{text-align:center;margin-bottom:8px}
+footer{border-top:1px solid var(--color-border);padding:28px 0;text-align:center;color:var(--color-text-muted);font-size:.85rem}
+#totop{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,transform .2s;z-index:60}
+#totop.show{opacity:1;pointer-events:auto}
+#totop:hover{transform:translateY(-3px)}
+
+/* Apparition au scroll */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}*{transition:none!important}}
+@media(max-width:560px){.top nav{display:none}.pager{grid-template-columns:1fr}.pager .next{text-align:left}.keys{padding:28px 20px}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wide top-in">
+    <a class="brand" href="#top">
+      <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l11 4v8c0 7-5 12-11 14C10 27 5 22 5 15V7z" fill="#2563EB"/><path d="M11 16l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Cybersécurité pour débutants
+    </a>
+    <nav aria-label="Navigation rapide"><a href="#sommaire">Sommaire</a><a href="#points-cles">Points clés</a></nav>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<div class="wrap hero">
+  <div class="badges">
+    <span class="badge">Module 1 — Fondamentaux de la sécurité numérique</span>
+    <span class="badge plain">Leçon 03</span>
+    <span class="badge plain">15 min de lecture</span>
+    <span class="badge plain">Niveau débutant</span>
+  </div>
+  <h1>Activer l'authentification à deux facteurs et protéger ses comptes</h1>
+  <p class="lead">Un mot de passe seul ne suffit plus. Cette leçon montre comment ajouter une seconde barrière, et comment garder un œil sur ce qui se passe dans vos comptes.</p>
+  <div class="goal"><strong>Objectif :</strong> ajouter des couches de protection supplémentaires aux comptes essentiels et savoir surveiller leur activité.</div>
+</div>
+
+<!-- SOMMAIRE -->
+<div class="wrap" id="sommaire">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2>Dans cette leçon</h2>
+    <ol>
+      <li><a href="#s1">Le principe de l'authentification multifacteur</a></li>
+      <li><a href="#s2">Comparer les méthodes de 2FA</a></li>
+      <li><a href="#s3">Les codes de secours</a></li>
+      <li><a href="#s4">Quels comptes protéger en priorité</a></li>
+      <li><a href="#s5">Surveiller les accès à vos comptes</a></li>
+      <li><a href="#s6">Perte ou vol du téléphone : récupérer et limiter les risques</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- 1 -->
+<section class="lesson" id="s1"><div class="wrap reveal">
+  <h2>1. Le principe de l'authentification multifacteur</h2>
+  <p>L'<strong>authentification multifacteur</strong> (MFA, ou 2FA quand elle utilise deux facteurs) demande plusieurs preuves d'identité différentes avant d'ouvrir un compte. Si une preuve est volée, par exemple votre mot de passe, la seconde bloque encore l'accès.</p>
+  <p>Ces preuves appartiennent à trois familles. Pour que la protection soit réelle, les deux facteurs doivent venir de <strong>familles différentes</strong> : deux mots de passe ne comptent pas pour deux facteurs.</p>
+  <div class="cards">
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>Ce que je sais</h3><p>Un mot de passe, un code PIN, une phrase secrète.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div><h3>Ce que je possède</h3><p>Un téléphone, une application d'authentification, une clé de sécurité physique.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 00-7 7v3M12 7a3 3 0 00-3 3v5a4 4 0 01-1 3M12 11v4a8 8 0 01-2 5M16 10v5a11 11 0 01-1.5 4M19 12v1"/></svg></div><h3>Ce que je suis</h3><p>Une empreinte digitale, la reconnaissance du visage.</p></div>
+  </div>
+</div>
+<figure class="fig reveal">
+  <svg viewBox="0 0 900 230" role="img" aria-label="Schéma : l'utilisateur saisit son mot de passe, puis valide un second facteur, avant que l'accès au compte soit accordé. Un voleur qui connaît seulement le mot de passe est bloqué à la seconde étape.">
+    <g font-family="Inter,sans-serif" font-size="15" fill="#0A0F14">
+      <rect x="30" y="75" width="150" height="70" rx="12" fill="#F4F8FC" stroke="#E2E8F0"/><text x="105" y="106" text-anchor="middle" font-weight="600">Vous</text><text x="105" y="127" text-anchor="middle" fill="#5B6472" font-size="13">se connecte</text>
+      <path d="M180 110h70" stroke="#5B6472" stroke-width="2"/><path d="M244 104l8 6-8 6" fill="none" stroke="#5B6472" stroke-width="2"/>
+      <rect x="260" y="60" width="170" height="100" rx="12" fill="#fff" stroke="#E2E8F0"/><text x="345" y="92" text-anchor="middle" font-weight="600">Étape 1</text><text x="345" y="114" text-anchor="middle" fill="#5B6472" font-size="13">Mot de passe</text><text x="345" y="138" text-anchor="middle" fill="#5B6472" font-size="12">(ce que je sais)</text>
+      <path d="M430 110h70" stroke="#5B6472" stroke-width="2"/><path d="M494 104l8 6-8 6" fill="none" stroke="#5B6472" stroke-width="2"/>
+      <rect x="510" y="60" width="170" height="100" rx="12" fill="#EAF2FF" stroke="#2563EB" stroke-width="2"/><text x="595" y="92" text-anchor="middle" font-weight="600" fill="#2563EB">Étape 2</text><text x="595" y="114" text-anchor="middle" font-size="13">Second facteur</text><text x="595" y="138" text-anchor="middle" fill="#5B6472" font-size="12">(possède / suis)</text>
+      <path d="M680 110h60" stroke="#5B6472" stroke-width="2"/><path d="M734 104l8 6-8 6" fill="none" stroke="#5B6472" stroke-width="2"/>
+      <path d="M810 70l42 15v26c0 28-18 46-42 54-24-8-42-26-42-54V85z" fill="#2563EB"/><path d="M793 112l13 13 24-26" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="810" y="195" text-anchor="middle" font-weight="600">Accès accordé</text>
+      <text x="345" y="200" text-anchor="middle" fill="#5B6472" font-size="13">Un voleur peut s'arrêter ici…</text><text x="595" y="200" text-anchor="middle" fill="#2563EB" font-size="13" font-weight="600">…et se faire bloquer ici</text>
+    </g>
+  </svg>
+  <figcaption class="caption">Le second facteur est une porte supplémentaire que le mot de passe volé n'ouvre pas.</figcaption>
+</figure>
+<div class="wrap reveal">
+  <div class="callout"><span class="ci">💡</span><div><strong>À retenir</strong><p>La 2FA ne remplace pas un bon mot de passe : elle s'ajoute à lui. Les deux ensemble rendent le piratage de votre compte beaucoup plus difficile.</p></div></div>
+</div></section>
+
+<!-- 2 -->
+<section class="lesson" id="s2"><div class="wrap reveal">
+  <h2>2. Comparer les méthodes de 2FA</h2>
+  <p>Toutes les méthodes ne se valent pas. Elles se classent entre commodité et niveau de protection. Choisissez l'onglet pour voir le détail de chacune.</p>
+  <div class="tabs" id="tabs-methods">
+    <div role="tablist" aria-label="Méthodes de 2FA">
+      <button role="tab" id="t1" aria-controls="p1" aria-selected="true">SMS</button>
+      <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Application (TOTP)</button>
+      <button role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">Clé physique (FIDO2)</button>
+      <button role="tab" id="t4" aria-controls="p4" aria-selected="false" tabindex="-1">Notification push</button>
+    </div>
+    <div role="tabpanel" id="p1" aria-labelledby="t1">
+      <p><span class="level">Protection : correcte</span></p>
+      <p>Un code à usage unique est envoyé par SMS sur votre numéro. C'est la méthode la plus répandue, car elle ne demande aucune application.</p>
+      <div class="pc"><div><b>Avantages</b><ul><li>Simple et disponible partout</li><li>Fonctionne sur un téléphone basique</li></ul></div><div><b>Limites</b><ul><li>Dépend du réseau mobile</li><li>Le numéro peut être transféré frauduleusement vers une autre carte SIM</li></ul></div></div>
+    </div>
+    <div role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+      <p><span class="level">Protection : bonne</span></p>
+      <p>Une application d'authentification (TOTP, « mot de passe temporaire ») génère sur votre téléphone un code de 6 chiffres qui change toutes les 30 secondes environ. Le code est calculé localement, il ne transite pas par le réseau mobile.</p>
+      <div class="pc"><div><b>Avantages</b><ul><li>Fonctionne sans réseau mobile</li><li>Non lié à votre numéro de téléphone</li></ul></div><div><b>Limites</b><ul><li>Il faut installer et sauvegarder l'application</li><li>Un faux site peut quand même vous demander le code</li></ul></div></div>
+    </div>
+    <div role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+      <p><span class="level">Protection : très élevée</span></p>
+      <p>Une clé de sécurité physique (norme FIDO2, par exemple une YubiKey) se branche en USB ou se pose contre le téléphone (NFC). Elle vérifie que vous êtes bien sur le vrai site : un faux site ne peut pas la faire répondre.</p>
+      <div class="pc"><div><b>Avantages</b><ul><li>Résiste à l'hameçonnage</li><li>Rien à recopier</li></ul></div><div><b>Limites</b><ul><li>Achat d'un appareil</li><li>Prévoir une seconde clé de rechange</li></ul></div></div>
+    </div>
+    <div role="tabpanel" id="p4" aria-labelledby="t4" hidden>
+      <p><span class="level">Protection : bonne, avec vigilance</span></p>
+      <p>Le service envoie une notification sur votre téléphone : vous appuyez sur « Approuver » ou « Refuser ». C'est rapide et confortable.</p>
+      <div class="pc"><div><b>Avantages</b><ul><li>Un seul geste</li><li>Affiche souvent le lieu et l'appareil de la demande</li></ul></div><div><b>Limites</b><ul><li>Risque d'approuver par réflexe</li><li>Des demandes répétées peuvent pousser à accepter par lassitude</li></ul></div></div>
+    </div>
+  </div>
+  <div class="callout"><span class="ci">⚠️</span><div><strong>Erreur fréquente</strong><p>Approuver une notification que vous n'avez pas déclenchée. Si vous n'êtes pas en train de vous connecter, refusez, puis changez votre mot de passe.</p></div></div>
+  <div class="callout"><span class="ci">🔐</span><div><strong>Bonne pratique</strong><p>Toute 2FA vaut mieux que pas de 2FA. Si le service le propose, préférez une application d'authentification ou une clé physique au SMS.</p></div></div>
+</div></section>
+
+<!-- 3 -->
+<section class="lesson" id="s3"><div class="wrap reveal">
+  <h2>3. Les codes de secours</h2>
+  <p>Quand vous activez la 2FA, le service vous remet souvent une liste de <strong>codes de secours</strong> (backup codes). Chacun ne sert qu'<strong>une seule fois</strong> et permet d'entrer dans votre compte si vous n'avez plus accès à votre second facteur, par exemple si votre téléphone est perdu.</p>
+  <div class="cards">
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div><h3>Ils remplacent le second facteur</h3><p>Ils sont votre issue de secours : sans eux, un téléphone perdu peut vous fermer l'accès.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div><h3>Ils valent un mot de passe</h3><p>Quiconque les trouve peut entrer dans le compte. Ils se protègent comme un secret.</p></div>
+  </div>
+  <details><summary>Où les stocker ?</summary><div class="body"><p>Dans un gestionnaire de mots de passe, ou imprimés et rangés dans un endroit fermé à clé, séparé de votre téléphone. Évitez une capture d'écran dans la galerie photo, une note non protégée ou un email envoyé à vous-même.</p></div></details>
+  <details><summary>Que faire après en avoir utilisé un ?</summary><div class="body"><p>Ce code est désormais invalide. Quand il vous en reste peu, générez-en une nouvelle série depuis les paramètres de sécurité du compte : l'ancienne série est alors annulée.</p></div></details>
+  <div class="callout"><span class="ci">🔐</span><div><strong>Bonne pratique</strong><p>Enregistrez vos codes de secours <em>au moment</em> d'activer la 2FA, pas plus tard : c'est souvent la seule fois où le service les affiche.</p></div></div>
+</div></section>
+
+<!-- 4 -->
+<section class="lesson" id="s4"><div class="wrap reveal">
+  <h2>4. Quels comptes protéger en priorité</h2>
+  <p>Inutile de tout sécuriser en même temps. Commencez par les comptes dont la compromission ferait le plus de dégâts.</p>
+</div>
+<figure class="fig reveal">
+  <svg viewBox="0 0 900 270" role="img" aria-label="Schéma : la messagerie principale est au centre et reçoit les liens de réinitialisation de mot de passe des réseaux sociaux, de la banque et du mobile money. Si elle est piratée, les autres comptes tombent.">
+    <g font-family="Inter,sans-serif" font-size="15" fill="#0A0F14">
+      <g stroke="#5B6472" stroke-width="2" stroke-dasharray="5 5"><path d="M345 135H250"/><path d="M555 135h95"/><path d="M450 90V55"/><path d="M450 180v35"/></g>
+      <rect x="345" y="90" width="210" height="90" rx="14" fill="#EAF2FF" stroke="#2563EB" stroke-width="2"/>
+      <rect x="425" y="108" width="50" height="34" rx="4" fill="none" stroke="#2563EB" stroke-width="2.5"/><path d="M425 112l25 17 25-17" fill="none" stroke="#2563EB" stroke-width="2.5"/>
+      <text x="450" y="166" text-anchor="middle" font-weight="600">Messagerie principale</text>
+      <rect x="40" y="105" width="210" height="60" rx="12" fill="#F4F8FC" stroke="#E2E8F0"/><text x="145" y="141" text-anchor="middle">Réseaux sociaux</text>
+      <rect x="650" y="105" width="210" height="60" rx="12" fill="#F4F8FC" stroke="#E2E8F0"/><text x="755" y="141" text-anchor="middle">Compte bancaire</text>
+      <rect x="345" y="10" width="210" height="45" rx="12" fill="#F4F8FC" stroke="#E2E8F0"/><text x="450" y="38" text-anchor="middle">Autres services</text>
+      <rect x="345" y="215" width="210" height="45" rx="12" fill="#F4F8FC" stroke="#E2E8F0"/><text x="450" y="243" text-anchor="middle">Mobile money</text>
+      <text x="145" y="195" text-anchor="middle" fill="#5B6472" font-size="13">Les liens de réinitialisation de mot de passe</text><text x="145" y="213" text-anchor="middle" fill="#5B6472" font-size="13">arrivent tous par email</text>
+    </g>
+  </svg>
+  <figcaption class="caption">Votre messagerie est la clé maîtresse : qui la contrôle peut réinitialiser vos autres comptes.</figcaption>
+</figure>
+<div class="wrap reveal">
+  <div class="cards">
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div><h3>Messagerie principale</h3><p>Elle reçoit les réinitialisations de mots de passe de presque tous vos comptes. À protéger en premier.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M15 15c3 0 6 1 6 4"/></svg></div><h3>Réseaux sociaux</h3><p>Un compte piraté sert à tromper vos contacts, usurper votre identité et abîmer votre réputation.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg></div><h3>Comptes bancaires</h3><p>Ils donnent un accès direct à votre argent : activez toutes les protections proposées par votre banque.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 9h4M12 7v4M10 15h4"/></svg></div><h3>Mobile money</h3><p>Le code secret et la validation de chaque transaction protègent votre solde : ne les partagez avec personne, même un agent.</p></div>
+  </div>
+  <div class="callout"><span class="ci">💡</span><div><strong>À retenir</strong><p>Protégez d'abord la messagerie, puis tout ce qui touche à l'argent, puis les réseaux sociaux. Cet ordre limite l'effet domino en cas d'attaque.</p></div></div>
+</div></section>
+
+<!-- 5 -->
+<section class="lesson" id="s5"><div class="wrap reveal">
+  <h2>5. Surveiller les accès à vos comptes</h2>
+  <p>La 2FA bloque beaucoup d'intrusions, mais un compte reste à surveiller. Les grands services proposent dans leurs paramètres de sécurité trois outils de contrôle.</p>
+  <div class="cards">
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="10" rx="1.5"/><path d="M6 19h6M9 15v4"/><rect x="17" y="9" width="5" height="10" rx="1"/></svg></div><h3>Appareils connectés</h3><p>La liste des téléphones et ordinateurs autorisés. Retirez ceux que vous ne reconnaissez pas ou n'utilisez plus.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Sessions actives</h3><p>Les connexions encore ouvertes en ce moment. Fermez toute session inconnue ou laissée sur un ordinateur partagé.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></svg></div><h3>Alertes de connexion</h3><p>Un email ou une notification avertit d'une connexion depuis un nouvel appareil ou un lieu inhabituel.</p></div>
+  </div>
+  <details><summary>Comment lire une alerte de connexion ?</summary><div class="body"><p>Regardez l'appareil, la ville approximative et l'heure. Si c'est bien vous, ignorez-la. Sinon, changez immédiatement le mot de passe, déconnectez toutes les sessions et vérifiez que votre 2FA est toujours en place.</p></div></details>
+  <details><summary>Que faire face à un faux message d'alerte ?</summary><div class="body"><p>Des escrocs imitent ces alertes pour vous faire cliquer. N'utilisez jamais le lien du message : ouvrez le site ou l'application officielle vous-même. Nous reviendrons sur ce sujet dans la leçon suivante.</p></div></details>
+  <div class="callout"><span class="ci">🔐</span><div><strong>Bonne pratique</strong><p>Faites une revue rapide des appareils et sessions de vos comptes essentiels de temps en temps, et après tout voyage ou prêt de téléphone.</p></div></div>
+</div></section>
+
+<!-- 6 -->
+<section class="lesson" id="s6"><div class="wrap reveal">
+  <h2>6. Perte ou vol du téléphone : récupérer et limiter les risques</h2>
+  <p>Votre téléphone est souvent votre second facteur : le perdre est donc le principal risque de la 2FA. Avec une procédure claire et les codes de secours, l'incident reste maîtrisable. Voici l'enchaînement à connaître.</p>
+  <ol class="stepper">
+    <li><b>Verrouiller</b><span>Localiser et verrouiller l'appareil à distance, ou l'effacer si nécessaire.</span></li>
+    <li><b>Bloquer la SIM</b><span>Contacter l'opérateur pour suspendre la ligne et demander une nouvelle carte.</span></li>
+    <li><b>Sécuriser</b><span>Depuis un autre appareil, changer les mots de passe et fermer les sessions, en commençant par la messagerie.</span></li>
+    <li><b>Récupérer l'accès</b><span>Utiliser un code de secours ou une seconde méthode pour reconfigurer la 2FA.</span></li>
+    <li><b>Surveiller</b><span>Alerter la banque et le service de mobile money, puis contrôler l'activité des comptes.</span></li>
+  </ol>
+  <details><summary>Pourquoi bloquer la SIM rapidement ?</summary><div class="body"><p>Avec votre numéro, un malfaisant peut recevoir vos codes par SMS et demander des réinitialisations de mots de passe. Plus la ligne est suspendue tôt, moins il a de temps pour agir.</p></div></details>
+  <details><summary>Et si je n'ai plus de code de secours ?</summary><div class="body"><p>Chaque service a une procédure de récupération de compte, avec vérification d'identité, qui peut prendre du temps. C'est pourquoi une seconde méthode de 2FA (une seconde clé, un second appareil) est préférable.</p></div></details>
+  <details><summary>Que préparer avant qu'un incident n'arrive ?</summary><div class="body"><p>Disposer de codes de secours rangés en lieu sûr, d'un second facteur de rechange pour les comptes essentiels, et connaître la procédure de blocage de la ligne chez son opérateur et celle du service de mobile money.</p></div></details>
+</div></section>
+
+<!-- POINTS CLÉS -->
+<section class="lesson" id="points-cles" style="background:var(--color-bg)"><div class="wide reveal">
+  <div class="keys">
+    <h2>Points clés à retenir</h2>
+    <ul>
+      <li>La 2FA associe deux facteurs de familles différentes : savoir, posséder, être.</li>
+      <li>L'application d'authentification ou la clé physique protègent mieux que le SMS.</li>
+      <li>Les codes de secours sont à usage unique et à conserver comme un secret, hors du téléphone.</li>
+      <li>Protégez d'abord la messagerie, puis les comptes liés à l'argent, puis les réseaux sociaux.</li>
+      <li>Contrôlez régulièrement appareils, sessions actives et alertes de connexion.</li>
+      <li>En cas de perte du téléphone : verrouiller, bloquer la SIM, sécuriser les comptes, récupérer l'accès, surveiller.</li>
+    </ul>
+  </div>
+  <div class="pager">
+    <a href="lecon-02-creer-et-gerer-des-mots-de-passe-solides.html"><small>← Leçon précédente</small>Leçon 02 — Créer et gérer des mots de passe solides</a>
+    <a class="next" href="lecon-04-reconnaitre-le-phishing-et-les-arnaques-en-ligne.html"><small>Leçon suivante →</small>Leçon 04 — Reconnaître le phishing et les arnaques en ligne</a>
+  </div>
+  <p class="back-mod"><a href="module-1.html">Retour au sommaire du Module 1</a></p>
+</div></section>
+</main>
+
+<footer><div class="wrap">Cybersécurité pour débutants — Module 1 · Leçon 03</div></footer>
+<button id="totop" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* Barre de progression + bouton retour en haut */
+(function(){
+  var bar=document.getElementById('progress'), top=document.getElementById('totop');
+  function onScroll(){
+    var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+    top.classList.toggle('show',h.scrollTop>600);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  top.addEventListener('click',function(){window.scrollTo({top:0})});
+})();
+
+/* Onglets accessibles (flèches, Home, End) */
+document.querySelectorAll('.tabs').forEach(function(box){
+  var tabs=[].slice.call(box.querySelectorAll('[role=tab]'));
+  function select(t){
+    tabs.forEach(function(x){
+      var on=x===t;
+      x.setAttribute('aria-selected',on); x.tabIndex=on?0:-1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden=!on;
+    });
+    t.focus();
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){select(t)});
+    t.addEventListener('keydown',function(e){
+      var k=e.key, n=null;
+      if(k==='ArrowRight')n=tabs[(i+1)%tabs.length];
+      else if(k==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+      else if(k==='Home')n=tabs[0];
+      else if(k==='End')n=tabs[tabs.length-1];
+      if(n){e.preventDefault();select(n)}
+    });
+  });
+});
+
+/* Apparition douce des sections (désactivée si mouvement réduit) */
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches){
+    els.forEach(function(e){e.classList.add('in')});return;
+  }
+  var io=new IntersectionObserver(function(list){
+    list.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}});
+  },{threshold:.08});
+  els.forEach(function(e){io.observe(e)});
+})();
+</script>
+</body>
+</html>

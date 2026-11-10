@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 10 — Réagir à un incident et construire son plan de protection | Filière Cybersécurité</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232563EB' d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identiques sur tous les cours de la filière) ===== */
+:root{
+  --color-bg:#FFFFFF; --color-bg-alt:#F4F8FC; --color-text:#0A0F14; --color-text-muted:#5B6472;
+  --color-accent:#2563EB; --color-accent-soft:#EAF2FF; --color-border:#E2E8F0;
+  --font-display:'Sora','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font-body);font-size:1.0625rem;line-height:1.7;color:var(--color-text);background:var(--color-bg)}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.2;margin:0 0 .6em}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+.muted{color:var(--color-text-muted)}
+
+/* ===== Barre de progression + header ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:.95rem;text-decoration:none;color:var(--color-text)}
+.brand svg{width:22px;height:22px}
+.menu-btn{font:500 .9rem var(--font-body);background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--color-text);transition:border-color .2s}
+.menu-btn:hover{border-color:var(--color-accent)}
+#drawer{display:none;position:absolute;right:20px;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:8px;min-width:290px;box-shadow:0 8px 24px rgba(10,15,20,.08)}
+#drawer.open{display:block}
+#drawer a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#drawer a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+
+/* ===== Hero ===== */
+.hero{padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.82rem;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent)}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted);border:1px solid var(--color-border)}
+.hero .lead{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.course{font-size:.95rem;color:var(--color-text-muted);margin-bottom:12px}
+
+/* ===== Sommaire ===== */
+.toc{background:var(--color-bg-alt);border-radius:var(--radius);padding:24px 28px;margin:40px auto}
+.toc ol{margin:0;padding-left:1.2em}
+.toc li{padding:3px 0}
+.toc a{text-decoration:none;color:var(--color-text);transition:color .2s}
+.toc a:hover{color:var(--color-accent)}
+
+/* ===== Sections ===== */
+section.lesson{padding:64px 0}
+section.lesson.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ===== Cartes ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;transition:border-color .2s,transform .2s}
+.alt .card{background:#fff}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card svg{width:28px;height:28px;stroke:var(--color-accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin-bottom:.3em}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+
+/* ===== Encadrés ===== */
+.note{display:flex;gap:14px;border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:28px 0}
+.note .ic{font-size:1.3rem;line-height:1.5}
+.note strong{display:block;font-family:var(--font-display);margin-bottom:2px}
+.note p{margin:0;font-size:.98rem}
+
+/* ===== Tabs ===== */
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;overflow:hidden}
+.tablist{display:flex;overflow-x:auto;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.tablist button{flex:1 0 auto;font:500 .95rem var(--font-body);padding:12px 18px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent;transition:color .2s}
+.tablist button:hover{color:var(--color-text)}
+.tablist button[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent);background:#fff}
+.tabpanel{padding:20px 22px}
+.tabpanel[hidden]{display:none}
+.tabpanel p:last-child,.tabpanel ol:last-child,.tabpanel ul:last-child{margin-bottom:0}
+.tabpanel ul,.tabpanel ol{margin:0 0 1em;padding-left:1.3em}
+.tabpanel li{padding:2px 0}
+
+/* ===== Accordéons ===== */
+details{border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;margin:10px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details>div{padding:0 18px 16px;color:var(--color-text-muted);font-size:.98rem}
+
+/* ===== Schémas ===== */
+figure{margin:32px 0}
+figure svg{width:100%;height:auto;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius)}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--font-body)}
+
+/* ===== Tableau ===== */
+.tablewrap{overflow-x:auto;margin:24px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.93rem;line-height:1.5}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--color-border);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;background:var(--color-bg-alt)}
+tr:last-child td{border-bottom:0}
+td{color:var(--color-text-muted)}
+td:first-child{color:var(--color-text);font-weight:500}
+
+/* ===== Stepper ===== */
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;counter-reset:s}
+.stepper li{counter-increment:s;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:44px 14px 14px;font-size:.92rem}
+.stepper li::before{content:counter(s);position:absolute;top:12px;left:14px;width:24px;height:24px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem/24px var(--font-display);text-align:center}
+.stepper b{display:block;font-family:var(--font-display);margin-bottom:2px}
+.stepper span{color:var(--color-text-muted)}
+
+/* ===== Points clés, nav, footer ===== */
+.keys{list-style:none;padding:0;margin:24px 0;display:grid;gap:12px}
+.keys li{display:flex;gap:12px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:14px 18px}
+.keys li::before{content:"✓";color:var(--color-accent);font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding:48px 0}
+.nav a,.nav span{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px 20px;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}
+.nav small{display:block;color:var(--color-text-muted)}
+.nav .next{text-align:right}
+.nav span{color:var(--color-text-muted);background:var(--color-bg-alt);text-align:right}
+.modlink{text-align:center;margin-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:28px 0;font-size:.9rem;color:var(--color-text-muted);text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,border-color .2s}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{border-color:var(--color-accent)}
+@media (max-width:600px){.hero{padding:48px 0 40px}section.lesson{padding:44px 0}.toc{padding:20px}}
+</style>
+</head>
+<body>
+<div id="progress" role="presentation"></div>
+
+<header class="top">
+  <div class="wide">
+    <a class="brand" href="#debut">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#2563EB" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="M8.5 12l2.4 2.4L15.5 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Filière Cybersécurité
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="drawer">Sommaire</button>
+  </div>
+  <nav id="drawer" aria-label="Sommaire rapide">
+    <a href="#detection">1. Détection précoce</a>
+    <a href="#secours">2. Premiers secours : Isoler, Changer, Prévenir</a>
+    <a href="#recuperation">3. Récupérer un compte piraté</a>
+    <a href="#signalement">4. Canaux officiels de signalement</a>
+    <a href="#hygiene">5. Entourage et hygiène numérique</a>
+    <a href="#plan">6. Routine et plan de protection sur 30 jours</a>
+    <a href="#cles">Points clés à retenir</a>
+  </nav>
+</header>
+
+<main id="debut">
+<div class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 2 — Protection des données, de l'identité et réaction aux incidents</span>
+      <span class="badge plain">⏱ 15 min de lecture</span>
+      <span class="badge plain">Niveau débutant</span>
+    </div>
+    <p class="course">Leçon 10</p>
+    <h1>Réagir à un incident et construire son plan de protection</h1>
+    <p class="lead">Objectif : réagir efficacement face à une compromission et formaliser un plan de protection numérique durable.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2 style="font-size:1.1rem">Dans cette leçon</h2>
+    <ol>
+      <li><a href="#detection">Détection précoce d'une compromission</a></li>
+      <li><a href="#secours">Protocole de premiers secours : Isoler, Changer, Prévenir</a></li>
+      <li><a href="#recuperation">Récupérer un compte piraté</a></li>
+      <li><a href="#signalement">Canaux officiels de signalement</a></li>
+      <li><a href="#hygiene">Sensibilisation de l'entourage et hygiène numérique</a></li>
+      <li><a href="#plan">Routine de vérification et plan de protection sur 30 jours</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============ 1. Détection ============ -->
+<section class="lesson" id="detection">
+  <div class="wrap reveal">
+    <h2>1. Détection précoce : reconnaître une compromission</h2>
+    <p>Une compromission est rarement spectaculaire. Plus on la repère tôt, moins les dégâts sont importants : c'est pourquoi il faut connaître les <strong>signes discrets</strong> qui doivent alerter.</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Signes de compromission">
+        <button role="tab">Compte</button><button role="tab">Appareil</button><button role="tab">Mobile Money</button>
+      </div>
+      <div class="tabpanel" role="tabpanel">
+        <ul>
+          <li>Notification de connexion depuis un lieu ou un appareil inconnu.</li>
+          <li>Mot de passe soudain refusé, ou e-mails de réinitialisation que vous n'avez pas demandés.</li>
+          <li>Messages, publications ou invitations envoyés en votre nom sans que vous en soyez l'auteur.</li>
+          <li>Paramètres modifiés : adresse de récupération, numéro de téléphone, redirections de courrier.</li>
+        </ul>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <ul>
+          <li>Lenteur inhabituelle, batterie qui se vide vite, appareil qui chauffe sans raison.</li>
+          <li>Applications ou extensions que vous n'avez jamais installées.</li>
+          <li>Fenêtres publicitaires intempestives, changement de page d'accueil du navigateur.</li>
+          <li>Consommation de données mobiles anormale.</li>
+        </ul>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <ul>
+          <li>SMS de confirmation pour une opération que vous n'avez pas effectuée.</li>
+          <li>Solde inexpliqué ou transaction inconnue dans l'historique.</li>
+          <li>Demandes répétées de code ou de PIN, ou changement de PIN non demandé.</li>
+          <li>Perte soudaine de signal du téléphone, pouvant indiquer un détournement de la carte SIM.</li>
+        </ul>
+      </div>
+    </div>
+    <details>
+      <summary>Un seul signe suffit-il à conclure à un piratage ?</summary>
+      <div>Non : une lenteur peut être banale et une notification peut être une erreur. Mais l'un de ces signes justifie une <strong>vérification immédiate</strong>. Deux signes ou plus, ou un signe touchant l'argent ou la messagerie, appellent une réaction directe.</div>
+    </details>
+    <details>
+      <summary>Pourquoi la messagerie est-elle si sensible ?</summary>
+      <div>La boîte e-mail sert à réinitialiser presque tous les autres comptes. Quiconque la contrôle peut, de proche en proche, prendre la main sur les réseaux sociaux, les boutiques et parfois les services financiers.</div>
+    </details>
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>Un comportement inhabituel est un signal. Dans le doute, mieux vaut vérifier trop tôt que constater les dégâts trop tard.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 2. Premiers secours ============ -->
+<section class="lesson alt" id="secours">
+  <div class="wrap reveal">
+    <h2>2. Protocole de premiers secours : Isoler, Changer, Prévenir</h2>
+    <p>Face à une compromission, la panique pousse à agir dans le désordre. Un protocole simple en trois temps fournit un cadre clair et réduit les erreurs.</p>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-labelledby="s2-t s2-d">
+        <title id="s2-t">Protocole Isoler, Changer, Prévenir</title>
+        <desc id="s2-d">Trois étapes successives : isoler l'appareil ou la session, changer les accès, prévenir les services concernés.</desc>
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#2563EB"/></marker></defs>
+        <g fill="#fff" stroke="#E2E8F0" stroke-width="2"><rect x="16" y="40" width="180" height="150" rx="14"/><rect x="230" y="40" width="180" height="150" rx="14"/><rect x="444" y="40" width="180" height="150" rx="14"/></g>
+        <g fill="#EAF2FF" stroke="#2563EB" stroke-width="2"><circle cx="106" cy="40" r="22"/><circle cx="320" cy="40" r="22"/><circle cx="534" cy="40" r="22"/></g>
+        <g font-size="16" font-weight="700" fill="#2563EB" text-anchor="middle"><text x="106" y="46">1</text><text x="320" y="46">2</text><text x="534" y="46">3</text></g>
+        <g font-size="18" font-weight="700" fill="#0A0F14" text-anchor="middle" font-family="Sora,Inter,sans-serif"><text x="106" y="96">Isoler</text><text x="320" y="96">Changer</text><text x="534" y="96">Prévenir</text></g>
+        <g font-size="13" fill="#5B6472" text-anchor="middle">
+          <text x="106" y="124">Couper la connexion,</text><text x="106" y="144">déconnecter les sessions</text><text x="106" y="164">ouvertes.</text>
+          <text x="320" y="124">Nouveaux mots de passe,</text><text x="320" y="144">double authentification,</text><text x="320" y="164">depuis un appareil sûr.</text>
+          <text x="534" y="124">Banque, opérateur,</text><text x="534" y="144">plateforme, proches</text><text x="534" y="164">et contacts.</text>
+        </g>
+        <g stroke="#2563EB" stroke-width="2.2" fill="none" marker-end="url(#ar)"><path d="M198 115h30"/><path d="M412 115h30"/></g>
+        <text x="320" y="218" font-size="12.5" fill="#5B6472" text-anchor="middle">L'ordre compte : on stoppe d'abord l'attaquant, puis on reprend la main, puis on alerte.</text>
+      </svg>
+      <figcaption>Le protocole en trois étapes : une base simple à retenir sous stress.</figcaption>
+    </figure>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.500a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.500 15.500a5 5 0 0 1 7 0"/><path d="M4 4l16 16"/></svg>
+        <h3>Isoler</h3>
+        <p>Couper le Wi-Fi ou les données mobiles de l'appareil suspect, fermer les sessions ouvertes sur les autres appareils pour couper l'accès à l'attaquant.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>
+        <h3>Changer</h3>
+        <p>Remplacer les mots de passe, en commençant par la messagerie, puis les comptes financiers. Activer la double authentification. Le tout depuis un appareil sain.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        <h3>Prévenir</h3>
+        <p>Informer la banque ou l'opérateur, la plateforme concernée et les contacts susceptibles de recevoir de faux messages en votre nom.</p>
+      </div>
+    </div>
+    <details>
+      <summary>Pourquoi changer les mots de passe depuis un autre appareil ?</summary>
+      <div>Si l'appareil d'origine est infecté (par exemple par un enregistreur de frappe), les nouveaux mots de passe seraient capturés à leur tour. Il faut les changer depuis un appareil considéré comme sain.</div>
+    </details>
+    <details>
+      <summary>Faut-il éteindre ou réinitialiser l'appareil immédiatement ?</summary>
+      <div>L'isolement (couper la connexion) est la priorité. Une réinitialisation complète peut ensuite être envisagée, mais après avoir noté ce qui s'est passé et sauvegardé les données saines, car elle efface aussi les traces utiles aux signalements.</div>
+    </details>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Attention : erreur fréquente</strong><p>Changer un mot de passe sans avoir déconnecté les sessions ouvertes : l'attaquant déjà connecté peut parfois rester actif. Déconnecter les autres appareils fait partie de l'étape « Changer ».</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 3. Récupération ============ -->
+<section class="lesson" id="recuperation">
+  <div class="wrap reveal">
+    <h2>3. Récupérer un compte piraté</h2>
+    <p>Chaque service propose une procédure de récupération. Leur principe est commun : <strong>prouver que le compte est le vôtre</strong> et en reprendre le contrôle par les canaux officiels du service.</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Types de comptes à récupérer">
+        <button role="tab">Réseaux sociaux</button><button role="tab">Messagerie</button><button role="tab">Mobile Money</button>
+      </div>
+      <div class="tabpanel" role="tabpanel">
+        <ol>
+          <li>Ouvrir le service par son adresse officielle et choisir « mot de passe oublié » ou « compte piraté ».</li>
+          <li>Utiliser l'e-mail ou le numéro de récupération pour recevoir un code ou un lien.</li>
+          <li>Définir un nouveau mot de passe, déconnecter tous les appareils, activer la double authentification.</li>
+          <li>Vérifier les paramètres modifiés : e-mail, numéro, applications connectées, publications.</li>
+          <li>Si le contact de récupération a été changé, passer par la procédure de vérification d'identité proposée par la plateforme.</li>
+        </ol>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <ol>
+          <li>Utiliser la procédure de récupération du fournisseur, via son site officiel.</li>
+          <li>Changer le mot de passe, activer la double authentification, fermer toutes les sessions.</li>
+          <li>Contrôler les règles de redirection et de transfert automatique, ainsi que les adresses de récupération : ce sont des portes dérobées fréquentes.</li>
+          <li>Passer en revue les comptes liés à cette adresse et sécuriser en priorité ceux qui touchent à l'argent.</li>
+        </ol>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <ol>
+          <li>Contacter sans délai le service client officiel de l'opérateur pour faire bloquer le portefeuille.</li>
+          <li>Fournir l'identité, le numéro concerné et les références des opérations suspectes.</li>
+          <li>Demander la remise en service avec un nouveau code PIN, éventuellement après vérification en agence officielle.</li>
+          <li>Si la carte SIM a été détournée, la faire bloquer et en obtenir une nouvelle auprès de l'opérateur.</li>
+        </ol>
+      </div>
+    </div>
+    <details>
+      <summary>Que faire si je n'ai plus accès à mon e-mail ni à mon numéro de récupération ?</summary>
+      <div>La plupart des plateformes proposent un formulaire de vérification alternative (questions, appareils habituels, pièce d'identité). Le délai est plus long, d'où l'intérêt de garder ses informations de récupération à jour.</div>
+    </details>
+    <details>
+      <summary>Comment éviter les faux « services de récupération » ?</summary>
+      <div>Après un piratage, des escrocs proposent de « récupérer » le compte contre paiement. Seule la plateforme elle-même, ou l'opérateur, peut rétablir un accès. Toute offre extérieure payante doit être ignorée.</div>
+    </details>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Ne démarrer une récupération que depuis l'adresse officielle du service, saisie ou enregistrée par vous, jamais depuis un lien reçu par message.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 4. Signalement ============ -->
+<section class="lesson alt" id="signalement">
+  <div class="wrap reveal">
+    <h2>4. Canaux officiels de signalement</h2>
+    <p>Signaler n'est pas une simple formalité : cela permet de bloquer l'attaquant, de protéger d'autres victimes et d'ouvrir des droits (contestation, remboursement, enquête). Chaque type d'incident a son interlocuteur.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M7 14h4"/></svg>
+        <h3>Plateformes</h3>
+        <p>Réseaux sociaux, messageries, boutiques : formulaire de signalement ou d'assistance du service concerné, pour bloquer le compte ou le faux profil.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg>
+        <h3>Banques et opérateurs</h3>
+        <p>Service client officiel, pour bloquer une carte ou un portefeuille, contester une opération et ouvrir un dossier de réclamation.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M5 7h14M7 7l-3 7a3 3 0 0 0 6 0zM17 7l-3 7a3 3 0 0 0 6 0z"/><path d="M12 7v13M8 20h8"/></svg>
+        <h3>Autorités judiciaires</h3>
+        <p>Police, gendarmerie ou procureur : dépôt de plainte en cas de vol d'argent, d'usurpation d'identité, de chantage ou de menace.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.400 9.400 8 11 4.600-1.600 8-6 8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3>Organismes de cybersécurité</h3>
+        <p>Structure nationale chargée de la sécurité numérique ou d'assistance aux victimes, selon votre pays, pour signaler un incident ou un site frauduleux.</p>
+      </div>
+    </div>
+    <details>
+      <summary>Quelles informations préparer avant de signaler ?</summary>
+      <div>Date et heure des faits, comptes et numéros concernés, captures d'écran, références de transactions, messages reçus, adresses web suspectes. Un dossier clair accélère le traitement.</div>
+    </details>
+    <details>
+      <summary>Comment trouver le bon organisme dans mon pays ?</summary>
+      <div>Se référer aux sites officiels des ministères en charge du numérique, de la banque centrale, de l'autorité de protection des données ou des services de police. Les structures et leurs coordonnées varient d'un pays à l'autre : on passe toujours par leurs canaux publiés officiellement.</div>
+    </details>
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>On signale à plusieurs niveaux : la plateforme pour couper l'attaque, la banque ou l'opérateur pour l'argent, les autorités pour les infractions.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 5. Hygiène ============ -->
+<section class="lesson" id="hygiene">
+  <div class="wrap reveal">
+    <h2>5. Sensibilisation de l'entourage et hygiène numérique</h2>
+    <p>La sécurité d'une personne dépend aussi de celle de son entourage : un proche piraté peut envoyer de faux messages en votre nom, et un collaborateur négligent peut exposer toute une équipe.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.700L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.700L3 16M3 21v-5h5"/></svg>
+        <h3>Mises à jour</h3>
+        <p>Système, applications et navigateur à jour : la plupart des attaques exploitent des failles déjà corrigées.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></svg>
+        <h3>Accès solides</h3>
+        <p>Un mot de passe unique par compte, un gestionnaire de mots de passe, et la double authentification partout où elle existe.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7c0-2 3.600-3 8-3s8 1 8 3-3.600 3-8 3-8-1-8-3z"/><path d="M4 7v10c0 2 3.600 3 8 3s8-1 8-3V7M4 12c0 2 3.600 3 8 3s8-1 8-3"/></svg>
+        <h3>Sauvegardes</h3>
+        <p>Copies régulières des données importantes, conservées séparément de l'appareil principal.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.700 0l3-3a4 4 0 0 0-5.700-5.700l-1 1"/><path d="M14 10a4 4 0 0 0-5.700 0l-3 3a4 4 0 0 0 5.700 5.700l1-1"/><path d="M4 4l16 16"/></svg>
+        <h3>Prudence face aux liens</h3>
+        <p>Ne pas cliquer sur un lien ou une pièce jointe inattendus, vérifier l'expéditeur par un autre canal en cas de doute.</p>
+      </div>
+    </div>
+    <h3 style="max-width:720px;margin:40px auto 12px;padding:0 20px">Sensibiliser sans culpabiliser</h3>
+    <div style="max-width:720px;margin:0 auto;padding:0 20px">
+      <details>
+        <summary>Famille et proches</summary>
+        <div>Prévenir rapidement les contacts en cas de piratage pour qu'ils ignorent les messages suspects, partager les gestes de base (double authentification, vigilance face aux demandes d'argent), et convenir d'un moyen de vérifier une demande inhabituelle par un autre canal, par exemple un appel.</div>
+      </details>
+      <details>
+        <summary>Collaborateurs et petite équipe</summary>
+        <div>Instaurer une règle simple : tout incident, même douteux, se signale immédiatement et sans reproche. Une culture sans blâme favorise la déclaration rapide, ce qui limite les dégâts. Mutualiser quelques règles communes : mots de passe, sauvegardes, comptes partagés.</div>
+      </details>
+      <details>
+        <summary>Pourquoi éviter le ton accusateur ?</summary>
+        <div>Une personne qui a peur d'être blâmée cache son erreur. Or une compromission cachée se transforme en incident plus grave. L'objectif est de rendre le signalement facile et rapide.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. Routine et plan ============ -->
+<section class="lesson alt" id="plan">
+  <div class="wrap reveal">
+    <h2>6. Routine de vérification et plan de protection sur 30 jours</h2>
+    <p>La sécurité n'est pas un événement ponctuel : c'est une <strong>routine</strong>. Formaliser un plan, c'est décider à l'avance quoi vérifier, à quelle fréquence, et dans quel ordre mettre en place les protections. Voici un modèle de plan type, présenté à titre d'illustration.</p>
+    <figure>
+      <svg viewBox="0 0 640 210" role="img" aria-labelledby="s6-t s6-d">
+        <title id="s6-t">Frise du plan de protection sur 30 jours</title>
+        <desc id="s6-d">Quatre semaines : semaine 1 les accès, semaine 2 les appareils, semaine 3 les données et paiements, semaine 4 la routine et l'entourage.</desc>
+        <line x1="70" y1="70" x2="570" y2="70" stroke="#E2E8F0" stroke-width="3"/>
+        <g fill="#fff" stroke="#2563EB" stroke-width="2.500"><circle cx="70" cy="70" r="18"/><circle cx="237" cy="70" r="18"/><circle cx="403" cy="70" r="18"/><circle cx="570" cy="70" r="18"/></g>
+        <g font-size="14" font-weight="700" fill="#2563EB" text-anchor="middle"><text x="70" y="75">S1</text><text x="237" y="75">S2</text><text x="403" y="75">S3</text><text x="570" y="75">S4</text></g>
+        <g font-size="15" font-weight="700" fill="#0A0F14" text-anchor="middle" font-family="Sora,Inter,sans-serif"><text x="70" y="124">Accès</text><text x="237" y="124">Appareils</text><text x="403" y="124">Données</text><text x="570" y="124">Routine</text></g>
+        <g font-size="12.5" fill="#5B6472" text-anchor="middle">
+          <text x="70" y="146">Mots de passe,</text><text x="70" y="164">double authentif.</text>
+          <text x="237" y="146">Mises à jour,</text><text x="237" y="164">protection, verrouillage</text>
+          <text x="403" y="146">Sauvegardes,</text><text x="403" y="164">paiements, alertes</text>
+          <text x="570" y="146">Vérifications,</text><text x="570" y="164">entourage</text>
+        </g>
+        <text x="320" y="198" font-size="12.5" fill="#5B6472" text-anchor="middle">Une progression par étapes, plutôt qu'un chantier unique et décourageant.</text>
+      </svg>
+      <figcaption>Modèle de plan de protection étalé sur un mois.</figcaption>
+    </figure>
+  </div>
+  <div class="wide reveal">
+    <ol class="stepper" aria-label="Plan de protection type sur 30 jours">
+      <li><b>Semaine 1 — Accès</b><span>Sécuriser la messagerie, les comptes clés, les mots de passe, la double authentification, les informations de récupération.</span></li>
+      <li><b>Semaine 2 — Appareils</b><span>Mises à jour, verrouillage d'écran, protection contre les logiciels malveillants, tri des applications.</span></li>
+      <li><b>Semaine 3 — Données et paiements</b><span>Sauvegardes, carte virtuelle, plafonds, alertes de transaction, code PIN.</span></li>
+      <li><b>Semaine 4 — Routine</b><span>Fixer le calendrier des vérifications, convenir de règles avec l'entourage, noter les contacts d'urgence.</span></li>
+    </ol>
+  </div>
+  <div class="wrap reveal">
+    <h3>Exemple de routine de vérification régulière</h3>
+    <div class="tablewrap" role="region" aria-label="Routine de vérification type" tabindex="0">
+      <table>
+        <thead><tr><th scope="col">Fréquence</th><th scope="col">Éléments à vérifier</th></tr></thead>
+        <tbody>
+          <tr><td>Chaque semaine</td><td>Alertes de connexion, historique des transactions, mises à jour en attente.</td></tr>
+          <tr><td>Chaque mois</td><td>Appareils et sessions connectés, applications installées, bon fonctionnement des sauvegardes.</td></tr>
+          <tr><td>Chaque trimestre</td><td>Mots de passe des comptes critiques, informations de récupération, plafonds bancaires.</td></tr>
+          <tr><td>Chaque année</td><td>Revue complète du plan, nettoyage des comptes inutilisés, actualisation des contacts d'urgence.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <details>
+      <summary>Que contient un plan de protection formalisé ?</summary>
+      <div>Un inventaire des comptes et appareils importants, les protections en place (double authentification, sauvegardes, alertes), la routine de vérification, la liste des contacts d'urgence (banque, opérateur, personnes de confiance) et le protocole Isoler, Changer, Prévenir à portée de main.</div>
+    </details>
+    <details>
+      <summary>Pourquoi écrire le plan plutôt que le garder en tête ?</summary>
+      <div>Sous stress, la mémoire flanche. Un document simple, rangé à un endroit accessible hors ligne ou chez un proche de confiance, permet de réagir calmement. Il ne doit jamais contenir de mots de passe en clair.</div>
+    </details>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Un plan se révise : les outils, les menaces et les habitudes changent. Une revue régulière le garde pertinent et réaliste.</p></div></div>
+    <div class="note"><span class="ic">🔗</span><div><strong>Pour aller plus loin</strong><p>Cette leçon conclut la formation. Les notions des leçons précédentes (mots de passe, double authentification, vie privée, paiements) forment les briques de votre plan de protection.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ Points clés ============ -->
+<section class="lesson" id="cles">
+  <div class="wrap reveal">
+    <h2>Points clés à retenir</h2>
+    <ul class="keys">
+      <li>Des signes discrets (connexions inconnues, messages non écrits, opérations inexpliquées) doivent déclencher une vérification immédiate.</li>
+      <li>Le protocole de premiers secours tient en trois mots : Isoler, Changer, Prévenir.</li>
+      <li>Une récupération de compte passe toujours par les procédures officielles du service ou de l'opérateur.</li>
+      <li>La messagerie est le compte à sécuriser en priorité, car elle ouvre l'accès aux autres.</li>
+      <li>On signale à plusieurs niveaux : plateforme, banque ou opérateur, autorités et organismes de cybersécurité.</li>
+      <li>Prévenir et sensibiliser l'entourage, sans reproche, limite la propagation d'un incident.</li>
+      <li>Un plan de protection écrit, avec une routine de vérification régulière, rend la sécurité durable.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="nav">
+    <a class="prev" href="lecon-09-securiser-ses-paiements-et-ses-achats-en-ligne.html" rel="prev"><small>Leçon précédente</small>Leçon 09 — Sécuriser ses paiements et ses achats en ligne</a>
+    <span><small>Leçon suivante</small>Aucune (dernière leçon de la formation)</span>
+  </div>
+  <p class="modlink"><a href="module-2.html">Retour au sommaire du module 2</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière Cybersécurité · Module 2 · Leçon 10</div></footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* Barre de progression, bouton retour haut */
+const bar=document.getElementById('progress'),topBtn=document.getElementById('top');
+function onScroll(){
+  const h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+  bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+  topBtn.classList.toggle('show',h.scrollTop>600);
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+/* Menu sommaire */
+const mb=document.getElementById('menuBtn'),dr=document.getElementById('drawer');
+mb.onclick=()=>{const o=dr.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+dr.addEventListener('click',e=>{if(e.target.tagName==='A'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+
+/* Onglets accessibles (flèches, Home, End) */
+document.querySelectorAll('[data-tabs]').forEach((box,n)=>{
+  const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+  tabs.forEach((t,i)=>{t.id=`t${n}-${i}`;panels[i].setAttribute('aria-labelledby',t.id);panels[i].tabIndex=0});
+  function select(i){tabs.forEach((t,j)=>{const on=i===j;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[j].hidden=!on})}
+  tabs.forEach((t,i)=>{
+    t.onclick=()=>select(i);
+    t.onkeydown=e=>{
+      let k=null;
+      if(e.key==='ArrowRight')k=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft')k=(i-1+tabs.length)%tabs.length;
+      if(e.key==='Home')k=0;if(e.key==='End')k=tabs.length-1;
+      if(k!==null){e.preventDefault();select(k);tabs[k].focus()}
+    };
+  });
+  select(0);
+});
+
+/* Apparition douce des sections (désactivée si prefers-reduced-motion) */
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+  els.forEach(el=>io.observe(el));
+}else els.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>

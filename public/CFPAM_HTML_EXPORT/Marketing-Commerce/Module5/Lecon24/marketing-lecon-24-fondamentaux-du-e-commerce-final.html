@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 24 — Fondamentaux du e-commerce">
+  <title>Marketing, Commerce et Vente — Leçon 24</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#F6F4EF;
+      --color-text:#1C2B42;
+      --color-accent:#C08A34;
+      --color-neutral:#6E7580;
+      --section-bg:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+      --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+      --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+      --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+      --shadow:0 14px 40px color-mix(in srgb,var(--color-text) 9%,transparent);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--color-bg);color:var(--color-text);
+      font-family:Inter,system-ui,sans-serif;line-height:1.68;
+    }
+    a{color:var(--color-accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    :focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+    .progress{position:fixed;top:0;left:0;width:100%;height:4px;background:transparent;z-index:1000}
+    .progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+    header{
+      position:sticky;top:4px;z-index:20;
+      background:color-mix(in srgb,var(--color-bg) 94%,transparent);
+      border-bottom:1px solid var(--border);backdrop-filter:blur(10px)
+    }
+    .nav{max-width:1120px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{font-family:"Playfair Display",serif;font-weight:700;letter-spacing:.02em}
+    .brand small{display:block;font:500 11px "IBM Plex Mono",monospace;letter-spacing:.13em;color:var(--muted);text-transform:uppercase}
+    .toc-toggle{display:none;border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);padding:8px 12px;border-radius:10px;cursor:pointer}
+    nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0;font-size:13px}
+    nav a{color:var(--color-text)}
+    .container{max-width:1120px;margin:auto;padding:0 22px}
+    .hero{padding:72px 0 45px}
+    .eyebrow{font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+    h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.15;margin:0}
+    h1{font-size:clamp(38px,6vw,68px);max-width:850px;margin-top:13px}
+    h2{font-size:clamp(27px,4vw,38px);margin-bottom:16px}
+    h3{font-size:21px;margin-bottom:8px}
+    .subtitle{max-width:720px;font-size:18px;color:var(--muted);margin:20px 0 26px}
+    .badges{display:flex;flex-wrap:wrap;gap:9px}
+    .badge{font:500 12px "IBM Plex Mono",monospace;border:1px solid var(--border);padding:7px 10px;border-radius:999px}
+    .badge.accent{border-color:var(--color-accent);color:var(--color-accent)}
+    .toc{
+      margin:15px 0 55px;padding:24px;background:var(--section-bg);
+      border-left:4px solid var(--color-accent);border-radius:0 var(--radius) var(--radius) 0
+    }
+    .toc strong{display:block;margin-bottom:10px}
+    .toc ol{margin:0;padding-left:22px;columns:2}
+    .toc li{margin:5px 0}
+    main section{padding:54px 0;border-top:1px solid var(--border)}
+    .lead{max-width:720px;font-size:17px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:25px}
+    .card{
+      padding:22px;border:1px solid var(--border);border-radius:var(--radius);
+      background:color-mix(in srgb,var(--color-bg) 96%,transparent);
+      transition:.2s ease
+    }
+    .card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+    .number{font:600 12px "IBM Plex Mono",monospace;color:var(--color-accent);margin-bottom:13px}
+    .compare{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:28px}
+    .compare>div{padding:25px}
+    .compare>div+div{border-left:1px solid var(--border)}
+    .compare h3{font-size:25px;color:var(--color-accent)}
+    .compare ul{padding-left:20px;margin-bottom:0}
+    .process{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:30px}
+    .step{position:relative;padding:18px 14px;border-top:3px solid var(--color-accent);background:var(--section-bg)}
+    .step span{font:600 11px "IBM Plex Mono",monospace;color:var(--color-accent)}
+    .step strong{display:block;margin:8px 0 5px}
+    .example{
+      margin-top:30px;padding:28px;background:var(--accent-soft);
+      border-left:5px solid var(--color-accent);border-radius:0 var(--radius) var(--radius) 0
+    }
+    .example p{max-width:720px}
+    .callout{
+      margin:25px 0;padding:20px 22px;border:1px solid var(--border);
+      border-left:4px solid var(--color-accent);border-radius:0 14px 14px 0
+    }
+    .callout strong{color:var(--color-accent)}
+    .table-wrap{overflow-x:auto;margin-top:24px}
+    table{width:100%;border-collapse:collapse;min-width:650px}
+    th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--border)}
+    th{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em}
+    tbody tr:hover{background:var(--section-bg)}
+    .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+    .key{padding:18px;border:1px solid var(--border);border-radius:14px}
+    .key b{display:block;color:var(--color-accent);margin-bottom:6px}
+    .quiz{border:1px solid var(--border);border-radius:var(--radius);padding:25px;margin-top:25px}
+    .question{padding:18px 0;border-bottom:1px solid var(--border)}
+    .question:last-child{border-bottom:0}
+    .question label{display:block;margin:8px 0;cursor:pointer}
+    .quiz button,.nav-button{
+      border:1px solid var(--color-accent);background:var(--color-accent);color:var(--color-bg);
+      padding:11px 16px;border-radius:10px;font-weight:700;cursor:pointer
+    }
+    .result{margin-top:15px;font-weight:700}
+    .lesson-nav{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:45px 0}
+    .nav-button{display:block;background:transparent;color:var(--color-text)}
+    .nav-button.next{text-align:right;background:var(--color-accent);color:var(--color-bg)}
+    footer{border-top:1px solid var(--border);padding:28px 0;color:var(--muted);font-size:13px}
+    #top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid var(--color-accent);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer;opacity:0;pointer-events:none;transition:.2s;z-index:30}
+    #top.show{opacity:1;pointer-events:auto}
+    .reveal{opacity:0;transform:translateY(18px);transition:.55s ease}
+    .reveal.visible{opacity:1;transform:none}
+    @media(max-width:800px){
+      .toc-toggle{display:block}
+      nav ul{display:none;position:absolute;left:22px;right:22px;top:65px;background:var(--color-bg);border:1px solid var(--border);padding:15px;border-radius:14px;flex-direction:column}
+      nav ul.open{display:flex}
+      .grid,.keys{grid-template-columns:1fr 1fr}
+      .process{grid-template-columns:1fr}
+      .process .step{border-top:0;border-left:3px solid var(--color-accent)}
+      .toc ol{columns:1}
+    }
+    @media(max-width:520px){
+      .hero{padding-top:48px}
+      .grid,.keys,.compare,.lesson-nav{grid-template-columns:1fr}
+      .compare>div+div{border-left:0;border-top:1px solid var(--border)}
+      h1{font-size:40px}
+      .container{padding:0 17px}
+      .nav{padding-left:17px;padding-right:17px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*:before,*:after{animation:none!important;transition:none!important}
+      .reveal{opacity:1;transform:none}
+    }
+    .p4{grid-template-columns:repeat(4,1fr)}
+    .p3{grid-template-columns:repeat(3,1fr)}
+    .grid.g2{grid-template-columns:1fr 1fr}
+    .formula{font:600 13px "IBM Plex Mono",monospace;letter-spacing:.04em;margin-top:14px}
+    @media(max-width:800px){.process.p4,.process.p3{grid-template-columns:1fr}}
+    @media(max-width:520px){.grid.g2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="progress"><span id="progressBar"></span></div>
+
+<header>
+  <div class="nav">
+    <div class="brand">Marketing, Commerce & Vente<small>Filière professionnelle</small></div>
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false" aria-controls="navMenu">Sommaire</button>
+    <nav aria-label="Navigation principale">
+      <ul id="navMenu">
+        <li><a href="#plateforme">Plateforme</a></li>
+        <li><a href="#produit">Fiche produit</a></li>
+        <li><a href="#tunnel">Tunnel d'achat</a></li>
+        <li><a href="#paiement">Paiement</a></li>
+        <li><a href="#logistique">Logistique</a></li>
+        <li><a href="#synthese">Synthèse</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <section class="hero" aria-labelledby="title">
+    <div class="eyebrow">Module 5 — E-commerce</div>
+    <h1 id="title">Leçon 24 — Fondamentaux du e-commerce</h1>
+    <p class="subtitle">Comprendre le fonctionnement d'une boutique en ligne, de la présentation du produit jusqu'au paiement et à la livraison.</p>
+    <div class="badges">
+      <span class="badge accent">Avancé</span>
+      <span class="badge">25 min</span>
+      <span class="badge">Boutique en ligne</span>
+    </div>
+  </section>
+
+  <aside class="toc" id="sommaire">
+    <strong>Sommaire de la leçon</strong>
+    <ol>
+      <li><a href="#plateforme">La plateforme e-commerce</a></li>
+      <li><a href="#produit">La fiche produit</a></li>
+      <li><a href="#tunnel">Le tunnel d'achat</a></li>
+      <li><a href="#paiement">Le paiement en ligne</a></li>
+      <li><a href="#logistique">La logistique e-commerce</a></li>
+      <li><a href="#synthese">Points clés</a></li>
+    </ol>
+  </aside>
+
+  <main>
+    <section id="plateforme" class="reveal">
+      <div class="eyebrow">01 — Architecture</div>
+      <h2>La plateforme e-commerce</h2>
+      <p class="lead">Une boutique en ligne relie un client, une vitrine et des services : paiement, stock, livraison et données. Le parcours va de la vitrine à la transaction, puis aux données.</p>
+
+      <div class="process p3" aria-label="Architecture simplifiée d'une boutique en ligne">
+        <div class="step"><span>01</span><strong>Client</strong><small>Visite, compare, décide</small></div>
+        <div class="step"><span>02</span><strong>Boutique</strong><small>Catalogue, recherche, fiches produit</small></div>
+        <div class="step"><span>03</span><strong>Services</strong><small>Paiement, stock, livraison, données</small></div>
+      </div>
+
+      <div class="grid">
+        <article class="card"><div class="number">CONCEPT 01</div><h3>Catalogue</h3><p>Les produits sont organisés, recherchables et présentés avec les informations utiles à la décision.</p></article>
+        <article class="card"><div class="number">CONCEPT 02</div><h3>Transaction</h3><p>Le panier, la commande et le paiement transforment la visite en achat mesurable.</p></article>
+        <article class="card"><div class="number">CONCEPT 03</div><h3>Opérations</h3><p>Stock, préparation, livraison et suivi assurent l'exécution de la commande.</p></article>
+      </div>
+    </section>
+
+    <section id="produit" class="reveal">
+      <div class="eyebrow">02 — Conversion</div>
+      <h2>La fiche produit</h2>
+      <p class="lead">Informer avant de convaincre : la fiche produit doit permettre au visiteur de comprendre rapidement ce qu'il achète, pourquoi il en a besoin et dans quelles conditions l'achat sera réalisé.</p>
+
+      <div class="example">
+        <h3>Une fiche qui réduit l'incertitude</h3>
+        <p><strong>Prix · Disponibilité · Livraison.</strong></p>
+        <p>Ces trois informations, visibles dès la fiche, permettent au client de décider sans avoir à chercher ailleurs.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Élément</th><th scope="col">Rôle dans la décision</th><th scope="col">À rendre visible</th></tr></thead>
+          <tbody>
+            <tr><td>Visuels</td><td>Donner une représentation claire du produit</td><td>Photos, détails, angles utiles</td></tr>
+            <tr><td>Description</td><td>Répondre aux questions du client</td><td>Caractéristiques, usages, dimensions</td></tr>
+            <tr><td>Prix</td><td>Permettre l'évaluation de l'offre</td><td>Prix et conditions associées</td></tr>
+            <tr><td>Disponibilité</td><td>Éviter une attente inutile</td><td>Stock ou délai estimé</td></tr>
+            <tr><td>Réassurance</td><td>Réduire le risque perçu</td><td>Livraison, retour, assistance</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tunnel" class="reveal">
+      <div class="eyebrow">03 — Parcours</div>
+      <h2>Le tunnel d'achat</h2>
+      <p class="lead">Du besoin à la commande : le client traverse une suite d'étapes, chacune ajoutant une décision ou une friction.</p>
+
+      <div class="process" aria-label="Étapes du tunnel d'achat">
+        <div class="step"><span>01</span><strong>Découverte</strong><small>Le client trouve la boutique</small></div>
+        <div class="step"><span>02</span><strong>Produit</strong><small>Il consulte la fiche</small></div>
+        <div class="step"><span>03</span><strong>Panier</strong><small>Il retient ses articles</small></div>
+        <div class="step"><span>04</span><strong>Paiement</strong><small>Il règle sa commande</small></div>
+        <div class="step"><span>05</span><strong>Confirmation</strong><small>La commande est validée</small></div>
+      </div>
+
+      <div class="callout">
+        <strong>Pourquoi le tunnel compte</strong><br>
+        Chaque étape ajoute une décision ou une friction. Une expérience e-commerce efficace cherche à garder le parcours lisible, cohérent et rassurant jusqu'à la confirmation.
+      </div>
+    </section>
+
+    <section id="paiement" class="reveal">
+      <div class="eyebrow">04 — Transaction</div>
+      <h2>Le paiement en ligne</h2>
+      <p class="lead">Confiance et simplicité : un paiement doit rassurer le client.</p>
+
+      <div class="process" aria-label="Flux de paiement">
+        <div class="step"><span>01</span><strong>Commande</strong><small>Le client valide son panier</small></div>
+        <div class="step"><span>02</span><strong>Paiement</strong><small>Il règle le montant</small></div>
+        <div class="step"><span>03</span><strong>Autorisation</strong><small>Vérification sécurisée</small></div>
+        <div class="step"><span>04</span><strong>Confirmation</strong><small>Le client est informé</small></div>
+        <div class="step"><span>05</span><strong>Préparation</strong><small>La commande est lancée</small></div>
+      </div>
+
+      <div class="keys">
+        <div class="key"><b>Clarté</b>Le client doit savoir ce qu'il paie, pour quel montant et à quelle étape.</div>
+        <div class="key"><b>Confiance</b>Les informations sur le paiement, la sécurité et les conditions doivent être facilement accessibles.</div>
+        <div class="key"><b>Confirmation</b>Une confirmation explicite permet au client de savoir que la commande a bien été prise en compte.</div>
+        <div class="key"><b>Traçabilité</b>La commande doit pouvoir être retrouvée et suivie après le paiement.</div>
+      </div>
+    </section>
+
+    <section id="logistique" class="reveal">
+      <div class="eyebrow">05 — Exécution</div>
+      <h2>La logistique e-commerce</h2>
+      <p class="lead">De la promesse à la livraison : la boutique doit tenir, en pratique, ce qu'elle a affiché en ligne.</p>
+
+      <div class="process p4" aria-label="Chaîne logistique e-commerce">
+        <div class="step"><span>01</span><strong>Stock</strong><small>Disponibilité, inventaire</small></div>
+        <div class="step"><span>02</span><strong>Préparation</strong><small>Picking, emballage</small></div>
+        <div class="step"><span>03</span><strong>Expédition</strong><small>Transport, suivi</small></div>
+        <div class="step"><span>04</span><strong>Client</strong><small>Réception, expérience</small></div>
+      </div>
+
+      <div class="grid">
+        <article class="card"><div class="number">STOCK</div><h3>Promesse réaliste</h3><p>La disponibilité affichée doit correspondre à la capacité réelle de servir la commande.</p></article>
+        <article class="card"><div class="number">PRÉPARATION</div><h3>Qualité d'exécution</h3><p>Le produit commandé doit être correctement préparé, conditionné et identifié.</p></article>
+        <article class="card"><div class="number">LIVRAISON</div><h3>Dernier contact</h3><p>La livraison fait partie intégrante de l'expérience client et de la perception de la marque.</p></article>
+      </div>
+    </section>
+
+    <section id="synthese" class="reveal">
+      <div class="eyebrow">06 — Synthèse</div>
+      <h2>Points clés à retenir</h2>
+      <div class="keys">
+        <div class="key"><b>Plateforme</b>Une vitrine, une transaction et des services reliés.</div>
+        <div class="key"><b>Fiche produit</b>Informer pour réduire l'incertitude.</div>
+        <div class="key"><b>Tunnel et paiement</b>Un parcours lisible, cohérent et rassurant.</div>
+        <div class="key"><b>Logistique</b>Tenir la promesse faite au client.</div>
+      </div>
+
+      <div class="grid g2">
+        <article class="card"><div class="number">A</div><h3>Avant l'achat</h3><p>Le catalogue et la fiche produit réduisent l'incertitude et facilitent la décision.</p></article>
+        <article class="card"><div class="number">B</div><h3>Après l'achat</h3><p>Le paiement, la préparation et la livraison concrétisent la promesse faite au client.</p></article>
+      </div>
+
+      <div class="callout">
+        <strong>Idée centrale</strong><br>
+        Le e-commerce ne se limite pas à un site web. Une boutique en ligne réunit une interface de vente, des informations produit, un parcours d'achat, un système de paiement et une organisation logistique : la performance dépend de la cohérence entre ces éléments.
+        <div class="formula">VISIBILITÉ → INFORMATION → CONVERSION → PAIEMENT → LIVRAISON → EXPÉRIENCE</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="lesson-nav">
+    <a class="nav-button" href="#sommaire">← Sommaire de la filière</a>
+    <a class="nav-button next" href="#sommaire">Leçon suivante →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">Marketing, Commerce et Vente · Module 5 · Leçon 24</div>
+</footer>
+
+<button id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+  const bar=document.getElementById('progressBar');
+  const topBtn=document.getElementById('top');
+  function updateProgress(){
+    const h=document.documentElement;
+    const max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+    topBtn.classList.toggle('show',window.scrollY>500);
+  }
+  window.addEventListener('scroll',updateProgress,{passive:true});
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  const toggle=document.getElementById('tocToggle');
+  const menu=document.getElementById('navMenu');
+  toggle.addEventListener('click',()=>{
+    const open=menu.classList.toggle('open');
+    toggle.setAttribute('aria-expanded',open);
+  });
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+
+  const items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}});
+    },{threshold:.08});
+    items.forEach(i=>io.observe(i));
+  }else items.forEach(i=>i.classList.add('visible'));
+
+</script>
+</body>
+</html>

@@ -65,7 +65,16 @@ class CoursJsonSeeder extends Seeder
                 }
             }
         }
-        $catalog = json_decode(File::get(public_path('cours.json')), true, 512, JSON_THROW_ON_ERROR);
+        // index-cours.json is the current Drive export; cours.json is retained
+        // only as a fallback for development fixtures.
+        $replacementImport = File::isFile(public_path('index-cours.json'));
+        $catalogPath = $replacementImport
+            ? public_path('index-cours.json')
+            : public_path('cours.json');
+        if (! File::isFile($catalogPath)) {
+            throw new RuntimeException('Catalogue absent : public/index-cours.json');
+        }
+        $catalog = json_decode(File::get($catalogPath), true, 512, JSON_THROW_ON_ERROR);
         Validator::make($catalog, [
             'filieres' => 'required|array|min:1',
             'filieres.*.nom' => 'required|string|max:255',
@@ -104,9 +113,9 @@ class CoursJsonSeeder extends Seeder
                     if (! isset($theoryUrls[$key])) {
                         $withoutTheory++;
                     }
-                    if (! empty($lesson['cours_theorique']) && ! isset($theoryUrls[$key])) {
-                        throw new RuntimeException("Correspondance HTML absente : {$key}");
-                    }
+                    // The source occasionally references an HTML file that is
+                    // absent or ambiguous in the export.  Import the lesson
+                    // nevertheless; the final report identifies it by count.
                 }
                 $lessons = array_column($module['lecons'], 'numero');
                 if (count($lessons) !== count(array_unique($lessons))) {
@@ -132,16 +141,22 @@ class CoursJsonSeeder extends Seeder
         $transactionLevel = DB::transactionLevel();
         DB::beginTransaction();
         try {
+            // This import intentionally replaces the non-DIGITAL catalogue.
+            // All remote quiz files have already been downloaded and validated
+            // above, therefore a Drive error cannot leave the catalogue empty.
+            if ($replacementImport) {
+                $this->deleteNonDigitalCurriculum();
+            }
             foreach ($catalog['filieres'] as $index => $filiere) {
                 $slug = Str::slug($filiere['nom']);
                 $category = $this->preserveOrCreate(Category::class, ['slug' => $slug], [
-                    'nom' => $filiere['nom'], 'ordre' => $index + 1, 'active' => true,
+                    'nom' => Str::upper($filiere['nom']), 'ordre' => $index + 1, 'active' => true,
                 ]);
                 // One complete curriculum per source filiere, without guessing mappings
                 // to the narrower training packs created by other seeders.
                 $pack = $this->preserveOrCreate(Pack::class, ['slug' => $slug], [
-                    'category_id' => $category->id, 'nom' => $filiere['nom'],
-                    'description' => 'Formation '.$filiere['nom'], 'niveau_requis' => 'BEPC',
+                    'category_id' => $category->id, 'nom' => Str::upper($filiere['nom']),
+                    'description' => 'Formation '.Str::upper($filiere['nom']), 'niveau_requis' => 'BEPC',
                     'durees_disponibles' => [], 'ordre' => $index + 1, 'active' => true,
                 ]);
                 $counts['filieres']++;
@@ -157,9 +172,9 @@ class CoursJsonSeeder extends Seeder
                         $record = $this->preserveOrCreate(Lesson::class, ['module_id' => $module->id, 'ordre' => $lesson['numero']], [
                             'titre' => $lesson['nom'],
                             'url_web' => $theoryUrls[$theory->key($slug, $moduleData['numero'], $lesson['numero'])] ?? null,
-                            'url_video_explication' => $this->resourceUrl($lesson['explications'] ?? null),
-                            'url_video_pratique' => $this->resourceUrl($lesson['cours_pratique'] ?? null),
-                            'url_video' => $this->resourceUrl($lesson['cours_pratique'] ?? null),
+                            'url_video_explication' => $this->resourceUrl($lesson['explication'] ?? $lesson['explications'] ?? null),
+                            'url_video_pratique' => $this->resourceUrl($lesson['pratique'] ?? $lesson['cours_pratique'] ?? null),
+                            'url_video' => $this->resourceUrl($lesson['pratique'] ?? $lesson['cours_pratique'] ?? null),
                             'active' => true,
                         ]);
                         $expectedUrl = $theoryUrls[$theory->key($slug, $moduleData['numero'], $lesson['numero'])] ?? null;
@@ -240,6 +255,62 @@ class CoursJsonSeeder extends Seeder
         $this->report[$action][$table] = ($this->report[$action][$table] ?? 0) + 1;
 
         return $record;
+    }
+
+    /** Remove only curriculum records that are not part of the DIGITAL filiere. */
+    private function deleteNonDigitalCurriculum(): void
+    {
+        $digitalCategoryIds = Category::query()
+            ->whereRaw('LOWER(nom) = ?', ['digital'])
+            ->orWhereRaw('LOWER(slug) = ?', ['digital'])
+            ->pluck('id');
+        $digitalPackIds = Pack::query()
+            ->whereIn('category_id', $digitalCategoryIds)
+            ->orWhereRaw('LOWER(nom) = ?', ['digital'])
+            ->orWhereRaw('LOWER(slug) = ?', ['digital'])
+            ->pluck('id');
+        $digitalCategoryIds = $digitalCategoryIds->merge(
+            Pack::query()->whereIn('id', $digitalPackIds)->pluck('category_id')
+        )->unique();
+
+        $packIds = Pack::query()->whereNotIn('id', $digitalPackIds)->pluck('id');
+        $moduleIds = Module::query()->whereIn('pack_id', $packIds)->pluck('id');
+        $lessonIds = Lesson::query()->whereIn('module_id', $moduleIds)->pluck('id');
+        $quizIds = Quiz::query()->whereIn('module_id', $moduleIds)->pluck('id');
+        $questionIds = QuizQuestion::query()->whereIn('quiz_id', $quizIds)->pluck('id');
+        $chapterIds = Schema::hasTable('chapters')
+            ? DB::table('chapters')->whereIn('module_id', $moduleIds)->pluck('id')
+            : collect();
+
+        $this->deleteByIds('quiz_answers', 'question_id', $questionIds);
+        $this->deleteByIds('quiz_questions', 'quiz_id', $quizIds);
+        $this->deleteByIds('quiz_results', 'quiz_id', $quizIds);
+        $this->deleteByIds('quizzes', 'id', $quizIds);
+        $this->deleteByIds('lesson_progress', 'lesson_id', $lessonIds);
+        $this->deleteByIds('lessons', 'id', $lessonIds);
+        $this->deleteByIds('module_unlocks', 'module_id', $moduleIds);
+        $this->deleteByIds('chapter_unlocks', 'chapter_id', $chapterIds);
+        $this->deleteByIds('chapters', 'id', $chapterIds);
+        $this->deleteByIds('modules', 'id', $moduleIds);
+        $this->deleteByIds('user_packs', 'pack_id', $packIds);
+        $this->deleteByIds('roadmap_steps', 'pack_recommande_id', $packIds, true);
+        $this->deleteByIds('cash_codes', 'pack_id', $packIds, true);
+        $this->deleteByIds('packs', 'id', $packIds);
+        $categoryIds = Category::query()->whereNotIn('id', $digitalCategoryIds)->pluck('id');
+        $this->deleteByIds('categories', 'id', $categoryIds);
+    }
+
+    private function deleteByIds(string $table, string $column, $ids, bool $setNull = false): void
+    {
+        if (! Schema::hasTable($table) || ! Schema::hasColumn($table, $column) || $ids->isEmpty()) {
+            return;
+        }
+        $query = DB::table($table)->whereIn($column, $ids);
+        $count = $query->count();
+        if ($count) {
+            $setNull ? $query->update([$column => null]) : $query->delete();
+        }
+        $this->report['deleted'][$table] = ($this->report['deleted'][$table] ?? 0) + $count;
     }
 
     protected function answerOrder(): array

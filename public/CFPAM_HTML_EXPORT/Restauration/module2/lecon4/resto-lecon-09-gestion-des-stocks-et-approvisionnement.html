@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 09 — Gestion des stocks et approvisionnement. Filière Restauration, Module 2.">
+<title>Leçon 09 — Gestion des stocks et approvisionnement | Restauration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FDF3E7;
+  --color-text:#3B2314;
+  --color-accent:#E8752C;
+  --color-neutral:#8A6E5C;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--color-bg);color:var(--color-text);
+  font-family:Inter,system-ui,sans-serif;line-height:1.7;
+}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button,a{outline-offset:4px}
+button:focus-visible,a:focus-visible,summary:focus-visible{
+  outline:3px solid var(--color-accent);outline-offset:4px
+}
+.progress{
+  position:fixed;top:0;left:0;width:100%;height:5px;z-index:1000;
+  background:color-mix(in srgb,var(--color-neutral) 12%,var(--color-bg));
+}
+.progress-bar{height:100%;width:0;background:var(--color-accent)}
+.site-header{
+  position:sticky;top:5px;z-index:100;
+  background:color-mix(in srgb,var(--color-bg) 94%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));
+}
+.header-inner{
+  max-width:1180px;margin:auto;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px
+}
+.brand{font-family:"Playfair Display",serif;font-weight:700;font-size:1.15rem}
+.brand small{display:block;font:500 .72rem "IBM Plex Mono",monospace;color:var(--color-neutral);letter-spacing:.06em}
+.menu-toggle{
+  display:none;background:none;border:1px solid var(--color-neutral);
+  color:var(--color-text);padding:8px 12px;border-radius:8px;cursor:pointer
+}
+.toc{
+  display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px
+}
+.toc a{font-size:.8rem;font-weight:600;padding:6px 9px;border-radius:7px}
+.toc a:hover{background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));text-decoration:none}
+.container{max-width:1180px;margin:auto;padding:0 24px}
+.hero{padding:76px 0 58px;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg))}
+.eyebrow{
+  color:var(--color-accent);font:600 .78rem "IBM Plex Mono",monospace;
+  letter-spacing:.09em;text-transform:uppercase
+}
+h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.18;margin-top:0}
+h1{font-size:clamp(2.4rem,6vw,5rem);max-width:850px;margin:12px 0 20px}
+h2{font-size:clamp(1.8rem,3vw,2.7rem);margin-bottom:16px}
+h3{font-size:1.35rem}
+.lead{font-size:1.15rem;max-width:720px;color:color-mix(in srgb,var(--color-text) 78%,var(--color-bg))}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+.badge{
+  border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  padding:7px 11px;border-radius:999px;font:600 .75rem "IBM Plex Mono",monospace
+}
+.badge.accent{border-color:var(--color-accent);color:var(--color-accent)}
+section{padding:70px 0;scroll-margin-top:90px}
+.section-alt{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.section-intro{max-width:720px;margin-bottom:30px}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{
+  border:1px solid color-mix(in srgb,var(--color-neutral) 38%,var(--color-bg));
+  padding:24px;border-radius:14px;background:var(--color-bg);
+  transition:.2s ease
+}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{
+  width:42px;height:42px;border:1px solid var(--color-accent);border-radius:10px;
+  display:grid;place-items:center;color:var(--color-accent);font-size:1.2rem;margin-bottom:15px
+}
+.callout{
+  margin:28px 0;padding:20px 22px;border:1px solid var(--color-accent);
+  border-left:5px solid var(--color-accent);border-radius:10px;
+  background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))
+}
+.callout strong{display:block;margin-bottom:4px}
+.flow{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:30px 0;
+  border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));border-radius:14px;overflow:hidden
+}
+.step{padding:20px;border-right:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg))}
+.step:last-child{border-right:0}
+.step-num{font:600 .72rem "IBM Plex Mono",monospace;color:var(--color-accent)}
+.step h3{font-size:1.05rem;margin:7px 0}
+.diagram{
+  border:1px solid color-mix(in srgb,var(--color-neutral) 40%,var(--color-bg));
+  border-radius:14px;padding:20px;background:var(--color-bg);overflow:auto
+}
+svg{display:block;width:100%;height:auto;min-width:620px}
+svg text{fill:var(--color-text);font-family:Inter,sans-serif}
+svg .accent{fill:var(--color-accent)}
+svg .line{stroke:var(--color-neutral)}
+svg .box{fill:var(--color-bg);stroke:var(--color-neutral);stroke-width:2}
+svg .active{fill:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));stroke:var(--color-accent);stroke-width:3}
+.table-wrap{overflow-x:auto;margin:22px 0}
+table{border-collapse:collapse;width:100%;min-width:680px}
+th,td{text-align:left;padding:13px 14px;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg))}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+td.mono,th.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.tabs{margin-top:28px}
+.tab-buttons{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--color-neutral)}
+.tab-btn{
+  border:0;background:none;color:var(--color-text);padding:11px 14px;cursor:pointer;font-weight:600
+}
+.tab-btn[aria-selected="true"]{color:var(--color-accent);border-bottom:3px solid var(--color-accent)}
+.tab-panel{padding:24px 4px}
+[hidden]{display:none!important}
+details{border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));padding:15px 0}
+summary{cursor:pointer;font-weight:700}
+.exercise{
+  border:1px solid var(--color-accent);border-radius:14px;padding:28px;
+  background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))
+}
+.choice{
+  display:block;width:100%;text-align:left;margin:10px 0;padding:14px 16px;
+  border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  background:var(--color-bg);color:var(--color-text);border-radius:9px;cursor:pointer;font:inherit
+}
+.choice:hover,.choice:focus{border-color:var(--color-accent)}
+.result{margin-top:18px;font-weight:700}
+.key-grid .card{min-height:150px}
+.nav-lessons{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:stretch;margin-top:35px
+}
+.nav-card{
+  border:1px solid color-mix(in srgb,var(--color-neutral) 45%,var(--color-bg));
+  padding:18px;border-radius:12px
+}
+.nav-card.next{text-align:right}
+.nav-label{font:600 .7rem "IBM Plex Mono",monospace;color:var(--color-neutral);text-transform:uppercase}
+.top-link{
+  border:1px solid var(--color-neutral);border-radius:10px;padding:10px 13px;align-self:center
+}
+footer{border-top:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg));padding:30px 0;color:color-mix(in srgb,var(--color-text) 65%,var(--color-bg));font-size:.9rem}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){
+  .menu-toggle{display:block}
+  .toc{display:none;width:100%;justify-content:flex-start;padding-top:10px}
+  .toc.open{display:flex}
+  .header-inner{flex-wrap:wrap}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr}
+  .step{border-right:0;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 35%,var(--color-bg))}
+  .step:last-child{border-bottom:0}
+  .hero{padding-top:55px}
+  .nav-lessons{grid-template-columns:1fr}
+  .nav-card.next{text-align:left}
+  .top-link{justify-self:start}
+}
+@media(max-width:480px){
+  .container{padding:0 17px}
+  h1{font-size:2.35rem}
+  section{padding:52px 0}
+  .card,.exercise{padding:20px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .card{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">Filière Restauration<small>MODULE 2 · CUISINE</small></div>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="toc">Sommaire</button>
+    <nav class="toc" id="toc" aria-label="Sommaire de la leçon">
+      <a href="#objectifs">Objectifs</a>
+      <a href="#inventaire">Inventaire</a>
+      <a href="#fifo">FIFO</a>
+      <a href="#commande">Commande</a>
+      <a href="#reception">Réception</a>
+      <a href="#documents">Documents</a>
+      <a href="#exercice">Exercice</a>
+      <a href="#essentiel">À retenir</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">Leçon 09 · Module 2</div>
+    <h1>Gestion des stocks et approvisionnement</h1>
+    <p class="lead">Suivre les stocks, anticiper les besoins et sécuriser l’approvisionnement pour assurer une production régulière en cuisine.</p>
+    <div class="badges">
+      <span class="badge accent">Niveau CAP</span>
+      <span class="badge">Durée · 20 min</span>
+      <span class="badge">Inventaire · FIFO · Commande · Réception</span>
+    </div>
+  </div>
+</section>
+
+<section id="objectifs">
+<div class="container reveal">
+  <div class="section-intro">
+    <div class="eyebrow">01 · Objectifs</div>
+    <h2>Pourquoi gérer les stocks ?</h2>
+    <p>Une bonne gestion des stocks permet de disposer des matières nécessaires au bon moment, de limiter les pertes et de mieux contrôler les achats.</p>
+  </div>
+  <div class="grid-3">
+    <article class="card"><div class="icon">▣</div><h3>Suivre</h3><p>Connaître les quantités disponibles et repérer rapidement les écarts.</p></article>
+    <article class="card"><div class="icon">↻</div><h3>Faire tourner</h3><p>Organiser les produits pour utiliser en priorité les plus anciens.</p></article>
+    <article class="card"><div class="icon">⌁</div><h3>Anticiper</h3><p>Prévoir les besoins afin d’éviter les ruptures et les commandes inutiles.</p></article>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong>Le stock n’est pas seulement une réserve : c’est un outil de pilotage de l’activité de cuisine.</div>
+</div>
+</section>
+
+<section id="inventaire" class="section-alt">
+<div class="container reveal">
+  <div class="eyebrow">02 · Inventaire</div>
+  <h2>Compter, vérifier, comparer</h2>
+  <p class="section-intro">L’inventaire consiste à recenser les produits réellement présents et à comparer les quantités observées avec les informations disponibles dans le suivi des stocks.</p>
+  <div class="flow" aria-label="Étapes d’un inventaire">
+    <div class="step"><span class="step-num">01</span><h3>Préparer</h3><p>Organiser les zones et les familles de produits.</p></div>
+    <div class="step"><span class="step-num">02</span><h3>Compter</h3><p>Mesurer les quantités présentes.</p></div>
+    <div class="step"><span class="step-num">03</span><h3>Noter</h3><p>Reporter les quantités sur la fiche.</p></div>
+    <div class="step"><span class="step-num">04</span><h3>Comparer</h3><p>Identifier les écarts éventuels.</p></div>
+    <div class="step"><span class="step-num">05</span><h3>Agir</h3><p>Adapter les commandes et le rangement.</p></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <caption style="text-align:left;margin-bottom:10px;font-weight:700">Exemple de fiche d’inventaire</caption>
+      <thead><tr><th>Produit</th><th class="mono">Unité</th><th class="mono">Stock réel</th><th class="mono">Seuil</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>Riz</td><td class="mono">kg</td><td class="mono">12</td><td class="mono">8</td><td>Surveiller</td></tr>
+        <tr><td>Huile</td><td class="mono">L</td><td class="mono">4</td><td class="mono">5</td><td>Commander</td></tr>
+        <tr><td>Tomates</td><td class="mono">kg</td><td class="mono">3</td><td class="mono">6</td><td>Commander</td></tr>
+        <tr><td>Farine</td><td class="mono">kg</td><td class="mono">15</td><td class="mono">10</td><td>Surveiller</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<section id="fifo">
+<div class="container reveal">
+  <div class="eyebrow">03 · Rotation des stocks</div>
+  <h2>La méthode FIFO</h2>
+  <p class="section-intro"><strong>FIFO</strong> signifie « First In, First Out » : le premier produit entré en stock est le premier à sortir. Le rangement doit rendre cette rotation facile à appliquer.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 900 270" role="img" aria-labelledby="fifoTitle fifoDesc">
+      <title id="fifoTitle">Schéma de rotation FIFO</title>
+      <desc id="fifoDesc">Les produits les plus anciens sont placés devant les nouveaux afin d’être utilisés en premier.</desc>
+      <text x="30" y="38" font-size="18" font-weight="700">Rangement recommandé</text>
+      <rect class="active" x="45" y="75" width="185" height="95" rx="12"/>
+      <rect class="box" x="255" y="75" width="185" height="95" rx="12"/>
+      <rect class="box" x="465" y="75" width="185" height="95" rx="12"/>
+      <rect class="box" x="675" y="75" width="180" height="95" rx="12"/>
+      <text x="137" y="110" text-anchor="middle" font-size="14">ANCIEN</text>
+      <text x="137" y="140" text-anchor="middle" font-size="19" font-weight="700">À UTILISER</text>
+      <text x="347" y="110" text-anchor="middle" font-size="14">ENTRÉ AVANT</text>
+      <text x="557" y="110" text-anchor="middle" font-size="14">PLUS RÉCENT</text>
+      <text x="765" y="110" text-anchor="middle" font-size="14">NOUVEAU</text>
+      <path d="M230 195 H55" class="line" stroke-width="3" marker-end="url(#arrow)"/>
+      <text x="450" y="222" text-anchor="middle" font-size="16">Sens de sortie : les plus anciens d’abord</text>
+      <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" class="accent"/></marker></defs>
+    </svg>
+  </div>
+  <div class="callout"><strong>📌 Rappel hygiène</strong>La rotation des produits doit être associée au respect des conditions de conservation et aux contrôles nécessaires à la sécurité alimentaire.</div>
+</div>
+</section>
+
+<section id="commande" class="section-alt">
+<div class="container reveal">
+  <div class="eyebrow">04 · Approvisionnement</div>
+  <h2>Du besoin au bon de commande</h2>
+  <p class="section-intro">Avant de commander, on part des besoins prévus, du stock disponible et du niveau de stock souhaité.</p>
+  <div class="tabs">
+    <div class="tab-buttons" role="tablist" aria-label="Approches d’approvisionnement">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-besoin" id="btn-besoin">Analyser le besoin</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-commande" id="btn-commande">Préparer la commande</button>
+    </div>
+    <div class="tab-panel" id="tab-besoin" role="tabpanel" aria-labelledby="btn-besoin">
+      <div class="grid-2">
+        <div><h3>1. Observer</h3><p>Consulter l’inventaire et repérer les produits proches du seuil de commande.</p></div>
+        <div><h3>2. Prévoir</h3><p>Tenir compte de l’activité prévue et des besoins de production.</p></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-commande" role="tabpanel" aria-labelledby="btn-commande" hidden>
+      <div class="grid-2">
+        <div><h3>3. Quantifier</h3><p>Déterminer les quantités à acheter et les unités utilisées.</p></div>
+        <div><h3>4. Formaliser</h3><p>Renseigner un bon de commande clair : produit, quantité, unité et fournisseur.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <caption style="text-align:left;margin-bottom:10px;font-weight:700">Modèle simplifié de bon de commande</caption>
+      <thead><tr><th>Référence</th><th>Produit</th><th class="mono">Quantité</th><th>Unité</th><th>Observations</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">RIZ-01</td><td>Riz</td><td class="mono">10</td><td>kg</td><td>Sac adapté au stockage</td></tr>
+        <tr><td class="mono">HUI-02</td><td>Huile</td><td class="mono">5</td><td>L</td><td>Conditionnement habituel</td></tr>
+        <tr><td class="mono">TOM-03</td><td>Tomates</td><td class="mono">8</td><td>kg</td><td>À contrôler à réception</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><strong>👨‍🍳 Conseil professionnel</strong>Une commande précise facilite la réception : moins il y a d’ambiguïtés sur le produit ou la quantité, plus le contrôle est rapide.</div>
+</div>
+</section>
+
+<section id="reception">
+<div class="container reveal">
+  <div class="eyebrow">05 · Réception</div>
+  <h2>Contrôler avant de ranger</h2>
+  <p class="section-intro">La réception est une étape de contrôle. Les marchandises livrées doivent être confrontées à la commande et vérifiées avant leur rangement.</p>
+  <div class="grid-3">
+    <article class="card"><div class="icon">✓</div><h3>Quantité</h3><p>Comparer les quantités livrées avec celles demandées.</p></article>
+    <article class="card"><div class="icon">□</div><h3>Conformité</h3><p>Vérifier l’état, l’identification et la conformité des produits reçus.</p></article>
+    <article class="card"><div class="icon">↻</div><h3>Rangement</h3><p>Orienter rapidement les produits vers leur zone de stockage appropriée.</p></article>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <caption style="text-align:left;margin-bottom:10px;font-weight:700">Modèle de contrôle à réception</caption>
+      <thead><tr><th>Point contrôlé</th><th>Question</th><th>Résultat</th><th>Action si écart</th></tr></thead>
+      <tbody>
+        <tr><td>Produit</td><td>Est-ce le produit commandé ?</td><td>Conforme / Écart</td><td>Signaler</td></tr>
+        <tr><td>Quantité</td><td>La quantité correspond-elle ?</td><td>Conforme / Écart</td><td>Noter l’écart</td></tr>
+        <tr><td>État</td><td>Le produit est-il en bon état ?</td><td>Conforme / Écart</td><td>Isoler / signaler</td></tr>
+        <tr><td>Conservation</td><td>Les conditions prévues sont-elles respectées ?</td><td>Conforme / Écart</td><td>Traiter l’écart</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><strong>⚠️ Attention · erreur fréquente</strong>Ranger immédiatement une livraison sans la contrôler peut rendre plus difficile la détection d’une erreur de quantité ou de conformité.</div>
+</div>
+</section>
+
+<section id="documents" class="section-alt">
+<div class="container reveal">
+  <div class="eyebrow">06 · Documents de travail</div>
+  <h2>Les documents qui structurent le suivi</h2>
+  <div class="grid-2">
+    <details open><summary>Fiche d’inventaire</summary><p>Elle sert à enregistrer les quantités réellement présentes et à suivre les écarts.</p></details>
+    <details><summary>Bon de commande</summary><p>Il formalise la demande adressée au fournisseur et précise les produits et quantités souhaités.</p></details>
+    <details><summary>Document de réception</summary><p>Il permet de garder une trace des contrôles effectués lors de la livraison.</p></details>
+    <details><summary>Suivi des stocks</summary><p>Il aide à visualiser les entrées, les sorties et les niveaux de stock afin d’anticiper les besoins.</p></details>
+  </div>
+</div>
+</section>
+
+<section id="exercice">
+<div class="container reveal">
+  <div class="eyebrow">07 · Mini-exercice</div>
+  <h2>Quel produit utiliser en premier ?</h2>
+  <div class="exercise">
+    <p><strong>Situation :</strong> dans la réserve, trois cartons du même produit sont disponibles. Le carton A est entré lundi, B mercredi et C vendredi. Nous sommes samedi.</p>
+    <p>Selon la règle FIFO, lequel doit être utilisé en premier ?</p>
+    <button class="choice" data-answer="wrong">Carton C — entré vendredi</button>
+    <button class="choice" data-answer="correct">Carton A — entré lundi</button>
+    <button class="choice" data-answer="wrong">Carton B — entré mercredi</button>
+    <div class="result" id="exerciseResult" aria-live="polite"></div>
+  </div>
+</div>
+</section>
+
+<section id="essentiel" class="section-alt">
+<div class="container reveal">
+  <div class="eyebrow">08 · Synthèse</div>
+  <h2>Points clés à retenir</h2>
+  <div class="grid-3 key-grid">
+    <article class="card"><h3>Inventorier</h3><p>Compter et enregistrer les produits réellement disponibles.</p></article>
+    <article class="card"><h3>FIFO</h3><p>Faire sortir en priorité les produits entrés en premier.</p></article>
+    <article class="card"><h3>Commander</h3><p>Anticiper les besoins à partir du stock et de l’activité prévue.</p></article>
+    <article class="card"><h3>Réceptionner</h3><p>Contrôler la livraison avant le rangement.</p></article>
+    <article class="card"><h3>Tracer</h3><p>Utiliser des documents simples pour conserver une information fiable.</p></article>
+    <article class="card"><h3>Prévenir</h3><p>Une gestion régulière limite les ruptures, les pertes et les erreurs.</p></article>
+  </div>
+  <div class="nav-lessons">
+    <a class="nav-card" href="#" aria-label="Leçon précédente"><span class="nav-label">Leçon précédente</span><br><strong>08 · Pâtisserie de base</strong></a>
+    <a class="top-link" href="#objectifs">↑ Sommaire</a>
+    <a class="nav-card next" href="#" aria-label="Leçon suivante"><span class="nav-label">Leçon suivante</span><br><strong>10 · Organisation de la brigade et poste de travail</strong></a>
+  </div>
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">Filière Restauration · Module 2 · Leçon 09 — Gestion des stocks et approvisionnement</div>
+</footer>
+
+<script>
+const progressBar=document.getElementById('progressBar');
+function updateProgress(){
+  const doc=document.documentElement;
+  const max=doc.scrollHeight-window.innerHeight;
+  progressBar.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+updateProgress();
+
+const menuToggle=document.getElementById('menuToggle');
+const toc=document.getElementById('toc');
+menuToggle.addEventListener('click',()=>{
+  const open=toc.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded',open);
+});
+toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  toc.classList.remove('open');menuToggle.setAttribute('aria-expanded','false');
+}));
+
+const tabButtons=document.querySelectorAll('.tab-btn');
+tabButtons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    tabButtons.forEach(b=>b.setAttribute('aria-selected','false'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.hidden=true);
+    btn.setAttribute('aria-selected','true');
+    document.getElementById(btn.getAttribute('aria-controls')).hidden=false;
+  });
+});
+tabButtons.forEach((btn,i)=>{
+  btn.addEventListener('keydown',e=>{
+    if(!['ArrowRight','ArrowLeft'].includes(e.key))return;
+    e.preventDefault();
+    const next=(i+(e.key==='ArrowRight'?1:-1)+tabButtons.length)%tabButtons.length;
+    tabButtons[next].focus();tabButtons[next].click();
+  });
+});
+
+document.querySelectorAll('.choice').forEach(choice=>{
+  choice.addEventListener('click',()=>{
+    const result=document.getElementById('exerciseResult');
+    if(choice.dataset.answer==='correct'){
+      result.textContent='✓ Bonne réponse : le carton A est le plus ancien, il sort en premier selon FIFO.';
+    }else{
+      result.textContent='À revoir : FIFO signifie « premier entré, premier sorti ».';
+    }
+  });
+});
+
+const reveals=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}});
+  },{threshold:.08});
+  reveals.forEach(el=>observer.observe(el));
+}else{reveals.forEach(el=>el.classList.add('visible'))}
+</script>
+</body>
+</html>

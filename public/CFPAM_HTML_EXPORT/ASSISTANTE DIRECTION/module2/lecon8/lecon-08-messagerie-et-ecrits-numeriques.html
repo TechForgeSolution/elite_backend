@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 8 — Messagerie et écrits numériques</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  /* Mail schema */
+  .mail-frame{border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg); margin:20px 0; overflow:hidden;}
+  .mail-field{display:flex; border-bottom:1px solid var(--color-border); font-size:0.88rem;}
+  .mail-field:last-child{border-bottom:none;}
+  .mail-field .mf-label{width:90px; flex-shrink:0; padding:9px 12px; background:var(--color-bg-alt); color:var(--color-text-muted); font-weight:600;}
+  .mail-field .mf-value{padding:9px 12px; flex:1;}
+  .mail-body{padding:16px; font-size:0.9rem; color:var(--color-text-muted); border-top:2px solid var(--color-border);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 8 — Messagerie et écrits numériques</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#objet-structure">1. Objet et structure d'un courriel</a>
+          <a href="#copie-copie-cachee">2. Copie et copie cachée</a>
+          <a href="#pieces-jointes">3. Pièces jointes</a>
+          <a href="#regles-dossiers">4. Règles et dossiers</a>
+          <a href="#signature-ton">5. Signature, ton et nétiquette</a>
+          <a href="#relances">6. Relances</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 2 — Communication professionnelle écrite et orale</span>
+      <span class="badge brass">Niveau débutant</span>
+      <span class="badge">25 min</span>
+    </div>
+    <h1>Leçon 8 — Messagerie et écrits numériques</h1>
+    <p class="subtitle">Gérer une boîte professionnelle sans perdre d'information : structurer ses courriels, organiser sa messagerie et relancer avec le bon ton.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Rédiger un courriel professionnel avec un objet clair et une structure lisible.</li>
+      <li>Utiliser à bon escient la copie (Cc) et la copie cachée (Cci).</li>
+      <li>Gérer les pièces jointes sans erreur ni oubli.</li>
+      <li>Organiser une boîte de réception à l'aide de règles et de dossiers.</li>
+      <li>Adopter une signature et un ton conformes à la nétiquette professionnelle.</li>
+      <li>Relancer un correspondant efficacement, sans agressivité ni négligence.</li>
+    </ul>
+  </div>
+
+  <section id="objet-structure">
+    <h2>1. Objet et structure d'un courriel</h2>
+    <p>L'objet d'un courriel professionnel n'est pas accessoire : c'est souvent la seule information visible avant l'ouverture du message, et celle qui permet de le retrouver plus tard. Un objet vague (« Question », « Bonjour ») oblige le destinataire à ouvrir le message pour en comprendre l'urgence, et rend la recherche ultérieure quasi impossible.</p>
+    <p>Un courriel professionnel bien structuré suit toujours le même schéma : une formule d'appel, un message court allant à l'essentiel, une formule de politesse, puis une signature. Chaque paragraphe traite une seule idée.</p>
+
+    <div class="mail-frame">
+      <div class="mail-field"><div class="mf-label">Objet</div><div class="mf-value">Devis rénovation salle de réunion — retour attendu avant le 12/10</div></div>
+      <div class="mail-field"><div class="mf-label">À</div><div class="mf-value">j.moreau@fournisseur-exemple.fr</div></div>
+      <div class="mail-body">Bonjour Monsieur Moreau,<br><br>Pourriez-vous nous transmettre un devis actualisé pour la rénovation de la salle de réunion, avant le 12 octobre ?<br><br>Je reste à votre disposition pour toute précision.<br><br>Cordialement,<br>Camille Dubois</div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Un bon objet contient le sujet précis et, si utile, une échéance ou une action attendue : « Facture n°2451 — paiement à confirmer avant vendredi » plutôt que « Facture ».
+    </div>
+
+    <div class="tabs" data-tabs="objet-vague-precis">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Objet vague</button>
+        <button class="tab-btn" role="tab" data-tab="b">Objet précis</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>« Réunion » — le destinataire ne sait pas de quelle réunion il s'agit, ni ce qui est attendu de lui. Ce message se noie dans la boîte de réception et devient introuvable au bout de quelques semaines.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>« Réunion budget 2027 — confirmer votre présence le 14/11 à 10h » — le sujet, l'action attendue et l'échéance sont visibles sans ouvrir le message.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Répondre à un ancien message pour traiter un sujet totalement différent, en laissant l'objet d'origine. Le fil devient incohérent et le message est difficile à retrouver.
+    </div>
+  </section>
+
+  <section id="copie-copie-cachee">
+    <h2>2. Copie et copie cachée</h2>
+    <p>Le champ <strong>À</strong> désigne le ou les destinataires principaux, ceux dont une action ou une réponse est attendue. Le champ <strong>Cc</strong> (copie carbone) informe des personnes qui n'ont pas à répondre mais doivent être tenues au courant. Le champ <strong>Cci</strong> (copie cachée) fait de même, sans que les autres destinataires ne voient qui est en copie cachée.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Champ</th><th>Rôle</th><th>Exemple d'usage</th></tr></thead>
+        <tbody>
+          <tr><td>À</td><td>Destinataire(s) principal(aux), une réponse ou une action est attendue</td><td>La personne chargée de traiter la demande</td></tr>
+          <tr><td>Cc</td><td>Personnes informées, sans action attendue</td><td>Le responsable hiérarchique tenu au courant</td></tr>
+          <tr><td>Cci</td><td>Personnes informées sans que les autres le sachent</td><td>Envoi groupé à une liste externe, pour protéger les adresses</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Mettre en Cci une personne pour qu'elle « surveille discrètement » un échange interne : c'est perçu comme une manœuvre déloyale si elle est découverte. La Cci s'utilise surtout pour protéger des adresses lors d'un envoi groupé.
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      Pour un envoi à de nombreux destinataires externes qui ne se connaissent pas entre eux, toujours utiliser le Cci : mettre toutes les adresses en À ou en Cc expose la liste complète des contacts à chaque destinataire.
+    </div>
+  </section>
+
+  <section id="pieces-jointes">
+    <h2>3. Pièces jointes</h2>
+    <p>Une pièce jointe mal gérée est l'une des causes les plus fréquentes d'incidents en messagerie professionnelle : fichier oublié, mauvaise version envoyée, format illisible par le destinataire, ou poids excessif bloquant l'envoi.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Nommer clairement</h3><p>Un nom de fichier explicite (« Devis_RenovationSalle_2026-10.pdf ») plutôt que « document1.pdf ».</p></div>
+      <div class="card"><h3>Vérifier avant d'envoyer</h3><p>Ouvrir la pièce jointe pour confirmer qu'il s'agit bien de la bonne version, avant tout envoi.</p></div>
+      <div class="card"><h3>Adapter le format</h3><p>Un PDF pour un document final, un format modifiable seulement si une modification est attendue en retour.</p></div>
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Que faire si le fichier est trop lourd ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Compresser le fichier, le convertir en PDF allégé, ou utiliser un service de transfert sécurisé fourni par l'organisation plutôt qu'un service grand public non validé.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Comment éviter d'oublier la pièce jointe ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Joindre le fichier en tout premier, avant même de rédiger le corps du message. La plupart des messageries détectent aussi le mot « pièce jointe » dans le texte et alertent si aucun fichier n'est attaché.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Faut-il toujours joindre le fichier d'origine ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Non : pour un document destiné à ne plus être modifié (devis signé, rapport final), un export PDF évite toute modification involontaire côté destinataire.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="regles-dossiers">
+    <h2>4. Règles et dossiers</h2>
+    <p>Une boîte de réception professionnelle reçoit chaque jour des dizaines de messages de nature différente. Sans organisation, les messages importants se noient parmi les notifications automatiques et les échanges déjà traités.</p>
+
+    <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma d'une boîte de réception organisée en dossiers" style="width:100%; max-width:520px; display:block; margin:20px auto;">
+      <rect x="10" y="10" width="180" height="200" fill="#E8EFEB" stroke="#5E5A54" stroke-width="1"/>
+      <text x="100" y="30" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle" font-weight="600">Boîte de réception</text>
+      <rect x="24" y="45" width="152" height="24" fill="#FDFCFA" stroke="#E4DFD6"/>
+      <text x="30" y="61" font-family="Inter" font-size="9.5" fill="#16181C">Message non trié</text>
+      <rect x="24" y="75" width="152" height="24" fill="#FDFCFA" stroke="#E4DFD6"/>
+      <text x="30" y="91" font-family="Inter" font-size="9.5" fill="#16181C">Message urgent</text>
+      <line x1="200" y1="60" x2="240" y2="30" stroke="#A8823C" stroke-width="1.2"/>
+      <line x1="200" y1="85" x2="240" y2="95" stroke="#A8823C" stroke-width="1.2"/>
+      <line x1="200" y1="85" x2="240" y2="160" stroke="#A8823C" stroke-width="1.2"/>
+      <rect x="240" y="12" width="150" height="36" fill="none" stroke="#5E5A54"/>
+      <text x="315" y="34" font-family="Inter" font-size="10.5" fill="#16181C" text-anchor="middle">📁 À traiter</text>
+      <rect x="240" y="80" width="150" height="36" fill="none" stroke="#5E5A54"/>
+      <text x="315" y="102" font-family="Inter" font-size="10.5" fill="#16181C" text-anchor="middle">📁 En attente de réponse</text>
+      <rect x="240" y="145" width="150" height="36" fill="none" stroke="#5E5A54"/>
+      <text x="315" y="167" font-family="Inter" font-size="10.5" fill="#16181C" text-anchor="middle">📁 Archives / Traité</text>
+      <rect x="440" y="12" width="180" height="36" fill="#F5F2EC" stroke="#E4DFD6"/>
+      <text x="530" y="34" font-family="Inter" font-size="9.5" fill="#5E5A54" text-anchor="middle">Règle : notifications auto → dossier dédié</text>
+    </svg>
+
+    <p>Deux mécanismes complémentaires permettent cette organisation : les <strong>règles</strong> (tri automatique selon l'expéditeur, l'objet ou des mots-clés) et les <strong>dossiers</strong> (classement manuel une fois le message traité).</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Trier</h3><p>Séparer l'urgent, l'important non urgent et l'information pure.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Créer des dossiers</h3><p>Par projet, par correspondant ou par statut (à traiter, en attente, archivé).</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Automatiser</h3><p>Une règle range directement les notifications répétitives hors de la boîte principale.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Archiver</h3><p>Un message traité quitte la boîte de réception pour un dossier d'archive.</p></div>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Boîte de réception vide en fin de journée n'est pas obligatoire, mais chaque message qui y reste doit correspondre à une action encore non traitée.
+    </div>
+  </section>
+
+  <section id="signature-ton">
+    <h2>5. Signature, ton et nétiquette</h2>
+    <p>La signature identifie l'expéditeur et facilite le contact en retour : nom, fonction, organisation, coordonnées. Elle doit rester sobre et identique sur l'ensemble des messages professionnels.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Signature professionnelle</span><button class="copy-btn" data-copy-target="model-sig">Copier</button></div>
+      <pre id="model-sig">Camille Dubois
+Assistante de direction — Direction générale
+[Nom de l'organisation]
+Tél. : 01 23 45 67 89
+camille.dubois@organisation-exemple.fr</pre>
+    </div>
+
+    <p>Le ton d'un courriel professionnel reste courtois même en cas de désaccord ou de contretemps. La nétiquette (l'ensemble des usages de politesse propres à l'écrit numérique) repose sur quelques règles simples.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Pas de majuscules</h3><p>Écrire en majuscules équivaut à crier ; à réserver aux sigles usuels uniquement.</p></div>
+      <div class="card"><h3>Relire avant d'envoyer</h3><p>Fautes, ton, destinataires et pièce jointe se vérifient systématiquement avant l'envoi.</p></div>
+      <div class="card"><h3>Un délai de réponse raisonnable</h3><p>Accuser réception rapidement, même si la réponse complète prendra plus de temps.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Répondre à chaud à un message perçu comme désagréable. Un brouillon rédigé sous le coup de l'agacement gagne toujours à être relu, voire laissé de côté quelques minutes, avant envoi.
+    </div>
+  </section>
+
+  <section id="relances">
+    <h2>6. Relances</h2>
+    <p>Relancer un correspondant qui n'a pas répondu fait partie des tâches courantes d'une messagerie professionnelle. Une relance efficace rappelle le contexte, reste courtoise et propose une échéance claire, sans reproche.</p>
+
+    <div class="tabs" data-tabs="relance-tons">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Relance maladroite</button>
+        <button class="tab-btn" role="tab" data-tab="b">Relance efficace</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>« Je n'ai toujours pas de réponse, c'est urgent, merci de faire le nécessaire rapidement. » — ton sec, aucun rappel du contexte, le destinataire doit rechercher lui-même le message d'origine.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>« Je me permets de revenir vers vous concernant le devis demandé le 3 octobre (message ci-dessous). Pourriez-vous nous le transmettre avant le 15 octobre ? » — contexte rappelé, échéance précisée, ton neutre.</p>
+      </div>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant de relancer : vérifier qu'aucune réponse n'est arrivée dans un autre dossier, répondre dans le fil existant plutôt que créer un nouveau message, et proposer une échéance réaliste.
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Certaines messageries permettent de programmer un rappel automatique sur un message envoyé sans réponse au bout d'un délai donné, ce qui évite d'oublier une relance.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Vous prenez en charge une boîte professionnelle contenant 30 messages accumulés sur deux jours d'absence : demandes de devis, notifications automatiques, une relance client déjà ancienne, plusieurs messages internes en copie, et deux fils de discussion sur le même sujet avec des objets différents.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 1 à 6, décrivez l'ordre dans lequel vous traiteriez cette boîte : tri initial, réponses prioritaires, relances à envoyer, et éléments à archiver.</p>
+    </div>
+  </section>
+
+  <section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Un objet clair et précis facilite la lecture immédiate et la recherche ultérieure du message.</li>
+      <li>Le Cc informe sans attendre d'action ; le Cci protège les adresses lors d'un envoi groupé.</li>
+      <li>Une pièce jointe se nomme clairement et se vérifie avant l'envoi, dans le format adapté.</li>
+      <li>Règles et dossiers permettent de garder une boîte de réception exploitable au quotidien.</li>
+      <li>Signature sobre et ton courtois constant construisent l'image professionnelle de l'expéditeur.</li>
+      <li>Une relance efficace rappelle le contexte et propose une échéance, sans reproche.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : une <strong>boîte organisée</strong> (règles et dossiers) et <strong>cinq courriels types rédigés</strong>, réutilisables directement en situation professionnelle.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Organisation de la boîte (règles et dossiers)</span><button class="copy-btn" data-copy-target="model-boite">Copier</button></div>
+      <pre id="model-boite">Dossiers à créer :
+- À traiter
+- En attente de réponse
+- Archives (par mois ou par projet)
+- Notifications automatiques
+
+Règles à configurer :
+- Expéditeur = outil interne (ex. logiciel de facturation) → dossier "Notifications automatiques"
+- Objet contient "facture" → copie dans le dossier "Comptabilité"
+- Message reçu en Cci de la direction → marqué comme "Information", sans réponse attendue</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Courriel type 1 — Demande d'information</span><button class="copy-btn" data-copy-target="model-1">Copier</button></div>
+      <pre id="model-1">Objet : Demande d'information — [sujet précis]
+
+Bonjour [Civilité + Nom],
+
+Je me permets de vous contacter au sujet de [sujet]. Pourriez-vous me transmettre [information demandée] avant le [échéance] ?
+
+Je reste à votre disposition pour tout complément.
+
+Cordialement,
+[Nom et fonction]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Courriel type 2 — Réponse à une demande</span><button class="copy-btn" data-copy-target="model-2">Copier</button></div>
+      <pre id="model-2">Objet : RE : [objet du message d'origine]
+
+Bonjour [Civilité + Nom],
+
+Suite à votre message, voici les éléments demandés : [réponse].
+
+N'hésitez pas à revenir vers moi pour toute précision complémentaire.
+
+Cordialement,
+[Nom et fonction]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Courriel type 3 — Transmission avec pièce jointe</span><button class="copy-btn" data-copy-target="model-3">Copier</button></div>
+      <pre id="model-3">Objet : Transmission — [nom du document] pour [usage/échéance]
+
+Bonjour [Civilité + Nom],
+
+Veuillez trouver ci-joint [nom du document]. [Une phrase de contexte si nécessaire.]
+
+Merci de me confirmer sa bonne réception.
+
+Cordialement,
+[Nom et fonction]
+
+Pièce jointe : [Nom_du_fichier.pdf]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Courriel type 4 — Relance courtoise</span><button class="copy-btn" data-copy-target="model-4">Copier</button></div>
+      <pre id="model-4">Objet : RE : [objet du message d'origine] — relance
+
+Bonjour [Civilité + Nom],
+
+Je me permets de revenir vers vous concernant [sujet], évoqué dans mon message du [date] ci-dessous.
+
+Pourriez-vous m'indiquer où en est ce dossier, et si possible me répondre avant le [échéance] ?
+
+Cordialement,
+[Nom et fonction]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Courriel type 5 — Report ou excuse pour un délai</span><button class="copy-btn" data-copy-target="model-5">Copier</button></div>
+      <pre id="model-5">Objet : RE : [objet du message d'origine] — délai complémentaire
+
+Bonjour [Civilité + Nom],
+
+Je vous remercie pour votre message. Le délai annoncé initialement doit être revu : je pourrai vous transmettre [élément attendu] d'ici le [nouvelle échéance].
+
+Je vous prie de bien vouloir excuser ce contretemps.
+
+Cordialement,
+[Nom et fonction]</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Dossiers créés (à traiter, en attente, archives, notifications)</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Au moins une règle de tri automatique configurée</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Cinq courriels types rédigés et relus</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Signature professionnelle enregistrée dans la messagerie</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Usage du Cc et du Cci vérifié sur les modèles concernés</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Modèle de relance testé sur un cas réel en attente</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 7 — Comptes rendus et procès-verbaux</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 9 — Communication orale et relation client</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 2 — Communication professionnelle écrite et orale · Leçon 8 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

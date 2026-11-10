@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 04 — Mettre en place sa boutique et ses canaux de vente</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23059669'/><path d='M25 35h50l-6 30H31zM38 35a12 12 0 0 1 24 0' fill='none' stroke='white' stroke-width='7' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--bg-alt:#F4F9F6;--text:#0A0F0C;--muted:#626B65;--accent:#059669;--accent-soft:#E8F7F0;--border:#DDE9E2;--accent-text:#047857;
+--display:'Sora','Segoe UI',system-ui,sans-serif;--body:'Source Sans 3','Segoe UI',system-ui,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.125rem/1.7 var(--body)}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.bar{max-width:1040px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font:700 1rem var(--display);display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.brand svg{width:26px;height:26px}
+.menu-btn{font:600 .95rem var(--body);background:none;border:1px solid var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--text)}
+.menu-btn:hover{border-color:var(--accent)}
+#menu{display:none;position:absolute;right:20px;top:100%;background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:280px;box-shadow:0 10px 30px rgba(10,15,12,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:9px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-size:1rem}
+#menu a:hover{background:var(--accent-soft)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);border-bottom:1px solid var(--border);padding:72px 0 56px}
+.hero .wrap{max-width:1040px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--accent-soft);color:var(--accent-text);border:1px solid var(--border);padding:4px 12px;border-radius:99px;font-size:.9rem;font-weight:600}
+.badge.dark{background:var(--text);color:#fff;border-color:var(--text)}
+.course{color:var(--muted);font-size:1rem;margin:0 0 8px}
+h1{font:700 clamp(2rem,4.5vw,3rem)/1.15 var(--display);margin:0 0 18px;letter-spacing:-.02em}
+.lead{font-size:1.25rem;color:var(--muted);margin:0}
+.hero svg{width:100%;height:auto}
+.goal{margin-top:24px;padding-left:16px;border-left:3px solid var(--accent);font-size:1.05rem}
+h2{font:700 clamp(1.5rem,3vw,2rem)/1.25 var(--display);margin:0 0 20px;letter-spacing:-.01em}
+h3{font:600 1.2rem/1.35 var(--display);margin:32px 0 10px}
+section.lesson{padding:72px 0}
+section.alt{background:var(--bg-alt);border-block:1px solid var(--border)}
+p{margin:0 0 1.1em}
+.toc{padding:48px 0 0}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:t}
+.toc a{display:flex;gap:14px;align-items:baseline;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);counter-increment:t;transition:border-color .2s,background .2s}
+.toc a::before{content:counter(t);font:700 .95rem var(--display);color:var(--accent-text)}
+.toc a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0;max-width:1040px}
+.full{max-width:1040px;margin:auto;padding:0 20px}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card svg{width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin:0 0 6px;font-size:1.1rem}
+.card p{margin:0;color:var(--muted);font-size:1rem;line-height:1.55}
+.note{border-radius:12px;padding:16px 20px;margin:28px 0;border:1px solid var(--border);background:var(--bg-alt)}
+.note strong{display:block;font:600 1rem var(--display);margin-bottom:4px}
+.note p{margin:0;font-size:1.02rem}
+.note.tip{background:var(--accent-soft);border-color:#bfe6d4}
+.note.warn{background:#fff;border-left:4px solid var(--text)}
+.note.best{border-left:4px solid var(--accent);background:#fff}
+.tabs [role=tablist]{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:22px;overflow-x:auto}
+.tabs [role=tab]{font:600 1rem var(--body);background:none;border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;color:var(--muted);white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--text);border-bottom-color:var(--accent)}
+.tabs [role=tab]:hover{color:var(--accent-text)}
+.panel[hidden]{display:none}
+.panel{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel ul{padding-left:20px;margin:0 0 1em}
+.panel li{margin-bottom:6px}
+.ex{background:var(--bg-alt);border-radius:10px;padding:12px 16px;font-size:1rem;color:var(--muted)}
+.tw{overflow-x:auto;margin:24px 0}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:1rem;line-height:1.5;background:#fff}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+thead th{font:600 .95rem var(--display);background:var(--text);color:#fff}
+tbody th{font-weight:600;background:var(--bg-alt)}
+details{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent-text);font:700 1.3rem/1 var(--display);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details>div{padding:0 18px 14px;color:var(--muted);font-size:1.02rem}
+.fig{margin:28px 0;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{text-align:center;color:var(--muted);font-size:.95rem;margin-top:8px}
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:s;position:relative}
+.stepper li{counter-increment:s;position:relative;padding-top:52px;font-size:1rem;line-height:1.5}
+.stepper li::before{content:counter(s);position:absolute;top:0;left:0;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 1rem var(--display);z-index:1}
+.stepper li::after{content:"";position:absolute;top:18px;left:38px;right:-14px;height:2px;background:var(--border)}
+.stepper li:last-child::after{display:none}
+.stepper b{display:block;font:600 1rem var(--display);margin-bottom:4px}
+.key{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:1040px;margin:auto}
+.key div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px 18px 52px;position:relative;font-size:1.02rem;line-height:1.55}
+.key div::before{content:"";position:absolute;left:18px;top:22px;width:20px;height:20px;border-radius:50%;background:var(--accent-soft) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5 10.5l3.5 3.5L15 7' fill='none' stroke='%23059669' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
+.pager{max-width:1040px;margin:0 auto;padding:56px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pager a,.pager span{display:block;padding:18px 22px;border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);line-height:1.4}
+.pager small{display:block;color:var(--muted);font-size:.9rem;margin-bottom:4px}
+.pager a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.pager .next{text-align:right}
+.back{text-align:center;padding-bottom:40px}
+.back a{font-weight:600}
+footer{border-top:1px solid var(--border);padding:28px 20px;text-align:center;color:var(--muted);font-size:.95rem}
+#top{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.3rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s;z-index:60}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{background:var(--accent)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media(max-width:820px){
+.hero .wrap{grid-template-columns:1fr}.hero{padding:48px 0 40px}
+.cards,.key{grid-template-columns:1fr}
+.stepper{grid-template-columns:1fr;gap:20px}
+.stepper li{padding:2px 0 0 54px}.stepper li::after{display:none}
+.pager{grid-template-columns:1fr}.pager .next{text-align:left}
+section.lesson{padding:52px 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top">
+ <div class="bar">
+  <a class="brand" href="#debut"><svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#059669"/><path d="M25 35h50l-6 30H31zM38 35a12 12 0 0 1 24 0" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"/></svg>Formation E-commerce</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire rapide">
+   <a href="#arborescence">Arborescence et pages indispensables</a>
+   <a href="#whatsapp">WhatsApp Business</a>
+   <a href="#social">Facebook et Instagram</a>
+   <a href="#marketplaces">Marketplaces</a>
+   <a href="#technique">Bases techniques</a>
+   <a href="#commande">Parcours de commande</a>
+   <a href="#retenir">Points clés</a>
+  </nav>
+ </div>
+</header>
+
+<main id="debut">
+<section class="hero">
+ <div class="wrap">
+  <div>
+   <div class="badges"><span class="badge dark">Module 1 — Fondamentaux de la vente en ligne</span><span class="badge">15 min de lecture</span><span class="badge">Niveau débutant</span></div>
+   <p class="course">Leçon 04</p>
+   <h1>Mettre en place sa boutique et ses canaux de vente</h1>
+   <p class="lead">Organisez un dispositif simple pour que vos clients découvrent vos produits, les consultent et puissent commander facilement.</p>
+   <p class="goal"><strong>Objectif :</strong> configurer un dispositif simple permettant aux clients de découvrir et commander les produits.</p>
+  </div>
+  <svg viewBox="0 0 320 260" role="img" aria-label="Illustration : boutique en ligne reliée à un catalogue, un client et une commande">
+   <rect x="20" y="30" width="190" height="150" rx="14" fill="#fff" stroke="#DDE9E2" stroke-width="2"/>
+   <rect x="20" y="30" width="190" height="26" rx="14" fill="#0A0F0C"/><rect x="20" y="44" width="190" height="12" fill="#0A0F0C"/>
+   <circle cx="36" cy="43" r="4" fill="#fff"/><circle cx="50" cy="43" r="4" fill="#059669"/>
+   <rect x="36" y="72" width="70" height="60" rx="8" fill="#E8F7F0"/>
+   <path d="M54 96h34M54 107h24M54 118h30" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
+   <rect x="118" y="72" width="76" height="8" rx="4" fill="#DDE9E2"/><rect x="118" y="90" width="50" height="8" rx="4" fill="#DDE9E2"/>
+   <rect x="118" y="118" width="76" height="26" rx="13" fill="#059669"/><text x="156" y="135" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Sora,sans-serif">Commander</text>
+   <rect x="36" y="146" width="70" height="8" rx="4" fill="#DDE9E2"/>
+   <rect x="170" y="160" width="130" height="70" rx="12" fill="#F4F9F6" stroke="#DDE9E2" stroke-width="2"/>
+   <path d="M186 196h54M232 188l8 8-8 8" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+   <circle cx="276" cy="196" r="14" fill="#fff" stroke="#0A0F0C" stroke-width="2.5"/>
+   <path d="M269 196h14M276 189v14" stroke="#0A0F0C" stroke-width="2"/>
+   <text x="235" y="224" text-anchor="middle" font-size="11" fill="#626B65" font-family="Source Sans 3,sans-serif">Commande</text>
+  </svg>
+ </div>
+</section>
+
+<nav class="toc" aria-labelledby="toc-t">
+ <div class="wrap">
+  <h2 id="toc-t">Au programme</h2>
+  <ol>
+   <li><a href="#arborescence">Arborescence et pages indispensables d'une boutique</a></li>
+   <li><a href="#whatsapp">Configurer le catalogue WhatsApp Business</a></li>
+   <li><a href="#social">Utiliser Facebook et Instagram pour vendre</a></li>
+   <li><a href="#marketplaces">Comprendre les marketplaces</a></li>
+   <li><a href="#technique">Nom de domaine, hébergement et navigation mobile</a></li>
+   <li><a href="#commande">Concevoir un parcours de commande fluide</a></li>
+   <li><a href="#retenir">Points clés à retenir</a></li>
+  </ol>
+ </div>
+</nav>
+
+<section class="lesson" id="arborescence">
+ <div class="wrap rv">
+  <h2>Arborescence et pages indispensables</h2>
+  <p>Une boutique en ligne doit permettre au visiteur de comprendre rapidement ce que vous vendez, de trouver un produit, de vérifier les informations utiles et de passer commande sans se perdre.</p>
+  <figure class="fig">
+   <svg viewBox="0 0 760 280" role="img" aria-label="Schéma d'arborescence d'une boutique en ligne">
+    <g font-family="Source Sans 3,sans-serif" fill="#0A0F0C">
+     <rect x="300" y="18" width="160" height="44" rx="10" fill="#E8F7F0" stroke="#059669" stroke-width="2"/>
+     <text x="380" y="46" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="14">Accueil</text>
+     <path d="M380 62v28M380 90H90M380 90H670M90 90v24M240 90v24M380 90v24M520 90v24M670 90v24" fill="none" stroke="#DDE9E2" stroke-width="2"/>
+     <rect x="25" y="114" width="130" height="42" rx="9" fill="#fff" stroke="#DDE9E2"/>
+     <rect x="175" y="114" width="130" height="42" rx="9" fill="#fff" stroke="#DDE9E2"/>
+     <rect x="315" y="114" width="130" height="42" rx="9" fill="#fff" stroke="#DDE9E2"/>
+     <rect x="455" y="114" width="130" height="42" rx="9" fill="#fff" stroke="#DDE9E2"/>
+     <rect x="605" y="114" width="130" height="42" rx="9" fill="#fff" stroke="#DDE9E2"/>
+     <text x="90" y="140" text-anchor="middle" font-size="13">Catalogue</text>
+     <text x="240" y="140" text-anchor="middle" font-size="13">À propos</text>
+     <text x="380" y="140" text-anchor="middle" font-size="13">Contact</text>
+     <text x="520" y="140" text-anchor="middle" font-size="13">Panier</text>
+     <text x="670" y="140" text-anchor="middle" font-size="13">Mentions légales</text>
+     <path d="M90 156v42M90 198h290M380 156v42M380 198v22" fill="none" stroke="#DDE9E2" stroke-width="2"/>
+     <rect x="25" y="198" width="130" height="42" rx="9" fill="#F4F9F6" stroke="#DDE9E2"/>
+     <rect x="175" y="198" width="130" height="42" rx="9" fill="#F4F9F6" stroke="#DDE9E2"/>
+     <rect x="315" y="198" width="130" height="42" rx="9" fill="#F4F9F6" stroke="#DDE9E2"/>
+     <text x="90" y="224" text-anchor="middle" font-size="13">Fiche produit</text>
+     <text x="240" y="224" text-anchor="middle" font-size="13">Informations</text>
+     <text x="380" y="224" text-anchor="middle" font-size="13">Commande</text>
+    </g>
+   </svg>
+   <figcaption>Une structure simple aide le client à passer de la découverte du catalogue à la commande.</figcaption>
+  </figure>
+  <div class="cards">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18M3 12h12M3 19h18"/><path d="M19 9l2 3-2 3"/></svg><h3>Accueil & catalogue</h3><p>L'accueil présente l'offre et oriente vers le catalogue. Le catalogue permet de parcourir les produits par catégories ou besoins.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg><h3>Fiche produit</h3><p>Elle précise le nom, les visuels, le prix, les caractéristiques, la disponibilité et les informations nécessaires avant l'achat.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-2 11H7L4 5zM4 5L3 2H1"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg><h3>Panier & contact</h3><p>Le panier prépare la commande. Les pages À propos, Contact et Mentions légales renforcent la confiance et clarifient le cadre de la vente.</p></div>
+  </div>
+  <div class="note tip"><strong>💡 À retenir</strong><p>Une bonne arborescence n'a pas besoin d'être complexe : chaque page doit avoir une fonction claire et conduire naturellement vers l'étape suivante.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="whatsapp">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Le catalogue WhatsApp Business</h2>
+   <p>WhatsApp Business peut servir de vitrine mobile pour présenter des produits et faciliter les échanges avec les clients. Le catalogue rassemble les références directement dans l'environnement de messagerie.</p>
+  </div>
+  <div class="cards">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><h3>Vitrine mobile</h3><p>Présenter les produits avec des informations lisibles, des visuels cohérents et un prix clairement identifiable.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v12H7l-3 3z"/><path d="M8 9h8M8 13h5"/></svg><h3>Réponses rapides</h3><p>Préparer des réponses aux demandes fréquentes permet de gagner du temps et de conserver une communication régulière.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v13H4z"/><path d="M8 10h8M8 14h5"/></svg><h3>Étiquettes</h3><p>Organiser les conversations selon leur état : nouveau contact, commande à confirmer, paiement reçu ou suivi client.</p></div>
+  </div>
+  <div class="wrap" style="padding:0">
+   <div class="note best"><strong>🛒 Bonne pratique e-commerce</strong><p>Gardez les informations du catalogue cohérentes avec les autres canaux : nom du produit, prix, disponibilité et conditions doivent rester compréhensibles partout.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="lesson" id="social">
+ <div class="wrap rv">
+  <h2>Facebook et Instagram pour la vente</h2>
+  <p>Les réseaux sociaux peuvent jouer deux rôles complémentaires : faire découvrir les produits et orienter les personnes intéressées vers un catalogue ou un dispositif de commande.</p>
+  <div class="tabs" data-tabs>
+   <div role="tablist" aria-label="Usages des réseaux sociaux">
+    <button role="tab" aria-selected="true">Découverte</button>
+    <button role="tab" aria-selected="false">Catalogue</button>
+    <button role="tab" aria-selected="false">Conversion</button>
+   </div>
+   <div class="panel" role="tabpanel">
+    <p><strong>Découverte</strong> : les publications, stories et contenus visuels attirent l'attention sur les produits.</p>
+    <ul><li>Montrer le produit dans son contexte d'utilisation.</li><li>Présenter les bénéfices de façon simple.</li><li>Utiliser des liens ou appels à l'action compréhensibles.</li></ul>
+    <div class="ex">Le contenu social sert d'entrée vers le parcours de vente.</div>
+   </div>
+   <div class="panel" role="tabpanel" hidden>
+    <p><strong>Catalogue</strong> : lorsque les fonctionnalités disponibles le permettent, les produits peuvent être présentés dans une boutique sociale ou reliés à un catalogue.</p>
+    <ul><li>Conserver des visuels homogènes.</li><li>Afficher des informations produit à jour.</li><li>Faciliter le passage vers la consultation ou la commande.</li></ul>
+    <div class="ex">Le catalogue réduit la distance entre le contenu vu sur le réseau et le produit recherché.</div>
+   </div>
+   <div class="panel" role="tabpanel" hidden>
+    <p><strong>Conversion</strong> : l'objectif est de limiter le nombre d'étapes entre l'intérêt et l'action.</p>
+    <ul><li>Diriger vers le bon produit plutôt que vers une page générique.</li><li>Rendre visible le prix et les conditions essentielles.</li><li>Permettre au client de poser rapidement une question si nécessaire.</li></ul>
+    <div class="ex">Un parcours court et clair facilite la décision d'achat.</div>
+   </div>
+  </div>
+  <div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Publier régulièrement sans indiquer clairement où consulter le produit ni comment commander. La visibilité n'est utile que si elle mène vers une action compréhensible.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="marketplaces">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Les marketplaces</h2>
+   <p>Une marketplace est une place de marché numérique qui met en relation plusieurs vendeurs et des acheteurs. Elle peut apporter de la visibilité sans nécessiter immédiatement une boutique indépendante complète.</p>
+  </div>
+  <figure class="fig">
+   <svg viewBox="0 0 760 220" role="img" aria-label="Schéma du fonctionnement d'une marketplace">
+    <g font-family="Source Sans 3,sans-serif" fill="#0A0F0C">
+     <rect x="25" y="72" width="170" height="72" rx="12" fill="#fff" stroke="#DDE9E2" stroke-width="2"/>
+     <rect x="295" y="42" width="170" height="132" rx="12" fill="#E8F7F0" stroke="#059669" stroke-width="2"/>
+     <rect x="565" y="72" width="170" height="72" rx="12" fill="#fff" stroke="#DDE9E2" stroke-width="2"/>
+     <text x="110" y="103" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="14">Vendeur</text>
+     <text x="110" y="126" text-anchor="middle" font-size="13">Produits & commandes</text>
+     <text x="380" y="83" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="14">Marketplace</text>
+     <text x="380" y="108" text-anchor="middle" font-size="13">Mise en relation</text>
+     <text x="380" y="130" text-anchor="middle" font-size="13">Catalogue • paiement</text>
+     <text x="380" y="152" text-anchor="middle" font-size="13">règles • avis</text>
+     <text x="650" y="103" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="14">Client</text>
+     <text x="650" y="126" text-anchor="middle" font-size="13">Recherche & achat</text>
+     <path d="M195 108h100M465 108h100" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+     <path d="M280 100l15 8-15 8M550 100l15 8-15 8" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+   </svg>
+   <figcaption>La marketplace centralise une partie du parcours, tandis que le vendeur reste responsable de son offre et du traitement de ses commandes.</figcaption>
+  </figure>
+  <div class="tw"><table>
+   <thead><tr><th></th><th>Marketplace</th><th>Boutique propre</th><th>Réseaux sociaux</th></tr></thead>
+   <tbody>
+    <tr><th>Visibilité</th><td>Des acheteurs sont déjà présents sur la plateforme.</td><td>Le trafic doit être construit.</td><td>Dépend de la communauté et de la portée des contenus.</td></tr>
+    <tr><th>Contrôle</th><td>Les règles de la plateforme s'appliquent.</td><td>Contrôle plus important sur l'expérience.</td><td>Contrôle intermédiaire selon le réseau utilisé.</td></tr>
+    <tr><th>Coûts</th><td>Des commissions ou frais peuvent s'appliquer.</td><td>Nom de domaine, hébergement et autres coûts de fonctionnement.</td><td>Peu de frais techniques au départ, mais du temps et parfois de la publicité.</td></tr>
+    <tr><th>Rôle</th><td>Accélérer la mise en relation avec des acheteurs.</td><td>Construire une présence commerciale durable.</td><td>Créer de la visibilité et rapprocher contenu, conversation et vente.</td></tr>
+   </tbody>
+  </table></div>
+  <div class="wrap" style="padding:0">
+   <details><summary>Pourquoi utiliser une marketplace ?</summary><div>Elle peut être pertinente pour bénéficier d'une audience déjà active et tester rapidement la demande autour d'une offre. En contrepartie, le vendeur dépend des règles, de la visibilité et des frais de la plateforme.</div></details>
+   <details><summary>Pourquoi ne pas dépendre d'un seul canal ?</summary><div>Chaque canal possède ses propres avantages et limites. Diversifier progressivement peut réduire la dépendance à une seule plateforme tout en conservant une organisation maîtrisable.</div></details>
+  </div>
+ </div>
+</section>
+
+<section class="lesson" id="technique">
+ <div class="wrap rv">
+  <h2>Les bases techniques</h2>
+  <p>Une boutique en ligne repose sur quelques éléments techniques simples à comprendre. L'objectif n'est pas de devenir développeur, mais de savoir à quoi servent les principaux composants.</p>
+  <div class="cards">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M5 4h14v16H5z"/><path d="M8 11h8M8 15h5"/></svg><h3>Nom de domaine</h3><p>C'est l'adresse utilisée pour accéder à votre boutique, par exemple une adresse courte et facile à retenir.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg><h3>Hébergement</h3><p>Il permet de stocker les fichiers et données nécessaires au fonctionnement d'un site afin qu'il soit accessible en ligne.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M9 5h6M10 19h4"/></svg><h3>Navigation mobile</h3><p>Les menus, boutons, textes, images et formulaires doivent rester lisibles et utilisables sur un petit écran.</p></div>
+  </div>
+  <div class="note tip"><strong>💡 À retenir</strong><p>Une boutique techniquement simple mais facile à parcourir est préférable à une interface complexe qui ralentit le client. La priorité reste l'accès rapide au produit et à la commande.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="commande">
+ <div class="wrap rv">
+  <h2>Concevoir un parcours de commande fluide</h2>
+  <p>Le parcours de commande correspond à la suite d'étapes entre le moment où le client clique sur un produit et celui où sa commande est confirmée. Chaque étape inutile peut créer une friction.</p>
+  <ol class="stepper" aria-label="Parcours de commande">
+   <li><b>Découverte</b>Le client arrive depuis une recherche, un réseau social, une marketplace ou un lien partagé.</li>
+   <li><b>Produit</b>Il comprend rapidement ce qui est vendu, le prix, les caractéristiques et la disponibilité.</li>
+   <li><b>Panier</b>Il vérifie les articles, les quantités, le total et les conditions essentielles.</li>
+   <li><b>Paiement</b>Il dispose d'une méthode claire et d'une confirmation de commande.</li>
+  </ol>
+  <div class="fig">
+   <svg viewBox="0 0 760 180" role="img" aria-label="Frise du clic au paiement">
+    <g font-family="Source Sans 3,sans-serif" fill="#0A0F0C">
+     <line x1="75" y1="74" x2="685" y2="74" stroke="#DDE9E2" stroke-width="6" stroke-linecap="round"/>
+     <circle cx="75" cy="74" r="22" fill="#059669"/><circle cx="278" cy="74" r="22" fill="#059669"/><circle cx="481" cy="74" r="22" fill="#059669"/><circle cx="685" cy="74" r="22" fill="#059669"/>
+     <text x="75" y="80" text-anchor="middle" fill="#fff" font-family="Sora,sans-serif" font-size="14">1</text>
+     <text x="278" y="80" text-anchor="middle" fill="#fff" font-family="Sora,sans-serif" font-size="14">2</text>
+     <text x="481" y="80" text-anchor="middle" fill="#fff" font-family="Sora,sans-serif" font-size="14">3</text>
+     <text x="685" y="80" text-anchor="middle" fill="#fff" font-family="Sora,sans-serif" font-size="14">4</text>
+     <text x="75" y="120" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="13">Découvrir</text>
+     <text x="278" y="120" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="13">Comprendre</text>
+     <text x="481" y="120" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="13">Vérifier</text>
+     <text x="685" y="120" text-anchor="middle" font-family="Sora,sans-serif" font-weight="700" font-size="13">Payer</text>
+    </g>
+   </svg>
+   <figcaption>Le principe : réduire les hésitations, les informations manquantes et les étapes inutiles.</figcaption>
+  </div>
+  <div class="note best"><strong>🛒 Bonne pratique e-commerce</strong><p>À chaque étape, le client doit savoir où il se trouve, ce qu'il doit faire ensuite et combien cela coûte. La clarté du parcours compte autant que l'esthétique de la boutique.</p></div>
+  <details><summary>Les principales sources de friction</summary><div>Informations produit incomplètes, prix difficiles à trouver, boutons peu visibles, navigation mobile inconfortable, étapes de commande trop nombreuses ou absence d'informations sur la livraison et le paiement peuvent ralentir la décision.</div></details>
+  <details><summary>Le rôle de la confiance</summary><div>Les informations de contact, les mentions légales, les conditions de vente, les modalités de livraison et une présentation cohérente de la marque contribuent à rassurer le client avant la commande.</div></details>
+ </div>
+</section>
+
+<section class="lesson alt" id="retenir">
+ <div class="full rv">
+  <div class="wrap" style="padding:0"><h2>Points clés à retenir</h2></div>
+  <div class="key">
+   <div>Une boutique doit avoir une arborescence simple : accueil, catalogue, fiche produit, panier et pages de confiance.</div>
+   <div>WhatsApp Business peut servir de vitrine mobile avec catalogue, réponses rapides et étiquettes.</div>
+   <div>Facebook et Instagram peuvent attirer les clients puis les orienter vers un catalogue ou un parcours de commande.</div>
+   <div>Les marketplaces apportent une audience existante, mais imposent leurs règles et leurs conditions.</div>
+   <div>Le nom de domaine, l'hébergement et une navigation mobile claire constituent des bases techniques essentielles.</div>
+   <div>Un bon parcours de commande réduit les frictions du premier clic jusqu'au paiement.</div>
+  </div>
+ </div>
+</section>
+</main>
+
+<nav class="pager" aria-label="Navigation entre les leçons">
+ <a href="lecon-03-catalogue-produit-attractif.html" rel="prev"><small>Leçon précédente</small>Leçon 03 — Créer un catalogue produit attractif</a>
+ <a class="next" href="lecon-05-paiement-livraison-commandes.html" rel="next"><small>Leçon suivante</small>Leçon 05 — Paiement, livraison et organisation des commandes</a>
+</nav>
+<p class="back"><a href="#debut">Retour au sommaire du Module 1</a></p>
+
+<footer>Formation E-commerce · Module 1 — Fondamentaux de la vente en ligne</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('progress'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
+var mb=document.getElementById('menuBtn'),mn=document.getElementById('menu');
+mb.addEventListener('click',function(){var o=mn.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+mn.addEventListener('click',function(e){if(e.target.tagName==='A'){mn.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){mn.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('[data-tabs]').forEach(function(t){
+var tabs=[].slice.call(t.querySelectorAll('[role=tab]')),ps=[].slice.call(t.querySelectorAll('[role=tabpanel]'));
+function sel(i){tabs.forEach(function(b,j){b.setAttribute('aria-selected',i===j);b.tabIndex=i===j?0:-1;ps[j].hidden=i!==j})}
+tabs.forEach(function(b,i){b.addEventListener('click',function(){sel(i)});
+b.addEventListener('keydown',function(e){var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:null;
+if(n===null)return;n=(n+tabs.length)%tabs.length;sel(n);tabs[n].focus()})});sel(0)});
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(el){io.observe(el)})}
+else rv.forEach(function(el){el.classList.add('in')});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 04 — Automatiser les formulaires, les emails et les notifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;
+  --color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-border:#E1E4E8;
+  --muted:#4B5563;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 var(--font-body)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);padding:56px 0 40px}
+.crumb{font:500 .9rem var(--font-body);color:var(--muted);margin:0 0 16px}
+h1{font:700 clamp(2rem,5vw,2.75rem)/1.12 var(--font-head);letter-spacing:-.02em;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.meta li{background:var(--color-bg);border:1px solid var(--color-border);border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:500}
+.meta li.lvl{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.goal{margin:28px 0 0;padding:16px 20px;background:var(--color-bg);border-left:4px solid var(--color-accent);border-radius:0 8px 8px 0}
+.goal strong{font-family:var(--font-head)}
+nav.toc{margin:32px 0 0;padding:20px 24px;border:1px solid var(--color-border);border-radius:10px}
+nav.toc p{margin:0 0 8px;font:700 1rem var(--font-head)}
+nav.toc ol{margin:0;padding-left:1.25rem}
+nav.toc a{color:var(--color-text);text-decoration:none;border-bottom:1px solid var(--color-accent)}
+nav.toc a:hover{background:var(--color-accent-soft)}
+section{padding:48px 0 8px}
+h2{font:700 1.65rem/1.25 var(--font-head);letter-spacing:-.01em;margin:0 0 16px;display:flex;gap:12px;align-items:baseline}
+h2 .n{color:var(--color-accent)}
+h3{font:700 1.15rem var(--font-head);margin:28px 0 8px}
+p{margin:0 0 16px}
+ul,ol{padding-left:1.25rem;margin:0 0 16px}
+li{margin-bottom:6px}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:24px 0;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ic{font-size:1.4rem;line-height:1.4}
+.callout p{margin:0}
+.callout b{font-family:var(--font-head)}
+.callout.tip{background:var(--color-accent-soft);border-color:#99E6DA}
+.callout.warn{background:#FFF8E6;border-color:#F3D98B}
+.callout.link{background:var(--color-bg);border-left:4px solid var(--color-accent)}
+figure{margin:28px 0}
+figure svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}
+.scroll{overflow-x:auto;margin:20px 0}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.95rem}
+th,td{text-align:left;padding:10px 14px;border:1px solid var(--color-border);vertical-align:top}
+th{background:var(--color-bg-alt);font-family:var(--font-head)}
+.cards{display:grid;gap:12px;margin:20px 0}
+.card{border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);overflow:hidden}
+.card button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card button:hover{background:var(--color-bg-alt)}
+.card button:focus-visible{outline:3px solid var(--color-accent);outline-offset:-3px}
+.card .t{font:700 1.05rem var(--font-head);display:block}
+.card .s{font-size:.9rem;color:var(--muted)}
+.card .chev{transition:transform .2s;color:var(--color-accent);font-weight:700}
+.card[data-open="true"] .chev{transform:rotate(90deg)}
+.card .body{display:none;padding:0 18px 16px;border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.card[data-open="true"] .body{display:block}
+.card .body p{margin:12px 0 6px}
+.calc{border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-alt);padding:20px;margin:24px 0}
+.calc h3{margin-top:0}
+.fields{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:600px){.fields{grid-template-columns:1fr}}
+label{display:block;font-size:.9rem;font-weight:500}
+input[type=text],select{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg)}
+.mail,.msg{margin-top:18px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;padding:16px 20px;font-size:.98rem}
+.mail .subj{font:700 1rem var(--font-head);padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--color-border)}
+.mail p{margin:0 0 10px}
+.msg{border-left:4px solid var(--color-accent)}
+.msg .ch{font:700 .95rem var(--font-head);color:#0B6F66;margin-bottom:4px}
+.msg p{margin:0}
+.var{background:var(--color-accent-soft);border-radius:4px;padding:0 4px}
+code{font:500 .92em ui-monospace,monospace;background:var(--color-bg-alt);padding:2px 6px;border-radius:4px}
+.steps{list-style:none;padding:0;margin:20px 0}
+.steps li{margin:0 0 12px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);padding:14px 18px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
+.steps li.done{background:var(--color-accent-soft);border-color:var(--color-accent)}
+.steps input{width:20px;height:20px;margin-top:4px;accent-color:var(--color-accent)}
+.steps b{font-family:var(--font-head)}
+.steps .d{grid-column:2;color:var(--muted);font-size:.95rem}
+.prog{height:8px;background:var(--color-border);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.prog span{display:block;height:100%;width:0;background:var(--color-accent);transition:width .25s}
+.recap{margin:48px 0 0;padding:24px;border:2px solid var(--color-accent);border-radius:12px}
+.recap h2{font-size:1.3rem}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 64px}
+.pager a{display:block;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:500}
+.pager a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pager small{display:block;color:var(--muted);font-weight:400}
+.pager .next{text-align:right}
+@media(max-width:560px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">Module 1 — Fondamentaux et premières automatisations</p>
+    <h1>Leçon 04 — Automatiser les formulaires, les emails et les notifications</h1>
+    <ul class="meta">
+      <li class="lvl">Niveau : Débutant</li>
+      <li>⏱ 30 min</li>
+      <li>5 parties</li>
+    </ul>
+    <p class="goal"><strong>Objectif :</strong> créer des automatisations simples qui collectent des informations via un formulaire et préviennent automatiquement les personnes concernées par e-mail et messagerie instantanée.</p>
+    <nav class="toc" aria-label="Sommaire">
+      <p>Dans cette leçon</p>
+      <ol>
+        <li><a href="#collecte">Anatomie de la collecte d'information</a></li>
+        <li><a href="#declencheur">Configurer le déclencheur</a></li>
+        <li><a href="#emails">Rédiger des e-mails automatiques</a></li>
+        <li><a href="#notifs">Envoyer des notifications d'équipe</a></li>
+        <li><a href="#tests">Tester et gérer les erreurs</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="collecte">
+  <h2><span class="n">1.</span>Anatomie de la collecte d'information</h2>
+  <p>Une automatisation n'est fiable que si les données qui y entrent sont propres. Tout commence donc par le formulaire.</p>
+  <h3>Les règles d'un bon formulaire</h3>
+  <ul>
+    <li><b>Un champ, une information</b> : séparez Prénom et Nom plutôt qu'un seul champ « Nom complet ». Vous pourrez ainsi écrire « Bonjour Camille ».</li>
+    <li><b>Peu de champs obligatoires</b> : exigez seulement ce dont l'automatisation a besoin pour fonctionner (au minimum, l'adresse e-mail).</li>
+    <li><b>Des réponses prévisibles</b> : préférez une liste déroulante à un texte libre quand les choix sont connus.</li>
+    <li><b>Une validation à la source</b> : activez la vérification du format (e-mail, téléphone, date).</li>
+  </ul>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Type de champ</th><th>À utiliser pour</th><th>Pourquoi c'est utile</th></tr></thead>
+    <tbody>
+      <tr><td><b>Texte court</b></td><td>Prénom, nom, société</td><td>Variable simple à insérer dans un message</td></tr>
+      <tr><td><b>E-mail</b></td><td>Adresse de contact</td><td>Format vérifié, évite les erreurs d'envoi</td></tr>
+      <tr><td><b>Liste déroulante</b></td><td>Type de demande, urgence</td><td>Permet de router vers le bon canal</td></tr>
+      <tr><td><b>Date</b></td><td>Date souhaitée, échéance</td><td>Format identique pour tous</td></tr>
+      <tr><td><b>Texte long</b></td><td>Description libre</td><td>À réserver au détail que personne ne peut deviner</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> Après la Leçon 02, gardez en tête votre tâche à automatiser et demandez-vous : de quelles informations le traitement a-t-il vraiment besoin ? Tout champ en plus est un frein pour la personne qui remplit.</p></div>
+</section>
+
+<section id="declencheur">
+  <h2><span class="n">2.</span>Configurer le déclencheur</h2>
+  <p>Le déclencheur est l'événement qui lance le scénario : ici, l'envoi du formulaire. Deux approches existent.</p>
+  <ul>
+    <li><b>Le déclencheur « nouvelle réponse »</b> proposé par l'orchestrateur pour votre outil de formulaire. C'est le plus simple à configurer.</li>
+    <li><b>Le webhook</b> (vu à la Leçon 03) : le formulaire envoie lui-même les données à l'adresse fournie par l'orchestrateur, dès l'envoi.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 640 230" role="img" aria-labelledby="st sd">
+      <title id="st">Scénario complet avec branche d'erreur</title>
+      <desc id="sd">Le formulaire déclenche le scénario, qui envoie un e-mail à la personne et un message à l'équipe. En cas d'échec, une alerte d'erreur est envoyée.</desc>
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0D9488"/></marker>
+      <marker id="ae" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#B45309"/></marker></defs>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="14" text-anchor="middle" fill="#090D12">
+        <rect x="10" y="40" width="110" height="56" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="65" y="73">Formulaire</text>
+        <rect x="160" y="40" width="130" height="56" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="225" y="73">Déclencheur</text>
+        <rect x="340" y="10" width="140" height="48" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="410" y="40">E-mail au client</text>
+        <rect x="340" y="78" width="140" height="48" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="410" y="108">Message d'équipe</text>
+        <rect x="160" y="160" width="130" height="50" rx="10" fill="#FFF8E6" stroke="#F3D98B" stroke-width="2"/><text x="225" y="190">Alerte d'erreur</text>
+      </g>
+      <g stroke="#0D9488" stroke-width="2" marker-end="url(#ar)" fill="none">
+        <line x1="120" y1="68" x2="158" y2="68"/><path d="M290 60 L315 60 L315 34 L338 34"/><path d="M290 76 L315 76 L315 102 L338 102"/>
+      </g>
+      <path d="M225 96 L225 158" stroke="#B45309" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ae)" fill="none"/>
+      <text x="236" y="132" font-family="Inter, sans-serif" font-size="12" fill="#B45309">si échec</text>
+    </svg>
+    <figcaption>Prévoir la branche d'erreur dès le départ vous évite de découvrir un problème des semaines plus tard.</figcaption>
+  </figure>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention au délai.</b> Selon l'outil et l'offre choisis, un déclencheur peut vérifier les nouvelles réponses à intervalles réguliers plutôt qu'instantanément. Vérifiez cette information dans la documentation de l'outil.</p></div>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Pour tester le déclencheur.</b> Envoyez une réponse de test au formulaire : l'orchestrateur affiche alors les champs reçus, que vous réutiliserez comme variables dans les étapes suivantes.</p></div>
+</section>
+
+<section id="emails">
+  <h2><span class="n">3.</span>Rédiger des e-mails automatiques</h2>
+  <p>Un e-mail automatique doit être aussi soigné qu'un message écrit à la main. Les <b>variables dynamiques</b> insèrent les réponses du formulaire dans le texte : <code>{{prenom}}</code>, <code>{{demande}}</code>, etc.</p>
+  <h3>Structure d'un accusé de réception professionnel</h3>
+  <ol>
+    <li><b>Objet clair</b> : il dit tout de suite de quoi il s'agit.</li>
+    <li><b>Salutation personnalisée</b> avec le prénom.</li>
+    <li><b>Confirmation</b> que la demande est bien reçue.</li>
+    <li><b>Récapitulatif</b> de ce qui a été envoyé.</li>
+    <li><b>Prochaine étape et délai</b> : que va-t-il se passer ?</li>
+    <li><b>Signature et contact</b>, avec une vraie personne à joindre.</li>
+  </ol>
+  <form class="calc" onsubmit="return false" aria-labelledby="mt">
+    <h3 id="mt">Aperçu en direct</h3>
+    <div class="fields">
+      <label>Prénom<input type="text" id="prenom" value="Camille"></label>
+      <label>Demande<input type="text" id="demande" value="devis pour un site web"></label>
+      <label>Délai de réponse<input type="text" id="delai" value="48 heures ouvrées"></label>
+    </div>
+    <div class="mail" aria-live="polite">
+      <div class="subj">Objet : nous avons bien reçu votre demande</div>
+      <p>Bonjour <span class="var" id="v1"></span>,</p>
+      <p>Merci pour votre message. Nous confirmons la réception de votre demande : <span class="var" id="v2"></span>.</p>
+      <p>Un membre de l'équipe vous répondra sous <span class="var" id="v3"></span>.</p>
+      <p>Cordialement,<br>L'équipe Exemple<br>contact@exemple.fr</p>
+    </div>
+  </form>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Prévoyez les champs vides.</b> Si le prénom manque, le message « Bonjour , » fait mauvais effet. Remplacez la variable par une valeur de secours (« Bonjour, ») grâce à la fonction « si vide » de votre outil. Essayez-le dans l'aperçu en effaçant le prénom.</p></div>
+</section>
+
+<section id="notifs">
+  <h2><span class="n">4.</span>Envoyer des notifications d'équipe</h2>
+  <p>L'e-mail s'adresse au client. L'équipe, elle, a besoin d'être prévenue vite, là où elle travaille déjà : Slack, Discord ou Microsoft Teams. Les trois peuvent recevoir des messages d'un orchestrateur, via un connecteur ou une adresse de webhook que vous créez dans le canal.</p>
+  <h3>Un bon message d'équipe est court</h3>
+  <ul>
+    <li><b>Qui</b> a fait la demande.</li>
+    <li><b>Quoi</b> : le type de demande en une phrase.</li>
+    <li><b>Urgence</b> si elle existe.</li>
+    <li><b>Un lien</b> vers la ligne du tableau ou le dossier complet.</li>
+  </ul>
+  <h3>Router selon le type de demande</h3>
+  <p>Un « routeur » ou « filtre » envoie le message vers le bon canal selon la valeur d'un champ. Choisissez un type pour voir le résultat.</p>
+  <form class="calc" onsubmit="return false" aria-labelledby="rt">
+    <h3 id="rt">Simulateur de routage</h3>
+    <label>Type de demande
+      <select id="type"><option value="devis">Demande de devis</option><option value="support">Question support</option><option value="urgent">Urgence</option></select></label>
+    <div class="msg" aria-live="polite"><div class="ch" id="ch"></div><p id="mt2"></p></div>
+  </form>
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> Réservez un canal dédié aux alertes automatiques. Un canal trop bruyant finit par être ignoré, et les messages importants avec lui.</p></div>
+</section>
+
+<section id="tests">
+  <h2><span class="n">5.</span>Tester et gérer les erreurs</h2>
+  <p>Un scénario qui marche une fois ne marche pas forcément toujours. Testez avec des cas normaux, puis avec des cas qui posent problème. Cliquez sur une situation pour voir comment réagir.</p>
+  <div class="cards" id="cards">
+    <div class="card">
+      <button type="button" aria-expanded="false"><span><span class="t">Données manquantes</span><span class="s">Un champ est vide, le message est cassé</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <div class="body"><p><b>Cause :</b> un champ facultatif est vide ou un champ a été renommé dans le formulaire.</p><p><b>Que faire :</b> rendez le champ obligatoire s'il est indispensable, ou prévoyez une valeur de secours. Après toute modification du formulaire, relancez un test pour actualiser les champs reçus.</p></div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false"><span><span class="t">Mauvaise adresse e-mail</span><span class="s">L'e-mail ne part pas ou revient en erreur</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <div class="body"><p><b>Cause :</b> faute de frappe, espace en trop, adresse inexistante.</p><p><b>Que faire :</b> activez la validation du champ e-mail dans le formulaire. Ajoutez une branche « en cas d'erreur » qui prévient l'équipe pour qu'elle contacte la personne autrement.</p></div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false"><span><span class="t">Le scénario ne se déclenche pas</span><span class="s">Rien ne se passe après l'envoi du formulaire</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <div class="body"><p><b>À vérifier dans l'ordre :</b> le scénario est-il activé ? L'adresse du webhook est-elle bien collée dans le formulaire ? Le formulaire est-il publié ? L'historique d'exécution de l'orchestrateur affiche-t-il une tentative ?</p></div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false"><span><span class="t">Connexion expirée</span><span class="s">Un compte connecté refuse l'accès</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <div class="body"><p><b>Cause :</b> l'autorisation a expiré, un mot de passe a changé ou une clé d'API a été supprimée.</p><p><b>Que faire :</b> reconnectez le compte dans l'orchestrateur, puis relancez l'exécution qui a échoué depuis l'historique.</p></div>
+    </div>
+  </div>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Ne testez pas sur de vrais clients.</b> Utilisez vos propres adresses et un canal d'équipe de test, pour éviter d'envoyer des messages par erreur.</p></div>
+
+  <h3>Liste de test avant la mise en route</h3>
+  <div class="prog" aria-hidden="true"><span id="bar"></span></div>
+  <p id="ptxt" style="font-size:.9rem;color:var(--muted)" aria-live="polite">0 test sur 5 validé</p>
+  <ul class="steps" id="steps">
+    <li><input type="checkbox" id="t1"><label for="t1"><b>Cas normal</b></label><span class="d">Toutes les informations sont renseignées : l'e-mail et le message d'équipe arrivent correctement.</span></li>
+    <li><input type="checkbox" id="t2"><label for="t2"><b>Champ facultatif vide</b></label><span class="d">Le message reste lisible, sans variable vide.</span></li>
+    <li><input type="checkbox" id="t3"><label for="t3"><b>Adresse e-mail invalide</b></label><span class="d">Le formulaire la refuse, ou l'alerte d'erreur prévient l'équipe.</span></li>
+    <li><input type="checkbox" id="t4"><label for="t4"><b>Chaque type de demande</b></label><span class="d">Chaque valeur de la liste déroulante arrive dans le bon canal.</span></li>
+    <li><input type="checkbox" id="t5"><label for="t5"><b>Lecture sur mobile</b></label><span class="d">L'e-mail reçu reste clair sur un téléphone.</span></li>
+  </ul>
+
+  <div class="recap">
+    <h2>À retenir</h2>
+    <ul>
+      <li>Un formulaire propre rend l'automatisation fiable : peu de champs obligatoires, des types adaptés.</li>
+      <li>Le déclencheur capte chaque réponse ; vérifiez s'il agit en temps réel.</li>
+      <li>Un accusé de réception clair confirme, récapitule et annonce la suite.</li>
+      <li>Les messages d'équipe sont courts et routés vers le bon canal.</li>
+      <li>Testez les cas qui posent problème et prévoyez une alerte d'erreur.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Navigation entre leçons">
+  <a href="lecon-03-decouvrir-outils-ia-nocode.html"><small>Leçon précédente</small>Leçon 03 — Découvrir les outils d'IA et de No-Code</a>
+  <a class="next" href="lecon-05.html"><small>Leçon suivante</small>Leçon 05 — Automatiser la gestion des données</a>
+</nav>
+
+</main>
+
+<script>
+document.querySelectorAll('#cards .card').forEach(function(card){
+  var btn=card.querySelector('button');
+  btn.addEventListener('click',function(){
+    var open=card.getAttribute('data-open')==='true';
+    card.setAttribute('data-open',String(!open));
+    btn.setAttribute('aria-expanded',String(!open));
+  });
+});
+(function(){
+  var a=document.getElementById('prenom'),b=document.getElementById('demande'),c=document.getElementById('delai');
+  function mail(){
+    var p=a.value.trim();
+    document.getElementById('v1').textContent=p||'(prénom vide)';
+    document.getElementById('v2').textContent=b.value.trim()||'(demande vide)';
+    document.getElementById('v3').textContent=c.value.trim()||'(délai vide)';
+  }
+  [a,b,c].forEach(function(e){e.addEventListener('input',mail)});mail();
+  var sel=document.getElementById('type'),ch=document.getElementById('ch'),m=document.getElementById('mt2');
+  var R={
+    devis:['Canal : #commercial','Nouvelle demande de devis de Camille : site web. Réponse attendue sous 48 h. Voir la ligne dans le tableau.'],
+    support:['Canal : #support','Question de Camille sur un site web. Priorité normale. Voir le dossier.'],
+    urgent:['Canal : #urgences (avec notification à l\'équipe de garde)','Urgence signalée par Camille : site web. À traiter dès que possible. Voir le dossier.']
+  };
+  function route(){var r=R[sel.value];ch.textContent=r[0];m.textContent=r[1]}
+  sel.addEventListener('change',route);route();
+  var boxes=document.querySelectorAll('#steps input'),bar=document.getElementById('bar'),txt=document.getElementById('ptxt');
+  function upd(){
+    var n=0;
+    boxes.forEach(function(x){x.closest('li').classList.toggle('done',x.checked);if(x.checked)n++});
+    bar.style.width=(n/boxes.length*100)+'%';
+    txt.textContent=n+(n>1?' tests':' test')+' sur '+boxes.length+(n>1?' validés':' validé');
+  }
+  boxes.forEach(function(x){x.addEventListener('change',upd)});
+})();
+</script>
+</body>
+</html>

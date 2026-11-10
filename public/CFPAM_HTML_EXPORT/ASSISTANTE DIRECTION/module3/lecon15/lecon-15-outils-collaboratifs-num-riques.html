@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 15 — Outils collaboratifs numériques</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EO%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  /* Drive schema legend */
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin:10px 0 0; font-size:0.8rem; color:var(--color-text-muted);}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .legend i{width:11px; height:11px; border-radius:2px; display:inline-block;}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 15 — Outils collaboratifs numériques</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#drive-droits">1. Drive et partage de droits</a>
+          <a href="#coedition">2. Coédition</a>
+          <a href="#teams-meet">3. Teams ou Meet</a>
+          <a href="#espaces-taches">4. Espaces de tâches</a>
+          <a href="#versions-historique">5. Versions et historique</a>
+          <a href="#sauvegarde-hors-ligne">6. Sauvegarde et travail hors ligne</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 3 — Organisation, temps et réunions</span>
+      <span class="badge brass">Niveau intermédiaire</span>
+      <span class="badge">25 min</span>
+    </div>
+    <h1>Leçon 15 — Outils collaboratifs numériques</h1>
+    <p class="subtitle">Travailler à plusieurs sur les mêmes documents sans perte de version, grâce au partage de droits, à la coédition et à un espace collaboratif bien structuré.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Organiser un espace de stockage partagé (Drive) et attribuer les bons droits d'accès.</li>
+      <li>Coéditer un document à plusieurs sans écraser le travail des autres contributeurs.</li>
+      <li>Choisir entre un outil de visioconférence et un outil de messagerie d'équipe selon le besoin.</li>
+      <li>Structurer un espace de tâches partagé, lisible par toute l'équipe.</li>
+      <li>Utiliser l'historique des versions pour revenir en arrière sans perte d'information.</li>
+      <li>Sécuriser son travail par une sauvegarde adaptée, y compris hors connexion.</li>
+    </ul>
+  </div>
+
+  <section id="drive-droits">
+    <h2>1. Drive et partage de droits</h2>
+    <p>Un espace de stockage partagé (« Drive ») centralise les documents d'un service pour éviter la dispersion des versions entre les postes individuels et les pièces jointes de courriel. Son efficacité dépend directement de la manière dont il est structuré et dont les droits d'accès sont attribués.</p>
+    <p>Trois niveaux de droits reviennent dans la plupart des outils collaboratifs : la <strong>lecture</strong> (consulter sans modifier), la <strong>modification</strong> (éditer le contenu) et la <strong>gestion</strong> (modifier, inviter d'autres personnes, changer les droits d'autrui).</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Droit</th><th>Ce que la personne peut faire</th><th>Exemple d'attribution</th></tr></thead>
+        <tbody>
+          <tr><td>Lecture seule</td><td>Consulter et télécharger, sans modifier</td><td>Un intervenant externe consultant un dossier</td></tr>
+          <tr><td>Modification</td><td>Éditer le contenu des documents existants</td><td>Les membres de l'équipe travaillant sur le projet</td></tr>
+          <tr><td>Gestion</td><td>Modifier, inviter, retirer des droits</td><td>La personne responsable de l'espace partagé</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma d'un espace de stockage partagé structuré par dossiers et droits" style="width:100%; max-width:520px; display:block; margin:20px auto;">
+      <rect x="10" y="10" width="150" height="180" fill="#E8EFEB" stroke="#5E5A54" stroke-width="1"/>
+      <text x="85" y="30" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle" font-weight="600">Espace du service</text>
+      <rect x="24" y="45" width="122" height="26" fill="#FDFCFA" stroke="#E4DFD6"/>
+      <text x="30" y="62" font-family="Inter" font-size="9.5" fill="#16181C">📁 01_Projets</text>
+      <rect x="24" y="78" width="122" height="26" fill="#FDFCFA" stroke="#E4DFD6"/>
+      <text x="30" y="95" font-family="Inter" font-size="9.5" fill="#16181C">📁 02_Modèles</text>
+      <rect x="24" y="111" width="122" height="26" fill="#FDFCFA" stroke="#E4DFD6"/>
+      <text x="30" y="128" font-family="Inter" font-size="9.5" fill="#16181C">📁 03_Archives</text>
+      <rect x="24" y="144" width="122" height="26" fill="#FDFCFA" stroke="#E4DFD6"/>
+      <text x="30" y="161" font-family="Inter" font-size="9.5" fill="#16181C">📁 04_Externe</text>
+      <line x1="146" y1="57" x2="240" y2="57" stroke="#A8823C" stroke-width="1.2"/>
+      <line x1="146" y1="124" x2="240" y2="124" stroke="#A8823C" stroke-width="1.2"/>
+      <line x1="146" y1="157" x2="240" y2="157" stroke="#A8823C" stroke-width="1.2"/>
+      <rect x="240" y="40" width="180" height="30" fill="none" stroke="#2F5D50"/>
+      <text x="330" y="59" font-family="Inter" font-size="9.5" fill="#2F5D50" text-anchor="middle">Équipe — Modification</text>
+      <rect x="240" y="108" width="180" height="30" fill="none" stroke="#5E5A54"/>
+      <text x="330" y="127" font-family="Inter" font-size="9.5" fill="#5E5A54" text-anchor="middle">Responsable — Gestion</text>
+      <rect x="240" y="142" width="180" height="30" fill="none" stroke="#A8823C"/>
+      <text x="330" y="161" font-family="Inter" font-size="9.5" fill="#A8823C" text-anchor="middle">Externes — Lecture seule</text>
+    </svg>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Accorder un droit de modification à toute une liste de diffusion externe « pour simplifier », alors qu'un droit de lecture seule suffit. Un document de référence peut alors être modifié ou supprimé par erreur.
+    </div>
+  </section>
+
+  <section id="coedition">
+    <h2>2. Coédition</h2>
+    <p>La coédition permet à plusieurs personnes de travailler simultanément sur le même document, chacune voyant les modifications des autres en temps réel. Elle remplace l'ancien usage consistant à s'échanger des versions successives d'un même fichier par courriel.</p>
+
+    <div class="tabs" data-tabs="coedition-vs-envoi">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Échange de versions par courriel</button>
+        <button class="tab-btn" role="tab" data-tab="b">Coédition en ligne</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Chaque contributeur reçoit une copie, la modifie de son côté, puis la renvoie. Il faut ensuite fusionner manuellement les versions « rapport_v2_final_relu_VF.docx », avec un risque élevé d'écraser le travail d'un collègue ou de perdre une modification.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Un seul document, ouvert simultanément par plusieurs contributeurs. Chacun voit les modifications des autres en direct, sans jamais dupliquer le fichier ni perdre de version.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Un seul fichier de référence</h3><p>Jamais de copie locale téléchargée puis renvoyée : tout le monde travaille sur le même document en ligne.</p></div>
+      <div class="card"><h3>Commentaires plutôt que modifications directes</h3><p>Pour une relecture, le mode commentaire signale une remarque sans changer le texte final.</p></div>
+      <div class="card"><h3>Attribution des auteurs</h3><p>Chaque modification reste associée à son auteur, ce qui permet de solliciter la bonne personne en cas de question.</p></div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      En coédition, le mode « suggestion » ou « commentaire » est réservé à la relecture ; le mode « édition directe » n'est utilisé que par les personnes responsables du contenu final.
+    </div>
+  </section>
+
+  <section id="teams-meet">
+    <h2>3. Teams ou Meet</h2>
+    <p>Les outils de visioconférence et de messagerie d'équipe (Teams, Meet, ou équivalents) couvrent des besoins différents : l'un privilégie l'échange synchrone en direct, l'autre l'échange écrit organisé par canal ou par sujet.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Besoin</th><th>Outil adapté</th><th>Pourquoi</th></tr></thead>
+        <tbody>
+          <tr><td>Réunion avec plusieurs intervenants</td><td>Visioconférence</td><td>Discussion synchrone, partage d'écran, décision rapide</td></tr>
+          <tr><td>Question ponctuelle à un collègue</td><td>Messagerie instantanée</td><td>Réponse rapide, sans formalisme d'un courriel</td></tr>
+          <tr><td>Suivi d'un sujet dans la durée</td><td>Canal ou fil dédié</td><td>L'historique reste organisé et consultable plus tard</td></tr>
+          <tr><td>Décision formelle ou engageante</td><td>Courriel</td><td>Trace écrite officielle et datée</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Faut-il créer un canal par projet ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Oui, dès qu'un projet dépasse quelques échanges : un canal dédié évite de mélanger plusieurs sujets dans une même conversation et facilite la recherche ultérieure.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Que faire des décisions prises en visioconférence ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Les consigner par écrit (compte rendu ou message de synthèse dans le canal) juste après la réunion, pour que les absents et les futurs relecteurs disposent d'une trace fiable.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Traiter une messagerie d'équipe comme une messagerie instantanée personnelle, avec des messages informels dispersés sur plusieurs canaux, rendant impossible la recherche d'une information a posteriori.
+    </div>
+  </section>
+
+  <section id="espaces-taches">
+    <h2>4. Espaces de tâches</h2>
+    <p>Un espace de tâches partagé (tableau de suivi, liste de travaux) rend visible à toute l'équipe qui fait quoi, avec quelle échéance, sans dépendre de la mémoire de chacun ou d'un échange de courriels dispersé.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Lister les tâches</h3><p>Une tâche par ligne, avec un intitulé précis et actionnable.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Assigner un responsable</h3><p>Une seule personne responsable par tâche, même si plusieurs y contribuent.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Fixer une échéance</h3><p>Une date réaliste, visible par toute l'équipe.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Mettre à jour le statut</h3><p>À faire, en cours, terminé — mis à jour par le responsable lui-même.</p></div>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Un espace de tâches reste utile seulement si chaque membre de l'équipe le met à jour lui-même : un tableau tenu par une seule personne pour tous les autres devient vite obsolète.
+    </div>
+  </section>
+
+  <section id="versions-historique">
+    <h2>5. Versions et historique</h2>
+    <p>La plupart des outils collaboratifs conservent un historique complet des modifications d'un document : qui a modifié quoi, et à quel moment. Cet historique permet de revenir à une version antérieure en cas d'erreur, sans avoir à reconstituer le contenu de mémoire.</p>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      L'historique des versions rend inutile la pratique consistant à dupliquer un fichier avant chaque modification importante (« rapport_avant_modif.docx ») : l'outil garde déjà toutes les versions successives.
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Quand consulter l'historique ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Après une suppression accidentelle de contenu, en cas de doute sur l'auteur d'une modification, ou pour retrouver une version antérieure à un changement contesté.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Peut-on nommer une version comme « définitive » ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Oui, la plupart des outils permettent de marquer une version comme jalon (par exemple « Version envoyée au client le 12/03 »), ce qui facilite son repérage ultérieur dans l'historique.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sauvegarde-hors-ligne">
+    <h2>6. Sauvegarde et travail hors ligne</h2>
+    <p>Un document en ligne dépend d'une connexion réseau. Il est indispensable de savoir comment il est sauvegardé automatiquement et comment continuer à travailler en cas de coupure de connexion, sans perdre le travail réalisé hors ligne.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Sauvegarde automatique</h3><p>La plupart des outils collaboratifs enregistrent en continu ; aucune action manuelle n'est nécessaire tant que la connexion est active.</p></div>
+      <div class="card"><h3>Mode hors ligne</h3><p>Certains outils permettent de continuer à modifier un document sans connexion ; la synchronisation reprend au retour du réseau.</p></div>
+      <div class="card"><h3>Sauvegarde locale ponctuelle</h3><p>Pour un document critique, un export local ponctuel (PDF ou copie) reste une précaution utile avant un événement à risque (déplacement, mise à jour importante).</p></div>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      Une copie exportée localement pour un usage hors ligne doit être supprimée une fois son utilité passée, pour éviter qu'une version obsolète ou non sécurisée circule en dehors de l'espace partagé.
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Certains outils affichent un indicateur de synchronisation (icône ou message) permettant de vérifier, avant de fermer son poste, que toutes les modifications hors ligne ont bien été renvoyées vers l'espace partagé.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Votre service de cinq personnes vient d'adopter un espace collaboratif commun. Il n'existe encore aucune organisation : les dossiers sont vides, les droits d'accès ne sont pas définis, et chacun continue d'échanger des fichiers par courriel par habitude.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 1 à 6, décrivez comment vous structureriez cet espace collaboratif et quelles règles d'usage vous proposeriez à l'équipe pour que l'habitude de l'échange par courriel disparaisse progressivement.</p>
+    </div>
+  </section>
+<section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Les droits d'accès (lecture, modification, gestion) se choisissent selon le rôle réel de chaque personne.</li>
+      <li>La coédition remplace l'échange de versions par courriel et évite les pertes de modifications.</li>
+      <li>Visioconférence, messagerie d'équipe et courriel répondent à des besoins différents, à ne pas confondre.</li>
+      <li>Un espace de tâches n'est utile que si chaque membre de l'équipe le met à jour lui-même.</li>
+      <li>L'historique des versions rend inutile la multiplication de copies de sauvegarde manuelles.</li>
+      <li>Le travail hors ligne doit être synchronisé et vérifié dès le retour de la connexion.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : un <strong>espace partagé structuré</strong> et une <strong>charte d'utilisation d'une page</strong>, prêts à être déployés dans un service.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Structure de l'espace partagé</span><button class="copy-btn" data-copy-target="model-1">Copier</button></div>
+      <pre id="model-1">Espace du service
+├── 01_Projets en cours
+│   └── [Un sous-dossier par projet]
+├── 02_Modèles et documents de référence
+├── 03_Archives (par année)
+└── 04_Partage externe (accès en lecture seule uniquement)
+
+Droits recommandés :
+- Équipe du service : modification sur 01, 02 et 03
+- Responsable du service : gestion complète
+- Intervenants externes : lecture seule sur 04 uniquement</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Charte d'utilisation de l'espace collaboratif</span><button class="copy-btn" data-copy-target="model-2">Copier</button></div>
+      <pre id="model-2">Charte d'utilisation de l'espace collaboratif — [Nom du service]
+
+1. Tout document de travail est créé et modifié directement dans l'espace partagé, jamais envoyé par courriel en pièce jointe entre membres de l'équipe.
+2. Les droits d'accès sont attribués selon le rôle (lecture, modification, gestion) et revus à chaque arrivée ou départ.
+3. La relecture d'un document se fait en mode commentaire ; l'édition directe est réservée à l'auteur ou au responsable du contenu.
+4. Les décisions prises en réunion ou en visioconférence sont consignées par écrit dans le canal ou le compte rendu dédié.
+5. L'espace de tâches est mis à jour par chaque responsable de tâche, au fil de l'avancement.
+6. En cas d'erreur ou de perte de contenu, l'historique des versions est consulté avant toute autre action.
+7. Toute copie exportée pour un usage hors ligne est supprimée une fois son utilité passée.</pre>
+    </div>
+
+    <h3>Checklist de mise en place</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Arborescence de dossiers créée et validée avec l'équipe</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Droits d'accès attribués selon le rôle de chaque personne</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Charte d'utilisation rédigée et diffusée à l'équipe</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Espace de tâches créé avec responsables et échéances</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Fonctionnement de l'historique des versions testé une fois</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Mode hors ligne vérifié sur au moins un poste de l'équipe</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 14 — Suivi des tâches et des projets</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 16 — Documents commerciaux</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 3 — Organisation, temps et réunions · Leçon 15 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

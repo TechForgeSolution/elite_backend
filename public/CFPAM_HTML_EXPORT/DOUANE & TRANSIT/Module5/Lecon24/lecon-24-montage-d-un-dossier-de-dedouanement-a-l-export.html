@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 24 — Montage d'un dossier de dédouanement à l'export">
+<title>Leçon 24 — Montage d'un dossier de dédouanement à l'export</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F7F3E8;--color-text:#1C2B3A;--color-accent:#B8863B;--color-neutral:#98A2AD;
+ --section-bg:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}
+button{font:inherit;color:inherit}:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{height:4px;position:fixed;inset:0 0 auto;background:var(--color-neutral);z-index:1000}.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+.header{position:sticky;top:4px;z-index:40;border-bottom:1px solid var(--border);background:rgba(247,243,232,.95);backdrop-filter:blur(8px)}
+.header-inner{max-width:1180px;margin:auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.04em;color:var(--color-text)}.seal{width:38px;height:38px;border:2px solid var(--color-accent);border-radius:50%;display:grid;place-items:center;font:600 11px "IBM Plex Mono"}
+.nav{display:flex;gap:16px;flex-wrap:wrap;font-size:.88rem}.nav a{color:var(--color-text)}
+main{max-width:1180px;margin:auto}
+.hero{padding:76px 24px 55px;display:grid;grid-template-columns:1.15fr .85fr;gap:45px;align-items:center}
+.eyebrow,.kicker{font:500 .78rem "IBM Plex Mono";letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{line-height:1.2;margin-top:0}h1{font-size:clamp(2.35rem,5.7vw,4.7rem);letter-spacing:-.045em;margin:12px 0 20px}h2{font-size:clamp(1.8rem,3vw,2.7rem)}h3{font-size:1.25rem}
+.lead{font-size:1.18rem;max-width:720px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.badge{border:1px solid var(--border);background:var(--soft);padding:7px 11px;border-radius:999px;font-size:.82rem}
+.visual{border:1px solid var(--border);background:var(--color-bg);padding:18px;overflow:auto}.visual svg{display:block;width:100%;height:auto;min-width:620px}.caption{font-size:.82rem;color:var(--muted);margin-top:9px}
+.toc{margin:0 24px 35px;padding:26px;background:var(--section-bg);border:1px solid var(--border)}.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px 22px}.toc a{display:block;padding:7px 0;border-bottom:1px solid var(--border)}
+section{padding:67px 24px;scroll-margin-top:90px}section:nth-of-type(even){background:var(--section-bg)}
+.container{max-width:950px;margin:auto}.text{max-width:720px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:28px 0}.card{border:1px solid var(--border);padding:20px;background:var(--color-bg);transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.55rem;margin-bottom:7px}.callout{border:2px solid var(--color-accent);padding:20px;margin:28px 0;background:var(--soft)}.callout strong{display:block;margin-bottom:6px}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:28px 0}.step{border-top:3px solid var(--color-accent);padding:14px 8px}.step-num{font:600 .8rem "IBM Plex Mono";color:var(--color-accent)}
+.form{font:400 .86rem "IBM Plex Mono";background:var(--soft);border:1px solid var(--border);padding:18px;overflow:auto;white-space:pre;min-width:650px}
+.form-wrap{overflow:auto;border:1px solid var(--border);background:var(--soft);padding:18px}.form-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.copy{border:1px solid var(--color-accent);background:var(--color-bg);padding:7px 11px;cursor:pointer;font-size:.8rem}
+.tabs{margin:30px 0}.tab-buttons{display:flex;border-bottom:1px solid var(--border);overflow:auto}.tab-buttons button{border:0;background:transparent;padding:12px 18px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);font-weight:700}.tab-panel{padding:22px;border:1px solid var(--border);border-top:0}.tab-panel[hidden]{display:none}
+table{width:100%;border-collapse:collapse;font-size:.94rem}th,td{border-bottom:1px solid var(--border);padding:12px;text-align:left;vertical-align:top}th{font:600 .75rem "IBM Plex Mono";text-transform:uppercase;letter-spacing:.04em}.table-wrap{overflow-x:auto;border:1px solid var(--border)}
+.mono{font-family:"IBM Plex Mono";background:var(--soft);padding:2px 6px;border-radius:4px}
+.accordion{border-top:1px solid var(--border)}.accordion button{width:100%;text-align:left;border:0;border-bottom:1px solid var(--border);background:transparent;padding:17px 0;cursor:pointer;font-weight:600;display:flex;justify-content:space-between}.answer{padding:0 0 18px;max-width:720px}.answer[hidden]{display:none}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.key{border-top:3px solid var(--color-accent);padding:16px;background:var(--color-bg)}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:38px}.lesson-link{border:1px solid var(--border);padding:18px;background:var(--color-bg)}.next{text-align:right}
+.top{position:fixed;right:18px;bottom:18px;border:1px solid var(--color-accent);background:var(--color-bg);padding:10px 14px;cursor:pointer;display:none}
+footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;color:var(--muted);font-size:.85rem}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.toc-grid,.cards{grid-template-columns:1fr}.stepper{grid-template-columns:1fr 1fr}.key-grid{grid-template-columns:1fr 1fr}.nav{display:none}}
+@media(max-width:520px){.header-inner{padding:10px 15px}.hero,section{padding-left:16px;padding-right:16px}.toc{margin-left:16px;margin-right:16px}.stepper,.key-grid,.nav-lessons{grid-template-columns:1fr}h1{font-size:2.65rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+<header class="header"><div class="header-inner">
+<a class="brand" href="#top"><span class="seal">D&T</span><span>DOUANE &amp; TRANSIT</span></a>
+<nav class="nav" aria-label="Navigation"><a href="#declaration">Déclaration</a><a href="#certificats">Certificats</a><a href="#banque">Banque</a><a href="#sortie">Sortie</a><a href="#dossier">Dossier</a></nav>
+</div></header>
+
+<main id="top">
+<section class="hero"><div class="reveal">
+<div class="eyebrow">Module 5 · Dédouanement — Pratique du métier de déclarant</div>
+<h1>Montage d'un dossier de dédouanement à l'export</h1>
+<p class="lead">Constituer un dossier d'exportation complet et conforme, depuis la préparation documentaire jusqu'aux formalités de sortie.</p>
+<div class="badges"><span class="badge">Leçon 24</span><span class="badge">Avancé</span><span class="badge">15 min</span><span class="badge">Export</span></div>
+</div>
+<div class="visual reveal" aria-label="Schéma du parcours d'un dossier export">
+<svg viewBox="0 0 560 410" role="img"><title>Parcours d'un dossier de dédouanement à l'export</title>
+<rect x="35" y="30" width="490" height="345" rx="10" fill="none" stroke="#1C2B3A" stroke-width="3"/>
+<g font-family="IBM Plex Sans" text-anchor="middle" fill="#1C2B3A">
+<rect x="65" y="65" width="185" height="62" rx="7" fill="#F7F3E8" stroke="#1C2B3A" stroke-width="2"/><text x="157" y="92" font-size="15" font-weight="700">DOCUMENTS</text><text x="157" y="113" font-size="12">facture · origine · sanitaire</text>
+<rect x="310" y="65" width="185" height="62" rx="7" fill="#F7F3E8" stroke="#B8863B" stroke-width="3"/><text x="402" y="92" font-size="15" font-weight="700">BANQUE</text><text x="402" y="113" font-size="12">domiciliation</text>
+<rect x="65" y="180" width="185" height="62" rx="7" fill="#B8863B" opacity=".12" stroke="#B8863B" stroke-width="3"/><text x="157" y="207" font-size="15" font-weight="700">DÉCLARATION</text><text x="157" y="228" font-size="12">exportation</text>
+<rect x="310" y="180" width="185" height="62" rx="7" fill="#F7F3E8" stroke="#1C2B3A" stroke-width="2"/><text x="402" y="207" font-size="15" font-weight="700">CONTRÔLE</text><text x="402" y="228" font-size="12">si applicable</text>
+<rect x="188" y="295" width="185" height="62" rx="7" fill="#B8863B" opacity=".12" stroke="#B8863B" stroke-width="3"/><text x="280" y="322" font-size="15" font-weight="700">SORTIE</text><text x="280" y="343" font-size="12">marchandises</text>
+</g>
+<g fill="none" stroke="#98A2AD" stroke-width="3"><path d="M250 96h60M157 127v53M402 127v53M250 211h60M402 242l-95 53"/></g>
+<g fill="none" stroke="#B8863B" stroke-width="3"><path d="M278 86l10 10-10 10M147 170l10 10-10 10M392 170l10 10-10 10M278 201l10 10-10 10M297 285l-10 10 10 10"/></g>
+</svg><div class="caption">Vue d’ensemble : le dossier relie pièces commerciales, justificatifs spécifiques, formalités bancaires, déclaration et sortie.</div>
+</div></section>
+
+<aside class="toc reveal"><div class="kicker">Sommaire</div><h2>Parcours de la leçon</h2><div class="toc-grid">
+<a href="#intro">01 · Logique du dossier export</a><a href="#declaration">02 · Déclaration d'exportation</a><a href="#certificats">03 · Certificats sanitaires et d'origine</a><a href="#banque">04 · Domiciliation bancaire</a><a href="#sortie">05 · Formalités de sortie</a><a href="#dossier">06 · Contrôle de complétude</a><a href="#essentiel">07 · Points clés</a>
+</div></aside>
+
+<section id="intro"><div class="container reveal"><div class="kicker">01 · Vue d’ensemble</div><h2>Construire un dossier cohérent</h2><div class="text">
+<p>Le dossier de dédouanement à l’export rassemble les informations et pièces nécessaires au traitement de l’opération. Le déclarant doit rechercher la cohérence entre la marchandise, les documents commerciaux, les certificats requis, les éléments bancaires et la déclaration.</p>
+<p>La préparation en amont réduit les risques d’incomplétude documentaire et facilite le déroulement des formalités.</p></div>
+<div class="cards"><article class="card"><div class="icon">🧾</div><h3>Identifier</h3><p>Déterminer la marchandise, l’opération, les parties et les documents nécessaires.</p></article><article class="card"><div class="icon">📋</div><h3>Constituer</h3><p>Réunir les pièces commerciales et justificatives utiles au dossier.</p></article><article class="card"><div class="icon">✓</div><h3>Vérifier</h3><p>Contrôler la cohérence des données avant la déclaration et la sortie.</p></article></div>
+<div class="callout"><strong>💡 À retenir</strong>Un dossier export ne se limite pas à la déclaration : la qualité du montage dépend de la cohérence de l’ensemble des pièces qui l’accompagnent.</div>
+</div></section>
+
+<section id="declaration"><div class="container reveal"><div class="kicker">02 · Déclaration</div><h2>La déclaration d’exportation</h2><div class="text">
+<p>La déclaration matérialise les informations nécessaires au traitement douanier de l’exportation. Le déclarant doit renseigner les éléments de l’opération avec exactitude et veiller à leur concordance avec les justificatifs disponibles.</p></div>
+<div class="visual" aria-label="Étapes de préparation d'une déclaration d'exportation"><svg viewBox="0 0 900 270" role="img"><title>Préparation de la déclaration d'exportation en quatre étapes</title>
+<g font-family="IBM Plex Sans" text-anchor="middle"><g fill="#F7F3E8" stroke="#1C2B3A" stroke-width="2"><rect x="45" y="90" width="180" height="90" rx="7"/><rect x="255" y="90" width="180" height="90" rx="7"/><rect x="465" y="90" width="180" height="90" rx="7"/><rect x="675" y="90" width="180" height="90" rx="7"/></g>
+<g fill="#1C2B3A"><text x="135" y="122" font-size="15" font-weight="700">1 · COLLECTER</text><text x="135" y="147" font-size="12">pièces et données</text><text x="345" y="122" font-size="15" font-weight="700">2 · CONTRÔLER</text><text x="345" y="147" font-size="12">cohérence</text><text x="555" y="122" font-size="15" font-weight="700">3 · DÉCLARER</text><text x="555" y="147" font-size="12">données export</text><text x="765" y="122" font-size="15" font-weight="700">4 · SUIVRE</text><text x="765" y="147" font-size="12">traitement / sortie</text></g>
+<g stroke="#B8863B" stroke-width="3"><path d="M225 135h30M435 135h30M645 135h30"/></g><g fill="none" stroke="#B8863B" stroke-width="3"><path d="M245 126l10 9-10 9M455 126l10 9-10 9M665 126l10 9-10 9"/></g></g></svg></div>
+<div class="form-wrap"><div class="form-head"><strong>Extrait pédagogique — fiche de préparation</strong><button class="copy" data-copy="operation=EXPORT&#10;marchandise=[à renseigner]&#10;exportateur=[à renseigner]&#10;destinataire=[à renseigner]&#10;documents=[à vérifier]">Copier</button></div><div class="form">OPÉRATION        : EXPORT
+EXPORTATEUR     : [à renseigner]
+DESTINATAIRE    : [à renseigner]
+MARCHANDISE     : [à renseigner]
+RÉF. COMMERCIALE : [à renseigner]
+ORIGINE         : [à vérifier]
+CERTIFICATS     : [à vérifier]
+DOMICILIATION   : [à vérifier]
+SORTIE          : [à préparer]</div></div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Une information portée dans la déclaration doit pouvoir être rapprochée des pièces du dossier. Les incohérences entre facture, certificat, données de transport et déclaration peuvent entraîner des demandes de clarification ou retarder le traitement.</div>
+</div></section>
+
+<section id="certificats"><div class="container reveal"><div class="kicker">03 · Justificatifs</div><h2>Certificats sanitaires et d’origine</h2><div class="text">
+<p>Selon la nature des marchandises et les exigences applicables à l’opération, des certificats spécifiques peuvent compléter le dossier. Deux catégories sont particulièrement importantes dans le contenu de cette leçon : les certificats sanitaires et les certificats d’origine.</p></div>
+<div class="tabs"><div class="tab-buttons" role="tablist" aria-label="Comparaison des certificats"><button role="tab" aria-selected="true" aria-controls="tab-san" id="san">Certificat sanitaire</button><button role="tab" aria-selected="false" aria-controls="tab-org" id="org">Certificat d’origine</button></div>
+<div class="tab-panel" id="tab-san" role="tabpanel" aria-labelledby="san"><h3>Certificat sanitaire</h3><p>Il accompagne les marchandises pour lesquelles des exigences sanitaires s’appliquent. Sa présence et son contenu doivent être vérifiés en fonction de la marchandise et de la destination.</p><div class="mono">À vérifier : produit · autorité compétente · destination · exigences applicables</div></div>
+<div class="tab-panel" id="tab-org" role="tabpanel" aria-labelledby="org" hidden><h3>Certificat d’origine</h3><p>Il permet de documenter l’origine de la marchandise lorsque ce justificatif est requis. Les informations doivent être cohérentes avec les autres pièces du dossier.</p><div class="mono">À vérifier : marchandise · origine · émetteur · concordance documentaire</div></div></div>
+<div class="visual" aria-label="Matrice de vérification des certificats"><svg viewBox="0 0 900 300" role="img"><title>Vérification des certificats dans le dossier export</title>
+<g font-family="IBM Plex Sans"><rect x="80" y="55" width="740" height="190" rx="8" fill="#F7F3E8" stroke="#1C2B3A" stroke-width="2"/>
+<text x="120" y="95" fill="#1C2B3A" font-size="15" font-weight="700">MARCHANDISE</text><text x="400" y="95" fill="#1C2B3A" font-size="15" font-weight="700">EXIGENCE</text><text x="675" y="95" fill="#1C2B3A" font-size="15" font-weight="700">JUSTIFICATIF</text>
+<line x1="105" y1="112" x2="795" y2="112" stroke="#98A2AD"/><text x="120" y="150" fill="#1C2B3A" font-size="14">Produit soumis à exigences sanitaires</text><text x="400" y="150" fill="#1C2B3A" font-size="14">Selon destination / réglementation</text><text x="675" y="150" fill="#1C2B3A" font-size="14">Certificat sanitaire</text>
+<line x1="105" y1="170" x2="795" y2="170" stroke="#98A2AD"/><text x="120" y="208" fill="#1C2B3A" font-size="14">Origine à justifier</text><text x="400" y="208" fill="#1C2B3A" font-size="14">Selon opération</text><text x="675" y="208" fill="#1C2B3A" font-size="14">Certificat d’origine</text></g></svg></div>
+</div></section>
+
+<section id="banque"><div class="container reveal"><div class="kicker">04 · Domiciliation</div><h2>La domiciliation bancaire</h2><div class="text">
+<p>La domiciliation bancaire fait partie des éléments à vérifier dans le montage du dossier d’exportation. Elle doit être intégrée à la préparation documentaire et rapprochée des informations de l’opération.</p></div>
+<div class="stepper"><div class="step"><div class="step-num">01</div><strong>Identifier</strong><br>l’opération concernée</div><div class="step"><div class="step-num">02</div><strong>Vérifier</strong><br>les informations bancaires</div><div class="step"><div class="step-num">03</div><strong>Rapprocher</strong><br>les références du dossier</div><div class="step"><div class="step-num">04</div><strong>Archiver</strong><br>la pièce / référence</div><div class="step"><div class="step-num">05</div><strong>Contrôler</strong><br>avant finalisation</div></div>
+<div class="visual" aria-label="Place de la domiciliation bancaire dans le dossier"><svg viewBox="0 0 900 260" role="img"><title>Articulation entre opération commerciale, banque et déclaration</title>
+<circle cx="180" cy="130" r="70" fill="#F7F3E8" stroke="#1C2B3A" stroke-width="3"/><circle cx="450" cy="130" r="70" fill="#B8863B" opacity=".12" stroke="#B8863B" stroke-width="3"/><circle cx="720" cy="130" r="70" fill="#F7F3E8" stroke="#1C2B3A" stroke-width="3"/>
+<g font-family="IBM Plex Sans" text-anchor="middle" fill="#1C2B3A"><text x="180" y="125" font-size="16" font-weight="700">OPÉRATION</text><text x="180" y="148" font-size="12">commerciale</text><text x="450" y="125" font-size="16" font-weight="700">BANQUE</text><text x="450" y="148" font-size="12">domiciliation</text><text x="720" y="125" font-size="16" font-weight="700">DOSSIER</text><text x="720" y="148" font-size="12">export</text></g>
+<path d="M250 130h130M520 130h130" stroke="#B8863B" stroke-width="3"/><path d="M370 120l10 10-10 10M640 120l10 10-10 10" fill="none" stroke="#B8863B" stroke-width="3"/></svg></div>
+<div class="callout"><strong>⚖️ Réglementation / texte applicable</strong>Le document fourni fixe l’objectif et mentionne la domiciliation bancaire comme composante du dossier, mais ne précise pas ici le texte réglementaire détaillé ni les modalités propres à chaque opération. Il convient donc de vérifier les exigences applicables avant traitement.</div>
+</div></section>
+
+<section id="sortie"><div class="container reveal"><div class="kicker">05 · Sortie</div><h2>Les formalités de sortie</h2><div class="text">
+<p>Après la préparation et le traitement de la déclaration, le dossier doit permettre d’assurer la réalisation des formalités liées à la sortie des marchandises. Le suivi doit relier la déclaration, les pièces et le mouvement physique des marchandises.</p></div>
+<div class="visual" aria-label="Frise des formalités de sortie"><svg viewBox="0 0 900 310" role="img"><title>Parcours des formalités de sortie</title>
+<line x1="110" y1="145" x2="790" y2="145" stroke="#98A2AD" stroke-width="5"/>
+<g fill="#B8863B"><circle cx="120" cy="145" r="18"/><circle cx="290" cy="145" r="18"/><circle cx="460" cy="145" r="18"/><circle cx="630" cy="145" r="18"/><circle cx="790" cy="145" r="18"/></g>
+<g font-family="IBM Plex Sans" text-anchor="middle" fill="#1C2B3A"><text x="120" y="90" font-size="14" font-weight="700">DOSSIER</text><text x="120" y="108" font-size="12">complet</text><text x="290" y="90" font-size="14" font-weight="700">DÉCLARATION</text><text x="290" y="108" font-size="12">traitée</text><text x="460" y="90" font-size="14" font-weight="700">CONTRÔLE</text><text x="460" y="108" font-size="12">si requis</text><text x="630" y="90" font-size="14" font-weight="700">SORTIE</text><text x="630" y="108" font-size="12">formalisée</text><text x="790" y="90" font-size="14" font-weight="700">SUIVI</text><text x="790" y="108" font-size="12">preuve / archivage</text>
+<text x="450" y="220" font-size="15" font-weight="600">Le mouvement physique doit rester cohérent avec le traitement documentaire.</text></g></svg></div>
+<div class="accordion"><div><button type="button" aria-expanded="false">Que faut-il vérifier avant la sortie ? <span>+</span></button><div class="answer" hidden>La cohérence du dossier, l’état du traitement de la déclaration et les formalités nécessaires à la sortie doivent être vérifiés conformément aux exigences applicables.</div></div><div><button type="button" aria-expanded="false">Pourquoi conserver les preuves ? <span>+</span></button><div class="answer" hidden>La conservation des pièces et des références permet de documenter l’opération et d’assurer la traçabilité du dossier.</div></div></div>
+</div></section>
+
+<section id="dossier"><div class="container reveal"><div class="kicker">06 · Contrôle de complétude</div><h2>Checklist du dossier export</h2><div class="table-wrap"><table><thead><tr><th scope="col">Élément</th><th scope="col">Contrôle</th><th scope="col">Statut</th></tr></thead><tbody>
+<tr><th scope="row">Déclaration d’exportation</th><td>Données cohérentes avec l’opération et les justificatifs</td><td><span class="mono">À vérifier</span></td></tr>
+<tr><th scope="row">Pièces commerciales</th><td>Présence et concordance des informations</td><td><span class="mono">À vérifier</span></td></tr>
+<tr><th scope="row">Certificat sanitaire</th><td>Requis selon la marchandise et les exigences applicables</td><td><span class="mono">Selon cas</span></td></tr>
+<tr><th scope="row">Certificat d’origine</th><td>Présence lorsque requis et concordance avec le dossier</td><td><span class="mono">Selon cas</span></td></tr>
+<tr><th scope="row">Domiciliation bancaire</th><td>Référence / justificatif intégré au dossier</td><td><span class="mono">À vérifier</span></td></tr>
+<tr><th scope="row">Formalités de sortie</th><td>Traitement et preuve de sortie à suivre</td><td><span class="mono">À suivre</span></td></tr>
+</tbody></table></div>
+<div class="cards"><article class="card"><div class="icon">01</div><h3>Complétude</h3><p>Toutes les pièces nécessaires sont identifiées et disponibles.</p></article><article class="card"><div class="icon">02</div><h3>Cohérence</h3><p>Les informations concordent entre documents et déclaration.</p></article><article class="card"><div class="icon">03</div><h3>Traçabilité</h3><p>Les références et preuves de l’opération sont conservées.</p></article></div>
+<div class="callout"><strong>📋 Cas de dossier</strong>Pour une exportation, le déclarant peut organiser son contrôle final autour de quatre questions : <strong>la marchandise est-elle correctement identifiée ? les pièces requises sont-elles présentes ? les données sont-elles concordantes ? les formalités de sortie sont-elles suivies ?</strong></div>
+</div></section>
+
+<section id="essentiel"><div class="container reveal"><div class="kicker">07 · Synthèse</div><h2>Points clés à retenir</h2>
+<div class="key-grid"><div class="key"><strong>01</strong><br>Le dossier export doit être constitué de manière complète et cohérente.</div><div class="key"><strong>02</strong><br>La déclaration d’exportation doit correspondre aux justificatifs.</div><div class="key"><strong>03</strong><br>Les certificats sanitaires et d’origine sont vérifiés selon les exigences applicables.</div><div class="key"><strong>04</strong><br>La domiciliation bancaire et les formalités de sortie font partie du suivi du dossier.</div></div>
+<div class="callout"><strong>💡 À retenir</strong>Le métier de déclarant repose ici sur une logique simple : <strong>collecter → contrôler → déclarer → suivre la sortie → conserver la traçabilité</strong>.</div>
+<div class="nav-lessons"><a class="lesson-link" href="#"><strong>← Leçon 23</strong><br>Montage d'un dossier de dédouanement à l'import</a><a class="lesson-link next" href="#"><strong>Leçon 25 →</strong><br>Contrôle douanier, vérification et visite des marchandises</a></div>
+</div></section>
+</main>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑ Haut</button>
+<footer>Filière Douane &amp; Transit · Module 5 · Leçon 24 — Montage d'un dossier de dédouanement à l'export</footer>
+<script>
+(()=> {
+const bar=document.getElementById('progressBar'), topBtn=document.getElementById('topBtn');
+function update(){const d=document.documentElement,m=d.scrollHeight-d.clientHeight;bar.style.width=(m?scrollY/m*100:0)+'%';topBtn.style.display=scrollY>500?'block':'none'}
+addEventListener('scroll',update,{passive:true});update();
+topBtn.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+document.querySelectorAll('[role="tab"]').forEach(b=>b.onclick=()=>{
+const g=b.closest('.tabs');g.querySelectorAll('[role="tab"]').forEach(x=>x.setAttribute('aria-selected','false'));g.querySelectorAll('[role="tabpanel"]').forEach(x=>x.hidden=true);b.setAttribute('aria-selected','true');document.getElementById(b.getAttribute('aria-controls')).hidden=false;
+});
+document.querySelectorAll('.accordion button').forEach(b=>b.onclick=()=>{const open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));b.nextElementSibling.hidden=open;b.querySelector('span').textContent=open?'+':'−'});
+document.querySelectorAll('.copy').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);const old=b.textContent;b.textContent='Copié';setTimeout(()=>b.textContent=old,1200)}catch(e){b.textContent='Copie indisponible'}});
+const r=document.querySelectorAll('.reveal');if('IntersectionObserver'in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});r.forEach(x=>io.observe(x))}else r.forEach(x=>x.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 22 — Élaboration de la carte et fixation des prix. BTS, Module 5.">
+<title>Leçon 22 — Élaboration de la carte et fixation des prix | Filière Restauration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FDF3E7;
+  --color-text:#3B2314;
+  --color-accent:#E8752C;
+  --color-neutral:#8A6E5C;
+  --soft-accent:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --soft-accent-5:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-border:color-mix(in srgb,var(--color-accent) 65%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.15;margin:0 0 .7rem}
+h1{font-size:clamp(2.2rem,5vw,4.2rem)}
+h2{font-size:clamp(1.7rem,3vw,2.5rem)}
+h3{font-size:1.25rem}
+p{max-width:720px}
+a{color:var(--color-accent);font-weight:600}
+button{font:inherit;color:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font-family:"Playfair Display",serif;font-weight:700}
+.nav a{text-decoration:none}
+.menu{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.hero{max-width:1180px;margin:auto;padding:72px 22px 45px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--color-accent);font-size:.82rem}
+.subtitle{font-size:1.12rem;color:var(--muted);max-width:720px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.badge{border:1px solid var(--accent-border);padding:6px 11px;border-radius:999px;font-size:.84rem;font-family:"IBM Plex Mono",monospace}
+.wrap{max-width:1180px;margin:auto;padding:0 22px}
+.toc{padding:25px;border:1px solid var(--border);background:var(--soft-accent-5);border-radius:18px;margin-bottom:52px}
+.toc strong{display:block;margin-bottom:10px}
+.toc ol{margin:0;padding-left:22px;columns:2}
+main section{scroll-margin-top:90px;padding:54px 0}
+main section:nth-of-type(even){background:var(--soft-accent-5)}
+.section-inner{max-width:900px;margin:auto;padding:0 22px}
+.lead{font-size:1.05rem}
+.callout{border:2px solid var(--color-accent);border-radius:16px;padding:18px 20px;margin:24px 0;background:var(--soft-accent)}
+.callout .label{font-weight:700;margin-bottom:5px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.card{border:1px solid var(--border);border-radius:16px;padding:20px;background:var(--color-bg);transition:.2s ease}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.table-wrap{overflow-x:auto;margin:25px 0;border:1px solid var(--border);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:650px;font-family:"IBM Plex Mono",monospace;font-size:.9rem}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border)}
+th{background:var(--soft-accent);font-weight:600}
+tr:hover td{background:var(--soft-accent-5)}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:28px 0}
+.step{padding:15px;border-top:3px solid var(--color-accent);background:var(--soft-accent-5);border-radius:10px}
+.num{font-family:"IBM Plex Mono";font-weight:600;color:var(--color-accent)}
+svg{width:100%;height:auto;border:1px solid var(--border);border-radius:16px;background:var(--color-bg);margin:20px 0}
+.svg-text{font-family:Inter,sans-serif;fill:var(--color-text)}
+.svg-accent{fill:var(--color-accent)}
+.svg-neutral{fill:var(--color-neutral)}
+details{border-bottom:1px solid var(--border);padding:15px 0}
+summary{cursor:pointer;font-weight:700}
+.tabs{margin:25px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.tab-buttons button{cursor:pointer;border:1px solid var(--border);background:var(--color-bg);padding:9px 14px;border-radius:9px}
+.tab-buttons button[aria-selected="true"]{border-color:var(--color-accent);background:var(--soft-accent)}
+.tab-panel{padding:20px;border:1px solid var(--border);margin-top:10px;border-radius:12px}
+.exercise{border:2px solid var(--color-accent);border-radius:16px;padding:22px}
+.exercise label{display:block;margin:10px 0;cursor:pointer}
+.exercise button,.backtop{border:1px solid var(--color-accent);background:var(--soft-accent);padding:10px 15px;border-radius:9px;cursor:pointer;font-weight:700}
+.feedback{margin-top:14px;font-weight:600}
+.keys{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.key{padding:18px;border-left:4px solid var(--color-accent);background:var(--soft-accent-5)}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:40px 0}
+.nav-card{border:1px solid var(--border);padding:20px;border-radius:14px;text-decoration:none;display:block}
+footer{padding:35px 22px;border-top:1px solid var(--border);text-align:center;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){.cards{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr}.toc ol{columns:1}}
+@media(max-width:520px){.hero{padding-top:45px}.cards,.keys,.nav-lessons{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.menu{gap:10px}.section-inner{padding:0 18px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">Filière Restauration</div>
+    <div class="menu"><a href="#sommaire">Sommaire</a><a href="#objectifs">Objectifs</a><a href="#essentiel">Essentiel</a></div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Module 5 · Gestion de Restaurant — coûts, achats et outils</div>
+    <h1>Élaboration de la carte et fixation des prix</h1>
+    <p class="subtitle">Construire une carte cohérente et fixer des prix rentables.</p>
+    <div class="badges">
+      <span class="badge">LEÇON 22</span><span class="badge">BTS</span><span class="badge">25 min</span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap" id="sommaire">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <strong>Sommaire</strong>
+    <ol>
+      <li><a href="#fondamentaux">Fondamentaux de la carte</a></li>
+      <li><a href="#ingenierie">Ingénierie de menu</a></li>
+      <li><a href="#prix">Fixation des prix</a></li>
+      <li><a href="#positionnement">Positionnement et concurrence</a></li>
+      <li><a href="#equilibre">Équilibre de la carte</a></li>
+      <li><a href="#exercice">Mini-exercice interactif</a></li>
+      <li><a href="#essentiel">Points clés à retenir</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main>
+<section id="objectifs" class="reveal"><div class="section-inner">
+  <h2>Objectifs pédagogiques</h2>
+  <p class="lead">À l’issue de cette leçon, l’étudiant doit être capable de construire une carte cohérente, d’utiliser une logique d’ingénierie de menu, de déterminer un prix de vente et d’apprécier le positionnement d’une offre.</p>
+  <div class="callout"><div class="label">💡 À retenir</div>Une carte rentable ne cherche pas seulement à vendre « cher » : elle doit articuler identité, attentes des clients, coûts, prix acceptables et performance commerciale.</div>
+</div></section>
+
+<section id="fondamentaux" class="reveal"><div class="section-inner">
+  <h2>1. Les fondamentaux d’une carte cohérente</h2>
+  <p>La carte est à la fois un outil commercial, un support d’expression de l’identité du restaurant et un instrument de pilotage. Sa construction doit tenir compte du concept, de la clientèle visée, des capacités de production et de la rentabilité recherchée.</p>
+  <div class="cards">
+    <article class="card"><h3>🎯 Identité</h3><p>Style culinaire, promesse, niveau de gamme et cohérence avec le concept.</p></article>
+    <article class="card"><h3>👥 Clientèle</h3><p>Habitudes, budget, attentes, fréquence de visite et sensibilité au prix.</p></article>
+    <article class="card"><h3>⚙️ Faisabilité</h3><p>Compétences, matériel, saisonnalité, disponibilité des produits et organisation.</p></article>
+  </div>
+  <h3>Construire la logique de l’offre</h3>
+  <div class="stepper" aria-label="Étapes de construction de la carte">
+    <div class="step"><span class="num">01</span><br>Positionner le concept</div>
+    <div class="step"><span class="num">02</span><br>Identifier la clientèle</div>
+    <div class="step"><span class="num">03</span><br>Structurer l’offre</div>
+    <div class="step"><span class="num">04</span><br>Calculer les prix</div>
+    <div class="step"><span class="num">05</span><br>Contrôler et ajuster</div>
+  </div>
+</div></section>
+
+<section id="ingenierie" class="reveal"><div class="section-inner">
+  <h2>2. L’ingénierie de menu</h2>
+  <p>L’ingénierie de menu consiste à analyser les plats selon leur performance commerciale et économique afin d’aider à décider lesquels mettre en avant, maintenir, modifier ou retirer.</p>
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">Matrice simplifiée d'ingénierie de menu</caption>
+      <thead><tr><th scope="col">Catégorie</th><th scope="col">Popularité</th><th scope="col">Rentabilité</th><th scope="col">Décision indicative</th></tr></thead>
+      <tbody>
+        <tr><td>Vedette</td><td>Forte</td><td>Forte</td><td>Mettre en avant</td></tr>
+        <tr><td>Rentable mais discret</td><td>Faible</td><td>Forte</td><td>Travailler la présentation et la vente</td></tr>
+        <tr><td>Populaire mais peu rentable</td><td>Forte</td><td>Faible</td><td>Revoir coût, portion ou prix</td></tr>
+        <tr><td>Faible performance</td><td>Faible</td><td>Faible</td><td>Modifier ou retirer</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><div class="label">👨‍🍳 Conseil de chef</div>Ne raisonnez pas uniquement à partir du coût matière. Un plat peut avoir une marge unitaire intéressante mais demander trop de temps, de main-d’œuvre ou d’équipements.</div>
+</div></section>
+
+<section id="prix" class="reveal"><div class="section-inner">
+  <h2>3. Fixation des prix</h2>
+  <p>Le prix de vente doit couvrir les coûts et contribuer à la marge recherchée, tout en restant cohérent avec le positionnement de l’établissement et la perception de valeur du client.</p>
+  <div class="callout"><div class="label">📌 Méthode</div>Le <strong>coefficient multiplicateur</strong> relie un coût de référence au prix de vente : <strong>Prix de vente = coût de référence × coefficient</strong>. Le coefficient doit être défini selon la méthode de gestion retenue par l’établissement.</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Plat</th><th scope="col">Coût matière</th><th scope="col">Coefficient</th><th scope="col">Prix calculé</th></tr></thead>
+      <tbody>
+        <tr><td>Entrée A</td><td>4,00 €</td><td>3,5</td><td>14,00 €</td></tr>
+        <tr><td>Plat B</td><td>8,00 €</td><td>3,5</td><td>28,00 €</td></tr>
+        <tr><td>Dessert C</td><td>3,00 €</td><td>4</td><td>12,00 €</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Approches de fixation du prix">
+      <button role="tab" aria-selected="true" aria-controls="tab1" id="tabbtn1">Approche coût</button>
+      <button role="tab" aria-selected="false" aria-controls="tab2" id="tabbtn2">Approche marché</button>
+      <button role="tab" aria-selected="false" aria-controls="tab3" id="tabbtn3">Approche valeur</button>
+    </div>
+    <div class="tab-panel" role="tabpanel" id="tab1" aria-labelledby="tabbtn1">On part des coûts et d’un objectif de marge pour construire un prix cohérent avec l’économie du restaurant.</div>
+    <div class="tab-panel" role="tabpanel" id="tab2" hidden>On observe les prix pratiqués par des établissements comparables afin de situer l’offre et d’éviter un positionnement incohérent.</div>
+    <div class="tab-panel" role="tabpanel" id="tab3" hidden>On estime le prix que la clientèle accepte au regard de la promesse, de l’expérience, de la qualité perçue et du positionnement.</div>
+  </div>
+</div></section>
+
+<section id="positionnement" class="reveal"><div class="section-inner">
+  <h2>4. Positionnement prix et analyse des compétiteurs</h2>
+  <p>L’analyse concurrentielle ne consiste pas à copier les prix voisins. Elle permet de comprendre le niveau de gamme, la composition des offres, les portions, les services associés et la valeur perçue.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Critère</th><th scope="col">Notre offre</th><th scope="col">Concurrent A</th><th scope="col">Concurrent B</th></tr></thead>
+      <tbody>
+        <tr><td>Positionnement</td><td>À définir</td><td>Accessible</td><td>Premium</td></tr>
+        <tr><td>Plat principal type</td><td>28 €</td><td>24 €</td><td>32 €</td></tr>
+        <tr><td>Promesse</td><td>Qualité + expérience</td><td>Rapidité</td><td>Produit + service</td></tr>
+        <tr><td>Opportunité</td><td>Différenciation</td><td>Prix</td><td>Expérience</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <details><summary>Pourquoi éviter une simple guerre des prix ?</summary><p>Une baisse de prix peut augmenter l’attractivité mais réduire la contribution par couvert. Elle peut également brouiller le positionnement. La décision doit être évaluée avec les volumes de vente, les coûts et la valeur perçue.</p></details>
+  <details><summary>Quels éléments comparer chez les concurrents ?</summary><p>Prix, structure de carte, formules, portions, spécialités, horaires, niveau de service, avis clients et promesse commerciale peuvent être observés pour obtenir une vision plus complète.</p></details>
+</div></section>
+
+<section id="equilibre" class="reveal"><div class="section-inner">
+  <h2>5. Équilibre de la carte</h2>
+  <p>Une carte équilibrée évite la multiplication des références difficiles à produire et donne au client des choix lisibles. L’objectif est de combiner attractivité commerciale et maîtrise opérationnelle.</p>
+  <svg viewBox="0 0 900 330" role="img" aria-label="Schéma montrant l'équilibre entre attractivité, rentabilité et faisabilité opérationnelle">
+    <rect x="80" y="55" width="220" height="90" rx="18" class="svg-neutral" opacity=".18"/>
+    <rect x="340" y="55" width="220" height="90" rx="18" class="svg-accent" opacity=".18"/>
+    <rect x="600" y="55" width="220" height="90" rx="18" class="svg-neutral" opacity=".18"/>
+    <text x="190" y="95" text-anchor="middle" class="svg-text" font-weight="700">Attractivité</text>
+    <text x="190" y="122" text-anchor="middle" class="svg-text">clientèle &amp; désir</text>
+    <text x="450" y="95" text-anchor="middle" class="svg-text" font-weight="700">Rentabilité</text>
+    <text x="450" y="122" text-anchor="middle" class="svg-text">prix &amp; marge</text>
+    <text x="710" y="95" text-anchor="middle" class="svg-text" font-weight="700">Faisabilité</text>
+    <text x="710" y="122" text-anchor="middle" class="svg-text">production &amp; achats</text>
+    <line x1="300" y1="100" x2="340" y2="100" stroke="var(--color-accent)" stroke-width="3"/>
+    <line x1="560" y1="100" x2="600" y2="100" stroke="var(--color-accent)" stroke-width="3"/>
+    <circle cx="450" cy="230" r="58" class="svg-accent" opacity=".2"/>
+    <text x="450" y="225" text-anchor="middle" class="svg-text" font-weight="700">CARTE</text>
+    <text x="450" y="248" text-anchor="middle" class="svg-text">cohérente</text>
+  </svg>
+  <div class="callout"><div class="label">⚠️ Attention / erreur fréquente</div>Multiplier les plats pour « donner du choix » peut augmenter les stocks, les pertes, la complexité de mise en place et les risques d’irrégularité.</div>
+</div></section>
+
+<section id="exercice" class="reveal"><div class="section-inner">
+  <h2>6. Mini-exercice interactif</h2>
+  <div class="exercise">
+    <p><strong>Situation :</strong> un plat coûte 7 € en coût de référence. L’établissement applique un coefficient de 4 pour cette catégorie. Quel prix est obtenu par la méthode présentée ?</p>
+    <label><input type="radio" name="q1" value="21"> 21 €</label>
+    <label><input type="radio" name="q1" value="28"> 28 €</label>
+    <label><input type="radio" name="q1" value="35"> 35 €</label>
+    <button type="button" id="check">Vérifier</button>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </div>
+</div></section>
+
+<section id="essentiel" class="reveal"><div class="section-inner">
+  <h2>7. Points clés à retenir</h2>
+  <div class="keys">
+    <div class="key"><strong>1. Une carte est un outil de gestion.</strong><br>Elle doit être cohérente avec le concept, la clientèle et les capacités de production.</div>
+    <div class="key"><strong>2. L’ingénierie de menu aide à décider.</strong><br>La popularité et la rentabilité orientent les actions sur les plats.</div>
+    <div class="key"><strong>3. Le prix ne dépend pas d’un seul facteur.</strong><br>Coûts, marché, positionnement et valeur perçue doivent être considérés.</div>
+    <div class="key"><strong>4. L’équilibre protège la rentabilité.</strong><br>Une offre lisible et maîtrisable facilite les achats et la production.</div>
+  </div>
+  <div class="callout"><div class="label">📌 Rappel</div>Le prix calculé est un point de départ de gestion. Il doit ensuite être confronté au positionnement de l’établissement et à la réalité commerciale.</div>
+</div></section>
+</main>
+
+<div class="wrap">
+  <nav class="nav-lessons" aria-label="Navigation entre les leçons">
+    <a class="nav-card" href="#sommaire">← Leçon précédente<br><strong>Leçon 21 — Gestion des coûts matières et food cost</strong></a>
+    <a class="nav-card" href="#sommaire">Leçon suivante →<br><strong>Leçon 23 — Gestion des approvisionnements et fournisseurs</strong></a>
+  </nav>
+  <button class="backtop" type="button" id="backtop">↑ Retour en haut</button>
+</div>
+
+<footer>
+  <p>Filière Restauration · Module 5 · Leçon 22 · Support pédagogique</p>
+</footer>
+
+<script>
+(function(){
+  const progress=document.getElementById('progress');
+  function updateProgress(){
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+  }
+  window.addEventListener('scroll',updateProgress,{passive:true}); updateProgress();
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=[...group.querySelectorAll('[role="tab"]')];
+    const panels=[...group.querySelectorAll('[role="tabpanel"]')];
+    function activate(i){
+      buttons.forEach((b,n)=>b.setAttribute('aria-selected',String(n===i)));
+      panels.forEach((p,n)=>p.hidden=n!==i);
+    }
+    buttons.forEach((b,i)=>b.addEventListener('click',()=>activate(i)));
+    buttons.forEach((b,i)=>b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();const n=(i+1)%buttons.length;buttons[n].focus();activate(n)}
+      if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();const n=(i-1+buttons.length)%buttons.length;buttons[n].focus();activate(n)}
+    }));
+  });
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+  },{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+  document.getElementById('check').addEventListener('click',()=>{
+    const selected=document.querySelector('input[name="q1"]:checked');
+    const feedback=document.getElementById('feedback');
+    if(!selected){feedback.textContent='Sélectionnez une réponse.';return}
+    feedback.textContent=selected.value==='28'
+      ? '✓ Bonne réponse : 7 € × 4 = 28 €.'
+      : 'À revoir : le calcul est 7 € × 4 = 28 €.';
+  });
+  document.getElementById('backtop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+})();
+</script>
+</body>
+</html>

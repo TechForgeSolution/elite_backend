@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 7 — Comptes rendus et procès-verbaux</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3ECR%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 7 — Comptes rendus et procès-verbaux</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#trois-types">1. Les trois types de compte rendu</a>
+          <a href="#proces-verbal">2. Le procès-verbal</a>
+          <a href="#releve-decisions">3. Le relevé de décisions</a>
+          <a href="#style-impersonnel">4. Le style impersonnel</a>
+          <a href="#diffusion-validation">5. Diffusion et validation</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+<a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 2 — Communication professionnelle écrite et orale</span>
+      <span class="badge brass">Niveau débutant</span>
+      <span class="badge">30 min</span>
+    </div>
+    <h1>Leçon 7 — Comptes rendus et procès-verbaux</h1>
+    <p class="subtitle">Restituer une réunion de façon exploitable et neutre : choisir le bon format, adopter le style impersonnel et garantir une diffusion validée.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Distinguer compte rendu intégral, synthétique et chronologique, et choisir le format adapté à la réunion.</li>
+      <li>Identifier ce qui différencie un procès-verbal d'un compte rendu ordinaire.</li>
+      <li>Construire un relevé de décisions clair, avec responsables et échéances.</li>
+      <li>Rédiger dans un style impersonnel, neutre et fidèle aux échanges.</li>
+      <li>Organiser la diffusion et la validation du document avant son envoi définitif.</li>
+    </ul>
+  </div>
+
+  <section id="trois-types">
+    <h2>1. Les trois types de compte rendu</h2>
+    <p>Le choix du format de compte rendu dépend de l'usage qui en sera fait : conserver une trace complète, informer rapidement, ou suivre le déroulement précis des échanges.</p>
+
+    <div class="tabs" data-tabs="types-cr">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Intégral</button>
+        <button class="tab-btn" role="tab" data-tab="b">Synthétique</button>
+        <button class="tab-btn" role="tab" data-tab="c">Chronologique</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Restitue la totalité des échanges, reformulés mais sans rien omettre. Utilisé pour les réunions à forte portée juridique ou stratégique, où chaque argument peut être requis ultérieurement. Document long, rarement lu en intégralité au quotidien.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Ne retient que l'essentiel : les points abordés, les conclusions et les décisions, sans détailler chaque prise de parole. C'est le format le plus courant pour les réunions d'équipe régulières, car il est rapide à produire et à lire.</p>
+      </div>
+      <div class="tab-panel" data-panel="c">
+        <p>Suit l'ordre exact du déroulement de la réunion, point par point, dans l'ordre où les sujets ont été traités. Utile pour reconstituer précisément comment une décision a été prise, notamment en cas de désaccord ultérieur.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Le compte rendu synthétique convient à la grande majorité des réunions internes. Réserver le format intégral aux réunions à enjeu juridique ou stratégique.
+    </div>
+  </section>
+
+  <section id="proces-verbal">
+    <h2>2. Le procès-verbal</h2>
+    <p>Le procès-verbal (PV) se distingue du compte rendu par sa valeur formelle : il concerne des instances définies par un texte (assemblée générale, conseil d'administration, comité d'entreprise) et suit des règles précises de rédaction et de validation.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Critère</th><th>Compte rendu</th><th>Procès-verbal</th></tr></thead>
+        <tbody>
+          <tr><td>Instance concernée</td><td>Réunion de travail courante</td><td>Instance statutaire (AG, CA, CE…)</td></tr>
+          <tr><td>Valeur</td><td>Informative</td><td>Officielle, parfois opposable</td></tr>
+          <tr><td>Validation</td><td>Souple, par les participants</td><td>Formelle, souvent signée par le président de séance</td></tr>
+          <tr><td>Conservation</td><td>Selon les besoins du service</td><td>Archivage obligatoire, durée réglementaire</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Confondre les deux documents et employer le terme « procès-verbal » pour une simple réunion d'équipe : le mot implique une valeur formelle que la réunion n'a pas forcément.
+    </div>
+  </section>
+
+  <section id="releve-decisions">
+    <h2>3. Le relevé de décisions</h2>
+    <p>Le relevé de décisions est souvent la partie la plus consultée du document : il liste, sans ambiguïté, ce qui a été décidé, par qui cela doit être fait, et pour quand.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Décision</th><th>Responsable</th><th>Échéance</th></tr></thead>
+        <tbody>
+          <tr><td>Valider le nouveau planning des congés</td><td>Direction des ressources humaines</td><td>10 mars</td></tr>
+          <tr><td>Transmettre le devis actualisé au fournisseur</td><td>Service achats</td><td>5 mars</td></tr>
+          <tr><td>Organiser la réunion de suivi</td><td>Assistante de direction</td><td>Semaine suivante</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Chaque ligne du relevé de décisions doit comporter un responsable nommé et une échéance datée : une décision sans responsable ni échéance n'a aucune valeur de suivi.
+    </div>
+  </section>
+
+  <section id="style-impersonnel">
+    <h2>4. Le style impersonnel</h2>
+    <p>Le compte rendu ne restitue pas les propos au style direct : il reformule dans un style impersonnel, qui évite le « je » et privilégie des tournures neutres, factuelles et détachées de l'émotion du moment.</p>
+
+    <div class="tabs" data-tabs="style-avant-apres">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Formulation à éviter</button>
+        <button class="tab-btn" role="tab" data-tab="b">Reformulation impersonnelle</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>« Je pense que le budget est trop serré et je ne suis pas d'accord avec la proposition de Monsieur Eto'o. »</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>« Le budget proposé est jugé trop restreint par plusieurs participants. Une réserve est exprimée sur la proposition présentée. »</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Retranscrire les tensions ou le ton d'un échange animé : le compte rendu retient le fond des positions exprimées, jamais la forme émotionnelle des échanges.
+    </div>
+  </section>
+
+  <section id="diffusion-validation">
+    <h2>5. Diffusion et validation</h2>
+    <p>Un compte rendu n'est diffusé qu'après une étape de validation, qui garantit que le document reflète fidèlement la réunion avant d'engager les personnes citées.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Rédiger</h3><p>À partir des notes ou de l'enregistrement, dans les 24 à 48h.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Faire valider</h3><p>Par l'organisateur ou le président de séance.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Corriger si besoin</h3><p>Intégrer les remarques avant diffusion.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Diffuser</h3><p>Aux participants et aux personnes concernées par les décisions.</p></div>
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Pour un procès-verbal, la validation suit en général une règle fixée par les statuts de l'instance (approbation lors de la réunion suivante, par exemple).
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Vous disposez de l'enregistrement d'une réunion de service de 15 minutes, au cours de laquelle trois sujets ont été abordés et deux décisions ont été prises, chacune avec un responsable identifié. La direction souhaite recevoir un document de deux pages maximum, lisible rapidement, avec un relevé de décisions clair.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 1 à 5, indiquez quel type de compte rendu vous choisiriez, et décrivez les étapes de rédaction et de validation que vous suivriez avant diffusion.</p>
+    </div>
+  </section>
+<section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Le format synthétique convient à la majorité des réunions ; l'intégral et le chronologique répondent à des besoins spécifiques.</li>
+      <li>Le procès-verbal a une valeur formelle et concerne des instances statutaires, à la différence du compte rendu courant.</li>
+      <li>Le relevé de décisions doit toujours indiquer un responsable nommé et une échéance datée.</li>
+      <li>Le style impersonnel reformule le fond des échanges sans en restituer le ton ni l'émotion.</li>
+      <li>Aucun compte rendu n'est diffusé sans validation préalable par l'organisateur ou l'instance concernée.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : un <strong>compte rendu de deux pages</strong>, avec relevé de décisions et responsables identifiés.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Compte rendu synthétique (2 pages)</span><button class="copy-btn" data-copy-target="model-1">Copier</button></div>
+      <pre id="model-1">COMPTE RENDU DE RÉUNION
+
+Objet : [objet de la réunion]
+Date : [JJ/MM/AAAA]        Lieu / support : [salle, visioconférence…]
+Participants : [liste des personnes présentes]
+Absents excusés : [liste, le cas échéant]
+Rédacteur : [nom]
+
+1. Points abordés
+   1.1 [Sujet 1] — résumé des échanges, en style impersonnel
+   1.2 [Sujet 2] — résumé des échanges
+   1.3 [Sujet 3] — résumé des échanges
+
+2. Relevé de décisions
+   | Décision | Responsable | Échéance |
+   |----------|-------------|----------|
+   | [décision 1] | [nom] | [date] |
+   | [décision 2] | [nom] | [date] |
+
+3. Prochaine réunion
+   Date prévisionnelle : [date]
+
+Document soumis à validation avant diffusion.</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Format choisi (intégral, synthétique ou chronologique) adapté à l'usage</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Style impersonnel respecté sur l'ensemble du document</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Relevé de décisions complet : décision, responsable, échéance</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Document limité à deux pages</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Validation obtenue avant diffusion</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Diffusion envoyée à tous les participants et responsables concernés</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 6 — Rédaction administrative</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 8 — Messagerie et écrits numériques</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 2 — Communication professionnelle écrite et orale · Leçon 7 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-l7-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-l7-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

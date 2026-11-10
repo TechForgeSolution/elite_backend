@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 10 — Construire son plan d'automatisation</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230D9488%22/><path d=%22M25 50h50M58 33l17 17-17 17%22 stroke=%22white%22 stroke-width=%2210%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;--color-text-muted:#57606A;--color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-accent-dark:#0F766E;--color-border:#E1E4E8;--code-bg:#0D1117;--card:#FFFFFF}
+@media(prefers-color-scheme:dark){:root{--color-bg:#0D1117;--color-bg-alt:#161B22;--color-text:#F0F6FC;--color-text-muted:#9DA7B3;--color-accent:#14B8A6;--color-accent-soft:#0F3D3A;--color-accent-dark:#2DD4BF;--color-border:#2A313A;--card:#161B22}}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.2;margin:0 0 .6em;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3.2rem)}h2{font-size:clamp(1.5rem,3vw,2rem)}h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}a{color:var(--color-accent-dark)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+.top-in{max-width:1000px;margin:auto;padding:.7rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.logo{font:600 .95rem Sora,sans-serif;display:flex;align-items:center;gap:.5rem}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--color-accent);display:inline-block}
+.btn{font:500 .9rem Inter,sans-serif;background:var(--color-accent);color:#fff;border:0;padding:.55rem 1rem;border-radius:8px;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s;display:inline-block}
+.btn:hover{background:var(--color-accent-dark);transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--color-text);border:1px solid var(--color-border)}
+.btn.ghost:hover{background:var(--color-bg-alt)}
+.wrap{max-width:720px;margin:auto;padding:0 1.25rem}
+.hero{padding:4.5rem 0 3rem}
+.crumb{color:var(--color-text-muted);font-size:.95rem;margin-bottom:1rem}
+.lead{font-size:1.2rem;color:var(--color-text-muted)}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}
+.badge{background:var(--color-accent-soft);color:var(--color-accent-dark);font-weight:500;font-size:.85rem;padding:.3rem .8rem;border-radius:99px}
+@media(prefers-color-scheme:dark){.badge{color:#99F6E4}}
+.toc{background:var(--color-bg-alt);border-radius:14px;padding:1.5rem 1.75rem;margin-bottom:3rem}
+.toc ol{margin:.5rem 0 0;padding-left:1.2rem}.toc li{margin:.3rem 0}.toc a{text-decoration:none;color:var(--color-text)}.toc a:hover{color:var(--color-accent-dark);text-decoration:underline}
+section.s{padding:3rem 0}section.s:nth-of-type(even){background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}.reveal.in{opacity:1;transform:none}
+.callout{border-left:4px solid var(--color-accent);background:var(--color-accent-soft);color:#0B3D38;padding:1rem 1.25rem;border-radius:0 10px 10px 0;margin:1.5rem 0}
+.callout b{display:block;margin-bottom:.2rem}
+@media(prefers-color-scheme:dark){.callout{color:#E6FFFB}}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.card{background:var(--card);border:1px solid var(--color-border);border-radius:12px;padding:1.2rem;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card .ic{font-size:1.5rem}.card h3{margin:.4rem 0 .3rem}.card p{margin:0;font-size:.95rem;color:var(--color-text-muted)}
+.fig{margin:1.5rem 0;background:var(--card);border:1px solid var(--color-border);border-radius:12px;padding:1rem}
+.fig svg{width:100%;height:auto;display:block}.fig figcaption{font-size:.85rem;color:var(--color-text-muted);margin-top:.5rem;text-align:center}
+.svg-t{fill:var(--color-text);font:500 13px Inter,sans-serif}.svg-m{fill:var(--color-text-muted);font:12px Inter,sans-serif}
+.node{fill:var(--color-bg-alt);stroke:var(--color-border)}.node.on{fill:var(--color-accent);stroke:none}.line{stroke:var(--color-text-muted);fill:none;stroke-width:1.5}
+.stepper{display:flex;gap:0;margin:1.5rem 0;overflow-x:auto;padding-bottom:.5rem;list-style:none;padding-left:0}
+.stepper li{flex:1 0 140px;position:relative;text-align:center;padding:0 .5rem}
+.stepper li::before{content:"";position:absolute;top:17px;left:-50%;width:100%;height:2px;background:var(--color-border)}.stepper li:first-child::before{display:none}
+.stepper .d{position:relative;width:36px;height:36px;margin:0 auto .5rem;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .95rem Sora,sans-serif;display:grid;place-items:center}
+.stepper small{display:block;color:var(--color-text-muted);font-size:.85rem;line-height:1.4}
+.tabs [role=tablist]{display:flex;gap:.25rem;border-bottom:1px solid var(--color-border);flex-wrap:wrap}
+.tabs [role=tab]{background:none;border:0;padding:.7rem 1rem;font:500 .95rem Inter,sans-serif;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs [role=tab][aria-selected=true]{color:var(--color-text);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:1.2rem 0 0}.tabs [role=tabpanel][hidden]{display:none}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:1rem 0}th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--color-border)}th{font-weight:600}
+.scroll{overflow-x:auto}
+.code{position:relative;background:var(--code-bg);color:#E6EDF3;border-radius:12px;margin:1.5rem 0}
+.code pre{margin:0;padding:1.1rem 1.2rem;overflow-x:auto;font:.88rem/1.65 ui-monospace,Menlo,Consolas,monospace;counter-reset:l}
+.code .ln{display:block}.code .ln::before{counter-increment:l;content:counter(l);display:inline-block;width:1.6rem;margin-right:.9rem;text-align:right;color:#6E7681}
+.k{color:#5EEAD4}.v{color:#F0C674}.c{color:#8B949E}
+.copy{position:absolute;top:.5rem;right:.5rem;background:#21262D;color:#E6EDF3;border:1px solid #30363D;border-radius:6px;padding:.25rem .6rem;font:500 .8rem Inter,sans-serif;cursor:pointer}.copy:hover{background:#30363D}
+details{border:1px solid var(--color-border);border-radius:10px;margin:.6rem 0;background:var(--card)}
+summary{cursor:pointer;padding:.9rem 1.1rem;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::-webkit-details-marker{display:none}summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}details>div{padding:0 1.1rem 1rem;color:var(--color-text-muted)}details>div p:last-child{margin:0}
+.calc{background:var(--card);border:1px solid var(--color-border);border-radius:12px;padding:1.25rem;margin:1.5rem 0}
+.calc .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}
+.calc label{display:block;font-size:.85rem;color:var(--color-text-muted);margin-bottom:.25rem}
+.calc input{width:100%;padding:.55rem;border:1px solid var(--color-border);border-radius:8px;font:inherit;background:var(--color-bg);color:var(--color-text)}
+.res{margin-top:1rem;padding:1rem;background:var(--color-accent-soft);border-radius:10px;color:#0B3D38;font-weight:500}
+@media(prefers-color-scheme:dark){.res{color:#E6FFFB}}
+.key{list-style:none;padding:0;display:grid;gap:.7rem}.key li{display:flex;gap:.8rem;background:var(--card);border:1px solid var(--color-border);border-radius:10px;padding:.9rem 1rem}
+.key li::before{content:"✓";color:var(--color-accent);font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:2.5rem 0}
+.nav a{flex:1 1 260px;border:1px solid var(--color-border);border-radius:12px;padding:1rem 1.2rem;text-decoration:none;color:var(--color-text);transition:border-color .2s,transform .2s}
+.nav a:hover{border-color:var(--color-accent);transform:translateY(-2px)}.nav small{color:var(--color-text-muted);display:block}.nav .nx{text-align:right}
+.modlink{text-align:center;padding-bottom:1rem}
+footer{border-top:1px solid var(--color-border);padding:1.5rem;text-align:center;color:var(--color-text-muted);font-size:.9rem}
+#up{position:fixed;right:1.2rem;bottom:1.2rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-text);color:var(--color-bg);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s;font-size:1.1rem}#up.show{opacity:1;pointer-events:auto}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+@media(max-width:600px){.hero{padding-top:3rem}.logo span{display:none}}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="top-in">
+<div class="logo"><i></i><span>Automatisation IA &amp; No-Code</span></div>
+<a class="btn ghost" href="#sommaire">Sommaire</a></div></header>
+
+<main>
+<div class="wrap hero">
+<p class="crumb">Module 2 — Automatiser avec l'IA, sécuriser et piloter</p>
+<h1>Leçon 10 — Construire son plan d'automatisation</h1>
+<p class="lead">Transformez tout ce que vous avez appris en un plan concret sur 30 jours, avec des objectifs mesurables et un temps gagné que vous pouvez chiffrer.</p>
+<div class="badges"><span class="badge">Module 2</span><span class="badge">⏱ 30 min</span><span class="badge">Niveau intermédiaire</span></div>
+</div>
+
+<div class="wrap">
+<nav class="toc" id="sommaire" aria-label="Sommaire"><strong>Dans cette leçon</strong>
+<ol>
+<li><a href="#s1">Synthèse du parcours</a></li>
+<li><a href="#s2">Objectifs SMART et priorisation</a></li>
+<li><a href="#s3">Planification : calendrier, temps, budget</a></li>
+<li><a href="#s4">Calculer le ROI et suivre les KPI</a></li>
+<li><a href="#s5">Amélioration continue</a></li>
+<li><a href="#s6">Modèle de plan sur 30 jours</a></li>
+<li><a href="#cles">Points clés à retenir</a></li>
+</ol></nav>
+</div>
+
+<section class="s reveal" id="s1"><div class="wrap">
+<h2>1. Synthèse du parcours</h2>
+<p>Depuis le début du module, vous avez appris à repérer les tâches répétitives, à connecter vos outils, à confier des étapes à l'IA, puis à tester, sécuriser et maintenir vos automatisations. Cette leçon rassemble ces briques dans un seul document de pilotage : votre plan d'automatisation.</p>
+<div class="cards">
+<div class="card"><div class="ic">🔍</div><h3>Repérer</h3><p>Identifier les tâches longues, répétitives et à règles claires.</p></div>
+<div class="card"><div class="ic">🔗</div><h3>Connecter</h3><p>Relier vos outils via déclencheurs, webhooks et API.</p></div>
+<div class="card"><div class="ic">🧠</div><h3>Intégrer l'IA</h3><p>Confier à un modèle les étapes de rédaction, tri ou analyse.</p></div>
+<div class="card"><div class="ic">🛡️</div><h3>Sécuriser</h3><p>Tester, surveiller et protéger les données et les accès.</p></div>
+</div>
+<figure class="fig"><svg viewBox="0 0 640 110" role="img" aria-label="Schéma : du repérage des tâches au plan d'automatisation en passant par la connexion, l'IA et la sécurisation">
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#57606A"/></marker></defs>
+<rect class="node" x="10" y="30" width="110" height="50" rx="10"/><text class="svg-t" x="65" y="60" text-anchor="middle">Repérer</text>
+<rect class="node" x="165" y="30" width="110" height="50" rx="10"/><text class="svg-t" x="220" y="60" text-anchor="middle">Connecter</text>
+<rect class="node" x="320" y="30" width="110" height="50" rx="10"/><text class="svg-t" x="375" y="60" text-anchor="middle">IA</text>
+<rect class="node" x="475" y="30" width="155" height="50" rx="10"/><text class="svg-t" x="552" y="60" text-anchor="middle">Sécuriser</text>
+<path class="line" d="M120 55H163" marker-end="url(#ar)"/><path class="line" d="M275 55H318" marker-end="url(#ar)"/><path class="line" d="M430 55H473" marker-end="url(#ar)"/>
+<rect class="node on" x="165" y="95" width="310" height="1" opacity="0"/></svg>
+<figcaption>Les quatre acquis du module alimentent un seul plan d'action.</figcaption></figure>
+</div></section>
+
+<section class="s reveal" id="s2"><div class="wrap">
+<h2>2. Objectifs SMART et priorisation</h2>
+<p>Un objectif d'automatisation flou (« gagner du temps ») ne se pilote pas. Rendez-le <strong>Spécifique, Mesurable, Atteignable, Réaliste et Temporel</strong>.</p>
+<div class="code" data-copy><button class="copy" type="button">Copier</button><pre><code><span class="ln"><span class="c">// Modèle d'objectif SMART</span></span><span class="ln"><span class="k">"tâche"</span>: <span class="v">"Envoi des devis après un appel client"</span>,</span><span class="ln"><span class="k">"mesure"</span>: <span class="v">"15 min → 2 min par devis"</span>,</span><span class="ln"><span class="k">"volume"</span>: <span class="v">"20 devis par mois"</span>,</span><span class="ln"><span class="k">"échéance"</span>: <span class="v">"en production au jour 14"</span></span></code></pre></div>
+<h3>Prioriser les chantiers</h3>
+<p>Notez chaque tâche de 1 à 5 sur le gain de temps et sur la facilité de mise en place, puis commencez par les tâches qui cumulent les deux.</p>
+<div class="scroll"><table><thead><tr><th>Chantier</th><th>Gain</th><th>Facilité</th><th>Priorité</th></tr></thead><tbody>
+<tr><td>Envoi de devis</td><td>5</td><td>4</td><td>1re</td></tr>
+<tr><td>Publication de contenus</td><td>4</td><td>3</td><td>2e</td></tr>
+<tr><td>Reporting mensuel</td><td>3</td><td>2</td><td>3e</td></tr></tbody></table></div>
+<div class="callout"><b>💡 À retenir</b>Visez 2 à 3 chantiers maximum sur le premier mois. Un petit flux fiable vaut mieux que dix flux fragiles.</div>
+</div></section>
+
+<section class="s reveal" id="s3"><div class="wrap">
+<h2>3. Planification : calendrier, temps et budget</h2>
+<p>Répartissez le mois en quatre phases. Prévoyez environ 3 à 4 heures par semaine, et un budget d'outils (abonnement No-Code, crédits IA) fixé dès le départ.</p>
+<ol class="stepper">
+<li><div class="d">1</div><strong>Semaine 1</strong><small>Cadrer et cartographier</small></li>
+<li><div class="d">2</div><strong>Semaine 2</strong><small>Construire le premier flux</small></li>
+<li><div class="d">3</div><strong>Semaine 3</strong><small>Tester et sécuriser</small></li>
+<li><div class="d">4</div><strong>Semaine 4</strong><small>Mesurer et ajuster</small></li>
+</ol>
+<figure class="fig"><svg viewBox="0 0 640 170" role="img" aria-label="Diagramme de Gantt sur 4 semaines : cadrage en semaine 1, construction en semaine 2, tests en semaine 3, mesure en semaine 4">
+<g class="svg-m"><text x="150" y="18">S1</text><text x="270" y="18">S2</text><text x="390" y="18">S3</text><text x="510" y="18">S4</text></g>
+<g class="svg-t"><text x="10" y="48">Cadrage</text><text x="10" y="83">Construction</text><text x="10" y="118">Tests et sécurité</text><text x="10" y="153">Mesure et ajustement</text></g>
+<rect class="node on" x="130" y="32" width="110" height="22" rx="6"/><rect class="node on" x="250" y="67" width="110" height="22" rx="6"/><rect class="node on" x="370" y="102" width="110" height="22" rx="6"/><rect class="node on" x="490" y="137" width="110" height="22" rx="6"/></svg>
+<figcaption>Un chantier par semaine : chaque phase prépare la suivante.</figcaption></figure>
+<div class="tabs">
+<div role="tablist" aria-label="Rythme de travail">
+<button role="tab" aria-selected="true" aria-controls="p1" id="t1">Solo</button>
+<button role="tab" aria-selected="false" aria-controls="p2" id="t2" tabindex="-1">En équipe</button></div>
+<div role="tabpanel" id="p1" aria-labelledby="t1"><p>Bloquez 2 créneaux fixes par semaine dans votre agenda. Ne lancez qu'un seul flux à la fois pour garder le contrôle du suivi.</p></div>
+<div role="tabpanel" id="p2" aria-labelledby="t2" hidden><p>Nommez un responsable par flux, partagez la documentation et décidez ensemble de l'ordre de priorité lors d'un point hebdomadaire de 15 minutes.</p></div>
+</div>
+<div class="callout"><b>⚠️ Erreur fréquente</b>Sous-estimer le temps de test. Gardez au moins un quart de votre temps pour la vérification et la sécurisation.</div>
+</div></section>
+
+<section class="s reveal" id="s4"><div class="wrap">
+<h2>4. Calculer le ROI et suivre les KPI</h2>
+<p>Le retour sur investissement se résume à une question : le temps (et l'argent) gagné dépasse-t-il le temps (et l'argent) investi ? Mesurez la situation avant d'automatiser, sinon vous ne pourrez rien comparer.</p>
+<div class="cards">
+<div class="card"><div class="ic">⏱</div><h3>Temps gagné</h3><p>Durée avant moins durée après, multipliée par le volume.</p></div>
+<div class="card"><div class="ic">✅</div><h3>Taux d'erreur</h3><p>Part des exécutions qui échouent ou demandent une correction.</p></div>
+<div class="card"><div class="ic">💶</div><h3>Coût mensuel</h3><p>Abonnements, crédits IA et temps de maintenance.</p></div>
+</div>
+<div class="calc" aria-label="Calculateur de temps gagné">
+<div class="row">
+<div><label for="a">Minutes avant (par tâche)</label><input id="a" type="number" min="0" value="15"></div>
+<div><label for="b">Minutes après</label><input id="b" type="number" min="0" value="2"></div>
+<div><label for="c">Tâches par mois</label><input id="c" type="number" min="0" value="20"></div>
+<div><label for="d">Valeur d'une heure (€)</label><input id="d" type="number" min="0" value="40"></div></div>
+<div class="res" id="res" aria-live="polite"></div></div>
+<details><summary>Comment calculer le ROI en pourcentage ?</summary><div><p>ROI = (valeur du temps gagné − coût de l'automatisation) ÷ coût de l'automatisation. Incluez le temps passé à construire et à maintenir le flux dans le coût.</p></div></details>
+<details><summary>Quels KPI suivre au quotidien ?</summary><div><p>Le nombre d'exécutions, le taux de réussite, le temps moyen par tâche et le nombre d'interventions manuelles. Quatre indicateurs suffisent pour démarrer.</p></div></details>
+</div></section>
+
+<section class="s reveal" id="s5"><div class="wrap">
+<h2>5. Amélioration continue</h2>
+<p>Une automatisation n'est jamais terminée : vos outils changent, vos volumes aussi. Adoptez un cycle court et régulier.</p>
+<figure class="fig"><svg viewBox="0 0 640 190" role="img" aria-label="Cycle d'amélioration continue : mesurer, analyser, ajuster, puis recommencer">
+<defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#57606A"/></marker></defs>
+<rect class="node on" x="40" y="70" width="140" height="50" rx="10"/><text x="110" y="100" text-anchor="middle" style="fill:#fff;font:500 13px Inter,sans-serif">Mesurer</text>
+<rect class="node" x="250" y="70" width="140" height="50" rx="10"/><text class="svg-t" x="320" y="100" text-anchor="middle">Analyser</text>
+<rect class="node" x="460" y="70" width="140" height="50" rx="10"/><text class="svg-t" x="530" y="100" text-anchor="middle">Ajuster</text>
+<path class="line" d="M180 95H248" marker-end="url(#ar2)"/><path class="line" d="M390 95H458" marker-end="url(#ar2)"/>
+<path class="line" d="M530 122V160H110V122" marker-end="url(#ar2)"/><text class="svg-m" x="320" y="178" text-anchor="middle">Revue mensuelle</text></svg>
+<figcaption>Une revue mensuelle de 30 minutes suffit à garder vos flux utiles.</figcaption></figure>
+<p>Documentez chaque changement, gardez une version qui fonctionne et ne modifiez qu'un élément à la fois pour savoir ce qui a réellement amélioré les résultats.</p>
+<div class="callout"><b>🔗 Pour aller plus loin</b>Reprenez la Leçon 09 : vos tests et votre surveillance alimentent directement les KPI de ce plan.</div>
+</div></section>
+
+<section class="s reveal" id="s6"><div class="wrap">
+<h2>6. Modèle de plan d'action sur 30 jours</h2>
+<p>Copiez ce modèle et remplacez les exemples par votre activité. Il tient sur une page.</p>
+<div class="code" data-copy><button class="copy" type="button">Copier</button><pre><code><span class="ln"><span class="c"># PLAN D'AUTOMATISATION — 30 JOURS</span></span><span class="ln"><span class="k">Objectif SMART</span> : [tâche] de [X min] à [Y min], d'ici le jour 30</span><span class="ln"><span class="k">Jours 1-7</span>   : lister les tâches, noter gain/facilité, choisir 1 chantier</span><span class="ln"><span class="k">Jours 8-14</span>  : construire le flux (déclencheur → IA → action)</span><span class="ln"><span class="k">Jours 15-21</span> : tester, sécuriser les accès, prévoir les erreurs</span><span class="ln"><span class="k">Jours 22-30</span> : mesurer les KPI, calculer le ROI, décider de la suite</span><span class="ln"><span class="k">Budget</span>      : [outils + crédits IA] par mois</span><span class="ln"><span class="k">KPI</span>         : temps gagné, taux d'erreur, interventions manuelles</span></code></pre></div>
+<details><summary>Et si mon premier flux échoue ?</summary><div><p>C'est normal et utile. Notez la cause, corrigez-la, relancez un test et décalez le calendrier plutôt que d'ajouter un nouveau chantier.</p></div></details>
+</div></section>
+
+<section class="s reveal" id="cles"><div class="wrap">
+<h2>Points clés à retenir</h2>
+<ul class="key">
+<li>Un plan d'automatisation relie objectifs, calendrier, budget et mesure.</li>
+<li>Un bon objectif est SMART : chiffré, daté et réaliste.</li>
+<li>Priorisez par gain de temps et par facilité de mise en place.</li>
+<li>Mesurez avant d'automatiser pour pouvoir prouver le ROI.</li>
+<li>Révisez vos flux chaque mois : l'amélioration est continue.</li>
+</ul>
+<p>Bravo : vous avez terminé le parcours du Module 2. Il vous reste à valider vos acquis.</p>
+</div></section>
+
+<div class="wrap">
+<nav class="nav" aria-label="Navigation entre les leçons">
+<a href="#"><small>← Leçon précédente</small>Leçon 09 — Tester, sécuriser et maintenir ses automatisations</a>
+<a href="#" class="nx"><small>Leçon suivante →</small>Quiz de fin de Module 2 / Projet final</a>
+</nav>
+<p class="modlink"><a href="#">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Automatisation IA &amp; No-Code · Module 2 · Leçon 10</footer>
+<button id="up" aria-label="Retour en haut de page">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('bar'),up=document.getElementById('up');
+function onScroll(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';up.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+up.onclick=function(){scrollTo({top:0})};
+// Révélation au scroll
+var io='IntersectionObserver' in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08}):null;
+document.querySelectorAll('.reveal').forEach(function(el){io?io.observe(el):el.classList.add('in')});
+// Onglets (flèches clavier)
+document.querySelectorAll('.tabs').forEach(function(t){
+var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+function sel(i){tabs.forEach(function(b,j){var on=i===j;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on});tabs[i].focus()}
+tabs.forEach(function(b,i){b.onclick=function(){sel(i)};b.onkeydown=function(e){if(e.key==='ArrowRight')sel((i+1)%tabs.length);if(e.key==='ArrowLeft')sel((i-1+tabs.length)%tabs.length)}})});
+// Copier le code
+document.querySelectorAll('.code').forEach(function(box){
+var btn=box.querySelector('.copy');
+btn.onclick=function(){var txt=[].map.call(box.querySelectorAll('.ln'),function(l){return l.textContent}).join('\n');
+(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){btn.textContent='Copié ✓'},function(){var r=document.createRange();r.selectNodeContents(box.querySelector('code'));var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Sélectionné'});
+setTimeout(function(){btn.textContent='Copier'},1800)}});
+// Calculateur de temps gagné
+var ids=['a','b','c','d'].map(function(i){return document.getElementById(i)}),res=document.getElementById('res');
+function calc(){var v=ids.map(function(i){return Math.max(0,parseFloat(i.value)||0)});
+var min=Math.max(0,v[0]-v[1])*v[2],h=min/60;
+res.textContent='Temps gagné : '+h.toFixed(1).replace('.',',')+' h par mois, soit environ '+Math.round(h*v[3])+' € de temps libéré, et '+(h*12).toFixed(0)+' h sur l\u2019année.'}
+ids.forEach(function(i){i.addEventListener('input',calc)});calc();
+})();
+</script>
+</body>
+</html>

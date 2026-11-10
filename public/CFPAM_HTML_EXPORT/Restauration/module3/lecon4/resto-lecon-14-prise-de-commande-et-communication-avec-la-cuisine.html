@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 14 — Prise de commande et communication avec la cuisine">
+<title>Restauration — Leçon 14 | Prise de commande et communication avec la cuisine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FDF3E7;
+  --color-text:#3B2314;
+  --color-accent:#E8752C;
+  --color-neutral:#8A6E5C;
+  --shadow:0 10px 30px color-mix(in srgb,var(--color-text) 8%,transparent);
+  --border:color-mix(in srgb,var(--color-neutral) 25%,transparent);
+  --soft:color-mix(in srgb,var(--color-accent) 8%,var(--color-bg));
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--color-bg);color:var(--color-text);
+  font-family:Inter,Arial,sans-serif;line-height:1.7;
+}
+body.dark{
+  --color-bg:#3B2314;--color-text:#FDF3E7;--color-accent:#E8752C;--color-neutral:#8A6E5C;
+}
+a{color:inherit}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{
+  position:sticky;top:4px;z-index:100;
+  background:color-mix(in srgb,var(--color-bg) 94%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--border)
+}
+.nav{
+  max-width:var(--max);margin:auto;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px
+}
+.brand{font-weight:700;letter-spacing:.04em}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{
+  border:1px solid var(--border);border-radius:999px;padding:5px 10px;
+  font-size:.78rem;color:var(--color-neutral)
+}
+.badge.accent{color:var(--color-accent);border-color:color-mix(in srgb,var(--color-accent) 40%,transparent)}
+main{max-width:var(--max);margin:auto;padding:42px 24px 70px}
+.hero{
+  padding:46px 0 34px;display:grid;grid-template-columns:1.5fr .7fr;
+  gap:40px;align-items:end
+}
+.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:.78rem;color:var(--color-accent);font-weight:700}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;line-height:1.15}
+h1{font-size:clamp(2.3rem,5vw,4.4rem);margin:10px 0 18px}
+h2{font-size:clamp(1.7rem,3vw,2.5rem);margin:0 0 18px}
+h3{font-size:1.3rem;margin:0 0 10px}
+.lead{font-size:1.08rem;max-width:760px;color:var(--color-neutral)}
+.meta{
+  border:1px solid var(--border);padding:22px;border-radius:16px;
+  box-shadow:var(--shadow);background:color-mix(in srgb,var(--color-bg) 92%,var(--color-neutral))
+}
+.meta strong{display:block;font-family:"IBM Plex Mono",monospace;font-size:.86rem;margin-bottom:6px}
+.toc{
+  margin:10px 0 50px;padding:20px;border-left:3px solid var(--color-accent);
+  background:var(--soft);border-radius:0 14px 14px 0
+}
+.toc strong{display:block;margin-bottom:8px}
+.toc ul{margin:0;padding-left:20px;columns:2}
+.toc a{text-decoration:none}.toc a:hover{color:var(--color-accent)}
+section{margin:70px 0;scroll-margin-top:100px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{
+  border:1px solid var(--border);border-radius:16px;padding:22px;
+  background:color-mix(in srgb,var(--color-bg) 95%,var(--color-neutral));
+  transition:.2s ease
+}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.6rem;margin-bottom:8px}
+.callout{
+  margin:24px 0;padding:20px 22px;border-radius:14px;
+  border-left:4px solid var(--color-accent);background:var(--soft)
+}
+.callout .label{font-weight:700;color:var(--color-accent);display:block;margin-bottom:5px}
+.steps{display:flex;gap:8px;margin:28px 0;overflow:auto;padding-bottom:8px}
+.step{
+  min-width:170px;padding:15px;border:1px solid var(--border);border-radius:12px;
+  position:relative;background:var(--color-bg)
+}
+.step b{font-family:"IBM Plex Mono",monospace;color:var(--color-accent)}
+.protocol{width:100%;border-collapse:collapse;margin:22px 0;font-size:.94rem}
+.protocol th,.protocol td{padding:13px 14px;border:1px solid var(--border);text-align:left;vertical-align:top}
+.protocol th{background:var(--soft);font-family:"IBM Plex Mono",monospace;font-size:.82rem}
+.protocol tr:hover td{background:color-mix(in srgb,var(--color-accent) 4%,transparent)}
+.ticket{
+  font-family:"IBM Plex Mono",monospace;border:1px dashed var(--color-neutral);
+  padding:20px;border-radius:12px;background:color-mix(in srgb,var(--color-bg) 90%,var(--color-neutral));
+  white-space:pre-wrap
+}
+.accordion{border-top:1px solid var(--border)}
+details{border-bottom:1px solid var(--border);padding:16px 0}
+summary{cursor:pointer;font-weight:700}
+summary:focus{outline:2px solid var(--color-accent);outline-offset:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.svgbox{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--soft);overflow:hidden}
+svg{width:100%;height:auto}
+.navlinks{display:flex;justify-content:space-between;gap:16px;margin-top:60px}
+.navlink{
+  border:1px solid var(--border);padding:16px 20px;border-radius:12px;
+  text-decoration:none;max-width:48%
+}
+.navlink:hover{border-color:var(--color-accent)}
+footer{text-align:center;border-top:1px solid var(--border);padding:28px 20px;color:var(--color-neutral);font-size:.9rem}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);
+  border-radius:50%;background:var(--color-bg);color:var(--color-text);cursor:pointer;box-shadow:var(--shadow)}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){
+  .hero,.two{grid-template-columns:1fr}.grid{grid-template-columns:1fr}
+  .toc ul{columns:1}.nav{padding:12px 16px}main{padding:28px 16px 55px}
+  section{margin:52px 0}.navlinks{flex-direction:column}.navlink{max-width:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand">FILIÈRE RESTAURATION</div>
+    <div class="badges">
+      <span class="badge accent">MODULE 3</span>
+      <span class="badge">BAC Pro</span>
+      <span class="badge">20 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero reveal">
+    <div>
+      <div class="eyebrow">Service en salle — accueil et techniques de service</div>
+      <h1>Prise de commande et communication avec la cuisine</h1>
+      <p class="lead">
+        Savoir écouter le client, recueillir une commande complète, repérer les informations sensibles
+        et transmettre des informations fiables à la cuisine pour synchroniser le service.
+      </p>
+    </div>
+    <aside class="meta">
+      <strong>LEÇON 14</strong>
+      <div>Prendre une commande complète et la transmettre correctement.</div>
+    </aside>
+  </section>
+
+  <nav class="toc reveal" aria-label="Sommaire">
+    <strong>Sommaire</strong>
+    <ul>
+      <li><a href="#commande">1. Prendre une commande</a></li>
+      <li><a href="#allergies">2. Suggestions et allergies</a></li>
+      <li><a href="#ticket">3. Le bon de commande</a></li>
+      <li><a href="#transmission">4. Transmission en cuisine</a></li>
+      <li><a href="#synchronisation">5. Synchroniser le service</a></li>
+      <li><a href="#phrases">6. Phrases-types</a></li>
+      <li><a href="#resume">7. Points clés</a></li>
+    </ul>
+  </nav>
+
+  <section id="commande" class="reveal">
+    <div class="eyebrow">01 — La prise de commande</div>
+    <h2>Une commande complète commence par une écoute structurée</h2>
+    <p>
+      La prise de commande est l’action de recueillir avec précision les choix et les demandes du client,
+      puis de les enregistrer afin de permettre au service et à la cuisine de travailler sur les mêmes informations.
+    </p>
+
+    <div class="grid">
+      <article class="card">
+        <div class="icon">👂</div>
+        <h3>Écouter</h3>
+        <p>Être attentif au client, ne pas interrompre inutilement et reformuler lorsque l’information est incertaine.</p>
+      </article>
+      <article class="card">
+        <div class="icon">📝</div>
+        <h3>Noter</h3>
+        <p>Enregistrer les plats, quantités, cuissons, accompagnements et demandes particulières de façon lisible.</p>
+      </article>
+      <article class="card">
+        <div class="icon">🔎</div>
+        <h3>Vérifier</h3>
+        <p>Relire la commande avant transmission afin de limiter les oublis et les erreurs de compréhension.</p>
+      </article>
+    </div>
+
+    <div class="steps" aria-label="Étapes de prise de commande">
+      <div class="step"><b>01</b><br>Accueil et disponibilité</div>
+      <div class="step"><b>02</b><br>Choix du client</div>
+      <div class="step"><b>03</b><br>Précisions et demandes</div>
+      <div class="step"><b>04</b><br>Reformulation</div>
+      <div class="step"><b>05</b><br>Transmission</div>
+    </div>
+
+    <div class="callout">
+      <span class="label">👨‍🍳 Conseil de chef</span>
+      Avant de quitter la table, vérifiez les informations qui peuvent modifier la préparation ou le déroulement
+      du service : quantité, cuisson, accompagnement, allergie signalée ou demande particulière.
+    </div>
+  </section>
+
+  <section id="allergies" class="reveal">
+    <div class="eyebrow">02 — Suggestions et allergies</div>
+    <h2>Conseiller sans inventer et signaler sans ambiguïté</h2>
+    <div class="two">
+      <div>
+        <h3>Faire une suggestion</h3>
+        <p>
+          Une suggestion doit correspondre à la demande du client et aux informations disponibles sur les produits.
+          Le serveur peut orienter le choix, présenter une proposition et préciser les caractéristiques utiles.
+        </p>
+        <div class="callout">
+          <span class="label">💡 À retenir</span>
+          Une suggestion est un conseil de service : elle doit rester claire, pertinente et cohérente avec la carte.
+        </div>
+      </div>
+      <div>
+        <h3>Traiter une allergie signalée</h3>
+        <p>
+          Une allergie annoncée par le client doit être prise au sérieux. L’information doit être clairement identifiée
+          et transmise à la cuisine avant toute préparation concernée.
+        </p>
+        <div class="callout">
+          <span class="label">📌 Rappel HACCP / sécurité</span>
+          Ne jamais garantir l’absence d’un allergène sans disposer de l’information nécessaire. En cas de doute,
+          vérifier auprès de la cuisine avant de répondre au client.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ticket" class="reveal">
+    <div class="eyebrow">03 — Le bon de commande</div>
+    <h2>Un ticket utile doit être lisible et exploitable</h2>
+    <p>
+      Le bon de commande constitue le lien écrit entre la salle et la cuisine. Il doit permettre de comprendre
+      rapidement <strong>quoi préparer, en quelle quantité et avec quelles précisions</strong>.
+    </p>
+
+    <div class="two">
+      <div>
+        <h3>Informations essentielles</h3>
+        <table class="protocol">
+          <thead>
+            <tr><th scope="col">Information</th><th scope="col">Exemple</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Table / repère</td><td>Table 12</td></tr>
+            <tr><td>Quantité</td><td>2</td></tr>
+            <tr><td>Article</td><td>Filet de poisson</td></tr>
+            <tr><td>Cuisson / option</td><td>Cuisson indiquée par le client</td></tr>
+            <tr><td>Accompagnement</td><td>Selon le choix annoncé</td></tr>
+            <tr><td>Demande particulière</td><td>Sans l’élément demandé par le client</td></tr>
+            <tr><td>Allergie signalée</td><td>À identifier clairement</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>Modèle de ticket</h3>
+        <div class="ticket">TABLE : 12
+COUVERTS : 2
+
+1 × ENTRÉE
+1 × PLAT
+   └─ accompagnement : préciser
+   └─ cuisson : préciser
+
+DEMANDE PARTICULIÈRE :
+→ préciser clairement
+
+ALLERGIE SIGNALÉE :
+→ identifier + transmettre
+
+SERVEUR :
+→ identifier si nécessaire</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">⚠️ Attention / erreur fréquente</span>
+      Évitez les abréviations ambiguës et les informations incomplètes. Une formulation compréhensible en salle
+      n'est pas forcément suffisamment précise pour la cuisine.
+    </div>
+  </section>
+
+  <section id="transmission" class="reveal">
+    <div class="eyebrow">04 — Communication avec la cuisine</div>
+    <h2>Transmettre une information fiable, au bon moment</h2>
+    <div class="svgbox" role="img" aria-label="Schéma de transmission de la commande entre client, salle et cuisine">
+      <svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="30" y="65" width="210" height="110" rx="18" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+        <text x="135" y="105" text-anchor="middle" fill="#3B2314" font-size="23" font-family="Inter">CLIENT</text>
+        <text x="135" y="138" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">choix + demandes</text>
+
+        <rect x="345" y="45" width="210" height="150" rx="18" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+        <text x="450" y="88" text-anchor="middle" fill="#3B2314" font-size="23" font-family="Inter">SALLE</text>
+        <text x="450" y="120" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">écoute</text>
+        <text x="450" y="145" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">vérification</text>
+        <text x="450" y="170" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">transmission</text>
+
+        <rect x="660" y="65" width="210" height="110" rx="18" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+        <text x="765" y="105" text-anchor="middle" fill="#3B2314" font-size="23" font-family="Inter">CUISINE</text>
+        <text x="765" y="138" text-anchor="middle" fill="#8A6E5C" font-size="16" font-family="Inter">préparation</text>
+
+        <path d="M240 120 H335" fill="none" stroke="#E8752C" stroke-width="3"/>
+        <path d="M565 120 H650" fill="none" stroke="#E8752C" stroke-width="3"/>
+        <path d="M326 112 l12 8 -12 8" fill="none" stroke="#E8752C" stroke-width="3"/>
+        <path d="M641 112 l12 8 -12 8" fill="none" stroke="#E8752C" stroke-width="3"/>
+      </svg>
+    </div>
+
+    <div class="grid" style="margin-top:22px">
+      <article class="card">
+        <h3>1. Lire</h3>
+        <p>Contrôler que le ticket correspond à la table et que les informations sont compréhensibles.</p>
+      </article>
+      <article class="card">
+        <h3>2. Transmettre</h3>
+        <p>Faire parvenir la commande par le circuit prévu et signaler les demandes qui nécessitent une attention particulière.</p>
+      </article>
+      <article class="card">
+        <h3>3. Confirmer</h3>
+        <p>En cas d’information sensible ou inhabituelle, s’assurer que le message a bien été compris.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="synchronisation" class="reveal">
+    <div class="eyebrow">05 — Synchronisation du service</div>
+    <h2>Coordonner les commandes pour maintenir le rythme du service</h2>
+    <p>
+      La synchronisation consiste à faire circuler les informations entre la salle et la cuisine afin que les préparations
+      et le service arrivent au bon moment. Elle repose sur une communication claire et continue.
+    </p>
+
+    <table class="protocol">
+      <thead>
+        <tr>
+          <th scope="col">Situation</th>
+          <th scope="col">Action en salle</th>
+          <th scope="col">Information à transmettre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nouvelle commande</td>
+          <td>Enregistrer puis transmettre rapidement</td>
+          <td>Table, articles, quantités et précisions</td>
+        </tr>
+        <tr>
+          <td>Demande particulière</td>
+          <td>Identifier clairement la demande</td>
+          <td>Modification ou contrainte annoncée</td>
+        </tr>
+        <tr>
+          <td>Allergie signalée</td>
+          <td>Ne pas laisser l'information implicite</td>
+          <td>Allergie annoncée + vérification nécessaire</td>
+        </tr>
+        <tr>
+          <td>Question sur un plat</td>
+          <td>Vérifier auprès de la cuisine si nécessaire</td>
+          <td>Réponse fiable avant de confirmer au client</td>
+        </tr>
+        <tr>
+          <td>Décalage de service</td>
+          <td>Informer et coordonner</td>
+          <td>État de la commande et besoin de synchronisation</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <span class="label">👨‍🍳 Astuce pro</span>
+      La salle et la cuisine travaillent comme une seule chaîne de service : une information perdue ou mal formulée
+      peut provoquer une erreur, un retard ou une mauvaise expérience client.
+    </div>
+
+    <div class="accordion">
+      <details>
+        <summary>Pourquoi reformuler la commande ?</summary>
+        <p>La reformulation permet de confirmer avec le client que les choix enregistrés correspondent bien à sa demande.</p>
+      </details>
+      <details>
+        <summary>Que faire lorsqu'une information manque ?</summary>
+        <p>Ne pas supposer. Identifier l'information manquante et la vérifier auprès du client ou de la cuisine selon le cas.</p>
+      </details>
+      <details>
+        <summary>Pourquoi la lisibilité du ticket est-elle importante ?</summary>
+        <p>Parce que le ticket doit être compris rapidement par les personnes qui participent à la préparation et au service.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="phrases" class="reveal">
+    <div class="eyebrow">06 — Phrases-types</div>
+    <h2>Communiquer avec professionnalisme</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>Pour clarifier</h3>
+        <p>« Si je comprends bien, vous souhaitez… »</p>
+      </article>
+      <article class="card">
+        <h3>Pour une suggestion</h3>
+        <p>« Je peux vous proposer… »</p>
+      </article>
+      <article class="card">
+        <h3>Pour une allergie</h3>
+        <p>« Je vais vérifier cette information auprès de la cuisine avant de vous confirmer. »</p>
+      </article>
+      <article class="card">
+        <h3>Pour reformuler</h3>
+        <p>« Je vous reformule votre commande : … »</p>
+      </article>
+      <article class="card">
+        <h3>Pour transmettre</h3>
+        <p>« Table 12 : deux couverts, commande complète, avec la demande particulière indiquée sur le ticket. »</p>
+      </article>
+      <article class="card">
+        <h3>Pour confirmer</h3>
+        <p>« Votre demande est bien prise en compte. »</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="resume" class="reveal">
+    <div class="eyebrow">07 — Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <div class="two">
+      <div class="card">
+        <h3>Une bonne commande</h3>
+        <ul>
+          <li>écouter attentivement ;</li>
+          <li>noter avec précision ;</li>
+          <li>identifier les demandes particulières ;</li>
+          <li>signaler clairement les allergies ;</li>
+          <li>reformuler avant de terminer la prise de commande.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Une bonne transmission</h3>
+        <ul>
+          <li>utiliser un ticket lisible ;</li>
+          <li>transmettre les informations utiles à la cuisine ;</li>
+          <li>éviter les formulations ambiguës ;</li>
+          <li>vérifier les informations sensibles ;</li>
+          <li>maintenir la communication pour synchroniser le service.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">📌 À retenir</span>
+      <strong>Écouter → noter → vérifier → reformuler → transmettre → synchroniser.</strong>
+      Cette chaîne permet de transformer la demande du client en information exploitable par toute l'équipe.
+    </div>
+  </section>
+
+  <div class="navlinks">
+    <a class="navlink" href="#" aria-label="Leçon précédente">
+      ← <strong>Leçon 13</strong><br>
+      Connaissance des boissons et œnologie de base
+    </a>
+    <a class="navlink" href="#" aria-label="Leçon suivante">
+      <strong>Leçon 15</strong> →<br>
+      Gestion des réclamations clients
+    </a>
+  </div>
+</main>
+
+<footer>
+  Filière Restauration · Module 3 · Leçon 14 · Prise de commande et communication avec la cuisine
+</footer>
+
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('top');
+
+function updateProgress(){
+  const h=document.documentElement;
+  const max=h.scrollHeight-h.clientHeight;
+  progress.style.width=(max>0 ? (h.scrollTop/max)*100 : 0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+updateProgress();
+
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting) entry.target.classList.add('visible');
+  });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

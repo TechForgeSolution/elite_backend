@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 06 — Créer des graphiques efficaces</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+/* cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+/* encadrés */
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+/* figures */
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+/* stepper */
+.stepper{display:flex;gap:0;overflow-x:auto;margin:28px 0;padding-bottom:8px;counter-reset:s}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+/* tabs */
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+/* tableau */
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}td.l{text-align:left}
+/* code */
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+/* accordéon */
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+/* points clés */
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+/* nav */
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{color:var(--muted);background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+/* ===== Styles propres à la leçon 06 ===== */
+td.hl{background:var(--soft);font-weight:600}
+.dbar{height:12px;background:var(--accent);border-radius:3px;min-width:2px}
+.dcell{display:flex;align-items:center;gap:8px}.dcell span{min-width:2em;text-align:right;font-variant-numeric:tabular-nums}
+.dcell .trk{flex:1;min-width:80px}
+.ico{font-weight:700;color:var(--accent-dark)}.ico.mid{color:var(--muted)}.ico.low{color:var(--text)}
+.spk{display:block}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">Types</a><a href="#s2">Lisibilité</a><a href="#s3">Pièges</a><a href="#s4">Sparklines</a><a href="#s6">TCD</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 2 — Visualiser, analyser avec l'IA et présenter</span><span class="badge">⏱ 20 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Créer des graphiques efficaces</h1>
+  <p class="sub">Leçon 06 — Vous apprenez à choisir et à construire le graphique qui met le mieux en valeur un message chiffré.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>Choisir le bon type de graphique</a></li>
+<li><a href="#s2"><b>2</b>Les éléments d'un graphique lisible</a></li>
+<li><a href="#s3"><b>3</b>Pièges et graphiques trompeurs</a></li>
+<li><a href="#s4"><b>4</b>Sparklines : des graphiques dans une cellule</a></li>
+<li><a href="#s5"><b>5</b>Mise en forme conditionnelle visuelle</a></li>
+<li><a href="#s6"><b>6</b>Graphiques croisés dynamiques</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. Choisir le bon type de graphique</h2>
+<p>Le bon graphique dépend de la <strong>question métier</strong> posée, pas de l'effet visuel. On part de ce que l'on veut montrer, puis on choisit la forme.</p>
+<div class="cards">
+  <div class="card"><div class="ic">📊</div><h4>Histogramme</h4><p>Répartition d'une variable numérique en intervalles (ex. tranches de montants de commande).</p></div>
+  <div class="card"><div class="ic">📈</div><h4>Courbe</h4><p>Évolution dans le temps (ex. ventes mensuelles sur un an).</p></div>
+  <div class="card"><div class="ic">🥧</div><h4>Secteurs</h4><p>Parts d'un tout, avec peu de catégories (ex. 3 canaux de vente).</p></div>
+  <div class="card"><div class="ic">☰</div><h4>Barres horizontales</h4><p>Comparaison de catégories, surtout avec des libellés longs ou un classement.</p></div>
+  <div class="card"><div class="ic">⁘</div><h4>Nuage de points</h4><p>Relation entre deux variables numériques (ex. budget publicitaire et ventes).</p></div>
+</div>
+<div class="tbl"><table>
+<caption style="position:absolute;left:-9999px">Question métier et graphique adapté</caption>
+<tr><th>Question posée</th><th>Graphique conseillé</th></tr>
+<tr><td>Comment se répartissent les montants ?</td><td>Histogramme</td></tr>
+<tr><td>Comment les ventes évoluent-elles ?</td><td>Courbe</td></tr>
+<tr><td>Quelle part représente chaque canal ?</td><td>Secteurs (≤ 5 parts)</td></tr>
+<tr><td>Quel produit se vend le plus ?</td><td>Barres horizontales</td></tr>
+<tr><td>Deux variables évoluent-elles ensemble ?</td><td>Nuage de points</td></tr>
+</table></div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Un histogramme n'est pas un diagramme en barres : il regroupe une variable numérique en intervalles contigus, alors que les barres comparent des catégories distinctes.</p></div>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. Les éléments d'un graphique lisible</h2>
+<p>Un graphique efficace se comprend en quelques secondes. Quatre éléments y contribuent.</p>
+<figure>
+<svg viewBox="0 0 640 290" role="img" aria-label="Diagramme en barres annoté : titre explicite, axe vertical Ventes en k€, axe horizontal Trimestre, couleur d'accent sur la dernière barre, légende">
+<rect x="1" y="1" width="638" height="288" rx="10" fill="#fff" stroke="#E2E8F0"/>
+<text x="24" y="32" font-size="15" font-weight="700" fill="#0A0F14">Les ventes ont progressé de 50 % entre T1 et T4</text>
+<text x="24" y="52" font-size="12" fill="#5B6472">Ventes trimestrielles 2025 (k€)</text>
+<path d="M70 70V230H400" stroke="#5B6472" fill="none"/>
+<g stroke="#E2E8F0"><path d="M70 110H400M70 150H400M70 190H400"/></g>
+<g font-size="11" fill="#5B6472" text-anchor="end"><text x="64" y="234">0</text><text x="64" y="194">20</text><text x="64" y="154">40</text><text x="64" y="114">60</text></g>
+<g fill="#C9D3DD"><rect x="95" y="130" width="50" height="100"/><rect x="170" y="110" width="50" height="120"/><rect x="245" y="100" width="50" height="130"/></g>
+<rect x="320" y="80" width="50" height="150" fill="#16A34A"/>
+<g font-size="12" text-anchor="middle" fill="#0A0F14"><text x="120" y="248">T1</text><text x="195" y="248">T2</text><text x="270" y="248">T3</text><text x="345" y="248">T4</text><text x="345" y="74" font-weight="700">60</text></g>
+<text x="235" y="272" font-size="12" fill="#5B6472" text-anchor="middle">Trimestre</text>
+<text x="20" y="150" font-size="12" fill="#5B6472" transform="rotate(-90 20 150)" text-anchor="middle">Ventes (k€)</text>
+<g font-size="12" fill="#0A0F14"><path d="M420 70h6v-6h-6z" fill="#C9D3DD"/><text x="432" y="75">Trimestres précédents</text><rect x="420" y="86" width="6" height="6" fill="#16A34A"/><text x="432" y="92">Trimestre à retenir</text></g>
+<g font-size="12" fill="#0F7A37" font-weight="600"><text x="420" y="140">① Titre = le message</text><text x="420" y="162">② Axes étiquetés + unité</text><text x="420" y="184">③ Légende claire</text><text x="420" y="206">④ Une couleur d'accent</text></g>
+</svg>
+<figcaption>Le titre énonce l'enseignement ; une seule couleur met en valeur ce qui compte.</figcaption></figure>
+<div class="cards">
+  <div class="card"><div class="ic">🏷️</div><h4>Titre explicite</h4><p>Il énonce le message (« Les ventes progressent de 50 % »), pas seulement le sujet (« Ventes »).</p></div>
+  <div class="card"><div class="ic">📐</div><h4>Axes étiquetés</h4><p>Nom de la variable et unité (k€, %, mois).</p></div>
+  <div class="card"><div class="ic">🔑</div><h4>Légende claire</h4><p>Nécessaire dès qu'il y a plusieurs séries ; inutile avec une seule.</p></div>
+  <div class="card"><div class="ic">🎨</div><h4>Couleurs sobres</h4><p>Gris pour le contexte, vert pour l'information clé.</p></div>
+</div>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Retirez tout ce qui n'aide pas à comprendre : quadrillage dense, bordures, décorations. Ce qui reste doit servir le message.</p></div>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. Pièges et graphiques trompeurs à éviter</h2>
+<p>Un même jeu de données peut être présenté de façon honnête ou déformante. Voici deux représentations de deux ventes presque identiques (98 et 100).</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Comparaison : à gauche un axe tronqué à 96 fait paraître une barre deux fois plus haute que l'autre ; à droite un axe partant de zéro montre deux barres presque égales">
+<g font-size="13" font-weight="700" fill="#0A0F14"><text x="30" y="22">Axe tronqué (trompeur)</text><text x="350" y="22">Axe depuis 0 (fidèle)</text></g>
+<path d="M40 40V190H290M360 40V190H610" stroke="#5B6472" fill="none"/>
+<g fill="#C9D3DD"><rect x="80" y="130" width="60" height="60"/><rect x="400" y="73" width="60" height="117"/></g>
+<g fill="#16A34A"><rect x="180" y="70" width="60" height="120"/><rect x="500" y="70" width="60" height="120"/></g>
+<g font-size="12" text-anchor="middle" fill="#0A0F14"><text x="110" y="208">Produit A (98)</text><text x="210" y="208">Produit B (100)</text><text x="430" y="208">Produit A (98)</text><text x="530" y="208">Produit B (100)</text></g>
+<g font-size="11" fill="#5B6472" text-anchor="end"><text x="34" y="194">96</text><text x="34" y="74">100</text><text x="354" y="194">0</text><text x="354" y="74">100</text></g>
+<text x="165" y="224" font-size="12" fill="#5B6472" text-anchor="middle">B semble 2× plus grand que A</text>
+<text x="485" y="224" font-size="12" fill="#5B6472" text-anchor="middle">L'écart réel est de 2 %</text>
+</svg>
+<figcaption>Un axe qui ne part pas de zéro exagère les différences entre barres.</figcaption></figure>
+<div class="cards">
+  <div class="card"><div class="ic">✂️</div><h4>Axes tronqués</h4><p>Exagèrent les écarts. Pour des barres, l'axe part de zéro.</p></div>
+  <div class="card"><div class="ic">🧊</div><h4>Effets 3D</h4><p>La perspective déforme les surfaces et rend la lecture imprécise.</p></div>
+  <div class="card"><div class="ic">🧩</div><h4>Surcharge visuelle</h4><p>Trop de séries, de couleurs ou de textes noient le message.</p></div>
+  <div class="card"><div class="ic">📏</div><h4>Mauvaise échelle</h4><p>Des graduations irrégulières ou deux échelles mal choisies faussent la comparaison.</p></div>
+</div>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Un camembert de 10 parts, en 3D, avec des couleurs vives est presque illisible. Mieux vaut des barres horizontales triées, en une seule couleur.</p></div>
+<details><summary>Un axe tronqué est-il toujours interdit ?</summary><div><p>Pour une courbe, on peut zoomer sur une plage utile si cela est clairement indiqué sur l'axe. Pour des barres, la longueur représente la valeur : le zéro est indispensable.</p></div></details>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Sparklines : des graphiques dans une cellule</h2>
+<p>Une <strong>sparkline</strong> est un mini-graphique logé dans une cellule. Elle montre une tendance d'un coup d'œil, sans axes ni légende, à côté des chiffres.</p>
+<div class="tbl"><table>
+<caption style="position:absolute;left:-9999px">Tendance sur six mois de trois produits avec sparklines</caption>
+<tr><th>Produit</th><th>Tendance sur 6 mois</th><th style="text-align:right">Dernier mois</th></tr>
+<tr><td>Produit A</td><td><svg class="spk" viewBox="0 0 100 28" width="110" height="30" role="img" aria-label="Tendance en forte hausse"><polyline points="2,24 22,20.7 42,22.3 62,15.7 82,10.7 98,4" fill="none" stroke="#16A34A" stroke-width="2"/><circle cx="98" cy="4" r="3" fill="#16A34A"/></svg></td><td class="r">22</td></tr>
+<tr><td>Produit B</td><td><svg class="spk" viewBox="0 0 100 28" width="110" height="30" role="img" aria-label="Tendance en baisse"><polyline points="2,6.2 22,10.7 42,4 62,12.9 82,17.3 98,24" fill="none" stroke="#0A0F14" stroke-width="2"/><circle cx="98" cy="24" r="3" fill="#0A0F14"/></svg></td><td class="r">22</td></tr>
+<tr><td>Produit C</td><td><svg class="spk" viewBox="0 0 100 28" width="110" height="30" role="img" aria-label="Tendance en légère hausse irrégulière"><polyline points="2,24 22,14 42,19 62,9 82,14 98,4" fill="none" stroke="#16A34A" stroke-width="2"/><circle cx="98" cy="4" r="3" fill="#16A34A"/></svg></td><td class="r">24</td></tr>
+</table></div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Outil">
+    <button role="tab" aria-selected="true">Excel</button>
+    <button role="tab" aria-selected="false">Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Sélectionner la cellule de destination</li><li><em>Insertion › Sparklines</em> : Courbe, Histogramme ou Positif/Négatif</li><li>Indiquer la plage de données (ex. B2:G2), puis recopier vers le bas</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Saisir directement une fonction dans la cellule</li><li>Le type de mini-graphique se règle par un paramètre optionnel</li></ul>
+  <div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Courbe de tendance des valeurs B2 à G2</span>
+=<span class="fn">SPARKLINE</span>(B2:G2)
+<span class="cm">// Mini-histogramme</span>
+=<span class="fn">SPARKLINE</span>(B2:G2; {"charttype"\;"column"})</code></pre></div></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>La sparkline montre la <em>forme</em> d'une évolution, pas ses valeurs exactes : on la combine avec un chiffre clé pour une lecture complète.</p></div>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Mise en forme conditionnelle visuelle</h2>
+<p>La mise en forme conditionnelle ajoute de l'information visuelle <strong>directement dans le tableau</strong>, selon la valeur de chaque cellule. Trois familles sont particulièrement utiles.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Mises en forme">
+    <button role="tab" aria-selected="true">Barres de données</button>
+    <button role="tab" aria-selected="false">Échelles de couleurs</button>
+    <button role="tab" aria-selected="false">Jeux d'icônes</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>Une barre proportionnelle à la valeur apparaît dans la cellule : on compare les lignes d'un regard.</p>
+  <div class="tbl"><table><caption style="position:absolute;left:-9999px">Ventes par région avec barres de données</caption>
+  <tr><th>Région</th><th>Ventes (k€)</th></tr>
+  <tr><td>Nord</td><td><div class="dcell"><div class="trk"><div class="dbar" style="width:82%"></div></div><span>82</span></div></td></tr>
+  <tr><td>Sud</td><td><div class="dcell"><div class="trk"><div class="dbar" style="width:64%"></div></div><span>64</span></div></td></tr>
+  <tr><td>Ouest</td><td><div class="dcell"><div class="trk"><div class="dbar" style="width:41%"></div></div><span>41</span></div></td></tr>
+  <tr><td>Est</td><td><div class="dcell"><div class="trk"><div class="dbar" style="width:23%"></div></div><span>23</span></div></td></tr></table></div></div>
+  <div class="panel" role="tabpanel" hidden><p>L'intensité d'une couleur reflète la valeur : plus la cellule est foncée, plus la valeur est élevée. On privilégie un dégradé d'une seule teinte.</p>
+  <div class="tbl"><table><caption style="position:absolute;left:-9999px">Ventes par trimestre avec échelle de couleurs</caption>
+  <tr><th>Région</th><th style="text-align:right">T1</th><th style="text-align:right">T2</th><th style="text-align:right">T3</th></tr>
+  <tr><td>Nord</td><td class="r" style="background:#EAF7EF">20</td><td class="r" style="background:#A7DDB9">28</td><td class="r" style="background:#4FB872;color:#fff">34</td></tr>
+  <tr><td>Sud</td><td class="r" style="background:#EAF7EF">18</td><td class="r" style="background:#EAF7EF">19</td><td class="r" style="background:#A7DDB9">27</td></tr>
+  <tr><td>Ouest</td><td class="r" style="background:#EAF7EF">10</td><td class="r" style="background:#EAF7EF">12</td><td class="r" style="background:#EAF7EF">11</td></tr></table></div></div>
+  <div class="panel" role="tabpanel" hidden><p>De petits symboles classent chaque valeur : hausse, stabilité ou baisse par rapport à un seuil ou à la période précédente.</p>
+  <div class="tbl"><table><caption style="position:absolute;left:-9999px">Évolution avec jeux d'icônes</caption>
+  <tr><th>Région</th><th>Évolution</th><th>Lecture</th></tr>
+  <tr><td>Nord</td><td><span class="ico">▲</span></td><td>En hausse</td></tr>
+  <tr><td>Sud</td><td><span class="ico mid">▶</span></td><td>Stable</td></tr>
+  <tr><td>Ouest</td><td><span class="ico low">▼</span></td><td>En baisse</td></tr></table></div></div>
+</div>
+<p>Dans Excel : <em>Accueil › Mise en forme conditionnelle</em>. Dans Google Sheets : <em>Format › Mise en forme conditionnelle</em> (échelles de couleurs ; barres et icônes se reproduisent avec des règles ou des formules).</p>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Utilisée partout, la mise en forme conditionnelle devient un sapin de Noël. On la réserve aux colonnes qui portent le message, avec une seule logique visuelle à la fois.</p></div>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. Graphiques croisés dynamiques</h2>
+<p>Un <strong>graphique croisé dynamique</strong> (<em>Pivot Chart</em>) est un graphique relié à un tableau croisé dynamique (leçon 05). Quand on réorganise ou filtre le TCD, le graphique se redessine automatiquement.</p>
+<div class="stepper" role="list" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Outil">
+    <button role="tab" aria-selected="true">Excel</button>
+    <button role="tab" aria-selected="false">Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Cliquer dans le TCD, puis <em>Analyse du TCD › Graphique croisé dynamique</em></li><li>Choisir le type de graphique adapté à la question</li><li>Les boutons de filtre du graphique pilotent aussi le TCD</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Sélectionner le TCD, puis <em>Insertion › Graphique</em></li><li>Le graphique suit les modifications du TCD</li></ul></div>
+</div>
+<div class="note"><strong>🔗 Pour aller plus loin</strong><p>La leçon 07 assemble plusieurs graphiques croisés dynamiques et des filtres interactifs pour construire un tableau de bord.</p></div>
+<details><summary>Un graphique croisé dynamique a-t-il des limites ?</summary><div><p>Son type de graphique doit rester compatible avec la structure du TCD, et les mises en forme manuelles peuvent être réinitialisées lors d'une actualisation. Il faut vérifier la lisibilité après chaque modification.</p></div></details>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>Le type de graphique se choisit selon la question : distribution, évolution, parts, classement ou relation.</li>
+<li>Un graphique lisible a un titre qui énonce le message, des axes étiquetés, une légende claire et des couleurs sobres.</li>
+<li>Axes tronqués, effets 3D, surcharge et mauvaises échelles déforment la lecture.</li>
+<li>Les sparklines résument une tendance dans une cellule.</li>
+<li>Barres de données, échelles de couleurs et icônes enrichissent un tableau à condition d'être utilisées avec parcimonie.</li>
+<li>Un graphique croisé dynamique reste synchronisé avec son tableau croisé dynamique.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <a href="lecon-05-trier-filtrer-synthetiser-tcd.html">Leçon précédente<small>Leçon 05 — Trier, filtrer et synthétiser avec les tableaux croisés dynamiques (Module 1)</small></a>
+    <a href="lecon-07-construire-tableau-de-bord-interactif.html">Leçon suivante<small>Leçon 07 — Construire un tableau de bord interactif</small></a>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 2 · Leçon 06</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Étapes de création d'un graphique croisé dynamique (stepper) ===== */
+const steps=[
+["Préparer","Disposer d'un tableau croisé dynamique propre, issu de données bien structurées."],
+["Insérer","Créer le graphique à partir du TCD (Excel : Graphique croisé dynamique ; Sheets : Insertion › Graphique)."],
+["Choisir","Sélectionner le type adapté : courbe pour une évolution, barres pour un classement, etc."],
+["Affiner","Rédiger un titre explicite, étiqueter les axes et simplifier les couleurs."],
+["Dynamiser","Utiliser les filtres et segments : le graphique se met à jour à chaque changement du TCD."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Étape '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.setAttribute('role','listitem');
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

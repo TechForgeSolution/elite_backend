@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 17 — VPN et interconnexion de sites</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F6FEB'/%3E%3Cpath d='M6 16h20' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+--section:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));--soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));--border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 "IBM Plex Sans",sans-serif}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--color-accent);width:0;z-index:99}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav,.wrap{max-width:1120px;margin:auto;padding:0 24px}.nav{height:62px;display:flex;align-items:center;justify-content:space-between}
+.brand,h1,h2,h3{font-family:"Space Grotesk",sans-serif}.brand{font-weight:700}.brand b,.eyebrow,a{color:var(--color-accent)}a{text-decoration:none}a:hover{text-decoration:underline}
+.hero{padding:68px 24px 52px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;max-width:1120px;margin:auto}
+.eyebrow{font:600 .76rem "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase}h1{font-size:clamp(2.5rem,6vw,4.7rem);line-height:1.05;margin:12px 0 20px;letter-spacing:-.04em}h2{font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.15;margin:0 0 18px}h3{margin:0 0 8px}
+.lead{font-size:1.12rem;max-width:720px;color:var(--muted)}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badge{border:1px solid var(--border);border-radius:999px;padding:6px 11px;background:var(--soft);font-size:.82rem}
+.art,.visual{border:1px solid var(--border);border-radius:16px;background:var(--section);padding:16px;overflow:auto;margin-top:26px}.art{margin-top:0}.art svg,.visual svg{display:block;width:100%;height:auto}
+.toc{border-block:1px solid var(--border);padding:24px 0}.tocgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.toc a{border:1px solid var(--border);padding:11px 13px;border-radius:9px;display:block;background:var(--color-bg)}
+section.lesson{padding:68px 0}section.lesson:nth-child(even){background:var(--section)}.text{max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}.card,.key,.navcard{border:1px solid var(--border);border-radius:13px;background:var(--color-bg);padding:20px;transition:.2s}.card:hover,.navcard:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{width:40px;height:40px;border:1px solid var(--color-accent);border-radius:9px;display:grid;place-items:center;color:var(--color-accent);font:600 .8rem "IBM Plex Mono";margin-bottom:14px}
+.callout{margin:25px 0;padding:16px 18px;border-left:4px solid var(--color-accent);background:var(--soft);border-radius:0 10px 10px 0}.callout strong{display:block;margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin-top:24px;background:var(--color-bg);border:1px solid var(--border)}th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font:600 .78rem "IBM Plex Mono";text-transform:uppercase}tr:hover td{background:var(--soft)}.mono{font-family:"IBM Plex Mono"}.tw{overflow-x:auto}
+.tabs{margin-top:25px}.tabbtns{display:flex;gap:8px;flex-wrap:wrap}button{font:600 15px "IBM Plex Sans";cursor:pointer}.tabbtn{padding:9px 13px;border:1px solid var(--border);background:var(--color-bg);border-radius:8px;color:var(--color-text)}.tabbtn:hover{border-color:var(--color-accent)}.tabbtn[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}.panel{display:none;border:1px solid var(--border);padding:17px;border-radius:0 0 10px 10px;margin-top:8px;background:var(--color-bg)}.panel.active{display:block}.panel ul{margin:8px 0 0;padding-left:20px}
+details{border-bottom:1px solid var(--border);padding:15px 0}summary{cursor:pointer;font-weight:700}details p{margin:8px 0 0}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:25px 0}.step{border:1px solid var(--border);padding:13px;border-radius:10px;background:var(--color-bg);font-size:.92rem}.step b{color:var(--color-accent);font-family:"IBM Plex Mono"}
+.code{margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--color-bg);overflow:hidden}.codebar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--soft);font:600 .78rem "IBM Plex Mono"}
+.copy{border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);border-radius:7px;padding:4px 10px;font:600 .78rem "IBM Plex Mono"}.copy:hover{background:var(--color-accent);color:#fff}
+pre{margin:0;padding:16px 14px;overflow:auto;font:400 .86rem/1.7 "IBM Plex Mono"}.k{color:var(--color-accent);font-weight:600}.c{color:var(--muted)}
+.quiz{margin-top:26px;max-width:720px}.q{border:1px solid var(--border);border-radius:13px;background:var(--color-bg);padding:20px;margin-bottom:14px}.q p{margin:0 0 12px;font-weight:600}
+.opt{display:block;width:100%;text-align:left;font-weight:400;border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);border-radius:9px;padding:10px 13px;margin-top:8px}.opt:hover:not(:disabled){border-color:var(--color-accent)}.opt.ok{border-color:var(--color-accent);background:var(--soft);font-weight:600}.opt.ko{border-style:dashed;color:var(--muted)}
+.fb{margin:12px 0 0;color:var(--muted);font-size:.92rem;min-height:1.2em}.score{font:600 1rem "IBM Plex Mono";color:var(--color-accent)}
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}.navbottom{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:35px}.next{text-align:right}
+.back{position:fixed;right:18px;bottom:18px;width:45px;height:45px;border:1px solid var(--color-accent);border-radius:50%;background:var(--color-bg);color:var(--color-accent);opacity:0;pointer-events:none;z-index:40}.back.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);text-align:center;color:var(--muted);padding:26px}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.nav,.wrap{padding-inline:16px}.hero{padding:42px 16px}.grid,.keys,.navbottom,.tocgrid{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}section.lesson{padding:50px 0}.next{text-align:left}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><div class="nav"><div class="brand">Maintenance <b>&</b> Réseau Informatique</div><a href="#sommaire">Sommaire</a></div></header>
+
+<div class="hero">
+<div><div class="eyebrow">Module 4 · Réseaux informatiques - Sécurité et supervision</div><h1>VPN et interconnexion de sites</h1>
+<p class="lead">Mettre en place un tunnel VPN site à site pour relier deux réseaux distants à travers Internet, de façon sécurisée.</p>
+<div class="badges"><span class="badge">Leçon <b>17</b></span><span class="badge">Probatoire</span><span class="badge">15 min</span></div></div>
+<div class="art"><svg viewBox="0 0 620 410" role="img" aria-label="Deux sites reliés par un tunnel VPN à travers Internet">
+<rect x="20" y="130" width="170" height="150" rx="16" fill="none" stroke="#A9B4BE" stroke-width="2"/><rect x="430" y="130" width="170" height="150" rx="16" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+<path d="M220 100Q310 40 400 100Q440 135 400 170H220Q180 135 220 100Z" fill="none" stroke="#A9B4BE" stroke-width="2" transform="translate(0 20)"/>
+<rect x="190" y="185" width="240" height="40" rx="20" fill="none" stroke="#1F6FEB" stroke-width="3"/>
+<g fill="#10161D" text-anchor="middle"><text x="105" y="185" font-family="Space Grotesk" font-size="20" font-weight="700">SITE A</text><text x="105" y="215" font-family="IBM Plex Mono" font-size="12">192.168.10.0/24</text><text x="515" y="185" font-family="Space Grotesk" font-size="20" font-weight="700">SITE B</text><text x="515" y="215" font-family="IBM Plex Mono" font-size="12">192.168.20.0/24</text><text x="310" y="122" font-family="IBM Plex Mono" font-size="13">INTERNET</text><text x="310" y="210" font-family="IBM Plex Mono" font-size="13">TUNNEL CHIFFRÉ</text><text x="310" y="330" font-family="IBM Plex Mono" font-size="12">passerelle A ⇄ passerelle B</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M105 280V330"/><path d="M515 280V330"/></g><path d="M105 330H515" stroke="#A9B4BE" stroke-width="2" stroke-dasharray="6 6" fill="none"/></svg></div></div>
+
+<div class="wrap"><div class="toc" id="sommaire"><div class="eyebrow">Navigation</div><div class="tocgrid">
+<a href="#vue">01 · Comprendre le VPN</a><a href="#tunnel">02 · Tunnel site à site</a><a href="#protocoles">03 · IPSec et SSL VPN</a><a href="#securite">04 · Authentification et chiffrement</a><a href="#config">05 · Mise en place</a><a href="#exercice">06 · Mini-exercice</a><a href="#synthese">07 · Synthèse</a>
+</div></div></div>
+
+<main>
+<section class="lesson" id="vue"><div class="wrap reveal"><div class="text"><div class="eyebrow">01 · Définitions</div><h2>Qu'est-ce qu'un VPN ?</h2><p>Un <strong>VPN</strong> (Virtual Private Network, réseau privé virtuel) crée une liaison sécurisée entre deux équipements à travers un réseau non sûr, comme Internet. Les données circulent dans un <strong>tunnel</strong> : elles sont encapsulées puis chiffrées avant de quitter le site.</p></div>
+<div class="grid"><article class="card"><div class="icon">S2S</div><h3>Site à site</h3><p>Deux passerelles relient deux réseaux entiers. Les postes n'ont rien à installer.</p></article><article class="card"><div class="icon">RA</div><h3>Accès distant</h3><p>Un utilisateur nomade se connecte au réseau de l'entreprise depuis son poste.</p></article><article class="card"><div class="icon">TUN</div><h3>Tunnel</h3><p>Chemin logique qui encapsule les paquets d'origine dans de nouveaux paquets.</p></article></div>
+<div class="callout"><strong>💡 À retenir</strong>Un VPN ne rend pas Internet plus sûr : il protège les données qui le traversent grâce à l'authentification et au chiffrement.</div></div></section>
+
+<section class="lesson" id="tunnel"><div class="wrap reveal"><div class="text"><div class="eyebrow">02 · Interconnexion</div><h2>Le tunnel site à site</h2><p>Chaque site possède une <strong>passerelle VPN</strong> (routeur ou pare-feu) avec une adresse publique. Quand un poste du site A envoie un paquet vers le site B, la passerelle A le chiffre, l'encapsule et l'envoie à la passerelle B, qui le déchiffre et le livre.</p></div>
+<div class="visual"><svg viewBox="0 0 1000 280" role="img" aria-label="Chemin d'un paquet entre deux sites">
+<g fill="none" stroke="#A9B4BE" stroke-width="2"><rect x="20" y="90" width="150" height="80" rx="12"/><rect x="230" y="70" width="170" height="120" rx="12"/><rect x="600" y="70" width="170" height="120" rx="12"/><rect x="830" y="90" width="150" height="80" rx="12"/></g>
+<rect x="400" y="115" width="200" height="30" rx="15" fill="none" stroke="#1F6FEB" stroke-width="3"/>
+<g fill="#10161D" font-family="IBM Plex Sans" font-weight="700" text-anchor="middle"><text x="95" y="135">POSTE A</text><text x="95" y="158" font-family="IBM Plex Mono" font-size="11" font-weight="400">LAN A</text><text x="315" y="125">PASSERELLE A</text><text x="315" y="150" font-family="IBM Plex Mono" font-size="11" font-weight="400">chiffre</text><text x="685" y="125">PASSERELLE B</text><text x="685" y="150" font-family="IBM Plex Mono" font-size="11" font-weight="400">déchiffre</text><text x="905" y="135">SERVEUR B</text><text x="905" y="158" font-family="IBM Plex Mono" font-size="11" font-weight="400">LAN B</text><text x="500" y="220" font-family="IBM Plex Mono" font-size="12" font-weight="400">INTERNET · trafic illisible</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M170 130H230"/><path d="M770 130H830"/></g></svg></div>
+<h3 style="margin-top:32px">De la demande à l'échange chiffré</h3>
+<div class="steps"><div class="step"><b>01</b><br>Trafic à protéger détecté</div><div class="step"><b>02</b><br>Négociation IKE (phase 1)</div><div class="step"><b>03</b><br>Authentification des pairs</div><div class="step"><b>04</b><br>Négociation IPSec (phase 2)</div><div class="step"><b>05</b><br>Trafic chiffré (ESP)</div><div class="step"><b>06</b><br>Supervision du tunnel</div></div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Les deux LAN doivent avoir des plages d'adresses différentes (ici 192.168.10.0/24 et 192.168.20.0/24). Deux sites en 192.168.1.0/24 ne pourront pas être routés l'un vers l'autre.</div></div></section>
+
+<section class="lesson" id="protocoles"><div class="wrap reveal"><div class="text"><div class="eyebrow">03 · Protocoles</div><h2>IPSec ou SSL VPN ?</h2><p><strong>IPSec</strong> protège les paquets IP au niveau réseau. <strong>SSL VPN</strong> s'appuie sur TLS, le protocole de HTTPS, et convient surtout à l'accès distant. Comparez-les.</p></div>
+<div class="tabs"><div class="tabbtns" role="tablist" aria-label="Protocoles VPN"><button class="tabbtn" role="tab" id="t-ipsec" aria-selected="true" aria-controls="ipsec">IPSec</button><button class="tabbtn" role="tab" id="t-ssl" aria-selected="false" aria-controls="ssl" tabindex="-1">SSL VPN</button></div>
+<div id="ipsec" class="panel active" role="tabpanel" aria-labelledby="t-ipsec"><strong>IPSec</strong> (Internet Protocol Security) : ensemble de protocoles.<ul><li><b class="mono">IKE</b> : négocie les paramètres et les clés.</li><li><b class="mono">ESP</b> : chiffre et authentifie les données.</li><li>Choix habituel pour le <b>site à site</b>, entre deux passerelles.</li></ul></div>
+<div id="ssl" class="panel" role="tabpanel" aria-labelledby="t-ssl"><strong>SSL VPN</strong> (en pratique TLS) : chiffre les échanges sur le port 443.<ul><li>Fonctionne souvent depuis un simple navigateur ou un client léger.</li><li>Passe facilement les pare-feu, car le port 443 est presque toujours ouvert.</li><li>Choix habituel pour l'<b>accès distant</b> des utilisateurs nomades.</li></ul></div></div>
+<div class="tw"><table><thead><tr><th>Critère</th><th>IPSec</th><th>SSL VPN</th></tr></thead><tbody><tr><td>Niveau</td><td>Réseau (IP)</td><td>Session (TLS)</td></tr><tr><td>Usage typique</td><td>Site à site</td><td>Accès distant</td></tr><tr><td>Côté utilisateur</td><td>Transparent (passerelle)</td><td>Navigateur ou client léger</td></tr><tr><td>Ports</td><td class="mono">UDP 500, UDP 4500, ESP</td><td class="mono">TCP 443</td></tr></tbody></table></div></div></section>
+
+<section class="lesson" id="securite"><div class="wrap reveal"><div class="text"><div class="eyebrow">04 · Sécurité</div><h2>Authentification et chiffrement</h2><p>Un tunnel repose sur trois garanties : savoir <em>qui</em> est en face, empêcher la lecture des données et détecter toute modification.</p></div>
+<div class="grid"><article class="card"><div class="icon">ID</div><h3>Authentification</h3><p>Chaque passerelle prouve son identité par clé pré-partagée ou par certificat.</p></article><article class="card"><div class="icon">AES</div><h3>Confidentialité</h3><p>Le chiffrement (ex. AES-256) rend les données illisibles pour un tiers.</p></article><article class="card"><div class="icon">SHA</div><h3>Intégrité</h3><p>Une fonction de hachage (ex. SHA-256) révèle toute altération des paquets.</p></article></div>
+<details><summary>Clé pré-partagée ou certificat ?</summary><p>La clé pré-partagée (PSK) est simple pour deux sites, mais doit rester longue, secrète et unique. Les certificats demandent une infrastructure de gestion, mais s'adaptent mieux à de nombreux sites.</p></details>
+<details><summary>Que signifient les phases 1 et 2 ?</summary><p>La phase 1 établit un canal sécurisé entre les passerelles (IKE). La phase 2 négocie les paramètres qui protègent réellement le trafic des utilisateurs (IPSec).</p></details>
+<details><summary>Pourquoi éviter les algorithmes anciens ?</summary><p>DES, 3DES, MD5 et SHA-1 sont considérés comme dépassés. Privilégiez AES et SHA-256 ou supérieur, s'ils sont pris en charge des deux côtés.</p></details>
+<div class="callout"><strong>🔗 Pour aller plus loin</strong>Recherchez « IKEv2 » et « Perfect Forward Secrecy » pour comprendre comment les clés sont renouvelées régulièrement.</div></div></section>
+
+<section class="lesson" id="config"><div class="wrap reveal"><div class="text"><div class="eyebrow">05 · Mise en place</div><h2>Configurer le tunnel</h2><p>La règle d'or : les deux passerelles doivent partager <strong>les mêmes paramètres</strong> (algorithmes, clé, réseaux). Exemple de principe avec strongSwan sur la passerelle du site A.</p></div>
+<div class="code"><div class="codebar"><span>ipsec.conf · passerelle A</span><button class="copy" type="button" id="copy" aria-label="Copier le code">Copier</button></div>
+<pre id="codeblock"><code><span class="k">conn</span> site-a-vers-site-b
+    <span class="k">keyexchange</span>=ikev2
+    <span class="k">left</span>=203.0.113.10          <span class="c"># IP publique passerelle A</span>
+    <span class="k">leftsubnet</span>=192.168.10.0/24 <span class="c"># LAN du site A</span>
+    <span class="k">right</span>=198.51.100.20        <span class="c"># IP publique passerelle B</span>
+    <span class="k">rightsubnet</span>=192.168.20.0/24<span class="c"># LAN du site B</span>
+    <span class="k">ike</span>=aes256-sha256-modp2048
+    <span class="k">esp</span>=aes256-sha256
+    <span class="k">authby</span>=secret            <span class="c"># clé définie dans ipsec.secrets</span>
+    <span class="k">auto</span>=start</code></pre></div>
+<div class="callout"><strong>🧪 Exercice pratique</strong>Sur papier, écrivez la configuration de la passerelle B en inversant les valeurs <span class="mono">left</span> et <span class="mono">right</span>, puis vérifiez que tous les autres paramètres sont identiques.</div>
+<details><summary>Le tunnel ne monte pas : que vérifier ?</summary><p>1) Les passerelles se joignent-elles (ping vers l'IP publique) ? 2) Les ports UDP 500 et 4500 sont-ils autorisés ? 3) La clé et les algorithmes sont-ils identiques ? 4) Les sous-réseaux déclarés correspondent-ils exactement des deux côtés ?</p></details>
+<details><summary>Comment superviser le tunnel ?</summary><p>Consultez l'état du tunnel sur la passerelle (par exemple <span class="mono">ipsec statusall</span>), les journaux et les compteurs de trafic. Un tunnel « établi » sans trafic peut révéler une erreur de routage.</p></details></div></section>
+
+<section class="lesson" id="exercice"><div class="wrap reveal"><div class="text"><div class="eyebrow">06 · Mini-exercice</div><h2>Testez vos connaissances</h2><p>Cinq questions rapides. Choisissez une réponse pour voir la correction.</p></div>
+<div class="quiz" id="quiz"></div><p class="score" id="score" aria-live="polite"></p></div></section>
+
+<section class="lesson" id="synthese"><div class="wrap reveal"><div class="text"><div class="eyebrow">07 · Synthèse</div><h2>Points clés à retenir</h2><p>Un tunnel site à site relie deux réseaux privés de façon sécurisée à travers Internet.</p></div>
+<div class="keys"><div class="key"><b>VPN</b> — tunnel sécurisé sur un réseau non sûr.</div><div class="key"><b>Site à site</b> — deux passerelles relient deux LAN.</div><div class="key"><b>IPSec</b> — protection au niveau IP (IKE + ESP).</div><div class="key"><b>SSL VPN</b> — TLS, surtout pour l'accès distant.</div><div class="key"><b>Authentification</b> — clé pré-partagée ou certificat.</div><div class="key"><b>Chiffrement</b> — AES et hachage SHA-256 ou plus.</div></div>
+<div class="callout"><strong>💡 À retenir</strong>Pour monter un tunnel : plages LAN différentes, paramètres identiques des deux côtés, ports autorisés et supervision régulière.</div>
+<div class="navbottom"><div class="navcard"><div class="eyebrow">Précédente</div><a href="#"><strong>← Leçon 16 — Réseaux sans fil (Wi-Fi)</strong></a></div><div class="navcard next"><div class="eyebrow">Suivante</div><a href="#"><strong>Leçon 18 — Pare-feu et sécurité réseau →</strong></a></div></div></div></section>
+</main>
+<button class="back" id="back" aria-label="Retour en haut">↑</button>
+<footer>Maintenance et Réseau Informatique · Module 4 · Leçon 17</footer>
+<script>
+const p=document.getElementById('progress'),b=document.getElementById('back');
+function scrollUI(){let h=document.documentElement.scrollHeight-innerHeight;p.style.width=(h?scrollY/h*100:0)+'%';b.classList.toggle('show',scrollY>500)}addEventListener('scroll',scrollUI,{passive:true});scrollUI();b.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+document.querySelectorAll('.tabs').forEach(t=>{const bs=[...t.querySelectorAll('[role=tab]')],ps=t.querySelectorAll('[role=tabpanel]');
+function sel(x){bs.forEach(q=>{q.setAttribute('aria-selected','false');q.tabIndex=-1});ps.forEach(q=>q.classList.remove('active'));x.setAttribute('aria-selected','true');x.tabIndex=0;document.getElementById(x.getAttribute('aria-controls')).classList.add('active')}
+bs.forEach((x,i)=>{x.onclick=()=>sel(x);x.onkeydown=e=>{let n=e.key==='ArrowRight'?(i+1)%bs.length:e.key==='ArrowLeft'?(i-1+bs.length)%bs.length:-1;if(n>=0){e.preventDefault();sel(bs[n]);bs[n].focus()}}})});
+const els=document.querySelectorAll('.reveal');if('IntersectionObserver'in window){let io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});els.forEach(e=>io.observe(e))}else els.forEach(e=>e.classList.add('visible'));
+const cb=document.getElementById('copy');cb.onclick=()=>{const t=document.getElementById('codeblock').innerText;const done=()=>{cb.textContent='Copié';setTimeout(()=>cb.textContent='Copier',1800)};
+if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,done);else{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();done()}};
+const Q=[
+{q:"Quel type de VPN relie en permanence deux réseaux d'entreprise ?",o:["Un VPN d'accès distant","Un VPN site à site","Un simple partage de fichiers","Un réseau Wi-Fi invité"],a:1,e:"Le VPN site à site relie deux LAN via deux passerelles."},
+{q:"Quel ensemble de protocoles protège les paquets au niveau IP ?",o:["HTTP","DHCP","IPSec","DNS"],a:2,e:"IPSec (IKE + ESP) protège les échanges au niveau réseau."},
+{q:"Quel est le rôle du chiffrement dans un tunnel ?",o:["Rendre les données illisibles pour un tiers","Augmenter le débit","Attribuer les adresses IP","Sauvegarder les fichiers"],a:0,e:"Le chiffrement garantit la confidentialité des données."},
+{q:"Pour relier de nombreux sites, quelle authentification est la plus adaptée ?",o:["Une même clé partagée par tous","Aucune authentification","Des certificats","Un mot de passe simple"],a:2,e:"Les certificats se gèrent mieux à grande échelle que des clés partagées."},
+{q:"Le tunnel ne monte pas. Que vérifier en premier ?",o:["La couleur des câbles","Les paramètres identiques des deux côtés et les ports ouverts","Le fond d'écran des postes","La taille du disque dur"],a:1,e:"Algorithmes, clé, sous-réseaux et ports UDP 500/4500 doivent correspondre."}];
+let sc=0,done=0;const qz=document.getElementById('quiz'),so=document.getElementById('score');
+Q.forEach((it,i)=>{const d=document.createElement('div');d.className='q';d.innerHTML='<p>'+(i+1)+'. '+it.q+'</p>';const f=document.createElement('div');f.className='fb';f.setAttribute('aria-live','polite');
+it.o.forEach((t,j)=>{const x=document.createElement('button');x.type='button';x.className='opt';x.textContent=t;x.onclick=()=>{d.querySelectorAll('.opt').forEach((y,k)=>{y.disabled=true;if(k===it.a)y.classList.add('ok');else if(k===j)y.classList.add('ko')});
+const good=j===it.a;if(good)sc++;f.textContent=(good?'Correct. ':'Pas tout à fait. ')+it.e;done++;if(done===Q.length)so.textContent='Score : '+sc+' / '+Q.length};d.appendChild(x)});d.appendChild(f);qz.appendChild(d)});
+</script>
+</body></html>

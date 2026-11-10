@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 02 — Utiliser l'IA pour analyser les besoins et le comportement des clients | Filière IA &amp; Marketing</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563EB'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23fff'/%3E%3Ccircle cx='24' cy='8' r='2.5' fill='%23F97316'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F5F8FC;--color-text:#0A0F1C;--color-text-muted:#626B78;--color-accent:#2563EB;--color-accent-soft:#EAF1FF;--color-border:#DDE5F0;--color-orange:#F97316;--color-orange-dark:#B45309;--color-orange-soft:#FFF3E8;--r:10px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.2;margin:0 0 .6em;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1.1em}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+#bar::after{content:"";position:absolute;right:0;top:0;height:100%;width:36px;background:var(--color-orange)}
+header.top{position:sticky;top:3px;z-index:90;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px;position:relative}
+.brand{font:700 .95rem Sora,sans-serif;display:flex;align-items:center;gap:10px}
+.logo{width:26px;height:26px;border-radius:7px;background:var(--color-accent);position:relative}
+.logo::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--color-orange);border:2px solid #fff}
+.btn{font:500 .9rem Inter,sans-serif;border:1px solid var(--color-border);background:#fff;color:var(--color-text);padding:8px 14px;border-radius:8px;cursor:pointer;transition:border-color .2s,background .2s}
+.btn:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+#menu{display:none;position:absolute;right:20px;top:60px;width:min(340px,calc(100vw - 40px));background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:8px;box-shadow:0 12px 32px rgba(10,15,28,.12)}
+#menu.open{display:block}
+#menu a{display:block;padding:9px 12px;border-radius:6px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#menu a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+.hero{background:var(--color-bg-alt);padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.crumb{color:var(--color-text-muted);font-size:.9rem;margin-bottom:18px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0}
+.badge{font-size:.85rem;font-weight:500;padding:5px 12px;border-radius:99px;background:var(--color-accent-soft);color:#1D4ED8}
+.badge.o{background:var(--color-orange-soft);color:var(--color-orange-dark)}
+.sub{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.obj{margin-top:28px;padding:16px 18px;background:#fff;border-left:4px solid var(--color-orange);border-radius:0 var(--r) var(--r) 0}
+.obj b{font-family:Sora,sans-serif}
+nav.toc{padding:48px 0 8px}
+nav.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+nav.toc a{display:flex;gap:12px;align-items:baseline;padding:10px 14px;border-radius:8px;text-decoration:none;color:var(--color-text);border:1px solid transparent;transition:.2s}
+nav.toc a:hover{background:var(--color-accent-soft);border-color:var(--color-border);transform:translateX(3px)}
+nav.toc span{color:var(--color-accent);font:700 .95rem Sora,sans-serif;min-width:1.4em}
+section.s{padding:64px 0}
+section.s.alt{background:var(--color-bg-alt)}
+.lead{color:var(--color-text-muted)}
+dfn{font-style:normal;font-weight:600;background:var(--color-accent-soft);padding:0 4px;border-radius:4px}
+figure{margin:32px 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:20px}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:10px;text-align:center}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+svg text{font-family:Inter,sans-serif;fill:var(--color-text)}
+.tabs [role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{font:600 .95rem Inter,sans-serif;padding:11px 16px;border:0;background:none;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .2s}
+.tabs [role=tab]:hover{color:var(--color-text)}
+.tabs [role=tab][aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.panel{background:#fff;border:1px solid var(--color-border);border-top:0;border-radius:0 0 var(--r) var(--r);padding:22px 22px 6px}
+.panel[hidden]{display:none}
+.panel ul{padding-left:1.2em;margin:0 0 1.1em}
+.panel li{margin-bottom:.35em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:28px}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:22px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent);box-shadow:0 10px 24px rgba(37,99,235,.1)}
+.card .ic{width:44px;height:44px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;margin-bottom:14px}
+.card:nth-child(even) .ic{background:var(--color-orange-soft)}
+.card .ic svg{width:24px;height:24px;stroke:var(--color-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card:nth-child(even) .ic svg{stroke:var(--color-orange-dark)}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0 0 .6em}
+.note{display:flex;gap:14px;padding:18px 20px;border-radius:var(--r);margin:24px 0;background:var(--color-accent-soft);border-left:4px solid var(--color-accent)}
+.note.warn{background:var(--color-orange-soft);border-color:var(--color-orange)}
+.note.good{background:#fff;border:1px solid var(--color-border);border-left:4px solid var(--color-accent)}
+.note .e{font-size:1.4rem;line-height:1.4}
+.note p:last-child{margin:0}
+.note strong{font-family:Sora,sans-serif;display:block;margin-bottom:2px}
+details{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);margin:12px 0}
+details summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";color:var(--color-accent);font:600 1.3rem/1 Sora,sans-serif;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details>div{padding:0 18px 6px;color:var(--color-text-muted)}
+.code{background:#0D1117;border-radius:var(--r);margin:20px 0 28px;overflow:hidden}
+.code header{display:flex;justify-content:space-between;align-items:center;padding:8px 8px 8px 16px;background:#161B22;color:#C9D1D9;font-size:.85rem}
+.code .cp{font:500 .82rem Inter,sans-serif;background:#21262D;color:#E6EDF3;border:1px solid #30363D;border-radius:6px;padding:5px 12px;cursor:pointer;transition:background .2s}
+.code .cp:hover{background:#2D333B}
+.code pre{margin:0;padding:16px;overflow-x:auto;color:#E6EDF3;font:.9rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
+.code .ph{color:#79C0FF}
+.code .k{color:#FDBA74}
+/* stepper horizontal */
+.stp{margin:32px 0}
+.stp [role=tablist]{display:flex;position:relative;justify-content:space-between;gap:4px}
+.stp [role=tablist]::before{content:"";position:absolute;left:8%;right:8%;top:19px;height:2px;background:var(--color-border)}
+.stp [role=tab]{flex:1;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:500 .85rem/1.3 Inter,sans-serif;color:var(--color-text-muted);position:relative;padding:0 2px;text-align:center}
+.stp [role=tab] i{font:700 .95rem/38px Sora,sans-serif;font-style:normal;width:40px;height:40px;border-radius:50%;background:#fff;border:2px solid var(--color-border);color:var(--color-text-muted);transition:.2s}
+.stp [role=tab]:hover i{border-color:var(--color-accent)}
+.stp [role=tab][aria-selected=true]{color:var(--color-text);font-weight:600}
+.stp [role=tab][aria-selected=true] i{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
+.stp [role=tab].done i{border-color:var(--color-accent);color:var(--color-accent)}
+.stp [role=tab][aria-selected=true].done i{color:#fff}
+.stp .panel{margin-top:22px;border-top:1px solid var(--color-border);border-radius:var(--r);border-top:3px solid var(--color-orange)}
+.stp .nav{display:flex;justify-content:space-between;margin:0 0 18px}
+.persona{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:20px;margin:24px 0}
+.av{width:64px;height:64px;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;font:700 1.5rem Sora,sans-serif;position:relative}
+.av::after{content:"";position:absolute;right:-2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--color-orange);border:3px solid #fff}
+.persona dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 14px;font-size:.95rem}
+.persona dt{font-weight:600}.persona dd{margin:0;color:var(--color-text-muted)}
+.persona h3{grid-column:1/-1;margin:0}
+.key{display:grid;gap:12px;padding:0;list-style:none;margin:24px 0 0}
+.key li{display:flex;gap:14px;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:16px 18px}
+.key li::before{content:"✓";flex:none;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:700;margin-top:2px}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:48px 0 24px}
+.pn a{display:block;padding:18px 20px;border:1px solid var(--color-border);border-radius:var(--r);text-decoration:none;color:var(--color-text);transition:.2s}
+.pn a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pn small{display:block;color:var(--color-text-muted);font-size:.85rem}
+.pn .nx{text-align:right;border-color:var(--color-accent)}
+.mod{text-align:center;padding-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:24px 0;color:var(--color-text-muted);font-size:.88rem;text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,transform .2s;box-shadow:0 6px 16px rgba(37,99,235,.35);z-index:80}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{transform:translateY(-3px)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media(max-width:640px){.hero{padding:48px 0 40px}section.s{padding:48px 0}
+.stp [role=tablist]{flex-direction:column;gap:10px}.stp [role=tablist]::before{left:19px;right:auto;top:20px;bottom:20px;width:2px;height:auto}
+.stp [role=tab]{flex-direction:row;text-align:left;gap:14px}.persona{grid-template-columns:1fr}}
+@media(max-width:480px){.pn{grid-template-columns:1fr}.pn .nx{text-align:left}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="bar" role="presentation"></div>
+
+<header class="top">
+<div class="wide">
+<div class="brand"><span class="logo" aria-hidden="true"></span>Filière IA &amp; Marketing</div>
+<button class="btn" id="mbtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+<nav id="menu" aria-label="Sommaire de la leçon"></nav>
+</div>
+</header>
+
+<main>
+<div class="hero">
+<div class="wrap">
+<div class="crumb">Module 1 — Comprendre et utiliser l'IA pour le marketing</div>
+<h1>Utiliser l'IA pour analyser les besoins et le comportement des clients</h1>
+<p class="sub">Leçon 02. Mieux connaître sa clientèle, plus vite : construire un persona, synthétiser des avis et repérer ce qui compte vraiment pour les clients.</p>
+<div class="badges">
+<span class="badge">Module 1</span>
+<span class="badge">⏱ 15 min de lecture</span>
+<span class="badge o">Niveau débutant</span>
+</div>
+<div class="obj"><b>Objectif :</b> mobiliser l'IA pour mieux comprendre une clientèle cible et ses attentes.</div>
+</div>
+</div>
+
+<div class="wrap"><nav class="toc" aria-label="Table des matières"><h2 style="font-size:1.2rem">Dans cette leçon</h2><ol id="toc"></ol></nav></div>
+
+<!-- 1 -->
+<section class="s" id="analyse">
+<div class="wrap rv">
+<h2>1. L'analyse de clientèle assistée par l'IA</h2>
+<p>Connaître ses clients, c'est savoir <strong>qui ils sont, ce qu'ils attendent et pourquoi ils achètent</strong> (ou non). Auparavant, cela demandait des heures de lecture de messages, de tableaux et d'enquêtes. L'IA permet de faire ce premier tri en quelques minutes.</p>
+
+<figure>
+<svg viewBox="0 0 640 150" role="img" aria-labelledby="t1 d1" width="640" height="150">
+<title id="t1">De données brutes à des enseignements</title>
+<desc id="d1">Des avis, des messages et des réponses d'enquête sont transmis à l'IA, qui en tire des tendances, des attentes et des irritants, validés ensuite par l'équipe.</desc>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#626B78"/></marker></defs>
+<g font-size="13" font-weight="600">
+<rect x="8" y="14" width="170" height="34" rx="8" fill="#fff" stroke="#DDE5F0" stroke-width="2"/><text x="93" y="36" text-anchor="middle">Avis clients</text>
+<rect x="8" y="58" width="170" height="34" rx="8" fill="#fff" stroke="#DDE5F0" stroke-width="2"/><text x="93" y="80" text-anchor="middle">Messages et e-mails</text>
+<rect x="8" y="102" width="170" height="34" rx="8" fill="#fff" stroke="#DDE5F0" stroke-width="2"/><text x="93" y="124" text-anchor="middle">Réponses d'enquête</text>
+<rect x="250" y="40" width="130" height="70" rx="12" fill="#2563EB"/><text x="315" y="80" text-anchor="middle" style="fill:#fff">Analyse par IA</text>
+<rect x="452" y="14" width="180" height="34" rx="8" fill="#EAF1FF"/><text x="542" y="36" text-anchor="middle">Tendances</text>
+<rect x="452" y="58" width="180" height="34" rx="8" fill="#EAF1FF"/><text x="542" y="80" text-anchor="middle">Attentes et motivations</text>
+<rect x="452" y="102" width="180" height="34" rx="8" fill="#FFF3E8" stroke="#F97316" stroke-width="1.5"/><text x="542" y="124" text-anchor="middle">Irritants</text>
+</g>
+<path d="M180 75H248M382 75H450" stroke="#626B78" stroke-width="2" marker-end="url(#ar)"/>
+</svg>
+<figcaption>L'IA trie et résume ; l'équipe interprète et décide.</figcaption>
+</figure>
+
+<div class="tabs" id="tabs">
+<div role="tablist" aria-label="Selon la taille de l'entreprise">
+<button role="tab" id="tb1" aria-controls="p1" aria-selected="true">Petite entreprise</button>
+<button role="tab" id="tb2" aria-controls="p2" aria-selected="false" tabindex="-1">Grande entreprise</button>
+</div>
+<div class="panel" id="p1" role="tabpanel" aria-labelledby="tb1">
+<p><strong>Peu de moyens, peu de temps.</strong></p>
+<ul><li><b>Opportunité :</b> accéder à une analyse que seule une équipe dédiée pouvait faire.</li><li><b>Gain de temps :</b> résumer en minutes quelques dizaines d'avis ou de messages.</li><li><b>Valeur ajoutée :</b> décider à partir de faits plutôt que d'intuitions.</li></ul>
+</div>
+<div class="panel" id="p2" role="tabpanel" aria-labelledby="tb2" hidden>
+<p><strong>Beaucoup de données, difficiles à lire à la main.</strong></p>
+<ul><li><b>Opportunité :</b> traiter des milliers de retours sur plusieurs canaux.</li><li><b>Gain de temps :</b> repérer rapidement les sujets qui reviennent.</li><li><b>Valeur ajoutée :</b> comparer les attentes selon les segments de clientèle.</li></ul>
+</div>
+</div>
+
+<div class="note"><span class="e" aria-hidden="true">💡</span><div><strong>À retenir</strong><p>L'IA ne remplace pas le contact avec les clients : elle aide à <em>lire plus vite</em> ce qu'ils vous disent déjà.</p></div></div>
+</div>
+</section>
+
+<!-- 2 -->
+<section class="s alt" id="persona">
+<div class="wrap rv">
+<h2>2. Construire un persona pas à pas avec l'IA</h2>
+<p>Un <dfn>persona</dfn> est le portrait fictif d'un client type : son profil, ses objectifs, ses freins. Il aide toute l'équipe à parler au même client. Parcourez les cinq étapes ci-dessous.</p>
+</div>
+<div class="wrap rv">
+<div class="stp" id="stp">
+<div role="tablist" aria-label="Étapes de construction d'un persona">
+<button role="tab" id="s1" aria-controls="sp1" aria-selected="true"><i>1</i>Rassembler</button>
+<button role="tab" id="s2" aria-controls="sp2" aria-selected="false" tabindex="-1"><i>2</i>Repérer</button>
+<button role="tab" id="s3" aria-controls="sp3" aria-selected="false" tabindex="-1"><i>3</i>Rédiger</button>
+<button role="tab" id="s4" aria-controls="sp4" aria-selected="false" tabindex="-1"><i>4</i>Incarner</button>
+<button role="tab" id="s5" aria-controls="sp5" aria-selected="false" tabindex="-1"><i>5</i>Valider</button>
+</div>
+<div class="panel" id="sp1" role="tabpanel" aria-labelledby="s1"><h3>Rassembler vos informations</h3><p>Listez ce que vous savez déjà : tranches d'âge, achats fréquents, questions posées, avis, réponses d'enquête. Retirez les noms et coordonnées avant de les confier à l'IA.</p></div>
+<div class="panel" id="sp2" role="tabpanel" aria-labelledby="s2" hidden><h3>Repérer les groupes et les tendances</h3><p>Demandez à l'IA de regrouper vos clients par points communs : mêmes besoins, mêmes habitudes, mêmes freins. Gardez les 2 ou 3 groupes les plus importants pour votre activité.</p></div>
+<div class="panel" id="sp3" role="tabpanel" aria-labelledby="s3" hidden><h3>Rédiger une première fiche</h3><p>Pour chaque groupe, l'IA propose une fiche : profil, objectifs, motivations, freins, canaux préférés. Ce n'est qu'un brouillon.</p></div>
+<div class="panel" id="sp4" role="tabpanel" aria-labelledby="s4" hidden><h3>Donner vie au persona</h3><p>Un prénom, un métier, une phrase typique (« Je n'ai pas le temps de comparer dix offres »). Ces détails rendent le persona facile à retenir et à utiliser en réunion.</p></div>
+<div class="panel" id="sp5" role="tabpanel" aria-labelledby="s5" hidden><h3>Valider et ajuster</h3><p>Confrontez la fiche à la réalité : en parlant à de vrais clients, aux collègues en contact avec eux, ou à vos données. Corrigez ce qui sonne faux, puis mettez la fiche à jour régulièrement.</p></div>
+</div>
+
+<div class="code"><header><span>Prompt : créer une fiche persona</span><button class="cp" type="button">Copier le code</button></header><pre><code>Tu es analyste marketing. Voici des informations anonymisées sur mes clients : [coller les informations]. Propose 2 personas. Pour chacun : prénom fictif, âge, métier, objectifs, motivations d'achat, freins, canal de communication préféré. Indique clairement ce qui vient de mes données et ce qui est une hypothèse.</code></pre></div>
+
+<div class="persona" role="group" aria-label="Exemple de fiche persona fictive">
+<div class="av" aria-hidden="true">A</div>
+<dl><h3>Exemple fictif : Awa, 34 ans</h3>
+<dt>Profil</dt><dd>Gérante d'une petite boutique en ligne</dd>
+<dt>Objectif</dt><dd>Gagner du temps sur sa communication</dd>
+<dt>Frein</dt><dd>Peur de payer un outil qu'elle n'utilisera pas</dd>
+<dt>Canal</dt><dd>WhatsApp et réseaux sociaux</dd></dl>
+</div>
+
+<div class="note good"><span class="e" aria-hidden="true">🎯</span><div><strong>Bonne pratique marketing</strong><p>Demandez toujours à l'IA de distinguer les <em>faits issus de vos données</em> des <em>hypothèses</em>. Un persona repose sur du réel, pas sur de l'imagination.</p></div></div>
+</div>
+</section>
+
+<!-- 3 -->
+<section class="s" id="avis">
+<div class="wrap rv">
+<h2>3. Faire synthétiser des avis et des retours bruts</h2>
+<p>Des avis en vrac, des commentaires de réseaux sociaux, des e-mails de réclamation : c'est une matière précieuse, mais longue à lire. Collez-les dans l'assistant avec une consigne claire. Trois exemples à adapter :</p>
+
+<div class="code"><header><span>Prompt : synthèse générale</span><button class="cp" type="button">Copier le code</button></header><pre><code>Voici des avis clients sur [produit ou service] : [coller les avis]. Résume-les en 3 points forts et 3 points faibles. Pour chaque point, cite un court extrait d'avis comme preuve.</code></pre></div>
+<div class="code"><header><span>Prompt : classer par thème</span><button class="cp" type="button">Copier le code</button></header><pre><code>Classe ces commentaires par thème (prix, livraison, qualité, service client, autre) : [coller les commentaires]. Indique pour chaque thème le nombre de commentaires et le ton dominant (positif, neutre, négatif).</code></pre></div>
+<div class="code"><header><span>Prompt : repérer les questions récurrentes</span><button class="cp" type="button">Copier le code</button></header><pre><code>Voici les messages reçus par notre service client : [coller les messages]. Liste les 5 questions qui reviennent le plus souvent et propose une réponse courte pour chacune.</code></pre></div>
+
+<div class="note warn"><span class="e" aria-hidden="true">⚠️</span><div><strong>Attention / erreur fréquente</strong><p>Coller des avis contenant des noms, numéros de téléphone ou adresses. Anonymisez toujours les données avant de les confier à un outil d'IA.</p></div></div>
+</div>
+</section>
+
+<!-- 4 -->
+<section class="s alt" id="besoins">
+<div class="wrap rv">
+<h2>4. Besoins profonds, motivations d'achat et irritants</h2>
+<p>Un client exprime rarement son vrai besoin du premier coup. Il dit « c'est trop cher » alors qu'il craint peut-être de se tromper de choix. L'IA aide à lire <strong>entre les lignes</strong>.</p>
+
+<figure>
+<svg viewBox="0 0 600 220" role="img" aria-labelledby="t2 d2" width="600" height="220">
+<title id="t2">L'iceberg des besoins clients</title>
+<desc id="d2">Au-dessus de la surface : ce que le client dit. En dessous : ses besoins profonds, ses motivations et ses craintes.</desc>
+<rect x="0" y="0" width="600" height="70" fill="#EAF1FF"/>
+<rect x="0" y="70" width="600" height="150" fill="#F5F8FC"/>
+<path d="M0 70H600" stroke="#2563EB" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M250 70L300 22L350 70Z" fill="#fff" stroke="#2563EB" stroke-width="2"/>
+<path d="M200 70H400L330 190H270Z" fill="#fff" stroke="#2563EB" stroke-width="2"/>
+<g font-size="13"><text x="20" y="38" font-weight="600">Ce que le client dit</text><text x="20" y="56">« C'est trop cher. »</text>
+<text x="20" y="96" font-weight="600">Ce qui se cache dessous</text>
+<text x="420" y="110">Besoin de se rassurer</text><text x="420" y="136">Peur de se tromper</text><text x="420" y="162">Envie de gagner du temps</text></g>
+<circle cx="300" cy="132" r="6" fill="#F97316"/>
+</svg>
+<figcaption>Les paroles ne montrent qu'une partie du besoin.</figcaption>
+</figure>
+
+<div class="cards">
+<article class="card"><h3>Besoin profond</h3><p>Ce que le client cherche à obtenir au fond : gagner du temps, se rassurer, se sentir valorisé.</p></article>
+<article class="card"><h3>Motivation d'achat</h3><p>La raison qui déclenche la décision : un événement, une recommandation, une promotion, un problème à régler.</p></article>
+<article class="card"><h3>Irritant</h3><p>Ce qui agace ou fait abandonner : site lent, livraison tardive, réponse tardive, prix peu clairs.</p></article>
+</div>
+
+<div class="code"><header><span>Prompt : identifier irritants et motivations</span><button class="cp" type="button">Copier le code</button></header><pre><code>À partir de ces retours clients : [coller les retours], identifie (1) les besoins sous-entendus, (2) les raisons qui poussent à acheter, (3) les irritants, du plus fréquent au moins fréquent. Pour chaque irritant, propose une action possible pour le réduire.</code></pre></div>
+
+<details>
+<summary>Exemple : de l'irritant à l'action</summary>
+<div><p>Plusieurs clients écrivent « je ne sais pas quand mon colis arrive ». L'irritant est le manque d'information. L'action possible : un message de suivi de livraison.</p></div>
+</details>
+</div>
+</section>
+
+<!-- 5 -->
+<section class="s" id="limites">
+<div class="wrap rv">
+<h2>5. Limites, biais et risques de l'analyse automatisée</h2>
+<p>Une analyse produite par l'IA semble sûre d'elle, même quand elle se trompe. Trois risques principaux :</p>
+<div class="cards">
+<article class="card"><h3>Biais</h3><p>Si vos données ne représentent qu'une partie de vos clients, l'IA reproduira ce déséquilibre.</p></article>
+<article class="card"><h3>Généralisation</h3><p>Quelques avis très marqués peuvent sembler représenter tout le monde.</p></article>
+<article class="card"><h3>Inventions</h3><p>L'IA peut déduire des intentions ou citer des chiffres que vos données ne contiennent pas.</p></article>
+</div>
+
+<div class="note warn"><span class="e" aria-hidden="true">⚠️</span><div><strong>Attention : le contrôle humain est indispensable</strong><p>Ne prenez jamais une décision importante (prix, offre, ciblage) uniquement sur la base d'une analyse automatique. Relisez les sources, vérifiez les chiffres et croisez avec ce que vos équipes observent sur le terrain.</p></div></div>
+
+<details>
+<summary>Les bons réflexes de vérification</summary>
+<div><ul><li>Demander à l'IA d'appuyer chaque conclusion par des extraits.</li><li>Relire un échantillon des avis d'origine.</li><li>Vérifier que tous les types de clients sont représentés.</li><li>Protéger les données personnelles des clients.</li></ul></div>
+</details>
+<div class="note"><span class="e" aria-hidden="true">💡</span><div><strong>À retenir</strong><p>L'IA propose des pistes ; c'est vous qui jugez de leur pertinence.</p></div></div>
+</div>
+</section>
+
+<!-- Points clés -->
+<section class="s alt" id="points-cles">
+<div class="wrap rv">
+<h2>Points clés à retenir</h2>
+<ul class="key">
+<li>L'IA accélère la lecture des données clients, pour les petites comme pour les grandes entreprises.</li>
+<li>Un persona se construit en cinq étapes : rassembler, repérer, rédiger, incarner, valider.</li>
+<li>Un prompt d'analyse clair précise le contexte, les données et la forme de la synthèse.</li>
+<li>Derrière ce que dit le client se cachent des besoins profonds, des motivations et des irritants.</li>
+<li>Les données doivent être anonymisées avant d'être confiées à l'IA.</li>
+<li>Biais, généralisations et inventions imposent toujours un contrôle humain.</li>
+</ul>
+</div>
+</section>
+
+<div class="wrap">
+<div class="pn">
+<a href="lecon-01-comprendre-ia-marketing.html"><small>Leçon précédente</small>Leçon 01 — Comprendre l'intelligence artificielle et ses usages en marketing</a>
+<a class="nx" href="lecon-03-generer-idees-campagnes.html"><small>Leçon suivante</small>Leçon 03 — Générer des idées de campagnes avec l'IA</a>
+</div>
+<p class="mod"><a href="module-01.html">Retour au sommaire du module 1</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière IA &amp; Marketing · Module 1 · Leçon 02</div></footer>
+<button id="top" aria-label="Retour en haut de la page">↑</button>
+
+<script>
+(function(){
+var secs=[].slice.call(document.querySelectorAll('section.s[id]'));
+var toc=document.getElementById('toc'),menu=document.getElementById('menu');
+secs.forEach(function(s,i){
+var t=s.querySelector('h2').textContent.replace(/^\d+\.\s*/,'');
+var n=s.id==='points-cles'?'✓':(i+1);
+var li=document.createElement('li');li.innerHTML='<a href="#'+s.id+'"><span>'+n+'</span>'+t+'</a>';toc.appendChild(li);
+var a=document.createElement('a');a.href='#'+s.id;a.textContent=t;menu.appendChild(a);
+});
+var mb=document.getElementById('mbtn');
+function cm(){menu.classList.remove('open');mb.setAttribute('aria-expanded','false')}
+mb.addEventListener('click',function(e){e.stopPropagation();var o=menu.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+menu.addEventListener('click',cm);
+document.addEventListener('click',function(e){if(!menu.contains(e.target))cm()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){cm();mb.focus()}});
+
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function sc(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';top.classList.toggle('show',h.scrollTop>600)}
+window.addEventListener('scroll',sc,{passive:true});sc();
+top.addEventListener('click',function(){window.scrollTo({top:0})});
+
+function tabset(root,mark){
+var tabs=[].slice.call(root.querySelectorAll('[role=tab]'));
+function sel(t){var k=tabs.indexOf(t);tabs.forEach(function(x,i){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;if(mark)x.classList.toggle('done',i<k);document.getElementById(x.getAttribute('aria-controls')).hidden=!on});t.focus()}
+tabs.forEach(function(t,i){
+t.addEventListener('click',function(){sel(t)});
+t.addEventListener('keydown',function(e){
+var k=e.key,j=(k==='ArrowRight'||k==='ArrowDown')?i+1:(k==='ArrowLeft'||k==='ArrowUp')?i-1:k==='Home'?0:k==='End'?tabs.length-1:-1;
+if(j>-1){e.preventDefault();sel(tabs[(j+tabs.length)%tabs.length])}});
+});
+}
+tabset(document.getElementById('tabs'),false);
+tabset(document.getElementById('stp'),true);
+
+document.querySelectorAll('.code pre code').forEach(function(c){
+c.innerHTML=c.innerHTML.replace(/\[[^\]]+\]/g,'<span class="ph">$&</span>').replace(/^(Tu es [^.]+\.)/,'<span class="k">$1</span>');
+});
+document.querySelectorAll('.cp').forEach(function(b){
+b.addEventListener('click',function(){
+var code=b.closest('.code').querySelector('code'),txt=code.textContent;
+function ok(){b.textContent='Copié ✓';setTimeout(function(){b.textContent='Copier le code'},1800)}
+function fb(){var r=document.createRange();r.selectNodeContents(code);var s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy');ok()}catch(e){}s.removeAllRanges()}
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb)}else fb();
+});
+});
+
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
+rv.forEach(function(r){io.observe(r)});
+}else rv.forEach(function(r){r.classList.add('in')});
+})();
+</script>
+</body>
+</html>

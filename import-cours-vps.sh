@@ -10,7 +10,7 @@ case "${1:-}" in
     -h|--help)
         printf '%s\n' \
             'Usage : bash import-cours-vps.sh [--dry-run]' \
-            'Sans option : verification, simulation, puis import conservateur.' \
+            'Sans option : verification, simulation, puis remplacement hors DIGITAL.' \
             '--dry-run : simulation seulement, aucune ligne conservee.' \
             'PHP_BIN peut designer un autre executable PHP (ex. /usr/bin/php8.3).' \
             'A lancer avec le compte habituel de deploiement du projet.'
@@ -54,10 +54,10 @@ for file in artisan .env vendor/autoload.php \
     app/Services/TheoryCourseCatalog.php \
     app/Services/DirectVideoUrl.php \
     database/seeders/CoursJsonSeeder.php \
-    public/cours.json public/cours_theorique/liens_cours_theorique.json; do
+    public/index-cours.json; do
     [[ -r "$file" ]] || fail "Fichier absent ou illisible : $PROJECT_DIR/$file"
 done
-[[ -d database/data/cours-quizzes ]] || fail 'Deployer aussi database/data/cours-quizzes.'
+[[ -d public/CFPAM_HTML_EXPORT ]] || fail 'Deployer aussi public/CFPAM_HTML_EXPORT.'
 [[ -d storage && -w storage ]] || fail 'storage doit etre accessible en ecriture au compte de deploiement.'
 [[ -d bootstrap/cache && -w bootstrap/cache ]] || fail 'bootstrap/cache doit etre accessible en ecriture.'
 
@@ -74,7 +74,7 @@ run() { "$@" 2>&1 | tee -a "$LOG_FILE"; }
 
 log "Projet : $PROJECT_DIR"
 log "Journal : $LOG_FILE"
-log 'Import des cours uniquement. Donnees existantes et Digital conserves.'
+log 'Remplacement des cours uniquement. La filiere DIGITAL est conservee.'
 log 'Le .env et la configuration Laravel actuellement chargee restent en place.'
 
 run "$PHP_BIN" -r '

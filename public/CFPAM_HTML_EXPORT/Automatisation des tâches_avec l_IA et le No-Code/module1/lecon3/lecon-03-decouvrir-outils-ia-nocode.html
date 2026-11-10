@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 03 — Découvrir les outils d'IA et de No-Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;
+  --color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-border:#E1E4E8;
+  --muted:#4B5563;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 var(--font-body)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);padding:56px 0 40px}
+.crumb{font:500 .9rem var(--font-body);color:var(--muted);margin:0 0 16px}
+h1{font:700 clamp(2rem,5vw,2.75rem)/1.12 var(--font-head);letter-spacing:-.02em;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.meta li{background:var(--color-bg);border:1px solid var(--color-border);border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:500}
+.meta li.lvl{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.goal{margin:28px 0 0;padding:16px 20px;background:var(--color-bg);border-left:4px solid var(--color-accent);border-radius:0 8px 8px 0}
+.goal strong{font-family:var(--font-head)}
+nav.toc{margin:32px 0 0;padding:20px 24px;border:1px solid var(--color-border);border-radius:10px}
+nav.toc p{margin:0 0 8px;font:700 1rem var(--font-head)}
+nav.toc ol{margin:0;padding-left:1.25rem}
+nav.toc a{color:var(--color-text);text-decoration:none;border-bottom:1px solid var(--color-accent)}
+nav.toc a:hover{background:var(--color-accent-soft)}
+section{padding:48px 0 8px}
+h2{font:700 1.65rem/1.25 var(--font-head);letter-spacing:-.01em;margin:0 0 16px;display:flex;gap:12px;align-items:baseline}
+h2 .n{color:var(--color-accent)}
+h3{font:700 1.15rem var(--font-head);margin:28px 0 8px}
+p{margin:0 0 16px}
+ul,ol{padding-left:1.25rem;margin:0 0 16px}
+li{margin-bottom:6px}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:24px 0;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ic{font-size:1.4rem;line-height:1.4}
+.callout p{margin:0}
+.callout b{font-family:var(--font-head)}
+.callout.tip{background:var(--color-accent-soft);border-color:#99E6DA}
+.callout.warn{background:#FFF8E6;border-color:#F3D98B}
+.callout.link{background:var(--color-bg);border-left:4px solid var(--color-accent)}
+figure{margin:28px 0}
+figure svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}
+.cards{display:grid;gap:12px;margin:20px 0}
+.card{border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);overflow:hidden}
+.card button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card button:hover{background:var(--color-bg-alt)}
+.card button:focus-visible{outline:3px solid var(--color-accent);outline-offset:-3px}
+.card .t{font:700 1.05rem var(--font-head);display:block}
+.card .s{font-size:.9rem;color:var(--muted)}
+.tag{font:600 .8rem var(--font-body);padding:2px 10px;border-radius:999px;border:1px solid var(--color-border);white-space:nowrap}
+.tag.yes{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.card .chev{transition:transform .2s;color:var(--color-accent);font-weight:700}
+.card[data-open="true"] .chev{transform:rotate(90deg)}
+.card .body{display:none;padding:0 18px 16px;border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.card[data-open="true"] .body{display:block}
+.card .body p{margin:12px 0 6px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;padding:0;list-style:none}
+.tools li{margin:0;background:var(--color-bg);border:1px solid var(--color-border);border-radius:8px;padding:3px 12px;font-weight:500;font-size:.95rem}
+.scroll{overflow-x:auto;margin:20px 0}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.95rem}
+th,td{text-align:left;padding:10px 14px;border:1px solid var(--color-border);vertical-align:top}
+th{background:var(--color-bg-alt);font-family:var(--font-head)}
+.calc{border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-alt);padding:20px;margin:24px 0}
+.calc h3{margin-top:0}
+.fields{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:600px){.fields{grid-template-columns:1fr}}
+label{display:block;font-size:.9rem;font-weight:500}
+select{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg)}
+.reco{margin-top:18px;background:var(--color-bg);border:1px solid var(--color-accent);border-radius:10px;padding:14px 18px}
+.reco p{margin:0 0 8px}.reco p:last-child{margin:0}
+.reco strong{font-family:var(--font-head);color:#0B6F66}
+.steps{list-style:none;padding:0;margin:20px 0}
+.steps li{margin:0 0 12px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);padding:14px 18px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
+.steps li.done{background:var(--color-accent-soft);border-color:var(--color-accent)}
+.steps input{width:20px;height:20px;margin-top:4px;accent-color:var(--color-accent)}
+.steps b{font-family:var(--font-head)}
+.steps .d{grid-column:2;color:var(--muted);font-size:.95rem}
+.prog{height:8px;background:var(--color-border);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.prog span{display:block;height:100%;width:0;background:var(--color-accent);transition:width .25s}
+code{font:500 .92em ui-monospace,monospace;background:var(--color-bg-alt);padding:2px 6px;border-radius:4px}
+.recap{margin:48px 0 0;padding:24px;border:2px solid var(--color-accent);border-radius:12px}
+.recap h2{font-size:1.3rem}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 64px}
+.pager a{display:block;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:500}
+.pager a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pager small{display:block;color:var(--muted);font-weight:400}
+.pager .next{text-align:right}
+@media(max-width:560px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">Module 1 — Fondamentaux et premières automatisations</p>
+    <h1>Leçon 03 — Découvrir les outils d'IA et de No-Code</h1>
+    <ul class="meta">
+      <li class="lvl">Niveau : Débutant</li>
+      <li>⏱ 25 min</li>
+      <li>5 parties</li>
+    </ul>
+    <p class="goal"><strong>Objectif :</strong> choisir les outils adaptés à un besoin, à un budget et à un niveau technique donné, sans se perdre dans l'offre du marché.</p>
+    <nav class="toc" aria-label="Sommaire">
+      <p>Dans cette leçon</p>
+      <ol>
+        <li><a href="#cartographie">La cartographie des outils No-Code</a></li>
+        <li><a href="#ia">Les assistants IA intégrables</a></li>
+        <li><a href="#choix">Grille de décision et choix d'outils</a></li>
+        <li><a href="#securite">Sécurité et confidentialité</a></li>
+        <li><a href="#tuto">Tutoriel : comptes et clés d'accès</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="cartographie">
+  <h2><span class="n">1.</span>La cartographie des outils No-Code</h2>
+  <p>Des centaines d'outils existent, mais ils se rangent dans quelques familles. Savoir à quelle famille appartient un outil suffit pour comprendre son rôle. Dans un flux d'automatisation, ils travaillent ensemble.</p>
+  <figure>
+    <svg viewBox="0 0 640 170" role="img" aria-labelledby="ft fd">
+      <title id="ft">Flux d'automatisation typique</title>
+      <desc id="fd">Un formulaire envoie des données à un orchestrateur, qui interroge une IA, puis enregistre le résultat dans une base et envoie une notification.</desc>
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0D9488"/></marker></defs>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="14" text-anchor="middle" fill="#090D12">
+        <rect x="10" y="50" width="105" height="60" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="62" y="86">Formulaire</text>
+        <rect x="150" y="50" width="120" height="60" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="210" y="86">Orchestrateur</text>
+        <rect x="305" y="50" width="95" height="60" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="352" y="86">IA (LLM)</text>
+        <rect x="435" y="50" width="85" height="60" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="477" y="86">Base</text>
+        <rect x="550" y="50" width="80" height="60" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="590" y="86">Alerte</text>
+      </g>
+      <g stroke="#0D9488" stroke-width="2" marker-end="url(#ar)">
+        <line x1="115" y1="80" x2="148" y2="80"/><line x1="270" y1="80" x2="303" y2="80"/>
+        <line x1="400" y1="80" x2="433" y2="80"/><line x1="520" y1="80" x2="548" y2="80"/>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="12" fill="#4B5563" text-anchor="middle">
+        <text x="62" y="135">Collecte</text><text x="210" y="135">Relie et déclenche</text>
+        <text x="352" y="135">Comprend, rédige</text><text x="477" y="135">Stocke</text><text x="590" y="135">Prévient</text>
+      </g>
+    </svg>
+    <figcaption>L'orchestrateur est le chef de gare : il reçoit un événement et déclenche les étapes suivantes.</figcaption>
+  </figure>
+  <p>Cliquez sur une famille pour voir son rôle et quelques exemples.</p>
+  <div class="cards" id="cards">
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Orchestrateurs</span><span class="s">Relier les outils entre eux</span></span>
+        <span><span class="tag yes">Le cœur du flux</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p>Ils fonctionnent sur le principe « quand ceci arrive, fais cela ». Ils connectent vos applications sans code.</p>
+        <ul class="tools"><li>Make</li><li>Zapier</li><li>n8n</li></ul>
+        <p style="margin-top:12px"><b>Bon à savoir :</b> Zapier et Make sont des services en ligne. n8n est aussi disponible en version que l'on peut héberger soi-même, ce qui demande plus de technique.</p>
+      </div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Formulaires</span><span class="s">Collecter l'information proprement</span></span>
+        <span><span class="tag">Point d'entrée</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p>Un formulaire structure les données dès la source : c'est ce qui rend ensuite l'automatisation fiable.</p>
+        <ul class="tools"><li>Tally</li><li>Typeform</li><li>Google Forms</li></ul>
+      </div>
+    </div>
+    <div class="card">
+      <button type="button" aria-expanded="false">
+        <span><span class="t">Bases et tableaux</span><span class="s">Stocker et suivre les données</span></span>
+        <span><span class="tag">Mémoire du flux</span> <span class="chev" aria-hidden="true">›</span></span>
+      </button>
+      <div class="body">
+        <p>C'est l'endroit où l'on retrouve ce qui a été collecté et traité : une ligne par demande, une colonne par information.</p>
+        <ul class="tools"><li>Airtable</li><li>Google Sheets</li><li>Notion</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Lien avec la Leçon 02.</b> Reprenez votre inventaire de tâches : chaque tâche à automatiser se décompose en entrée (formulaire), traitement (orchestrateur, IA) et sortie (base, notification).</p></div>
+</section>
+
+<section id="ia">
+  <h2><span class="n">2.</span>Les assistants IA intégrables</h2>
+  <p>Un modèle de langage (LLM) comme ChatGPT (OpenAI), Claude (Anthropic) ou Gemini (Google) peut être appelé depuis un orchestrateur. Il ne remplace pas le flux : il y ajoute une étape qui sait lire et écrire du texte.</p>
+  <h3>Ce que l'IA apporte dans un flux</h3>
+  <ul>
+    <li><b>Classer</b> : trier un e-mail entrant (demande de devis, réclamation, question simple).</li>
+    <li><b>Extraire</b> : récupérer un montant, une date ou un nom dans un texte libre.</li>
+    <li><b>Résumer</b> : condenser un long message ou un compte rendu.</li>
+    <li><b>Rédiger</b> : proposer un brouillon de réponse, que vous relisez avant l'envoi.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> Les trois principaux fournisseurs proposent des fonctions comparables pour ces usages. Pour débuter, choisissez celui dont vous avez déjà un compte, puis comparez plus tard sur un cas réel.</p></div>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> Une IA peut se tromper avec assurance. Gardez une validation humaine sur les messages importants et sur toute décision.</p></div>
+</section>
+
+<section id="choix">
+  <h2><span class="n">3.</span>Grille de décision et choix d'outils</h2>
+  <p>Pour choisir sans vous perdre, comparez les options sur quatre critères seulement.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Critère</th><th>La question à se poser</th></tr></thead>
+    <tbody>
+      <tr><td><b>Coût</b></td><td>Combien par mois, et comment le prix évolue-t-il quand l'usage augmente ?</td></tr>
+      <tr><td><b>Volumétrie</b></td><td>Combien de demandes, de lignes ou d'exécutions par mois dois-je traiter ?</td></tr>
+      <tr><td><b>Limites du gratuit</b></td><td>Quelles limites (nombre d'opérations, de lignes, de fonctions) ? Elles changent souvent.</td></tr>
+      <tr><td><b>Prise en main</b></td><td>Puis-je construire mon premier flux en une heure, avec de la documentation en français ou en anglais clair ?</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Vérifiez toujours les tarifs.</b> Les offres gratuites et les prix changent régulièrement. Consultez la page officielle de l'outil avant de vous engager.</p></div>
+
+  <form class="calc" id="helper" onsubmit="return false" aria-labelledby="ht">
+    <h3 id="ht">Aide au choix</h3>
+    <div class="fields">
+      <label>Votre niveau technique
+        <select id="lvl"><option value="deb">Débutant</option><option value="mid">À l'aise avec les outils</option><option value="tech">Technique</option></select></label>
+      <label>Votre budget
+        <select id="bud"><option value="0">Gratuit uniquement</option><option value="s">Petit budget</option><option value="c">Confortable</option></select></label>
+      <label>Volume de données
+        <select id="vol"><option value="l">Faible</option><option value="m">Moyen</option><option value="h">Élevé</option></select></label>
+    </div>
+    <div class="reco" aria-live="polite" id="reco"></div>
+  </form>
+</section>
+
+<section id="securite">
+  <h2><span class="n">4.</span>Sécurité et confidentialité</h2>
+  <p>Automatiser, c'est faire circuler des données entre plusieurs services. Chaque service devient un maillon à surveiller, surtout si vos données concernent des personnes.</p>
+  <h3>Les trois questions à se poser</h3>
+  <ul>
+    <li><b>RGPD</b> : traitez-vous des données personnelles (nom, e-mail, téléphone) ? Si oui, sachez où elles sont hébergées, pourquoi vous les collectez et combien de temps vous les gardez. Vérifiez si l'éditeur propose un accord de traitement des données.</li>
+    <li><b>Propriété des données</b> : pouvez-vous exporter vos données et les supprimer facilement si vous quittez l'outil ?</li>
+    <li><b>Entraînement des modèles</b> : vos textes envoyés à une IA peuvent-ils servir à l'entraîner ? Cela dépend du fournisseur et de l'offre : lisez ses conditions d'utilisation et ses réglages de confidentialité.</li>
+  </ul>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Règle d'or.</b> N'envoyez jamais de données sensibles (santé, mots de passe, informations bancaires) à un outil dont vous n'avez pas vérifié les conditions. En cas de doute, anonymisez ou retirez la donnée.</p></div>
+  <div class="callout tip"><span class="ic">💡</span><p><b>Astuce.</b> Appliquez la minimisation : n'envoyez à l'IA que l'information nécessaire à la tâche, pas le dossier entier.</p></div>
+</section>
+
+<section id="tuto">
+  <h2><span class="n">5.</span>Tutoriel : comptes et clés d'accès</h2>
+  <p>Deux notions à comprendre avant de commencer :</p>
+  <ul>
+    <li>Un <b>webhook</b> est une adresse web (URL) qui reçoit des données quand un événement se produit, par exemple l'envoi d'un formulaire.</li>
+    <li>Une <b>clé d'API</b> est un mot de passe qui autorise votre orchestrateur à utiliser un service (l'IA, par exemple) en votre nom.</li>
+  </ul>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Une clé d'API se protège comme un mot de passe.</b> Ne la collez jamais dans un e-mail, un document partagé ou une capture d'écran. Si elle fuite, supprimez-la et créez-en une nouvelle.</p></div>
+  <p>Cochez les étapes au fur et à mesure. Les menus peuvent changer d'un outil à l'autre : suivez l'esprit de chaque étape.</p>
+  <div class="prog" aria-hidden="true"><span id="bar"></span></div>
+  <p id="ptxt" style="font-size:.9rem;color:var(--muted)" aria-live="polite">0 étape sur 7 terminée</p>
+  <ol class="steps" id="steps">
+    <li><input type="checkbox" id="s1"><label for="s1"><b>Créer un compte orchestrateur</b></label><span class="d">Choisissez Make, Zapier ou n8n selon la grille de la partie 3. Utilisez une adresse e-mail professionnelle que vous consultez régulièrement.</span></li>
+    <li><input type="checkbox" id="s2"><label for="s2"><b>Créer une base de données</b></label><span class="d">Créez un tableau (Google Sheets, par exemple) avec une ligne d'en-têtes : Date, Nom, Message, Statut.</span></li>
+    <li><input type="checkbox" id="s3"><label for="s3"><b>Créer un formulaire</b></label><span class="d">Avec Tally, Typeform ou Google Forms, ajoutez les mêmes champs que votre tableau.</span></li>
+    <li><input type="checkbox" id="s4"><label for="s4"><b>Générer un webhook</b></label><span class="d">Dans l'orchestrateur, créez un scénario qui démarre par un déclencheur « Webhook ». L'outil génère une URL : copiez-la.</span></li>
+    <li><input type="checkbox" id="s5"><label for="s5"><b>Brancher le formulaire sur le webhook</b></label><span class="d">Dans les paramètres d'intégration du formulaire, collez l'URL du webhook, puis envoyez une réponse de test.</span></li>
+    <li><input type="checkbox" id="s6"><label for="s6"><b>Créer une clé d'API pour l'IA</b></label><span class="d">Sur le site du fournisseur de votre choix (espace développeur), créez un compte, puis une clé d'API. Copiez-la une seule fois et rangez-la dans un gestionnaire de mots de passe.</span></li>
+    <li><input type="checkbox" id="s7"><label for="s7"><b>Connecter la clé et limiter la dépense</b></label><span class="d">Dans l'orchestrateur, ajoutez une connexion pour le fournisseur d'IA et collez la clé. Si le fournisseur le permet, fixez un plafond de dépense mensuel.</span></li>
+  </ol>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Prochaine étape.</b> À la Leçon 04, vous utiliserez ces comptes pour automatiser vos formulaires, vos e-mails et vos notifications.</p></div>
+
+  <div class="recap">
+    <h2>À retenir</h2>
+    <ul>
+      <li>Un flux se compose d'un formulaire, d'un orchestrateur, d'une IA éventuelle et d'une base.</li>
+      <li>Comparez les outils sur quatre critères : coût, volumétrie, limites du gratuit, prise en main.</li>
+      <li>Vérifiez les tarifs et les conditions sur les sites officiels.</li>
+      <li>Protégez les données personnelles et vos clés d'API.</li>
+      <li>Un webhook reçoit des données, une clé d'API donne accès à un service.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Navigation entre leçons">
+  <a href="lecon-02-identifier-taches-repetitives.html"><small>Leçon précédente</small>Leçon 02 — Identifier les tâches répétitives à automatiser</a>
+  <a class="next" href="lecon-04.html"><small>Leçon suivante</small>Leçon 04 — Automatiser les formulaires, les emails et les notifications</a>
+</nav>
+
+</main>
+
+<script>
+document.querySelectorAll('#cards .card').forEach(function(card){
+  var btn=card.querySelector('button');
+  btn.addEventListener('click',function(){
+    var open=card.getAttribute('data-open')==='true';
+    card.setAttribute('data-open',String(!open));
+    btn.setAttribute('aria-expanded',String(!open));
+  });
+});
+(function(){
+  var lvl=document.getElementById('lvl'),bud=document.getElementById('bud'),vol=document.getElementById('vol'),out=document.getElementById('reco');
+  function render(){
+    var l=lvl.value,b=bud.value,v=vol.value,html;
+    if(l==='tech'&&v!=='l'){
+      html='<p><strong>Piste : n8n.</strong></p><p>Avec un bon niveau technique et un volume qui grandit, un orchestrateur que l\'on peut héberger soi-même limite les coûts à l\'usage. Prévoyez du temps pour l\'installation et la maintenance.</p>';
+    }else if(l==='deb'){
+      html='<p><strong>Piste : Zapier ou Make, avec Google Forms et Google Sheets.</strong></p><p>Ces outils s\'apprennent vite et la documentation est abondante. Commencez par la version gratuite pour tester.</p>';
+    }else{
+      html='<p><strong>Piste : Make ou Zapier, avec Tally ou Typeform et Airtable ou Notion.</strong></p><p>Vous pouvez construire des flux à plusieurs étapes et gérer des conditions.</p>';
+    }
+    if(b==='0'){html+='<p>Budget gratuit : vérifiez les limites de la version gratuite (opérations, lignes, nombre de flux) avant de construire.</p>';}
+    if(v==='h'){html+='<p>Volume élevé : estimez le coût mensuel à ce volume, car c\'est souvent là que les prix augmentent.</p>';}
+    out.innerHTML=html;
+  }
+  [lvl,bud,vol].forEach(function(e){e.addEventListener('change',render)});
+  render();
+})();
+(function(){
+  var boxes=document.querySelectorAll('#steps input'),bar=document.getElementById('bar'),txt=document.getElementById('ptxt');
+  function upd(){
+    var n=0;
+    boxes.forEach(function(b){b.closest('li').classList.toggle('done',b.checked);if(b.checked)n++});
+    bar.style.width=(n/boxes.length*100)+'%';
+    txt.textContent=n+(n>1?' étapes':' étape')+' sur '+boxes.length+(n>1?' terminées':' terminée');
+  }
+  boxes.forEach(function(b){b.addEventListener('change',upd)});
+})();
+</script>
+</body>
+</html>

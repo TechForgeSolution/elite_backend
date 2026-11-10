@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 5 — Achats, ventes, règlements et TVA | Comptabilité générale</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Georgia,serif' fill='white' text-anchor='middle'%3E%C2%A2%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F6F8F6;
+    --color-text: #0B0F0D;
+    --color-text-muted: #5A6560;
+    --color-accent: #1F6F54;
+    --color-accent-soft: #E7F2ED;
+    --color-border: #E3E8E5;
+    --color-accent-alt: #B3541E;
+    --color-accent-alt-soft: #F5E9E1;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --max-text: 700px;
+    --radius: 6px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text);
+    margin: 0 0 0.5em;
+  }
+  h1{ font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 600; }
+  h2{ font-size: clamp(1.4rem, 2.6vw, 1.85rem); margin-top: 0; }
+  h3{ font-size: 1.15rem; }
+  p{ margin: 0 0 1.1em; color: var(--color-text); }
+  a{ color: var(--color-accent); text-decoration-thickness: 1.5px; text-underline-offset: 2px; }
+  a:hover{ color: #164f3c; }
+
+  .num{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- progress bar ---------- */
+  #progress-bar{
+    position: fixed; top:0; left:0; height:3px; width:0%;
+    background: var(--color-accent); z-index: 1000; transition: width 80ms linear;
+  }
+
+  /* ---------- header ---------- */
+  header.site-header{
+    position: sticky; top:0; z-index: 900;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.85rem 1.5rem;
+  }
+  .header-inner{
+    max-width: 1100px; margin: 0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap: 1rem;
+  }
+  .brand{ display:flex; align-items:center; gap:0.6rem; font-family: var(--font-display); font-weight:700; font-size:1rem; }
+  .brand .mark{
+    width: 26px; height:26px; border-radius:5px; background: var(--color-accent);
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-family: var(--font-mono);
+  }
+  .brand span.sub{ color: var(--color-text-muted); font-weight:500; font-family: var(--font-body); font-size: 0.85rem; }
+
+  nav.toc-menu{ position: relative; }
+  .toc-btn{
+    font-family: var(--font-body); font-size:0.9rem; font-weight:600; color: var(--color-text);
+    background: var(--color-bg-alt); border:1px solid var(--color-border); border-radius: var(--radius);
+    padding: 0.45rem 0.9rem; cursor:pointer;
+  }
+  .toc-btn:hover{ border-color: var(--color-accent); }
+  .toc-dropdown{
+    display:none; position:absolute; right:0; top: calc(100% + 8px);
+    background: #fff; border:1px solid var(--color-border); border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(11,15,13,0.08); min-width: 280px; padding: 0.5rem;
+  }
+  .toc-dropdown.open{ display:block; }
+  .toc-dropdown a{
+    display:block; padding: 0.5rem 0.6rem; border-radius: 4px; color: var(--color-text);
+    font-size: 0.9rem; text-decoration:none;
+  }
+  .toc-dropdown a:hover{ background: var(--color-accent-soft); color: var(--color-accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ max-width: 1100px; margin: 0 auto; padding: 2.6rem 1.5rem 1.6rem; }
+  .badges{ display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom: 1.1rem; }
+  .badge{
+    font-size: 0.78rem; font-weight:600; padding: 0.3rem 0.65rem; border-radius: 999px;
+    background: var(--color-accent-soft); color: var(--color-accent); border:1px solid transparent;
+  }
+  .badge.outline{ background:#fff; border-color: var(--color-border); color: var(--color-text-muted); }
+  .hero h1{ max-width: 780px; }
+  .hero .lesson-tag{ font-family: var(--font-mono); color: var(--color-accent); font-size:0.9rem; font-weight:500; margin-bottom:0.5rem; display:block; }
+  .hero .subtitle{ max-width: var(--max-text); color: var(--color-text-muted); font-size:1.05rem; }
+
+  /* ---------- toc inline (sommaire) ---------- */
+  .sommaire{
+    max-width: 1100px; margin: 0 auto 2.2rem; padding: 0 1.5rem;
+  }
+  .sommaire-card{
+    background: var(--color-bg-alt); border:1px solid var(--color-border); border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+  }
+  .sommaire-card h2{ font-size:0.85rem; text-transform: none; letter-spacing:0; color: var(--color-text-muted); font-family: var(--font-body); font-weight:600; margin-bottom:0.7rem; }
+  .sommaire-list{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns: repeat(2, 1fr); gap: 0.35rem 1.2rem; }
+  .sommaire-list li a{
+    display:flex; gap:0.6rem; align-items:baseline; text-decoration:none; color: var(--color-text); font-size:0.92rem; padding: 0.25rem 0;
+    border-bottom: 1px dashed transparent;
+  }
+  .sommaire-list li a:hover{ border-bottom-color: var(--color-accent); color: var(--color-accent); }
+  .sommaire-list li a .n{ font-family: var(--font-mono); color: var(--color-text-muted); font-size:0.82rem; }
+  @media (max-width: 640px){ .sommaire-list{ grid-template-columns: 1fr; } }
+
+  /* ---------- main layout ---------- */
+  main{ max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+  section.lesson-section{ padding: 2.6rem 0; border-top: 1px solid var(--color-border); scroll-margin-top: 90px; }
+  section.lesson-section:first-of-type{ border-top: none; }
+  .section-body{ max-width: var(--max-text); }
+  .section-eyebrow{ font-family: var(--font-mono); font-size:0.78rem; color: var(--color-accent); margin-bottom:0.4rem; }
+
+  .reveal{ opacity: 0; transform: translateY(14px); transition: opacity 500ms ease, transform 500ms ease; }
+  .reveal.in{ opacity:1; transform: translateY(0); }
+
+  /* ---------- callouts ---------- */
+  .callout{
+    display:flex; gap:0.8rem; padding: 1rem 1.15rem; border-radius: var(--radius);
+    margin: 1.4rem 0; border:1px solid var(--color-border); background: var(--color-bg-alt);
+    max-width: var(--max-text);
+  }
+  .callout .icon{ font-size:1.15rem; line-height:1.4; flex-shrink:0; }
+  .callout .content strong{ display:block; font-family: var(--font-display); font-size:0.95rem; margin-bottom:0.15rem; color: var(--color-text); }
+  .callout.retenir{ background: var(--color-accent-soft); border-color: #cfe6dc; }
+  .callout.attention{ background: var(--color-accent-alt-soft); border-color: #ecd3c0; }
+  .callout.pratique{ background: #fff; border: 1px solid var(--color-accent); border-left-width: 4px; }
+  .callout.normatif{ background: #fff; border-left: 4px solid var(--color-text-muted); }
+  .callout.plus-loin{ background: #fff; border: 1px dashed var(--color-border); }
+
+  /* ---------- tables ---------- */
+  .table-wrap{ overflow-x:auto; margin: 1.4rem 0; border:1px solid var(--color-border); border-radius: var(--radius); }
+  table{ border-collapse: collapse; width:100%; min-width: 480px; font-size:0.92rem; }
+  thead th{
+    text-align:left; font-family: var(--font-body); font-weight:600; font-size:0.82rem; color: var(--color-text-muted);
+    background: var(--color-bg-alt); padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--color-border);
+  }
+  tbody td{ padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: var(--color-bg-alt); }
+  td.amount, th.amount{ text-align:right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .total-row td{ font-weight:600; background: var(--color-accent-soft); }
+  .total-row td.amount{ color: var(--color-accent); }
+
+  /* ---------- T-account / SVG ---------- */
+  figure{ margin: 1.6rem 0; max-width: var(--max-text); }
+  figure svg{ width:100%; height:auto; display:block; }
+  figcaption{ font-size:0.85rem; color: var(--color-text-muted); margin-top:0.5rem; }
+
+  /* ---------- tabs ---------- */
+  .tabs{ margin: 1.6rem 0; max-width: var(--max-text); }
+  .tab-list{ display:flex; gap:0.4rem; border-bottom: 1px solid var(--color-border); }
+  .tab-btn{
+    font-family: var(--font-body); font-size:0.92rem; font-weight:600; color: var(--color-text-muted);
+    background:none; border:none; padding: 0.7rem 0.2rem; margin-right:1.2rem; cursor:pointer;
+    border-bottom: 2px solid transparent; margin-bottom:-1px;
+  }
+  .tab-btn:hover{ color: var(--color-text); }
+  .tab-btn[aria-selected="true"]{ color: var(--color-accent); border-bottom-color: var(--color-accent); }
+  .tab-btn:focus-visible, .accordion-trigger:focus-visible, .toc-btn:focus-visible, a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--color-accent); outline-offset: 2px;
+  }
+  .tab-panel{ display:none; padding-top: 1.1rem; }
+  .tab-panel.active{ display:block; }
+
+  /* ---------- accordion ---------- */
+  .accordion{ max-width: var(--max-text); margin: 1.4rem 0; border-top:1px solid var(--color-border); }
+  .accordion-item{ border-bottom:1px solid var(--color-border); }
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding: 1rem 0.1rem; display:flex; justify-content:space-between; align-items:center; gap:1rem;
+    font-family: var(--font-body); font-weight:600; font-size:0.98rem; color: var(--color-text);
+  }
+  .accordion-trigger .chevron{ transition: transform 200ms ease; color: var(--color-accent); flex-shrink:0; }
+  .accordion-trigger[aria-expanded="true"] .chevron{ transform: rotate(45deg); }
+  .accordion-panel{ max-height:0; overflow:hidden; transition: max-height 250ms ease; }
+  .accordion-panel .inner{ padding: 0 0.1rem 1.1rem; color: var(--color-text-muted); }
+
+  /* ---------- cards ---------- */
+  .card-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap: 1rem; margin: 1.6rem 0; max-width: 900px; }
+  .card{
+    border:1px solid var(--color-border); border-radius: var(--radius); padding: 1.1rem;
+    background:#fff; transition: border-color 150ms ease, transform 150ms ease;
+  }
+  .card:hover{ border-color: var(--color-accent); transform: translateY(-2px); }
+  .card .icon{ width:34px; height:34px; border-radius:7px; background: var(--color-accent-soft); color: var(--color-accent);
+    display:flex; align-items:center; justify-content:center; margin-bottom:0.7rem; font-size:1.05rem; }
+  .card h3{ font-size:1rem; margin-bottom:0.3rem; }
+  .card p{ font-size:0.88rem; color: var(--color-text-muted); margin:0; }
+
+  /* ---------- stepper ---------- */
+  .stepper{ display:flex; flex-wrap:wrap; gap: 0; margin: 1.8rem 0; max-width: 900px; counter-reset: step; }
+  .step{ flex:1 1 160px; position:relative; padding: 1rem 1rem 1rem 0; }
+  .step .step-num{
+    font-family: var(--font-mono); width:28px; height:28px; border-radius:50%; background: var(--color-accent);
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; margin-bottom:0.6rem;
+  }
+  .step:not(:last-child)::after{
+    content:''; position:absolute; top:14px; left: calc(100% - 0.6rem); width: calc(1rem); height:1px;
+    background: var(--color-border);
+  }
+  .step h3{ font-size:0.92rem; margin-bottom:0.25rem; }
+  .step p{ font-size:0.84rem; color: var(--color-text-muted); margin:0; }
+  @media (max-width: 760px){
+    .stepper{ flex-direction:column; }
+    .step:not(:last-child)::after{ display:none; }
+  }
+
+  /* ---------- key takeaways ---------- */
+  .takeaways{
+    background: var(--color-text); color:#fff; border-radius: 10px; padding: 2rem 1.8rem; margin-top: 1rem;
+  }
+  .takeaways h2{ color:#fff; }
+  .takeaways ul{ margin:0; padding-left:1.2rem; }
+  .takeaways li{ margin-bottom:0.6rem; color: #E7ECEA; }
+  .takeaways li::marker{ color: #6FBF9C; }
+
+  /* ---------- footer nav ---------- */
+  .lesson-nav{
+    display:flex; justify-content:space-between; gap:1rem; margin-top: 2.6rem; padding-top: 1.6rem; border-top:1px solid var(--color-border);
+  }
+  .nav-link{
+    flex:1; max-width: 47%; text-decoration:none; color: var(--color-text); border:1px solid var(--color-border);
+    border-radius: var(--radius); padding: 0.9rem 1rem; transition: border-color 150ms ease;
+  }
+  .nav-link:hover{ border-color: var(--color-accent); }
+  .nav-link .dir{ display:block; font-size:0.75rem; color: var(--color-text-muted); margin-bottom:0.2rem; font-family: var(--font-mono); }
+  .nav-link.next{ text-align:right; }
+  .nav-link .title{ font-weight:600; font-size:0.92rem; }
+  .back-to-module{ display:block; text-align:center; margin: 1.3rem 0 0; font-size:0.88rem; color: var(--color-text-muted); }
+
+  footer.site-footer{
+    border-top:1px solid var(--color-border); padding: 1.6rem 1.5rem; text-align:center;
+    color: var(--color-text-muted); font-size:0.85rem;
+  }
+
+  #back-to-top{
+    position: fixed; bottom: 1.4rem; right: 1.4rem; width:42px; height:42px; border-radius:50%;
+    background: var(--color-text); color:#fff; border:none; cursor:pointer; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden;
+    transition: opacity 200ms ease, visibility 200ms ease; z-index: 800;
+  }
+  #back-to-top.show{ opacity:1; visibility:visible; }
+  #back-to-top:hover{ background: var(--color-accent); }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="mark">C</span>
+      Filière Comptabilité<span class="sub">— parcours en ligne</span>
+    </div>
+    <nav class="toc-menu">
+      <button class="toc-btn" id="toc-toggle" aria-haspopup="true" aria-expanded="false">Sommaire</button>
+      <div class="toc-dropdown" id="toc-dropdown" role="menu">
+        <a href="#c1">1. Achats et ventes</a>
+        <a href="#c2">2. Clients et fournisseurs</a>
+        <a href="#c3">3. Le principe de la TVA</a>
+        <a href="#c4">4. Exemple pratique : une facture avec TVA</a>
+        <a href="#c5">5. Les règlements</a>
+        <a href="#c6">6. Points clés à retenir</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="badges">
+    <span class="badge">Module — Comptabilité générale</span>
+    <span class="badge outline">15 min</span>
+    <span class="badge outline">Niveau débutant</span>
+  </div>
+  <span class="lesson-tag">Leçon 5</span>
+  <h1>Achats, ventes, règlements et TVA</h1>
+  <p class="subtitle">Comment enregistrer une opération d'achat ou de vente, suivre ses clients et fournisseurs, et intégrer la TVA sans qu'elle ne vienne fausser le résultat de l'entreprise.</p>
+</div>
+
+<div class="sommaire">
+  <div class="sommaire-card">
+    <h2>Dans cette leçon</h2>
+    <ul class="sommaire-list">
+      <li><a href="#c1"><span class="n">01</span> Achats et ventes</a></li>
+      <li><a href="#c2"><span class="n">02</span> Clients et fournisseurs</a></li>
+      <li><a href="#c3"><span class="n">03</span> Le principe de la TVA</a></li>
+      <li><a href="#c4"><span class="n">04</span> Exemple pratique : une facture avec TVA</a></li>
+      <li><a href="#c5"><span class="n">05</span> Les règlements</a></li>
+      <li><a href="#c6"><span class="n">06</span> Points clés à retenir</a></li>
+    </ul>
+  </div>
+</div>
+
+<main>
+
+  <!-- SECTION 1 -->
+  <section class="lesson-section reveal" id="c1">
+    <div class="section-body">
+      <span class="section-eyebrow">01 — L'activité courante</span>
+      <h2>Achats et ventes</h2>
+      <p>L'essentiel de l'activité d'une entreprise se résume à deux mouvements : elle <strong>achète</strong> ce dont elle a besoin (marchandises, matières, services) et elle <strong>vend</strong> ce qu'elle produit ou revend. Chacun de ces mouvements donne lieu à une écriture comptable, construite sur les mêmes règles de débit/crédit vues dans les leçons précédentes.</p>
+      <p>Un achat de marchandises augmente une charge : on débite le compte <strong>601 — Achats de marchandises</strong>. Une vente augmente un produit : on crédite le compte <strong>707 — Ventes de marchandises</strong>.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Opération</th>
+            <th scope="col">Compte concerné</th>
+            <th scope="col">Nature</th>
+            <th scope="col">Sens</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Achat de marchandises</td>
+            <td class="num">601</td>
+            <td>Charge</td>
+            <td>Débit</td>
+          </tr>
+          <tr>
+            <td>Achat de matières premières</td>
+            <td class="num">602</td>
+            <td>Charge</td>
+            <td>Débit</td>
+          </tr>
+          <tr>
+            <td>Vente de marchandises</td>
+            <td class="num">707</td>
+            <td>Produit</td>
+            <td>Crédit</td>
+          </tr>
+          <tr>
+            <td>Prestations de services</td>
+            <td class="num">706</td>
+            <td>Produit</td>
+            <td>Crédit</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout retenir">
+      <span class="icon">💡</span>
+      <div class="content"><strong>À retenir</strong>Un achat n'est pas forcément payé comptant, et une vente n'est pas forcément encaissée tout de suite. La comptabilité distingue toujours le moment de la facturation (naissance de la charge ou du produit) du moment du règlement (mouvement de trésorerie) — c'est tout l'objet des sections suivantes.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="lesson-section reveal" id="c2">
+    <div class="section-body">
+      <span class="section-eyebrow">02 — Les comptes de tiers</span>
+      <h2>Clients et fournisseurs : deux comptes miroirs</h2>
+      <p>Tant qu'une facture n'est pas réglée, l'entreprise a une dette ou une créance envers son partenaire commercial. Deux comptes de tiers suivent cette situation :</p>
+      <ul>
+        <li>Le compte <strong>411 — Clients</strong> (un actif) enregistre ce que les clients doivent encore à l'entreprise.</li>
+        <li>Le compte <strong>401 — Fournisseurs</strong> (un passif) enregistre ce que l'entreprise doit encore à ses fournisseurs.</li>
+      </ul>
+      <p>Ces deux comptes sont l'image miroir l'un de l'autre : le premier grandit au débit, le second au crédit, exactement comme n'importe quel actif ou passif.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="Schéma du cycle achat-vente entre fournisseur, entreprise et client">
+        <rect x="0" y="0" width="640" height="240" fill="var(--color-bg)"/>
+
+        <rect x="20" y="90" width="150" height="70" rx="6" fill="#fff" stroke="var(--color-border)"/>
+        <text x="95" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-text)">Fournisseur</text>
+        <text x="95" y="140" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">compte 401</text>
+
+        <rect x="245" y="70" width="150" height="100" rx="6" fill="var(--color-accent-soft)" stroke="var(--color-accent)"/>
+        <text x="320" y="105" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="14" fill="var(--color-accent)">Entreprise</text>
+        <text x="320" y="126" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">601 Achats</text>
+        <text x="320" y="144" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">707 Ventes</text>
+
+        <rect x="470" y="90" width="150" height="70" rx="6" fill="#fff" stroke="var(--color-border)"/>
+        <text x="545" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-text)">Client</text>
+        <text x="545" y="140" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">compte 411</text>
+
+        <line x1="170" y1="115" x2="243" y2="115" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <text x="205" y="105" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="var(--color-text-muted)">Achat</text>
+
+        <line x1="397" y1="115" x2="468" y2="115" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <text x="432" y="105" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="var(--color-text-muted)">Vente</text>
+
+        <text x="95" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">Passif — augmente au crédit</text>
+        <text x="545" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">Actif — augmente au débit</text>
+
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="var(--color-accent)"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>Un achat crée une dette envers le fournisseur (compte 401 crédité) ; une vente crée une créance sur le client (compte 411 débité).</figcaption>
+    </figure>
+
+    <div class="callout attention">
+      <span class="icon">⚠️</span>
+      <div class="content"><strong>Erreur fréquente</strong>Confondre le compte 411 Clients et le compte 401 Fournisseurs. Astuce : le compte Clients (411) commence comme le mot « quatre-cent-onze, on nous doit », tandis que Fournisseurs (401) est ce que l'on doit — le sens du crédit/débit suit toujours la logique actif/passif, jamais le nom du tiers.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="lesson-section reveal" id="c3">
+    <div class="section-body">
+      <span class="section-eyebrow">03 — Une taxe de passage</span>
+      <h2>Le principe de la TVA</h2>
+      <p>La <strong>taxe sur la valeur ajoutée (TVA)</strong> est un impôt payé au final par le consommateur, mais collecté à chaque étape par les entreprises pour le compte de l'État. Elle n'est ni une charge ni un produit : l'entreprise ne fait que la faire transiter.</p>
+      <p>Deux comptes suivent ce mécanisme :</p>
+      <ul>
+        <li>La <strong>TVA collectée</strong> (compte 4431) : celle que l'entreprise facture à ses clients sur ses ventes.</li>
+        <li>La <strong>TVA déductible</strong> (compte 4452) : celle que les fournisseurs facturent à l'entreprise sur ses achats.</li>
+      </ul>
+      <p>À la fin de la période, l'entreprise reverse à l'État la différence entre ce qu'elle a collecté et ce qu'elle a payé.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 640 220" role="img" aria-label="Schéma du calcul de la TVA à décaisser à partir de la TVA collectée et de la TVA déductible">
+        <rect x="0" y="0" width="640" height="220" fill="var(--color-bg)"/>
+        <rect x="30" y="30" width="220" height="90" rx="6" fill="#fff" stroke="var(--color-text)"/>
+        <text x="140" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-text)">TVA collectée</text>
+        <text x="140" y="76" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">sur les ventes (4431)</text>
+        <text x="140" y="102" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="17" font-weight="600" fill="var(--color-accent)">192 500</text>
+
+        <rect x="390" y="30" width="220" height="90" rx="6" fill="#fff" stroke="var(--color-text)"/>
+        <text x="500" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="var(--color-text)">TVA déductible</text>
+        <text x="500" y="76" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--color-text-muted)">sur les achats (4452)</text>
+        <text x="500" y="102" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="17" font-weight="600" fill="var(--color-accent-alt)">96 250</text>
+
+        <text x="320" y="80" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="20" fill="var(--color-text-muted)">−</text>
+
+        <line x1="140" y1="120" x2="140" y2="160" stroke="var(--color-border)"/>
+        <line x1="500" y1="120" x2="500" y2="160" stroke="var(--color-border)"/>
+        <line x1="140" y1="160" x2="500" y2="160" stroke="var(--color-border)"/>
+        <line x1="320" y1="160" x2="320" y2="178" stroke="var(--color-border)"/>
+
+        <rect x="200" y="178" width="240" height="34" rx="6" fill="var(--color-accent-soft)" stroke="var(--color-accent)"/>
+        <text x="320" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="12" fill="var(--color-accent)">TVA à décaisser : 96 250</text>
+      </svg>
+      <figcaption>La TVA à reverser à l'État est la différence entre la TVA collectée sur les ventes et la TVA déductible sur les achats de la période.</figcaption>
+    </figure>
+
+    <div class="callout normatif">
+      <span class="icon">📌</span>
+      <div class="content"><strong>Rappel normatif</strong>Le taux et les échéances de déclaration de la TVA sont fixés par la législation fiscale de chaque pays et peuvent varier selon la nature du bien ou du service (taux normal, taux réduit, exonération). Au Cameroun par exemple, le taux normal appliqué est de 19,25 % (TVA + centimes additionnels communaux).</div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section class="lesson-section reveal" id="c4">
+    <div class="section-body">
+      <span class="section-eyebrow">04 — Mise en pratique</span>
+      <h2>Exemple pratique : une facture avec TVA</h2>
+    </div>
+
+    <div class="callout pratique">
+      <span class="icon">🧮</span>
+      <div class="content"><strong>Cas pratique</strong>L'entreprise vend des marchandises à un client pour un montant hors taxes (HT) de 1 000 000 FCFA, TVA à 19,25 %. Quelle écriture enregistrer ?</div>
+    </div>
+
+    <div class="section-body">
+      <p>Le montant de la TVA est de 1 000 000 × 19,25 % = 192 500 FCFA. Le client doit donc régler le montant toutes taxes comprises (TTC) : 1 192 500 FCFA. Trois comptes sont concernés.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">N° compte</th>
+            <th scope="col">Intitulé</th>
+            <th scope="col" class="amount">Débit</th>
+            <th scope="col" class="amount">Crédit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">411</td>
+            <td>Clients (montant TTC)</td>
+            <td class="amount">1 192 500</td>
+            <td class="amount">—</td>
+          </tr>
+          <tr>
+            <td class="num">707</td>
+            <td>Ventes de marchandises (montant HT)</td>
+            <td class="amount">—</td>
+            <td class="amount">1 000 000</td>
+          </tr>
+          <tr>
+            <td class="num">4431</td>
+            <td>TVA collectée</td>
+            <td class="amount">—</td>
+            <td class="amount">192 500</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Totaux</td>
+            <td class="amount">1 192 500</td>
+            <td class="amount">1 192 500</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-body">
+      <p>Côté achat, le mécanisme est symétrique. Un achat de marchandises de 500 000 FCFA HT, TVA à 19,25 %, donne la TVA déductible suivante : 500 000 × 19,25 % = 96 250 FCFA, pour un montant TTC dû au fournisseur de 596 250 FCFA.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">N° compte</th>
+            <th scope="col">Intitulé</th>
+            <th scope="col" class="amount">Débit</th>
+            <th scope="col" class="amount">Crédit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">601</td>
+            <td>Achats de marchandises (montant HT)</td>
+            <td class="amount">500 000</td>
+            <td class="amount">—</td>
+          </tr>
+          <tr>
+            <td class="num">4452</td>
+            <td>TVA déductible</td>
+            <td class="amount">96 250</td>
+            <td class="amount">—</td>
+          </tr>
+          <tr>
+            <td class="num">401</td>
+            <td>Fournisseurs (montant TTC)</td>
+            <td class="amount">—</td>
+            <td class="amount">596 250</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Totaux</td>
+            <td class="amount">596 250</td>
+            <td class="amount">596 250</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout retenir">
+      <span class="icon">💡</span>
+      <div class="content"><strong>À retenir</strong>La charge ou le produit est toujours enregistré pour son montant hors taxes : la TVA passe par des comptes de tiers (4431, 4452) qui n'affectent ni le chiffre d'affaires ni les charges de l'entreprise.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section class="lesson-section reveal" id="c5">
+    <div class="section-body">
+      <span class="section-eyebrow">05 — Le dénouement</span>
+      <h2>Les règlements</h2>
+      <p>Facturer n'est pas encaisser. Le règlement est l'opération qui éteint la créance ou la dette née de la facture, par un mouvement de trésorerie (banque ou caisse).</p>
+    </div>
+
+    <div class="tabs" id="tabs-reglement">
+      <div class="tab-list" role="tablist" aria-label="Types de règlement">
+        <button class="tab-btn" role="tab" id="tab-comptant" aria-controls="panel-comptant" aria-selected="true">Règlement au comptant</button>
+        <button class="tab-btn" role="tab" id="tab-credit" aria-controls="panel-credit" aria-selected="false" tabindex="-1">Règlement à crédit</button>
+      </div>
+      <div class="tab-panel active" id="panel-comptant" role="tabpanel" aria-labelledby="tab-comptant">
+        <p>La facturation et le paiement ont lieu au même moment. Une seule écriture combine la charge ou le produit, la TVA et le mouvement de trésorerie — aucun compte de tiers (411 ou 401) n'est utilisé, puisqu'aucune créance ni dette ne subsiste.</p>
+      </div>
+      <div class="tab-panel" id="panel-credit" role="tabpanel" aria-labelledby="tab-credit" hidden>
+        <p>La facturation précède le paiement. Deux écritures sont nécessaires : d'abord la facture, qui fait naître une créance (411) ou une dette (401) ; puis le règlement, qui l'éteint par le débit ou le crédit du compte de tiers, en contrepartie de la banque ou de la caisse.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Opération</th>
+            <th scope="col">N° compte</th>
+            <th scope="col" class="amount">Débit</th>
+            <th scope="col" class="amount">Crédit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Encaissement du client (règlement de la facture de vente)</td>
+            <td class="num">512 / 411</td>
+            <td class="amount">1 192 500</td>
+            <td class="amount">1 192 500</td>
+          </tr>
+          <tr>
+            <td>Décaissement au fournisseur (règlement de la facture d'achat)</td>
+            <td class="num">401 / 512</td>
+            <td class="amount">596 250</td>
+            <td class="amount">596 250</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-body">
+      <h3>Du devis à l'encaissement</h3>
+    </div>
+    <div class="stepper">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Commande</h3>
+        <p>Le client passe commande, le fournisseur reçoit la demande.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Facturation</h3>
+        <p>La facture (HT + TVA = TTC) fait naître la créance ou la dette.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Livraison</h3>
+        <p>Le bien ou le service est délivré au client.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Enregistrement</h3>
+        <p>L'écriture d'achat ou de vente est passée au journal.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <h3>Règlement</h3>
+        <p>Le paiement éteint le compte client ou fournisseur.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon">411</div>
+        <h3>Clients</h3>
+        <p>Diminue au crédit lors de l'encaissement : la créance disparaît.</p>
+      </div>
+      <div class="card">
+        <div class="icon">401</div>
+        <h3>Fournisseurs</h3>
+        <p>Diminue au débit lors du décaissement : la dette disparaît.</p>
+      </div>
+      <div class="card">
+        <div class="icon">512</div>
+        <h3>Banque</h3>
+        <p>Débitée à l'encaissement, créditée au décaissement.</p>
+      </div>
+      <div class="card">
+        <div class="icon">571</div>
+        <h3>Caisse</h3>
+        <p>Suit les mêmes règles que la banque pour les règlements en espèces.</p>
+      </div>
+    </div>
+
+    <div class="accordion" id="faq">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Faut-il toujours passer par les comptes 411 et 401 ?
+          <span class="chevron">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">Non. Ils ne sont utilisés que lorsque la facturation et le règlement ont lieu à des dates différentes (vente ou achat « à crédit »). Pour un règlement immédiat, l'écriture se fait directement entre le compte de charge/produit, la TVA et la trésorerie.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Que se passe-t-il si on oublie la TVA dans une écriture ?
+          <span class="chevron">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">Le montant enregistré en charge ou en produit sera surévalué ou l'écriture sera déséquilibrée, puisque le montant réellement facturé (TTC) ne correspondra plus à la somme des comptes utilisés. La déclaration de TVA de l'entreprise sera également faussée.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          La TVA collectée est-elle un gain pour l'entreprise ?
+          <span class="chevron">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">Non. Elle est encaissée pour le compte de l'État et devra lui être reversée, diminuée de la TVA déductible. Elle transite par le bilan (comptes de tiers) et n'entre jamais dans le calcul du résultat.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout plus-loin">
+      <span class="icon">🔗</span>
+      <div class="content"><strong>Pour aller plus loin</strong>La prochaine leçon aborde les travaux de fin d'exercice : ajustements, régularisations et construction des états financiers à partir de l'ensemble des écritures de la période.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section class="lesson-section reveal" id="c6">
+    <div class="section-body">
+      <span class="section-eyebrow">06 — Synthèse</span>
+      <h2>Points clés à retenir</h2>
+    </div>
+    <div class="takeaways">
+      <ul>
+        <li>Un achat débite un compte de charge, une vente crédite un compte de produit — toujours pour leur montant hors taxes.</li>
+        <li>Les comptes 411 (Clients) et 401 (Fournisseurs) suivent les créances et dettes tant que la facture n'est pas réglée.</li>
+        <li>La TVA n'est ni une charge ni un produit : elle transite par les comptes 4431 (collectée) et 4452 (déductible).</li>
+        <li>La TVA à reverser à l'État est la différence entre la TVA collectée et la TVA déductible de la période.</li>
+        <li>Le règlement est une opération distincte de la facturation : il éteint le compte de tiers en contrepartie de la trésorerie.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="lesson-nav">
+    <a class="nav-link prev" href="lecon4-Journal-grand-livre-balance.html">
+      <span class="dir">← Leçon précédente</span>
+      <span class="title">Journal, grand livre et balance</span>
+    </a>
+    <a class="nav-link next" href="lecon6-Travaux-de-fin-d-exercice-et-etats-financiers.html">
+      <span class="dir">Leçon suivante →</span>
+      <span class="title">Travaux de fin d'exercice et états financiers</span>
+    </a>
+  </div>
+  <a class="back-to-module" href="#">Retour au sommaire du module</a>
+</main>
+
+<footer class="site-footer">
+  Module Comptabilité générale — Parcours en ligne · Leçon 5 sur 8
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+(function(){
+  // ---- reading progress bar ----
+  var bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop || document.body.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    var pct = height > 0 ? (scrolled / height) * 100 : 0;
+    bar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // ---- toc dropdown ----
+  var tocBtn = document.getElementById('toc-toggle');
+  var tocDropdown = document.getElementById('toc-dropdown');
+  tocBtn.addEventListener('click', function(){
+    var open = tocDropdown.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocDropdown.contains(e.target) && e.target !== tocBtn){
+      tocDropdown.classList.remove('open');
+      tocBtn.setAttribute('aria-expanded','false');
+    }
+  });
+  tocDropdown.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      tocDropdown.classList.remove('open');
+      tocBtn.setAttribute('aria-expanded','false');
+    });
+  });
+
+  // ---- tabs ----
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = tabGroup.querySelectorAll('.tab-btn');
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){
+        tabs.forEach(function(t){
+          t.setAttribute('aria-selected','false');
+          t.tabIndex = -1;
+          document.getElementById(t.getAttribute('aria-controls')).classList.remove('active');
+          document.getElementById(t.getAttribute('aria-controls')).hidden = true;
+        });
+        tab.setAttribute('aria-selected','true');
+        tab.tabIndex = 0;
+        var panel = document.getElementById(tab.getAttribute('aria-controls'));
+        panel.classList.add('active');
+        panel.hidden = false;
+      });
+      tab.addEventListener('keydown', function(e){
+        var idx = Array.prototype.indexOf.call(tabs, tab);
+        if(e.key === 'ArrowRight'){ tabs[(idx+1) % tabs.length].focus(); tabs[(idx+1) % tabs.length].click(); }
+        if(e.key === 'ArrowLeft'){ tabs[(idx-1+tabs.length) % tabs.length].focus(); tabs[(idx-1+tabs.length) % tabs.length].click(); }
+      });
+    });
+  });
+
+  // ---- accordion ----
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      var panel = trigger.nextElementSibling;
+      trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      panel.style.maxHeight = expanded ? null : panel.scrollHeight + 'px';
+    });
+  });
+
+  // ---- back to top ----
+  var backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', function(){
+    if(window.scrollY > 500){ backBtn.classList.add('show'); } else { backBtn.classList.remove('show'); }
+  }, {passive:true});
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+
+  // ---- reveal on scroll ----
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if('IntersectionObserver' in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.12});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>

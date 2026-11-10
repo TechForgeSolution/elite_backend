@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 07 — Automatiser la création et la publication de contenus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;
+  --color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-border:#E1E4E8;
+  --muted:#4B5563;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 var(--font-body)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);padding:56px 0 40px}
+.crumb{font:500 .9rem var(--font-body);color:var(--muted);margin:0 0 16px}
+h1{font:700 clamp(2rem,5vw,2.75rem)/1.12 var(--font-head);letter-spacing:-.02em;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.meta li{background:var(--color-bg);border:1px solid var(--color-border);border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:500}
+.meta li.lvl{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.goal{margin:28px 0 0;padding:16px 20px;background:var(--color-bg);border-left:4px solid var(--color-accent);border-radius:0 8px 8px 0}
+.goal strong{font-family:var(--font-head)}
+nav.toc{margin:32px 0 0;padding:20px 24px;border:1px solid var(--color-border);border-radius:10px}
+nav.toc p{margin:0 0 8px;font:700 1rem var(--font-head)}
+nav.toc ol{margin:0;padding-left:1.25rem;columns:1}
+nav.toc a{color:var(--color-text);text-decoration:none;border-bottom:1px solid var(--color-accent)}
+nav.toc a:hover{background:var(--color-accent-soft)}
+section{padding:48px 0 8px}
+h2{font:700 1.65rem/1.25 var(--font-head);letter-spacing:-.01em;margin:0 0 16px;display:flex;gap:12px;align-items:baseline}
+h2 .n{color:var(--color-accent)}
+h3{font:700 1.15rem var(--font-head);margin:28px 0 8px}
+p{margin:0 0 16px}
+ul,ol{padding-left:1.25rem;margin:0 0 16px}
+li{margin-bottom:6px}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:24px 0;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ic{font-size:1.4rem;line-height:1.4}
+.callout p{margin:0}
+.callout b{font-family:var(--font-head)}
+.callout.tip{background:var(--color-accent-soft);border-color:#99E6DA}
+.callout.warn{background:#FFF8E6;border-color:#F3D98B}
+.callout.link{background:var(--color-bg);border-left:4px solid var(--color-accent)}
+.criteria{display:grid;gap:12px;margin:20px 0;padding:0;list-style:none}
+.criteria li{margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.criteria b{font-family:var(--font-head);color:#0B6F66}
+figure{margin:28px 0}
+figure svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}
+.cards{display:grid;gap:12px;margin:20px 0}
+.card{border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);overflow:hidden}
+.card button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card button:hover{background:var(--color-bg-alt)}
+.card button:focus-visible{outline:3px solid var(--color-accent);outline-offset:-3px}
+.card .t{font:700 1.05rem var(--font-head);display:block}
+.card .s{font-size:.9rem;color:var(--muted)}
+.tag{font:600 .8rem var(--font-body);padding:2px 10px;border-radius:999px;border:1px solid var(--color-border);white-space:nowrap}
+.tag.yes{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.tag.mid{background:var(--color-bg-alt)}
+.card .chev{transition:transform .2s;color:var(--color-accent);font-weight:700}
+.card[data-open="true"] .chev{transform:rotate(90deg)}
+.card .body{display:none;padding:0 18px 16px;border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.card[data-open="true"] .body{display:block}
+.card .body p{margin:12px 0 6px}
+.flow{display:grid;gap:0;margin:24px 0;padding:0;list-style:none}
+.flow li{position:relative;margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.flow li+li{margin-top:22px}
+.flow li+li::before{content:"";position:absolute;left:28px;top:-23px;height:22px;border-left:2px solid var(--color-accent)}
+.flow b{font-family:var(--font-head)}
+.flow small{display:block;color:var(--muted)}
+.calc{border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-alt);padding:20px;margin:24px 0}
+.calc h3{margin-top:0}
+.fields{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media(max-width:560px){.fields{grid-template-columns:1fr}}
+label{display:block;font-size:.9rem;font-weight:500}
+input{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg)}
+.out{margin-top:18px;display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.out{grid-template-columns:1fr}}
+.out div{background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;padding:12px 14px}
+.out strong{display:block;font:700 1.4rem var(--font-head);color:#0B6F66}
+.out span{font-size:.85rem;color:var(--muted)}
+code{font:500 .92em ui-monospace,monospace;background:var(--color-bg-alt);padding:2px 6px;border-radius:4px}
+.formula{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:12px 16px;font-size:.95rem}
+.recap{margin:48px 0 0;padding:24px;border:2px solid var(--color-accent);border-radius:12px}
+.recap h2{font-size:1.3rem}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 64px}
+.pager a{display:block;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:500}
+.pager a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pager small{display:block;color:var(--muted);font-weight:400}
+.pager .next{text-align:right}
+@media(max-width:560px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}}
+
+.tabs [role=tablist]{display:flex;gap:6px;border-bottom:1px solid var(--color-border);margin-top:20px}
+.tabs [role=tab]{font:600 .95rem var(--font-body);padding:9px 14px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;background:none;cursor:pointer;color:var(--muted)}
+.tabs [role=tab]:hover{background:var(--color-bg-alt)}
+.tabs [role=tab][aria-selected=true]{background:var(--color-accent-soft);color:#065F56;border-color:var(--color-border)}
+.tabs [role=tabpanel]{padding:16px 0 0}
+.tabs [role=tabpanel][hidden]{display:none}
+.code{position:relative;margin:16px 0}
+.code pre{margin:0;padding:16px 18px;background:#0D1117;color:#F0F6FC;border-radius:10px;overflow-x:auto;font:400 .86rem/1.6 ui-monospace,monospace;white-space:pre-wrap;word-break:break-word}
+.code .k{color:#5EEAD4}.code .s{color:#A5D6FF}.code .c{color:#8B949E}
+.code button{position:absolute;top:8px;right:8px;font:600 .75rem var(--font-body);padding:4px 10px;border-radius:6px;border:1px solid #30363D;background:#161B22;color:#F0F6FC;cursor:pointer}
+.code button:hover{background:#0F766E}
+.code .lbl{display:block;font:600 .8rem var(--font-body);color:var(--muted);margin-bottom:4px}
+.grid5{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:20px 0;padding:0;list-style:none}
+.grid5 li{margin:0;padding:14px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);transition:transform .2s,border-color .2s}
+.grid5 li:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.grid5 b{display:block;font-family:var(--font-head);color:#0B6F66}
+.grid5 span{font-size:.9rem;color:var(--muted)}
+details{border:1px solid var(--color-border);border-radius:10px;margin:12px 0;background:var(--color-bg)}
+summary{cursor:pointer;padding:14px 18px;font:700 1rem var(--font-head)}
+summary:hover{background:var(--color-bg-alt)}
+details>div{padding:0 18px 12px}
+.sim textarea{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;min-height:80px}
+.btn{margin-top:12px;font:600 .95rem var(--font-body);padding:9px 18px;border-radius:8px;border:0;background:var(--color-accent);color:#fff;cursor:pointer}
+.btn:hover{background:#0F766E}
+.res{margin-top:14px;padding:12px 16px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+.res .tag{margin-right:6px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:9}
+#top{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-bg);cursor:pointer;font-size:1.1rem;display:none}
+#top:hover{background:var(--color-accent-soft)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+
+.chk{list-style:none;padding:0;margin:16px 0}
+.chk li{margin:0 0 8px}
+.chk label{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);cursor:pointer;font-weight:400}
+.chk label:hover{border-color:var(--color-accent)}
+.chk input{width:auto;margin:5px 0 0}
+.score{font:700 1.05rem var(--font-head);padding:12px 16px;border-radius:10px;background:var(--color-bg-alt);border:1px solid var(--color-border)}
+.score.ok{background:var(--color-accent-soft);border-color:var(--color-accent)}
+.code pre code{background:none;padding:0;border-radius:0;color:inherit;font:inherit}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">Module 2 — Automatiser avec l'IA, sécuriser et piloter</p>
+    <h1>Leçon 07 — Automatiser la création et la publication de contenus</h1>
+    <ul class="meta">
+      <li class="lvl">Niveau : Débutant / Intermédiaire</li>
+      <li>⏱ 25 min</li>
+      <li>6 parties</li>
+    </ul>
+    <p class="goal"><strong>Objectif :</strong> gagner du temps dans la production, la planification et la diffusion multi-canal de vos contenus grâce à l'IA et au No-Code.</p>
+    <nav class="toc" aria-label="Sommaire">
+      <p>Dans cette leçon</p>
+      <ol>
+        <li><a href="#idees">Générer des idées et structurer des textes</a></li>
+        <li><a href="#templates">Utiliser et créer des modèles</a></li>
+        <li><a href="#planif">Planifier et automatiser la diffusion</a></li>
+        <li><a href="#canaux">Adapter un contenu à plusieurs canaux</a></li>
+        <li><a href="#marque">Cohérence de marque et relecture</a></li>
+        <li><a href="#flux">Exemples de flux d'automatisation</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+
+<section id="idees" class="fade">
+  <h2><span class="n">1.</span>Générer des idées et structurer des textes</h2>
+  <p>La page blanche est la tâche qui ralentit le plus la production de contenus. L'IA est excellente pour <b>proposer</b> des pistes et <b>organiser</b> un texte ; vous gardez le choix du sujet et de l'angle.</p>
+  <div class="tabs" id="tabs1">
+    <div role="tablist" aria-label="Idées ou plan">
+      <button role="tab" aria-selected="true" aria-controls="i1" id="ti1">Trouver des idées</button>
+      <button role="tab" aria-selected="false" aria-controls="i2" id="ti2" tabindex="-1">Structurer un texte</button>
+    </div>
+    <div role="tabpanel" id="i1" aria-labelledby="ti1"><div class="code"><span class="lbl">Prompt d'idées</span><pre><code><span class="k">Rôle</span> : tu es responsable éditorial d'une boutique de plantes d'intérieur.
+<span class="k">Tâche</span> : propose 10 idées d'articles pour débutants.
+<span class="k">Format</span> : un tableau avec titre, angle, public visé.
+<span class="k">Contraintes</span> : ton chaleureux, pas de jargon, pas d'idée déjà publiée : {{liste_articles_existants}}</code></pre><button type="button" class="cp">Copier</button></div></div>
+    <div role="tabpanel" id="i2" aria-labelledby="ti2" hidden><div class="code"><span class="lbl">Prompt de plan</span><pre><code>Pour le sujet « {{sujet}} », propose un plan en 4 parties :
+accroche, problème, solution en 3 étapes, appel à l'action.
+Pour chaque partie, donne 2 phrases de contenu. N'invente aucun chiffre.</code></pre><button type="button" class="cp">Copier</button></div></div>
+  </div>
+  <p>Comme dans la Leçon 06, la variable <code>{{liste_articles_existants}}</code> est alimentée automatiquement (par exemple depuis un tableur) pour éviter les doublons.</p>
+  <div class="callout tip"><span class="ic">💡</span><p><b>À retenir.</b> Demandez d'abord un <b>plan</b>, validez-le, puis faites rédiger. Corriger un plan prend 1 minute ; corriger un texte entier en prend 15.</p></div>
+</section>
+
+<section id="templates" class="fade">
+  <h2><span class="n">2.</span>Utiliser et créer des modèles (templates)</h2>
+  <p>Un <b>modèle</b> est une trame fixe avec des trous à remplir. Il garantit une structure identique à chaque publication et réduit ce que l'IA doit inventer.</p>
+  <div class="code"><span class="lbl">Modèle de publication (template)</span><pre><code><span class="k">ACCROCHE</span> : {{accroche}}
+<span class="k">CORPS</span> : {{message_principal}}
+<span class="k">PREUVE</span> : {{exemple_ou_chiffre_verifie}}
+<span class="k">APPEL À L’ACTION</span> : {{cta}} → {{lien}}
+<span class="k">HASHTAGS</span> : {{hashtags}}</code></pre><button type="button" class="cp">Copier</button></div>
+  <ul class="grid5">
+    <li><b>Fixe</b><span>Structure, ton, signature, mentions légales.</span></li>
+    <li><b>Variable</b><span>Sujet, chiffre, lien, date, prénom du lecteur.</span></li>
+    <li><b>Par l'IA</b><span>Accroche et reformulations, jamais les faits.</span></li>
+  </ul>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> Ne laissez pas l'IA remplir seule les champs factuels (prix, dates, chiffres). Ces données viennent d'une source fiable, par exemple votre tableur.</p></div>
+</section>
+
+<section id="planif" class="fade">
+  <h2><span class="n">3.</span>Planifier et automatiser la diffusion</h2>
+  <p>Publier à la main, c'est se connecter, copier, coller et vérifier l'heure, canal par canal. Un scénario No-Code le fait pour vous à partir d'un <b>calendrier éditorial</b>, souvent un simple tableur.</p>
+  <h3>Les 4 colonnes minimales du calendrier</h3>
+  <ul class="criteria">
+    <li><b>Contenu</b> — le texte de base ou son lien.</li>
+    <li><b>Date et heure</b> — le moment de publication prévu.</li>
+    <li><b>Canaux</b> — où publier (LinkedIn, newsletter, blog…).</li>
+    <li><b>Statut</b> — <code>brouillon</code>, <code>à_relire</code>, <code>prêt</code>, <code>publié</code>.</li>
+  </ul>
+  <p>Le scénario s'exécute à heure fixe, cherche les lignes au statut <code>prêt</code> dont la date est arrivée, publie, puis passe le statut à <code>publié</code>. Deux avantages : rien n'est publié sans validation, et aucune publication n'est faite deux fois.</p>
+  <div class="callout tip"><span class="ic">💡</span><p><b>À retenir.</b> Le statut est votre interrupteur de sécurité : tant qu'un humain n'a pas écrit <code>prêt</code>, rien ne part.</p></div>
+</section>
+
+<section id="canaux" class="fade">
+  <h2><span class="n">4.</span>Adapter un même contenu à plusieurs canaux</h2>
+  <p>Réécrire le même message pour chaque canal est long. On rédige <b>un contenu de base</b>, puis l'IA le décline selon les codes de chaque canal : longueur, ton, format. Exemple avec un guide sur l'arrosage :</p>
+  <div class="tabs" id="tabs2">
+    <div role="tablist" aria-label="Canaux">
+      <button role="tab" aria-selected="true" aria-controls="c1" id="tc1">LinkedIn</button>
+      <button role="tab" aria-selected="false" aria-controls="c2" id="tc2" tabindex="-1">Newsletter</button>
+      <button role="tab" aria-selected="false" aria-controls="c3" id="tc3" tabindex="-1">Blog</button>
+      <button role="tab" aria-selected="false" aria-controls="c4" id="tc4" tabindex="-1">Instagram</button>
+    </div>
+    <div role="tabpanel" id="c1" aria-labelledby="tc1"><div class="code"><span class="lbl">LinkedIn · professionnel, 600 caractères</span><pre><code>Vous arrosez trop vos plantes ? C'est l'erreur n°1 des débutants.
+3 gestes simples pour les garder en forme :
+1. Vérifier l'humidité avant d'arroser
+2. Choisir un pot drainant
+3. Adapter à la saison
+Détails dans notre guide 👉 {{lien}}</code></pre><button type="button" class="cp">Copier</button></div></div>
+    <div role="tabpanel" id="c2" aria-labelledby="tc2" hidden><div class="code"><span class="lbl">Newsletter · ton personnel, plus long</span><pre><code>Objet : Fini les plantes qui jaunissent
+Bonjour {{prenom}},
+Cette semaine, un sujet que beaucoup de lecteurs nous posent : l'arrosage.
+[Intro de 3 lignes + les 3 gestes détaillés + bouton « Lire le guide »]</code></pre><button type="button" class="cp">Copier</button></div></div>
+    <div role="tabpanel" id="c3" aria-labelledby="tc3" hidden><div class="code"><span class="lbl">Blog · article complet, titres et SEO</span><pre><code>Titre : Comment arroser ses plantes d'intérieur sans les noyer
+Plan : introduction · pourquoi ça jaunit · les 3 gestes · FAQ · conclusion
+Longueur : 800 mots · Mot-clé : « arroser plante d'intérieur »</code></pre><button type="button" class="cp">Copier</button></div></div>
+    <div role="tabpanel" id="c4" aria-labelledby="tc4" hidden><div class="code"><span class="lbl">Instagram · court, visuel</span><pre><code>🌿 Arroser, oui. Noyer, non.
+Le test du doigt : 2 cm de terre sèche = c'est l'heure.
+Guide complet : lien en bio.
+{{hashtags}}</code></pre><button type="button" class="cp">Copier</button></div></div>
+  </div>
+  <p>Côté automatisation, on décrit les canaux dans une donnée structurée que le scénario parcourt un par un :</p>
+  <div class="code"><span class="lbl">Payload : un contenu de base, plusieurs canaux</span><pre><code>{
+  <span class="s">"contenu_base"</span>: <span class="s">"Guide : arroser sans noyer ses plantes"</span>,
+  <span class="s">"canaux"</span>: [
+    { <span class="s">"nom"</span>: <span class="s">"linkedin"</span>,   <span class="s">"longueur_max"</span>: 600,  <span class="s">"ton"</span>: <span class="s">"professionnel"</span> },
+    { <span class="s">"nom"</span>: <span class="s">"newsletter"</span>, <span class="s">"longueur_max"</span>: 1200, <span class="s">"ton"</span>: <span class="s">"personnel"</span> },
+    { <span class="s">"nom"</span>: <span class="s">"instagram"</span>,  <span class="s">"longueur_max"</span>: 300,  <span class="s">"ton"</span>: <span class="s">"léger"</span> }
+  ],
+  <span class="s">"statut"</span>: <span class="s">"à_relire"</span>,
+  <span class="s">"date_publication"</span>: <span class="s">"2026-11-10T09:00:00+01:00"</span>
+}</code></pre><button type="button" class="cp">Copier</button></div>
+</section>
+
+<section id="marque" class="fade">
+  <h2><span class="n">5.</span>Cohérence de marque et règles de relecture</h2>
+  <p>Quand l'IA produit beaucoup, la voix de la marque peut devenir générique, voire changer d'un canal à l'autre. Deux garde-fous : un <b>mini-guide de style</b> glissé dans chaque prompt, et une <b>relecture humaine</b> avant publication.</p>
+  <div class="code"><span class="lbl">Consignes de marque à ajouter à chaque prompt</span><pre><code><span class="k">Ton</span> : chaleureux, pédagogue, vouvoiement.
+<span class="k">Mots à privilégier</span> : simple, concret, pas à pas.
+<span class="k">Mots interdits</span> : « révolutionnaire », « incroyable », « garanti ».
+<span class="k">Toujours</span> : une phrase d'action en fin de texte. <span class="k">Jamais</span> : de promesse chiffrée non vérifiée.</code></pre><button type="button" class="cp">Copier</button></div>
+  <details><summary>Qui relit, et quand ?</summary><div>
+    <p>Une seule personne désignée suffit au début. Pour les contenus sensibles (annonce officielle, sujet juridique, crise), prévoyez une seconde validation. Le statut <code>à_relire</code> du calendrier signale ce qui attend.</p></div></details>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Erreur fréquente.</b> Publier automatiquement dès la génération pour « gagner encore du temps ». Un seul texte erroné publié sous votre nom coûte plus que des mois de relectures.</p></div>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Pour aller plus loin.</b> Vérifiez aussi les règles du droit d'auteur et les mentions obligatoires de vos canaux. Elles seront approfondies dans les leçons sur la sécurité et la conformité.</p></div>
+</section>
+
+<section id="flux" class="fade">
+  <h2><span class="n">6.</span>Exemples de flux d'automatisation</h2>
+  <p>Voici un flux complet qui assemble toutes les parties de la leçon, avec une seule étape humaine : la relecture.</p>
+  <figure>
+    <svg viewBox="0 0 640 130" role="img" aria-labelledby="f1t f1d">
+      <title id="f1t">Flux de publication multi-canal</title>
+      <desc id="f1d">Une ligne du calendrier au statut prêt déclenche l'IA qui adapte le contenu, puis une personne relit, puis la publication a lieu sur plusieurs canaux.</desc>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="13" text-anchor="middle"><rect x="10" y="30" width="115" height="70" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="67.5" y="62" fill="#090D12">Planning</text><text x="67.5" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#4B5563">ligne « prête »</text><rect x="150" y="30" width="115" height="70" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="207.5" y="62" fill="#090D12">Déclencheur</text><text x="207.5" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#4B5563">chaque jour 8 h</text><rect x="290" y="30" width="115" height="70" rx="10" fill="#0D9488" /><text x="347.5" y="62" fill="#fff">IA : adapter</text><text x="347.5" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#fff">1 texte → 3 canaux</text><rect x="430" y="30" width="95" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="477.5" y="62" fill="#090D12">Relecture</text><text x="477.5" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#4B5563">validation</text><rect x="550" y="30" width="85" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="592.5" y="62" fill="#090D12">Publier</text><text x="592.5" y="82" font-family="Inter" font-weight="400" font-size="11" fill="#4B5563">multi-canal</text><g stroke="#0D9488" stroke-width="2.5" fill="#0D9488"><line x1="127" y1="65" x2="142" y2="65"/><polygon points="148,65 138,59 138,71" stroke="none"/><line x1="267" y1="65" x2="282" y2="65"/><polygon points="288,65 278,59 278,71" stroke="none"/><line x1="407" y1="65" x2="422" y2="65"/><polygon points="428,65 418,59 418,71" stroke="none"/><line x1="527" y1="65" x2="542" y2="65"/><polygon points="548,65 538,59 538,71" stroke="none"/></g></g>
+    </svg>
+    <figcaption>Les étapes en émeraude clair sont celles où un humain décide ou où le contenu part.</figcaption>
+  </figure>
+  <ol class="flow">
+    <li><b>Idée → plan</b> — L'IA propose des idées ; vous choisissez et validez le plan.<small>Humain + IA.</small></li>
+    <li><b>Rédaction → déclinaisons</b> — Le texte de base est décliné par canal à partir du modèle.<small>Automatique.</small></li>
+    <li><b>Relecture → statut « prêt »</b> — Une personne vérifie avec la checklist.<small>Étape humaine : à conserver.</small></li>
+    <li><b>Publication → suivi</b> — Le scénario publie à l'heure prévue et passe le statut à « publié ».<small>Automatique.</small></li>
+  </ol>
+  <div class="recap">
+    <h2>Points clés à retenir</h2>
+    <ul>
+      <li>L'IA propose des idées et des plans ; vous choisissez et validez.</li>
+      <li>Un modèle fixe la structure ; les faits viennent de sources fiables.</li>
+      <li>Un calendrier avec un statut pilote la planification et sécurise la publication.</li>
+      <li>Un contenu de base, décliné par canal : longueur, ton, format.</li>
+      <li>Guide de style dans les prompts, relecture humaine avant tout envoi.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Navigation entre leçons">
+  <a href="lecon-06.html"><small>Leçon précédente</small>Leçon 06 — Utiliser l'IA pour rédiger, résumer et trier automatiquement</a>
+  <a class="next" href="lecon-08.html"><small>Leçon suivante</small>Leçon 08 — Automatiser le suivi des clients et les processus métier</a>
+</nav>
+</main>
+<button id="top" type="button" aria-label="Retour en haut">↑</button>
+<script>
+document.querySelectorAll('.tabs').forEach(function(t){
+  var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+  function sel(i){tabs.forEach(function(b,j){
+    b.setAttribute('aria-selected',j===i);b.tabIndex=j===i?0:-1;
+    document.getElementById(b.getAttribute('aria-controls')).hidden=j!==i});tabs[i].focus()}
+  tabs.forEach(function(b,i){
+    b.addEventListener('click',function(){sel(i)});
+    b.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight')sel((i+1)%tabs.length);
+      if(e.key==='ArrowLeft')sel((i+tabs.length-1)%tabs.length)})})});
+document.querySelectorAll('.cp').forEach(function(b){
+  b.addEventListener('click',function(){
+    var txt=b.parentNode.querySelector('pre').innerText;
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){b.textContent='Copié ✓'},function(){b.textContent='Sélectionnez le texte'});
+    setTimeout(function(){b.textContent='Copier'},1800)})});
+var bar=document.getElementById('bar'),top_=document.getElementById('top');
+addEventListener('scroll',function(){
+  var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+  bar.style.width=(p*100)+'%';top_.style.display=h.scrollTop>600?'block':'none'});
+top_.addEventListener('click',function(){scrollTo({top:0})});
+var secs=document.querySelectorAll('.fade');
+if(window.IntersectionObserver&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
+  secs.forEach(function(s){io.observe(s)})}else{secs.forEach(function(s){s.classList.add('in')})}
+</script>
+</body>
+</html>

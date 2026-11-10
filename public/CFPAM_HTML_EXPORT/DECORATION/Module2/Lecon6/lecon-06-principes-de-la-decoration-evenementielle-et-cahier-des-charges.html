@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 06 — Principes de la décoration événementielle et cahier des charges. Filière Décoration.">
+<title>Leçon 06 — Principes de la décoration événementielle et cahier des charges</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FAF6F0;
+  --color-text:#3B2E28;
+  --color-accent:#C1694F;
+  --color-neutral:#A8998C;
+  --section:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --shadow:0 18px 45px rgba(59,46,40,.08);
+  --display:"Fraunces",Georgia,serif;
+  --body:"Work Sans",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--body);line-height:1.7}
+body:focus-within{scroll-behavior:smooth}
+::selection{background:var(--soft);color:var(--color-text)}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{opacity:.72}
+button,a{outline-offset:4px}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--color-accent)}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:3px;background:transparent}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+.header{position:sticky;top:3px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:-.02em}
+.brand small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:-2px}
+.navlinks{display:flex;gap:20px;font-size:13px;font-weight:500}
+.navlinks a{color:var(--color-text)}
+.hero{max-width:1180px;margin:0 auto;padding:92px 28px 72px;display:grid;grid-template-columns:1.2fr .8fr;gap:70px;align-items:center}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent);margin:0 0 18px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.08;letter-spacing:-.025em}
+h1{font-size:clamp(45px,6vw,78px);margin:0 0 24px;max-width:800px}
+h2{font-size:clamp(34px,4vw,52px);margin:0 0 18px}
+h3{font-size:25px;margin:0 0 9px}
+.lead{font-size:19px;max-width:680px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+.badge{padding:7px 11px;border:1px solid var(--line);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.badge.accent{border-color:var(--color-accent);color:var(--color-accent);background:var(--soft)}
+.hero-board{position:relative;min-height:380px;border:1px solid var(--line);padding:18px;background:var(--section);box-shadow:var(--shadow);transform:rotate(1.2deg)}
+.hero-board:before{content:"";position:absolute;top:-9px;left:34%;width:80px;height:19px;background:var(--soft);border:1px solid var(--line);transform:rotate(-2deg)}
+.board-inner{height:100%;min-height:340px;border:1px solid var(--line);padding:24px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1.2fr .8fr;gap:13px}
+.swatch,.scene,.note-paper{border:1px solid var(--line);background:var(--color-bg)}
+.swatch{padding:16px;display:flex;flex-direction:column;justify-content:end}
+.swatch .block{height:74px;background:var(--color-accent);margin-bottom:12px}
+.swatch code{font:11px var(--mono)}
+.scene{position:relative;overflow:hidden;padding:14px}
+.scene .arch{position:absolute;width:130px;height:165px;border:2px solid var(--color-text);border-bottom:0;border-radius:70px 70px 0 0;left:50%;bottom:16px;transform:translateX(-50%)}
+.scene .table{position:absolute;width:110px;height:25px;border:2px solid var(--color-text);border-radius:50%;left:50%;bottom:45px;transform:translateX(-50%)}
+.scene .stem{position:absolute;width:2px;height:62px;background:var(--color-accent);left:50%;bottom:55px}
+.note-paper{padding:17px;grid-column:1/-1;font-family:var(--mono);font-size:10px;display:flex;align-items:center;gap:15px}
+.note-paper strong{font-family:var(--body);font-size:13px}
+.toc-wrap{max-width:1180px;margin:0 auto;padding:0 28px 72px}
+.toc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:25px 0}
+.toc-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);margin-bottom:15px}
+.toc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.toc a{display:block;border:1px solid var(--line);padding:12px;color:var(--color-text);font-size:13px;transition:.2s}
+.toc a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+main{max-width:1180px;margin:auto}
+.section{padding:90px 28px}
+.section.alt{background:var(--section)}
+.section-head{max-width:760px;margin-bottom:42px}
+.kicker{font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent);margin-bottom:12px}
+.copy{max-width:720px}
+.copy p{margin:0 0 17px}
+.visual{margin:42px 0 0;border:1px solid var(--line);background:var(--color-bg);box-shadow:var(--shadow)}
+.visual svg{display:block;width:100%;height:auto}
+.caption{font-size:11px;color:var(--muted);padding:11px 15px;border-top:1px solid var(--line)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+.card{padding:25px;border:1px solid var(--line);background:var(--color-bg);transition:.25s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-3px)}
+.card-icon{font-size:24px;color:var(--color-accent);margin-bottom:14px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.quote{margin:34px 0;padding:22px 25px;border-left:4px solid var(--color-accent);background:var(--soft)}
+.quote strong{font-family:var(--display);font-size:22px}
+.callout{margin:38px 0;padding:24px;border:1px solid var(--color-accent);background:var(--soft);display:grid;grid-template-columns:auto 1fr;gap:15px}
+.callout .icon{font-size:24px}.callout p{margin:4px 0 0}
+.table-scroll{overflow-x:auto;margin-top:32px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:13px}
+th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:var(--soft)}
+tr:hover td{background:var(--section)}
+.mono{font-family:var(--mono);font-size:11px}
+.sample-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.sample{border:1px solid var(--line);padding:14px;background:var(--soft)}
+.sample-color{height:65px;border:1px solid var(--line);background:var(--color-accent);margin-bottom:12px}
+.sample code{font:10px var(--mono)}
+.tabs{margin-top:36px}
+.tab-buttons{display:flex;border-bottom:1px solid var(--line);overflow:auto}
+.tab-button{border:0;background:transparent;color:var(--muted);font:500 13px var(--body);padding:13px 17px;cursor:pointer;white-space:nowrap}
+.tab-button[aria-selected="true"]{color:var(--color-accent);border-bottom:2px solid var(--color-accent)}
+.tab-panel{display:none;padding:25px 0}.tab-panel.active{display:block}
+.tab-panel p{max-width:720px}
+.accordion{border-top:1px solid var(--line);margin-top:35px}
+details{border-bottom:1px solid var(--line);padding:17px 0}
+summary{cursor:pointer;font-family:var(--display);font-size:20px}
+details p{max-width:720px;color:var(--muted);margin:12px 0 0}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:42px}
+.step{position:relative;padding:20px 17px 10px;border-top:2px solid var(--color-neutral)}
+.step:not(:last-child):after{content:"→";position:absolute;right:-7px;top:-17px;font-family:var(--display);font-size:24px;color:var(--color-accent);background:var(--color-bg);padding:0 3px}
+.step-no{font:10px var(--mono);color:var(--color-accent);margin-bottom:15px}
+.step p{font-size:12px;color:var(--muted)}
+.case{display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:stretch;margin-top:38px}
+.case-visual{border:1px solid var(--line);background:var(--soft);padding:18px}
+.case-copy{padding:25px;border:1px solid var(--line);background:var(--color-bg)}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:35px}
+.key{border-top:3px solid var(--color-accent);padding:18px 0}
+.key strong{font-family:var(--display);font-size:22px}
+.key p{font-size:13px;color:var(--muted);margin:6px 0 0}
+.nav-bottom{max-width:1180px;margin:auto;padding:45px 28px 75px;display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center}
+.nav-card{border:1px solid var(--line);padding:18px;color:var(--color-text)}
+.nav-card.next{text-align:right}.nav-card:hover{border-color:var(--color-accent)}
+.nav-card span{display:block;font:9px var(--mono);text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.top{text-align:center;font:10px var(--mono);text-transform:uppercase;letter-spacing:.1em}
+footer{border-top:1px solid var(--line);padding:28px;text-align:center;color:var(--muted);font-size:11px}
+#topBtn{position:fixed;right:22px;bottom:22px;width:42px;height:42px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+#topBtn.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;gap:45px}.toc-grid{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:1fr 1fr}.sample-grid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr;gap:14px}.step:not(:last-child):after{display:none}
+  .case{grid-template-columns:1fr}.keys{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .nav{padding:13px 17px}.navlinks{display:none}.hero{padding:62px 18px 50px}.toc-wrap{padding:0 18px 45px}
+  .section{padding:60px 18px}.cards,.keys,.sample-grid{grid-template-columns:1fr}
+  .toc-grid{grid-template-columns:1fr}.hero-board{min-height:300px}.board-inner{min-height:260px}
+  .nav-bottom{padding:35px 18px 55px;grid-template-columns:1fr}.top{order:-1}.nav-card.next{text-align:left}
+  h1{font-size:44px}.lead{font-size:17px}.visual{margin-top:28px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}
+  *{transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top">Filière Décoration<small>Support de cours</small></a>
+    <div class="navlinks">
+      <a href="#evenements">Événements</a><a href="#brief">Brief</a><a href="#contraintes">Contraintes</a><a href="#synthese">Synthèse</a>
+    </div>
+  </nav>
+</header>
+
+<div id="top"></div>
+<section class="hero">
+  <div class="reveal">
+    <p class="eyebrow">Module 02 · Décoration événementielle</p>
+    <h1>Principes de la décoration événementielle et cahier des charges</h1>
+    <p class="lead">Comprendre comment transformer les attentes d'un client en une direction décorative cohérente, réaliste et maîtrisée.</p>
+    <div class="badges">
+      <span class="badge accent">Leçon 06</span><span class="badge">Intermédiaire</span><span class="badge">15 min</span>
+    </div>
+  </div>
+  <div class="hero-board reveal" aria-label="Planche visuelle évoquant un cahier de tendances événementiel">
+    <div class="board-inner">
+      <div class="swatch"><div class="block"></div><code>MATIÈRE · PALETTE · VOLUME</code></div>
+      <div class="scene" aria-hidden="true">
+        <div class="arch"></div><div class="stem"></div><div class="table"></div>
+      </div>
+      <div class="note-paper"><strong>CAHIER DES CHARGES</strong><span>Lieu · Budget · Délai · Ambiance · Usage</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="toc-wrap">
+  <nav class="toc reveal" aria-label="Sommaire">
+    <div class="toc-title">Sommaire de la leçon</div>
+    <div class="toc-grid">
+      <a href="#evenements">01 · Types d'événements</a>
+      <a href="#brief">02 · Le brief client</a>
+      <a href="#lieu">03 · Le lieu</a>
+      <a href="#budget">04 · Le budget</a>
+      <a href="#delai">05 · Le délai</a>
+    </div>
+  </nav>
+</div>
+
+<main>
+<section class="section" id="evenements">
+  <div class="section-head reveal">
+    <div class="kicker">01 · Les contextes</div>
+    <h2>Chaque événement possède son propre langage décoratif.</h2>
+    <p class="lead">La décoration événementielle ne se résume pas à embellir un espace. Elle accompagne un usage, une intention et une expérience.</p>
+  </div>
+  <div class="cards">
+    <article class="card reveal"><div class="card-icon">01</div><h3>Mariage</h3><p>Créer une atmosphère personnelle et émotionnelle, en tenant compte du lieu, du nombre d'invités, du déroulement de la réception et de l'identité du couple.</p></article>
+    <article class="card reveal"><div class="card-icon">02</div><h3>Séminaire</h3><p>Organiser visuellement un cadre professionnel : accueil, circulation, espace de travail, scène, signalétique et moments de convivialité.</p></article>
+    <article class="card reveal"><div class="card-icon">03</div><h3>Lancement de produit</h3><p>Mettre en scène une identité et rendre le produit immédiatement identifiable grâce aux volumes, aux points focaux et à une ambiance cohérente.</p></article>
+  </div>
+
+  <div class="visual reveal">
+    <svg viewBox="0 0 1100 430" role="img" aria-labelledby="eventTitle eventDesc">
+      <title id="eventTitle">Trois univers de décoration événementielle</title>
+      <desc id="eventDesc">Schéma présentant mariage, séminaire et lancement de produit autour de trois espaces stylisés.</desc>
+      <rect x="0" y="0" width="1100" height="430" fill="#FAF6F0"/>
+      <g stroke="#A8998C" fill="none" stroke-width="2">
+        <rect x="35" y="35" width="315" height="360"/><rect x="392" y="35" width="315" height="360"/><rect x="749" y="35" width="315" height="360"/>
+      </g>
+      <g fill="#3B2E28" font-family="Work Sans, sans-serif" font-size="16" font-weight="600">
+        <text x="62" y="75">MARIAGE</text><text x="419" y="75">SÉMINAIRE</text><text x="776" y="75">LANCEMENT</text>
+      </g>
+      <g stroke="#3B2E28" fill="none" stroke-width="3">
+        <path d="M115 285 Q192 185 269 285"/><ellipse cx="192" cy="300" rx="75" ry="20"/>
+        <rect x="470" y="180" width="160" height="100"/><path d="M455 160 H645"/><path d="M550 125 V180"/><path d="M505 145 H595"/>
+        <rect x="827" y="175" width="160" height="120"/><path d="M807 315 H1007"/><path d="M865 175 V135 H950 V175"/>
+      </g>
+      <g stroke="#C1694F" fill="none" stroke-width="4">
+        <path d="M192 170 V275"/><circle cx="192" cy="155" r="15"/><path d="M550 105 V155"/><circle cx="550" cy="95" r="12"/>
+        <path d="M907 105 V165"/><circle cx="907" cy="92" r="14"/>
+      </g>
+      <g fill="#A8998C" font-family="IBM Plex Mono, monospace" font-size="11">
+        <text x="62" y="365">ÉMOTION · PERSONNALISATION</text><text x="419" y="365">FONCTION · FLUIDITÉ</text><text x="776" y="365">IDENTITÉ · IMPACT</text>
+      </g>
+    </svg>
+    <div class="caption">La première étape consiste à identifier la nature de l'événement et l'expérience que la décoration doit soutenir.</div>
+  </div>
+</section>
+
+<section class="section alt" id="brief">
+  <div class="section-head reveal">
+    <div class="kicker">02 · Le brief client</div>
+    <h2>Avant de décorer, il faut comprendre la demande.</h2>
+    <p class="lead">Le brief client rassemble les informations nécessaires pour passer d'une intention parfois vague à des choix décoratifs précis.</p>
+  </div>
+  <div class="visual reveal">
+    <svg viewBox="0 0 1100 410" role="img" aria-labelledby="briefTitle briefDesc">
+      <title id="briefTitle">Parcours d'analyse d'un brief client</title>
+      <desc id="briefDesc">Diagramme en cinq étapes allant de l'écoute du client à la direction décorative.</desc>
+      <rect width="1100" height="410" fill="#FAF6F0"/>
+      <g stroke="#A8998C" stroke-width="2">
+        <line x1="110" y1="200" x2="990" y2="200"/>
+      </g>
+      <g fill="#FAF6F0" stroke="#C1694F" stroke-width="3">
+        <circle cx="110" cy="200" r="45"/><circle cx="330" cy="200" r="45"/><circle cx="550" cy="200" r="45"/><circle cx="770" cy="200" r="45"/><circle cx="990" cy="200" r="45"/>
+      </g>
+      <g fill="#3B2E28" font-family="IBM Plex Mono, monospace" font-size="14" text-anchor="middle">
+        <text x="110" y="205">01</text><text x="330" y="205">02</text><text x="550" y="205">03</text><text x="770" y="205">04</text><text x="990" y="205">05</text>
+      </g>
+      <g fill="#3B2E28" font-family="Work Sans, sans-serif" font-size="15" font-weight="600" text-anchor="middle">
+        <text x="110" y="120">ÉCOUTER</text><text x="330" y="120">PRÉCISER</text><text x="550" y="120">MESURER</text><text x="770" y="120">ARBITRER</text><text x="990" y="120">TRADUIRE</text>
+      </g>
+      <g fill="#A8998C" font-family="Work Sans, sans-serif" font-size="12" text-anchor="middle">
+        <text x="110" y="295">besoins</text><text x="330" y="295">attentes</text><text x="550" y="295">contraintes</text><text x="770" y="295">priorités</text><text x="990" y="295">ambiance</text>
+      </g>
+    </svg>
+    <div class="caption">Un bon brief sert de filtre : chaque proposition décorative doit pouvoir être reliée à une information recueillie auprès du client.</div>
+  </div>
+
+  <div class="copy reveal" style="margin-top:42px">
+    <h3>Les informations essentielles</h3>
+    <p>Le brief doit permettre de comprendre <strong>ce qui est organisé, pour qui, où, quand, avec quelles ressources et dans quelle ambiance</strong>. Il peut également préciser l'identité visuelle à respecter, les attentes particulières et les éléments incontournables.</p>
+  </div>
+
+  <div class="callout reveal">
+    <div class="icon">💡</div>
+    <div><strong>À retenir</strong><p>Le cahier des charges ne remplace pas la créativité : il lui donne un cadre. Plus les contraintes sont claires, plus les choix décoratifs peuvent être pertinents.</p></div>
+  </div>
+</section>
+
+<section class="section" id="lieu">
+  <div class="section-head reveal">
+    <div class="kicker">03 · La contrainte de lieu</div>
+    <h2>Le lieu devient la première matière du projet.</h2>
+    <p class="lead">Dimensions, accès, circulation, surfaces disponibles et organisation des espaces influencent directement la décoration.</p>
+  </div>
+  <div class="case">
+    <div class="case-visual reveal">
+      <svg viewBox="0 0 520 390" role="img" aria-labelledby="planTitle planDesc">
+        <title id="planTitle">Plan simplifié d'un espace événementiel</title>
+        <desc id="planDesc">Plan avec accueil, circulation, espace principal, scène et zone technique.</desc>
+        <rect x="22" y="22" width="476" height="346" fill="#FAF6F0" stroke="#3B2E28" stroke-width="3"/>
+        <rect x="45" y="48" width="105" height="70" fill="#C1694F" fill-opacity=".1" stroke="#C1694F" stroke-width="2"/>
+        <rect x="175" y="48" width="315" height="70" fill="#FAF6F0" stroke="#A8998C" stroke-width="2"/>
+        <rect x="45" y="145" width="285" height="195" fill="#FAF6F0" stroke="#A8998C" stroke-width="2"/>
+        <rect x="350" y="145" width="140" height="90" fill="#C1694F" fill-opacity=".1" stroke="#C1694F" stroke-width="2"/>
+        <rect x="350" y="260" width="140" height="80" fill="#FAF6F0" stroke="#A8998C" stroke-width="2"/>
+        <g fill="#3B2E28" font-family="IBM Plex Mono,monospace" font-size="10">
+          <text x="70" y="87">ACCUEIL</text><text x="285" y="87">CIRCULATION</text><text x="150" y="240">ESPACE PRINCIPAL</text><text x="390" y="190">SCÈNE</text><text x="383" y="302">TECHNIQUE</text>
+        </g>
+        <g stroke="#C1694F" stroke-width="2" fill="none">
+          <path d="M160 118 V145"/><path d="M330 190 H350"/><path d="M330 275 H350"/>
+        </g>
+      </svg>
+    </div>
+    <div class="case-copy reveal">
+      <div class="kicker">Lecture du lieu</div>
+      <h3>Observer avant d'installer</h3>
+      <p>Un projet décoratif doit tenir compte de la réalité physique du site. Une belle composition peut devenir inefficace si elle bloque un accès, réduit une circulation ou ignore une contrainte technique.</p>
+      <p>Le décorateur analyse notamment les zones d'accueil, les espaces de réception, les points focaux, les circulations, les zones techniques et les possibilités d'installation.</p>
+      <div class="quote"><strong>Le décor doit accompagner l'espace, pas lutter contre lui.</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="budget">
+  <div class="section-head reveal">
+    <div class="kicker">04 · La contrainte de budget</div>
+    <h2>Donner une priorité à chaque dépense.</h2>
+    <p class="lead">Le budget permet de distinguer ce qui est indispensable, ce qui crée l'impact visuel et ce qui peut être ajusté.</p>
+  </div>
+  <div class="tabs reveal" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Approches budgétaires">
+      <button class="tab-button" role="tab" aria-selected="true" aria-controls="budget1" id="tab1">Budget maîtrisé</button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="budget2" id="tab2">Budget confort</button>
+    </div>
+    <div class="tab-panel active" id="budget1" role="tabpanel" aria-labelledby="tab1">
+      <p>Concentrer les ressources sur quelques éléments forts : un point focal, une composition d'accueil, une table principale ou une scénographie ciblée. Réutiliser intelligemment les éléments disponibles permet de préserver la cohérence.</p>
+    </div>
+    <div class="tab-panel" id="budget2" role="tabpanel" aria-labelledby="tab2">
+      <p>Le budget offre davantage de latitude pour multiplier les points de présence décorative, travailler les matières, enrichir les compositions et traiter plusieurs zones de manière cohérente.</p>
+    </div>
+  </div>
+  <div class="table-scroll reveal">
+    <table>
+      <thead><tr><th scope="col">Poste</th><th scope="col">Rôle décoratif</th><th scope="col">Question à se poser</th><th scope="col">Priorité</th></tr></thead>
+      <tbody>
+        <tr><td>Accueil</td><td>Première impression</td><td>Que doit comprendre ou ressentir l'invité dès son arrivée ?</td><td class="mono">HAUTE</td></tr>
+        <tr><td>Point focal</td><td>Créer l'impact</td><td>Quel élément doit attirer le regard ?</td><td class="mono">HAUTE</td></tr>
+        <tr><td>Tables / espaces</td><td>Créer l'ambiance</td><td>Quel niveau de finition est attendu ?</td><td class="mono">MOYENNE</td></tr>
+        <tr><td>Détails</td><td>Enrichir l'ensemble</td><td>Quels détails peuvent être ajoutés sans déséquilibrer le budget ?</td><td class="mono">VARIABLE</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="delai">
+  <div class="section-head reveal">
+    <div class="kicker">05 · La contrainte de délai</div>
+    <h2>Une décoration réussie se prépare avant le jour J.</h2>
+    <p class="lead">Le délai influence les choix de conception, les commandes, la fabrication, la livraison, l'installation et le démontage.</p>
+  </div>
+  <div class="steps reveal" aria-label="Frise de préparation d'un événement">
+    <div class="step"><div class="step-no">ÉTAPE 01</div><h3>Brief</h3><p>Identifier la demande et les contraintes.</p></div>
+    <div class="step"><div class="step-no">ÉTAPE 02</div><h3>Conception</h3><p>Définir l'ambiance et les solutions décoratives.</p></div>
+    <div class="step"><div class="step-no">ÉTAPE 03</div><h3>Préparation</h3><p>Organiser matériaux, fournisseurs et éléments.</p></div>
+    <div class="step"><div class="step-no">ÉTAPE 04</div><h3>Installation</h3><p>Mettre en place le décor dans le temps prévu.</p></div>
+    <div class="step"><div class="step-no">ÉTAPE 05</div><h3>Démontage</h3><p>Prévoir la remise en état et la récupération.</p></div>
+  </div>
+
+  <div class="visual reveal" style="margin-top:55px">
+    <svg viewBox="0 0 1100 330" role="img" aria-labelledby="timelineTitle timelineDesc">
+      <title id="timelineTitle">Rétroplanning visuel d'un projet événementiel</title>
+      <desc id="timelineDesc">Frise allant du brief à l'événement avec préparation, logistique et installation.</desc>
+      <rect width="1100" height="330" fill="#FAF6F0"/>
+      <g stroke="#A8998C" stroke-width="2"><line x1="80" y1="170" x2="1020" y2="170"/></g>
+      <g stroke="#C1694F" stroke-width="3">
+        <line x1="110" y1="135" x2="110" y2="205"/><line x1="300" y1="135" x2="300" y2="205"/><line x1="510" y1="135" x2="510" y2="205"/><line x1="735" y1="135" x2="735" y2="205"/><line x1="980" y1="115" x2="980" y2="225"/>
+      </g>
+      <g fill="#C1694F">
+        <circle cx="110" cy="170" r="8"/><circle cx="300" cy="170" r="8"/><circle cx="510" cy="170" r="8"/><circle cx="735" cy="170" r="8"/><circle cx="980" cy="170" r="10"/>
+      </g>
+      <g fill="#3B2E28" font-family="Work Sans, sans-serif" font-size="14" font-weight="600">
+        <text x="82" y="105">BRIEF</text><text x="260" y="105">CONCEPTION</text><text x="465" y="105">COMMANDES</text><text x="695" y="105">INSTALLATION</text><text x="945" y="95">JOUR J</text>
+      </g>
+      <g fill="#A8998C" font-family="IBM Plex Mono, monospace" font-size="10">
+        <text x="68" y="225">BESOINS</text><text x="252" y="225">CHOIX</text><text x="464" y="225">LOGISTIQUE</text><text x="690" y="225">MONTAGE</text><text x="940" y="250">ÉVÉNEMENT</text>
+      </g>
+    </svg>
+    <div class="caption">Le rétroplanning permet de remonter depuis la date de l'événement pour sécuriser les étapes qui doivent impérativement être terminées à temps.</div>
+  </div>
+
+  <div class="accordion reveal">
+    <details>
+      <summary>Pourquoi le délai doit-il être intégré au cahier des charges ?</summary>
+      <p>Parce qu'une solution décorative dépend de sa disponibilité réelle : certains éléments doivent être commandés, fabriqués, transportés ou installés. Le délai détermine donc la faisabilité de la proposition.</p>
+    </details>
+    <details>
+      <summary>Que faire lorsqu'une contrainte limite la proposition ?</summary>
+      <p>Il faut l'identifier tôt, puis arbitrer. Le décorateur peut adapter le choix des éléments, la quantité, la localisation ou le niveau de finition tout en conservant l'intention générale du projet.</p>
+    </details>
+  </div>
+</section>
+
+<section class="section alt" id="synthese">
+  <div class="section-head reveal">
+    <div class="kicker">Synthèse</div>
+    <h2>Lire un cahier des charges comme un décorateur.</h2>
+    <p class="lead">L'objectif est de dégager les contraintes qui auront un impact direct sur la conception décorative.</p>
+  </div>
+  <div class="keys">
+    <article class="key reveal"><strong>Événement</strong><p>Identifier le type d'expérience à créer : mariage, séminaire ou lancement de produit.</p></article>
+    <article class="key reveal"><strong>Brief</strong><p>Clarifier les attentes, les usages, l'identité et les éléments incontournables.</p></article>
+    <article class="key reveal"><strong>Lieu</strong><p>Analyser volumes, circulation, accès, zones et contraintes techniques.</p></article>
+    <article class="key reveal"><strong>Ressources</strong><p>Arbitrer le budget et le délai pour construire une proposition réalisable.</p></article>
+  </div>
+  <div class="callout reveal">
+    <div class="icon">🎨</div>
+    <div><strong>Inspiration / style</strong><p>Imaginez le cahier des charges comme une planche de repères : il ne dit pas seulement ce qu'il faut produire, il révèle aussi l'espace de créativité dans lequel le projet peut évoluer.</p></div>
+  </div>
+</section>
+</main>
+
+<div class="nav-bottom">
+  <a class="nav-card" href="#top"><span>Leçon précédente</span>← LEÇON 05 · Éclairage d'intérieur et ambiances lumineuses</a>
+  <a class="top" href="#top">Retour au début</a>
+  <a class="nav-card next" href="#top"><span>Leçon suivante</span>LEÇON 07 · Scénographie et thématisation d'un événement →</a>
+</div>
+
+<footer>Filière Décoration · Module 02 · Leçon 06 · Support de cours</footer>
+<button id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const bar=document.getElementById('progressBar');
+  const topBtn=document.getElementById('topBtn');
+  function update(){
+    const doc=document.documentElement;
+    const max=doc.scrollHeight-window.innerHeight;
+    const pct=max>0?(window.scrollY/max)*100:0;
+    bar.style.width=pct+'%';
+    topBtn.classList.toggle('show',window.scrollY>500);
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=group.querySelectorAll('.tab-button');
+    const panels=group.querySelectorAll('.tab-panel');
+    buttons.forEach((btn,i)=>{
+      btn.addEventListener('click',()=>{
+        buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+        panels.forEach(p=>p.classList.remove('active'));
+        btn.setAttribute('aria-selected','true');
+        panels[i].classList.add('active');
+      });
+      btn.addEventListener('keydown',e=>{
+        if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+          e.preventDefault();
+          const next=e.key==='ArrowRight'?(i+1)%buttons.length:(i-1+buttons.length)%buttons.length;
+          buttons[next].focus();buttons[next].click();
+        }
+      });
+    });
+  });
+
+  const items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}
+      });
+    },{threshold:.12});
+    items.forEach(item=>observer.observe(item));
+  }else items.forEach(item=>item.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

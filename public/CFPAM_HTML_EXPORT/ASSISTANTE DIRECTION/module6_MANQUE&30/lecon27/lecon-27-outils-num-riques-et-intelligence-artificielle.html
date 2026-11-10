@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 27 — Outils numériques et intelligence artificielle</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EI%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 27 — Outils numériques et intelligence artificielle</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#signature-electronique">1. Signature électronique</a>
+          <a href="#numerisation-ocr">2. Numérisation et OCR</a>
+          <a href="#formulaires-en-ligne">3. Formulaires en ligne</a>
+          <a href="#redaction-ia">4. Rédaction assistée par IA</a>
+          <a href="#transcription-reunion">5. Transcription de réunion</a>
+          <a href="#verification-sorties">6. Vérification des sorties</a>
+          <a href="#donnees-sensibles">7. Données à ne jamais transmettre</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 6 — Professionnalisation et projet</span>
+      <span class="badge brass">Niveau avancé</span>
+      <span class="badge">30 min</span>
+    </div>
+    <h1>Leçon 27 — Outils numériques et intelligence artificielle</h1>
+    <p class="subtitle">Gagner du temps avec les outils numériques — signature électronique, OCR, formulaires, IA générative et transcription — sans jamais perdre le contrôle du résultat produit.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Choisir et utiliser une signature électronique adaptée au niveau de valeur juridique requis.</li>
+      <li>Numériser un document papier et en extraire le texte grâce à l'OCR, avec contrôle de qualité.</li>
+      <li>Construire un formulaire en ligne fiable pour collecter des informations sans ressaisie manuelle.</li>
+      <li>Utiliser un outil d'IA générative pour accélérer la rédaction, sans lui déléguer la responsabilité du contenu.</li>
+      <li>Produire un compte rendu de réunion à partir d'une transcription automatique, correctement relu.</li>
+      <li>Systématiser la vérification de toute sortie produite par un outil numérique ou une IA.</li>
+      <li>Identifier les données qui ne doivent jamais être transmises à un outil externe ou à une IA.</li>
+    </ul>
+  </div>
+
+  <section id="signature-electronique">
+    <h2>1. Signature électronique</h2>
+    <p>La signature électronique remplace la signature manuscrite sur un document numérique. Elle ne se limite pas à une image de signature insérée dans un fichier : selon le contexte, elle engage une valeur juridique différente, qu'il faut connaître avant de choisir un outil.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Niveau</th><th>Ce qu'il garantit</th><th>Usage typique</th></tr></thead>
+        <tbody>
+          <tr><td>Simple</td><td>Identifie approximativement le signataire, sans vérification forte</td><td>Accusé de réception, note interne</td></tr>
+          <tr><td>Avancé</td><td>Identifie le signataire de façon fiable et détecte toute modification ultérieure du document</td><td>Contrat commercial courant, devis</td></tr>
+          <tr><td>Qualifié</td><td>Équivalent juridique de la signature manuscrite, avec certificat délivré par un tiers de confiance</td><td>Acte notarié, document réglementé</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Le niveau de signature électronique doit être choisi en fonction de l'enjeu du document, jamais par défaut. Un contrat à fort enjeu ne se signe pas avec une simple image insérée.
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Considérer qu'une signature scannée puis collée dans un document a la même valeur qu'une signature électronique certifiée : elle ne garantit ni l'identité du signataire, ni l'intégrité du document après signature.
+    </div>
+  </section>
+
+  <section id="numerisation-ocr">
+    <h2>2. Numérisation et OCR</h2>
+    <p>La numérisation transforme un document papier en image numérique. L'OCR (reconnaissance optique de caractères) va plus loin : il analyse cette image pour en extraire un texte réellement modifiable et recherchable, plutôt qu'une simple photographie du document.</p>
+
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma du principe de l'OCR : document papier vers image scannée vers texte reconnu" style="width:100%; max-width:560px; display:block; margin:20px auto;">
+      <rect x="10" y="55" width="150" height="100" rx="3" fill="#F5F2EC" stroke="#5E5A54" stroke-width="1.5"/>
+      <line x1="30" y1="80" x2="130" y2="80" stroke="#A8A399" stroke-width="2"/>
+      <line x1="30" y1="95" x2="130" y2="95" stroke="#A8A399" stroke-width="2"/>
+      <line x1="30" y1="110" x2="110" y2="110" stroke="#A8A399" stroke-width="2"/>
+      <text x="85" y="180" font-family="Inter" font-size="12" fill="#5E5A54" text-anchor="middle">Papier</text>
+
+      <path d="M170 105 L235 105" stroke="#2F5D50" stroke-width="2" marker-end="url(#arrow27)"/>
+
+      <rect x="245" y="55" width="150" height="100" rx="3" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1.5"/>
+      <text x="320" y="110" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Image scannée</text>
+      <text x="320" y="128" font-family="Inter" font-size="10" fill="#5E5A54" text-anchor="middle">(PDF / JPG)</text>
+      <text x="320" y="180" font-family="Inter" font-size="12" fill="#5E5A54" text-anchor="middle">Numérisation</text>
+
+      <path d="M405 105 L470 105" stroke="#2F5D50" stroke-width="2" marker-end="url(#arrow27)"/>
+
+      <rect x="480" y="55" width="150" height="100" rx="3" fill="#FDFCFA" stroke="#A8823C" stroke-width="1.5"/>
+      <text x="500" y="80" font-family="Courier New" font-size="10" fill="#16181C">Texte</text>
+      <text x="500" y="95" font-family="Courier New" font-size="10" fill="#16181C">modifiable</text>
+      <text x="500" y="110" font-family="Courier New" font-size="10" fill="#16181C">et cherchable</text>
+      <text x="555" y="180" font-family="Inter" font-size="12" fill="#5E5A54" text-anchor="middle">OCR</text>
+      <defs>
+        <marker id="arrow27" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2F5D50"/></marker>
+      </defs>
+    </svg>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Choisir une bonne qualité de numérisation <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Une résolution de 300 dpi minimum, en noir et blanc net pour du texte, garantit un taux de reconnaissance nettement supérieur à un scan trop sombre ou de trop basse définition.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Vérifier le texte reconnu <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>L'OCR confond fréquemment certains caractères proches (le chiffre « 0 » et la lettre « O », le « 1 » et le « l »). Une relecture ciblée sur les chiffres, noms propres et montants est indispensable avant tout usage du texte extrait.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Documents manuscrits <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>L'OCR classique reconnaît mal l'écriture manuscrite. Pour ce cas, des outils spécialisés existent, mais le taux d'erreur reste plus élevé et la vérification doit être intégrale, ligne par ligne.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant d'utiliser un texte issu d'un OCR : comparer les montants et dates chiffrés avec l'original, vérifier l'orthographe des noms propres, contrôler que la mise en page n'a pas fait sauter une ligne entière.
+    </div>
+  </section>
+
+  <section id="formulaires-en-ligne">
+    <h2>3. Formulaires en ligne</h2>
+    <p>Un formulaire en ligne remplace la collecte d'informations par courriel ou sur papier. Bien conçu, il structure directement la donnée reçue (dans un tableau ou une base), ce qui évite la ressaisie manuelle et réduit les erreurs de transcription.</p>
+
+    <div class="tabs" data-tabs="formulaire-vs-mail">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Collecte par courriel</button>
+        <button class="tab-btn" role="tab" data-tab="b">Collecte par formulaire</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Chaque personne répond dans un format libre, parfois incomplet. L'assistante doit ouvrir chaque message, relever les informations une à une et les ressaisir dans un tableau, avec un risque d'erreur et de perte de temps proportionnel au nombre de réponses.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Chaque répondant remplit les mêmes champs obligatoires, dans le même ordre. Les réponses arrivent déjà structurées dans un tableau exploitable directement, sans ressaisie, et les champs obligatoires évitent les réponses incomplètes.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Champs obligatoires</h3><p>Marquer clairement les informations indispensables pour éviter les réponses incomplètes à relancer.</p></div>
+      <div class="card"><h3>Choix fermés</h3><p>Préférer les listes déroulantes ou cases à cocher au texte libre chaque fois que les réponses possibles sont connues à l'avance.</p></div>
+      <div class="card"><h3>Confirmation d'envoi</h3><p>Un message de confirmation automatique rassure le répondant et limite les relances inutiles.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Concevoir un formulaire avec un champ de texte libre pour une information qui aurait dû être un choix fermé (date au format libre, intitulé de fonction saisi à la main) : le tableau de résultats devient hétérogène et inexploitable tel quel.
+    </div>
+  </section>
+
+  <section id="redaction-ia">
+    <h2>4. Rédaction assistée par IA</h2>
+    <p>Un outil d'IA générative peut produire rapidement un premier jet de courriel, de compte rendu ou de synthèse à partir d'instructions précises. Il accélère la rédaction, mais ne remplace ni la connaissance du dossier, ni la relecture, ni la responsabilité de ce qui est signé ou envoyé.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Cadrer la demande</h3><p>Objectif, destinataire, ton, longueur et informations à inclure précisés clairement.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Générer un premier jet</h3><p>L'outil produit une proposition de texte à partir des instructions données.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Vérifier le contenu</h3><p>Contrôler chaque fait, chiffre, nom et référence cités dans le texte généré.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Ajuster et valider</h3><p>Reformuler ce qui ne correspond pas au contexte réel, avant diffusion sous son propre nom.</p></div>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Instruction structurée pour un outil d'IA</span><button class="copy-btn" data-copy-target="model-ia-1">Copier</button></div>
+      <pre id="model-ia-1">Rédige [un courriel / un compte rendu / une synthèse] destiné à [destinataire ou public].
+Objectif du message : [objectif précis].
+Ton attendu : [formel / neutre / cordial].
+Longueur souhaitée : [nombre de lignes ou de paragraphes].
+Éléments à inclure obligatoirement : [liste des informations, dates, chiffres].
+Éléments à ne pas mentionner : [le cas échéant].
+Ne pas inventer d'information absente de cette liste.</pre>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Plus l'instruction donnée à l'outil est précise (destinataire, ton, informations exactes à inclure), plus le premier jet produit est exploitable directement, et moins la vérification demande de temps.
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Copier-coller un texte généré par une IA sans relecture, en particulier lorsqu'il contient des chiffres, des dates ou des noms : un outil d'IA générative peut produire une information fausse avec la même assurance qu'une information exacte.
+    </div>
+  </section>
+
+  <section id="transcription-reunion">
+    <h2>5. Transcription de réunion</h2>
+    <p>Les outils de transcription automatique convertissent l'audio d'une réunion en texte, puis peuvent en produire un résumé structuré. Ils font gagner un temps considérable sur la prise de notes, à condition de rester un point de départ et non un compte rendu final.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Étape</th><th>Ce que fait l'outil</th><th>Ce que fait l'assistante</th></tr></thead>
+        <tbody>
+          <tr><td>Enregistrement</td><td>Capture l'audio de la réunion, avec l'accord des participants</td><td>Prévient les participants et vérifie le consentement</td></tr>
+          <tr><td>Transcription</td><td>Convertit la parole en texte brut, horodaté</td><td>Repère les passages inaudibles ou ambigus</td></tr>
+          <tr><td>Résumé automatique</td><td>Propose une synthèse et une liste d'actions</td><td>Vérifie que chaque décision et chaque nom sont exacts</td></tr>
+          <tr><td>Diffusion</td><td>—</td><td>Valide et envoie le compte rendu final sous sa responsabilité</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      L'enregistrement d'une réunion nécessite l'information préalable, et souvent l'accord explicite, des participants. Un enregistrement effectué à leur insu pose un problème juridique, indépendamment de la qualité de l'outil utilisé.
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant diffusion d'un compte rendu issu d'une transcription : noms des participants et intervenants vérifiés, décisions et échéances confirmées, actions attribuées à la bonne personne, passages incertains retirés ou reformulés.
+    </div>
+  </section>
+
+  <section id="verification-sorties">
+    <h2>6. Vérification des sorties</h2>
+    <p>Qu'il s'agisse d'un texte extrait par OCR, généré par une IA ou résumé automatiquement, chaque sortie d'un outil numérique doit être contrôlée avant d'être utilisée. Ce contrôle n'est pas optionnel : il fait partie intégrante de la tâche, au même titre que la production elle-même.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Exactitude factuelle</h3><p>Chaque chiffre, date, nom ou référence cité correspond-il bien à la source d'origine ?</p></div>
+      <div class="card"><h3>Cohérence interne</h3><p>Le texte ne se contredit-il pas d'un paragraphe à l'autre ?</p></div>
+      <div class="card"><h3>Adéquation au contexte</h3><p>Le ton et le contenu conviennent-ils réellement au destinataire et à la situation ?</p></div>
+      <div class="card"><h3>Absence d'invention</h3><p>Aucune information n'a-t-elle été ajoutée sans figurer dans la source ou l'instruction ?</p></div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Un outil numérique ou une IA est un accélérateur de production, jamais une source d'autorité. La responsabilité du contenu final reste entièrement celle de la personne qui le signe ou le diffuse.
+    </div>
+  </section>
+
+  <section id="donnees-sensibles">
+    <h2>7. Données à ne jamais transmettre</h2>
+    <p>Avant de coller un texte dans un outil externe (IA générative, service de transcription, plateforme de formulaire), il faut vérifier la nature des informations qu'il contient. Certaines données ne doivent jamais quitter les canaux internes et sécurisés de l'organisation.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Catégorie</th><th>Exemples</th></tr></thead>
+        <tbody>
+          <tr><td>Données personnelles sensibles</td><td>Santé, situation familiale, origine, opinions, situation financière personnelle</td></tr>
+          <tr><td>Informations confidentielles stratégiques</td><td>Projets non annoncés, chiffres non publiés, négociations en cours</td></tr>
+          <tr><td>Identifiants et accès</td><td>Mots de passe, codes d'accès, clés de connexion</td></tr>
+          <tr><td>Données contractuelles protégées</td><td>Clauses soumises à confidentialité, informations couvertes par un accord de non-divulgation</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      De nombreux outils d'IA généralistes grand public peuvent conserver ou réutiliser les contenus saisis. En cas de doute sur la politique de confidentialité d'un outil, ne jamais y transmettre une information qui n'est pas déjà publique.
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Certaines organisations mettent à disposition des versions professionnelles ou internes d'outils d'IA, avec des garanties de confidentialité renforcées. Il convient de toujours vérifier quel outil est autorisé par sa direction avant de traiter une information sensible.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Chaque mois, vous recevez par courriel une trentaine de demandes de rendez-vous provenant de partenaires externes, que vous ressaisissez une à une dans un tableau de suivi avant de les transmettre à la direction. Cette tâche vous prend régulièrement plus d'une heure et génère parfois des erreurs de date.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 3, 4 et 6, décrivez comment vous automatiseriez cette collecte, puis précisez les points que vous contrôleriez systématiquement avant de transmettre le tableau final à la direction.</p>
+    </div>
+  </section>
+
+  <section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Le niveau de signature électronique (simple, avancé, qualifié) se choisit selon l'enjeu réel du document.</li>
+      <li>L'OCR extrait un texte modifiable d'un document numérisé, mais ce texte doit toujours être relu avant usage.</li>
+      <li>Un formulaire en ligne bien conçu structure la donnée dès la collecte et supprime la ressaisie manuelle.</li>
+      <li>La rédaction assistée par IA accélère le premier jet, mais la vérification et la responsabilité restent humaines.</li>
+      <li>Une transcription de réunion n'est jamais diffusée telle quelle : noms, décisions et échéances sont vérifiés.</li>
+      <li>Toute sortie d'outil numérique se contrôle systématiquement avant usage : exactitude, cohérence, absence d'invention.</li>
+      <li>Les données sensibles, confidentielles ou les identifiants ne se transmettent jamais à un outil externe non validé.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : une <strong>procédure d'automatisation documentée</strong> et un <strong>rapport de vérification</strong>, fournis en <strong>.docx</strong> et en <strong>PDF</strong>.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Procédure d'automatisation d'une tâche répétitive</span><button class="copy-btn" data-copy-target="model-proc-1">Copier</button></div>
+      <pre id="model-proc-1">PROCÉDURE D'AUTOMATISATION
+
+Tâche concernée : [description de la tâche répétitive]
+Fréquence actuelle : [quotidienne / hebdomadaire / mensuelle]
+Temps consacré avant automatisation : [durée estimée]
+
+Outil choisi : [nom de l'outil ou du service]
+Justification du choix : [pourquoi cet outil plutôt qu'un autre]
+
+Étapes de mise en place :
+1. [étape 1]
+2. [étape 2]
+3. [étape 3]
+
+Données traitées par l'outil : [nature des informations transmises]
+Vérification effectuée avant validation : [oui/non — préciser]
+
+Résultat attendu après automatisation :
+- Temps gagné estimé : [durée]
+- Points de contrôle conservés : [liste]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Rapport de vérification d'une sortie d'outil</span><button class="copy-btn" data-copy-target="model-proc-2">Copier</button></div>
+      <pre id="model-proc-2">RAPPORT DE VÉRIFICATION
+
+Outil utilisé : [nom de l'outil / IA / OCR / transcription]
+Date : [JJ/MM/AAAA]
+Document ou texte contrôlé : [référence]
+
+Points vérifiés :
+[ ] Chiffres, dates et montants conformes à la source
+[ ] Noms propres et fonctions exacts
+[ ] Absence d'information inventée ou non sourcée
+[ ] Ton et contenu adaptés au destinataire
+[ ] Aucune donnée sensible transmise à l'outil
+
+Corrections apportées : [liste ou « aucune »]
+Validation finale par : [nom, fonction]</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Tâche répétitive identifiée et outil d'automatisation choisi et justifié</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Procédure d'automatisation rédigée étape par étape</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Nature des données transmises à l'outil vérifiée (aucune donnée sensible)</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Résultat produit par l'outil contrôlé point par point</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Rapport de vérification rempli et signé</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Export PDF final des deux documents vérifié avant diffusion</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 26 — Anglais professionnel</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 28 — Événementiel d'entreprise</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 6 — Professionnalisation et projet · Leçon 27 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

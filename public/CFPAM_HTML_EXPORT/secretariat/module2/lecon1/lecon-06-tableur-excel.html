@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 6 — Tableur (Excel) | Bureautique</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%232E4374'/%3E%3Cpath d='M25 35h35a8 8 0 018 8v10a8 8 0 01-8 8H45l-12 10v-10h-8a8 8 0 01-8-8V43a8 8 0 018-8z' fill='none' stroke='%23fff' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F7F7F9;
+    --color-text:#101216;
+    --color-text-muted:#5C6270;
+    --color-accent:#2E4374;
+    --color-accent-soft:#E8EBF3;
+    --color-border:#E4E5EA;
+    --color-accent-alt:#A6432B;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  kbd{
+    display:inline-block; font-family:var(--font-mono); font-size:0.82em; line-height:1;
+    background:var(--color-bg-alt); color:var(--color-text); border:1px solid var(--color-border);
+    border-bottom:2px solid var(--color-border); border-radius:5px; padding:4px 7px 3px; margin:0 1px;
+  }
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:720px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9dff0;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(16,18,22,0.1);
+    padding:10px; width:300px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:720px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#F7EAE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:480px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border); vertical-align:middle;}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .formula-box{
+    font-family:var(--font-mono); background:var(--color-bg); border:1px solid var(--color-border);
+    border-left:3px solid var(--color-accent); border-radius:0 8px 8px 0; padding:14px 20px; margin:16px 0;
+    font-size:0.95rem; color:var(--color-accent); font-weight:600;
+  }
+  .formula-box .desc{
+    display:block; font-family:var(--font-body); font-weight:400; color:var(--color-text-muted);
+    font-size:0.85rem; margin-top:6px;
+  }
+  .formula-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin:24px 0;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .cta-final{padding:56px 0; border-top:1px solid var(--color-border); background:var(--color-accent-soft);}
+  .cta-final .wrap{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px;}
+  .cta-final h2{margin-bottom:6px;}
+  .cta-final p{margin:0; color:var(--color-text-muted); max-width:520px;}
+  .cta-btn{
+    flex-shrink:0; display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:#fff; background:var(--color-accent);
+    border:none; border-radius:10px; padding:16px 26px; cursor:pointer; text-decoration:none;
+    box-shadow:0 8px 20px rgba(46,67,116,0.25); transition:background 0.15s ease, transform 0.15s ease;
+  }
+  .cta-btn:hover{background:#25355c; transform:translateY(-1px);}
+  .cta-btn svg{flex-shrink:0;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(46,67,116,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+    .cta-final .wrap{flex-direction:column; align-items:flex-start; text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="#fff" stroke-width="1.6"/><circle cx="7.5" cy="12" r="0.9" fill="#fff"/><circle cx="12" cy="12" r="0.9" fill="#fff"/><circle cx="16.5" cy="12" r="0.9" fill="#fff"/></svg>
+      </span>
+      Filière bureautique
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 2 — Bureautique : données, Internet et gestion documentaire</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau BEPC</span>
+    </div>
+    <h1>Tableur (Excel)</h1>
+    <p class="lede">Leçon 6 — créer des tableaux, calculer et présenter des données : interface, formatage, formules, références, tri/filtres et graphiques.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Découverte de l'interface" data-num="6.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.1</span><h2>Découverte de l'interface et structure</h2></div>
+      <p>Un tableur organise l'information dans une grille. Comprendre le vocabulaire de base — cellule, ligne, colonne, feuille, ruban — est indispensable avant de saisir la moindre donnée.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke="currentColor" stroke-width="1.2"/></svg>
+        <h3>Cellule</h3>
+        <p>Intersection d'une colonne et d'une ligne, identifiée par une adresse comme <span class="mono">A1</span> ou <span class="mono">C12</span>.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M3 8h18M3 16h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <h3>Ligne</h3>
+        <p>Suite horizontale de cellules, numérotée <span class="mono">1, 2, 3…</span> sur le bord gauche de la feuille.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M8 3v18M16 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <h3>Colonne</h3>
+        <p>Suite verticale de cellules, désignée par une lettre <span class="mono">A, B, C…</span> en haut de la feuille.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 17h6l2 3h4l2-3h4" stroke="currentColor" stroke-width="1.4"/></svg>
+        <h3>Feuille &amp; classeur</h3>
+        <p>Une feuille regroupe plusieurs onglets ; l'ensemble des feuilles forme un classeur (le fichier).</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <p>Le ruban, situé en haut de la fenêtre, regroupe les commandes par onglets thématiques (Accueil, Insertion, Mise en page…). La barre de formule affiche le contenu réel de la cellule active, même quand celle-ci affiche un résultat calculé.</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema simplifie de l'interface d'un tableur : ruban avec onglets, barre de formule, grille de colonnes A a E et de lignes 1 a 6 avec une cellule active B3, et onglets de feuilles en bas">
+        <g font-family="Inter, sans-serif">
+          <!-- Ruban -->
+          <rect x="10" y="10" width="760" height="34" rx="6" fill="#E8EBF3" stroke="#2E4374" stroke-width="1.4"></rect>
+          <text x="26" y="31" font-size="11.5" font-weight="600" fill="#2E4374">Accueil</text>
+          <text x="90" y="31" font-size="11.5" fill="#5C6270">Insertion</text>
+          <text x="160" y="31" font-size="11.5" fill="#5C6270">Mise en page</text>
+          <text x="255" y="31" font-size="11.5" fill="#5C6270">Formules</text>
+          <text x="325" y="31" font-size="11.5" fill="#5C6270">Données</text>
+          <text x="392" y="31" font-size="11.5" fill="#5C6270">Affichage</text>
+
+          <!-- Barre de formule -->
+          <rect x="10" y="52" width="760" height="28" fill="#FFFFFF" stroke="#E4E5EA" stroke-width="1.2"></rect>
+          <rect x="16" y="58" width="46" height="16" rx="3" fill="#F7F7F9" stroke="#E4E5EA" stroke-width="1"></rect>
+          <text x="39" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#2E4374" font-weight="600">B3</text>
+          <text x="70" y="70" font-family="IBM Plex Mono, monospace" font-size="11" fill="#101216">= A3 * 1.19</text>
+
+          <!-- Grille : en-têtes de colonnes -->
+          <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#5C6270">
+            <rect x="40" y="80" width="740" height="22" fill="#F7F7F9" stroke="#E4E5EA" stroke-width="1"></rect>
+            <text x="90" y="95" text-anchor="middle">A</text>
+            <text x="230" y="95" text-anchor="middle">B</text>
+            <text x="370" y="95" text-anchor="middle">C</text>
+            <text x="510" y="95" text-anchor="middle">D</text>
+            <text x="650" y="95" text-anchor="middle">E</text>
+          </g>
+
+          <!-- En-têtes de lignes + grille -->
+          <g>
+            <rect x="10" y="102" width="30" height="210" fill="#F7F7F9" stroke="#E4E5EA" stroke-width="1"></rect>
+            <!-- lignes horizontales -->
+            <path d="M10 102H750 M10 137H750 M10 172H750 M10 207H750 M10 242H750 M10 277H750 M10 312H750" stroke="#E4E5EA" stroke-width="1"></path>
+            <!-- colonnes verticales -->
+            <path d="M40 80V312 M180 80V312 M320 80V312 M460 80V312 M600 80V312 M740 80V312" stroke="#E4E5EA" stroke-width="1"></path>
+
+            <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#5C6270">
+              <text x="25" y="122" text-anchor="middle">1</text>
+              <text x="25" y="157" text-anchor="middle">2</text>
+              <text x="25" y="192" text-anchor="middle">3</text>
+              <text x="25" y="227" text-anchor="middle">4</text>
+              <text x="25" y="262" text-anchor="middle">5</text>
+              <text x="25" y="297" text-anchor="middle">6</text>
+            </g>
+
+            <!-- cellule active B3 -->
+            <rect x="180" y="172" width="140" height="35" fill="#E8EBF3" stroke="#2E4374" stroke-width="2"></rect>
+            <text x="250" y="194" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#2E4374" font-weight="600">11 900</text>
+          </g>
+
+          <!-- Onglets de feuilles -->
+          <rect x="10" y="312" width="760" height="26" fill="#FFFFFF" stroke="#E4E5EA" stroke-width="1"></rect>
+          <rect x="16" y="316" width="76" height="18" rx="4" fill="#2E4374"></rect>
+          <text x="54" y="329" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="600">Feuil1</text>
+          <rect x="98" y="316" width="76" height="18" rx="4" fill="#F7F7F9" stroke="#E4E5EA" stroke-width="1"></rect>
+          <text x="136" y="329" text-anchor="middle" font-size="10.5" fill="#5C6270">Feuil2</text>
+          <rect x="180" y="316" width="76" height="18" rx="4" fill="#F7F7F9" stroke="#E4E5EA" stroke-width="1"></rect>
+          <text x="218" y="329" text-anchor="middle" font-size="10.5" fill="#5C6270">Feuil3</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Chaque cellule possède une adresse unique (colonne + ligne, ex. <span class="mono">B3</span>). C'est cette adresse qui permet d'écrire des formules faisant référence au contenu d'autres cellules.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Formatage des données" data-num="6.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.2</span><h2>Formatage des données</h2></div>
+      <p>Formater une cellule ne change jamais la valeur réellement stockée : cela modifie uniquement la manière dont elle est affichée à l'écran. Un même nombre peut ainsi apparaître comme une date, une monnaie ou un pourcentage.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Principaux formats de nombres</caption>
+        <thead><tr><th scope="col">Format</th><th scope="col" class="num">Valeur saisie</th><th scope="col" class="num">Affichage</th><th scope="col">Usage typique</th></tr></thead>
+        <tbody>
+          <tr><td>Nombre</td><td class="num">1500</td><td class="num">1 500,00</td><td>Quantités, effectifs</td></tr>
+          <tr><td>Monnaie</td><td class="num">1500</td><td class="num">1 500 FCFA</td><td>Prix, montants, factures</td></tr>
+          <tr><td>Pourcentage</td><td class="num">0,25</td><td class="num">25 %</td><td>Taux, remises, TVA</td></tr>
+          <tr><td>Date</td><td class="num">45923</td><td class="num">03/09/2026</td><td>Échéances, plannings</td></tr>
+          <tr><td>Texte</td><td class="num">0621</td><td class="num">0621</td><td>Numéros à zéro non significatif</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <p>L'alignement complète le formatage : par convention, les nombres sont alignés à droite (pour comparer facilement les grandeurs) et le texte à gauche. Un alignement centré est réservé aux en-têtes de colonnes.</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Confondre la valeur stockée et son affichage : une date affichée « 03/09/2026 » reste, en interne, un nombre. Changer le format d'affichage ne corrige jamais une erreur de saisie dans la donnée elle-même.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Formules de base" data-num="6.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.3</span><h2>Formules de base</h2></div>
+      <p>Toute formule commence obligatoirement par le signe <span class="mono">=</span>. Sans lui, le tableur considère le contenu comme du simple texte ou un nombre, et n'effectue aucun calcul.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Opérateurs arithmétiques de base</caption>
+        <thead><tr><th scope="col">Opération</th><th scope="col">Symbole</th><th scope="col">Exemple</th></tr></thead>
+        <tbody>
+          <tr><td>Addition</td><td class="mono">+</td><td class="mono">=A1+A2</td></tr>
+          <tr><td>Soustraction</td><td class="mono">-</td><td class="mono">=A1-A2</td></tr>
+          <tr><td>Multiplication</td><td class="mono">*</td><td class="mono">=A1*A2</td></tr>
+          <tr><td>Division</td><td class="mono">/</td><td class="mono">=A1/A2</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <p>Au-delà des opérateurs simples, quelques fonctions essentielles permettent de calculer directement sur une plage de cellules, sans avoir à additionner manuellement chaque valeur.</p>
+    </div>
+
+    <div class="formula-grid reveal">
+      <div class="formula-box">
+        =SOMME(A1:A10)
+        <span class="desc">Additionne toutes les valeurs de la plage A1 à A10.</span>
+      </div>
+      <div class="formula-box">
+        =MOYENNE(B2:B8)
+        <span class="desc">Calcule la moyenne arithmétique des cellules B2 à B8.</span>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">📌 Bon réflexe</div>
+        <p>Une plage se note toujours <span class="mono">première_cellule:dernière_cellule</span>, séparée par deux-points — par exemple <span class="mono">A1:A10</span> désigne les dix cellules de A1 à A10 incluses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Références relatives et absolues" data-num="6.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.4</span><h2>Gestion des références</h2></div>
+      <p>Quand une formule est recopiée vers d'autres cellules, ses références peuvent s'ajuster automatiquement — ou rester fixes. Cette différence conditionne la fiabilité des calculs sur un grand tableau.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Référence relative contre référence absolue</caption>
+        <thead><tr><th scope="col">Type</th><th scope="col">Notation</th><th scope="col">Comportement à la recopie</th></tr></thead>
+        <tbody>
+          <tr><td>Référence relative</td><td class="mono">A1</td><td>S'ajuste automatiquement selon la position de la nouvelle cellule</td></tr>
+          <tr><td>Référence absolue</td><td class="mono">$A$1</td><td>Reste fixe, quelle que soit la cellule où la formule est recopiée</td></tr>
+          <tr><td>Référence mixte</td><td class="mono">$A1 ou A$1</td><td>Fige uniquement la colonne ou uniquement la ligne</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="formula-grid reveal">
+      <div class="formula-box">
+        =A2*$B$1
+        <span class="desc">Le taux en B1 reste fixe pour toutes les lignes recopiées ; seule la référence A2 s'ajuste.</span>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Oublier le symbole <span class="mono">$</span> devant une référence censée rester fixe (comme un taux de TVA en haut du tableau). En recopiant la formule vers le bas, la référence se décale et le calcul devient faux sans qu'aucune erreur ne s'affiche.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Tri et filtres" data-num="6.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.5</span><h2>Organisation et analyse des données</h2></div>
+      <p>Un tableau de données devient réellement exploitable une fois qu'on peut le classer et n'en afficher qu'une partie selon un critère. Le tri réorganise les lignes ; le filtre automatique masque temporairement celles qui ne correspondent pas à la sélection.</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Sélectionner la plage</h3>
+        <p>Inclure les en-têtes de colonnes et toutes les lignes de données concernées.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Choisir le critère de tri</h3>
+        <p>Ordre alphabétique (A→Z) ou numérique (croissant/décroissant), sur une ou plusieurs colonnes.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Activer les filtres</h3>
+        <p>Les en-têtes de colonnes affichent des flèches permettant de cocher les valeurs à afficher.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Analyser le résultat</h3>
+        <p>Les lignes filtrées restent en place mais sont masquées ; le tableau reste modifiable normalement.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Exemple : tableau trié par ordre décroissant du chiffre d'affaires</caption>
+        <thead><tr><th scope="col">Produit</th><th scope="col" class="num">Chiffre d'affaires (FCFA)</th></tr></thead>
+        <tbody>
+          <tr><td>Casiers de bureau</td><td class="num">185 000</td></tr>
+          <tr><td>Rames de papier</td><td class="num">142 500</td></tr>
+          <tr><td>Cartouches d'encre</td><td class="num">98 000</td></tr>
+          <tr><td>Classeurs</td><td class="num">54 200</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Trier ou filtrer ne supprime aucune donnée : les lignes masquées par un filtre restent présentes et réapparaissent dès que le filtre est retiré.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Graphiques et impression" data-num="6.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.6</span><h2>Représentation visuelle et impression</h2></div>
+      <p>Un graphique traduit en image une série de chiffres, ce qui facilite la lecture d'une tendance ou d'une répartition. Le choix du type de graphique dépend de ce que l'on cherche à montrer.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M10 20V4M16 20V13M22 20V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3>Histogramme</h3>
+        <p>Compare des valeurs entre catégories : ventes par produit, effectifs par service.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 2v10l7 5A10 10 0 1012 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <h3>Secteurs (camembert)</h3>
+        <p>Montre la répartition d'un total en parts : budget par poste de dépense.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M3 17l5-6 4 3 8-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Courbe</h3>
+        <p>Visualise une évolution dans le temps : chiffre d'affaires mois par mois.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <h3>Mise en page d'impression</h3>
+        <p>Aperçu avant impression, marges, zone d'impression et export en PDF pour la diffusion.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 780 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparaison visuelle entre un histogramme representant quatre categories et un diagramme en secteurs representant la repartition d'un budget en trois parts">
+        <g font-family="Inter, sans-serif">
+          <!-- Histogramme -->
+          <text x="170" y="24" text-anchor="middle" font-size="13" font-weight="600" fill="#101216">Histogramme</text>
+          <path d="M60 200H320" stroke="#5C6270" stroke-width="1.2"></path>
+          <rect x="80" y="140" width="40" height="60" fill="#2E4374"></rect>
+          <rect x="140" y="110" width="40" height="90" fill="#2E4374"></rect>
+          <rect x="200" y="160" width="40" height="40" fill="#2E4374"></rect>
+          <rect x="260" y="80" width="40" height="120" fill="#A6432B"></rect>
+          <text x="100" y="215" text-anchor="middle" font-size="10" fill="#5C6270">Jan</text>
+          <text x="160" y="215" text-anchor="middle" font-size="10" fill="#5C6270">Fév</text>
+          <text x="220" y="215" text-anchor="middle" font-size="10" fill="#5C6270">Mar</text>
+          <text x="280" y="215" text-anchor="middle" font-size="10" fill="#5C6270">Avr</text>
+
+          <!-- Secteurs -->
+          <text x="580" y="24" text-anchor="middle" font-size="13" font-weight="600" fill="#101216">Diagramme en secteurs</text>
+          <g transform="translate(580,130)">
+            <path d="M0 0 L0 -70 A70 70 0 0 1 60 30 Z" fill="#2E4374"></path>
+            <path d="M0 0 L60 30 A70 70 0 0 1 -35 60 Z" fill="#A6432B"></path>
+            <path d="M0 0 L-35 60 A70 70 0 0 1 0 -70 Z" fill="#A6B0C7"></path>
+            <circle cx="0" cy="0" r="70" fill="none" stroke="#E4E5EA" stroke-width="1"></circle>
+          </g>
+          <g font-size="10.5" fill="#5C6270">
+            <rect x="500" y="215" width="10" height="10" fill="#2E4374"></rect>
+            <text x="516" y="224">Salaires</text>
+            <rect x="590" y="215" width="10" height="10" fill="#A6432B"></rect>
+            <text x="606" y="224">Loyer</text>
+            <rect x="660" y="215" width="10" height="10" fill="#A6B0C7"></rect>
+            <text x="676" y="224">Fournitures</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Étapes pour préparer une feuille avant impression</caption>
+        <thead><tr><th scope="col">Étape</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Définir la zone d'impression (plage exacte à imprimer)</td></tr>
+          <tr><td>2</td><td>Choisir l'orientation (portrait ou paysage) et les marges</td></tr>
+          <tr><td>3</td><td>Vérifier l'aperçu avant impression</td></tr>
+          <tr><td>4</td><td>Exporter en PDF pour partager sans risque de modification</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Un graphique reste relié aux données sources : si le tableau change, le graphique se met à jour automatiquement, sans avoir à le recréer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="6.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">6.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Une feuille de calcul s'organise en cellules identifiées par une adresse (colonne + ligne), regroupées en lignes, colonnes et feuilles au sein d'un classeur.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>Le format d'affichage (nombre, monnaie, pourcentage, date) ne modifie jamais la valeur réellement stockée dans la cellule.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Toute formule commence par <span class="mono">=</span> ; les fonctions comme SOMME et MOYENNE calculent directement sur une plage de cellules.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Une référence relative s'ajuste à la recopie, une référence absolue (<span class="mono">$A$1</span>) reste fixe.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Le tri réorganise les lignes et le filtre automatique les masque temporairement, sans jamais supprimer de données.</p></div>
+      <div class="kp-card"><span class="num">06</span><p>Un graphique relié au tableau et une mise en page d'impression soignée rendent les données lisibles et partageables en PDF.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Leçon 5 — Communication professionnelle (Module 1)</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante</span>
+        <span class="dest">Leçon 7 — Messagerie et Internet</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 2</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Bureautique — Module 2</span>
+    <span>Leçon 6</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- barre de progression ----------
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  // ---------- retour en haut ----------
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  // ---------- sommaire généré depuis les sections ----------
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  // ---------- toggle du panneau sommaire (header) ----------
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  // ---------- accordéons ----------
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // ---------- animations au scroll ----------
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>

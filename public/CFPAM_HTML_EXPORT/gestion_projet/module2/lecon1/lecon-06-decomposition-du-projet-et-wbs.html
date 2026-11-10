@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 06 — Décomposition du projet et WBS | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2314213D'/%3E%3Cpath d='M50 20 L50 45 M30 45 L70 45 M30 45 L30 60 M50 45 L50 80 M70 45 L70 60' stroke='%23FF9F1C' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#F4F6F8;
+    --color-text:#14213D;
+    --color-accent:#FF9F1C;
+    --color-neutral:#8D99AE;
+
+    --tint-section: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --text-faint: color-mix(in srgb, var(--color-text) 40%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --border-soft-strong: color-mix(in srgb, var(--color-neutral) 75%, var(--color-bg));
+    --tint-badge: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --tint-badge-strong: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg));
+    --tint-code: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg));
+    --tint-hover: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+    --accent-soft: color-mix(in srgb, var(--color-accent) 55%, var(--color-bg));
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+
+  body{
+    margin:0;
+    background:var(--color-bg);
+    color:var(--color-text);
+    font-family:'Inter', system-ui, sans-serif;
+    font-weight:400;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Sora', sans-serif;
+    color:var(--color-text);
+    line-height:1.25;
+    margin:0 0 .5em 0;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  a{ color: var(--color-accent); }
+
+  /* ---------- Reading progress bar ---------- */
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent);
+    z-index:1000;
+    transition:width .1s linear;
+  }
+
+  /* ---------- Sticky header ---------- */
+  header.site-header{
+    position:sticky; top:0; z-index:900;
+    background:color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border-soft);
+    padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Sora', sans-serif; font-weight:700; font-size:.98rem;
+    letter-spacing:.01em;
+    white-space:nowrap;
+  }
+  .brand-mark{
+    width:28px; height:28px; border-radius:7px;
+    background:var(--color-text);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{ width:16px; height:16px; }
+  .brand small{
+    display:block; font-family:'Inter',sans-serif; font-weight:500;
+    font-size:.72rem; color:var(--text-muted); letter-spacing:0;
+  }
+
+  nav.menu-toc{
+    display:flex; gap:2px; overflow-x:auto; scrollbar-width:none;
+    flex-wrap:nowrap;
+  }
+  nav.menu-toc::-webkit-scrollbar{display:none;}
+  nav.menu-toc a{
+    text-decoration:none; color:var(--text-muted); font-size:.85rem;
+    font-weight:500; padding:7px 11px; border-radius:7px; white-space:nowrap;
+    transition:background .15s, color .15s;
+  }
+  nav.menu-toc a:hover, nav.menu-toc a:focus-visible{
+    background:var(--tint-badge); color:var(--color-text);
+  }
+
+  main{ max-width:960px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:56px 0 40px 0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .badge-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--tint-badge);
+    border:1px solid var(--border-soft);
+    color:var(--color-text);
+    font-size:.78rem; font-weight:600;
+    padding:5px 12px; border-radius:100px;
+  }
+  .badge.badge-accent{
+    border-color:color-mix(in srgb, var(--color-accent) 45%, var(--color-bg));
+    color:color-mix(in srgb, var(--color-accent) 78%, var(--color-text));
+  }
+  .badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--color-accent); flex-shrink:0; }
+
+  .hero h1{
+    font-size:clamp(1.9rem, 4vw, 2.7rem);
+    font-weight:800;
+    max-width:800px;
+    letter-spacing:-.01em;
+  }
+  .hero p.subtitle{
+    max-width:640px;
+    font-size:1.08rem;
+    color:var(--text-muted);
+    margin-top:14px;
+  }
+
+  .module-tag{
+    font-size:.82rem; font-weight:600; color:var(--color-accent);
+    margin-bottom:10px; display:block;
+  }
+
+  /* ---------- TOC ---------- */
+  .toc-box{
+    background:var(--color-bg);
+    border:1px solid var(--border-soft);
+    border-radius:12px;
+    padding:22px 24px;
+    margin:36px 0 8px 0;
+  }
+  .toc-box h2{ font-size:.95rem; text-transform:none; margin-bottom:14px; font-weight:700; }
+  .toc-list{
+    list-style:none; margin:0; padding:0;
+    display:grid; grid-template-columns:1fr 1fr; gap:6px 22px;
+  }
+  @media (max-width:600px){ .toc-list{ grid-template-columns:1fr; } }
+  .toc-list li a{
+    text-decoration:none; color:var(--color-text); font-size:.92rem;
+    display:flex; gap:10px; align-items:baseline;
+    padding:6px 0; border-bottom:1px dashed transparent;
+    transition:border-color .15s, color .15s;
+  }
+  .toc-list li a:hover{ border-color:var(--color-accent); color:color-mix(in srgb, var(--color-accent) 70%, var(--color-text)); }
+  .toc-list li a .toc-num{
+    font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--color-neutral); flex-shrink:0;
+  }
+
+  /* ---------- Sections ---------- */
+  section.lesson-section{
+    padding:52px 0;
+    border-bottom:1px solid var(--border-soft);
+    opacity:0; transform:translateY(14px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  section.lesson-section.in-view{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){
+    section.lesson-section{ opacity:1; transform:none; transition:none; }
+  }
+  section.lesson-section.tinted{
+    background:var(--tint-section);
+    margin:0 -24px; padding:52px 24px;
+  }
+
+  .eyebrow-code{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.78rem;
+    color:var(--color-neutral);
+    margin-bottom:6px;
+    display:block;
+  }
+  section.lesson-section h2{
+    font-size:1.55rem; font-weight:700; margin-bottom:18px;
+    scroll-margin-top:80px;
+  }
+  section.lesson-section h3{
+    font-size:1.15rem; font-weight:700; margin:28px 0 12px 0;
+    scroll-margin-top:80px;
+  }
+  section.lesson-section p{ max-width:720px; }
+  section.lesson-section > p, section.lesson-section > ul{ max-width:720px; }
+  section.lesson-section ul, section.lesson-section ol{ max-width:720px; padding-left:1.3em; }
+  section.lesson-section li{ margin-bottom:6px; }
+
+  .caption{
+    font-size:.85rem; color:var(--text-muted); margin-top:10px; max-width:720px;
+  }
+
+  /* ---------- Callout boxes ---------- */
+  .callout{
+    border:1px solid var(--border-soft);
+    border-left:4px solid var(--color-accent);
+    border-radius:10px;
+    padding:18px 20px;
+    margin:24px 0;
+    max-width:720px;
+    background:var(--color-bg);
+    display:flex; gap:14px;
+  }
+  .callout .icon{ font-size:1.3rem; line-height:1; flex-shrink:0; }
+  .callout .callout-title{ font-weight:700; margin-bottom:4px; font-size:.95rem; }
+  .callout p{ margin:0; font-size:.95rem; }
+  .callout p + p{ margin-top:8px; }
+
+  /* ---------- Pilotage card ---------- */
+  .pilot-card{
+    background:var(--tint-badge);
+    border:1px solid var(--border-soft);
+    border-radius:12px;
+    padding:18px 20px;
+    margin:24px 0;
+    max-width:720px;
+    position:relative;
+  }
+  .pilot-card .pilot-label{
+    font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--color-neutral); font-weight:600; margin-bottom:10px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .pilot-card pre{
+    margin:0; font-family:'JetBrains Mono',monospace; font-size:.86rem;
+    white-space:pre-wrap; line-height:1.75; color:var(--color-text);
+  }
+  .copy-btn{
+    font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600;
+    background:transparent; border:1px solid var(--border-soft-strong);
+    color:var(--text-muted); border-radius:6px; padding:3px 9px;
+    cursor:pointer; transition:background .15s, color .15s;
+  }
+  .copy-btn:hover{ background:var(--color-text); color:var(--color-bg); border-color:var(--color-text); }
+
+  /* ---------- Tables ---------- */
+  .table-wrap{ overflow-x:auto; margin:20px 0 8px 0; border:1px solid var(--border-soft); border-radius:12px; }
+  table{ border-collapse:collapse; width:100%; min-width:560px; font-size:.9rem; }
+  thead th{
+    text-align:left; font-family:'Inter',sans-serif; font-weight:600;
+    background:var(--tint-badge-strong);
+    color:var(--color-text);
+    padding:10px 14px; border-bottom:1px solid var(--border-soft);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:10px 14px; border-bottom:1px solid var(--border-soft);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:var(--tint-hover); }
+  td.mono, th.mono{ font-family:'JetBrains Mono',monospace; }
+  tr.row-milestone td{ background:var(--tint-badge); font-weight:600; }
+  tr.row-milestone td:first-child{ border-left:3px solid var(--color-accent); }
+
+  /* ---------- Tabs ---------- */
+  .tabs{ margin:26px 0; max-width:720px; }
+  .tab-list{ display:flex; gap:4px; border-bottom:1px solid var(--border-soft); flex-wrap:wrap; }
+  .tab-btn{
+    font-family:'Inter',sans-serif; font-size:.9rem; font-weight:600;
+    background:none; border:none; color:var(--text-muted);
+    padding:10px 16px; cursor:pointer; position:relative; top:1px;
+    border-bottom:2px solid transparent;
+  }
+  .tab-btn[aria-selected="true"]{
+    color:var(--color-text); border-bottom:2px solid var(--color-accent);
+  }
+  .tab-btn:focus-visible, .accordion-trigger:focus-visible, .copy-btn:focus-visible, a:focus-visible, .toc-list a:focus-visible{
+    outline:2px solid var(--color-accent); outline-offset:2px;
+  }
+  .tab-panel{ display:none; padding:20px 2px; font-size:.95rem; }
+  .tab-panel.active{ display:block; }
+  .tab-panel ul{ padding-left:1.2em; }
+
+  /* ---------- Accordion ---------- */
+  .accordion{ max-width:720px; margin:24px 0; border:1px solid var(--border-soft); border-radius:12px; overflow:hidden; }
+  .accordion-item + .accordion-item{ border-top:1px solid var(--border-soft); }
+  .accordion-trigger{
+    width:100%; text-align:left; background:var(--color-bg); border:none;
+    padding:16px 20px; font-family:'Inter',sans-serif; font-weight:600; font-size:.95rem;
+    color:var(--color-text); cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .accordion-trigger:hover{ background:var(--tint-hover); }
+  .accordion-trigger .chev{ transition:transform .2s ease; color:var(--color-accent); flex-shrink:0; }
+  .accordion-trigger[aria-expanded="true"] .chev{ transform:rotate(180deg); }
+  .accordion-panel{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+    background:var(--color-bg);
+  }
+  .accordion-panel-inner{ padding:0 20px 18px 20px; font-size:.92rem; color:var(--text-muted); }
+
+  /* ---------- Stepper ---------- */
+  .stepper{
+    display:flex; overflow-x:auto; gap:0; margin:28px 0; padding-bottom:6px;
+  }
+  .step{
+    flex:1 1 180px; min-width:170px; position:relative; padding:0 16px 0 0;
+  }
+  .step .step-marker{
+    display:flex; align-items:center; gap:10px; margin-bottom:10px;
+  }
+  .step .step-num{
+    font-family:'JetBrains Mono',monospace; font-weight:600; font-size:.85rem;
+    width:26px; height:26px; border-radius:50%; border:1.5px solid var(--color-accent);
+    color:var(--color-accent); display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; background:var(--color-bg); z-index:1;
+  }
+  .step .step-line{
+    flex:1; height:1.5px; background:var(--border-soft-strong);
+  }
+  .step:last-child .step-line{ display:none; }
+  .step h4{ font-size:.92rem; font-weight:700; margin:0 0 4px 0; }
+  .step p{ font-size:.85rem; color:var(--text-muted); margin:0; max-width:none; }
+
+  /* ---------- Cards grid ---------- */
+  .card-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px; margin:24px 0; }
+  .info-card{
+    border:1px solid var(--border-soft); border-radius:12px; padding:18px;
+    background:var(--color-bg); transition:border-color .15s;
+  }
+  .info-card:hover{ border-color:var(--accent-soft); }
+  .info-card .info-icon{ font-size:1.4rem; margin-bottom:10px; display:block; }
+  .info-card h4{ font-size:.95rem; font-weight:700; margin:0 0 6px 0; }
+  .info-card p{ font-size:.85rem; color:var(--text-muted); margin:0; max-width:none; }
+
+  /* ---------- SVG diagram wrapper ---------- */
+  .diagram-wrap{
+    border:1px solid var(--border-soft); border-radius:12px;
+    padding:20px; background:var(--color-bg); margin:24px 0;
+    overflow-x:auto;
+  }
+  .diagram-wrap svg{ display:block; margin:0 auto; max-width:100%; height:auto; }
+
+  /* ---------- Key takeaways ---------- */
+  .takeaway-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:16px; margin-top:24px; }
+  .takeaway-card{
+    border:1px solid var(--border-soft); border-radius:12px; padding:20px;
+    background:var(--color-bg); border-top:3px solid var(--color-accent);
+  }
+  .takeaway-card .tk-num{ font-family:'JetBrains Mono',monospace; color:var(--color-accent); font-size:.85rem; font-weight:600; }
+  .takeaway-card h4{ font-size:.98rem; margin:8px 0 6px 0; font-weight:700; }
+  .takeaway-card p{ font-size:.87rem; color:var(--text-muted); margin:0; max-width:none; }
+
+  /* ---------- Footer nav ---------- */
+  .lesson-nav{
+    display:flex; justify-content:space-between; gap:16px; padding:44px 0 20px 0;
+    flex-wrap:wrap;
+  }
+  .nav-link{
+    flex:1 1 260px;
+    border:1px solid var(--border-soft); border-radius:12px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text);
+    transition:border-color .15s, background .15s;
+    display:block;
+  }
+  .nav-link:hover{ border-color:var(--color-accent); background:var(--tint-badge); }
+  .nav-link .nav-label{ font-size:.76rem; color:var(--color-neutral); font-weight:600; text-transform:none; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+  .nav-link.next .nav-label{ justify-content:flex-end; }
+  .nav-link .nav-title{ font-weight:700; font-size:.98rem; }
+  .nav-link.next{ text-align:right; }
+
+  .back-to-module{
+    text-align:center; padding-bottom:36px;
+  }
+  .back-to-module a{
+    font-size:.88rem; font-weight:600; text-decoration:none;
+    color:var(--text-muted);
+  }
+  .back-to-module a:hover{ color:var(--color-accent); }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-soft);
+    padding:26px 24px; text-align:center;
+    font-size:.8rem; color:var(--text-faint);
+  }
+
+  /* ---------- Back to top ---------- */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; z-index:800;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--color-text); color:var(--color-bg);
+    border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease;
+    box-shadow:0 4px 14px color-mix(in srgb, var(--color-text) 25%, transparent);
+  }
+  #back-to-top.visible{ opacity:1; pointer-events:auto; }
+  #back-to-top:hover{ transform:translateY(-3px); }
+
+  ::selection{ background:var(--tint-badge-strong); }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4v6M6 10h12M6 10v5M12 10v9M18 10v5" stroke="#FF9F1C" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </span>
+    <span>Gestion de Projet<small>Module 2 — Planification et organisation</small></span>
+  </div>
+  <nav class="menu-toc" aria-label="Sommaire rapide">
+    <a href="#wbs-definition">Définition</a>
+    <a href="#hierarchie">Hiérarchie</a>
+    <a href="#lots-livrables">Lots &amp; livrables</a>
+    <a href="#niveau-detail">Niveau de détail</a>
+    <a href="#regles">Règles</a>
+    <a href="#exemple">Exemple</a>
+    <a href="#representations">Représentations</a>
+    <a href="#erreurs">Erreurs</a>
+    <a href="#retenir">À retenir</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <span class="module-tag">Module 2 · Planification et organisation du projet</span>
+    <div class="badge-row">
+      <span class="badge badge-accent"><span class="dot"></span>Leçon 06</span>
+      <span class="badge">Niveau intermédiaire</span>
+      <span class="badge mono">⏱ 18 min</span>
+    </div>
+    <h1>Décomposition du projet et WBS</h1>
+    <p class="subtitle">Apprendre à découper un projet en éléments maîtrisables — du projet global jusqu'au lot de travail — grâce à la Work Breakdown Structure, l'outil pivot de toute planification fiable.</p>
+  </section>
+
+  <div class="toc-box">
+    <h2>Sommaire de la leçon</h2>
+    <ul class="toc-list">
+      <li><a href="#wbs-definition"><span class="toc-num mono">01</span> Qu'est-ce que le WBS ?</a></li>
+      <li><a href="#hierarchie"><span class="toc-num mono">02</span> La hiérarchie de décomposition</a></li>
+      <li><a href="#lots-livrables"><span class="toc-num mono">03</span> Lots de travail et livrables</a></li>
+      <li><a href="#niveau-detail"><span class="toc-num mono">04</span> Le bon niveau de détail</a></li>
+      <li><a href="#regles"><span class="toc-num mono">05</span> Règles de construction</a></li>
+      <li><a href="#exemple"><span class="toc-num mono">06</span> Exemple concret commenté</a></li>
+      <li><a href="#representations"><span class="toc-num mono">07</span> Formats de représentation</a></li>
+      <li><a href="#erreurs"><span class="toc-num mono">08</span> Erreurs fréquentes</a></li>
+      <li><a href="#retenir"><span class="toc-num mono">09</span> Points clés à retenir</a></li>
+    </ul>
+  </div>
+
+  <!-- 01 ================================================================ -->
+  <section class="lesson-section" id="wbs-definition">
+    <span class="eyebrow-code mono">§ 01</span>
+    <h2>Qu'est-ce que le WBS ?</h2>
+    <p>Le <strong>Work Breakdown Structure</strong> (WBS), ou <strong>structure de découpage du projet</strong> (SDP) en français, est une décomposition hiérarchique du travail total à réaliser pour atteindre les objectifs du projet et produire les livrables requis. C'est la colonne vertébrale de toute planification : sans elle, un chef de projet estime des durées et des coûts sur un ensemble flou, ce qui rend le pilotage quasi impossible.</p>
+    <p>Le principe est simple : un projet, pris dans son ensemble, est trop large pour être planifié, estimé ou confié directement à une équipe. Le WBS consiste à le fragmenter progressivement en morceaux de plus en plus petits, jusqu'à obtenir des unités de travail que l'on peut estimer, assigner et suivre avec précision.</p>
+
+    <div class="callout">
+      <span class="icon">💡</span>
+      <div>
+        <div class="callout-title">À retenir</div>
+        <p>Le WBS décompose le <strong>travail</strong>, pas le temps. Il ne dit pas dans quel ordre ni à quelle date les choses se font — c'est le rôle du planning et du diagramme de Gantt (leçon suivante). Le WBS répond à une seule question : « <em>que faut-il produire ?</em> »</p>
+      </div>
+    </div>
+
+    <p>Chaque niveau de décomposition se rapproche du travail réel jusqu'à atteindre le <strong>lot de travail</strong> (work package), l'unité la plus fine du WBS, suffisamment petite pour être estimée de façon fiable et confiée à une seule personne ou une seule équipe.</p>
+  </section>
+
+  <!-- 02 ================================================================ -->
+  <section class="lesson-section tinted" id="hierarchie">
+    <span class="eyebrow-code mono">§ 02</span>
+    <h2>La hiérarchie de décomposition</h2>
+    <p>La décomposition suit généralement quatre niveaux logiques, du plus large au plus fin. Le nombre de niveaux réels varie selon la taille du projet, mais l'enchaînement logique reste le même.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma de la hiérarchie de décomposition : Projet, puis Phases, puis Activités, puis Tâches, puis Lots de travail">
+        <defs>
+          <marker id="arrow1" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#8D99AE"/>
+          </marker>
+        </defs>
+        <!-- level 1 : projet -->
+        <rect x="300" y="10" width="120" height="42" rx="8" fill="#14213D"/>
+        <text x="360" y="36" text-anchor="middle" fill="#F4F6F8" font-family="Sora, sans-serif" font-weight="700" font-size="14">Projet</text>
+
+        <line x1="360" y1="52" x2="360" y2="72" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <!-- level 2 : phases -->
+        <line x1="130" y1="72" x2="590" y2="72" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="130" y1="72" x2="130" y2="86" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="360" y1="72" x2="360" y2="86" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="590" y1="72" x2="590" y2="86" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <rect x="70" y="86" width="120" height="38" rx="7" fill="#FF9F1C" fill-opacity="0.14" stroke="#FF9F1C" stroke-width="1.4"/>
+        <text x="130" y="110" text-anchor="middle" fill="#14213D" font-family="Sora, sans-serif" font-weight="700" font-size="12.5">Phase 1</text>
+
+        <rect x="300" y="86" width="120" height="38" rx="7" fill="#FF9F1C" fill-opacity="0.14" stroke="#FF9F1C" stroke-width="1.4"/>
+        <text x="360" y="110" text-anchor="middle" fill="#14213D" font-family="Sora, sans-serif" font-weight="700" font-size="12.5">Phase 2</text>
+
+        <rect x="530" y="86" width="120" height="38" rx="7" fill="#FF9F1C" fill-opacity="0.14" stroke="#FF9F1C" stroke-width="1.4"/>
+        <text x="590" y="110" text-anchor="middle" fill="#14213D" font-family="Sora, sans-serif" font-weight="700" font-size="12.5">Phase 3</text>
+
+        <!-- level 3 : activités (only under phase 2 to keep the diagram legible) -->
+        <line x1="360" y1="124" x2="360" y2="140" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="270" y1="140" x2="450" y2="140" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="270" y1="140" x2="270" y2="154" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="360" y1="140" x2="360" y2="154" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="450" y1="140" x2="450" y2="154" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <rect x="215" y="154" width="110" height="34" rx="6" fill="#F4F6F8" stroke="#14213D" stroke-width="1.2"/>
+        <text x="270" y="176" text-anchor="middle" fill="#14213D" font-family="Inter, sans-serif" font-weight="600" font-size="11.5">Activité 2.1</text>
+
+        <rect x="305" y="154" width="110" height="34" rx="6" fill="#F4F6F8" stroke="#14213D" stroke-width="1.2"/>
+        <text x="360" y="176" text-anchor="middle" fill="#14213D" font-family="Inter, sans-serif" font-weight="600" font-size="11.5">Activité 2.2</text>
+
+        <rect x="395" y="154" width="110" height="34" rx="6" fill="#F4F6F8" stroke="#14213D" stroke-width="1.2"/>
+        <text x="450" y="176" text-anchor="middle" fill="#14213D" font-family="Inter, sans-serif" font-weight="600" font-size="11.5">Activité 2.3</text>
+
+        <!-- level 4 : tâches / lot de travail under Activité 2.2 -->
+        <line x1="360" y1="188" x2="360" y2="200" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="300" y1="200" x2="420" y2="200" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="300" y1="200" x2="300" y2="212" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="420" y1="200" x2="420" y2="212" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <rect x="248" y="212" width="104" height="32" rx="14" fill="#14213D" fill-opacity="0.06" stroke="#8D99AE" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="300" y="232" text-anchor="middle" fill="#14213D" font-family="JetBrains Mono, monospace" font-size="10.5">Tâche 2.2.1</text>
+
+        <rect x="368" y="212" width="104" height="32" rx="14" fill="#14213D" fill-opacity="0.06" stroke="#8D99AE" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="420" y="232" text-anchor="middle" fill="#14213D" font-family="JetBrains Mono, monospace" font-size="10.5">Tâche 2.2.2</text>
+      </svg>
+    </div>
+    <p class="caption">Schéma 1 — La décomposition se poursuit uniquement là où c'est nécessaire : toutes les phases n'ont pas forcément le même nombre de niveaux.</p>
+
+    <h3>Les quatre niveaux</h3>
+    <div class="card-grid">
+      <div class="info-card">
+        <span class="info-icon">🗂️</span>
+        <h4>Projet</h4>
+        <p>Le niveau 0 : l'objectif global et le livrable final attendu par le commanditaire.</p>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">📐</span>
+        <h4>Phases</h4>
+        <p>De grands regroupements logiques ou chronologiques (ex. cadrage, conception, réalisation, clôture).</p>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">⚙️</span>
+        <h4>Activités</h4>
+        <p>Des ensembles de travail cohérents à l'intérieur d'une phase, encore trop larges pour être estimés finement.</p>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">✅</span>
+        <h4>Tâches / lots de travail</h4>
+        <p>L'unité la plus fine : assignable, estimable, mesurable — le niveau où s'arrête le découpage.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 ================================================================ -->
+  <section class="lesson-section" id="lots-livrables">
+    <span class="eyebrow-code mono">§ 03</span>
+    <h2>Lots de travail et livrables</h2>
+    <p>Deux notions structurent le WBS et sont souvent confondues :</p>
+    <ul>
+      <li><strong>Le lot de travail</strong> (work package) est une unité de travail : ce que l'équipe fait concrètement. Il se nomme avec un verbe d'action (« rédiger », « développer », « tester »).</li>
+      <li><strong>Le livrable</strong> est le résultat tangible attendu à l'issue d'un ensemble de lots de travail. Il se nomme avec un nom (« cahier des charges », « maquette validée », « module de paiement »).</li>
+    </ul>
+    <p>Un bon WBS reste <strong>orienté livrables</strong> : chaque branche de l'arborescence doit correspondre à quelque chose qui se produit, se livre ou se valide — jamais à une simple activité administrative sans résultat identifiable.</p>
+
+    <div class="pilot-card">
+      <div class="pilot-label">
+        <span>fiche_lot_travail.yaml</span>
+        <button class="copy-btn" type="button" data-copy-target="pilot-1">Copier</button>
+      </div>
+      <pre id="pilot-1" class="mono">code:            2.2.1
+lot_de_travail:  Intégrer le module de paiement
+livrable:        Module de paiement fonctionnel (recette interne)
+responsable:     Équipe Back-end
+duree_estimee:   24h
+prerequis:       Maquettes validées (1.3)
+statut:          À planifier</pre>
+    </div>
+
+    <div class="callout">
+      <span class="icon">📐</span>
+      <div>
+        <div class="callout-title">Bonnes pratiques professionnelles</div>
+        <p>Nommez systématiquement les lots de travail avec un <strong>verbe à l'infinitif</strong> et les livrables avec un <strong>nom</strong>. Cette convention, simple en apparence, évite la confusion la plus fréquente dans les WBS mal construits : mélanger « ce qu'on fait » et « ce qu'on obtient ».</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 ================================================================ -->
+  <section class="lesson-section tinted" id="niveau-detail">
+    <span class="eyebrow-code mono">§ 04</span>
+    <h2>Le bon niveau de détail</h2>
+    <p>Décomposer trop peu rend l'estimation imprécise et le suivi impossible. Décomposer à l'excès noie l'équipe dans une bureaucratie de reporting inutile. Le repère le plus utilisé pour calibrer un lot de travail est la <strong>règle des 8/80</strong>.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frise illustrant la règle des 8/80 heures pour calibrer un lot de travail">
+        <line x1="60" y1="70" x2="640" y2="70" stroke="#8D99AE" stroke-width="2"/>
+        <!-- zone trop fine -->
+        <rect x="60" y="55" width="120" height="30" fill="#14213D" fill-opacity="0.05"/>
+        <!-- zone correcte -->
+        <rect x="180" y="55" width="260" height="30" fill="#FF9F1C" fill-opacity="0.16"/>
+        <!-- zone trop large -->
+        <rect x="440" y="55" width="200" height="30" fill="#14213D" fill-opacity="0.05"/>
+
+        <line x1="180" y1="50" x2="180" y2="90" stroke="#FF9F1C" stroke-width="2.5"/>
+        <circle cx="180" cy="70" r="4" fill="#FF9F1C"/>
+        <text x="180" y="105" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#14213D">8h</text>
+
+        <line x1="440" y1="50" x2="440" y2="90" stroke="#FF9F1C" stroke-width="2.5"/>
+        <circle cx="440" cy="70" r="4" fill="#FF9F1C"/>
+        <text x="440" y="105" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#14213D">80h</text>
+
+        <text x="120" y="42" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">Trop fin</text>
+        <text x="310" y="42" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="12.5" fill="#14213D">Zone recommandée</text>
+        <text x="540" y="42" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE">Trop large</text>
+      </svg>
+    </div>
+    <p class="caption">Schéma 2 — Un lot de travail bien calibré représente typiquement entre une journée et deux semaines de charge de travail.</p>
+
+    <p>Cette règle n'est qu'un repère, pas un dogme : sur un projet de deux semaines, elle serait trop grossière ; sur un programme de deux ans, elle serait beaucoup trop fine. Le bon niveau de détail dépend toujours du contexte, de la fréquence de suivi souhaitée et de la maturité de l'équipe.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Situation</th>
+            <th scope="col">Symptôme</th>
+            <th scope="col" class="mono">Conséquence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Décomposition trop macro</td>
+            <td>Un seul lot de travail couvre « développer l'application »</td>
+            <td class="mono">Estimation peu fiable, avancement invisible pendant des semaines</td>
+          </tr>
+          <tr class="row-milestone">
+            <td>Décomposition équilibrée</td>
+            <td>Lots de travail de 1 à 10 jours, alignés sur les livrables</td>
+            <td class="mono">Suivi précis, charge de reporting raisonnable</td>
+          </tr>
+          <tr>
+            <td>Décomposition trop fine</td>
+            <td>Des tâches de 30 minutes apparaissent dans le WBS</td>
+            <td class="mono">Micro-management, WBS ingérable, mise à jour chronophage</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 05 ================================================================ -->
+  <section class="lesson-section" id="regles">
+    <span class="eyebrow-code mono">§ 05</span>
+    <h2>Règles de construction</h2>
+    <p>Quatre règles garantissent la solidité d'un WBS, quel que soit le secteur ou la taille du projet.</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-marker"><span class="step-num mono">1</span><span class="step-line"></span></div>
+        <h4>Partir du livrable final</h4>
+        <p>Identifier d'abord ce que le projet doit produire, avant de réfléchir aux tâches.</p>
+      </div>
+      <div class="step">
+        <div class="step-marker"><span class="step-num mono">2</span><span class="step-line"></span></div>
+        <h4>Décomposer par livrables</h4>
+        <p>Chaque niveau se découpe en sous-livrables, pas en étapes chronologiques arbitraires.</p>
+      </div>
+      <div class="step">
+        <div class="step-marker"><span class="step-num mono">3</span><span class="step-line"></span></div>
+        <h4>Appliquer la règle des 100 %</h4>
+        <p>La somme des éléments d'un niveau doit couvrir exactement 100 % du niveau parent, ni plus, ni moins.</p>
+      </div>
+      <div class="step">
+        <div class="step-marker"><span class="step-num mono">4</span><span class="step-line"></span></div>
+        <h4>Vérifier l'exclusivité mutuelle</h4>
+        <p>Deux branches ne doivent jamais se chevaucher : un même travail n'apparaît qu'à un seul endroit.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="icon">⚠️</span>
+      <div>
+        <div class="callout-title">Attention / erreur fréquente</div>
+        <p>La <strong>règle des 100 %</strong> est la plus violée en pratique. Elle interdit deux excès symétriques : oublier un pan du travail (le WBS ne couvre alors que 85 % du projet réel) et ajouter des éléments qui ne contribuent à aucun livrable du niveau supérieur (le WBS « déborde » du périmètre).</p>
+      </div>
+    </div>
+
+    <h3>Codification</h3>
+    <p>Chaque élément du WBS reçoit un <strong>code hiérarchique</strong> (ex. <code class="mono">2.2.1</code>) qui indique instantanément sa position dans l'arborescence. Cette codification est ensuite reprise dans le planning, le budget et les rapports d'avancement — elle devient le langage commun de toute l'équipe projet.</p>
+  </section>
+
+  <!-- 06 ================================================================ -->
+  <section class="lesson-section tinted" id="exemple">
+    <span class="eyebrow-code mono">§ 06</span>
+    <h2>Exemple concret commenté</h2>
+    <p>Prenons un projet de <strong>refonte d'un site e-commerce</strong>. Le livrable final est « Site e-commerce refondu et mis en production ». Voici sa décomposition sur trois niveaux.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 740 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Arborescence WBS d'un projet de refonte de site e-commerce, du projet aux lots de travail">
+        <rect x="290" y="8" width="160" height="42" rx="8" fill="#14213D"/>
+        <text x="370" y="34" text-anchor="middle" fill="#F4F6F8" font-family="Sora, sans-serif" font-weight="700" font-size="13">1.0 Site e-commerce</text>
+
+        <line x1="370" y1="50" x2="370" y2="66" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="90" y1="66" x2="650" y2="66" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="90" y1="66" x2="90" y2="80" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="280" y1="66" x2="280" y2="80" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="460" y1="66" x2="460" y2="80" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="650" y1="66" x2="650" y2="80" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <rect x="20" y="80" width="140" height="36" rx="7" fill="#FF9F1C" fill-opacity="0.14" stroke="#FF9F1C" stroke-width="1.3"/>
+        <text x="90" y="103" text-anchor="middle" fill="#14213D" font-family="Sora, sans-serif" font-weight="700" font-size="11.5">1.1 Cadrage</text>
+
+        <rect x="210" y="80" width="140" height="36" rx="7" fill="#FF9F1C" fill-opacity="0.14" stroke="#FF9F1C" stroke-width="1.3"/>
+        <text x="280" y="103" text-anchor="middle" fill="#14213D" font-family="Sora, sans-serif" font-weight="700" font-size="11.5">1.2 Design UX/UI</text>
+
+        <rect x="390" y="80" width="140" height="36" rx="7" fill="#FF9F1C" fill-opacity="0.14" stroke="#FF9F1C" stroke-width="1.3"/>
+        <text x="460" y="103" text-anchor="middle" fill="#14213D" font-family="Sora, sans-serif" font-weight="700" font-size="11.5">1.3 Développement</text>
+
+        <rect x="580" y="80" width="140" height="36" rx="7" fill="#FF9F1C" fill-opacity="0.14" stroke="#FF9F1C" stroke-width="1.3"/>
+        <text x="650" y="103" text-anchor="middle" fill="#14213D" font-family="Sora, sans-serif" font-weight="700" font-size="11.5">1.4 Mise en prod.</text>
+
+        <!-- children under 1.3 Développement -->
+        <line x1="460" y1="116" x2="460" y2="132" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="330" y1="132" x2="590" y2="132" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="330" y1="132" x2="330" y2="146" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="460" y1="132" x2="460" y2="146" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="590" y1="132" x2="590" y2="146" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <rect x="268" y="146" width="124" height="34" rx="6" fill="#F4F6F8" stroke="#14213D" stroke-width="1.2"/>
+        <text x="330" y="167" text-anchor="middle" fill="#14213D" font-family="Inter, sans-serif" font-weight="600" font-size="11">1.3.1 Catalogue produits</text>
+
+        <rect x="398" y="146" width="124" height="34" rx="6" fill="#F4F6F8" stroke="#14213D" stroke-width="1.2"/>
+        <text x="460" y="167" text-anchor="middle" fill="#14213D" font-family="Inter, sans-serif" font-weight="600" font-size="11">1.3.2 Paiement</text>
+
+        <rect x="528" y="146" width="124" height="34" rx="6" fill="#F4F6F8" stroke="#14213D" stroke-width="1.2"/>
+        <text x="590" y="167" text-anchor="middle" fill="#14213D" font-family="Inter, sans-serif" font-weight="600" font-size="11">1.3.3 Compte client</text>
+
+        <!-- lots under 1.3.2 -->
+        <line x1="460" y1="180" x2="460" y2="194" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="400" y1="194" x2="520" y2="194" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="400" y1="194" x2="400" y2="206" stroke="#8D99AE" stroke-width="1.5"/>
+        <line x1="520" y1="194" x2="520" y2="206" stroke="#8D99AE" stroke-width="1.5"/>
+
+        <rect x="345" y="206" width="110" height="30" rx="14" fill="#14213D" fill-opacity="0.06" stroke="#8D99AE" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="400" y="225" text-anchor="middle" fill="#14213D" font-family="JetBrains Mono, monospace" font-size="10">1.3.2.1 Intégrer API</text>
+
+        <rect x="465" y="206" width="110" height="30" rx="14" fill="#14213D" fill-opacity="0.06" stroke="#8D99AE" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="520" y="225" text-anchor="middle" fill="#14213D" font-family="JetBrains Mono, monospace" font-size="10">1.3.2.2 Tester paiement</text>
+
+        <text x="370" y="270" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#8D99AE" font-style="italic">Niveau 0 — Projet · Niveau 1 — Phases · Niveau 2 — Activités · Niveau 3 — Lots de travail</text>
+      </svg>
+    </div>
+    <p class="caption">Schéma 3 — Seule la branche « Développement » est développée jusqu'au lot de travail ici, pour garder le schéma lisible ; en pratique, les quatre phases sont décomposées au même niveau de détail.</p>
+
+    <p>Traduit en tableau, le dictionnaire du WBS associé ressemble à ceci :</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" class="mono">Code</th>
+            <th scope="col">Lot de travail</th>
+            <th scope="col">Livrable associé</th>
+            <th scope="col" class="mono">Charge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">1.1</td>
+            <td>Rédiger la charte et cadrer le besoin</td>
+            <td>Charte de projet validée</td>
+            <td class="mono">40h</td>
+          </tr>
+          <tr>
+            <td class="mono">1.2</td>
+            <td>Concevoir les maquettes UX/UI</td>
+            <td>Maquettes validées</td>
+            <td class="mono">64h</td>
+          </tr>
+          <tr class="row-milestone">
+            <td class="mono">1.3.2.1</td>
+            <td>Intégrer l'API de paiement</td>
+            <td>Module de paiement intégré</td>
+            <td class="mono">24h</td>
+          </tr>
+          <tr>
+            <td class="mono">1.3.2.2</td>
+            <td>Tester le parcours de paiement</td>
+            <td>Rapport de tests de paiement</td>
+            <td class="mono">16h</td>
+          </tr>
+          <tr>
+            <td class="mono">1.4</td>
+            <td>Déployer en production</td>
+            <td>Site en ligne</td>
+            <td class="mono">12h</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 07 ================================================================ -->
+  <section class="lesson-section" id="representations">
+    <span class="eyebrow-code mono">§ 07</span>
+    <h2>Formats de représentation</h2>
+    <p>Le même WBS peut se présenter sous plusieurs formes, selon l'usage et la taille de l'équipe.</p>
+
+    <div class="tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Formats de représentation du WBS">
+        <button class="tab-btn" role="tab" id="tab-arbo" aria-selected="true" aria-controls="panel-arbo" data-tab="arbo">Structure arborescente</button>
+        <button class="tab-btn" role="tab" id="tab-liste" aria-selected="false" aria-controls="panel-liste" data-tab="liste" tabindex="-1">Liste indentée</button>
+        <button class="tab-btn" role="tab" id="tab-tableau" aria-selected="false" aria-controls="panel-tableau" data-tab="tableau" tabindex="-1">Tableau structuré</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-arbo" role="tabpanel" aria-labelledby="tab-arbo" data-panel="arbo">
+        <p>La forme la plus visuelle : chaque élément est une boîte reliée à son parent, comme un organigramme. Idéale pour présenter le découpage global en comité de pilotage — c'est le format utilisé dans les schémas 1 et 3 ci-dessus.</p>
+        <p><strong>Avantage</strong> : lecture immédiate de la hiérarchie. <strong>Limite</strong> : devient illisible au-delà de 30-40 éléments.</p>
+      </div>
+      <div class="tab-panel" id="panel-liste" role="tabpanel" aria-labelledby="tab-liste" data-panel="liste" hidden>
+        <p>Le WBS s'écrit comme un plan de document, avec une indentation par niveau :</p>
+        <ul>
+          <li>1.0 Site e-commerce refondu
+            <ul>
+              <li>1.1 Cadrage
+                <ul><li>1.1.1 Rédiger la charte</li></ul>
+              </li>
+              <li>1.2 Design UX/UI</li>
+              <li>1.3 Développement
+                <ul><li>1.3.2 Paiement</li></ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p><strong>Avantage</strong> : facile à rédiger dans un simple traitement de texte. <strong>Limite</strong> : moins parlant pour un public non technique.</p>
+      </div>
+      <div class="tab-panel" id="panel-tableau" role="tabpanel" aria-labelledby="tab-tableau" data-panel="tableau" hidden>
+        <p>Le WBS devient un <strong>dictionnaire</strong> : un tableau où chaque ligne est un lot de travail, avec ses colonnes de charge, responsable, livrable et statut — comme illustré au § 06. C'est le format qui s'exporte le mieux vers un outil de planification.</p>
+        <p><strong>Avantage</strong> : directement exploitable pour l'estimation et le suivi. <strong>Limite</strong> : masque la hiérarchie si le tableau n'est pas trié par code.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 ================================================================ -->
+  <section class="lesson-section tinted" id="erreurs">
+    <span class="eyebrow-code mono">§ 08</span>
+    <h2>Erreurs fréquentes</h2>
+    <p>Quelques pièges reviennent systématiquement dans les premiers WBS d'un chef de projet débutant.</p>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="true" aria-controls="acc-1">
+          <span>Confondre le WBS avec un planning</span>
+          <span class="chev" aria-hidden="true">⌄</span>
+        </button>
+        <div class="accordion-panel" id="acc-1" style="max-height:200px;">
+          <div class="accordion-panel-inner">Le WBS ne contient ni dates, ni durées, ni dépendances entre tâches. Ces éléments arrivent seulement lors de la mise en planning, une fois le WBS stabilisé.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-2">
+          <span>Décomposer par corps de métier plutôt que par livrable</span>
+          <span class="chev" aria-hidden="true">⌄</span>
+        </button>
+        <div class="accordion-panel" id="acc-2">
+          <div class="accordion-panel-inner">Structurer le WBS selon l'organigramme de l'entreprise (« équipe design », « équipe dev », « équipe qualité ») au lieu des livrables mélange organisation et contenu, et complique la mesure d'avancement réel du projet.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-3">
+          <span>Oublier les livrables de gestion de projet</span>
+          <span class="chev" aria-hidden="true">⌄</span>
+        </button>
+        <div class="accordion-panel" id="acc-3">
+          <div class="accordion-panel-inner">Le pilotage lui-même produit des livrables (comptes rendus, plans de gestion des risques, rapports d'avancement) qui doivent apparaître dans le WBS au même titre que les livrables techniques.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-4">
+          <span>Figer le WBS trop tôt</span>
+          <span class="chev" aria-hidden="true">⌄</span>
+        </button>
+        <div class="accordion-panel" id="acc-4">
+          <div class="accordion-panel-inner">Le WBS se précise par itérations, notamment pour les phases lointaines dans le temps où l'information est encore incomplète (élaboration progressive). Vouloir le détailler intégralement dès le lancement mène souvent à le refaire en cours de route.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 ================================================================ -->
+  <section class="lesson-section" id="retenir">
+    <span class="eyebrow-code mono">§ 09</span>
+    <h2>Points clés à retenir</h2>
+    <div class="takeaway-grid">
+      <div class="takeaway-card">
+        <span class="tk-num mono">01</span>
+        <h4>Décomposer le travail, pas le temps</h4>
+        <p>Le WBS répond à « que faut-il produire ? », jamais à « quand ? ».</p>
+      </div>
+      <div class="takeaway-card">
+        <span class="tk-num mono">02</span>
+        <h4>Quatre niveaux type</h4>
+        <p>Projet → phases → activités → tâches / lots de travail, jusqu'au niveau estimable.</p>
+      </div>
+      <div class="takeaway-card">
+        <span class="tk-num mono">03</span>
+        <h4>Règle des 8/80</h4>
+        <p>Un lot de travail bien calibré représente entre une journée et deux semaines de charge.</p>
+      </div>
+      <div class="takeaway-card">
+        <span class="tk-num mono">04</span>
+        <h4>Règle des 100 %</h4>
+        <p>Chaque niveau doit couvrir l'intégralité — et rien de plus — du niveau parent.</p>
+      </div>
+      <div class="takeaway-card">
+        <span class="tk-num mono">05</span>
+        <h4>Orientation livrables</h4>
+        <p>Chaque branche produit quelque chose de vérifiable, jamais une simple activité floue.</p>
+      </div>
+      <div class="takeaway-card">
+        <span class="tk-num mono">06</span>
+        <h4>Un langage commun</h4>
+        <p>Le code WBS (ex. 1.3.2.1) devient la référence partagée par le planning et le budget.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="icon">🔗</span>
+      <div>
+        <div class="callout-title">Pour aller plus loin</div>
+        <p>La prochaine leçon utilise directement les lots de travail du WBS comme base du planning : c'est là qu'ils recevront enfin des durées, des dépendances et des dates.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="lesson-nav">
+    <a class="nav-link prev" href="#" aria-label="Leçon précédente : Charte de projet et lancement">
+      <span class="nav-label">← Leçon précédente</span>
+      <span class="nav-title">Leçon 05 — Charte de projet et lancement</span>
+    </a>
+    <a class="nav-link next" href="#" aria-label="Leçon suivante : Planning et diagramme de Gantt">
+      <span class="nav-label">Leçon suivante →</span>
+      <span class="nav-title">Leçon 07 — Planning et diagramme de Gantt</span>
+    </a>
+  </div>
+
+  <div class="back-to-module">
+    <a href="#">↑ Retour au sommaire du Module 2 — Planification et organisation du projet</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  Filière Gestion de Projet — Module 2, Leçon 06 · Support de cours en ligne
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Reading progress bar ---------- */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  /* ---------- Back to top ---------- */
+  var backToTop = document.getElementById('back-to-top');
+  function toggleBackToTop(){
+    if(window.scrollY > 500){ backToTop.classList.add('visible'); }
+    else{ backToTop.classList.remove('visible'); }
+  }
+  window.addEventListener('scroll', toggleBackToTop, { passive:true });
+  toggleBackToTop();
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  /* ---------- Scroll reveal animations ---------- */
+  var sections = document.querySelectorAll('.lesson-section');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function(s){ io.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('in-view'); });
+  }
+
+  /* ---------- Tabs ---------- */
+  document.querySelectorAll('[data-tabs]').forEach(function(tabGroup){
+    var buttons = tabGroup.querySelectorAll('.tab-btn');
+    var panels = tabGroup.querySelectorAll('.tab-panel');
+    function activate(name){
+      buttons.forEach(function(b){
+        var active = b.getAttribute('data-tab') === name;
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+        b.tabIndex = active ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var active = p.getAttribute('data-panel') === name;
+        p.classList.toggle('active', active);
+        if(active){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+    buttons.forEach(function(btn, idx){
+      btn.addEventListener('click', function(){ activate(btn.getAttribute('data-tab')); });
+      btn.addEventListener('keydown', function(e){
+        var i = Array.prototype.indexOf.call(buttons, btn);
+        if(e.key === 'ArrowRight'){ e.preventDefault(); buttons[(i+1) % buttons.length].focus(); buttons[(i+1) % buttons.length].click(); }
+        if(e.key === 'ArrowLeft'){ e.preventDefault(); buttons[(i-1+buttons.length) % buttons.length].focus(); buttons[(i-1+buttons.length) % buttons.length].click(); }
+      });
+    });
+  });
+
+  /* ---------- Accordion ---------- */
+  document.querySelectorAll('[data-accordion] .accordion-trigger').forEach(function(trigger){
+    var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+    function setState(open){
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : '0px';
+    }
+    setState(trigger.getAttribute('aria-expanded') === 'true');
+    trigger.addEventListener('click', function(){
+      setState(trigger.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  window.addEventListener('load', function(){
+    document.querySelectorAll('[data-accordion] .accordion-trigger[aria-expanded="true"]').forEach(function(t){
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+    });
+  });
+
+  /* ---------- Copy buttons ---------- */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.getAttribute('data-copy-target'));
+      if(!target) return;
+      var text = target.textContent;
+      var done = function(){
+        var original = btn.textContent;
+        btn.textContent = 'Copié ✓';
+        setTimeout(function(){ btn.textContent = original; }, 1600);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        done();
+      }
+    });
+  });
+
+  /* ---------- Smooth-scroll offset for sticky header (native scroll-behavior handles most; ensure focus for a11y) ---------- */
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){
+    link.addEventListener('click', function(e){
+      var id = link.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if(el){
+        e.preventDefault();
+        el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start' });
+        history.pushState(null, '', '#' + id);
+        el.setAttribute('tabindex','-1');
+        el.focus({ preventScroll:true });
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

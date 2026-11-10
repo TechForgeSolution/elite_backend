@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 06 — Utiliser l’IA pour trouver des idées et préparer un brief créatif</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A0A0F'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%237C3AED'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F5FA;--color-text:#0A0A0F;--color-text-muted:#62616B;--color-accent:#7C3AED;--color-accent-soft:#F1EBFF;--color-border:#E5E1EB;--r:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.2;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(2.1rem,5.5vw,3.5rem)}
+h2{font-size:clamp(1.6rem,3.4vw,2.2rem);margin-bottom:1rem}
+h3{font-size:1.2rem;font-weight:600;margin-bottom:.4rem}
+p{margin:0 0 1.1rem}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+.small{font-size:.875rem;color:var(--color-text-muted)}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:30}
+header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:60px}
+.brand{font:700 1rem Sora,sans-serif;color:var(--color-text);text-decoration:none;display:flex;align-items:center;gap:.6rem}
+.brand i{width:22px;height:22px;border-radius:7px;background:var(--color-text);position:relative;display:block}
+.brand i:after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--color-accent)}
+.btn{display:inline-block;padding:.5rem 1rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text);text-decoration:none;font-weight:500;font-size:.9rem;background:#fff;transition:border-color .2s,color .2s,transform .2s}
+.btn:hover{border-color:var(--color-accent);color:var(--color-accent);transform:translateY(-1px)}
+.hero{padding:4.5rem 0 3rem;background:var(--color-bg-alt)}
+.hero .wide{display:grid;grid-template-columns:1.3fr 1fr;gap:2.5rem;align-items:center}
+.hero p.lead{font-size:1.2rem;color:var(--color-text-muted);margin:1.2rem 0 1.5rem;max-width:34ch}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem}
+.badge{background:var(--color-accent-soft);color:#5B21B6;border-radius:999px;padding:.25rem .8rem;font-size:.85rem;font-weight:600}
+.badge.plain{background:#fff;border:1px solid var(--color-border);color:var(--color-text)}
+.hero-art{width:100%;height:auto}
+.toc{padding:3rem 0 1rem}
+.toc ol{list-style:none;counter-reset:t;margin:1rem 0 0;padding:0;display:grid;gap:.5rem}
+.toc a{display:flex;gap:1rem;align-items:center;padding:.8rem 1rem;border:1px solid var(--color-border);border-radius:12px;text-decoration:none;color:var(--color-text);font-weight:500;transition:border-color .2s,background .2s}
+.toc a:before{counter-increment:t;content:counter(t);width:1.9rem;height:1.9rem;border-radius:50%;background:var(--color-accent-soft);color:var(--color-accent);display:grid;place-items:center;font:700 .85rem Sora,sans-serif;flex:none}
+.toc a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+section.sec{padding:4rem 0}
+section.alt{background:var(--color-bg-alt)}
+.fig{margin:1.8rem 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem}
+.alt .fig{background:#fff}
+.fig svg{display:block;width:100%;height:auto}
+.fig figcaption{font-size:.875rem;color:var(--color-text-muted);margin-top:.6rem}
+.callout{display:flex;gap:.9rem;padding:1.1rem 1.2rem;margin:1.6rem 0;border-radius:var(--r);background:var(--color-accent-soft);border-left:4px solid var(--color-accent)}
+.callout b{display:block;font-family:Sora,sans-serif;margin-bottom:.15rem}
+.callout .ic{font-size:1.3rem;line-height:1.5}
+.callout p{margin:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin:1.6rem 0}
+.card{background:var(--color-bg-alt);border-radius:var(--r);padding:1.3rem;transition:transform .2s,box-shadow .2s}
+.alt .card{background:#fff;border:1px solid var(--color-border)}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(124,58,237,.12)}
+.card svg{width:44px;height:44px;margin-bottom:.7rem}
+.card p{margin:0;font-size:.97rem;color:var(--color-text-muted)}
+.tabs [role=tablist]{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.tabs [role=tab]{font:600 .95rem Inter,sans-serif;padding:.55rem 1rem;border-radius:999px;border:1px solid var(--color-border);background:#fff;color:var(--color-text);cursor:pointer;transition:all .2s}
+.tabs [role=tab]:hover{border-color:var(--color-accent)}
+.tabs [role=tab][aria-selected=true]{background:var(--color-text);color:#fff;border-color:var(--color-text)}
+.tabs [role=tabpanel]{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1.4rem}
+.tabs [role=tabpanel][hidden]{display:none}
+.tabs .row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:center}
+.tabs svg{width:100%;height:auto}
+.stepper{list-style:none;counter-reset:s;margin:1.8rem 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;position:relative}
+.stepper li{counter-increment:s;position:relative;padding-top:2.6rem;font-size:.95rem}
+.stepper li:before{content:counter(s);position:absolute;top:0;left:0;width:2rem;height:2rem;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;font:700 .9rem Sora,sans-serif;z-index:1}
+.stepper li:after{content:"";position:absolute;top:1rem;left:2rem;right:-.8rem;height:2px;background:var(--color-border)}
+.stepper li:last-child:after{display:none}
+.stepper b{display:block;font-family:Sora,sans-serif}
+details{background:#fff;border:1px solid var(--color-border);border-radius:12px;margin-bottom:.7rem;transition:border-color .2s}
+details[open]{border-color:var(--color-accent)}
+summary{cursor:pointer;padding:1rem 1.2rem;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";color:var(--color-accent);font:700 1.3rem/1 Sora,sans-serif;transition:transform .2s}
+details[open] summary:after{transform:rotate(45deg)}
+details .in{padding:0 1.2rem 1.1rem}
+details .in p{margin:0 0 .6rem}
+.code{position:relative;background:#0A0A0F;color:#EDEBF2;border-radius:var(--r);margin:1.6rem 0;overflow:hidden}
+.code .hd{display:flex;justify-content:space-between;align-items:center;padding:.5rem .6rem .5rem 1.1rem;border-bottom:1px solid #26232e;font-size:.8rem;color:#A9A6B5}
+.code button{background:#1c1925;color:#fff;border:1px solid #38334a;border-radius:8px;padding:.3rem .8rem;font:500 .8rem Inter,sans-serif;cursor:pointer}
+.code button:hover{border-color:#A78BFA}
+.code pre{margin:0;padding:1rem 1.1rem;overflow-x:auto;font:.9rem/1.7 ui-monospace,Menlo,Consolas,monospace}
+.code .k{color:#C4B5FD}.code .c{color:#8C8998}
+.sw{display:flex;gap:.5rem;margin:1rem 0}
+.sw span{flex:1;height:54px;border-radius:10px;border:1px solid var(--color-border);display:flex;align-items:end;padding:.3rem .5rem;font-size:.75rem}
+.keys{display:grid;gap:.7rem;margin:1.5rem 0;padding:0;list-style:none}
+.keys li{display:flex;gap:.9rem;background:#fff;border:1px solid var(--color-border);border-radius:12px;padding:.9rem 1.1rem}
+.keys li:before{content:"";flex:none;width:.6rem;height:.6rem;border-radius:50%;background:var(--color-accent);margin-top:.65rem}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:3rem 0 2rem}
+.pn a{display:block;padding:1.2rem;border:1px solid var(--color-border);border-radius:var(--r);text-decoration:none;color:var(--color-text);transition:border-color .2s,transform .2s}
+.pn a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.pn .off{opacity:.5;pointer-events:none}
+.pn a.nx{text-align:right}
+.pn small{display:block;color:var(--color-text-muted)}
+.pn b{font-family:Sora,sans-serif}
+footer{border-top:1px solid var(--color-border);padding:1.5rem 0;text-align:center}
+#top{position:fixed;right:1.2rem;bottom:1.2rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-text);color:#fff;font-size:1.1rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.on{opacity:1;pointer-events:auto}
+#top:hover{background:var(--color-accent)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media(max-width:760px){.hero .wide{grid-template-columns:1fr}.hero-art{max-width:320px}.tabs .row{grid-template-columns:1fr}.stepper{grid-template-columns:1fr}.stepper li{padding:0 0 0 2.8rem;min-height:2rem}.stepper li:after{top:2rem;left:1rem;right:auto;bottom:-.8rem;width:2px;height:auto}.pn{grid-template-columns:1fr}.pn a.nx{text-align:left}section.sec{padding:3rem 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+.zone{display:grid;gap:.6rem;margin:1.4rem 0}.zone div{display:flex;gap:.8rem;align-items:flex-start;padding:.8rem 1rem;background:#fff;border:1px solid var(--color-border);border-radius:12px}.zone b{font-family:Sora,sans-serif;color:var(--color-accent);flex:none;min-width:5.2rem}.tabs ul{margin:.6rem 0 0;padding-left:1.1rem}.tabs li{margin-bottom:.25rem}.tabs .sp{margin-top:.8rem}
+</style>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+<a class="brand" href="#debut"><i></i>Design &amp; Canva</a>
+<a class="btn" href="#sommaire">Sommaire</a>
+</div></header>
+
+<main id="debut">
+<section class="hero"><div class="wide">
+<div>
+<div class="badges"><span class="badge">Module 2 — Création professionnelle avec Canva et l’IA</span></div>
+<h1 style="margin-top:1.2rem">Leçon 06<br>Utiliser l’IA pour trouver des idées et préparer un brief créatif</h1>
+<p class="lead">Faites de l’IA votre assistant de conception, sans perdre le contrôle du message ni de la direction artistique.</p>
+<div class="badges"><span class="badge plain">⏱ 15 min de lecture</span><span class="badge plain">Niveau débutant</span></div>
+</div>
+<svg class="hero-art" viewBox="0 0 320 300" role="img" aria-label="Une bulle de dialogue violette en dialogue avec un document de brief organisé en sections">
+<rect x="10" y="10" width="300" height="280" rx="16" fill="#fff" stroke="#E5E1EB"/>
+<rect x="34" y="38" width="130" height="70" rx="14" fill="#7C3AED"/><path d="M60 108l-4 22 24-22z" fill="#7C3AED"/>
+<circle cx="76" cy="73" r="5" fill="#fff"/><circle cx="98" cy="73" r="5" fill="#fff"/><circle cx="120" cy="73" r="5" fill="#fff"/>
+<rect x="150" y="150" width="136" height="116" rx="10" fill="#fff" stroke="#0A0A0F" stroke-width="1.5"/>
+<rect x="164" y="166" width="70" height="10" rx="3" fill="#0A0A0F"/>
+<rect x="164" y="190" width="104" height="6" rx="3" fill="#E5E1EB"/><rect x="164" y="204" width="90" height="6" rx="3" fill="#E5E1EB"/><rect x="164" y="218" width="104" height="6" rx="3" fill="#E5E1EB"/>
+<rect x="164" y="238" width="48" height="14" rx="7" fill="#F1EBFF" stroke="#7C3AED"/>
+</svg>
+</div></section>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire de la leçon"><div class="wrap">
+<h2>Au programme</h2>
+<p class="small" style="margin:0">Objectif : utiliser l’IA comme assistant de conception sans perdre le contrôle du message et de la direction artistique.</p>
+<ol>
+<li><a href="#s1">L’IA, partenaire créatif et assistant de conception</a></li>
+<li><a href="#s2">Les bases du prompt créatif</a></li>
+<li><a href="#s3">Générer des idées et des angles originaux</a></li>
+<li><a href="#s4">Personas et messages ciblés</a></li>
+<li><a href="#s5">Rédiger et structurer un brief créatif complet</a></li>
+<li><a href="#s6">Variantes de slogans, d’accroches et de CTA</a></li>
+<li><a href="#s7">Vérifier, sélectionner et filtrer</a></li>
+<li><a href="#s8">Points clés à retenir</a></li>
+</ol></div></nav>
+
+<section class="sec" id="s1"><div class="wrap rv">
+<h2>L’IA, partenaire créatif et assistant de conception</h2>
+<p>Une IA générative (comme Claude, ChatGPT ou la Magic Studio de Canva) produit du texte et des idées à partir de vos instructions. Elle fonctionne comme un assistant très rapide : elle propose beaucoup, vite. Mais elle ne connaît ni votre client, ni votre marque, ni vos objectifs réels, à moins que vous les lui donniez.</p>
+<div class="cards">
+<div class="card"><h3>Ce qu’elle fait bien</h3><p>Lister des idées, reformuler, structurer, produire des variantes, débloquer une page blanche.</p></div>
+<div class="card"><h3>Ce qu’elle ne fait pas</h3><p>Décider à votre place, connaître votre contexte, garantir l’exactitude ou l’originalité.</p></div>
+</div>
+<figure class="fig"><svg viewBox="0 0 600 150" role="img" aria-label="Boucle de travail : vous donnez la direction, l'IA propose, vous triez et décidez">
+<g font-family="Sora,sans-serif" font-weight="700" font-size="15" text-anchor="middle">
+<rect x="20" y="40" width="150" height="60" rx="30" fill="#0A0A0F"/><text x="95" y="76" fill="#fff">Vous cadrez</text>
+<rect x="225" y="40" width="150" height="60" rx="30" fill="#7C3AED"/><text x="300" y="76" fill="#fff">L’IA propose</text>
+<rect x="430" y="40" width="150" height="60" rx="30" fill="#fff" stroke="#0A0A0F" stroke-width="1.5"/><text x="505" y="76" fill="#0A0A0F">Vous décidez</text></g>
+<g stroke="#7C3AED" stroke-width="2" fill="none"><path d="M172 70h50M377 70h50"/><path d="M505 104v22H95v-22" stroke-dasharray="4 4"/></g>
+</svg><figcaption>L’humain ouvre et ferme la boucle : la direction artistique reste la vôtre.</figcaption></figure>
+<div class="callout"><span class="ic" aria-hidden="true">💡</span><div><b>À retenir</b><p>L’IA propose, vous disposez. Le message, le ton et le choix final restent des décisions humaines.</p></div></div>
+</div></section>
+
+<section class="sec alt" id="s2"><div class="wrap rv">
+<h2>Les bases du prompt créatif</h2>
+<p>Un prompt est l’instruction que vous donnez à l’IA. Plus il est précis, plus la réponse est utile. Un bon prompt contient cinq éléments :</p>
+<div class="zone">
+<div><b>Rôle</b><span>Qui l’IA doit incarner : « Tu es directeur artistique dans une agence ».</span></div>
+<div><b>Contexte</b><span>Votre projet, votre marque, votre public, l’objectif.</span></div>
+<div><b>Tâche</b><span>Ce que vous demandez, avec un nombre précis : « 10 idées de campagne ».</span></div>
+<div><b>Ton</b><span>Chaleureux, premium, humoristique, sobre…</span></div>
+<div><b>Contraintes</b><span>Longueur, mots interdits, format de réponse, éléments à éviter.</span></div>
+</div>
+<div class="tabs">
+<div role="tablist" aria-label="Qualité du prompt">
+<button role="tab" id="a1" aria-controls="b1" aria-selected="true">Prompt vague</button>
+<button role="tab" id="a2" aria-controls="b2" aria-selected="false" tabindex="-1">Prompt structuré</button>
+</div>
+<div role="tabpanel" id="b1" aria-labelledby="a1"><h3>Résultat : générique</h3><p>Une demande courte donne une réponse banale, valable pour n’importe quelle marque.</p>
+<div class="code"><div class="hd"><span>Prompt</span><button type="button" data-copy>Copier</button></div><pre><code>Donne-moi des idées pour une affiche de café.</code></pre></div></div>
+<div role="tabpanel" id="b2" aria-labelledby="a2" hidden><h3>Résultat : exploitable</h3><p>Chaque élément oriente la réponse vers votre projet réel.</p>
+<div class="code"><div class="hd"><span>Prompt</span><button type="button" data-copy>Copier</button></div><pre><code><span class="k">Rôle :</span> tu es directeur artistique.
+<span class="k">Contexte :</span> café de quartier à Lyon, clientèle
+d'étudiants, ouverture d'une terrasse en mai.
+<span class="k">Tâche :</span> propose 5 idées d'affiche A3.
+<span class="k">Ton :</span> chaleureux, simple, un peu d'humour.
+<span class="k">Contraintes :</span> max 8 mots par accroche,
+pas de jeu de mots sur « café ».</code></pre></div></div>
+</div>
+<div class="callout"><span class="ic" aria-hidden="true">🎨</span><div><b>Bonne pratique</b><p>Gardez vos prompts dans un document : un bon prompt se réutilise et s’améliore au fil des projets.</p></div></div>
+</div></section>
+
+<section class="sec" id="s3"><div class="wrap rv">
+<h2>Générer des idées et des angles originaux</h2>
+<p>Un <strong>angle créatif</strong> est la manière particulière de raconter votre message : par l’humour, l’émotion, la preuve, le contraste, la nostalgie… Demandez toujours plusieurs angles, puis creusez les plus prometteurs.</p>
+<ol class="stepper" aria-label="Méthode pour trouver des idées">
+<li><b>Ouvrir</b>Demandez 10 angles très différents.</li>
+<li><b>Trier</b>Gardez 2 ou 3 pistes qui vous parlent.</li>
+<li><b>Creuser</b>Demandez de développer chaque piste.</li>
+<li><b>Relancer</b>« Plus audacieux », « plus sobre ».</li>
+</ol>
+<div class="code"><div class="hd"><span>Prompt d’exploration</span><button type="button" data-copy>Copier</button></div><pre><code>Propose 10 angles créatifs différents pour
+annoncer la terrasse de notre café. Pour chaque
+angle : un nom, une idée en une phrase, et un
+exemple de visuel. Évite les clichés.</code></pre></div>
+<div class="callout"><span class="ic" aria-hidden="true">⚠️</span><div><b>Attention</b><p>Les premières idées d’une IA sont souvent les plus prévisibles. Poussez-la à aller plus loin, ou mélangez deux pistes.</p></div></div>
+</div></section>
+
+<section class="sec alt" id="s4"><div class="wrap rv">
+<h2>Personas et messages ciblés</h2>
+<p>Un <strong>persona</strong> est un portrait fictif de votre public cible. Il rend la cible concrète : on ne parle plus à « tout le monde », mais à quelqu’un de précis. L’IA peut vous aider à en esquisser plusieurs à partir de ce que vous savez.</p>
+<div class="cards">
+<div class="card"><h3>Qui</h3><p>Âge, situation, habitudes. Exemple : Léa, 21 ans, étudiante.</p></div>
+<div class="card"><h3>Besoin</h3><p>Ce qu’elle cherche : un lieu calme et abordable pour réviser.</p></div>
+<div class="card"><h3>Frein</h3><p>Ce qui la retient : le budget, le manque de temps.</p></div>
+<div class="card"><h3>Message</h3><p>Ce qui la touche : « Votre spot de révision, à 2 € le café ».</p></div>
+</div>
+<div class="code"><div class="hd"><span>Prompt persona</span><button type="button" data-copy>Copier</button></div><pre><code>À partir de ce contexte (café de quartier,
+clientèle étudiante), décris 2 personas :
+âge, besoin, frein, canal préféré. Pour chacun,
+propose un message clé de 10 mots maximum.</code></pre></div>
+<div class="callout"><span class="ic" aria-hidden="true">⚠️</span><div><b>Attention</b><p>Un persona généré par l’IA est une hypothèse, pas une étude. Il peut reprendre des stéréotypes : confrontez-le à la réalité de vos clients.</p></div></div>
+</div></section>
+
+<section class="sec" id="s5"><div class="wrap rv">
+<h2>Rédiger et structurer un brief créatif complet</h2>
+<p>Le <strong>brief créatif</strong> est le document qui cadre le projet : il vous guide pendant la conception et permet de juger le résultat. Il tient sur une page.</p>
+<figure class="fig"><svg viewBox="0 0 600 270" role="img" aria-label="Document de brief avec cinq rubriques : objectifs, cible, message clé, ton, contraintes visuelles">
+<rect x="20" y="10" width="200" height="250" rx="8" fill="#fff" stroke="#0A0A0F" stroke-width="1.5"/>
+<rect x="38" y="28" width="110" height="12" rx="3" fill="#0A0A0F"/>
+<g fill="#F1EBFF" stroke="#7C3AED"><rect x="38" y="56" width="164" height="30" rx="5"/><rect x="38" y="94" width="164" height="30" rx="5"/><rect x="38" y="132" width="164" height="30" rx="5"/><rect x="38" y="170" width="164" height="30" rx="5"/><rect x="38" y="208" width="164" height="30" rx="5"/></g>
+<g stroke="#7C3AED" stroke-width="2"><path d="M230 71h40M230 109h40M230 147h40M230 185h40M230 223h40"/></g>
+<g font-family="Inter,sans-serif" font-size="15" fill="#0A0A0F"><text x="282" y="76" font-weight="600">1. Objectifs</text><text x="282" y="114" font-weight="600">2. Cible</text><text x="282" y="152" font-weight="600">3. Message clé</text><text x="282" y="190" font-weight="600">4. Ton</text><text x="282" y="228" font-weight="600">5. Contraintes visuelles</text></g>
+</svg><figcaption>Les cinq rubriques d’un brief créatif.</figcaption></figure>
+<ol class="stepper" aria-label="Construire un brief avec l'IA">
+<li><b>Rassembler</b>Notez vos infos brutes.</li>
+<li><b>Structurer</b>Demandez à l’IA de les ranger.</li>
+<li><b>Corriger</b>Complétez les vides, supprimez l’inventé.</li>
+<li><b>Valider</b>Relisez et figez la version finale.</li>
+</ol>
+<div class="code"><div class="hd"><span>Prompt de brief</span><button type="button" data-copy>Copier</button></div><pre><code>Voici mes notes : [collez vos notes].
+Rédige un brief créatif d'une page avec :
+1. Objectifs (1 principal, 2 secondaires)
+2. Cible
+3. Message clé (1 phrase)
+4. Ton
+5. Contraintes visuelles (format, couleurs,
+   logo, mentions obligatoires)
+Si une information manque, pose-moi la
+question au lieu de l'inventer.</code></pre></div>
+<div class="callout"><span class="ic" aria-hidden="true">🎨</span><div><b>Bonne pratique</b><p>Terminez votre prompt par « pose-moi des questions si besoin » : l’IA signale alors ce qui manque plutôt que d’inventer.</p></div></div>
+</div></section>
+
+<section class="sec alt" id="s6"><div class="wrap rv">
+<h2>Variantes de slogans, d’accroches et de CTA</h2>
+<p>Une fois le brief posé, l’IA devient très efficace pour décliner. Demandez plusieurs variantes en une fois, avec des tons différents, puis comparez-les.</p>
+<div class="tabs">
+<div role="tablist" aria-label="Types de variantes">
+<button role="tab" id="c1" aria-controls="d1" aria-selected="true">Slogans</button>
+<button role="tab" id="c2" aria-controls="d2" aria-selected="false" tabindex="-1">Accroches visuelles</button>
+<button role="tab" id="c3" aria-controls="d3" aria-selected="false" tabindex="-1">CTA</button>
+</div>
+<div role="tabpanel" id="d1" aria-labelledby="c1"><h3>Slogans</h3><p>Phrases mémorables qui résument la marque ou la campagne.</p><ul><li>Demandez 10 slogans en 3 tons : sobre, humoristique, émotionnel</li><li>Limitez la longueur (6 mots maximum)</li></ul></div>
+<div role="tabpanel" id="d2" aria-labelledby="c2" hidden><h3>Accroches visuelles</h3><p>Titres courts destinés à l’affiche ou au post.</p><ul><li>Demandez-les par format : titre d’affiche, titre de story</li><li>Précisez que le texte doit être lisible en 2 secondes</li></ul></div>
+<div role="tabpanel" id="d3" aria-labelledby="c3" hidden><h3>Appels à l’action</h3><p>Verbes d’action courts pour boutons et blocs de contact.</p><ul><li>Demandez 8 CTA commençant par un verbe</li><li>Précisez l’action attendue : réserver, s’inscrire, appeler</li></ul></div>
+</div>
+<div class="code"><div class="hd"><span>Prompt de variantes</span><button type="button" data-copy>Copier</button></div><pre><code>En t'appuyant sur ce brief : [collez le brief],
+propose 5 slogans (6 mots max), 5 accroches
+d'affiche et 5 CTA. Varie les tons : sobre,
+humoristique, émotionnel. Présente-les en
+tableau.</code></pre></div>
+<div class="callout"><span class="ic" aria-hidden="true">💡</span><div><b>À retenir</b><p>Demandez beaucoup, gardez peu. La valeur est dans le tri, pas dans la quantité.</p></div></div>
+</div></section>
+
+<section class="sec" id="s7"><div class="wrap rv">
+<h2>Vérifier, sélectionner et filtrer</h2>
+<p>Garder le contrôle artistique repose sur une méthode simple : on part d’un grand nombre de propositions, on filtre avec des critères précis, puis on retient une seule version que l’on retravaille soi-même.</p>
+<figure class="fig"><svg viewBox="0 0 600 170" role="img" aria-label="Entonnoir : 20 propositions, 5 après filtrage, 1 choix final retravaillé">
+<path d="M30 20h540l-90 60H120z" fill="#F1EBFF" stroke="#7C3AED"/>
+<path d="M120 90h360l-70 40H190z" fill="#fff" stroke="#7C3AED"/>
+<rect x="250" y="136" width="100" height="28" rx="14" fill="#7C3AED"/>
+<g font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" fill="#0A0A0F"><text x="300" y="56">20 propositions générées</text><text x="300" y="116">5 pistes après filtrage</text><text x="300" y="155" fill="#fff">1 choix</text></g>
+</svg><figcaption>Du volume au choix : l’IA génère, vous sélectionnez.</figcaption></figure>
+<p>Passez chaque proposition au crible de ces cinq contrôles :</p>
+<details><summary>Fidèle au brief ?</summary><div class="in"><p>La proposition sert-elle l’objectif, parle-t-elle à la cible et porte-t-elle le message clé ? Sinon, écartez-la même si elle est séduisante.</p></div></details>
+<details><summary>Cohérente avec la marque ?</summary><div class="in"><p>Le ton, le vocabulaire et le niveau de langage correspondent-ils à l’identité visuelle et éditoriale ? Un ton trop familier ou trop grandiloquent est un signal d’alerte.</p></div></details>
+<details><summary>Exacte et vérifiable ?</summary><div class="in"><p>Une IA peut inventer des chiffres, des dates ou des promesses. Vérifiez chaque fait avant de le publier.</p></div></details>
+<details><summary>Originale ?</summary><div class="in"><p>Une formule trop générique ou qui ressemble à un slogan connu doit être retravaillée. Tapez-la dans un moteur de recherche pour vérifier qu’elle n’appartient pas déjà à une marque.</p></div></details>
+<details><summary>Sûre à partager ?</summary><div class="in"><p>Ne collez pas d’informations confidentielles (données clients, contrats) dans un outil d’IA. Vérifiez aussi les conditions d’usage de l’outil pour une utilisation commerciale.</p></div></details>
+<div class="callout"><span class="ic" aria-hidden="true">⚠️</span><div><b>Attention</b><p>Ne copiez jamais une proposition telle quelle. Reformulez-la, adaptez-la, signez-la : c’est ce qui la rend vraiment vôtre.</p></div></div>
+<div class="callout"><span class="ic" aria-hidden="true">🔗</span><div><b>Pour aller plus loin</b><p>La leçon 07 applique la même démarche aux images : créer et améliorer des visuels avec l’IA et Canva.</p></div></div>
+</div></section>
+
+<section class="sec alt" id="s8"><div class="wrap rv">
+<h2>Points clés à retenir</h2>
+<p>Gardez cette liste à portée de main à chaque projet.</p>
+<ul class="keys">
+<li><span><strong>L’IA assiste, vous décidez.</strong> Vous gardez la direction artistique.</span></li>
+<li><span><strong>Un prompt en cinq éléments.</strong> Rôle, contexte, tâche, ton, contraintes.</span></li>
+<li><span><strong>Plusieurs angles avant de choisir.</strong> Ouvrez large, puis creusez.</span></li>
+<li><span><strong>Des personas concrets.</strong> À confronter à la réalité.</span></li>
+<li><span><strong>Un brief d’une page.</strong> Objectifs, cible, message clé, ton, contraintes visuelles.</span></li>
+<li><span><strong>Des variantes en nombre.</strong> Slogans, accroches et CTA, puis un tri rigoureux.</span></li>
+<li><span><strong>Cinq contrôles.</strong> Fidélité, cohérence, exactitude, originalité, sécurité.</span></li>
+</ul>
+<div class="callout"><span class="ic" aria-hidden="true">💡</span><div><b>À retenir</b><p>Un bon usage de l’IA se mesure à la qualité de vos instructions et de votre tri, pas à la quantité d’idées générées.</p></div></div>
+</div></section>
+
+<div class="wrap">
+<nav class="pn" aria-label="Navigation entre les leçons">
+<a href="lecon-05-publications-reseaux-sociaux.html"><small>Leçon précédente</small><b>Leçon 05 — Concevoir des publications pour les réseaux sociaux</b></a>
+<a class="nx" href="lecon-07-images-ia-canva.html"><small>Leçon suivante</small><b>Leçon 07 — Créer et améliorer des images avec l’IA et Canva</b></a>
+</nav>
+<p style="text-align:center"><a class="btn" href="#sommaire">Retour au sommaire du module</a></p>
+</div>
+</main>
+<footer><p class="small" style="margin:0">Module 2 — Création professionnelle avec Canva et l’IA</p></footer>
+<button id="top" type="button" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function sc(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';top.classList.toggle('on',h.scrollTop>600)}
+addEventListener('scroll',sc,{passive:true});sc();
+top.addEventListener('click',function(){scrollTo({top:0})});
+[].forEach.call(document.querySelectorAll('[role=tablist]'),function(list){
+var tabs=[].slice.call(list.querySelectorAll('[role=tab]'));
+function sel(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on});t.focus()}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){sel(t)});t.addEventListener('keydown',function(e){var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:null;if(n!==null){e.preventDefault();sel(tabs[(n+tabs.length)%tabs.length])}})});
+});
+[].forEach.call(document.querySelectorAll('[data-copy]'),function(cb){
+cb.addEventListener('click',function(){var t=cb.closest('.code').querySelector('code').innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(function(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()});cb.textContent='Copié';setTimeout(function(){cb.textContent='Copier'},1800)});
+});
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(r){io.observe(r)})}else{rv.forEach(function(r){r.classList.add('in')})}
+})();
+</script>
+</body>
+</html>

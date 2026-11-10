@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 09 — Sécuriser ses paiements et ses achats en ligne | Filière Cybersécurité</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232563EB' d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identiques sur tous les cours de la filière) ===== */
+:root{
+  --color-bg:#FFFFFF; --color-bg-alt:#F4F8FC; --color-text:#0A0F14; --color-text-muted:#5B6472;
+  --color-accent:#2563EB; --color-accent-soft:#EAF2FF; --color-border:#E2E8F0;
+  --font-display:'Sora','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font-body);font-size:1.0625rem;line-height:1.7;color:var(--color-text);background:var(--color-bg)}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.2;margin:0 0 .6em}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+.muted{color:var(--color-text-muted)}
+
+/* ===== Barre de progression + header ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:.95rem;text-decoration:none;color:var(--color-text)}
+.brand svg{width:22px;height:22px}
+.menu-btn{font:500 .9rem var(--font-body);background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--color-text);transition:border-color .2s}
+.menu-btn:hover{border-color:var(--color-accent)}
+#drawer{display:none;position:absolute;right:20px;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:8px;min-width:280px;box-shadow:0 8px 24px rgba(10,15,20,.08)}
+#drawer.open{display:block}
+#drawer a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#drawer a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+
+/* ===== Hero ===== */
+.hero{padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.82rem;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent)}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted);border:1px solid var(--color-border)}
+.hero .lead{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.course{font-size:.95rem;color:var(--color-text-muted);margin-bottom:12px}
+
+/* ===== Sommaire ===== */
+.toc{background:var(--color-bg-alt);border-radius:var(--radius);padding:24px 28px;margin:40px auto}
+.toc ol{margin:0;padding-left:1.2em}
+.toc li{padding:3px 0}
+.toc a{text-decoration:none;color:var(--color-text);transition:color .2s}
+.toc a:hover{color:var(--color-accent)}
+
+/* ===== Sections ===== */
+section.lesson{padding:64px 0}
+section.lesson.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ===== Cartes ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;transition:border-color .2s,transform .2s}
+.alt .card{background:#fff}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card svg{width:28px;height:28px;stroke:var(--color-accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin-bottom:.3em}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+
+/* ===== Encadrés ===== */
+.note{display:flex;gap:14px;border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:28px 0}
+.note .ic{font-size:1.3rem;line-height:1.5}
+.note strong{display:block;font-family:var(--font-display);margin-bottom:2px}
+.note p{margin:0;font-size:.98rem}
+
+/* ===== Tabs ===== */
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;overflow:hidden}
+.tablist{display:flex;overflow-x:auto;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.tablist button{flex:1 0 auto;font:500 .95rem var(--font-body);padding:12px 18px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent;transition:color .2s}
+.tablist button:hover{color:var(--color-text)}
+.tablist button[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent);background:#fff}
+.tabpanel{padding:20px 22px}
+.tabpanel[hidden]{display:none}
+.tabpanel p:last-child{margin:0}
+.tabpanel ul{margin:0 0 1em;padding-left:1.2em}
+.tabpanel li{padding:2px 0}
+
+/* ===== Accordéons ===== */
+details{border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;margin:10px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details>div{padding:0 18px 16px;color:var(--color-text-muted);font-size:.98rem}
+
+/* ===== Schémas ===== */
+figure{margin:32px 0}
+figure svg{width:100%;height:auto;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius)}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--font-body)}
+
+/* ===== Tableau comparatif ===== */
+.tablewrap{overflow-x:auto;margin:24px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem;line-height:1.5}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--color-border);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;background:var(--color-bg-alt)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+td{color:var(--color-text-muted)}
+td:first-child{color:var(--color-text)}
+
+/* ===== Stepper ===== */
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;counter-reset:s}
+.stepper li{counter-increment:s;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:44px 14px 14px;font-size:.92rem}
+.stepper li::before{content:counter(s);position:absolute;top:12px;left:14px;width:24px;height:24px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem/24px var(--font-display);text-align:center}
+.stepper b{display:block;font-family:var(--font-display);margin-bottom:2px}
+.stepper span{color:var(--color-text-muted)}
+
+/* ===== Points clés, nav, footer ===== */
+.keys{list-style:none;padding:0;margin:24px 0;display:grid;gap:12px}
+.keys li{display:flex;gap:12px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:14px 18px}
+.keys li::before{content:"✓";color:var(--color-accent);font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding:48px 0}
+.nav a,.nav span{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px 20px;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}
+.nav small{display:block;color:var(--color-text-muted)}
+.nav .next{text-align:right}
+.nav span{color:var(--color-text-muted);background:var(--color-bg-alt)}
+.modlink{text-align:center;margin-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:28px 0;font-size:.9rem;color:var(--color-text-muted);text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,border-color .2s}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{border-color:var(--color-accent)}
+@media (max-width:600px){.hero{padding:48px 0 40px}section.lesson{padding:44px 0}.toc{padding:20px}}
+</style>
+</head>
+<body>
+<div id="progress" role="presentation"></div>
+
+<header class="top">
+  <div class="wide">
+    <a class="brand" href="#debut">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#2563EB" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="M8.5 12l2.4 2.4L15.5 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Filière Cybersécurité
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="drawer">Sommaire</button>
+  </div>
+  <nav id="drawer" aria-label="Sommaire rapide">
+    <a href="#site">1. Reconnaître un site fiable</a>
+    <a href="#methodes">2. Choisir sa méthode de paiement</a>
+    <a href="#arnaques">3. Les arnaques financières</a>
+    <a href="#protections">4. Protections bancaires modernes</a>
+    <a href="#pin">5. Protéger son code secret</a>
+    <a href="#recours">6. Recours et litiges</a>
+    <a href="#cles">Points clés à retenir</a>
+  </nav>
+</header>
+
+<main id="debut">
+<div class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 2 — Protection des données, de l'identité et réaction aux incidents</span>
+      <span class="badge plain">⏱ 15 min de lecture</span>
+      <span class="badge plain">Niveau débutant</span>
+    </div>
+    <p class="course">Leçon 09</p>
+    <h1>Sécuriser ses paiements et ses achats en ligne</h1>
+    <p class="lead">Objectif : effectuer des paiements en ligne et des opérations de Mobile Money avec un niveau de sécurité élevé.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2 style="font-size:1.1rem">Dans cette leçon</h2>
+    <ol>
+      <li><a href="#site">Reconnaître un site e-commerce fiable</a></li>
+      <li><a href="#methodes">Comparer les méthodes de paiement</a></li>
+      <li><a href="#arnaques">Typologie des arnaques financières en ligne</a></li>
+      <li><a href="#protections">Les protections bancaires modernes</a></li>
+      <li><a href="#pin">Protéger son code PIN et valider avec méthode</a></li>
+      <li><a href="#recours">Recours et gestion des litiges en cas de fraude</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============ 1. Site fiable ============ -->
+<section class="lesson" id="site">
+  <div class="wrap reveal">
+    <h2>1. Reconnaître un site e-commerce fiable</h2>
+    <p>Un paiement sécurisé commence avant la saisie du moindre numéro : par le choix du vendeur. Aucun critère n'est suffisant seul, mais leur combinaison donne une image fiable du site.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-labelledby="s1-t s1-d">
+        <title id="s1-t">Barre d'adresse d'un site fiable</title>
+        <desc id="s1-d">Une barre d'adresse de navigateur avec un cadenas et une adresse en https, accompagnée de deux repères : le cadenas indique une connexion chiffrée, le nom de domaine doit correspondre exactement au vendeur.</desc>
+        <rect x="30" y="30" width="580" height="48" rx="24" fill="#F4F8FC" stroke="#E2E8F0" stroke-width="2"/>
+        <g fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"><rect x="56" y="46" width="18" height="14" rx="3"/><path d="M60 46v-4a5 5 0 0 1 10 0v4"/></g>
+        <text x="90" y="60" font-size="17" fill="#5B6472">https://</text>
+        <text x="159" y="60" font-size="17" font-weight="600" fill="#0A0F14">boutique-exemple.com</text>
+        <text x="338" y="60" font-size="17" fill="#5B6472">/panier</text>
+        <g stroke="#2563EB" stroke-width="1.6" fill="none"><path d="M65 82v38"/><path d="M250 82v38"/></g>
+        <g fill="#fff" stroke="#E2E8F0" stroke-width="2">
+          <rect x="30" y="120" width="260" height="96" rx="12"/>
+          <rect x="310" y="120" width="300" height="96" rx="12"/>
+        </g>
+        <g font-size="15" fill="#0A0F14" font-weight="600"><text x="46" y="146">Connexion chiffrée</text><text x="326" y="146">Nom de domaine cohérent</text></g>
+        <g font-size="13.5" fill="#5B6472">
+          <text x="46" y="168">Le cadenas et « https » protègent</text><text x="46" y="188">les données pendant leur transfert.</text>
+          <text x="326" y="168">Pas de lettre en trop, pas de tiret</text><text x="326" y="188">inhabituel, pas de faute dans le nom.</text>
+        </g>
+        <path d="M250 120l-8-8h16z" fill="#E2E8F0" transform="translate(0,0)"/>
+        <text x="320" y="242" font-size="12.5" fill="#5B6472" text-anchor="middle">Le cadenas prouve que la connexion est chiffrée, pas que le vendeur est honnête.</text>
+      </svg>
+      <figcaption>La barre d'adresse : un premier niveau de lecture, à compléter par les autres critères.</figcaption>
+    </figure>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/></svg>
+        <h3>Mentions légales</h3>
+        <p>Raison sociale, adresse physique, numéro d'enregistrement, contact joignable, conditions de vente et politique de retour claires.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <h3>Connexion HTTPS</h3>
+        <p>Le cadenas dans la barre d'adresse indique un échange chiffré. C'est une condition minimale, pas une garantie de sérieux.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.500l6.1-.9z"/></svg>
+        <h3>Avis clients</h3>
+        <p>Des avis nombreux, variés et datés, y compris quelques critiques. Une série d'éloges identiques et récents est suspecte.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+        <h3>Réputation</h3>
+        <p>Recherche du nom du vendeur sur d'autres sources : forums, réseaux, presse, plateformes d'avis indépendantes.</p>
+      </div>
+    </div>
+    <details>
+      <summary>Quels signaux doivent éveiller la méfiance ?</summary>
+      <div>Prix très inférieurs au marché, remises extrêmes « valables aujourd'hui », absence totale de coordonnées, site créé très récemment, adresse web proche d'une grande marque mais légèrement modifiée, paiement imposé uniquement par virement ou par transfert d'argent direct.</div>
+    </details>
+    <details>
+      <summary>Pourquoi un site en HTTPS peut-il quand même être frauduleux ?</summary>
+      <div>Le HTTPS protège le trajet de l'information entre votre appareil et le site, mais n'importe qui, y compris un fraudeur, peut l'activer sur son propre site. Il répond à la question « mes données sont-elles chiffrées en route ? », pas à « ce vendeur est-il honnête ? ».</div>
+    </details>
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>On juge un site sur un faisceau d'indices : identité claire du vendeur, conditions transparentes, avis crédibles et réputation vérifiable en dehors du site lui-même.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 2. Méthodes de paiement ============ -->
+<section class="lesson alt" id="methodes">
+  <div class="wrap reveal">
+    <h2>2. Comparer les méthodes de paiement</h2>
+    <p>Toutes les méthodes ne protègent pas de la même façon. La différence tient surtout à deux questions : <strong>qui détient mes informations sensibles</strong> et <strong>que se passe-t-il si le vendeur ne livre pas</strong> ?</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Méthodes de paiement">
+        <button role="tab">Carte bancaire</button><button role="tab">Plateformes tierces</button><button role="tab">Mobile Money</button>
+      </div>
+      <div class="tabpanel" role="tabpanel">
+        <p><strong>Le vendeur reçoit les données de votre carte</strong> (numéro, date d'expiration, cryptogramme) ou les transmet à un prestataire de paiement.</p>
+        <ul>
+          <li>Atout : souvent un cadre de contestation prévu par la banque, des plafonds réglables, une validation supplémentaire (code reçu, application).</li>
+          <li>Limite : si le site est piraté ou frauduleux, vos données de carte sont exposées. C'est ici que la carte virtuelle prend tout son sens (voir section 4).</li>
+        </ul>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <p><strong>Un intermédiaire de paiement s'interpose</strong> entre vous et le vendeur : le vendeur ne voit pas vos coordonnées bancaires, seulement la confirmation du paiement.</p>
+        <ul>
+          <li>Atout : vos données sensibles restent chez l'intermédiaire ; certains proposent un dispositif de protection de l'acheteur (remboursement si l'objet n'arrive pas ou n'est pas conforme).</li>
+          <li>Limite : un faux site peut imiter la page de connexion de la plateforme. Il faut ouvrir la plateforme par son adresse officielle, jamais depuis un lien reçu.</li>
+        </ul>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <p><strong>L'argent circule d'un portefeuille électronique à un autre,</strong> validé par un code PIN sur le téléphone.</p>
+        <ul>
+          <li>Atout : rapide, très répandu, sans carte bancaire, avec notification immédiate de l'opération.</li>
+          <li>Limite : une opération confirmée est généralement <strong>difficile à annuler</strong>. Une erreur de destinataire ou une fraude se corrigent beaucoup moins facilement qu'un paiement par carte.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tablewrap" role="region" aria-label="Tableau comparatif des méthodes de paiement" tabindex="0">
+      <table>
+        <thead><tr><th scope="col">Critère</th><th scope="col">Carte bancaire</th><th scope="col">Plateforme tierce</th><th scope="col">Mobile Money</th></tr></thead>
+        <tbody>
+          <tr><td>Données vues par le vendeur</td><td>Numéro de carte</td><td>Aucune donnée bancaire</td><td>Numéro de téléphone</td></tr>
+          <tr><td>Réversibilité</td><td>Contestation possible</td><td>Selon la protection de l'acheteur</td><td>Faible une fois validé</td></tr>
+          <tr><td>Contrôle de l'utilisateur</td><td>Plafonds, alertes, carte virtuelle</td><td>Paramètres du compte</td><td>Code PIN, plafonds de l'opérateur</td></tr>
+          <tr><td>Risque principal</td><td>Fuite des données de carte</td><td>Faux portail de connexion</td><td>Transfert irréversible vers un fraudeur</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Avec un vendeur que vous ne connaissez pas, privilégiez un mode de paiement qui prévoit une protection de l'acheteur ou une possibilité de contestation. Évitez les transferts d'argent directs vers un inconnu.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 3. Arnaques ============ -->
+<section class="lesson" id="arnaques">
+  <div class="wrap reveal">
+    <h2>3. Typologie des arnaques financières en ligne</h2>
+    <p>Ces fraudes reposent presque toujours sur la même mécanique : <strong>une bonne affaire, un prétexte crédible, une pression sur le temps</strong>, puis un paiement difficile à récupérer. Les reconnaître, c'est déjà s'en protéger.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l2-4h12l2 4"/><path d="M4 8h16v3a3 3 0 0 1-3 3 3 3 0 0 1-2.500-1.300A3 3 0 0 1 12 14a3 3 0 0 1-2.500-1.300A3 3 0 0 1 7 14a3 3 0 0 1-3-3z"/><path d="M6 14v6h12v-6"/></svg>
+        <h3>Faux vendeurs</h3>
+        <p>Boutique en ligne éphémère, souvent copiée sur un vrai site : prix attractifs, paiement encaissé, produit jamais livré.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v10H9l-4 4v-4H3z"/><path d="M8 9h8"/></svg>
+        <h3>Petites annonces frauduleuses</h3>
+        <p>Offre trop belle, vendeur « à l'étranger » ou « indisponible », demande d'avance ou d'arrhes avant toute rencontre ou vérification.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.700"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/></svg>
+        <h3>Fausses demandes de remboursement</h3>
+        <p>Un message annonce un « trop-perçu » ou un remboursement à confirmer, et dirige vers une page qui récupère vos identifiants ou votre code.</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap reveal">
+    <h3>Anatomie d'une arnaque à l'achat</h3>
+    <ol class="stepper" aria-label="Déroulé typique d'une arnaque financière en ligne">
+      <li><b>Appât</b><span>Une offre exceptionnelle ou un remboursement inattendu.</span></li>
+      <li><b>Confiance</b><span>Faux avis, logo copié, message poli et rassurant.</span></li>
+      <li><b>Urgence</b><span>« Dernier exemplaire », « offre valable une heure ».</span></li>
+      <li><b>Paiement</b><span>Mode de paiement imposé, souvent sans recours.</span></li>
+      <li><b>Disparition</b><span>Plus de réponse, site fermé, numéro injoignable.</span></li>
+    </ol>
+    <details>
+      <summary>Que faire face à un vendeur qui refuse tout autre mode de paiement ?</summary>
+      <div>Un refus catégorique de tout moyen de paiement protégé, associé à de l'urgence, est l'un des signaux les plus fiables d'une fraude. Un vendeur sérieux accepte généralement plusieurs options et ne s'offusque pas d'une vérification.</div>
+    </details>
+    <details>
+      <summary>Comment reconnaître une fausse demande de remboursement ?</summary>
+      <div>Elle arrive sans que vous ayez rien demandé, insiste sur la rapidité, et vous demande de saisir un code reçu par SMS, votre PIN ou des identifiants. Un remboursement légitime n'exige jamais ces informations : l'argent est <em>reçu</em>, il n'a pas besoin d'un code secret de votre part.</div>
+    </details>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Attention : erreur fréquente</strong><p>Croire qu'on ne risque rien parce que le paiement est « petit ». Les fraudeurs répètent souvent de petites sommes sur de nombreuses victimes, et un premier paiement peut aussi servir à tester la carte.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 4. Protections bancaires ============ -->
+<section class="lesson alt" id="protections">
+  <div class="wrap reveal">
+    <h2>4. Les protections bancaires modernes</h2>
+    <p>Les banques et les opérateurs proposent aujourd'hui des outils qui limitent les dégâts même si une information est compromise. Le principe est simple : <strong>réduire ce qu'un fraudeur peut faire avec ce qu'il a volé</strong>.</p>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-labelledby="s4-t s4-d">
+        <title id="s4-t">Principe de la carte virtuelle</title>
+        <desc id="s4-d">Le compte principal alimente une carte virtuelle limitée en montant, qui paie le marchand. Le compte principal n'est jamais exposé au marchand.</desc>
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#2563EB"/></marker></defs>
+        <g fill="#fff" stroke="#E2E8F0" stroke-width="2"><rect x="20" y="70" width="150" height="90" rx="12"/><rect x="245" y="70" width="150" height="90" rx="12" stroke="#2563EB"/><rect x="470" y="70" width="150" height="90" rx="12"/></g>
+        <g font-size="15" font-weight="600" fill="#0A0F14" text-anchor="middle"><text x="95" y="108">Compte principal</text><text x="320" y="108">Carte virtuelle</text><text x="545" y="108">Marchand</text></g>
+        <g font-size="12.5" fill="#5B6472" text-anchor="middle"><text x="95" y="132">Jamais communiqué</text><text x="320" y="132">Montant et durée limités</text><text x="545" y="132">Reçoit seulement la carte jetable</text></g>
+        <g stroke="#2563EB" stroke-width="2.2" fill="none" marker-end="url(#ar)"><path d="M172 115h70"/><path d="M397 115h70"/></g>
+        <g font-size="12.5" fill="#2563EB" text-anchor="middle"><text x="207" y="104">alimente</text><text x="432" y="104">paie</text></g>
+        <path d="M320 30l-16 6v12c0 10 7 18 16 21 9-3 16-11 16-21V36z" fill="#EAF2FF" stroke="#2563EB" stroke-width="2"/>
+        <path d="M312 49l5 5 10-11" fill="none" stroke="#2563EB" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="320" y="196" font-size="13" fill="#5B6472" text-anchor="middle">Si le marchand est piraté, seule la carte virtuelle limitée est exposée.</text>
+      </svg>
+      <figcaption>La carte virtuelle crée une barrière entre le compte et le vendeur.</figcaption>
+    </figure>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.500" y="6" width="19" height="13" rx="2"/><path d="M2.500 10h19M6 15h4"/></svg>
+        <h3>Carte virtuelle (e-carte)</h3>
+        <p>Un numéro distinct de la carte physique, créé pour les achats en ligne, parfois à usage unique ou rechargeable à la demande.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>
+        <h3>Plafonds</h3>
+        <p>Une limite de paiement et de retrait réglable, par jour ou par mois. Plus elle est basse, plus l'impact d'une fraude est contenu.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        <h3>Alertes en temps réel</h3>
+        <p>Notification instantanée de chaque transaction par SMS ou application, pour repérer immédiatement un mouvement inconnu.</p>
+      </div>
+    </div>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Utiliser les protections">
+        <button role="tab">Carte virtuelle</button><button role="tab">Plafonds</button><button role="tab">Alertes</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p><strong>Usage typique :</strong> une e-carte pour les achats en ligne, alimentée du montant nécessaire seulement. Si les données fuitent chez un vendeur, elles ne donnent accès qu'à ce montant et non au compte principal, et la carte peut être supprimée sans toucher à la carte physique.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p><strong>Usage typique :</strong> un plafond ajusté à ses habitudes réelles, éventuellement relevé ponctuellement pour un gros achat puis rabaissé. Un fraudeur ne peut alors pas vider un compte d'un seul coup.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p><strong>Usage typique :</strong> une alerte pour chaque opération, quel que soit le montant. Plus la détection est rapide, plus la réaction l'est aussi : blocage de la carte, signalement, contestation.</p></div>
+    </div>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>La disponibilité de ces outils dépend de la banque ou de l'opérateur. Consultez l'application ou le service client de votre établissement pour savoir lesquels sont proposés et comment les paramétrer.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 5. PIN ============ -->
+<section class="lesson" id="pin">
+  <div class="wrap reveal">
+    <h2>5. Protéger son code PIN et valider avec méthode</h2>
+    <p>Le code PIN ou code secret est la dernière barrière entre un fraudeur et votre argent, en particulier sur Mobile Money. Il ne se partage <strong>avec personne</strong> : ni un proche pressé, ni un « agent », ni un prétendu conseiller.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/></svg>
+        <h3>Ne jamais le communiquer</h3>
+        <p>Aucun opérateur, aucune banque et aucun vendeur légitime ne demande votre code secret, par appel, message ou formulaire.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12s3.500-6 9-6 9 6 9 6-3.500 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.500"/></svg>
+        <h3>Le saisir à l'abri des regards</h3>
+        <p>Dans un lieu public, couvrir l'écran ou le clavier. La saisie se fait seul, sans « aide » d'un tiers.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>
+        <h3>Relire avant de valider</h3>
+        <p>Vérifier destinataire, montant et frais sur l'écran de confirmation. Ce dernier contrôle évite l'erreur comme la fraude.</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap reveal">
+    <h3>Les réflexes lors d'une validation</h3>
+    <ol class="stepper" aria-label="Réflexes avant de valider une transaction">
+      <li><b>S'arrêter</b><span>Ignorer l'urgence annoncée par l'interlocuteur.</span></li>
+      <li><b>Vérifier</b><span>Nom du destinataire, numéro, montant, motif.</span></li>
+      <li><b>Isoler</b><span>Valider seul, sans partager l'écran ni dicter de code.</span></li>
+      <li><b>Confirmer</b><span>Saisir son code uniquement dans l'application officielle.</span></li>
+      <li><b>Contrôler</b><span>Lire le SMS ou la notification de confirmation.</span></li>
+    </ol>
+    <details>
+      <summary>Quelles précautions pour choisir un bon code PIN ?</summary>
+      <div>Éviter les suites évidentes (1234, 0000), les dates de naissance, le numéro de téléphone ou une partie de celui-ci. Utiliser un code différent pour chaque service et le changer dès qu'on soupçonne qu'il a été vu ou deviné.</div>
+    </details>
+    <details>
+      <summary>Que faire si quelqu'un demande mon code « pour annuler une erreur » ?</summary>
+      <div>C'est un scénario classique : le fraudeur annonce un transfert par erreur et demande un code ou une confirmation pour le « rectifier ». Aucune annulation légitime n'exige que vous communiquiez votre code secret. Mettre fin à l'échange et contacter l'opérateur par ses canaux officiels.</div>
+    </details>
+    <details>
+      <summary>Pourquoi ne pas enregistrer son code dans le téléphone ?</summary>
+      <div>Une note, une photo ou un message contenant le code donne un accès direct à toute personne qui accède à l'appareil (vol, prêt, logiciel espion). Le code doit rester dans la mémoire de son propriétaire.</div>
+    </details>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Attention : erreur fréquente</strong><p>Se laisser « guider » au téléphone par un faux conseiller. Quelqu'un qui vous dicte quoi taper et quand valider contrôle la transaction à votre place : raccrochez et rappelez le numéro officiel.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 6. Recours ============ -->
+<section class="lesson alt" id="recours">
+  <div class="wrap reveal">
+    <h2>6. Recours et gestion des litiges en cas de fraude</h2>
+    <p>Même avec de bons réflexes, une fraude peut survenir. <strong>La rapidité de la réaction</strong> conditionne souvent les chances de limiter les pertes. Voici la logique générale d'un recours.</p>
+  </div>
+  <div class="wide reveal">
+    <ol class="stepper" aria-label="Étapes d'un recours après une fraude">
+      <li><b>Bloquer</b><span>Suspendre la carte, le compte ou le portefeuille concerné.</span></li>
+      <li><b>Alerter</b><span>Prévenir la banque ou l'opérateur par les canaux officiels.</span></li>
+      <li><b>Conserver</b><span>Garder captures, messages, reçus, références de transaction.</span></li>
+      <li><b>Contester</b><span>Déposer une réclamation écrite, avec les preuves.</span></li>
+      <li><b>Signaler</b><span>Informer les autorités ou organismes compétents si nécessaire.</span></li>
+      <li><b>Sécuriser</b><span>Changer codes et mots de passe, surveiller les comptes.</span></li>
+    </ol>
+  </div>
+  <div class="wrap reveal">
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Types de litiges">
+        <button role="tab">Litige bancaire</button><button role="tab">Litige commercial</button><button role="tab">Mobile Money</button>
+      </div>
+      <div class="tabpanel" role="tabpanel">
+        <p><strong>Débit non autorisé ou carte utilisée à votre insu.</strong> Bloquer la carte, informer la banque sans attendre, puis déposer une contestation écrite. Plus le délai est court, plus la démarche est solide ; les délais de contestation sont fixés par la banque et la réglementation.</p>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <p><strong>Produit non livré, non conforme ou différent de l'annonce.</strong> Contacter d'abord le vendeur par écrit, en conservant l'échange. Sans réponse, saisir la plateforme de vente ou de paiement, puis les organismes de protection des consommateurs.</p>
+      </div>
+      <div class="tabpanel" role="tabpanel" hidden>
+        <p><strong>Transfert vers un mauvais numéro ou obtenu par fraude.</strong> Contacter immédiatement le service client officiel de l'opérateur avec la référence de la transaction. Une opération validée étant difficile à annuler, la rapidité du signalement est déterminante.</p>
+      </div>
+    </div>
+    <details>
+      <summary>Quelles preuves rassembler ?</summary>
+      <div>Captures d'écran de l'annonce ou du site, adresse web exacte, échanges avec le vendeur, confirmation de commande, reçu de paiement, référence de transaction, date, heure, montant et numéro de destinataire.</div>
+    </details>
+    <details>
+      <summary>Faut-il rembourser ou « négocier » avec le fraudeur ?</summary>
+      <div>Non. Toute nouvelle somme envoyée est une perte supplémentaire. Les fraudeurs promettent parfois une restitution contre « des frais » : c'est une seconde arnaque visant la même victime.</div>
+    </details>
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>Bloquer, alerter, conserver les preuves, contester : cette séquence s'applique à presque toute fraude. L'agir vite fait souvent la différence.</p></div></div>
+    <div class="note"><span class="ic">🔗</span><div><strong>Pour aller plus loin</strong><p>La leçon suivante approfondit la réaction face à un incident et la construction d'un plan de protection personnel.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ Points clés ============ -->
+<section class="lesson" id="cles">
+  <div class="wrap reveal">
+    <h2>Points clés à retenir</h2>
+    <ul class="keys">
+      <li>Un site fiable se reconnaît à un faisceau d'indices : mentions légales, HTTPS, avis crédibles, réputation vérifiable.</li>
+      <li>Le cadenas HTTPS protège la connexion, pas l'honnêteté du vendeur.</li>
+      <li>Chaque méthode de paiement a ses forces : contestation pour la carte, intermédiaire pour les plateformes, rapidité mais irréversibilité pour le Mobile Money.</li>
+      <li>Les arnaques suivent un schéma : appât, confiance, urgence, paiement, disparition.</li>
+      <li>Carte virtuelle, plafonds et alertes en temps réel limitent l'impact d'une fraude.</li>
+      <li>Le code PIN ne se communique à personne et chaque transaction se relit avant validation.</li>
+      <li>En cas de fraude : bloquer, alerter, conserver les preuves, contester, puis sécuriser.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="nav">
+    <a class="prev" href="lecon-08-proteger-sa-vie-privee-et-son-identite-numerique.html" rel="prev"><small>Leçon précédente</small>Leçon 08 — Protéger sa vie privée et son identité numérique</a>
+    <a class="next" href="lecon-10-reagir-a-un-incident-et-construire-son-plan-de-protection.html" rel="next"><small>Leçon suivante</small>Leçon 10 — Réagir à un incident et construire son plan de protection</a>
+  </div>
+  <p class="modlink"><a href="module-2.html">Retour au sommaire du module 2</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière Cybersécurité · Module 2 · Leçon 09</div></footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* Barre de progression, bouton retour haut */
+const bar=document.getElementById('progress'),topBtn=document.getElementById('top');
+function onScroll(){
+  const h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+  bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+  topBtn.classList.toggle('show',h.scrollTop>600);
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+/* Menu sommaire */
+const mb=document.getElementById('menuBtn'),dr=document.getElementById('drawer');
+mb.onclick=()=>{const o=dr.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+dr.addEventListener('click',e=>{if(e.target.tagName==='A'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+
+/* Onglets accessibles (flèches, Home, End) */
+document.querySelectorAll('[data-tabs]').forEach((box,n)=>{
+  const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+  tabs.forEach((t,i)=>{t.id=`t${n}-${i}`;panels[i].setAttribute('aria-labelledby',t.id);panels[i].tabIndex=0});
+  function select(i){tabs.forEach((t,j)=>{const on=i===j;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[j].hidden=!on})}
+  tabs.forEach((t,i)=>{
+    t.onclick=()=>select(i);
+    t.onkeydown=e=>{
+      let k=null;
+      if(e.key==='ArrowRight')k=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft')k=(i-1+tabs.length)%tabs.length;
+      if(e.key==='Home')k=0;if(e.key==='End')k=tabs.length-1;
+      if(k!==null){e.preventDefault();select(k);tabs[k].focus()}
+    };
+  });
+  select(0);
+});
+
+/* Apparition douce des sections (désactivée si prefers-reduced-motion) */
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+  els.forEach(el=>io.observe(el));
+}else els.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>

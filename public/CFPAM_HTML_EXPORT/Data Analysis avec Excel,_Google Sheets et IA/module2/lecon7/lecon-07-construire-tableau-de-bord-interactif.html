@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 07 — Construire un tableau de bord interactif</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+/* cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+/* encadrés */
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+/* figures */
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+/* stepper */
+.stepper{display:flex;gap:0;overflow-x:auto;margin:28px 0;padding-bottom:8px;counter-reset:s}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+/* tabs */
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+/* tableau */
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}td.l{text-align:left}
+/* code */
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+/* accordéon */
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+/* points clés */
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+/* nav */
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{color:var(--muted);background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">KPI</a><a href="#s2">Mise en page</a><a href="#s3">Interactivité</a><a href="#s5">Impression</a><a href="#s6">Mise à jour</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 2 — Visualiser, analyser avec l'IA et présenter</span><span class="badge">⏱ 25 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Construire un tableau de bord interactif</h1>
+  <p class="sub">Leçon 07 — Vous rassemblez les indicateurs clés dans un tableau de bord clair, lisible et facile à mettre à jour, dans Excel comme dans Google Sheets.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>Choisir les indicateurs clés (KPI)</a></li>
+<li><a href="#s2"><b>2</b>Ergonomie et mise en page d'un dashboard</a></li>
+<li><a href="#s3"><b>3</b>Ajouter de l'interactivité : segments, chronologies, filtres</a></li>
+<li><a href="#s4"><b>4</b>Relier les éléments interactifs à plusieurs tableaux croisés</a></li>
+<li><a href="#s5"><b>5</b>Optimiser pour l'écran et pour l'impression / PDF</a></li>
+<li><a href="#s6"><b>6</b>Mettre à jour les données et protéger les feuilles</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. Choisir les indicateurs clés (KPI)</h2>
+<p>Un <strong>tableau de bord</strong> (dashboard) réunit sur une seule page les chiffres et graphiques qui permettent de suivre une activité d'un coup d'œil. Un <strong>KPI</strong> (<em>Key Performance Indicator</em>, indicateur clé de performance) est un chiffre qui mesure si un objectif est atteint.</p>
+<p>Prenons une boutique de papeterie dont l'objectif est d'augmenter ses ventes tout en gardant une bonne marge. Chaque indicateur choisi répond à une question précise liée à cet objectif.</p>
+<div class="tbl"><table>
+<tr><th>Objectif métier</th><th>KPI aligné</th><th>Question à laquelle il répond</th></tr>
+<tr><td>Faire croître les ventes</td><td>Chiffre d'affaires</td><td>Combien avons-nous vendu ce mois-ci ?</td></tr>
+<tr><td>Préserver la rentabilité</td><td>Taux de marge</td><td>Que gagnons-nous sur chaque euro vendu ?</td></tr>
+<tr><td>Fidéliser les clients</td><td>Panier moyen</td><td>Combien un client dépense-t-il par commande ?</td></tr>
+<tr><td>Suivre la qualité du service</td><td>Taux de retour</td><td>Quelle part des commandes est renvoyée ?</td></tr>
+</table></div>
+<div class="cards">
+  <div class="card"><div class="ic">🎯</div><h4>Aligné</h4><p>Il mesure directement un objectif de l'organisation.</p></div>
+  <div class="card"><div class="ic">🔢</div><h4>Mesurable</h4><p>Il se calcule à partir de données disponibles et fiables.</p></div>
+  <div class="card"><div class="ic">🧭</div><h4>Utile à la décision</h4><p>Sa variation suggère une action concrète.</p></div>
+  <div class="card"><div class="ic">✂️</div><h4>Limité en nombre</h4><p>Quelques KPI bien choisis valent mieux que vingt chiffres.</p></div>
+</div>
+<p>La construction d'un tableau de bord suit un enchaînement simple. Sélectionnez une étape pour en voir le détail.</p>
+<div class="stepper" role="list" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<div class="note"><strong>💡 À retenir</strong><p>Un KPI se choisit en partant de l'objectif, jamais en partant des données disponibles. Un chiffre qui ne déclenche aucune décision n'a pas sa place sur le tableau de bord.</p></div>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. Ergonomie et mise en page d'un dashboard</h2>
+<p>Un lecteur doit comprendre l'essentiel en quelques secondes. Pour cela, on organise la page selon une <strong>hiérarchie visuelle</strong> : du plus synthétique au plus détaillé, de haut en bas, comme on lit une page.</p>
+<figure>
+<svg viewBox="0 0 640 330" role="img" aria-label="Maquette d'un tableau de bord : en haut quatre tuiles KPI, au milieu deux graphiques côte à côte, en bas un tableau de détail, le tout aligné sur une grille">
+<rect x="1" y="1" width="638" height="328" rx="10" fill="#fff" stroke="#E2E8F0"/>
+<rect x="1" y="1" width="638" height="32" rx="10" fill="#0A0F14"/><text x="16" y="22" font-size="13" font-weight="600" fill="#fff">Tableau de bord — Ventes</text>
+<g font-size="11" fill="#5B6472"><text x="20" y="54">① Les KPI synthétiques, en haut</text></g>
+<g font-weight="600">
+<rect x="20" y="62" width="140" height="56" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="32" y="84" font-size="11" fill="#5B6472" font-weight="400">Chiffre d'affaires</text><text x="32" y="107" font-size="18" fill="#0A0F14">48 200 €</text>
+<rect x="175" y="62" width="140" height="56" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="187" y="84" font-size="11" fill="#5B6472" font-weight="400">Taux de marge</text><text x="187" y="107" font-size="18" fill="#0A0F14">32 %</text>
+<rect x="330" y="62" width="140" height="56" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="342" y="84" font-size="11" fill="#5B6472" font-weight="400">Panier moyen</text><text x="342" y="107" font-size="18" fill="#0A0F14">36 €</text>
+<rect x="485" y="62" width="135" height="56" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="497" y="84" font-size="11" fill="#5B6472" font-weight="400">Taux de retour</text><text x="497" y="107" font-size="18" fill="#0A0F14">2,1 %</text>
+</g>
+<text x="20" y="140" font-size="11" fill="#5B6472">② Les graphiques détaillés, en dessous</text>
+<rect x="20" y="148" width="300" height="100" rx="8" fill="#fff" stroke="#E2E8F0"/>
+<g fill="#16A34A"><rect x="45" y="200" width="22" height="38"/><rect x="85" y="185" width="22" height="53"/><rect x="125" y="170" width="22" height="68"/><rect x="165" y="190" width="22" height="48"/><rect x="205" y="162" width="22" height="76" /><rect x="245" y="175" width="22" height="63" fill="#0A0F14"/></g>
+<rect x="335" y="148" width="285" height="100" rx="8" fill="#fff" stroke="#E2E8F0"/>
+<path d="M355 230 L400 205 L445 215 L490 180 L535 190 L600 165" fill="none" stroke="#16A34A" stroke-width="2.5"/>
+<text x="20" y="268" font-size="11" fill="#5B6472">③ Le détail, tout en bas</text>
+<rect x="20" y="276" width="600" height="40" rx="8" fill="#F4F8F7" stroke="#E2E8F0"/>
+<g stroke="#E2E8F0"><path d="M20 296H620"/><path d="M220 276V316M420 276V316"/></g>
+<path d="M1 134H639" stroke="#16A34A" stroke-width="0" />
+</svg>
+<figcaption>Hiérarchie visuelle : synthèse en haut, graphiques au milieu, détail en bas, sur une grille alignée.</figcaption></figure>
+<div class="cards">
+  <div class="card"><div class="ic">🔝</div><h4>Le plus important d'abord</h4><p>Les KPI occupent le haut de la page, en grands caractères.</p></div>
+  <div class="card"><div class="ic">▦</div><h4>Une grille</h4><p>Blocs de même largeur, alignés, avec des marges régulières.</p></div>
+  <div class="card"><div class="ic">🎨</div><h4>Peu de couleurs</h4><p>Une couleur d'accent pour ce qui compte, du gris pour le reste.</p></div>
+  <div class="card"><div class="ic">🏷️</div><h4>Titres explicites</h4><p>Chaque graphique dit ce qu'il montre et sur quelle période.</p></div>
+</div>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Entasser tous les graphiques possibles sur une même page. Un tableau de bord surchargé est illisible : chaque élément doit justifier sa place par rapport à un KPI.</p></div>
+<details><summary>Où construire le tableau de bord dans le classeur ?</summary><div><p>On place le dashboard dans une feuille dédiée, par exemple « Dashboard », distincte des feuilles de données et de calculs. Les données sources restent dans leur feuille d'origine, ce qui garde le classeur lisible et sûr.</p></div></details>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. Ajouter de l'interactivité : segments, chronologies, filtres</h2>
+<p>Un tableau de bord est <strong>interactif</strong> quand le lecteur peut changer ce qu'il voit en un clic : choisir un magasin, une catégorie ou une période, sans toucher aux formules.</p>
+<div class="cards">
+  <div class="card"><div class="ic">🔘</div><h4>Segment (slicer)</h4><p>Boutons de filtre pour une catégorie : région, produit, vendeur.</p></div>
+  <div class="card"><div class="ic">📅</div><h4>Chronologie</h4><p>Curseur pour filtrer par mois, trimestre ou année.</p></div>
+  <div class="card"><div class="ic">☑️</div><h4>Case à cocher / liste</h4><p>Commandes simples dans Google Sheets pour activer ou choisir.</p></div>
+</div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Outils interactifs">
+    <button role="tab" aria-selected="true">Excel</button>
+    <button role="tab" aria-selected="false">Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul>
+    <li><strong>Segments :</strong> à partir d'un tableau croisé dynamique, onglet <em>Analyse du tableau croisé dynamique</em> puis <em>Insérer un segment</em>.</li>
+    <li><strong>Chronologie :</strong> même onglet, <em>Insérer une chronologie</em>, sur une colonne de dates.</li>
+    <li>Segments et chronologies se redimensionnent et se placent librement sur le dashboard.</li>
+  </ul></div>
+  <div class="panel" role="tabpanel" hidden><ul>
+    <li><strong>Segments :</strong> menu <em>Données</em> puis <em>Ajouter un segment</em> ; il agit sur les graphiques et tableaux croisés.</li>
+    <li><strong>Filtres :</strong> <em>Données</em> puis <em>Créer un filtre</em> sur un tableau.</li>
+    <li><strong>Commandes :</strong> menu <em>Insertion</em> pour une <em>Case à cocher</em> ou une <em>Liste déroulante</em>, lues ensuite par une formule.</li>
+  </ul></div>
+</div>
+<p>Dans Google Sheets, une liste déroulante en cellule B1 (par exemple le nom d'un magasin) peut piloter un calcul : la formule ci-dessous additionne les ventes du magasin choisi.</p>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Ventes du magasin choisi en B1 (magasins en colonne A, montants en colonne C)</span>
+=<span class="fn">SOMME.SI</span>(A2:A100; B1; C2:C100)</code></pre></div>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Limitez-vous à trois ou quatre éléments interactifs, ceux qui répondent aux questions les plus fréquentes. Trop de boutons rendent le tableau de bord difficile à lire.</p></div>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Relier les éléments interactifs à plusieurs tableaux croisés</h2>
+<p>Un dashboard contient souvent plusieurs tableaux croisés dynamiques : un par KPI ou par graphique. Pour que <strong>un seul segment</strong> filtre tout le tableau de bord en même temps, il faut le connecter à chacun d'eux. Ils doivent partager la même source de données.</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Schéma : un segment Région et une chronologie sont reliés à trois tableaux croisés dynamiques qui alimentent trois éléments du dashboard">
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="10" y="30" width="130" height="50" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="75" y="60" fill="#0A0F14">Segment Région</text>
+<rect x="10" y="150" width="130" height="50" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="75" y="180" fill="#0A0F14">Chronologie</text>
+<rect x="250" y="10" width="140" height="44" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="320" y="37" fill="#0A0F14">TCD 1 : Ventes</text>
+<rect x="250" y="93" width="140" height="44" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="320" y="120" fill="#0A0F14">TCD 2 : Marge</text>
+<rect x="250" y="176" width="140" height="44" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="320" y="203" fill="#0A0F14">TCD 3 : Produits</text>
+<rect x="500" y="10" width="130" height="44" rx="8" fill="#0A0F14"/><text x="565" y="37" fill="#fff">KPI + courbe</text>
+<rect x="500" y="93" width="130" height="44" rx="8" fill="#0A0F14"/><text x="565" y="120" fill="#fff">Graphique marge</text>
+<rect x="500" y="176" width="130" height="44" rx="8" fill="#0A0F14"/><text x="565" y="203" fill="#fff">Top produits</text>
+</g>
+<g stroke="#16A34A" stroke-width="1.5" fill="none"><path d="M140 55L250 32"/><path d="M140 55L250 115"/><path d="M140 55L250 198"/><path d="M140 175L250 40" stroke-dasharray="5 4"/><path d="M140 175L250 122" stroke-dasharray="5 4"/><path d="M140 175L250 202" stroke-dasharray="5 4"/></g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M390 32H498"/><path d="M390 115H498"/><path d="M390 198H498"/></g>
+<text x="195" y="228" font-size="11" fill="#5B6472" text-anchor="middle"></text>
+</svg>
+<figcaption>Un segment et une chronologie connectés à trois tableaux croisés : un clic met à jour tout le dashboard.</figcaption></figure>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Connexion">
+    <button role="tab" aria-selected="true">Dans Excel</button>
+    <button role="tab" aria-selected="false">Dans Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>Clic droit sur le segment, puis <strong>Connexions de rapport</strong> (ou <em>Se connecter au rapport</em>) : on coche les tableaux croisés à relier. Le même réglage existe pour la chronologie.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Dans les paramètres du segment, onglet <strong>Données</strong>, on choisit les graphiques et tableaux croisés qu'il contrôle. Une même colonne de filtrage est utilisée pour tous.</p></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Si un tableau croisé n'est pas connecté, il reste inchangé quand on clique sur le segment. Le dashboard affiche alors des chiffres incohérents entre eux : c'est un signe qu'il manque une connexion.</p></div>
+<details><summary>Pourquoi faut-il une source de données commune ?</summary><div><p>Un segment filtre une colonne précise d'une source. Seuls les tableaux croisés construits sur cette même source peuvent y être reliés. D'où l'intérêt de partir d'un tableau de données unique et bien structuré.</p></div></details>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Optimiser pour l'écran et pour l'impression / PDF</h2>
+<p>Un même tableau de bord est consulté sur un écran, mais aussi souvent envoyé en PDF ou imprimé pour une réunion. Les deux usages demandent des réglages différents.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Usages">
+    <button role="tab" aria-selected="true">Consultation à l'écran</button>
+    <button role="tab" aria-selected="false">Impression / PDF</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul>
+    <li>Masquer le quadrillage et les en-têtes de lignes et colonnes pour un rendu épuré.</li>
+    <li>Adapter la largeur du dashboard à l'écran habituel du lecteur.</li>
+    <li>Figer les volets pour garder les titres visibles pendant le défilement.</li>
+  </ul></div>
+  <div class="panel" role="tabpanel" hidden><ul>
+    <li>Définir la <strong>zone d'impression</strong> pour n'imprimer que le dashboard.</li>
+    <li>Choisir l'orientation <strong>paysage</strong> et ajuster à <strong>1 page en largeur</strong>.</li>
+    <li>Vérifier l'aperçu avant impression : les graphiques ne doivent pas être coupés entre deux pages.</li>
+  </ul></div>
+</div>
+<div class="cards">
+  <div class="card"><div class="ic">🖨️</div><h4>Excel</h4><p>Onglet Mise en page : zone d'impression, orientation, mise à l'échelle. Puis Fichier, Exporter en PDF.</p></div>
+  <div class="card"><div class="ic">📄</div><h4>Google Sheets</h4><p>Fichier, Imprimer : réglages de page et de mise à l'échelle. Ou Télécharger au format PDF.</p></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>Les segments filtrent la vue au moment de l'export : le PDF reproduit l'état du tableau de bord à cet instant. Il faut donc choisir les filtres voulus avant d'exporter.</p></div>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. Mettre à jour les données et protéger les feuilles</h2>
+<p>Un bon tableau de bord se met à jour <strong>sans reconstruction</strong> : on ajoute les nouvelles données à la source, puis on actualise. Les calculs et graphiques suivent automatiquement.</p>
+<figure>
+<svg viewBox="0 0 640 140" role="img" aria-label="Flux de mise à jour : nouvelles données dans la feuille Données, actualisation des tableaux croisés, mise à jour du dashboard verrouillé, export en PDF">
+<defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="12" font-weight="600" text-anchor="middle">
+<rect x="10" y="30" width="125" height="56" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="72" y="55" fill="#0A0F14">Feuille</text><text x="72" y="72" fill="#0A0F14">« Données »</text>
+<rect x="170" y="30" width="125" height="56" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="232" y="55" fill="#0A0F14">Tableaux croisés</text><text x="232" y="72" fill="#0A0F14">actualisés</text>
+<rect x="330" y="30" width="145" height="56" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="402" y="55" fill="#0A0F14">Feuille « Dashboard »</text><text x="402" y="72" fill="#0A0F14">verrouillée 🔒</text>
+<rect x="510" y="30" width="120" height="56" rx="8" fill="#0A0F14"/><text x="570" y="63" fill="#fff">Export PDF</text>
+</g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar2)"><path d="M135 58H168"/><path d="M295 58H328"/><path d="M475 58H508"/></g>
+<text x="320" y="118" font-size="12" fill="#5B6472" text-anchor="middle">On modifie uniquement la source : le reste suit.</text>
+</svg>
+<figcaption>Flux de mise à jour d'un tableau de bord.</figcaption></figure>
+<h3>Mettre à jour sans casser</h3>
+<div class="cards">
+  <div class="card"><div class="ic">📋</div><h4>Source en tableau</h4><p>Un tableau structuré s'étend automatiquement quand on ajoute des lignes.</p></div>
+  <div class="card"><div class="ic">🔄</div><h4>Actualiser</h4><p>Excel : Données, Actualiser tout. Dans Sheets, les tableaux croisés se recalculent seuls.</p></div>
+</div>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// KPI du dashboard : total des ventes de la source (tableau nommé « Ventes »)</span>
+=<span class="fn">SOMME</span>(Ventes[Montant])</code></pre></div>
+<h3>Protéger le tableau de bord</h3>
+<p>Une fois le dashboard terminé, on <strong>verrouille</strong> les cellules de calcul et de mise en page pour éviter qu'une formule soit effacée par erreur. Les éléments interactifs restent utilisables.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Protection">
+    <button role="tab" aria-selected="true">Excel</button>
+    <button role="tab" aria-selected="false">Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Onglet <em>Révision</em> puis <em>Protéger la feuille</em>, avec un mot de passe facultatif.</li><li>Par défaut, toutes les cellules sont verrouillées : la protection s'applique donc dès son activation.</li><li>On peut autoriser l'usage des segments dans les options de protection.</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Menu <em>Données</em> puis <em>Protéger les feuilles et les plages</em>.</li><li>On choisit qui peut modifier : soi seul, ou certaines personnes.</li><li>Les autres lecteurs continuent de voir et d'utiliser les filtres selon leurs droits.</li></ul></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>La protection d'une feuille limite les modifications accidentelles. Elle ne remplace pas la gestion des droits de partage : un mot de passe simple n'est pas une garantie de confidentialité.</p></div>
+<details><summary>Que protéger exactement ?</summary><div><p>On protège la feuille du dashboard et les feuilles de calculs. La feuille de données sources reste modifiable par les personnes chargées de l'alimenter, car c'est là que se font les mises à jour.</p></div></details>
+<div class="note"><strong>🔗 Pour aller plus loin</strong><p>La prochaine leçon montre comment l'IA aide à analyser et à interpréter les données affichées dans un tableau de bord comme celui-ci.</p></div>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>Un KPI se choisit à partir d'un objectif métier ; il doit être mesurable et utile à la décision.</li>
+<li>La mise en page suit une hiérarchie : KPI synthétiques en haut, graphiques en dessous, détail en bas, sur une grille alignée.</li>
+<li>Segments, chronologies, filtres et commandes rendent le dashboard interactif, avec une sélection limitée aux besoins réels.</li>
+<li>Un segment doit être connecté à chaque tableau croisé pour filtrer tout le tableau de bord à la fois.</li>
+<li>La zone d'impression, l'orientation et la mise à l'échelle garantissent un PDF propre.</li>
+<li>On met à jour la source puis on actualise ; on protège ensuite les feuilles de calcul et de dashboard.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <a href="lecon-06-creer-graphiques-efficaces.html">Leçon précédente<small>Leçon 06 — Créer des graphiques efficaces</small></a>
+    <a href="lecon-08-utiliser-ia-analyser-interpreter-donnees.html">Leçon suivante<small>Leçon 08 — Utiliser l'IA pour analyser et interpréter les données</small></a>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 2 · Leçon 07</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Étapes (stepper) ===== */
+const steps=[
+["Objectif","Préciser ce que le tableau de bord doit permettre de suivre et pour qui : direction, équipe commerciale, responsable de magasin."],
+["KPI","Choisir quelques indicateurs alignés sur l'objectif, avec leur définition de calcul claire."],
+["Données","Préparer une source unique, propre et structurée, sur laquelle s'appuient tous les calculs."],
+["Mise en page","Organiser la page : KPI en haut, graphiques détaillés en dessous, alignements sur grille."],
+["Interactivité","Ajouter segments, chronologies ou filtres, puis les connecter à tous les tableaux croisés."],
+["Diffusion","Régler l'affichage et l'impression, protéger les feuilles, puis partager ou exporter en PDF."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Étape '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.setAttribute('role','listitem');
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

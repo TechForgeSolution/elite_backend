@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 21 — Indicateurs et tableau de bord RH, Module 5 — Performance, relations sociales et outils RH.">
+  <title>Leçon 21 — Indicateurs et tableau de bord RH</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F6B5F'/%3E%3Cpath d='M15 45V28h10V45M27 45V18h10v27M39 45V23h10v22M12 45h40' fill='none' stroke='%23F7F8F6' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Manrope:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#F7F8F6;
+      --color-text:#1F2933;
+      --color-accent:#2F6B5F;
+      --color-neutral:#8A9690;
+      --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+      --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+      --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+      --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+      --accent-faint:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+      --max:1120px;
+      --reading:720px;
+      --shadow:0 10px 30px rgba(31,41,51,.06);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--color-bg);color:var(--color-text);
+      font-family:Inter,system-ui,sans-serif;line-height:1.7;
+    }
+    h1,h2,h3{font-family:Manrope,Inter,sans-serif;line-height:1.2;margin:0 0 16px}
+    h1{font-size:clamp(2.2rem,5vw,4.2rem);letter-spacing:-.045em}
+    h2{font-size:clamp(1.55rem,3vw,2.2rem);letter-spacing:-.025em}
+    h3{font-size:1.05rem}
+    p{margin:0 0 16px}
+    a{color:var(--color-accent);text-underline-offset:3px}
+    button{font:inherit;color:inherit}
+    :focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+    .progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+    .site-header{
+      position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);
+      border-bottom:1px solid var(--border);backdrop-filter:blur(10px)
+    }
+    .header-inner{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--color-text);font-family:Manrope;font-weight:700}
+    .brand-mark{width:34px;height:34px;border:2px solid var(--color-accent);border-radius:9px;display:grid;place-items:center}
+    .brand-mark svg{width:19px;height:19px}
+    .brand small{display:block;font:500 .68rem "JetBrains Mono";color:var(--text-muted);letter-spacing:.08em}
+    .menu-btn{display:none;border:1px solid var(--border);background:var(--color-bg);border-radius:8px;padding:7px 10px;cursor:pointer}
+    .toc-nav{display:flex;gap:18px;align-items:center}
+    .toc-nav a{font-size:.84rem;text-decoration:none;color:var(--text-muted)}
+    .toc-nav a:hover{color:var(--color-accent)}
+    main{max-width:var(--max);margin:auto;padding:0 24px}
+    .hero{padding:82px 0 70px;display:grid;grid-template-columns:1.2fr .8fr;gap:62px;align-items:end}
+    .eyebrow{font:600 .72rem "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent);margin-bottom:18px}
+    .hero h1{max-width:820px}
+    .subtitle{max-width:680px;font-size:1.12rem;color:var(--text-muted)}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}
+    .badge{border:1px solid var(--border);background:var(--accent-faint);border-radius:999px;padding:7px 11px;font:500 .72rem "JetBrains Mono";color:var(--color-text)}
+    .hero-visual{border:1px solid var(--border);border-radius:22px;background:var(--bg-alt);padding:22px;box-shadow:var(--shadow)}
+    .hero-visual svg{display:block;width:100%;height:auto}
+    .caption{font-size:.75rem;color:var(--text-muted);margin-top:10px}
+    .toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 0;margin-bottom:76px}
+    .toc h2{font-size:1rem;margin-bottom:14px}
+    .toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 28px}
+    .toc a{text-decoration:none;font-size:.9rem;padding:5px 0}
+    section{scroll-margin-top:90px;margin-bottom:88px}
+    .section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:28px}
+    .section-number{font:600 .72rem "JetBrains Mono";color:var(--color-accent);border:1px solid var(--color-accent);border-radius:7px;padding:7px 8px;min-width:42px;text-align:center}
+    .reading{max-width:var(--reading)}
+    .lead{font-size:1.08rem;color:var(--text-muted)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
+    .card{border:1px solid var(--border);border-radius:15px;padding:20px;background:var(--color-bg);transition:.2s}
+    .card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+    .icon{width:36px;height:36px;border:1px solid var(--color-accent);border-radius:10px;display:grid;place-items:center;color:var(--color-accent);margin-bottom:15px;font:600 .78rem "JetBrains Mono"}
+    .card p{font-size:.88rem;color:var(--text-muted);margin:0}
+    .callout{border:2px solid var(--color-accent);border-radius:15px;padding:20px 22px;margin:25px 0;background:var(--accent-faint);display:grid;grid-template-columns:auto 1fr;gap:15px}
+    .callout .callout-icon{font-size:1.2rem;color:var(--color-accent)}
+    .callout strong{font-family:Manrope}
+    .callout p{margin:4px 0 0;font-size:.9rem}
+    .section-alt{background:var(--bg-alt);padding:56px 24px;margin-left:-24px;margin-right:-24px}
+    .diagram{border:1px solid var(--border);border-radius:18px;background:var(--color-bg);padding:18px;margin:28px 0;overflow-x:auto}
+    .diagram svg{display:block;width:100%;min-width:680px;height:auto}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0}
+    .metric{
+      border:1px solid var(--border);border-radius:15px;padding:18px;background:var(--color-bg);
+    }
+    .metric-label{font-size:.78rem;color:var(--text-muted);margin-bottom:8px}
+    .metric-value{font:600 1.1rem "JetBrains Mono";color:var(--color-accent)}
+    .metric-note{font-size:.78rem;color:var(--text-muted);margin-top:7px}
+    .stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:32px 0}
+    .step{position:relative;padding:22px 18px 18px;border-top:2px solid var(--color-neutral)}
+    .step:not(:last-child)::after{content:"";position:absolute;right:-7px;top:-7px;width:12px;height:12px;border-top:2px solid var(--color-accent);border-right:2px solid var(--color-accent);transform:rotate(45deg);background:var(--color-bg)}
+    .step-num{font:600 .7rem "JetBrains Mono";color:var(--color-accent)}
+    .step p{font-size:.83rem;color:var(--text-muted);margin:5px 0 0}
+    .formula{border:1px solid var(--border);border-radius:14px;background:var(--accent-faint);padding:16px 18px;margin:18px 0;font:600 .86rem "JetBrains Mono";overflow:auto}
+    .tabs{margin:30px 0}
+    .tab-list{display:flex;gap:6px;border-bottom:1px solid var(--border);overflow-x:auto}
+    .tab-btn{border:0;background:none;padding:12px 15px;cursor:pointer;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
+    .tab-btn[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+    .tab-panel{padding:22px 0}
+    .tab-panel[hidden]{display:none}
+    table{width:100%;border-collapse:collapse;font-size:.86rem}
+    th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+    th{font:600 .72rem "JetBrains Mono";color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+    td strong{font-family:Manrope}
+    .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+    .accordion{border-top:1px solid var(--border)}
+    .acc-item{border-bottom:1px solid var(--border)}
+    .acc-btn{width:100%;border:0;background:none;text-align:left;padding:17px 4px;display:flex;justify-content:space-between;cursor:pointer;font-family:Manrope;font-weight:600}
+    .acc-btn span:last-child{color:var(--color-accent);transition:.2s}
+    .acc-btn[aria-expanded=true] span:last-child{transform:rotate(45deg)}
+    .acc-content{padding:0 4px 18px;color:var(--text-muted);font-size:.9rem}
+    .acc-content[hidden]{display:none}
+    .key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .key{border:1px solid var(--border);border-left:4px solid var(--color-accent);padding:18px;background:var(--color-bg);border-radius:10px}
+    .key strong{display:block;font-family:Manrope;margin-bottom:5px}
+    .key span{font-size:.86rem;color:var(--text-muted)}
+    .example{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+    .example-box{border:1px solid var(--border);border-radius:15px;padding:22px;background:var(--color-bg)}
+    .example-box h3{color:var(--color-accent)}
+    .legend{display:flex;flex-wrap:wrap;gap:12px 20px;font-size:.76rem;color:var(--text-muted);margin-top:8px}
+    .legend span{display:inline-flex;align-items:center;gap:7px}
+    .legend i{width:10px;height:10px;border-radius:50%;border:2px solid var(--color-accent);display:inline-block}
+    .footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:90px 0 35px}
+    .nav-card{border:1px solid var(--border);border-radius:14px;padding:18px;text-decoration:none;color:var(--color-text);background:var(--color-bg)}
+    .nav-card:hover{border-color:var(--color-accent)}
+    .nav-card.next{text-align:right}
+    .nav-label{font:600 .68rem "JetBrains Mono";color:var(--text-muted);text-transform:uppercase}
+    .nav-title{display:block;font-family:Manrope;font-weight:700;margin-top:5px}
+    footer{border-top:1px solid var(--border);padding:28px 0 45px;color:var(--text-muted);font-size:.78rem}
+    .top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+    .top.show{opacity:1;pointer-events:auto}
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
+    .reveal.visible{opacity:1;transform:none}
+    @media(max-width:980px){
+      .hero{grid-template-columns:1fr;gap:35px;padding-top:58px}
+      .cards{grid-template-columns:repeat(2,1fr)}
+      .toc-grid{grid-template-columns:1fr 1fr}
+      .stepper{grid-template-columns:repeat(3,1fr);gap:12px}
+      .step{border-top:0;border-left:2px solid var(--color-neutral)}
+      .step:not(:last-child)::after{right:auto;left:-7px;top:auto;bottom:-7px;transform:rotate(135deg)}
+      .metric-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:680px){
+      main{padding:0 17px}.header-inner{padding:12px 17px}
+      .menu-btn{display:block}.toc-nav{display:none;position:absolute;left:0;right:0;top:100%;background:var(--color-bg);border-bottom:1px solid var(--border);padding:14px 17px;flex-direction:column;align-items:flex-start}
+      .toc-nav.open{display:flex}
+      .hero{padding:45px 0 50px}.toc{margin-bottom:55px}.section-alt{margin-left:-17px;margin-right:-17px;padding:45px 17px}
+      .cards,.key-grid,.example,.footer-nav,.metric-grid{grid-template-columns:1fr}
+      .toc-grid{grid-template-columns:1fr}.stepper{grid-template-columns:1fr}
+      .step:not(:last-child)::after{display:none}.step{border-left:0;border-top:2px solid var(--color-neutral)}
+      .footer-nav .next{text-align:left}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card,.top{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="Filière Gestion des Ressources Humaines">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 19V7h16v12M2 19h20M8 7V4h8v3M7 11h10M7 15h10"/>
+          </svg>
+        </span>
+        <span>Filière GRH<small>SUPPORT DE COURS</small></span>
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">Menu</button>
+      <nav class="toc-nav" id="mainNav" aria-label="Navigation principale">
+        <a href="#kpi">KPI RH</a>
+        <a href="#indicateurs">Indicateurs</a>
+        <a href="#reporting">Reporting social</a>
+        <a href="#dashboard">Tableau de bord</a>
+        <a href="#exemple">Exemple</a>
+        <a href="#essentiel">À retenir</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="title">
+      <div>
+        <div class="eyebrow">Module 05 · Performance, relations sociales et outils RH</div>
+        <h1 id="title">Indicateurs et tableau de bord RH</h1>
+        <p class="subtitle">Mesurer la performance de la fonction RH à l’aide d’indicateurs structurés, d’un reporting social lisible et d’un tableau de bord utile à la décision.</p>
+        <div class="badges">
+          <span class="badge">LEÇON 21</span>
+          <span class="badge">AVANCÉ</span>
+          <span class="badge">15–20 MIN</span>
+        </div>
+      </div>
+
+      <figure class="hero-visual reveal">
+        <svg viewBox="0 0 520 340" role="img" aria-labelledby="heroTitle heroDesc">
+          <title id="heroTitle">Tableau de bord RH reliant plusieurs indicateurs</title>
+          <desc id="heroDesc">Un tableau de bord central présente des indicateurs de turnover, absentéisme, masse salariale et formation, reliés au pilotage RH.</desc>
+
+          <rect x="1" y="1" width="518" height="338" rx="18" fill="none" stroke="var(--border)"/>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M260 170L112 88M260 170L408 88M260 170L112 252M260 170L408 252"/>
+            <path d="M260 108V78M260 232V262"/>
+          </g>
+
+          <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+            <circle cx="260" cy="170" r="70"/>
+            <rect x="42" y="48" width="142" height="80" rx="13"/>
+            <rect x="336" y="48" width="142" height="80" rx="13"/>
+            <rect x="42" y="212" width="142" height="80" rx="13"/>
+            <rect x="336" y="212" width="142" height="80" rx="13"/>
+            <rect x="214" y="16" width="92" height="45" rx="11"/>
+          </g>
+
+          <g fill="var(--color-text)" font-family="Inter" text-anchor="middle">
+            <text x="260" y="34" font-family="JetBrains Mono" font-size="10" font-weight="600">PILOTAGE</text>
+            <text x="260" y="164" font-family="Manrope" font-size="16" font-weight="700">TABLEAU</text>
+            <text x="260" y="186" font-family="Manrope" font-size="16" font-weight="700">DE BORD RH</text>
+            <text x="113" y="80" font-family="Manrope" font-weight="700">TURNOVER</text>
+            <text x="113" y="101" font-size="11">Mobilité des effectifs</text>
+            <text x="407" y="80" font-family="Manrope" font-weight="700">ABSENTÉISME</text>
+            <text x="407" y="101" font-size="11">Temps d’absence</text>
+            <text x="113" y="244" font-family="Manrope" font-weight="700">MASSE SALARIALE</text>
+            <text x="113" y="265" font-size="11">Coût des rémunérations</text>
+            <text x="407" y="244" font-family="Manrope" font-weight="700">FORMATION</text>
+            <text x="407" y="265" font-size="11">Effort de développement</text>
+          </g>
+        </svg>
+        <figcaption class="caption">Un tableau de bord RH rapproche des indicateurs cohérents pour éclairer la performance, les évolutions et les décisions.</figcaption>
+      </figure>
+    </section>
+
+    <nav class="toc" aria-label="Sommaire de la leçon">
+      <h2>Sommaire de la leçon</h2>
+      <div class="toc-grid">
+        <a href="#kpi">01 — KPI RH : mesurer pour piloter</a>
+        <a href="#indicateurs">02 — Indicateurs clés</a>
+        <a href="#turnover">03 — Turnover</a>
+        <a href="#absenteisme">04 — Absentéisme</a>
+        <a href="#masse">05 — Masse salariale</a>
+        <a href="#formation">06 — Taux de formation</a>
+        <a href="#reporting">07 — Reporting social</a>
+        <a href="#dashboard">08 — Tableau de bord RH</a>
+        <a href="#exemple">09 — Exemple professionnel</a>
+        <a href="#essentiel">10 — Points clés à retenir</a>
+      </div>
+    </nav>
+
+    <section id="kpi" class="reveal">
+      <div class="section-head">
+        <span class="section-number">01</span>
+        <div><h2>KPI RH : mesurer pour piloter</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead"><strong>Un KPI RH</strong> est un indicateur clé utilisé pour suivre une dimension importante de l’activité ou de la performance RH. Il transforme des données sociales en information utile au pilotage.</p>
+        <p>Un indicateur n’est pas seulement un chiffre. Sa valeur dépend de ce qu’il mesure, de la période observée, du périmètre retenu, de la qualité des données et de la manière dont il est interprété.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="icon" aria-hidden="true">01</div>
+          <h3>Définir</h3>
+          <p>Préciser la question RH suivie, le périmètre, la période et la source des données.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">02</div>
+          <h3>Mesurer</h3>
+          <p>Calculer l’indicateur avec une méthode stable pour rendre les résultats comparables.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">03</div>
+          <h3>Interpréter</h3>
+          <p>Relier le résultat à son contexte avant d’en tirer une conclusion de pilotage.</p>
+        </article>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 300" role="img" aria-labelledby="kpiTitle kpiDesc">
+          <title id="kpiTitle">Chaîne de transformation des données en décision RH</title>
+          <desc id="kpiDesc">Données sociales, calcul d’indicateurs, interprétation et décision de pilotage sont reliés dans une chaîne logique.</desc>
+
+          <g fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="35" y="95" width="170" height="100" rx="14"/>
+            <rect x="265" y="95" width="170" height="100" rx="14"/>
+            <rect x="495" y="95" width="170" height="100" rx="14"/>
+            <rect x="725" y="95" width="140" height="100" rx="14"/>
+          </g>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M205 145H265M435 145H495M665 145H725"/>
+          </g>
+          <g fill="var(--color-text)" text-anchor="middle" font-family="Inter">
+            <text x="120" y="130" font-family="Manrope" font-weight="700">DONNÉES</text>
+            <text x="120" y="153" font-size="12">Effectifs, absences,</text>
+            <text x="120" y="173" font-size="12">rémunération, formation</text>
+
+            <text x="350" y="130" font-family="Manrope" font-weight="700">KPI RH</text>
+            <text x="350" y="153" font-size="12">Turnover, absentéisme,</text>
+            <text x="350" y="173" font-size="12">masse salariale, formation</text>
+
+            <text x="580" y="130" font-family="Manrope" font-weight="700">ANALYSE</text>
+            <text x="580" y="153" font-size="12">Évolution, comparaison,</text>
+            <text x="580" y="173" font-size="12">écart, tendance</text>
+
+            <text x="795" y="130" font-family="Manrope" font-weight="700">DÉCISION</text>
+            <text x="795" y="153" font-size="12">Pilotage RH</text>
+            <text x="795" y="173" font-size="12">et reporting</text>
+          </g>
+        </svg>
+        <div class="caption">Le KPI s’inscrit dans une chaîne de pilotage : produire une mesure fiable, puis lui donner un sens.</div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">💡</div>
+        <div><strong>À retenir</strong><p>Un bon indicateur RH doit être défini de manière stable, compris par ses utilisateurs et relié à une finalité de pilotage. Un chiffre isolé ne constitue pas encore une analyse.</p></div>
+      </div>
+    </section>
+
+    <section id="indicateurs" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">02</span>
+        <div><h2>Les principaux indicateurs RH</h2></div>
+      </div>
+      <div class="reading">
+        <p>La leçon s’appuie sur cinq familles de mesures : <strong>turnover</strong>, <strong>absentéisme</strong>, <strong>masse salariale</strong>, <strong>formation</strong> et <strong>reporting social</strong>. Ces dimensions peuvent être rapprochées dans un tableau de bord pour obtenir une lecture structurée de la performance RH.</p>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric">
+          <div class="metric-label">INDICATEUR 01</div>
+          <div class="metric-value">TURNOVER</div>
+          <div class="metric-note">Suit la mobilité et les sorties par rapport à l’effectif de référence.</div>
+        </article>
+        <article class="metric">
+          <div class="metric-label">INDICATEUR 02</div>
+          <div class="metric-value">ABSENTÉISME</div>
+          <div class="metric-note">Suit la part du temps de travail non réalisée du fait des absences.</div>
+        </article>
+        <article class="metric">
+          <div class="metric-label">INDICATEUR 03</div>
+          <div class="metric-value">MASSE SAL.</div>
+          <div class="metric-note">Suit l’évolution du coût des rémunérations sur un périmètre donné.</div>
+        </article>
+        <article class="metric">
+          <div class="metric-label">INDICATEUR 04</div>
+          <div class="metric-value">FORMATION</div>
+          <div class="metric-note">Suit l’effort de formation et la part des salariés concernés.</div>
+        </article>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Indicateur</th>
+              <th scope="col">Ce qu’il observe</th>
+              <th scope="col">Lecture principale</th>
+              <th scope="col">Point de vigilance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Turnover</strong></td>
+              <td>Les mouvements de personnel et notamment les départs.</td>
+              <td>Dynamique de mobilité et de renouvellement des effectifs.</td>
+              <td>Interpréter selon les métiers, la période et la nature des départs.</td>
+            </tr>
+            <tr>
+              <td><strong>Absentéisme</strong></td>
+              <td>Les absences rapportées au temps théorique de travail.</td>
+              <td>Poids des absences dans l’activité.</td>
+              <td>Comparer des périmètres homogènes et surveiller les variations.</td>
+            </tr>
+            <tr>
+              <td><strong>Masse salariale</strong></td>
+              <td>Le coût total des rémunérations sur le périmètre étudié.</td>
+              <td>Évolution du poids des rémunérations.</td>
+              <td>Distinguer évolution des effectifs, rémunérations et structure.</td>
+            </tr>
+            <tr>
+              <td><strong>Taux de formation</strong></td>
+              <td>La proportion de salariés ayant bénéficié d’une action de formation selon la définition retenue.</td>
+              <td>Effort de développement des compétences.</td>
+              <td>La lecture gagne à être rapprochée des besoins de compétences.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="turnover" class="reveal">
+      <div class="section-head">
+        <span class="section-number">03</span>
+        <div><h2>Le turnover</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead">Le <strong>turnover</strong> renseigne sur les mouvements de personnel au sein de l’organisation. Il permet notamment de suivre la dynamique des départs et le renouvellement des effectifs.</p>
+        <p>La mesure doit toujours préciser la période et le périmètre observés. Dans une lecture de pilotage, le taux prend davantage de sens lorsqu’il est comparé à une période antérieure, à une autre population ou à une cible définie par l’organisation.</p>
+      </div>
+
+      <div class="formula">Taux de turnover ≈ (nombre de départs sur la période / effectif moyen sur la période) × 100</div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 340" role="img" aria-labelledby="turnTitle turnDesc">
+          <title id="turnTitle">Lecture du turnover à partir des départs et de l’effectif moyen</title>
+          <desc id="turnDesc">Le turnover combine le nombre de départs sur la période et l’effectif moyen, puis produit un taux interprétable dans son contexte.</desc>
+
+          <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="65" y="95" width="250" height="110" rx="16"/>
+            <rect x="585" y="95" width="250" height="110" rx="16"/>
+            <circle cx="450" cy="150" r="58"/>
+          </g>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M315 150H390M510 150H585"/>
+          </g>
+          <g fill="var(--color-text)" text-anchor="middle">
+            <text x="190" y="132" font-family="Manrope" font-weight="700">DÉPARTS</text>
+            <text x="190" y="157" font-size="12">sur la période étudiée</text>
+            <text x="190" y="180" font-size="12">à définir par nature si nécessaire</text>
+
+            <text x="450" y="145" font-family="JetBrains Mono" font-weight="600" font-size="18">÷</text>
+            <text x="450" y="170" font-size="11">ratio</text>
+
+            <text x="710" y="132" font-family="Manrope" font-weight="700">EFFECTIF MOYEN</text>
+            <text x="710" y="157" font-size="12">sur la période étudiée</text>
+            <text x="710" y="180" font-size="12">base de comparaison</text>
+
+            <text x="450" y="285" font-family="JetBrains Mono" font-weight="600" font-size="18">× 100</text>
+            <text x="450" y="309" font-size="12">TAUX DE TURNOVER</text>
+          </g>
+        </svg>
+        <figcaption class="caption">Le même taux peut recouvrir des situations RH différentes : la lecture doit donc rester liée à la structure et au contexte des départs.</figcaption>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">⚠️</div>
+        <div><strong>Attention — erreur fréquente</strong><p>Interpréter un turnover élevé comme un problème en soi est insuffisant. Il faut distinguer les départs, les populations concernées et la période avant de conclure.</p></div>
+      </div>
+    </section>
+
+    <section id="absenteisme" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">04</span>
+        <div><h2>L’absentéisme</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead">Le taux d’<strong>absentéisme</strong> mesure la part du temps de travail non réalisée en raison des absences retenues dans le périmètre de calcul.</p>
+        <p>Il constitue un indicateur de présence utile au pilotage. Comme pour les autres KPI, sa définition doit être explicite : population concernée, période, nature des absences prises en compte et base de temps utilisée.</p>
+      </div>
+
+      <div class="formula">Taux d’absentéisme = (temps d’absence retenu / temps théorique de travail) × 100</div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 320" role="img" aria-labelledby="absTitle absDesc">
+          <title id="absTitle">Structure du calcul du taux d’absentéisme</title>
+          <desc id="absDesc">Le temps d’absence retenu est comparé au temps théorique de travail afin d’obtenir un pourcentage.</desc>
+          <g fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="70" y="80" width="290" height="120" rx="16"/>
+            <rect x="540" y="80" width="290" height="120" rx="16"/>
+            <rect x="355" y="235" width="190" height="58" rx="13"/>
+          </g>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M360 140H540"/>
+            <path d="M450 200V235"/>
+          </g>
+          <g fill="var(--color-text)" text-anchor="middle">
+            <text x="215" y="118" font-family="Manrope" font-weight="700">TEMPS D’ABSENCE</text>
+            <text x="215" y="145" font-size="12">selon le périmètre défini</text>
+            <text x="215" y="168" font-size="12">et la période observée</text>
+
+            <text x="685" y="118" font-family="Manrope" font-weight="700">TEMPS THÉORIQUE</text>
+            <text x="685" y="145" font-size="12">base de travail attendue</text>
+            <text x="685" y="168" font-size="12">sur la même population</text>
+
+            <text x="450" y="271" font-family="Manrope" font-weight="700">TAUX D’ABSENTÉISME</text>
+          </g>
+        </svg>
+        <div class="caption">La comparaison n’est fiable que si le numérateur et le dénominateur couvrent le même périmètre et la même période.</div>
+      </div>
+    </section>
+
+    <section id="masse" class="reveal">
+      <div class="section-head">
+        <span class="section-number">05</span>
+        <div><h2>La masse salariale</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead">La <strong>masse salariale</strong> représente le coût des rémunérations sur un périmètre et une période donnés. Elle constitue un indicateur central pour suivre le poids et l’évolution des dépenses de personnel.</p>
+        <p>Son évolution peut refléter plusieurs phénomènes : variation des effectifs, évolution des rémunérations, changements de structure ou effets liés aux entrées et sorties. La lecture du montant doit donc être rapprochée des autres indicateurs RH.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="icon" aria-hidden="true">E</div>
+          <h3>Effectifs</h3>
+          <p>Une évolution de l’effectif modifie mécaniquement le niveau global des rémunérations.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">R</div>
+          <h3>Rémunérations</h3>
+          <p>Des variations de rémunération peuvent faire évoluer la masse salariale à effectif constant.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">S</div>
+          <h3>Structure</h3>
+          <p>La composition des populations et des postes peut expliquer une partie des écarts observés.</p>
+        </article>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Lecture</th>
+              <th scope="col">Question de pilotage</th>
+              <th scope="col">Indicateur à rapprocher</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Évolution globale</strong></td>
+              <td>La masse salariale progresse-t-elle ou diminue-t-elle ?</td>
+              <td>Effectifs et rémunération moyenne.</td>
+            </tr>
+            <tr>
+              <td><strong>Effet des effectifs</strong></td>
+              <td>La variation est-elle liée au nombre de salariés ?</td>
+              <td>Effectif moyen et mouvements de personnel.</td>
+            </tr>
+            <tr>
+              <td><strong>Effet rémunération</strong></td>
+              <td>La variation est-elle liée au niveau des rémunérations ?</td>
+              <td>Évolution des rémunérations et structure.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="formation" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">06</span>
+        <div><h2>Le taux de formation</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead">Le <strong>taux de formation</strong> permet de suivre l’effort de développement des compétences à travers la part des salariés concernés par les actions de formation, selon la définition retenue par l’organisation.</p>
+        <p>Dans un pilotage RH avancé, ce taux gagne à être mis en relation avec les besoins de compétences et avec les populations concernées. Le volume seul ne suffit pas à décrire la portée de l’effort de formation.</p>
+      </div>
+
+      <div class="formula">Taux de formation = (nombre de salariés concernés / population de référence) × 100</div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 315" role="img" aria-labelledby="formTitle formDesc">
+          <title id="formTitle">Lecture du taux de formation</title>
+          <desc id="formDesc">Une population de référence est mise en relation avec le nombre de salariés concernés par la formation pour produire un taux.</desc>
+          <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="55" y="70" width="245" height="115" rx="16"/>
+            <rect x="655" y="70" width="190" height="115" rx="16"/>
+            <circle cx="470" cy="127" r="60"/>
+          </g>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M300 127H410M530 127H655"/>
+          </g>
+          <g fill="var(--color-text)" text-anchor="middle">
+            <text x="177" y="105" font-family="Manrope" font-weight="700">SALARIÉS CONCERNÉS</text>
+            <text x="177" y="132" font-size="12">par une action de formation</text>
+            <text x="177" y="155" font-size="12">sur la période</text>
+
+            <text x="470" y="122" font-family="JetBrains Mono" font-weight="600" font-size="18">÷</text>
+            <text x="470" y="147" font-size="11">puis × 100</text>
+
+            <text x="750" y="105" font-family="Manrope" font-weight="700">POPULATION</text>
+            <text x="750" y="132" font-size="12">de référence</text>
+            <text x="750" y="155" font-size="12">même période / périmètre</text>
+          </g>
+          <text x="450" y="245" font-family="Manrope" font-weight="700" font-size="14" text-anchor="middle" fill="var(--color-accent)">TAUX DE FORMATION</text>
+        </svg>
+        <div class="caption">Le taux de formation est une mesure de couverture ; sa signification dépend du périmètre et des besoins auxquels les actions répondent.</div>
+      </div>
+    </section>
+
+    <section id="reporting" class="reveal">
+      <div class="section-head">
+        <span class="section-number">07</span>
+        <div><h2>Le reporting social</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead">Le <strong>reporting social</strong> rassemble et présente des données relatives aux ressources humaines pour permettre un suivi régulier de la situation sociale de l’organisation.</p>
+        <p>Il met en forme des données issues des différents domaines RH et facilite la comparaison dans le temps. Un reporting utile est structuré, documenté et adapté aux besoins de ses destinataires.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-list" role="tablist" aria-label="Composantes du reporting social">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-donnees" id="btn-donnees">Données</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-lecture" id="btn-lecture" tabindex="-1">Lecture</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-diffusion" id="btn-diffusion" tabindex="-1">Diffusion</button>
+        </div>
+        <div id="tab-donnees" class="tab-panel" role="tabpanel" aria-labelledby="btn-donnees">
+          <h3>Données : rassembler les mesures utiles</h3>
+          <p>Le reporting peut mobiliser des données d’effectifs, de mouvements, d’absences, de rémunération ou de formation, selon le périmètre du suivi.</p>
+        </div>
+        <div id="tab-lecture" class="tab-panel" role="tabpanel" aria-labelledby="btn-lecture" hidden>
+          <h3>Lecture : transformer les chiffres en tendances</h3>
+          <p>Les indicateurs sont lus en évolution, en comparaison ou par rapport à une référence. Le contexte est indispensable pour expliquer un écart ou une tendance.</p>
+        </div>
+        <div id="tab-diffusion" class="tab-panel" role="tabpanel" aria-labelledby="btn-diffusion" hidden>
+          <h3>Diffusion : adapter l’information</h3>
+          <p>La présentation des résultats doit correspondre aux besoins des destinataires : niveau de détail, fréquence de suivi et indicateurs prioritaires.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">📐</div>
+        <div><strong>Bonnes pratiques professionnelles</strong><p>Conserver une définition stable des indicateurs, documenter les sources et vérifier la cohérence des périodes et périmètres avant diffusion.</p></div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">08</span>
+        <div><h2>Le tableau de bord RH</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead">Le <strong>tableau de bord RH</strong> sélectionne et organise les indicateurs les plus utiles au pilotage. Il ne cherche pas à afficher toutes les données disponibles, mais à donner une vue structurée des dimensions suivies.</p>
+      </div>
+
+      <div class="stepper" aria-label="Construction simplifiée d'un tableau de bord RH">
+        <article class="step"><span class="step-num">ÉTAPE 01</span><h3>Définir le besoin</h3><p>Préciser ce que le suivi doit permettre de comprendre.</p></article>
+        <article class="step"><span class="step-num">ÉTAPE 02</span><h3>Choisir les KPI</h3><p>Retenir les mesures directement liées au besoin de pilotage.</p></article>
+        <article class="step"><span class="step-num">ÉTAPE 03</span><h3>Fiabiliser</h3><p>Contrôler les sources, calculs, périodes et périmètres.</p></article>
+        <article class="step"><span class="step-num">ÉTAPE 04</span><h3>Comparer</h3><p>Observer les évolutions, écarts ou tendances.</p></article>
+        <article class="step"><span class="step-num">ÉTAPE 05</span><h3>Piloter</h3><p>Utiliser les résultats pour structurer la lecture RH.</p></article>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 380" role="img" aria-labelledby="dashTitle dashDesc">
+          <title id="dashTitle">Architecture simplifiée d'un tableau de bord RH</title>
+          <desc id="dashDesc">Le tableau de bord central présente quatre familles de KPI et une zone de tendance pour aider au pilotage.</desc>
+
+          <rect x="22" y="22" width="856" height="336" rx="18" fill="none" stroke="var(--border)"/>
+          <rect x="50" y="50" width="800" height="42" rx="11" fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2"/>
+          <text x="76" y="76" font-family="Manrope" font-weight="700" font-size="15" fill="var(--color-text)">TABLEAU DE BORD RH</text>
+          <text x="824" y="76" font-family="JetBrains Mono" text-anchor="end" font-size="11" fill="var(--text-muted)">PÉRIODE · PÉRIMÈTRE · SOURCE</text>
+
+          <g fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="50" y="116" width="176" height="92" rx="14"/>
+            <rect x="242" y="116" width="176" height="92" rx="14"/>
+            <rect x="434" y="116" width="176" height="92" rx="14"/>
+            <rect x="626" y="116" width="224" height="92" rx="14"/>
+          </g>
+
+          <g fill="var(--color-text)" text-anchor="middle">
+            <text x="138" y="145" font-family="Manrope" font-weight="700">TURNOVER</text>
+            <text x="138" y="169" font-family="JetBrains Mono" font-size="13">KPI</text>
+
+            <text x="330" y="145" font-family="Manrope" font-weight="700">ABSENTÉISME</text>
+            <text x="330" y="169" font-family="JetBrains Mono" font-size="13">KPI</text>
+
+            <text x="522" y="145" font-family="Manrope" font-weight="700">MASSE SALARIALE</text>
+            <text x="522" y="169" font-family="JetBrains Mono" font-size="13">KPI</text>
+
+            <text x="738" y="145" font-family="Manrope" font-weight="700">FORMATION</text>
+            <text x="738" y="169" font-family="JetBrains Mono" font-size="13">KPI</text>
+          </g>
+
+          <g fill="var(--bg-alt)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="50" y="232" width="500" height="98" rx="14"/>
+            <rect x="566" y="232" width="284" height="98" rx="14"/>
+          </g>
+
+          <g fill="var(--color-text)">
+            <text x="72" y="258" font-family="Manrope" font-weight="700">TENDANCES</text>
+            <text x="72" y="282" font-family="Inter" font-size="12">Évolution dans le temps</text>
+            <path d="M72 309 C135 285 175 320 240 296 S348 310 408 280 S490 303 530 276" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
+            <text x="588" y="258" font-family="Manrope" font-weight="700">LECTURE</text>
+            <text x="588" y="282" font-family="Inter" font-size="12">Contexte · écarts</text>
+            <text x="588" y="302" font-family="Inter" font-size="12">comparaisons · tendances</text>
+          </g>
+        </svg>
+        <div class="legend" aria-label="Légende du tableau de bord">
+          <span><i aria-hidden="true"></i> KPI structurants</span>
+          <span><i aria-hidden="true"></i> tendance</span>
+          <span><i aria-hidden="true"></i> lecture contextuelle</span>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">💡</div>
+        <div><strong>À retenir</strong><p>Le tableau de bord est un outil de synthèse. Sa qualité tient autant à la sélection des indicateurs qu’à leur définition, leur fiabilité et leur interprétation.</p></div>
+      </div>
+    </section>
+
+    <section id="exemple" class="reveal">
+      <div class="section-head">
+        <span class="section-number">09</span>
+        <div><h2>Exemple professionnel : lire un tableau de bord RH</h2></div>
+      </div>
+      <div class="reading">
+        <p>Une direction RH suit chaque période le turnover, l’absentéisme, la masse salariale et le taux de formation. Le tableau de bord présente l’évolution de ces indicateurs sur un même périmètre afin de faciliter une lecture cohérente de la situation sociale.</p>
+      </div>
+
+      <div class="example">
+        <article class="example-box">
+          <h3>Une vue synthétique</h3>
+          <p>Le reporting met côte à côte les quatre familles d’indicateurs. Chaque valeur est accompagnée de sa période et de son périmètre, ce qui rend les comparaisons plus lisibles.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">KPI</th><th scope="col">Lecture</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Turnover</strong></td><td>Suivre les mouvements de personnel.</td></tr>
+                <tr><td><strong>Absentéisme</strong></td><td>Suivre le poids des absences.</td></tr>
+                <tr><td><strong>Masse salariale</strong></td><td>Suivre le coût des rémunérations.</td></tr>
+                <tr><td><strong>Formation</strong></td><td>Suivre l’effort de développement.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="example-box">
+          <h3>Une lecture structurée</h3>
+          <p>Un changement observé sur un indicateur n’est pas interprété seul. La DRH rapproche les tendances pour mieux comprendre la situation et produire un reporting utile à la direction.</p>
+          <div class="callout">
+            <div class="callout-icon" aria-hidden="true">👥</div>
+            <div><strong>Situation RH — exemple explicatif</strong><p>Une hausse du turnover, par exemple, doit être replacée dans sa période et dans les populations concernées. Le tableau de bord sert alors de support de lecture, pas de conclusion automatique.</p></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="accordion" aria-label="Précisions professionnelles">
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="acc1"><span>Pourquoi ne pas multiplier les KPI ?</span><span aria-hidden="true">+</span></button>
+          <div class="acc-content" id="acc1" hidden>Un tableau de bord devient moins lisible lorsque trop d’indicateurs sont juxtaposés sans hiérarchisation. La sélection doit rester liée à la finalité du pilotage.</div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="acc2"><span>Pourquoi préciser la période et le périmètre ?</span><span aria-hidden="true">+</span></button>
+          <div class="acc-content" id="acc2" hidden>Deux valeurs ne sont comparables que si les conditions de calcul sont cohérentes. La période et la population étudiée font donc partie de la définition pratique de l’indicateur.</div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="acc3"><span>Quelle différence entre KPI et tableau de bord ?</span><span aria-hidden="true">+</span></button>
+          <div class="acc-content" id="acc3" hidden>Le KPI est une mesure clé. Le tableau de bord organise plusieurs KPI, leur contexte et leur évolution afin d’obtenir une vue de pilotage plus structurée.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="essentiel" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">10</span>
+        <div><h2>Points clés à retenir</h2></div>
+      </div>
+
+      <div class="key-grid">
+        <div class="key"><strong>KPI RH</strong><span>Un indicateur clé transforme des données sociales en mesure utile au suivi et au pilotage.</span></div>
+        <div class="key"><strong>Turnover</strong><span>Il suit les mouvements et départs en rapport avec un effectif de référence.</span></div>
+        <div class="key"><strong>Absentéisme</strong><span>Il rapporte le temps d’absence retenu au temps théorique de travail.</span></div>
+        <div class="key"><strong>Masse salariale</strong><span>Elle permet de suivre l’évolution du coût global des rémunérations.</span></div>
+        <div class="key"><strong>Formation</strong><span>Le taux de formation suit la part de la population concernée par les actions retenues.</span></div>
+        <div class="key"><strong>Reporting social</strong><span>Il rassemble et présente les données sociales pour faciliter une lecture régulière.</span></div>
+        <div class="key"><strong>Tableau de bord</strong><span>Il organise une sélection de KPI cohérents, contextualisés et comparables.</span></div>
+        <div class="key"><strong>Principe de lecture</strong><span>Un chiffre doit toujours être interprété selon sa définition, sa période, son périmètre et son contexte.</span></div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">💡</div>
+        <div><strong>Idée essentielle</strong><p>La performance RH se pilote à partir d’indicateurs fiables, structurés et interprétés dans leur contexte. Le tableau de bord donne une vue synthétique permettant d’éclairer le suivi de la fonction RH.</p></div>
+      </div>
+    </section>
+
+    <div class="footer-nav" aria-label="Navigation entre les leçons">
+      <a class="nav-card" href="#">
+        <span class="nav-label">Leçon précédente</span>
+        <span class="nav-title">Leçon 20 — Prévention des risques et santé au travail</span>
+      </a>
+      <a class="nav-card next" href="#" aria-label="Leçon suivante : Dialogue social et relations avec les représentants du personnel">
+        <span class="nav-label">Leçon suivante</span>
+        <span class="nav-title">Leçon 22 — Dialogue social et relations avec les représentants du personnel →</span>
+      </a>
+    </div>
+
+    <footer>
+      <strong>Filière Gestion des Ressources Humaines</strong> · Module 5 — Performance, relations sociales et outils RH · Leçon 21
+    </footer>
+  </main>
+
+  <button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+  <script>
+    (() => {
+      const progress = document.getElementById('progress');
+      const topBtn = document.getElementById('topBtn');
+      const menuBtn = document.getElementById('menuBtn');
+      const mainNav = document.getElementById('mainNav');
+
+      function updateScrollUI(){
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = max > 0 ? window.scrollY / max : 0;
+        progress.style.width = (ratio * 100) + '%';
+        topBtn.classList.toggle('show', window.scrollY > 500);
+      }
+
+      window.addEventListener('scroll', updateScrollUI, {passive:true});
+      updateScrollUI();
+
+      topBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+      menuBtn.addEventListener('click', () => {
+        const open = mainNav.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', String(open));
+      });
+
+      mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        mainNav.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded','false');
+      }));
+
+      const tabButtons = [...document.querySelectorAll('.tab-btn')];
+      tabButtons.forEach((btn, i) => {
+        btn.addEventListener('click', () => activateTab(i));
+        btn.addEventListener('keydown', e => {
+          let next = i;
+          if(e.key === 'ArrowRight') next = (i + 1) % tabButtons.length;
+          if(e.key === 'ArrowLeft') next = (i - 1 + tabButtons.length) % tabButtons.length;
+          if(e.key === 'Home') next = 0;
+          if(e.key === 'End') next = tabButtons.length - 1;
+          if(next !== i){
+            e.preventDefault();
+            activateTab(next);
+            tabButtons[next].focus();
+          }
+        });
+      });
+
+      function activateTab(index){
+        tabButtons.forEach((b,i) => {
+          const selected = i === index;
+          b.setAttribute('aria-selected', String(selected));
+          b.tabIndex = selected ? 0 : -1;
+          document.getElementById(b.getAttribute('aria-controls')).hidden = !selected;
+        });
+      }
+
+      document.querySelectorAll('.acc-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          document.getElementById(btn.getAttribute('aria-controls')).hidden = expanded;
+        });
+
+        btn.addEventListener('keydown', e => {
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+
+      const revealItems = document.querySelectorAll('.reveal');
+      if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if(entry.isIntersecting){
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {threshold:.12});
+        revealItems.forEach(el => observer.observe(el));
+      } else {
+        revealItems.forEach(el => el.classList.add('visible'));
+      }
+    })();
+  </script>
+</body>
+</html>

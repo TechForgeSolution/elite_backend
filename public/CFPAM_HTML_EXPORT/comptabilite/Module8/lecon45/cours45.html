@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 45 — Analyse coût-volume-profit | Analyse des coûts</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  .mono{font-size:0.92em;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:720px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:720px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  td.num.negative{color:var(--color-accent-alt);}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+  .status-pill{display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:600; border-radius:100px; padding:3px 10px;}
+  .status-pill.done{color:var(--color-accent); background:var(--color-accent-soft);}
+  .status-pill.progress{color:#8A6D1F; background:#FBF3DC;}
+  .status-pill.late{color:var(--color-accent-alt); background:#FBEEE6;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+  .tab-panel ul{margin:0 0 1.1em; padding-left:1.2em;}
+  .tab-panel li{margin-bottom:4px;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+  .card .example{margin-top:10px; font-family:var(--font-mono); font-size:0.78rem; color:var(--color-accent);}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+  section.alt .step-index{background:var(--color-bg-alt);}
+
+  .formula{
+    max-width:720px; margin:24px 0; padding:16px 20px; border:1px solid var(--color-border);
+    border-radius:10px; background:var(--color-bg); font-family:var(--font-mono); font-size:0.95rem;
+    font-variant-numeric:tabular-nums; overflow-x:auto;
+  }
+  .formula .label{display:block; font-family:var(--font-body); font-size:0.78rem; color:var(--color-text-muted); margin-bottom:6px;}
+  .formula strong{color:var(--color-accent); font-weight:600;}
+  .tab-panel .formula{margin-top:0;}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+  section.alt .diagram-wrap{background:var(--color-bg);}
+
+  .sim{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; background:var(--color-bg-alt); padding:24px;}
+  .sim-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:22px;}
+  .sim label{display:block; font-size:0.82rem; font-weight:600; color:var(--color-text-muted); margin-bottom:6px;}
+  .sim input[type="number"]{
+    width:100%; font-family:var(--font-mono); font-size:1rem; padding:9px 12px;
+    border:1px solid var(--color-border); border-radius:8px; background:var(--color-bg); color:var(--color-text);
+  }
+  .sim input[type="number"]:focus-visible, .sim input[type="range"]:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .sim .range-row{margin-bottom:22px;}
+  .sim .range-row .val{font-family:var(--font-mono); color:var(--color-accent); font-weight:600;}
+  .sim input[type="range"]{width:100%; accent-color:var(--color-accent);}
+  .sim-out{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;}
+  .sim-card{background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:14px 16px;}
+  .sim-card .k{display:block; font-size:0.78rem; color:var(--color-text-muted); margin-bottom:2px;}
+  .sim-card .v{font-family:var(--font-mono); font-size:1.15rem; font-weight:600; font-variant-numeric:tabular-nums;}
+  .sim-card.result .v{color:var(--color-accent);}
+  .sim-card.result.loss .v{color:var(--color-accent-alt);}
+  .sim-msg{margin:18px 0 0; font-size:0.92rem; color:var(--color-text-muted);}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column; gap:18px;}
+    .step{padding-right:0;}
+    .step:not(:last-child)::after{display:none;}
+    .hero{padding:44px 0 36px;}
+    section.lesson-section{padding:44px 0;}
+    .sim{padding:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filière comptabilité
+    </div>
+    <nav class="toc-toggle" aria-label="Sommaire rapide">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 8 — Analyse des coûts</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau intermédiaire</span>
+    </div>
+    <h1>Leçon 45 — Analyse coût-volume-profit</h1>
+    <p class="lede">Relier les coûts, le volume d'activité, le prix de vente, la marge et le résultat pour répondre à des questions concrètes : combien faut-il vendre pour ne pas perdre d'argent, et que devient le résultat si l'activité varie ?</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Coûts fixes, coûts variables et résultat" data-num="45.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">45.1</span><h2>Coûts fixes, coûts variables et résultat</h2></div>
+      <p>L'analyse coût-volume-profit (CVP) part d'une idée simple : quand le volume vendu change, tous les coûts ne réagissent pas de la même façon. Les <strong>coûts variables</strong> évoluent proportionnellement au volume ; les <strong>coûts fixes</strong> restent stables sur la période, quel que soit le volume, dans la limite de la capacité de production.</p>
+      <p>Le résultat se lit alors directement à partir de quatre éléments : le prix de vente unitaire, le coût variable unitaire, les charges fixes et la quantité vendue.</p>
+    </div>
+
+    <div class="formula reveal">
+      <span class="label">Résultat de la période</span>
+      Résultat = (Prix − Coût variable unitaire) × Quantité − <strong>Charges fixes</strong>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Comportement des coûts quand le volume varie</caption>
+        <thead>
+          <tr><th scope="col">Type de coût</th><th scope="col">Total quand le volume augmente</th><th scope="col">Par unité vendue</th><th scope="col">Exemples</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status-pill done">Variable</span></td>
+            <td>Augmente proportionnellement</td>
+            <td>Constant</td>
+            <td>Matières, emballage, commissions</td>
+          </tr>
+          <tr>
+            <td><span class="status-pill progress">Fixe</span></td>
+            <td>Constant</td>
+            <td>Diminue</td>
+            <td>Loyer, assurances, salaires de structure</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention</div>
+        <p>Un coût fixe n'est fixe que sur une plage d'activité donnée. Si le volume dépasse la capacité de l'atelier, il faut louer un local ou recruter : les charges fixes augmentent alors par paliers, et l'analyse doit être refaite pour chaque palier.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="La marge sur coût variable" data-num="45.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">45.2</span><h2>La marge sur coût variable</h2></div>
+      <p>La <strong>marge sur coût variable</strong> (MCV) est ce qu'il reste du chiffre d'affaires une fois payés les coûts qui varient avec les ventes. Elle sert d'abord à couvrir les charges fixes, puis, au-delà, à dégager du bénéfice.</p>
+      <p>Chaque unité vendue apporte la même contribution. Le <strong>taux de MCV</strong> exprime cette contribution en pourcentage du prix de vente.</p>
+    </div>
+
+    <div class="formula reveal">
+      <span class="label">Marge sur coût variable unitaire et taux de MCV</span>
+      MCV unitaire = Prix − Coût variable unitaire<br>
+      Taux de MCV = <strong>MCV unitaire ÷ Prix</strong>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.6 2.5-1.6s2.5.6 2.5 1.6-1 1.5-2.5 1.5-2.5.6-2.5 1.6 1 1.6 2.5 1.6 2.5-.6 2.5-1.6"/></svg>
+        <h3>Prix de vente</h3>
+        <p>Ce que le client paie pour une unité.</p>
+        <div class="example">50 €</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+        <h3>Coût variable unitaire</h3>
+        <p>Ce qui est consommé à chaque unité produite ou vendue.</p>
+        <div class="example">− 30 €</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <h3>MCV unitaire</h3>
+        <p>La contribution de chaque unité aux charges fixes puis au bénéfice.</p>
+        <div class="example">= 20 €  (taux : 40 %)</div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Avant le seuil de rentabilité, chaque unité vendue réduit la perte de 20 € ; au-delà, chaque unité ajoute 20 € au bénéfice. La marge sur coût variable est la grandeur centrale de toute l'analyse CVP.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Le seuil de rentabilité" data-num="45.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">45.3</span><h2>Le seuil de rentabilité</h2></div>
+      <p>Le <strong>seuil de rentabilité</strong> (ou point mort) est le niveau d'activité pour lequel la marge sur coût variable couvre exactement les charges fixes : le résultat est nul. En dessous, l'entreprise perd de l'argent ; au-dessus, elle en gagne.</p>
+      <p>On peut l'exprimer de deux façons, selon que l'on raisonne en nombre d'unités ou en chiffre d'affaires.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Deux façons d'exprimer le seuil de rentabilité">
+        <button class="tab-btn" role="tab" id="tab-cvp45-1" aria-controls="panel-cvp45-1" aria-selected="true">En quantités</button>
+        <button class="tab-btn" role="tab" id="tab-cvp45-2" aria-controls="panel-cvp45-2" aria-selected="false" tabindex="-1">En chiffre d'affaires</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-cvp45-1" role="tabpanel" aria-labelledby="tab-cvp45-1" tabindex="0">
+        <div class="formula">
+          <span class="label">Seuil en quantités (avec 60 000 € de charges fixes)</span>
+          Charges fixes ÷ MCV unitaire = 60 000 ÷ 20 = <strong>3 000 unités</strong>
+        </div>
+        <div class="prose">
+          <p>Cette forme est la plus parlante pour un responsable de production ou un commercial : elle donne un objectif de volume à atteindre.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-cvp45-2" role="tabpanel" aria-labelledby="tab-cvp45-2" tabindex="0" hidden>
+        <div class="formula">
+          <span class="label">Seuil en chiffre d'affaires (avec 60 000 € de charges fixes)</span>
+          Charges fixes ÷ Taux de MCV = 60 000 ÷ 0,40 = <strong>150 000 €</strong>
+        </div>
+        <div class="prose">
+          <p>Cette forme est utile quand l'entreprise vend plusieurs produits de prix différents : le chiffre d'affaires devient l'unité commune. On retrouve le même seuil : 3 000 unités × 50 € = 150 000 €.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Graphique coût-volume-profit : la droite du chiffre d'affaires coupe la droite des coûts totaux au seuil de rentabilité de 3 000 unités, soit 150 000 euros. À gauche du seuil, l'entreprise est en perte ; à droite, en bénéfice. Le volume prévu de 4 000 unités laisse une marge de sécurité de 1 000 unités.">
+        <g font-family="Inter, sans-serif" font-size="11" fill="#5A6560">
+          <!-- grille et axes -->
+          <line x1="70" y1="270" x2="600" y2="270" stroke="#5A6560" stroke-width="1"></line>
+          <line x1="70" y1="270" x2="70" y2="24" stroke="#5A6560" stroke-width="1"></line>
+
+          <line x1="70" y1="222" x2="590" y2="222" stroke="#E3E8E5"></line>
+          <line x1="70" y1="174" x2="590" y2="174" stroke="#E3E8E5"></line>
+          <line x1="70" y1="126" x2="590" y2="126" stroke="#E3E8E5"></line>
+          <line x1="70" y1="78" x2="590" y2="78" stroke="#E3E8E5"></line>
+          <line x1="70" y1="30" x2="590" y2="30" stroke="#E3E8E5"></line>
+
+          <g font-family="IBM Plex Mono, monospace" font-size="10">
+            <text x="64" y="274" text-anchor="end">0</text>
+            <text x="64" y="226" text-anchor="end">50 k</text>
+            <text x="64" y="178" text-anchor="end">100 k</text>
+            <text x="64" y="130" text-anchor="end">150 k</text>
+            <text x="64" y="82" text-anchor="end">200 k</text>
+            <text x="64" y="34" text-anchor="end">250 k</text>
+
+            <text x="70" y="286" text-anchor="middle">0</text>
+            <text x="174" y="286" text-anchor="middle">1 000</text>
+            <text x="278" y="286" text-anchor="middle">2 000</text>
+            <text x="382" y="286" text-anchor="middle">3 000</text>
+            <text x="486" y="286" text-anchor="middle">4 000</text>
+            <text x="590" y="286" text-anchor="middle">5 000</text>
+          </g>
+          <text x="330" y="304" text-anchor="middle" font-size="11.5">Quantités vendues (unités)</text>
+          <text x="12" y="18" font-size="11.5">Euros</text>
+
+          <!-- zones -->
+          <text x="200" y="245" text-anchor="middle" fill="#B3541E" font-weight="600" font-size="12">Zone de perte</text>
+          <text x="520" y="148" text-anchor="middle" fill="#1F6F54" font-weight="600" font-size="12">Zone de bénéfice</text>
+
+          <!-- charges fixes -->
+          <line x1="70" y1="212.4" x2="590" y2="212.4" stroke="#5A6560" stroke-width="1.5" stroke-dasharray="5 4"></line>
+          <text x="80" y="207" font-size="10.5">Charges fixes 60 000 €</text>
+
+          <!-- coûts totaux -->
+          <line x1="70" y1="212.4" x2="590" y2="68.4" stroke="#B3541E" stroke-width="2.5"></line>
+          <text x="590" y="60" text-anchor="end" fill="#B3541E" font-weight="600" font-size="11.5">Coûts totaux</text>
+
+          <!-- chiffre d'affaires -->
+          <line x1="70" y1="270" x2="590" y2="30" stroke="#1F6F54" stroke-width="2.5"></line>
+          <text x="350" y="60" text-anchor="end" fill="#1F6F54" font-weight="600" font-size="11.5">Chiffre d'affaires</text>
+
+          <!-- seuil -->
+          <line x1="382" y1="126" x2="382" y2="270" stroke="#0B0F0D" stroke-width="1" stroke-dasharray="3 3"></line>
+          <circle cx="382" cy="126" r="6" fill="#FFFFFF" stroke="#0B0F0D" stroke-width="2"></circle>
+          <text x="392" y="118" fill="#0B0F0D" font-weight="600" font-size="11.5">Seuil : 3 000 u. / 150 000 €</text>
+
+          <!-- volume prévu et marge de sécurité -->
+          <line x1="486" y1="97" x2="486" y2="270" stroke="#1F6F54" stroke-width="1" stroke-dasharray="3 3"></line>
+          <line x1="382" y1="258" x2="486" y2="258" stroke="#1F6F54" stroke-width="2"></line>
+          <text x="434" y="252" text-anchor="middle" fill="#1F6F54" font-weight="600" font-size="10.5">Marge de sécurité</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Sur le graphique, le seuil de rentabilité est le point où la droite du chiffre d'affaires croise celle des coûts totaux. L'écart vertical entre les deux droites, à droite du seuil, représente le bénéfice ; à gauche, la perte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Marge de sécurité et levier opérationnel" data-num="45.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">45.4</span><h2>Marge de sécurité et levier opérationnel</h2></div>
+      <p>Atteindre le seuil ne suffit pas : il faut savoir de combien l'activité peut reculer avant de passer en perte. La <strong>marge de sécurité</strong> mesure cet écart entre l'activité prévue et le seuil. Le <strong>levier opérationnel</strong> indique, lui, à quel point le résultat réagit aux variations de volume.</p>
+    </div>
+
+    <div class="formula reveal">
+      <span class="label">Marge de sécurité et levier opérationnel</span>
+      Marge de sécurité = Activité prévue − Seuil de rentabilité<br>
+      Indice de sécurité = <strong>Marge de sécurité ÷ Activité prévue</strong><br>
+      Levier opérationnel = <strong>MCV totale ÷ Résultat</strong>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Compte de résultat différentiel — 4 000 unités vendues (en euros)</caption>
+        <thead>
+          <tr><th scope="col">Ligne</th><th scope="col" class="num">Total</th><th scope="col" class="num">Par unité</th><th scope="col" class="num">% du CA</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chiffre d'affaires</td><td class="num">200 000</td><td class="num">50</td><td class="num">100 %</td></tr>
+          <tr><td>− Coûts variables</td><td class="num">120 000</td><td class="num">30</td><td class="num">60 %</td></tr>
+          <tr><td>= Marge sur coût variable</td><td class="num">80 000</td><td class="num">20</td><td class="num">40 %</td></tr>
+          <tr><td>− Charges fixes</td><td class="num">60 000</td><td class="num">—</td><td class="num">30 %</td></tr>
+          <tr class="total"><td>= Résultat</td><td class="num">20 000</td><td class="num">—</td><td class="num">10 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <h3>Marge de sécurité</h3>
+        <p>4 000 − 3 000 unités : l'activité peut baisser de 1 000 unités avant la perte.</p>
+        <div class="example">= 1 000 u. = 50 000 €</div>
+      </div>
+      <div class="card">
+        <h3>Indice de sécurité</h3>
+        <p>1 000 ÷ 4 000 : l'activité peut reculer d'un quart sans perte.</p>
+        <div class="example">= 25 %</div>
+      </div>
+      <div class="card">
+        <h3>Levier opérationnel</h3>
+        <p>80 000 ÷ 20 000 : une variation du volume est multipliée par 4 sur le résultat.</p>
+        <div class="example">= 4</div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Le levier joue dans les deux sens</div>
+        <p>Avec un levier de 4, une hausse des ventes de 10 % augmente le résultat de 40 % (4 400 unités : 28 000 € au lieu de 20 000 €). Mais une baisse de 10 % le réduit de 40 % : plus les charges fixes sont élevées, plus le résultat est sensible à l'activité.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Simulateur : testez vos hypothèses" data-num="45.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">45.5</span><h2>Simulateur : testez vos hypothèses</h2></div>
+      <p>Modifiez les valeurs ci-dessous pour voir comment le seuil de rentabilité, la marge de sécurité et le résultat réagissent. Les valeurs de départ sont celles du cas étudié dans la leçon.</p>
+    </div>
+
+    <div class="sim reveal">
+      <div class="sim-grid">
+        <div>
+          <label for="sim-prix">Prix de vente (€)</label>
+          <input type="number" id="sim-prix" value="50" min="0" step="1" inputmode="decimal">
+        </div>
+        <div>
+          <label for="sim-cv">Coût variable unitaire (€)</label>
+          <input type="number" id="sim-cv" value="30" min="0" step="1" inputmode="decimal">
+        </div>
+        <div>
+          <label for="sim-cf">Charges fixes (€)</label>
+          <input type="number" id="sim-cf" value="60000" min="0" step="1000" inputmode="decimal">
+        </div>
+      </div>
+      <div class="range-row">
+        <label for="sim-q">Quantité vendue : <span class="val" id="sim-q-val">4 000</span> unités</label>
+        <input type="range" id="sim-q" min="0" max="8000" step="100" value="4000">
+      </div>
+      <div class="sim-out" aria-live="polite">
+        <div class="sim-card"><span class="k">MCV unitaire</span><span class="v" id="out-mcv">20 €</span></div>
+        <div class="sim-card"><span class="k">Taux de MCV</span><span class="v" id="out-taux">40 %</span></div>
+        <div class="sim-card"><span class="k">Seuil en quantités</span><span class="v" id="out-sq">3 000 u.</span></div>
+        <div class="sim-card"><span class="k">Seuil en CA</span><span class="v" id="out-sca">150 000 €</span></div>
+        <div class="sim-card"><span class="k">Indice de sécurité</span><span class="v" id="out-is">25 %</span></div>
+        <div class="sim-card result" id="card-res"><span class="k">Résultat</span><span class="v" id="out-res">20 000 €</span></div>
+      </div>
+      <p class="sim-msg" id="sim-msg"></p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧪 Exercice pratique</div>
+        <p>Faites passer le prix de vente à 45 € en gardant les autres valeurs. Que devient le seuil de rentabilité, et le résultat à 4 000 unités est-il encore positif ?</p>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Voir la correction
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>La MCV unitaire tombe à <span class="mono">45 − 30 = 15 €</span> et le seuil monte à <span class="mono">60 000 ÷ 15 = 4 000 unités</span>. À 4 000 unités, le résultat est donc nul : <span class="mono">15 × 4 000 − 60 000 = 0</span>. Une baisse de prix de 10 % a supprimé toute la marge de sécurité.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Agir sur les leviers de rentabilité" data-num="45.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">45.6</span><h2>Agir sur les leviers de rentabilité</h2></div>
+      <p>Pour améliorer le résultat ou abaisser le seuil de rentabilité, l'entreprise dispose de trois leviers, qu'il faut toujours tester ensemble : agir sur l'un modifie souvent l'effet des autres.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V6M6 12l6-6 6 6"/></svg>
+        <h3>Le prix</h3>
+        <p>Une hausse augmente la MCV unitaire, mais peut réduire les volumes vendus.</p>
+        <div class="example">55 € → seuil 2 400 u.</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+        <h3>Les coûts variables</h3>
+        <p>Une économie sur les achats ou le rendement matière améliore la MCV de chaque unité.</p>
+        <div class="example">27 € → seuil 2 609 u.</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg>
+        <h3>Les charges fixes</h3>
+        <p>Une réduction abaisse le seuil, mais ne doit pas dégrader la qualité ou la capacité.</p>
+        <div class="example">54 000 € → seuil 2 700 u.</div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Limites du modèle</div>
+        <p>L'analyse CVP suppose un prix et un coût variable unitaire constants, des charges fixes stables et des produits vendus dans une proportion connue. Elle donne un ordre de grandeur fiable, pas une prévision exacte.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Pourquoi utiliser la marge sur coût variable plutôt que la marge brute ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Parce que la marge brute mélange coûts fixes et variables dans le coût des ventes. La MCV isole ce qui varie réellement avec le volume, ce qui permet de calculer le seuil et d'anticiper l'effet d'une variation d'activité.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Comment traiter une entreprise qui vend plusieurs produits ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>On calcule un taux de MCV moyen pondéré par la part de chaque produit dans le chiffre d'affaires, puis on l'applique aux charges fixes communes. Le seuil obtenu suppose que la répartition des ventes entre produits reste stable.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Que faire d'un coût « semi-variable » ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Un coût semi-variable (l'électricité par exemple) comporte un abonnement fixe et une part proportionnelle à la consommation. On le sépare en deux : l'abonnement rejoint les charges fixes, la consommation rejoint les coûts variables.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="45.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">45.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Les coûts variables suivent le volume ; les coûts fixes restent stables sur une plage d'activité donnée.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>La marge sur coût variable (prix − coût variable unitaire) couvre d'abord les charges fixes, puis dégage le bénéfice.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Le seuil de rentabilité vaut charges fixes ÷ MCV unitaire en quantités, ou charges fixes ÷ taux de MCV en chiffre d'affaires.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>La marge de sécurité mesure de combien l'activité peut reculer avant la perte ; le levier opérationnel mesure la sensibilité du résultat au volume.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Prix, coûts variables et charges fixes sont les trois leviers d'action, à tester ensemble et dans les limites du modèle.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente · Module 8</span>
+        <span class="dest">Coût unitaire et volume d'activité</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante · Module 8</span>
+        <span class="dest">Coûts pertinents pour la décision</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 8</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 8</span>
+    <span>Leçon 45 — Analyse des coûts</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && !tocBtn.contains(e.target)){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  /* Simulateur CVP */
+  var nf = new Intl.NumberFormat('fr-FR', { maximumFractionDigits:0 });
+  function fmt(n){ return nf.format(Math.round(n)); }
+  var inPrix = document.getElementById('sim-prix');
+  var inCv = document.getElementById('sim-cv');
+  var inCf = document.getElementById('sim-cf');
+  var inQ = document.getElementById('sim-q');
+
+  function num(el){
+    var v = parseFloat(el.value);
+    return isFinite(v) && v >= 0 ? v : 0;
+  }
+
+  function simulate(){
+    var prix = num(inPrix), cv = num(inCv), cf = num(inCf), q = num(inQ);
+    var mcv = prix - cv;
+    var taux = prix > 0 ? mcv / prix : 0;
+    var res = mcv * q - cf;
+
+    document.getElementById('sim-q-val').textContent = fmt(q);
+    document.getElementById('out-mcv').textContent = fmt(mcv) + ' €';
+    document.getElementById('out-taux').textContent = (taux * 100).toFixed(0) + ' %';
+
+    var msg = document.getElementById('sim-msg');
+    var cardRes = document.getElementById('card-res');
+    var sq = null;
+
+    if(mcv > 0){
+      sq = cf / mcv;
+      document.getElementById('out-sq').textContent = fmt(Math.ceil(sq)) + ' u.';
+      document.getElementById('out-sca').textContent = fmt(Math.ceil(sq) * prix) + ' €';
+    } else {
+      document.getElementById('out-sq').textContent = '—';
+      document.getElementById('out-sca').textContent = '—';
+    }
+
+    if(mcv > 0 && q > 0){
+      document.getElementById('out-is').textContent = ((q - sq) / q * 100).toFixed(0) + ' %';
+    } else {
+      document.getElementById('out-is').textContent = '—';
+    }
+
+    document.getElementById('out-res').textContent = fmt(res) + ' €';
+    cardRes.classList.toggle('loss', res < 0);
+
+    if(mcv <= 0){
+      msg.textContent = 'La marge sur coût variable est nulle ou négative : chaque unité vendue creuse la perte, il n\u2019existe aucun seuil de rentabilité.';
+    } else if(res < 0){
+      msg.textContent = 'Il manque ' + fmt(Math.ceil(sq) - q) + ' unités pour atteindre le seuil de rentabilité : l\u2019entreprise est en perte.';
+    } else if(res === 0){
+      msg.textContent = 'L\u2019entreprise est exactement au seuil de rentabilité : le résultat est nul.';
+    } else {
+      msg.textContent = 'L\u2019entreprise est au-dessus du seuil : elle peut perdre ' + fmt(q - sq) + ' unités de ventes avant de passer en perte.';
+    }
+  }
+
+  [inPrix, inCv, inCf, inQ].forEach(function(el){ el.addEventListener('input', simulate); });
+  simulate();
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

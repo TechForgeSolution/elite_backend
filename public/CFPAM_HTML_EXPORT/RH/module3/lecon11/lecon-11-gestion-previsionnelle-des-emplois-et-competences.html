@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 11 — Gestion prévisionnelle des emplois et compétences, Module 3 — Formation, compétences et gestion des carrières.">
+  <title>Leçon 11 — Gestion prévisionnelle des emplois et compétences</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F6B5F'/%3E%3Cpath d='M20 46V22h24v24M16 46h32M26 22v-6h12v6' fill='none' stroke='%23F7F8F6' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Manrope:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#F7F8F6;
+      --color-text:#1F2933;
+      --color-accent:#2F6B5F;
+      --color-neutral:#8A9690;
+      --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+      --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+      --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+      --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+      --accent-faint:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+      --max:1120px;
+      --reading:720px;
+      --shadow:0 10px 30px rgba(31,41,51,.06);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--color-bg);color:var(--color-text);
+      font-family:Inter,system-ui,sans-serif;line-height:1.7;
+    }
+    h1,h2,h3{font-family:Manrope,Inter,sans-serif;line-height:1.2;margin:0 0 16px}
+    h1{font-size:clamp(2.2rem,5vw,4.5rem);letter-spacing:-.045em}
+    h2{font-size:clamp(1.55rem,3vw,2.2rem);letter-spacing:-.025em}
+    h3{font-size:1.05rem}
+    p{margin:0 0 16px}
+    a{color:var(--color-accent);text-underline-offset:3px}
+    button{font:inherit;color:inherit}
+    :focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+    .progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+    .site-header{
+      position:sticky;top:4px;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);
+      border-bottom:1px solid var(--border);backdrop-filter:blur(10px)
+    }
+    .header-inner{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--color-text);font-family:Manrope;font-weight:700}
+    .brand-mark{width:34px;height:34px;border:2px solid var(--color-accent);border-radius:9px;display:grid;place-items:center}
+    .brand-mark svg{width:19px;height:19px}
+    .brand small{display:block;font:500 .68rem "JetBrains Mono";color:var(--text-muted);letter-spacing:.08em}
+    .menu-btn{display:none;border:1px solid var(--border);background:var(--color-bg);border-radius:8px;padding:7px 10px;cursor:pointer}
+    .toc-nav{display:flex;gap:18px;align-items:center}
+    .toc-nav a{font-size:.84rem;text-decoration:none;color:var(--text-muted)}
+    .toc-nav a:hover{color:var(--color-accent)}
+    main{max-width:var(--max);margin:auto;padding:0 24px}
+    .hero{padding:82px 0 70px;display:grid;grid-template-columns:1.25fr .75fr;gap:70px;align-items:end}
+    .eyebrow{font:600 .72rem "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent);margin-bottom:18px}
+    .hero h1{max-width:820px}
+    .subtitle{max-width:680px;font-size:1.12rem;color:var(--text-muted)}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}
+    .badge{border:1px solid var(--border);background:var(--accent-faint);border-radius:999px;padding:7px 11px;font:500 .72rem "JetBrains Mono";color:var(--color-text)}
+    .hero-visual{border:1px solid var(--border);border-radius:22px;background:var(--bg-alt);padding:22px;box-shadow:var(--shadow)}
+    .hero-visual svg{display:block;width:100%;height:auto}
+    .caption{font-size:.75rem;color:var(--text-muted);margin-top:10px}
+    .toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 0;margin-bottom:76px}
+    .toc h2{font-size:1rem;margin-bottom:14px}
+    .toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 28px}
+    .toc a{text-decoration:none;font-size:.9rem;padding:5px 0}
+    section{scroll-margin-top:90px;margin-bottom:88px}
+    .section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:28px}
+    .section-number{font:600 .72rem "JetBrains Mono";color:var(--color-accent);border:1px solid var(--color-accent);border-radius:7px;padding:7px 8px;min-width:42px;text-align:center}
+    .reading{max-width:var(--reading)}
+    .lead{font-size:1.08rem;color:var(--text-muted)}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0}
+    .card{border:1px solid var(--border);border-radius:15px;padding:20px;background:var(--color-bg);transition:.2s}
+    .card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+    .icon{width:36px;height:36px;border:1px solid var(--color-accent);border-radius:10px;display:grid;place-items:center;color:var(--color-accent);margin-bottom:15px}
+    .card p{font-size:.88rem;color:var(--text-muted);margin:0}
+    .callout{border:2px solid var(--color-accent);border-radius:15px;padding:20px 22px;margin:25px 0;background:var(--accent-faint);display:grid;grid-template-columns:auto 1fr;gap:15px}
+    .callout .callout-icon{font-size:1.2rem;color:var(--color-accent)}
+    .callout strong{font-family:Manrope}
+    .callout p{margin:4px 0 0;font-size:.9rem}
+    .section-alt{background:var(--bg-alt);padding:56px 24px;margin-left:-24px;margin-right:-24px}
+    .diagram{border:1px solid var(--border);border-radius:18px;background:var(--color-bg);padding:18px;margin:28px 0;overflow-x:auto}
+    .diagram svg{display:block;width:100%;min-width:620px;height:auto}
+    .stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:32px 0}
+    .step{position:relative;padding:22px 18px 18px;border-top:2px solid var(--color-neutral)}
+    .step:not(:last-child)::after{content:"";position:absolute;right:-7px;top:-7px;width:12px;height:12px;border-top:2px solid var(--color-accent);border-right:2px solid var(--color-accent);transform:rotate(45deg);background:var(--color-bg)}
+    .step-num{font:600 .7rem "JetBrains Mono";color:var(--color-accent)}
+    .step p{font-size:.83rem;color:var(--text-muted);margin:5px 0 0}
+    .tabs{margin:30px 0}
+    .tab-list{display:flex;gap:6px;border-bottom:1px solid var(--border);overflow-x:auto}
+    .tab-btn{border:0;background:none;padding:12px 15px;cursor:pointer;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
+    .tab-btn[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+    .tab-panel{padding:22px 0}
+    .tab-panel[hidden]{display:none}
+    table{width:100%;border-collapse:collapse;font-size:.86rem}
+    th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+    th{font:600 .72rem "JetBrains Mono";color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+    td strong{font-family:Manrope}
+    .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--color-bg)}
+    .accordion{border-top:1px solid var(--border)}
+    .acc-item{border-bottom:1px solid var(--border)}
+    .acc-btn{width:100%;border:0;background:none;text-align:left;padding:17px 4px;display:flex;justify-content:space-between;cursor:pointer;font-family:Manrope;font-weight:600}
+    .acc-btn span:last-child{color:var(--color-accent);transition:.2s}
+    .acc-btn[aria-expanded=true] span:last-child{transform:rotate(45deg)}
+    .acc-content{padding:0 4px 18px;color:var(--text-muted);font-size:.9rem}
+    .acc-content[hidden]{display:none}
+    .key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .key{border:1px solid var(--border);border-left:4px solid var(--color-accent);padding:18px;background:var(--color-bg);border-radius:10px}
+    .key strong{display:block;font-family:Manrope;margin-bottom:5px}
+    .key span{font-size:.86rem;color:var(--text-muted)}
+    .example{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+    .example-box{border:1px solid var(--border);border-radius:15px;padding:22px;background:var(--color-bg)}
+    .example-box h3{color:var(--color-accent)}
+    .footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:90px 0 35px}
+    .nav-card{border:1px solid var(--border);border-radius:14px;padding:18px;text-decoration:none;color:var(--color-text);background:var(--color-bg)}
+    .nav-card:hover{border-color:var(--color-accent)}
+    .nav-card.next{text-align:right}
+    .nav-label{font:600 .68rem "JetBrains Mono";color:var(--text-muted);text-transform:uppercase}
+    .nav-title{display:block;font-family:Manrope;font-weight:700;margin-top:5px}
+    footer{border-top:1px solid var(--border);padding:28px 0 45px;color:var(--text-muted);font-size:.78rem}
+    .top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+    .top.show{opacity:1;pointer-events:auto}
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
+    .reveal.visible{opacity:1;transform:none}
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr;gap:35px;padding-top:58px}
+      .cards{grid-template-columns:repeat(2,1fr)}
+      .toc-grid{grid-template-columns:1fr 1fr}
+      .stepper{grid-template-columns:1fr 1fr;gap:12px}
+      .step{border-top:0;border-left:2px solid var(--color-neutral)}
+      .step:not(:last-child)::after{right:auto;left:-7px;top:auto;bottom:-7px;transform:rotate(135deg)}
+    }
+    @media(max-width:680px){
+      main{padding:0 17px}.header-inner{padding:12px 17px}
+      .menu-btn{display:block}.toc-nav{display:none;position:absolute;left:0;right:0;top:100%;background:var(--color-bg);border-bottom:1px solid var(--border);padding:14px 17px;flex-direction:column;align-items:flex-start}
+      .toc-nav.open{display:flex}
+      .hero{padding:45px 0 50px}.toc{margin-bottom:55px}.section-alt{margin-left:-17px;margin-right:-17px;padding:45px 17px}
+      .cards,.key-grid,.example,.footer-nav{grid-template-columns:1fr}
+      .toc-grid{grid-template-columns:1fr}.stepper{grid-template-columns:1fr}
+      .step:not(:last-child)::after{display:none}.step{border-left:0;border-top:2px solid var(--color-neutral)}
+      .footer-nav .next{text-align:left}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card,.top{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="Filière Gestion des Ressources Humaines">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M5 19V8h14v11M3 19h18M9 8V5h6v3M8 12h8M8 15h8"/>
+          </svg>
+        </span>
+        <span>Filière GRH<small>SUPPORT DE COURS</small></span>
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">Menu</button>
+      <nav class="toc-nav" id="mainNav" aria-label="Navigation principale">
+        <a href="#gpec">GPEC</a>
+        <a href="#cartographie">Cartographie</a>
+        <a href="#ecarts">Écarts</a>
+        <a href="#referentiel">Référentiel</a>
+        <a href="#plan-action">Plan d’action</a>
+        <a href="#essentiel">À retenir</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="title">
+      <div>
+        <div class="eyebrow">Module 03 · Formation, compétences et gestion des carrières</div>
+        <h1 id="title">Introduction à la fonction RH</h1>
+        <p class="subtitle">Anticiper les évolutions des emplois et des compétences pour rapprocher les besoins futurs de l’entreprise des ressources disponibles.</p>
+        <div class="badges">
+          <span class="badge">LEÇON 01</span>
+          <span class="badge">INTERMÉDIAIRE</span>
+          <span class="badge">15–20 MIN</span>
+        </div>
+      </div>
+      <figure class="hero-visual reveal"><svg viewBox="0 0 520 340" role="img" aria-labelledby="heroTitle heroDesc">
+  <title id="heroTitle">Schéma de la gestion prévisionnelle des emplois et compétences</title>
+  <desc id="heroDesc">Un cycle relie les besoins futurs, les compétences disponibles, l’analyse des écarts et le plan d’action RH.</desc>
+  <rect x="1" y="1" width="518" height="338" rx="18" fill="none" stroke="var(--border)"/>
+  <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+    <path d="M260 170L125 90M260 170L395 90M260 170L125 250M260 170L395 250"/>
+    <path d="M160 90H95M360 90H425M160 250H95M360 250H425"/>
+  </g>
+  <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+    <circle cx="260" cy="170" r="66"/>
+    <rect x="35" y="48" width="145" height="84" rx="13"/>
+    <rect x="340" y="48" width="145" height="84" rx="13"/>
+    <rect x="35" y="208" width="145" height="84" rx="13"/>
+    <rect x="340" y="208" width="145" height="84" rx="13"/>
+  </g>
+  <g fill="var(--color-text)" font-family="Inter" font-size="14" text-anchor="middle">
+    <text x="260" y="166" font-family="Manrope" font-weight="700">GPEC</text>
+    <text x="260" y="188" font-size="12">anticiper & ajuster</text>
+    <text x="107" y="82" font-family="Manrope" font-weight="700">BESOINS FUTURS</text>
+    <text x="107" y="104" font-size="12">emplois & activités</text>
+    <text x="412" y="82" font-family="Manrope" font-weight="700">COMPÉTENCES</text>
+    <text x="412" y="104" font-size="12">ressources disponibles</text>
+    <text x="107" y="242" font-family="Manrope" font-weight="700">ÉCARTS</text>
+    <text x="107" y="264" font-size="12">besoins ↔ existant</text>
+    <text x="412" y="242" font-family="Manrope" font-weight="700">PLAN D’ACTION</text>
+    <text x="412" y="264" font-size="12">former, recruter, mobiliser</text>
+  </g>
+</svg><figcaption class="caption">La GPEC transforme les évolutions prévues en décisions RH sur les emplois et les compétences.</figcaption></figure>
+    </section>
+
+    <nav class="toc" aria-label="Sommaire de la leçon">
+      <h2>Sommaire de la leçon</h2>
+      <div class="toc-grid">
+        <a href="#gpec">01 — Comprendre la GPEC</a>
+        <a href="#cartographie">02 — Cartographie des compétences</a>
+        <a href="#ecarts">03 — Écarts compétences / besoins</a>
+        <a href="#referentiel">04 — Référentiel métiers</a>
+        <a href="#plan-action">05 — Plan d’action RH</a>
+        <a href="#essentiel">06 — Points clés à retenir</a>
+      </div>
+    </nav>
+
+    <section id="gpec" class="reveal">
+      <div class="section-head">
+        <span class="section-number">01</span>
+        <div><h2>Comprendre la GPEC</h2></div>
+      </div>
+      <div class="reading">
+        <p class="lead"><strong>La gestion prévisionnelle des emplois et des compétences (GPEC)</strong> est une démarche qui consiste à anticiper les évolutions des emplois et les compétences nécessaires à l’organisation, puis à comparer ces besoins avec les ressources disponibles.</p>
+        <p>Elle permet de relier les transformations de l’activité, des métiers et des organisations aux décisions RH. La logique est prospective : il ne s’agit pas seulement de décrire la situation actuelle, mais de préparer les évolutions attendues.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="icon" aria-hidden="true">01</div><h3>Anticiper</h3>
+          <p>Identifier les changements susceptibles de modifier les emplois et les compétences nécessaires.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">02</div><h3>Observer</h3>
+          <p>Décrire les compétences actuellement disponibles dans l’organisation.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">03</div><h3>Comparer</h3>
+          <p>Mettre en évidence les écarts entre les besoins futurs et les ressources existantes.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">04</div><h3>Agir</h3>
+          <p>Définir des actions RH cohérentes : développement des compétences, mobilité ou recrutement.</p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">💡</div>
+        <div><strong>À retenir</strong><p>La GPEC suit une logique simple : <strong>prévoir → connaître l’existant → mesurer les écarts → agir</strong>. Elle aide ainsi l’entreprise à ne pas subir les évolutions de ses métiers.</p></div>
+      </div>
+    </section>
+
+    <section id="cartographie" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">02</span>
+        <div><h2>Construire une cartographie des compétences</h2></div>
+      </div>
+      <div class="reading">
+        <p>La <strong>cartographie des compétences</strong> représente les compétences détenues ou nécessaires dans l’organisation. Elle peut être organisée par métier, fonction, équipe ou famille professionnelle.</p>
+        <p>Elle donne une vision structurée de l’existant et facilite l’identification des compétences stratégiques, disponibles, insuffisantes ou à développer.</p>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 360" role="img" aria-labelledby="mapTitle mapDesc">
+          <title id="mapTitle">Cartographie simplifiée des compétences</title>
+          <desc id="mapDesc">Un métier est relié à plusieurs compétences, regroupées en compétences techniques, comportementales et organisationnelles.</desc>
+          <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="345" y="135" width="210" height="90" rx="15"/>
+            <rect x="45" y="55" width="220" height="80" rx="14"/>
+            <rect x="635" y="55" width="220" height="80" rx="14"/>
+            <rect x="45" y="235" width="220" height="80" rx="14"/>
+            <rect x="635" y="235" width="220" height="80" rx="14"/>
+          </g>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M265 95L345 160"/><path d="M635 95L555 160"/>
+            <path d="M265 275L345 205"/><path d="M635 275L555 205"/>
+          </g>
+          <g fill="var(--color-text)" font-family="Inter" text-anchor="middle">
+            <text x="450" y="172" font-family="Manrope" font-weight="700" font-size="18">MÉTIER</text>
+            <text x="450" y="196" font-size="12">activités & responsabilités</text>
+            <text x="155" y="87" font-family="Manrope" font-weight="700">TECHNIQUES</text>
+            <text x="155" y="110" font-size="12">savoir-faire professionnels</text>
+            <text x="745" y="87" font-family="Manrope" font-weight="700">COMPORTEMENTALES</text>
+            <text x="745" y="110" font-size="12">posture & comportements</text>
+            <text x="155" y="267" font-family="Manrope" font-weight="700">ORGANISATIONNELLES</text>
+            <text x="155" y="290" font-size="12">méthodes & coordination</text>
+            <text x="745" y="267" font-family="Manrope" font-weight="700">NIVEAU ATTENDU</text>
+            <text x="745" y="290" font-size="12">maîtrise selon le métier</text>
+          </g>
+        </svg>
+        <div class="caption">La cartographie met en relation les métiers et les compétences nécessaires à leur exercice.</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Élément observé</th><th scope="col">Question RH</th><th scope="col">Utilité</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Métier</strong></td><td>Quelles activités sont réalisées ?</td><td>Délimiter le périmètre professionnel.</td></tr>
+            <tr><td><strong>Compétence</strong></td><td>Que faut-il savoir faire ?</td><td>Décrire les capacités nécessaires.</td></tr>
+            <tr><td><strong>Niveau</strong></td><td>Quel degré de maîtrise est attendu ?</td><td>Comparer le niveau disponible au niveau requis.</td></tr>
+            <tr><td><strong>Évolution</strong></td><td>Quelles compétences vont devenir nécessaires ?</td><td>Préparer les évolutions des métiers.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="ecarts" class="reveal">
+      <div class="section-head">
+        <span class="section-number">03</span>
+        <div><h2>Identifier les écarts entre compétences et besoins</h2></div>
+      </div>
+      <div class="reading">
+        <p>L’analyse des écarts consiste à comparer les <strong>compétences disponibles</strong> avec les <strong>compétences nécessaires</strong> à l’horizon étudié. Cette comparaison permet de distinguer les situations d’adéquation, de déficit ou de besoin d’évolution.</p>
+      </div>
+
+      <div class="stepper" aria-label="Processus d'analyse des écarts">
+        <article class="step"><span class="step-num">ÉTAPE 01</span><h3>Prévoir</h3><p>Déterminer les évolutions des activités, emplois et compétences.</p></article>
+        <article class="step"><span class="step-num">ÉTAPE 02</span><h3>Diagnostiquer</h3><p>Établir l’état des compétences disponibles.</p></article>
+        <article class="step"><span class="step-num">ÉTAPE 03</span><h3>Comparer</h3><p>Mesurer les différences entre niveaux requis et disponibles.</p></article>
+        <article class="step"><span class="step-num">ÉTAPE 04</span><h3>Prioriser</h3><p>Repérer les écarts qui nécessitent une action RH.</p></article>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-list" role="tablist" aria-label="Lecture des écarts de compétences">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-adaptation" id="btn-adaptation">Adaptation</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-developpement" id="btn-developpement" tabindex="-1">Développement</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-recrutement" id="btn-recrutement" tabindex="-1">Renforcement</button>
+        </div>
+        <div id="tab-adaptation" class="tab-panel" role="tabpanel" aria-labelledby="btn-adaptation">
+          <h3>Écart d’adaptation</h3>
+          <p>Les compétences existent, mais une évolution des outils, méthodes ou activités peut nécessiter une mise à jour des pratiques professionnelles.</p>
+        </div>
+        <div id="tab-developpement" class="tab-panel" role="tabpanel" aria-labelledby="btn-developpement" hidden>
+          <h3>Écart de développement</h3>
+          <p>Le besoin futur suppose une montée en compétence. L’organisation peut alors prévoir des actions de développement et des parcours professionnels adaptés.</p>
+        </div>
+        <div id="tab-recrutement" class="tab-panel" role="tabpanel" aria-labelledby="btn-recrutement" hidden>
+          <h3>Écart nécessitant un renforcement</h3>
+          <p>Lorsque les compétences nécessaires ne peuvent pas être couvertes suffisamment par les ressources disponibles, le recrutement ou la mobilité peuvent compléter les ressources internes.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">⚠️</div>
+        <div><strong>Attention — erreur fréquente</strong><p>Un écart de compétences ne signifie pas automatiquement qu’il faut recruter. La réponse RH dépend de la nature de l’écart : développement des compétences, mobilité interne, organisation du travail ou recrutement peuvent être envisagés.</p></div>
+      </div>
+    </section>
+
+    <section id="referentiel" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">04</span>
+        <div><h2>Le référentiel métiers</h2></div>
+      </div>
+      <div class="reading">
+        <p>Le <strong>référentiel métiers</strong> constitue un outil de structuration. Il décrit les métiers présents dans l’organisation et peut préciser leurs activités, responsabilités, compétences et évolutions attendues.</p>
+        <p>Dans une démarche GPEC, il fournit une base commune pour parler des métiers et comparer les besoins futurs avec les compétences existantes.</p>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 300" role="img" aria-labelledby="refTitle refDesc">
+          <title id="refTitle">Structure d'un référentiel métiers</title>
+          <desc id="refDesc">Le métier est décrit par les activités, responsabilités, compétences et perspectives d'évolution.</desc>
+          <g fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="35" y="95" width="170" height="100" rx="14"/>
+            <rect x="245" y="95" width="170" height="100" rx="14"/>
+            <rect x="455" y="95" width="170" height="100" rx="14"/>
+            <rect x="665" y="95" width="200" height="100" rx="14"/>
+          </g>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M205 145H245"/><path d="M415 145H455"/><path d="M625 145H665"/>
+          </g>
+          <g fill="var(--color-text)" text-anchor="middle" font-family="Inter">
+            <text x="120" y="132" font-family="Manrope" font-weight="700">ACTIVITÉS</text>
+            <text x="120" y="157" font-size="12">ce qui est réalisé</text>
+            <text x="330" y="132" font-family="Manrope" font-weight="700">RESPONSABILITÉS</text>
+            <text x="330" y="157" font-size="12">rôle & périmètre</text>
+            <text x="540" y="132" font-family="Manrope" font-weight="700">COMPÉTENCES</text>
+            <text x="540" y="157" font-size="12">savoir, savoir-faire</text>
+            <text x="765" y="132" font-family="Manrope" font-weight="700">ÉVOLUTIONS</text>
+            <text x="765" y="157" font-size="12">besoins futurs</text>
+          </g>
+        </svg>
+        <div class="caption">Le référentiel fournit une description structurée des métiers et sert de base à l’analyse des compétences.</div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">📐</div>
+        <div><strong>Bonnes pratiques professionnelles</strong><p>Un référentiel utile doit rester compréhensible, cohérent avec les activités réelles et suffisamment évolutif pour accompagner les transformations des métiers.</p></div>
+      </div>
+
+      <div class="accordion" aria-label="Précisions sur le référentiel métiers">
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="acc1"><span>Pourquoi relier métiers et compétences ?</span><span aria-hidden="true">+</span></button>
+          <div class="acc-content" id="acc1" hidden>Parce qu’un métier correspond à un ensemble d’activités et de responsabilités qui mobilisent certaines compétences. Cette relation facilite l’identification des besoins et des écarts.</div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="acc2"><span>Pourquoi le référentiel est-il utile à la GPEC ?</span><span aria-hidden="true">+</span></button>
+          <div class="acc-content" id="acc2" hidden>Il donne une base structurée pour décrire la situation actuelle et mettre en regard les évolutions attendues des emplois et des compétences.</div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="acc3"><span>Le référentiel est-il figé ?</span><span aria-hidden="true">+</span></button>
+          <div class="acc-content" id="acc3" hidden>Non. Dans une logique prévisionnelle, il doit pouvoir évoluer lorsque les activités, les outils, les responsabilités ou les compétences nécessaires changent.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="plan-action" class="reveal">
+      <div class="section-head">
+        <span class="section-number">05</span>
+        <div><h2>Construire le plan d’action RH</h2></div>
+      </div>
+      <div class="reading">
+        <p>Le <strong>plan d’action RH</strong> traduit les écarts identifiés en réponses concrètes. Il doit relier chaque besoin prioritaire à une action cohérente et à un horizon de mise en œuvre.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Besoin identifié</th><th scope="col">Réponse RH possible</th><th scope="col">Finalité</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Compétence à renforcer</strong></td><td>Développement des compétences</td><td>Réduire l’écart entre le niveau disponible et le niveau attendu.</td></tr>
+            <tr><td><strong>Besoin de mobilité</strong></td><td>Mobilité ou évolution interne</td><td>Mieux utiliser les compétences disponibles dans l’organisation.</td></tr>
+            <tr><td><strong>Compétence absente</strong></td><td>Recrutement</td><td>Apporter une compétence qui n’est pas suffisamment disponible en interne.</td></tr>
+            <tr><td><strong>Métier en évolution</strong></td><td>Accompagnement du changement</td><td>Préparer les collaborateurs et l’organisation aux transformations.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 900 340" role="img" aria-labelledby="actionTitle actionDesc">
+          <title id="actionTitle">Du diagnostic au plan d'action RH</title>
+          <desc id="actionDesc">Une chaîne relie l'analyse des besoins à la priorisation, aux actions RH et au suivi.</desc>
+          <g fill="var(--accent-soft)" stroke="var(--color-accent)" stroke-width="2">
+            <rect x="35" y="115" width="185" height="90" rx="14"/>
+            <rect x="245" y="115" width="185" height="90" rx="14"/>
+            <rect x="455" y="115" width="185" height="90" rx="14"/>
+            <rect x="665" y="115" width="200" height="90" rx="14"/>
+          </g>
+          <g fill="none" stroke="var(--color-accent)" stroke-width="2">
+            <path d="M220 160H245"/><path d="M430 160H455"/><path d="M640 160H665"/>
+          </g>
+          <g fill="var(--color-text)" text-anchor="middle" font-family="Inter">
+            <text x="127" y="148" font-family="Manrope" font-weight="700">DIAGNOSTIC</text>
+            <text x="127" y="174" font-size="12">écarts identifiés</text>
+            <text x="337" y="148" font-family="Manrope" font-weight="700">PRIORISATION</text>
+            <text x="337" y="174" font-size="12">besoins prioritaires</text>
+            <text x="547" y="148" font-family="Manrope" font-weight="700">ACTIONS RH</text>
+            <text x="547" y="174" font-size="12">développer, mobiliser</text>
+            <text x="765" y="148" font-family="Manrope" font-weight="700">SUIVI</text>
+            <text x="765" y="174" font-size="12">évolution des écarts</text>
+          </g>
+        </svg>
+        <div class="caption">Le plan d’action transforme le diagnostic GPEC en décisions RH suivies dans le temps.</div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">👥</div>
+        <div><strong>Situation RH — exemple explicatif</strong><p>Une entreprise anticipe l’évolution d’un métier et constate que certaines compétences seront davantage nécessaires. La GPEC permet de comparer ces besoins avec les compétences actuelles, puis de prévoir des actions de développement, de mobilité ou, si nécessaire, de recrutement.</p></div>
+      </div>
+    </section>
+
+    <section id="essentiel" class="section-alt reveal">
+      <div class="section-head">
+        <span class="section-number">06</span>
+        <div><h2>Points clés à retenir</h2></div>
+      </div>
+      <div class="key-grid">
+        <div class="key"><strong>GPEC</strong><span>La GPEC anticipe les évolutions des emplois et des compétences afin de rapprocher besoins futurs et ressources disponibles.</span></div>
+        <div class="key"><strong>Cartographie</strong><span>Elle donne une représentation structurée des métiers et des compétences nécessaires ou disponibles.</span></div>
+        <div class="key"><strong>Écarts</strong><span>L’analyse compare les compétences disponibles avec les compétences nécessaires pour identifier les besoins d’action.</span></div>
+        <div class="key"><strong>Référentiel</strong><span>Le référentiel métiers fournit une base commune pour décrire les activités, responsabilités, compétences et évolutions des métiers.</span></div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon" aria-hidden="true">💡</div>
+        <div><strong>Idée essentielle</strong><p>Une démarche GPEC efficace ne consiste pas seulement à constater les compétences présentes : elle permet surtout d’anticiper les besoins, de mesurer les écarts et de préparer un plan d’action RH cohérent.</p></div>
+      </div>
+    </section>
+
+    <div class="footer-nav" aria-label="Navigation entre les leçons">
+      <div class="nav-card">
+        <span class="nav-label">Leçon précédente</span>
+        <span class="nav-title">Aucune — début du module</span>
+      </div>
+      <a class="nav-card next" href="#" aria-label="Leçon suivante : Acteurs et organisation de la fonction RH">
+        <span class="nav-label">Leçon suivante</span>
+        <span class="nav-title">Leçon 02 — Acteurs et organisation de la fonction RH →</span>
+      </a>
+    </div>
+
+    <footer>
+      <strong>Filière Gestion des Ressources Humaines</strong> · Module 3 — Formation, compétences et gestion des carrières · Leçon 11
+    </footer>
+  </main>
+
+  <button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+  <script>
+    (() => {
+      const progress = document.getElementById('progress');
+      const topBtn = document.getElementById('topBtn');
+      const menuBtn = document.getElementById('menuBtn');
+      const mainNav = document.getElementById('mainNav');
+
+      function updateScrollUI(){
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = max > 0 ? window.scrollY / max : 0;
+        progress.style.width = (ratio * 100) + '%';
+        topBtn.classList.toggle('show', window.scrollY > 500);
+      }
+      window.addEventListener('scroll', updateScrollUI, {passive:true});
+      updateScrollUI();
+
+      topBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+      menuBtn.addEventListener('click', () => {
+        const open = mainNav.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', String(open));
+      });
+      mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        mainNav.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded','false');
+      }));
+
+      const tabButtons = [...document.querySelectorAll('.tab-btn')];
+      tabButtons.forEach((btn, i) => {
+        btn.addEventListener('click', () => activateTab(i));
+        btn.addEventListener('keydown', e => {
+          let next = i;
+          if(e.key === 'ArrowRight') next = (i + 1) % tabButtons.length;
+          if(e.key === 'ArrowLeft') next = (i - 1 + tabButtons.length) % tabButtons.length;
+          if(e.key === 'Home') next = 0;
+          if(e.key === 'End') next = tabButtons.length - 1;
+          if(next !== i){ e.preventDefault(); activateTab(next); tabButtons[next].focus(); }
+        });
+      });
+      function activateTab(index){
+        tabButtons.forEach((b,i) => {
+          const selected = i === index;
+          b.setAttribute('aria-selected', String(selected));
+          b.tabIndex = selected ? 0 : -1;
+          document.getElementById(b.getAttribute('aria-controls')).hidden = !selected;
+        });
+      }
+
+      document.querySelectorAll('.acc-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          document.getElementById(btn.getAttribute('aria-controls')).hidden = expanded;
+        });
+      });
+
+      const revealItems = document.querySelectorAll('.reveal');
+      if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if(entry.isIntersecting){
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {threshold:.12});
+        revealItems.forEach(el => observer.observe(el));
+      } else revealItems.forEach(el => el.classList.add('visible'));
+    })();
+  </script>
+</body>
+</html>

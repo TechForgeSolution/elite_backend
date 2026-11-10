@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 4 — Journal, grand livre et balance</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cpath d='M25 35h50M25 50h50M25 65h30' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F6F8F6;
+    --color-text: #0B0F0D;
+    --color-text-muted: #5A6560;
+    --color-accent: #1F6F54;
+    --color-accent-soft: #E7F2ED;
+    --color-border: #E3E8E5;
+    --color-accent-alt: #B3541E;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --content-width: 720px;
+    --wide-width: 960px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-text);
+  }
+
+  a { color: var(--color-accent); }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* --- Progress bar --- */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--color-accent);
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* --- Header --- */
+  header.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(140%) blur(6px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .header-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .brand-mark {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--color-accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .brand-mark svg { width: 15px; height: 15px; }
+
+  nav.header-nav {
+    display: flex;
+    gap: 22px;
+    font-size: 14px;
+  }
+  nav.header-nav a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+  }
+  nav.header-nav a:hover, nav.header-nav a.active {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent);
+  }
+  .header-menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  @media (max-width: 760px) {
+    nav.header-nav { display: none; }
+    .header-menu-toggle { display: inline-block; }
+  }
+
+  /* --- Layout wrapper --- */
+  main { display: block; }
+  .measure {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .measure-wide {
+    max-width: var(--wide-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* --- Hero --- */
+  .hero {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .badge {
+    font-size: 12.5px;
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+    border: 1px solid var(--color-border);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 4.2vw, 40px);
+    margin: 0 0 14px;
+    max-width: 16ch;
+  }
+  .hero .subtitle {
+    font-size: 18px;
+    color: var(--color-text-muted);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  /* --- TOC --- */
+  .toc {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin: 36px 0 0;
+  }
+  .toc h2 {
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    margin: 0 0 12px;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+  .toc ol {
+    margin: 0; padding: 0;
+    list-style: none;
+    counter-reset: toc-counter;
+  }
+  .toc li {
+    counter-increment: toc-counter;
+    margin-bottom: 6px;
+  }
+  .toc a {
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 15px;
+    display: flex;
+    gap: 10px;
+    padding: 4px 0;
+  }
+  .toc a::before {
+    content: counter(toc-counter);
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    font-size: 13px;
+    width: 18px;
+  }
+  .toc a:hover { color: var(--color-accent); }
+
+  /* --- Sections --- */
+  section.lesson-section {
+    padding: 52px 0;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  section.lesson-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  section.lesson-section.alt {
+    background: var(--color-bg-alt);
+  }
+  section.lesson-section h2 {
+    font-size: 26px;
+    margin: 0 0 6px;
+  }
+  section.lesson-section .section-kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+  }
+  section.lesson-section p {
+    margin: 0 0 16px;
+  }
+  section.lesson-section h3 {
+    font-size: 19px;
+    margin: 28px 0 10px;
+  }
+
+  /* --- Callout boxes --- */
+  .callout {
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    background: var(--color-bg);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 24px 0;
+    display: flex;
+    gap: 14px;
+  }
+  section.lesson-section.alt .callout { background: #FFFFFF; }
+  .callout .icon { font-size: 20px; line-height: 1.4; flex-shrink: 0; }
+  .callout .body strong.label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--color-accent);
+  }
+  .callout.warning { border-left-color: var(--color-accent-alt); }
+  .callout.warning .body strong.label { color: var(--color-accent-alt); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* --- Cards grid --- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .card {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 20px;
+    background: var(--color-bg);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  section.lesson-section.alt .card { background: #FFFFFF; }
+  .card:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+  .card .card-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: var(--color-accent-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .card .card-icon svg { width: 18px; height: 18px; stroke: var(--color-accent); }
+  .card h4 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  .card p { font-size: 14.5px; color: var(--color-text-muted); margin: 0; }
+
+  /* --- Tabs --- */
+  .tabs { margin: 28px 0; }
+  .tab-list {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--color-text); }
+  .tab-btn[aria-selected="true"] {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.is-active { display: block; }
+  .tab-panel ul { margin: 0; padding-left: 20px; }
+  .tab-panel li { margin-bottom: 8px; }
+
+  /* --- Accordion --- */
+  .accordion { border-top: 1px solid var(--color-border); margin: 24px 0; }
+  .accordion-item { border-bottom: 1px solid var(--color-border); }
+  .accordion-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 4px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .accordion-item summary::-webkit-details-marker { display: none; }
+  .accordion-item summary .plus {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    font-size: 18px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .accordion-item[open] summary .plus { transform: rotate(45deg); }
+  .accordion-item .accordion-body {
+    padding: 0 4px 18px;
+    color: var(--color-text-muted);
+    font-size: 15px;
+  }
+
+  /* --- Accounting tables --- */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+  }
+  table.ledger {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 520px;
+    font-size: 14.5px;
+  }
+  table.ledger caption {
+    text-align: left;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    padding: 12px 16px 0;
+  }
+  table.ledger th, table.ledger td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+  }
+  table.ledger thead th {
+    background: var(--color-bg-alt);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+  table.ledger td.amount, table.ledger th.amount {
+    font-family: var(--font-mono);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  table.ledger tbody tr:hover { background: var(--color-accent-soft); }
+  table.ledger tr.total td {
+    font-weight: 600;
+    color: var(--color-accent);
+    border-top: 2px solid var(--color-accent);
+    border-bottom: none;
+  }
+
+  /* --- Stepper --- */
+  .stepper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 32px 0 12px;
+  }
+  .step {
+    position: relative;
+    padding: 0 14px 0 0;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: -2px;
+    width: calc(100% - 8px);
+    height: 2px;
+    background: var(--color-border);
+  }
+  .step .step-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 2;
+  }
+  .step h4 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    margin: 0 0 4px;
+  }
+  .step p { font-size: 13.5px; color: var(--color-text-muted); margin: 0; }
+
+  @media (max-width: 700px) {
+    .stepper { grid-template-columns: 1fr; gap: 22px; }
+    .step:not(:last-child)::after { display: none; }
+  }
+
+  /* --- SVG diagram wrapper --- */
+  .diagram-wrap {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-bg);
+    padding: 20px;
+    margin: 24px 0;
+  }
+  section.lesson-section.alt .diagram-wrap { background: #FFFFFF; }
+  .diagram-wrap svg { width: 100%; height: auto; display: block; }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 10px;
+  }
+
+  /* --- Key takeaways --- */
+  .takeaways {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+  .takeaway {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--color-bg);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .takeaway svg { flex-shrink: 0; margin-top: 2px; width: 18px; height: 18px; stroke: var(--color-accent); }
+  .takeaway p { margin: 0; font-size: 14.5px; }
+
+  /* --- Prev/next nav --- */
+  .lesson-nav {
+    border-top: 1px solid var(--color-border);
+    padding: 40px 0 60px;
+  }
+  .lesson-nav-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .nav-card {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--color-text);
+    display: block;
+    transition: border-color 0.2s ease;
+  }
+  .nav-card:hover { border-color: var(--color-accent); }
+  .nav-card .dir {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .nav-card.next { text-align: right; }
+  .nav-card .title { font-family: var(--font-display); font-weight: 600; font-size: 15.5px; }
+  .back-to-module {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .lesson-nav-grid { grid-template-columns: 1fr; }
+    .nav-card.next { text-align: left; }
+  }
+
+  /* --- Footer --- */
+  footer.site-footer {
+    border-top: 1px solid var(--color-border);
+    padding: 28px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+
+  /* --- Back to top --- */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    z-index: 800;
+  }
+  #back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  #back-to-top svg { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" role="presentation"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">C</span>
+      Filière Comptabilité
+    </div>
+    <nav class="header-nav" aria-label="Sommaire de la leçon">
+      <a href="#journal">Le journal</a>
+      <a href="#grand-livre">Le grand livre</a>
+      <a href="#balance">La balance</a>
+      <a href="#liens">Les liens entre les trois</a>
+      <a href="#points-cles">L'essentiel</a>
+    </nav>
+    <button class="header-menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu">Sommaire</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="measure">
+      <div class="badges">
+        <span class="badge">Module — Comptabilité générale</span>
+        <span class="badge">Niveau débutant</span>
+        <span class="badge">15 min de lecture</span>
+      </div>
+      <h1>Journal, grand livre et balance</h1>
+      <p class="subtitle">Leçon 4 — comprendre les trois documents qui organisent toute comptabilité : où chaque écriture est d'abord saisie, où elle est ensuite classée, et comment on vérifie que rien ne s'est perdu en chemin.</p>
+
+      <nav class="toc" aria-label="Sommaire cliquable">
+        <h2>Dans cette leçon</h2>
+        <ol>
+          <li><a href="#journal">Le journal</a></li>
+          <li><a href="#grand-livre">Le grand livre</a></li>
+          <li><a href="#balance">La balance</a></li>
+          <li><a href="#liens">Les liens entre journal, grand livre et balance</a></li>
+          <li><a href="#points-cles">Points clés à retenir</a></li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <section id="journal" class="lesson-section">
+    <div class="measure">
+      <span class="section-kicker">01 — Journal</span>
+      <h2>Le journal</h2>
+      <p>Le journal est le tout premier registre comptable. Chaque opération de l'entreprise y est enregistrée, dans l'ordre chronologique, sous forme d'une écriture en partie double : un ou plusieurs comptes débités, un ou plusieurs comptes crédités, pour un montant total identique de part et d'autre.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h4>Ordre chronologique</h4>
+          <p>Les écritures se succèdent dans l'ordre où les opérations se sont produites, sans classement par nature.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <h4>Une pièce, une écriture</h4>
+          <p>Chaque écriture s'appuie sur une pièce justificative datée : facture, relevé bancaire, bulletin de paie.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M9 13h6M9 17h6"/></svg></div>
+          <h4>Preuve légale</h4>
+          <p>Le journal fait foi en cas de contrôle : c'est la trace irréfutable et non modifiable de l'activité de l'entreprise.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger">
+          <caption>Extrait du journal — deux écritures successives</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Compte</th>
+              <th scope="col">Libellé</th>
+              <th scope="col" class="amount">Débit</th>
+              <th scope="col" class="amount">Crédit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>03/06</td>
+              <td>411 — Clients</td>
+              <td>Facture n°128</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">—</td>
+            </tr>
+            <tr>
+              <td>03/06</td>
+              <td>707 — Ventes</td>
+              <td>Facture n°128</td>
+              <td class="amount">—</td>
+              <td class="amount">1 200,00</td>
+            </tr>
+            <tr>
+              <td>05/06</td>
+              <td>512 — Banque</td>
+              <td>Règlement facture n°128</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">—</td>
+            </tr>
+            <tr>
+              <td>05/06</td>
+              <td>411 — Clients</td>
+              <td>Règlement facture n°128</td>
+              <td class="amount">—</td>
+              <td class="amount">1 200,00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">💡</span>
+        <div class="body">
+          <strong class="label">À retenir</strong>
+          <p>Le journal ne dit rien, à lui seul, du solde d'un compte particulier : il faut pour cela regrouper toutes les lignes qui concernent ce compte, où qu'elles apparaissent dans le temps. C'est le rôle du grand livre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="grand-livre" class="lesson-section alt">
+    <div class="measure">
+      <span class="section-kicker">02 — Grand livre</span>
+      <h2>Le grand livre</h2>
+      <p>Le grand livre reprend toutes les écritures du journal, mais les reclasse compte par compte. Chaque compte y possède sa propre page : on y voit tous les débits, tous les crédits, et le solde qui en résulte.</p>
+
+      <div class="table-wrap">
+        <table class="ledger">
+          <caption>Extrait du grand livre — compte 411 « Clients »</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Libellé</th>
+              <th scope="col" class="amount">Débit</th>
+              <th scope="col" class="amount">Crédit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>03/06</td>
+              <td>Facture n°128</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">—</td>
+            </tr>
+            <tr>
+              <td>05/06</td>
+              <td>Règlement facture n°128</td>
+              <td class="amount">—</td>
+              <td class="amount">1 200,00</td>
+            </tr>
+            <tr class="total">
+              <td colspan="2">Solde du compte</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">1 200,00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warning">
+        <span class="icon" aria-hidden="true">⚠️</span>
+        <div class="body">
+          <strong class="label">Erreur fréquente</strong>
+          <p>Croire que le grand livre contient des informations différentes du journal. En réalité, c'est exactement la même matière première, seulement présentée sous un autre angle : par compte plutôt que par date.</p>
+        </div>
+      </div>
+
+      <p>Dans cet exemple, le compte client est soldé : le débit et le crédit s'annulent, ce qui signifie que le client a réglé sa facture et ne doit plus rien.</p>
+    </div>
+  </section>
+
+  <section id="balance" class="lesson-section">
+    <div class="measure">
+      <span class="section-kicker">03 — Balance</span>
+      <h2>La balance</h2>
+      <p>La balance est un tableau récapitulatif qui liste, pour chaque compte du grand livre, le total des débits, le total des crédits, et le solde final. C'est l'outil de contrôle par excellence de la comptabilité.</p>
+
+      <div class="table-wrap">
+        <table class="ledger">
+          <caption>Extrait de la balance à fin de mois</caption>
+          <thead>
+            <tr>
+              <th scope="col">Compte</th>
+              <th scope="col" class="amount">Total débit</th>
+              <th scope="col" class="amount">Total crédit</th>
+              <th scope="col" class="amount">Solde débiteur</th>
+              <th scope="col" class="amount">Solde créditeur</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>411 — Clients</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">0,00</td>
+              <td class="amount">—</td>
+            </tr>
+            <tr>
+              <td>512 — Banque</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">0,00</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">—</td>
+            </tr>
+            <tr>
+              <td>707 — Ventes</td>
+              <td class="amount">0,00</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">—</td>
+              <td class="amount">1 200,00</td>
+            </tr>
+            <tr class="total">
+              <td>Total général</td>
+              <td class="amount">2 400,00</td>
+              <td class="amount">2 400,00</td>
+              <td class="amount">1 200,00</td>
+              <td class="amount">1 200,00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">📌</span>
+        <div class="body">
+          <strong class="label">Rappel normatif</strong>
+          <p>Grâce à la partie double, le total des débits égale toujours le total des crédits sur la balance. Une balance qui ne s'équilibre pas révèle une erreur d'enregistrement à corriger avant toute clôture.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">🧮</span>
+        <div class="body">
+          <strong class="label">Cas pratique</strong>
+          <p>Sur une balance, le total des soldes débiteurs (1 200) est bien égal au total des soldes créditeurs (1 200). Si un comptable ajoutait une écriture en oubliant sa contrepartie, cette égalité serait immédiatement rompue — c'est ainsi que l'erreur se révèle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="liens" class="lesson-section alt">
+    <div class="measure-wide">
+      <span class="section-kicker">04 — Les liens entre les trois</span>
+      <h2>Les liens entre journal, grand livre et balance</h2>
+      <p class="measure" style="padding:0;">Ces trois documents ne sont pas indépendants : ils forment une chaîne, où chaque niveau reprend et réorganise l'information du niveau précédent, sans jamais rien y ajouter ni en retrancher.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma des liens entre le journal, le grand livre et la balance : le journal enregistre par date, le grand livre reclasse par compte, la balance récapitule et contrôle l'équilibre">
+          <defs>
+            <marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" fill="#1F6F54"/>
+            </marker>
+          </defs>
+          <g font-family="Inter, sans-serif">
+            <rect x="20" y="50" width="240" height="100" rx="8" fill="#E7F2ED" stroke="#1F6F54"/>
+            <text x="140" y="90" text-anchor="middle" font-size="15" font-weight="600" fill="#1F6F54">Journal</text>
+            <text x="140" y="112" text-anchor="middle" font-size="12" fill="#1F6F54">Écritures classées</text>
+            <text x="140" y="128" text-anchor="middle" font-size="12" fill="#1F6F54">par date</text>
+
+            <line x1="260" y1="100" x2="312" y2="100" stroke="#1F6F54" stroke-width="2" marker-end="url(#arrow4)"/>
+
+            <rect x="315" y="50" width="240" height="100" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="435" y="90" text-anchor="middle" font-size="15" font-weight="600" fill="#0B0F0D">Grand livre</text>
+            <text x="435" y="112" text-anchor="middle" font-size="12" fill="#5A6560">Mêmes écritures,</text>
+            <text x="435" y="128" text-anchor="middle" font-size="12" fill="#5A6560">classées par compte</text>
+
+            <line x1="555" y1="100" x2="607" y2="100" stroke="#1F6F54" stroke-width="2" marker-end="url(#arrow4)"/>
+
+            <rect x="610" y="50" width="240" height="100" rx="8" fill="#F6F8F6" stroke="#E3E8E5"/>
+            <text x="730" y="90" text-anchor="middle" font-size="15" font-weight="600" fill="#0B0F0D">Balance</text>
+            <text x="730" y="112" text-anchor="middle" font-size="12" fill="#5A6560">Total des comptes,</text>
+            <text x="730" y="128" text-anchor="middle" font-size="12" fill="#5A6560">contrôle de l'équilibre</text>
+          </g>
+        </svg>
+        <p class="diagram-caption">Une même information circule et se réorganise, sans jamais changer de nature, du journal jusqu'à la balance.</p>
+      </div>
+
+      <div class="measure" style="padding:0;">
+        <div class="stepper">
+          <div class="step">
+            <span class="step-dot num">1</span>
+            <h4>Saisir au journal</h4>
+            <p>Chaque opération est enregistrée le jour même, dans l'ordre chronologique.</p>
+          </div>
+          <div class="step">
+            <span class="step-dot num">2</span>
+            <h4>Reporter au grand livre</h4>
+            <p>Chaque ligne du journal est reportée dans la page du compte qu'elle concerne.</p>
+          </div>
+          <div class="step">
+            <span class="step-dot num">3</span>
+            <h4>Récapituler en balance</h4>
+            <p>Les soldes de tous les comptes sont additionnés pour vérifier l'équilibre global.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="measure" style="padding:0;">
+        <div class="accordion">
+          <details class="accordion-item">
+            <summary>Pourquoi tenir trois documents distincts plutôt qu'un seul ?<span class="plus" aria-hidden="true">+</span></summary>
+            <div class="accordion-body">
+              <p>Chacun répond à une question différente : le journal prouve « quand », le grand livre répond à « combien pour ce compte précis », et la balance vérifie « est-ce que tout est cohérent ». Cette séparation facilite le contrôle et la détection d'erreurs.</p>
+            </div>
+          </details>
+          <details class="accordion-item">
+            <summary>La balance permet-elle de repérer toutes les erreurs ?<span class="plus" aria-hidden="true">+</span></summary>
+            <div class="accordion-body">
+              <p>Non. Elle détecte les déséquilibres entre débits et crédits, mais pas une erreur d'imputation qui respecterait tout de même l'équilibre — par exemple, un montant enregistré dans le mauvais compte des deux côtés.</p>
+            </div>
+          </details>
+          <details class="accordion-item">
+            <summary>À quel moment établit-on la balance ?<span class="plus" aria-hidden="true">+</span></summary>
+            <div class="accordion-body">
+              <p>Elle peut être établie à tout moment pour un contrôle intermédiaire, mais elle est systématiquement produite avant la clôture d'un exercice, pour préparer le bilan et le compte de résultat.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="measure" style="padding:0;">
+        <div class="callout">
+          <span class="icon" aria-hidden="true">🔗</span>
+          <div class="body">
+            <strong class="label">Pour aller plus loin</strong>
+            <p>La leçon suivante applique ce mécanisme aux opérations les plus courantes d'une entreprise : achats, ventes, règlements et gestion de la TVA.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="points-cles" class="lesson-section">
+    <div class="measure">
+      <span class="section-kicker">Synthèse</span>
+      <h2>Points clés à retenir</h2>
+      <div class="takeaways">
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Le journal enregistre chaque opération dans l'ordre chronologique, appuyée sur une pièce justificative.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Le grand livre reclasse ces mêmes écritures compte par compte, pour connaître le solde de chaque compte.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>La balance récapitule tous les comptes et vérifie que le total des débits égale le total des crédits.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Les trois documents contiennent la même information, seulement organisée différemment : par date, par compte, puis en synthèse.</p>
+        </div>
+        <div class="takeaway">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <p>Un déséquilibre en balance signale toujours une erreur d'enregistrement, à corriger avant la clôture.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Navigation entre leçons">
+    <div class="measure">
+      <div class="lesson-nav-grid">
+        <a class="nav-card" href="lecon-3-comptes-debit-credit-partie-double.html">
+          <span class="dir">← Leçon précédente</span>
+          <span class="title">Leçon 3 — Comptes, débit, crédit et partie double</span>
+        </a>
+        <a class="nav-card next" href="lecon-5-achats-ventes-reglements-tva.html">
+          <span class="dir">Leçon suivante →</span>
+          <span class="title">Leçon 5 — Achats, ventes, règlements et TVA</span>
+        </a>
+      </div>
+      <p class="back-to-module"><a href="#top">↑ Retour au sommaire du module</a></p>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="site-footer">
+  Filière Comptabilité — Module Comptabilité générale · Leçon 4 sur le programme
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de la page">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Reading progress bar */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  /* Back to top button */
+  var backToTop = document.getElementById('back-to-top');
+  function toggleBackToTop() {
+    if (window.scrollY > 480) {
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  }
+  document.addEventListener('scroll', toggleBackToTop, { passive: true });
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  toggleBackToTop();
+
+  /* Mobile menu toggle: reveal the nav links inline below header */
+  var menuToggle = document.getElementById('menu-toggle');
+  var headerNav = document.querySelector('nav.header-nav');
+  menuToggle.addEventListener('click', function () {
+    var expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!expanded));
+    if (!expanded) {
+      headerNav.style.display = 'flex';
+      headerNav.style.flexDirection = 'column';
+      headerNav.style.position = 'absolute';
+      headerNav.style.top = '100%';
+      headerNav.style.left = '0';
+      headerNav.style.right = '0';
+      headerNav.style.background = '#FFFFFF';
+      headerNav.style.padding = '14px 24px';
+      headerNav.style.borderBottom = '1px solid var(--color-border)';
+      headerNav.style.gap = '14px';
+    } else {
+      headerNav.removeAttribute('style');
+    }
+  });
+  headerNav.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      if (window.innerWidth <= 760) {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        headerNav.removeAttribute('style');
+      }
+    });
+  });
+
+  /* Scroll-triggered fade-in for sections */
+  var sections = document.querySelectorAll('section.lesson-section');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function (s) { observer.observe(s); });
+  } else {
+    sections.forEach(function (s) { s.classList.add('is-visible'); });
+  }
+
+  /* Active TOC/header link highlighting on scroll */
+  var navLinks = document.querySelectorAll('nav.header-nav a');
+  var sectionIds = Array.prototype.map.call(sections, function (s) { return s.id; });
+  function highlightNav() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    sectionIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollPos) { currentId = id; }
+    });
+    navLinks.forEach(function (link) {
+      var match = link.getAttribute('href') === '#' + currentId;
+      link.classList.toggle('active', match);
+    });
+  }
+  document.addEventListener('scroll', highlightNav, { passive: true });
+  highlightNav();
+
+})();
+</script>
+
+</body>
+</html>

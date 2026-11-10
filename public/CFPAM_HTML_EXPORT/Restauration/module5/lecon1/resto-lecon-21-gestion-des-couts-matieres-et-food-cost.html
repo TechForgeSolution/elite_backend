@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 21 — Gestion des coûts matières et food cost | Restauration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#FDF3E7;--color-text:#3B2314;--color-accent:#E8752C;--color-neutral:#8A6E5C;
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --shadow:0 12px 35px color-mix(in srgb,var(--color-text) 10%,transparent);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:15px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Playfair Display",serif;font-weight:700;font-size:1.05rem}
+.brand span{color:var(--color-accent)}
+.toc-link{font-family:"IBM Plex Mono",monospace;font-size:.78rem;border:1px solid var(--border);padding:7px 10px;border-radius:6px}
+main{max-width:1180px;margin:auto;padding:0 24px}
+.hero{padding:72px 0 55px;display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:end}
+.kicker{font:600 .78rem "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.15}
+h1{font-size:clamp(2.35rem,5vw,4.5rem);margin:14px 0 18px;max-width:850px}
+h2{font-size:clamp(1.8rem,3vw,2.6rem);margin:0 0 20px}
+h3{font-size:1.35rem;margin:24px 0 10px}
+.lead{font-size:1.12rem;max-width:720px;color:var(--muted)}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge{padding:15px;border:1px solid var(--border);background:var(--soft);border-radius:8px}
+.badge b{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--color-neutral);text-transform:uppercase}
+.badge span{font-weight:700}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:22px 0;margin-bottom:70px}
+.toc ol{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 28px;margin:0;padding-left:22px}
+.toc li{padding:5px}
+section{padding:70px 0;scroll-margin-top:80px}
+section:nth-of-type(even){background:var(--soft);margin-left:calc((1180px - 100vw)/2);margin-right:calc((1180px - 100vw)/2);padding-left:max(24px,calc((100vw - 1180px)/2 + 24px));padding-right:max(24px,calc((100vw - 1180px)/2 + 24px))}
+.section-inner{max-width:1000px}
+.prose{max-width:720px}
+.callout{margin:26px 0;padding:18px 20px;border-left:5px solid var(--color-accent);background:var(--soft10);border-radius:0 8px 8px 0}
+.callout strong{display:block;margin-bottom:5px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:25px}
+.card{border:1px solid var(--border);padding:22px;background:var(--color-bg);border-radius:10px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+.icon{font-size:1.5rem}
+.formula{font:600 1.05rem "IBM Plex Mono",monospace;padding:20px;border:1px dashed var(--color-accent);background:var(--soft);border-radius:8px;margin:18px 0;overflow:auto}
+.table-wrap{overflow-x:auto;margin:22px 0;border:1px solid var(--border);border-radius:9px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:13px 15px;border-bottom:1px solid var(--border);text-align:left}
+th{font-family:"IBM Plex Mono",monospace;font-size:.78rem;text-transform:uppercase;background:var(--soft)}
+tbody tr:hover{background:var(--soft)}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+svg{max-width:100%;height:auto}
+.diagram{border:1px solid var(--border);border-radius:10px;padding:18px;background:var(--color-bg);margin:25px 0}
+.tabs{margin-top:25px}
+.tab-buttons{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.tab-buttons button{font:600 .85rem Inter;background:transparent;color:var(--color-text);border:0;border-bottom:3px solid transparent;padding:12px 15px;cursor:pointer}
+.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}
+.tab-panel{padding:22px 0}
+details{border-top:1px solid var(--border);padding:15px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-weight:700}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:25px}
+.step{position:relative;padding:18px 12px;border:1px solid var(--border);border-radius:8px;background:var(--color-bg)}
+.step b{display:block;font:600 .75rem "IBM Plex Mono";color:var(--color-accent);margin-bottom:7px}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{padding:18px;border:1px solid var(--border);border-radius:8px;background:var(--soft)}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:60px 0}
+.lesson-nav{border:1px solid var(--border);padding:22px;border-radius:10px;background:var(--soft)}
+.lesson-nav.next{text-align:right}
+#top{position:fixed;right:22px;bottom:22px;border:1px solid var(--border);background:var(--color-bg);color:var(--color-text);border-radius:50%;width:44px;height:44px;cursor:pointer;box-shadow:var(--shadow)}
+footer{border-top:1px solid var(--border);padding:30px 24px;color:var(--muted);font-size:.85rem}
+footer div{max-width:1180px;margin:auto}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){
+ .hero{grid-template-columns:1fr;padding-top:50px}.meta{grid-template-columns:repeat(3,1fr)}
+ .toc ol{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.keys{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+ main{padding:0 18px}.nav{padding:13px 18px}.hero{padding:42px 0}
+ .meta,.cards,.keys,.nav-lessons{grid-template-columns:1fr}.toc ol{grid-template-columns:1fr}
+ section{padding:52px 0}section:nth-of-type(even){margin-left:-18px;margin-right:-18px;padding-left:18px;padding-right:18px}
+ .steps{grid-template-columns:1fr}.toc{margin-bottom:35px}
+ h1{font-size:2.35rem}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card{transition:none}
+}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+<header>
+ <nav class="nav" aria-label="Navigation principale">
+  <div class="brand">Filière <span>Restauration</span></div>
+  <a class="toc-link" href="#sommaire">☰ Sommaire</a>
+ </nav>
+</header>
+
+<main>
+<section class="hero reveal" id="debut">
+ <div>
+  <div class="kicker">Module 5 · Gestion de restaurant — coûts, achats et outils</div>
+  <h1>Leçon 21 — Gestion des coûts matières et food cost</h1>
+  <p class="lead">Calculer et maîtriser le coût matière d’un plat pour mieux piloter les achats, la marge et l’ajustement des recettes.</p>
+ </div>
+ <div class="meta" aria-label="Informations sur la leçon">
+  <div class="badge"><b>Niveau</b><span>BTS</span></div>
+  <div class="badge"><b>Durée</b><span>25 min</span></div>
+  <div class="badge"><b>Module</b><span>5</span></div>
+ </div>
+</section>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire">
+ <ol>
+  <li><a href="#fondamentaux">Comprendre les coûts matières</a></li>
+  <li><a href="#fiche">La fiche technique</a></li>
+  <li><a href="#calcul">Calculer le food cost</a></li>
+  <li><a href="#marge">Marge et prix de vente</a></li>
+  <li><a href="#ajuster">Ajuster une recette</a></li>
+  <li><a href="#pilotage">Piloter au quotidien</a></li>
+  <li><a href="#synthese">Points clés à retenir</a></li>
+ </ol>
+</nav>
+
+<section id="fondamentaux" class="reveal">
+ <div class="section-inner">
+  <h2>1. Comprendre les coûts matières</h2>
+  <div class="prose">
+   <p>Le <strong>coût matière</strong> correspond à la valeur des ingrédients consommés pour produire un plat ou une portion. Il constitue une donnée essentielle pour vérifier qu’une recette reste économiquement maîtrisée.</p>
+   <p>Le <strong>food cost</strong> exprime généralement le rapport entre le coût des matières et le prix de vente du plat. Il permet de suivre la part du prix de vente consacrée aux matières premières.</p>
+  </div>
+  <div class="cards">
+   <article class="card"><div class="icon">🧾</div><h3>Coût matière</h3><p>Somme des coûts des ingrédients réellement utilisés dans une recette.</p></article>
+   <article class="card"><div class="icon">📊</div><h3>Food cost</h3><p>Indicateur qui met en relation le coût matière et le prix de vente.</p></article>
+   <article class="card"><div class="icon">⚖️</div><h3>Marge</h3><p>Écart entre le prix de vente et le coût matière, avant prise en compte des autres charges.</p></article>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong>Une recette peut être appréciée par les clients tout en étant insuffisamment rentable. Le coût matière permet de passer d’une perception qualitative à une mesure chiffrée.</div>
+ </div>
+</section>
+
+<section id="fiche" class="reveal">
+ <div class="section-inner">
+  <h2>2. Construire une fiche technique</h2>
+  <p class="prose">La fiche technique standardise la recette et fournit la base du calcul. Elle indique notamment les ingrédients, les quantités, les unités, les prix d’achat et le coût correspondant.</p>
+  <div class="diagram" role="img" aria-label="Schéma du calcul du coût matière à partir des ingrédients">
+   <svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="var(--color-neutral)" stroke-width="2">
+      <rect x="20" y="55" width="160" height="90" rx="8"/><rect x="215" y="55" width="160" height="90" rx="8"/>
+      <rect x="410" y="55" width="160" height="90" rx="8"/><rect x="605" y="55" width="275" height="90" rx="8"/>
+      <path d="M180 100h35M375 100h35M570 100h35"/>
+    </g>
+    <g fill="var(--color-text)" font-family="Inter" text-anchor="middle">
+      <text x="100" y="90">Ingrédients</text><text x="100" y="116">quantités</text>
+      <text x="295" y="90">Prix d’achat</text><text x="295" y="116">au kg / L / unité</text>
+      <text x="490" y="90">Coût de</text><text x="490" y="116">chaque ligne</text>
+      <text x="742" y="90" font-weight="700">TOTAL COÛT MATIÈRE</text><text x="742" y="116">de la recette</text>
+    </g>
+    <g fill="var(--color-accent)"><circle cx="197" cy="100" r="4"/><circle cx="392" cy="100" r="4"/><circle cx="587" cy="100" r="4"/></g>
+   </svg>
+  </div>
+  <div class="table-wrap">
+   <table>
+    <caption class="sr-only">Exemple de fiche technique simplifiée</caption>
+    <thead><tr><th scope="col">Ingrédient</th><th scope="col">Quantité</th><th scope="col">Prix unitaire</th><th scope="col">Coût ligne</th></tr></thead>
+    <tbody>
+     <tr><td>Poulet</td><td class="num">0,180 kg</td><td class="num">4 500 FCFA/kg</td><td class="num">810 FCFA</td></tr>
+     <tr><td>Riz</td><td class="num">0,120 kg</td><td class="num">1 200 FCFA/kg</td><td class="num">144 FCFA</td></tr>
+     <tr><td>Légumes</td><td class="num">0,100 kg</td><td class="num">1 800 FCFA/kg</td><td class="num">180 FCFA</td></tr>
+     <tr><td>Assaisonnement</td><td class="num">forfait</td><td class="num">—</td><td class="num">100 FCFA</td></tr>
+     <tr><th colspan="3" scope="row">Coût matière de la portion</th><th class="num">1 234 FCFA</th></tr>
+    </tbody>
+   </table>
+  </div>
+  <div class="callout"><strong>👨‍🍳 Conseil de chef</strong>Utiliser des unités cohérentes et des quantités réellement standardisées évite de sous-estimer le coût d’une portion.</div>
+ </div>
+</section>
+
+<section id="calcul" class="reveal">
+ <div class="section-inner">
+  <h2>3. Calculer le food cost</h2>
+  <p class="prose">Le calcul repose sur deux données : le coût matière du plat et son prix de vente. Le pourcentage obtenu facilite la comparaison entre recettes et le suivi de la carte.</p>
+  <div class="formula">Food cost (%) = (Coût matière ÷ Prix de vente HT) × 100</div>
+  <h3>Exemple numérique</h3>
+  <p class="prose">Si une portion coûte <span class="num">1 234 FCFA</span> en matières premières et est vendue <span class="num">4 500 FCFA</span> HT :</p>
+  <div class="formula">Food cost = (1 234 ÷ 4 500) × 100 ≈ 27,42 %</div>
+  <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Le food cost n’est pas la marge nette. Il ne prend pas à lui seul en charge les salaires, loyers, énergie, taxes, pertes et autres charges de l’établissement.</div>
+  <div class="tabs">
+   <div class="tab-buttons" role="tablist" aria-label="Lecture des indicateurs">
+    <button role="tab" aria-selected="true" aria-controls="tab1" id="t1">Coût matière</button>
+    <button role="tab" aria-selected="false" aria-controls="tab2" id="t2">Food cost</button>
+    <button role="tab" aria-selected="false" aria-controls="tab3" id="t3">Marge brute matière</button>
+   </div>
+   <div id="tab1" class="tab-panel" role="tabpanel" aria-labelledby="t1"><strong>Montant en FCFA :</strong> combien coûte la recette en matières premières.</div>
+   <div id="tab2" class="tab-panel" role="tabpanel" aria-labelledby="t2" hidden><strong>Pourcentage :</strong> quelle part du prix de vente correspond au coût matière.</div>
+   <div id="tab3" class="tab-panel" role="tabpanel" aria-labelledby="t3"><strong>Différence :</strong> prix de vente moins coût matière, avant les autres charges.</div>
+  </div>
+ </div>
+</section>
+
+<section id="marge" class="reveal">
+ <div class="section-inner">
+  <h2>4. Marge et prix de vente</h2>
+  <p class="prose">Le coût matière sert également à apprécier la marge dégagée par une recette et à éclairer la fixation du prix de vente. Le prix ne doit cependant pas être déterminé à partir du seul coût des ingrédients : le positionnement, les charges et la clientèle doivent aussi être considérés.</p>
+  <div class="formula">Marge brute matière = Prix de vente HT − Coût matière</div>
+  <div class="table-wrap">
+   <table>
+    <thead><tr><th scope="col">Indicateur</th><th scope="col">Calcul</th><th scope="col">Exemple</th></tr></thead>
+    <tbody>
+     <tr><td>Coût matière</td><td class="num">Somme des coûts</td><td class="num">1 234 FCFA</td></tr>
+     <tr><td>Prix de vente HT</td><td class="num">Prix affiché hors taxe</td><td class="num">4 500 FCFA</td></tr>
+     <tr><td>Food cost</td><td class="num">1 234 ÷ 4 500 × 100</td><td class="num">27,42 %</td></tr>
+     <tr><td>Marge brute matière</td><td class="num">4 500 − 1 234</td><td class="num">3 266 FCFA</td></tr>
+    </tbody>
+   </table>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong>Comparer les plats avec les mêmes indicateurs aide à repérer les recettes dont le coût matière dérive ou dont le prix de vente doit être réexaminé.</div>
+ </div>
+</section>
+
+<section id="ajuster" class="reveal">
+ <div class="section-inner">
+  <h2>5. Ajuster une recette</h2>
+  <p class="prose">Une recette peut devenir plus coûteuse à la suite d’une hausse du prix d’achat, d’une quantité excessive ou d’un rendement insuffisant. L’ajustement doit préserver la qualité attendue par le client.</p>
+  <div class="steps" aria-label="Processus d'ajustement d'une recette">
+   <div class="step"><b>01 · Mesurer</b>Calculer le coût actuel.</div>
+   <div class="step"><b>02 · Repérer</b>Identifier les postes les plus coûteux.</div>
+   <div class="step"><b>03 · Vérifier</b>Contrôler quantité, rendement et prix d’achat.</div>
+   <div class="step"><b>04 · Ajuster</b>Revoir recette, achat ou prix selon le contexte.</div>
+   <div class="step"><b>05 · Standardiser</b>Mettre à jour la fiche technique.</div>
+  </div>
+  <div class="callout"><strong>👨‍🍳 Conseil de chef</strong>Avant de réduire une portion, rechercher d’abord les pertes, les surdosages et les écarts de rendement : on peut souvent améliorer le coût sans dégrader l’expérience client.</div>
+ </div>
+</section>
+
+<section id="pilotage" class="reveal">
+ <div class="section-inner">
+  <h2>6. Piloter les coûts au quotidien</h2>
+  <div class="cards">
+   <article class="card"><div class="icon">📦</div><h3>Achats</h3><p>Comparer les prix, contrôler les quantités reçues et suivre les variations.</p></article>
+   <article class="card"><div class="icon">🔪</div><h3>Production</h3><p>Respecter les fiches techniques et limiter les pertes lors de la préparation.</p></article>
+   <article class="card"><div class="icon">📈</div><h3>Suivi</h3><p>Comparer régulièrement les coûts théoriques et les résultats observés.</p></article>
+  </div>
+  <details><summary>Pourquoi mettre à jour les prix d’achat ?</summary><p>Parce qu’un coût matière calculé avec des prix anciens peut donner une image fausse de la rentabilité actuelle d’un plat.</p></details>
+  <details><summary>Pourquoi standardiser les portions ?</summary><p>Parce que la quantité servie influence directement le coût matière. Une portion non standardisée rend les comparaisons peu fiables.</p></details>
+  <details><summary>Quel rôle pour la fiche technique ?</summary><p>Elle constitue le référentiel de production et de calcul : recette, quantités, rendements et coûts doivent rester cohérents.</p></details>
+  <div class="callout"><strong>📌 Rappel hygiène et organisation</strong>La maîtrise des coûts ne doit jamais conduire à négliger les règles d’hygiène, la sécurité alimentaire ou la qualité des matières premières.</div>
+ </div>
+</section>
+
+<section id="synthese" class="reveal">
+ <div class="section-inner">
+  <h2>Points clés à retenir</h2>
+  <div class="keys">
+   <div class="key"><strong>1. Fiche technique</strong><br>Elle standardise la recette et sert de base au calcul.</div>
+   <div class="key"><strong>2. Coût matière</strong><br>Il correspond à la somme des coûts des ingrédients utilisés.</div>
+   <div class="key"><strong>3. Food cost</strong><br><span class="num">Coût matière ÷ prix de vente HT × 100</span>.</div>
+   <div class="key"><strong>4. Pilotage</strong><br>Achats, portions, pertes et prix doivent être suivis ensemble.</div>
+  </div>
+  <div class="callout"><strong>🔗 Pour aller plus loin</strong>La maîtrise du coût matière prépare directement à l’élaboration de la carte et à la fixation des prix : les indicateurs calculés ici deviennent des données d’aide à la décision.</div>
+ </div>
+</section>
+
+<div class="nav-lessons">
+ <a class="lesson-nav" href="#sommaire"><small>Leçon précédente</small><br><strong>Organisation du module et outils de gestion</strong></a>
+ <a class="lesson-nav next" href="#sommaire"><small>Leçon suivante</small><br><strong>Leçon 22 — Élaboration de la carte et fixation des prix →</strong></a>
+</div>
+</main>
+
+<button id="top" aria-label="Retour en haut" title="Retour en haut">↑</button>
+<footer><div>Filière Restauration · Module 5 · Leçon 21 — Support pédagogique autonome</div></footer>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+ const d=document.documentElement;
+ progress.style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
+}
+addEventListener('scroll',updateProgress,{passive:true}); updateProgress();
+
+const topBtn=document.getElementById('top');
+topBtn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+const buttons=[...document.querySelectorAll('[role="tab"]')];
+buttons.forEach((btn,i)=>{
+ btn.addEventListener('click',()=>{
+  buttons.forEach((b,j)=>{
+   const active=i===j;
+   b.setAttribute('aria-selected',active);
+   document.getElementById(b.getAttribute('aria-controls')).hidden=!active;
+  });
+ });
+ btn.addEventListener('keydown',e=>{
+  let n=null;
+  if(e.key==='ArrowRight') n=(i+1)%buttons.length;
+  if(e.key==='ArrowLeft') n=(i-1+buttons.length)%buttons.length;
+  if(n!==null){e.preventDefault();buttons[n].focus();buttons[n].click();}
+ });
+});
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{
+ if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}
+}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

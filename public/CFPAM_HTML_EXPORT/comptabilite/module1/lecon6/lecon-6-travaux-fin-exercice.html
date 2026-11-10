@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 6 — Travaux de fin d'exercice et états financiers | Comptabilité Générale</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filiere comptabilite
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 1 — Comptabilité générale</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau débutant</span>
+    </div>
+    <h1>Travaux de fin d'exercice et états financiers</h1>
+    <p class="lede">Leçon 6 — comment un comptable ferme un exercice : écritures d'inventaire, amortissements, provisions, régularisations, jusqu'à la production du bilan et du compte de résultat.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Pourquoi des travaux de fin d'exercice" data-num="6.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.1</span><h2>Pourquoi des travaux de fin d'exercice</h2></div>
+      <p>Toute l'année, l'entreprise enregistre ses opérations au fur et à mesure : achats, ventes, règlements. Ces écritures dites courantes suffisent pour suivre l'activité au quotidien, mais elles ne racontent pas toute l'histoire à la date de clôture.</p>
+      <p>À la fin de l'exercice, certains éléments doivent être ajustés pour que les comptes reflètent fidèlement le patrimoine et le résultat réel de l'entreprise : c'est le principe d'image fidèle. Ce sont les travaux d'inventaire.</p>
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Les travaux de fin d'exercice reposent sur le principe d'indépendance des exercices : chaque charge et chaque produit doit être rattaché à l'exercice auquel il se rapporte réellement, pas à l'exercice où l'argent est encaissé ou décaissé.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cycle comptable : du journal a la cloture, en passant par le grand livre, l'inventaire et la balance">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#1F6F54"></path>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif" font-size="13" fill="#0B0F0D">
+          <rect x="10" y="70" width="140" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="80" y="95" text-anchor="middle" font-weight="600">Journal</text>
+          <text x="80" y="113" text-anchor="middle" fill="#5A6560" font-size="11">écritures courantes</text>
+
+          <rect x="200" y="70" width="150" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="275" y="95" text-anchor="middle" font-weight="600">Grand livre</text>
+          <text x="275" y="113" text-anchor="middle" fill="#5A6560" font-size="11">par compte</text>
+
+          <rect x="400" y="70" width="150" height="60" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="475" y="90" text-anchor="middle" font-weight="600" fill="#1F6F54">Inventaire</text>
+          <text x="475" y="106" text-anchor="middle" fill="#1F6F54" font-size="11">amortissements,</text>
+          <text x="475" y="120" text-anchor="middle" fill="#1F6F54" font-size="11">provisions, régul.</text>
+
+          <rect x="600" y="70" width="130" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="665" y="95" text-anchor="middle" font-weight="600">Balance</text>
+          <text x="665" y="113" text-anchor="middle" fill="#5A6560" font-size="11">après inventaire</text>
+
+          <rect x="770" y="70" width="80" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="810" y="95" text-anchor="middle" font-weight="600" font-size="12">Bilan</text>
+          <text x="810" y="112" text-anchor="middle" font-weight="600" font-size="12">CR</text>
+
+          <line x1="150" y1="100" x2="196" y2="100" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow)"></line>
+          <line x1="350" y1="100" x2="396" y2="100" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow)"></line>
+          <line x1="550" y1="100" x2="596" y2="100" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow)"></line>
+          <line x1="730" y1="100" x2="766" y2="100" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow)"></line>
+          <text x="430" y="30" text-anchor="middle" fill="#5A6560" font-size="12">≈ 31 décembre — date de clôture</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Les écritures d'inventaire" data-num="6.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.2</span><h2>Les écritures d'inventaire</h2></div>
+      <p>Les écritures d'inventaire sont passées une seule fois par an, à la clôture. Elles ne correspondent pas à un flux d'argent mais à un ajustement comptable. On y regroupe trois grandes familles :</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M5 8l7-5 7 5M5 8v10a1 1 0 001 1h12a1 1 0 001-1V8" stroke="currentColor" stroke-width="1.6"></path></svg>
+        <h3>Amortissements</h3>
+        <p>La perte de valeur normale d'une immobilisation avec le temps ou l'usage.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z" stroke="currentColor" stroke-width="1.6"></path><path d="M12 12v6M12 12L4.5 7.5M12 12l7.5-4.5" stroke="currentColor" stroke-width="1.6"></path></svg>
+        <h3>Dépréciations et provisions</h3>
+        <p>Une perte de valeur exceptionnelle ou un risque probable, non certain, identifié à la clôture.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"></rect><path d="M7 9h10M7 13h10M7 17h6" stroke="currentColor" stroke-width="1.6"></path></svg>
+        <h3>Régularisations</h3>
+        <p>Le rattachement des charges et produits au bon exercice, quelle que soit la date d'encaissement.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">📌 Rappel normatif</div>
+        <p>En France, ces travaux sont encadrés par le Plan Comptable Général (PCG), notamment ses articles relatifs à l'amortissement des actifs et aux provisions. Ils sont obligatoires pour toute entreprise tenant une comptabilité d'engagement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Les amortissements" data-num="6.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.3</span><h2>Les amortissements</h2></div>
+      <p>Un amortissement constate la consommation des avantages économiques d'une immobilisation (matériel, véhicule, logiciel...) sur sa durée d'utilisation. Chaque année, une fraction de la valeur du bien est enregistrée en charge.</p>
+      <p style="text-align:center; font-family:var(--font-mono); font-size:1.05rem; padding:14px; background:var(--color-bg-alt); border-radius:8px;">Annuité = (Valeur d'origine − Valeur résiduelle) / Durée d'utilisation</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Une entreprise achète un ordinateur professionnel pour <span class="mono">6 000 €</span> HT, amortissable en linéaire sur <span class="mono">3 ans</span>, sans valeur résiduelle.</p>
+        <p>Annuité = 6 000 / 3 = <strong>2 000 € par an</strong>.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Écriture d'inventaire — dotation aux amortissements (31/12)</caption>
+        <thead>
+          <tr><th scope="col">Compte</th><th scope="col">Intitulé</th><th scope="col" class="num">Débit</th><th scope="col" class="num">Crédit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">6811</td><td>Dotations aux amortissements des immobilisations</td><td class="num">2 000,00</td><td class="num">—</td></tr>
+          <tr><td class="mono">2818</td><td>Amortissements des autres immobilisations corporelles</td><td class="num">—</td><td class="num">2 000,00</td></tr>
+          <tr class="total"><td colspan="2">Total</td><td class="num">2 000,00</td><td class="num">2 000,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Confondre l'amortissement (perte de valeur normale et prévisible) avec la dépréciation (perte de valeur anormale et incertaine, constatée par un test spécifique à la clôture).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Les provisions" data-num="6.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.4</span><h2>Les provisions</h2></div>
+      <p>Le terme provision est souvent utilisé de façon générale, mais le PCG distingue deux mécanismes bien différents. Comparez-les :</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Types de provisions">
+        <button class="tab-btn" role="tab" id="tab-prov-1" aria-controls="panel-prov-1" aria-selected="true">Provision pour risques et charges</button>
+        <button class="tab-btn" role="tab" id="tab-prov-2" aria-controls="panel-prov-2" aria-selected="false" tabindex="-1">Dépréciation d'actif</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-prov-1" role="tabpanel" aria-labelledby="tab-prov-1" tabindex="0">
+        <div class="prose">
+          <p>Constatée lorsqu'une obligation existe envers un tiers à la clôture (litige, garantie donnée à un client, amende probable), dont le montant ou l'échéance n'est pas fixé avec précision, mais dont la sortie de ressources est probable.</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <caption>Exemple — provision pour litige avec un client</caption>
+            <thead><tr><th scope="col">Compte</th><th scope="col">Intitulé</th><th scope="col" class="num">Débit</th><th scope="col" class="num">Crédit</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">6815</td><td>Dotations aux provisions pour risques</td><td class="num">3 000,00</td><td class="num">—</td></tr>
+              <tr><td class="mono">1511</td><td>Provisions pour litiges</td><td class="num">—</td><td class="num">3 000,00</td></tr>
+              <tr class="total"><td colspan="2">Total</td><td class="num">3 000,00</td><td class="num">3 000,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-prov-2" role="tabpanel" aria-labelledby="tab-prov-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Constatée lorsqu'un actif (stock, créance client, titre) perd de la valeur de façon non définitive : un client qui tarde à payer, un stock invendable, une action qui a chuté. Contrairement à l'amortissement, elle est réversible si la situation s'améliore.</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <caption>Exemple — dépréciation d'une créance client douteuse</caption>
+            <thead><tr><th scope="col">Compte</th><th scope="col">Intitulé</th><th scope="col" class="num">Débit</th><th scope="col" class="num">Crédit</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">6817</td><td>Dotations aux dépréciations des actifs circulants</td><td class="num">800,00</td><td class="num">—</td></tr>
+              <tr><td class="mono">491</td><td>Dépréciations des comptes clients</td><td class="num">—</td><td class="num">800,00</td></tr>
+              <tr class="total"><td colspan="2">Total</td><td class="num">800,00</td><td class="num">800,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Provision ou dépréciation : comment trancher rapidement ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Posez-vous la question : est-ce qu'un <strong>actif</strong> perd de la valeur (dépréciation) ou est-ce qu'une <strong>dette potentielle</strong> apparaît envers un tiers (provision pour risques et charges) ? La distinction porte sur la nature de l'élément concerné, pas sur le degré d'incertitude.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Que devient une provision l'année suivante ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Elle est réexaminée à chaque clôture : reprise totale ou partielle si le risque diminue ou se réalise, ajustement à la hausse si le risque s'aggrave, ou maintien si la situation est inchangée.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Les régularisations" data-num="6.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.5</span><h2>Les régularisations de charges et de produits</h2></div>
+      <p>Le principe d'indépendance des exercices impose de rattacher chaque charge et chaque produit à l'exercice qui l'a réellement généré, indépendamment de la date d'encaissement ou de décaissement. Quatre situations reviennent régulièrement :</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Charges constatées d'avance</h3>
+        <p>Une charge déjà payée mais qui concerne en partie l'exercice suivant (ex. assurance annuelle payée en octobre).</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Produits constatés d'avance</h3>
+        <p>Un produit déjà facturé mais dont la prestation n'est pas encore rendue à la clôture.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Charges à payer</h3>
+        <p>Une charge de l'exercice dont la facture n'est pas encore reçue (ex. facture d'électricité de décembre reçue en janvier).</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Produits à recevoir</h3>
+        <p>Une prestation déjà rendue par l'entreprise mais dont la facture n'est pas encore émise à la clôture.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Une prime d'assurance de <span class="mono">1 200 €</span> couvrant la période du 1er octobre N au 30 septembre N+1 a été payée en totalité en octobre N. À la clôture du 31 décembre N, 9 mois concernent encore l'exercice N+1.</p>
+        <p>Charge constatée d'avance = 1 200 × 9/12 = <strong>900 €</strong>, à sortir des charges de l'exercice N.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Les états financiers" data-num="6.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">6.6</span><h2>Les états financiers</h2></div>
+      <p>Une fois les écritures d'inventaire enregistrées, la balance après inventaire permet de construire les deux documents de synthèse de l'exercice : le bilan et le compte de résultat.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Bilan simplifié au 31/12/N</caption>
+        <thead>
+          <tr><th scope="col">Actif</th><th scope="col" class="num">Montant</th><th scope="col">Passif</th><th scope="col" class="num">Montant</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Immobilisations nettes</td><td class="num">18 000</td><td>Capital</td><td class="num">15 000</td></tr>
+          <tr><td>Stocks</td><td class="num">6 500</td><td>Réserves</td><td class="num">4 000</td></tr>
+          <tr><td>Créances clients</td><td class="num">9 200</td><td>Résultat de l'exercice</td><td class="num">3 100</td></tr>
+          <tr><td>Trésorerie</td><td class="num">4 400</td><td>Dettes fournisseurs</td><td class="num">12 000</td></tr>
+          <tr><td>&nbsp;</td><td class="num">&nbsp;</td><td>Dettes fiscales et sociales</td><td class="num">4 000</td></tr>
+          <tr class="total"><td>Total actif</td><td class="num">38 100</td><td>Total passif</td><td class="num">38 100</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Compte de résultat simplifié — exercice N</caption>
+        <thead>
+          <tr><th scope="col">Charges</th><th scope="col" class="num">Montant</th><th scope="col">Produits</th><th scope="col" class="num">Montant</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Achats consommés</td><td class="num">21 000</td><td>Ventes de marchandises</td><td class="num">42 000</td></tr>
+          <tr><td>Charges de personnel</td><td class="num">12 500</td><td>Production vendue</td><td class="num">3 000</td></tr>
+          <tr><td>Dotations aux amortissements</td><td class="num">2 000</td><td>&nbsp;</td><td class="num">&nbsp;</td></tr>
+          <tr><td>Dotations aux provisions</td><td class="num">3 800</td><td>&nbsp;</td><td class="num">&nbsp;</td></tr>
+          <tr><td>Impôt sur les bénéfices</td><td class="num">2 600</td><td>&nbsp;</td><td class="num">&nbsp;</td></tr>
+          <tr><td>Résultat de l'exercice (bénéfice)</td><td class="num">3 100</td><td>&nbsp;</td><td class="num">&nbsp;</td></tr>
+          <tr class="total"><td>Total</td><td class="num">45 000</td><td>Total</td><td class="num">45 000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🔗 Pour aller plus loin</div>
+        <p>Le bilan montre ce que l'entreprise possède et doit à un instant donné ; le compte de résultat explique comment le résultat de l'exercice a été formé. Les deux documents, accompagnés de l'annexe, constituent les comptes annuels.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="6.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">6.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Les travaux de fin d'exercice ajustent les comptes pour respecter le principe d'image fidèle et d'indépendance des exercices.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>L'amortissement constate une perte de valeur normale et prévisible d'une immobilisation, étalée sur sa durée d'utilisation.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>La provision pour risques concerne une dette potentielle envers un tiers ; la dépréciation concerne la perte de valeur d'un actif.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Les régularisations rattachent chaque charge et produit au bon exercice, indépendamment de la date de paiement.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Le bilan et le compte de résultat, construits à partir de la balance après inventaire, forment le cœur des comptes annuels.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Achats, ventes, règlements et TVA</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Suite du module</span>
+        <span class="dest">Quiz du Module 1</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 1</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Comptabilité Générale — Module 1</span>
+    <span>Leçon 6 sur 6</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- barre de progression ----------
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  // ---------- retour en haut ----------
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  // ---------- sommaire généré depuis les sections ----------
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  // ---------- toggle du panneau sommaire (header) ----------
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  // ---------- onglets (tabs) ----------
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  // ---------- accordéons ----------
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // ---------- animations au scroll ----------
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

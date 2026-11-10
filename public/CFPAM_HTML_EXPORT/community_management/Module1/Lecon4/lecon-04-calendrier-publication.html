@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 04 — Planifier et créer un calendrier de publication</title>
+<meta name="description" content="Community Management — Module 1, Leçon 04 : planifier et créer un calendrier éditorial pour publier de façon régulière et cohérente.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232E5AAC'/%3E%3Cpath d='M9 12h14M9 17h14M9 22h8' stroke='white' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;
+  --color-bg-alt:#F7F9FC;
+  --color-text:#0A0A0F;
+  --color-text-muted:#5B6472;
+  --color-accent:#2E5AAC;
+  --color-accent-soft:#EAF0FB;
+  --color-border:#E5E8EE;
+  --font-display:'Sora','Inter',system-ui,sans-serif;
+  --font-text:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --radius:14px;
+  --header-h:60px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{font-family:var(--font-text);background:var(--color-bg);color:var(--color-text);line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.2;color:var(--color-text);font-weight:700;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3.1rem)}
+h2{font-size:clamp(1.55rem,3.2vw,2rem);margin-bottom:1.1rem}
+h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .6rem}
+p{margin-bottom:1.1rem}
+ul,ol{margin:0 0 1.1rem 1.3rem}
+li{margin-bottom:.4rem}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:980px;margin:0 auto;padding:0 20px}
+
+/* Progress */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:200;transition:width .1s linear}
+
+/* Header */
+header.site{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border);height:var(--header-h)}
+header.site .inner{max-width:980px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:600;font-size:.95rem;color:var(--color-text)}
+.brand:hover{text-decoration:none}
+.brand .logo{width:28px;height:28px;border-radius:8px;background:var(--color-accent);display:grid;place-items:center}
+.brand small{display:block;font-family:var(--font-text);font-weight:400;font-size:.72rem;color:var(--color-text-muted);line-height:1.1}
+.menu-btn{font:inherit;font-size:.9rem;font-weight:500;background:var(--color-bg);border:1px solid var(--color-border);color:var(--color-text);padding:8px 14px;border-radius:999px;cursor:pointer;display:flex;gap:8px;align-items:center;transition:border-color .2s,background .2s}
+.menu-btn:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.menu-panel{position:absolute;right:20px;top:calc(var(--header-h) - 4px);width:min(320px,calc(100vw - 40px));background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);box-shadow:0 12px 32px rgba(10,10,15,.08);padding:10px;display:none}
+.menu-panel.open{display:block}
+.menu-panel a{display:block;padding:9px 12px;border-radius:8px;color:var(--color-text);font-size:.93rem}
+.menu-panel a:hover{background:var(--color-accent-soft);color:var(--color-accent);text-decoration:none}
+
+/* Hero */
+.hero{padding:72px 0 48px;background:var(--color-bg)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--color-accent-soft);color:var(--color-accent);font-size:.8rem;font-weight:600;padding:5px 12px;border-radius:999px}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted);border:1px solid var(--color-border)}
+.eyebrow{font-size:.85rem;color:var(--color-text-muted);margin-bottom:10px;font-weight:500}
+.hero h1{margin-bottom:16px}
+.hero .lead{font-size:1.15rem;color:var(--color-text-muted);max-width:620px}
+.objective{margin-top:26px;border-left:3px solid var(--color-accent);padding:4px 0 4px 16px;color:var(--color-text)}
+.objective strong{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--color-accent);margin-bottom:2px}
+
+/* TOC */
+.toc{background:var(--color-bg-alt);padding:44px 0}
+.toc h2{font-size:1.2rem;margin-bottom:16px}
+.toc ol{list-style:none;margin:0;counter-reset:t;display:grid;grid-template-columns:repeat(2,1fr);gap:8px 20px}
+.toc li{counter-increment:t;margin:0}
+.toc a{display:flex;gap:12px;align-items:baseline;padding:10px 14px;border-radius:10px;background:#fff;border:1px solid var(--color-border);color:var(--color-text);font-size:.95rem;transition:border-color .2s,transform .2s}
+.toc a::before{content:counter(t,decimal-leading-zero);font-family:var(--font-display);font-weight:700;color:var(--color-accent);font-size:.85rem}
+.toc a:hover{border-color:var(--color-accent);transform:translateY(-2px);text-decoration:none}
+
+/* Sections */
+section.lesson{padding:76px 0}
+section.lesson:nth-of-type(even){background:var(--color-bg-alt)}
+.sec-num{font-family:var(--font-display);font-weight:700;color:var(--color-accent);font-size:.9rem;letter-spacing:.06em;margin-bottom:8px;display:block}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.fade.in{opacity:1;transform:none}
+
+/* Callouts */
+.callout{border-radius:var(--radius);padding:18px 20px 18px 56px;margin:28px 0;position:relative;background:var(--color-accent-soft);border:1px solid #D3E0F7}
+.callout .ico{position:absolute;left:18px;top:16px;font-size:1.3rem;line-height:1.4}
+.callout .t{font-family:var(--font-display);font-weight:600;color:var(--color-accent);display:block;margin-bottom:4px;font-size:.95rem}
+.callout p:last-child{margin-bottom:0}
+.callout.warn{background:#fff;border:1px solid var(--color-accent);}
+.callout.more{background:#fff;border:1px dashed var(--color-accent)}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:26px 0}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:22px;transition:transform .25s,box-shadow .25s,border-color .25s}
+section.lesson:nth-of-type(even) .card{background:#fff}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(46,90,172,.10);border-color:var(--color-accent)}
+.card .ci{width:42px;height:42px;border-radius:11px;background:var(--color-accent-soft);display:grid;place-items:center;margin-bottom:14px;color:var(--color-accent)}
+.card h3{margin:0 0 6px;font-size:1.02rem}
+.card p{font-size:.93rem;color:var(--color-text-muted);margin:0}
+.card .tag{display:inline-block;margin-top:12px;font-size:.75rem;font-weight:600;color:var(--color-accent);background:var(--color-accent-soft);padding:3px 10px;border-radius:999px}
+
+/* Stepper */
+.stepper{list-style:none;margin:34px 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
+.stepper li{position:relative;text-align:center;padding:0 6px;margin:0}
+.stepper li::before{content:"";position:absolute;top:21px;left:-50%;width:100%;height:2px;background:var(--color-border);z-index:0}
+.stepper li:first-child::before{display:none}
+.stepper .dot{position:relative;z-index:1;width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:#fff;border:2px solid var(--color-accent);color:var(--color-accent);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;transition:background .25s,color .25s,transform .25s}
+.stepper li:hover .dot{background:var(--color-accent);color:#fff;transform:scale(1.08)}
+.stepper strong{display:block;font-size:.92rem;font-family:var(--font-display);font-weight:600}
+.stepper span.d{display:block;font-size:.8rem;color:var(--color-text-muted);line-height:1.4;margin-top:2px}
+
+/* Tabs */
+.tabs{margin:26px 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);overflow:hidden}
+.tablist{display:flex;overflow-x:auto;border-bottom:1px solid var(--color-border);background:var(--color-bg-alt)}
+.tab{font:inherit;font-size:.92rem;font-weight:500;padding:13px 20px;border:0;background:transparent;color:var(--color-text-muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s,background .2s}
+.tab:hover{color:var(--color-accent)}
+.tab[aria-selected="true"]{color:var(--color-accent);background:#fff;border-bottom-color:var(--color-accent);font-weight:600}
+.tabpanel{padding:22px 24px}
+.tabpanel[hidden]{display:none}
+.tabpanel p{margin-bottom:.7rem}
+.tabpanel ul{margin-bottom:0}
+
+/* Accordion */
+.acc{margin:24px 0;border:1px solid var(--color-border);border-radius:var(--radius);overflow:hidden;background:#fff}
+.acc-item+.acc-item{border-top:1px solid var(--color-border)}
+.acc-btn{width:100%;font:inherit;font-weight:500;text-align:left;background:#fff;border:0;padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;color:var(--color-text);transition:background .2s}
+.acc-btn:hover{background:var(--color-bg-alt)}
+.acc-btn svg{flex:none;transition:transform .25s;color:var(--color-accent)}
+.acc-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.acc-panel{padding:0 20px 18px;color:var(--color-text-muted);font-size:.97rem}
+.acc-panel[hidden]{display:none}
+.acc-panel p:last-child{margin-bottom:0}
+
+/* Weekly calendar */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:26px 0 8px}
+.day{background:#fff;border:1px solid var(--color-border);border-radius:12px;padding:12px 10px;min-height:150px;transition:border-color .2s,transform .2s}
+.day:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.day h4{font-family:var(--font-display);font-size:.82rem;font-weight:600;margin-bottom:8px;color:var(--color-text)}
+.day h4 small{display:block;font-family:var(--font-text);font-weight:400;color:var(--color-text-muted);font-size:.7rem}
+.post{background:var(--color-accent-soft);border-radius:8px;padding:7px 8px;font-size:.74rem;line-height:1.35;margin-bottom:6px;color:var(--color-text)}
+.post b{display:block;color:var(--color-accent);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em}
+.day.rest .post{background:var(--color-bg-alt);color:var(--color-text-muted);text-align:center;font-style:italic}
+.caption{font-size:.85rem;color:var(--color-text-muted);text-align:center}
+
+/* Distribution bar */
+.dist{margin:26px 0}
+.dist-row{margin-bottom:16px}
+.dist-row .lab{display:flex;justify-content:space-between;font-size:.92rem;font-weight:500;margin-bottom:6px}
+.dist-row .lab span:last-child{color:var(--color-accent);font-weight:600}
+.bar{height:10px;background:var(--color-border);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--color-accent);border-radius:999px;width:0;transition:width 1s ease}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;margin:24px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:560px}
+th{text-align:left;background:var(--color-bg-alt);font-family:var(--font-display);font-weight:600;font-size:.82rem;padding:12px 14px;border-bottom:1px solid var(--color-border)}
+td{padding:12px 14px;border-bottom:1px solid var(--color-border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--color-bg-alt)}
+
+/* Code */
+.code{margin:24px 0;border-radius:var(--radius);overflow:hidden;background:#0F131B;color:#E7EBF3}
+.code-head{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#171C27;font-size:.8rem;color:#9AA6BD}
+.copy{font:inherit;font-size:.78rem;color:#E7EBF3;background:transparent;border:1px solid #33405A;border-radius:6px;padding:4px 10px;cursor:pointer;transition:background .2s,border-color .2s}
+.copy:hover{background:#232B3B;border-color:#6C8FD6}
+pre{overflow-x:auto;padding:16px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:.84rem;line-height:1.7}
+.ln{display:block}
+.ln::before{content:attr(data-n);display:inline-block;width:2ch;margin-right:16px;text-align:right;color:#5A6784;user-select:none}
+.k{color:#8FB1F2}.s{color:#B7D3A8}.c{color:#6D7A96;font-style:italic}
+
+/* Key points */
+.keys{display:grid;gap:12px;margin:24px 0 0;counter-reset:k;list-style:none;padding:0}
+.keys li{counter-increment:k;display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--color-border);border-radius:12px;padding:16px 18px;margin:0;transition:border-color .2s,transform .2s}
+.keys li:hover{border-color:var(--color-accent);transform:translateX(4px)}
+.keys li::before{content:counter(k);flex:none;width:30px;height:30px;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:.85rem}
+
+/* Lesson nav */
+.lnav{padding:60px 0 30px}
+.lnav .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lnav a.nl{display:block;border:1px solid var(--color-border);border-radius:var(--radius);padding:18px 20px;color:var(--color-text);transition:border-color .2s,transform .2s,box-shadow .2s;background:#fff}
+.lnav a.nl:hover{border-color:var(--color-accent);transform:translateY(-3px);box-shadow:0 10px 24px rgba(46,90,172,.09);text-decoration:none}
+.lnav a.nl small{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;color:var(--color-accent);font-weight:600;margin-bottom:4px}
+.lnav a.nl span{font-family:var(--font-display);font-weight:600;font-size:.98rem;line-height:1.35;display:block}
+.lnav a.next{text-align:right}
+.back-toc{text-align:center;margin-top:22px;font-size:.92rem}
+
+footer.site-foot{border-top:1px solid var(--color-border);padding:28px 0;text-align:center;font-size:.85rem;color:var(--color-text-muted)}
+
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px rgba(10,10,15,.1);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s,border-color .2s;z-index:150}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+
+svg.diagram{width:100%;height:auto;display:block;margin:26px 0 8px}
+
+@media (max-width:900px){
+  .week{grid-template-columns:repeat(2,1fr)}
+  .day{min-height:0}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .hero{padding:48px 0 36px}
+  section.lesson{padding:54px 0}
+  .toc ol{grid-template-columns:1fr}
+  .week{grid-template-columns:1fr}
+  .stepper{grid-template-columns:1fr;gap:18px}
+  .stepper li{display:grid;grid-template-columns:44px 1fr;column-gap:14px;text-align:left;padding:0}
+  .stepper li::before{top:-18px;left:21px;width:2px;height:18px}
+  .stepper .dot{margin:0;grid-row:span 2}
+  .lnav .grid{grid-template-columns:1fr}
+  .lnav a.next{text-align:left}
+  .brand small{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .fade{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="progress" role="presentation"></div>
+
+<header class="site">
+  <div class="inner">
+    <a class="brand" href="#debut" aria-label="Retour au début de la leçon">
+      <span class="logo" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </span>
+      <span>Community Management<small>Module 1 · Leçon 04</small></span>
+    </a>
+    <div style="position:relative">
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        Sommaire
+      </button>
+    </div>
+    <nav class="menu-panel" id="menuPanel" aria-label="Sommaire de la leçon">
+      <a href="#definition">1. Définition et utilité</a>
+      <a href="#frequence">2. Fréquence et moments</a>
+      <a href="#repartition">3. Formats et thématiques</a>
+      <a href="#elements">4. Éléments d’un calendrier</a>
+      <a href="#processus">5. Du brouillon à la publication</a>
+      <a href="#outils">6. Outils de planification</a>
+      <a href="#evenements">7. Anticiper les temps forts</a>
+      <a href="#resume">8. Points clés à retenir</a>
+    </nav>
+  </div>
+</header>
+
+<main id="debut">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="wrap">
+      <div class="badges">
+        <span class="badge">Module 1 — Fondamentaux</span>
+        <span class="badge plain">⏱ 15 min de lecture</span>
+        <span class="badge plain">Niveau débutant</span>
+      </div>
+      <p class="eyebrow">Community Management et gestion des réseaux sociaux · Leçon 04</p>
+      <h1>Planifier et créer un calendrier de publication</h1>
+      <p class="lead">Comment organiser une présence régulière et cohérente sur les réseaux sociaux grâce à un calendrier éditorial simple, réaliste et durable.</p>
+      <div class="objective">
+        <strong>Objectif pédagogique</strong>
+        Organiser une publication régulière et cohérente grâce à un calendrier éditorial.
+      </div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Table des matières">
+    <div class="wide">
+      <h2>Dans cette leçon</h2>
+      <ol>
+        <li><a href="#definition">Définition et utilité du calendrier éditorial</a></li>
+        <li><a href="#frequence">Fréquence et meilleurs moments de publication</a></li>
+        <li><a href="#repartition">Répartition des formats et des thématiques</a></li>
+        <li><a href="#elements">Éléments d’un calendrier</a></li>
+        <li><a href="#processus">Du brouillon à la publication</a></li>
+        <li><a href="#outils">Outils de planification</a></li>
+        <li><a href="#evenements">Anticiper les événements et temps forts</a></li>
+        <li><a href="#resume">Points clés à retenir</a></li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- 1 -->
+  <section class="lesson" id="definition">
+    <div class="wrap fade">
+      <span class="sec-num">01</span>
+      <h2>Définition et utilité du calendrier éditorial</h2>
+      <p>Un <strong>calendrier éditorial</strong> (ou calendrier de publication) est un document qui planifie à l’avance <em>quoi</em> publier, <em>quand</em>, <em>où</em> et <em>sous quelle forme</em>. C’est la feuille de route quotidienne d’un community manager : il transforme des envies de publication en un programme concret.</p>
+      <p>Sans calendrier, on publie « quand on y pense » : les contenus sont irréguliers, les idées se répètent et la ligne éditoriale se perd. Avec un calendrier, on gagne du temps et de la sérénité.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3>Gagner du temps</h3>
+          <p>Les idées sont préparées en une fois, plutôt que cherchées chaque matin sous la pression.</p>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5"/></svg></div>
+          <h3>Assurer la régularité</h3>
+          <p>Une audience s’habitue aux rendez-vous : elle sait quand et ce qu’elle va retrouver.</p>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></div>
+          <h3>Garder la cohérence</h3>
+          <p>Chaque contenu sert la ligne éditoriale et les objectifs de la marque, sans publier « pour publier ».</p>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 20c0-2.4 1.6-4.4 4-5"/></svg></div>
+          <h3>Coordonner l’équipe</h3>
+          <p>Rédacteurs, graphistes et validateurs savent qui fait quoi, et pour quelle date.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <span class="ico" aria-hidden="true">💡</span>
+        <span class="t">À retenir</span>
+        <p><strong>Régularité avant quantité.</strong> Il vaut mieux publier trois fois par semaine pendant des mois que dix fois en une semaine puis disparaître. Un rythme réaliste, que l’on peut tenir, est toujours préférable à un rythme ambitieux qui s’essouffle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="lesson" id="frequence">
+    <div class="wrap fade">
+      <span class="sec-num">02</span>
+      <h2>Fréquence et meilleurs moments de publication</h2>
+      <p>Il n’existe pas de fréquence universelle. Le bon rythme dépend de trois facteurs : le <strong>réseau</strong> utilisé, les <strong>ressources disponibles</strong> (temps, équipe, matériel) et les <strong>attentes de l’audience</strong>.</p>
+      <p>Pour un débutant, la règle d’or est de partir d’un rythme modeste, puis de l’augmenter progressivement si l’on parvient à le tenir sans baisse de qualité.</p>
+
+      <div class="tabs" data-tabs>
+        <div class="tablist" role="tablist" aria-label="Rythmes indicatifs par réseau">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="p-ig" id="t-ig">Instagram</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="p-fb" id="t-fb" tabindex="-1">Facebook</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="p-li" id="t-li" tabindex="-1">LinkedIn</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="p-tt" id="t-tt" tabindex="-1">TikTok</button>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-ig" aria-labelledby="t-ig">
+          <p><strong>Rythme de départ conseillé : 3 à 4 publications par semaine</strong>, complétées par des stories régulières.</p>
+          <ul>
+            <li>Alterner publications du fil, carrousels et formats courts.</li>
+            <li>Les stories permettent d’entretenir le lien entre deux publications.</li>
+          </ul>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-fb" aria-labelledby="t-fb" hidden>
+          <p><strong>Rythme de départ conseillé : 3 publications par semaine.</strong></p>
+          <ul>
+            <li>Idéal pour les annonces, les actualités locales et la vie d’une communauté.</li>
+            <li>Un rythme trop élevé sur une page peut lasser sans augmenter l’engagement.</li>
+          </ul>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-li" aria-labelledby="t-li" hidden>
+          <p><strong>Rythme de départ conseillé : 2 à 3 publications par semaine.</strong></p>
+          <ul>
+            <li>Le ton est professionnel : expertise, retours d’expérience, actualités du secteur.</li>
+            <li>Les publications en semaine, pendant les horaires de travail, sont généralement mieux suivies.</li>
+          </ul>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-tt" aria-labelledby="t-tt" hidden>
+          <p><strong>Rythme de départ conseillé : 3 à 5 vidéos par semaine</strong> si les moyens de production le permettent.</p>
+          <ul>
+            <li>Le réseau valorise la régularité et la créativité plus que la perfection technique.</li>
+            <li>À défaut, mieux vaut 2 vidéos soignées par semaine qu’un rythme intenable.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Trouver les meilleurs moments</h3>
+      <p>Les « meilleures heures » diffusées sur Internet ne sont que des moyennes générales. Le vrai meilleur moment est celui où <em>votre</em> audience est en ligne. Pour le découvrir :</p>
+      <ul>
+        <li>consultez les statistiques natives de chaque réseau (jours et heures d’activité des abonnés) ;</li>
+        <li>testez plusieurs créneaux pendant quelques semaines ;</li>
+        <li>comparez les résultats et ajustez : c’est un processus d’amélioration continue.</li>
+      </ul>
+      <div class="callout warn">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <span class="t">Erreur fréquente</span>
+        <p>Copier aveuglément le calendrier d’un autre compte ou une « heure miracle » trouvée en ligne. Chaque audience a ses propres habitudes : fuseau horaire, métier, mode de vie.</p>
+      </div>
+      <div class="acc">
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="a1" id="b1">Faut-il publier tous les jours ?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="acc-panel" id="a1" role="region" aria-labelledby="b1" hidden><p>Pas nécessairement. Publier chaque jour n’est utile que si vous avez assez de contenus de qualité à proposer. Pour un débutant, un rythme de 3 publications par semaine, tenu dans la durée, est souvent plus efficace.</p></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="a2" id="b2">Que faire si mon audience est répartie sur plusieurs fuseaux horaires ?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="acc-panel" id="a2" role="region" aria-labelledby="b2" hidden><p>Regardez d’où vient la majorité de vos abonnés dans les statistiques et visez ce public en priorité. Vous pouvez aussi varier les horaires d’une publication à l’autre pour toucher différents segments.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="lesson" id="repartition">
+    <div class="wrap fade">
+      <span class="sec-num">03</span>
+      <h2>Répartition des formats et des thématiques</h2>
+      <p>Un bon calendrier n’est pas une succession de contenus identiques. Il équilibre deux dimensions : les <strong>thématiques</strong> (de quoi parle-t-on ?) et les <strong>formats</strong> (sous quelle forme ?).</p>
+
+      <h3>Les piliers thématiques</h3>
+      <p>On définit généralement trois à cinq grands thèmes, appelés <em>piliers éditoriaux</em>, issus de la ligne éditoriale (leçon 03). Chaque publication se rattache à l’un d’eux.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg></div>
+          <h3>Informer / éduquer</h3>
+          <p>Conseils, explications, bonnes pratiques, réponses aux questions fréquentes.</p>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg></div>
+          <h3>Divertir / inspirer</h3>
+          <p>Coulisses, humour, témoignages, histoires qui humanisent la marque.</p>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18l-2 12H5zM8 7a4 4 0 0 1 8 0"/></svg></div>
+          <h3>Promouvoir</h3>
+          <p>Produits, services, offres, annonces : le contenu qui soutient directement l’activité.</p>
+        </div>
+      </div>
+
+      <h3>Un équilibre indicatif</h3>
+      <p>Un repère courant consiste à limiter les contenus purement promotionnels, afin que l’audience reçoive surtout de la valeur. Voici un exemple de répartition, à adapter selon vos objectifs :</p>
+      <div class="dist" role="group" aria-label="Exemple de répartition des contenus">
+        <div class="dist-row"><div class="lab"><span>Contenus utiles (éduquer, informer)</span><span>40 %</span></div><div class="bar"><i data-w="40"></i></div></div>
+        <div class="dist-row"><div class="lab"><span>Contenus d’engagement (divertir, inspirer)</span><span>40 %</span></div><div class="bar"><i data-w="40"></i></div></div>
+        <div class="dist-row"><div class="lab"><span>Contenus promotionnels</span><span>20 %</span></div><div class="bar"><i data-w="20"></i></div></div>
+      </div>
+
+      <h3>La variété des formats</h3>
+      <p>Alterner les formats maintient l’intérêt et permet de toucher des préférences de lecture différentes : <strong>image simple</strong>, <strong>carrousel</strong>, <strong>texte seul</strong>, <strong>vidéo courte</strong>, <strong>story</strong>, <strong>sondage</strong>, <strong>direct</strong>. Un même sujet peut d’ailleurs être décliné sous plusieurs formats.</p>
+      <div class="callout more">
+        <span class="ico" aria-hidden="true">🔗</span>
+        <span class="t">Pour aller plus loin</span>
+        <p>La leçon 05 détaille comment adapter chaque contenu aux codes et aux formats propres à chaque réseau.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="lesson" id="elements">
+    <div class="wrap fade">
+      <span class="sec-num">04</span>
+      <h2>Éléments d’un calendrier</h2>
+      <p>Quel que soit l’outil choisi, un calendrier éditorial efficace contient au minimum les informations suivantes :</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Élément</th><th>Rôle</th><th>Exemple</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Date et heure</strong></td><td>Fixe le moment de publication</td><td>Mardi 12 h 30</td></tr>
+            <tr><td><strong>Canal</strong></td><td>Indique sur quel réseau publier</td><td>Instagram</td></tr>
+            <tr><td><strong>Sujet / thématique</strong></td><td>Précise le message et le pilier concerné</td><td>Conseil : 3 erreurs à éviter</td></tr>
+            <tr><td><strong>Format</strong></td><td>Définit la forme du contenu</td><td>Carrousel</td></tr>
+            <tr><td><strong>Texte (légende)</strong></td><td>Rédaction, hashtags, appel à l’action</td><td>Texte rédigé, 4 hashtags</td></tr>
+            <tr><td><strong>Visuel / média</strong></td><td>Lien vers l’image ou la vidéo</td><td>Dossier « Visuels octobre »</td></tr>
+            <tr><td><strong>Statut</strong></td><td>Suit l’avancement</td><td>Idée · En création · Prêt · Publié</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Exemple de semaine type</h3>
+      <p>Voici un exemple de planning hebdomadaire pour une petite marque présente sur deux réseaux. Il illustre l’alternance des thématiques et des formats.</p>
+      <div class="week" role="list" aria-label="Exemple de calendrier hebdomadaire">
+        <div class="day" role="listitem"><h4>Lundi<small>Instagram</small></h4><div class="post"><b>Conseil</b>Carrousel : 3 astuces</div></div>
+        <div class="day" role="listitem"><h4>Mardi<small>Facebook</small></h4><div class="post"><b>Actualité</b>Annonce d’une nouveauté</div></div>
+        <div class="day" role="listitem"><h4>Mercredi<small>Instagram</small></h4><div class="post"><b>Coulisses</b>Story + vidéo courte</div></div>
+        <div class="day" role="listitem"><h4>Jeudi<small>Facebook</small></h4><div class="post"><b>Engagement</b>Sondage à la communauté</div></div>
+        <div class="day" role="listitem"><h4>Vendredi<small>Instagram</small></h4><div class="post"><b>Promotion</b>Offre de la semaine</div></div>
+        <div class="day rest" role="listitem"><h4>Samedi<small>—</small></h4><div class="post">Veille et réponses aux messages</div></div>
+        <div class="day rest" role="listitem"><h4>Dimanche<small>—</small></h4><div class="post">Repos / bilan rapide</div></div>
+      </div>
+      <p class="caption">Exemple illustratif : 5 publications dans la semaine, avec un seul contenu promotionnel.</p>
+
+      <h3>Un modèle simple à structurer</h3>
+      <p>Même un simple tableur suffit. Voici la structure type d’un fichier, au format texte séparé par des virgules (CSV), que l’on peut ouvrir dans n’importe quel tableur :</p>
+      <div class="code">
+        <div class="code-head"><span>calendrier-editorial.csv</span><button class="copy" type="button" aria-label="Copier le code">Copier</button></div>
+<pre><code><span class="ln" data-n="1"><span class="k">date,heure,canal,sujet,format,statut</span></span><span class="ln" data-n="2">2026-10-12,12:30,Instagram,3 astuces pour débuter,Carrousel,Prêt</span><span class="ln" data-n="3">2026-10-13,18:00,Facebook,Annonce nouveauté,Image,En création</span><span class="ln" data-n="4">2026-10-14,12:30,Instagram,Coulisses de l’atelier,Vidéo courte,Idée</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="lesson" id="processus">
+    <div class="wrap fade">
+      <span class="sec-num">05</span>
+      <h2>Du brouillon à la publication</h2>
+      <p>Un calendrier n’est pas seulement un tableau : c’est un processus qui accompagne chaque contenu, de l’idée jusqu’à sa mise en ligne. Cinq étapes structurent le travail :</p>
+    </div>
+    <div class="wide fade">
+      <ol class="stepper" aria-label="Étapes du processus de publication">
+        <li><div class="dot">1</div><strong>Idées</strong><span class="d">Collecter des sujets selon les piliers</span></li>
+        <li><div class="dot">2</div><strong>Planification</strong><span class="d">Placer chaque idée dans le calendrier</span></li>
+        <li><div class="dot">3</div><strong>Création</strong><span class="d">Rédiger, concevoir les visuels</span></li>
+        <li><div class="dot">4</div><strong>Programmation</strong><span class="d">Planifier l’envoi dans un outil</span></li>
+        <li><div class="dot">5</div><strong>Publication</strong><span class="d">Mise en ligne, suivi et réponses</span></li>
+      </ol>
+    </div>
+    <div class="wrap fade">
+      <h3>Travailler par lots</h3>
+      <p>Une méthode efficace consiste à réserver un temps dédié, par exemple une fois par semaine ou par mois, pour concevoir plusieurs contenus d’un coup. Cette organisation « par lots » limite les changements de tâches et libère le reste du temps pour l’interaction avec la communauté.</p>
+      <div class="acc">
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="a3" id="b3">Quelle période planifier à l’avance ?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="acc-panel" id="a3" role="region" aria-labelledby="b3" hidden><p>Pour débuter, planifier une à deux semaines suffit. Avec l’expérience, on passe à un calendrier mensuel, complété par une vision trimestrielle des grands temps forts.</p></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" aria-expanded="false" aria-controls="a4" id="b4">Un calendrier peut-il être modifié ?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="acc-panel" id="a4" role="region" aria-labelledby="b4" hidden><p>Oui, et il le doit. Un calendrier est un cadre, pas une contrainte rigide : on garde de la place pour réagir à l’actualité, à un événement imprévu ou à une question de la communauté.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="lesson" id="outils">
+    <div class="wrap fade">
+      <span class="sec-num">06</span>
+      <h2>Outils de planification</h2>
+      <p>Il n’est pas nécessaire d’investir dans un logiciel coûteux pour commencer. De nombreux outils gratuits ou peu coûteux répondent aux besoins d’un débutant.</p>
+    </div>
+    <div class="wide fade">
+      <div class="cards">
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></div>
+          <h3>Tableur (Google Sheets, Excel)</h3>
+          <p>Le plus simple et le plus flexible. Idéal pour créer son premier calendrier avec des colonnes personnalisées.</p>
+          <span class="tag">Gratuit</span>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></div>
+          <h3>Trello</h3>
+          <p>Un tableau de cartes à déplacer entre colonnes (idée, en création, prêt, publié). Très visuel pour suivre l’avancement.</p>
+          <span class="tag">Offre gratuite</span>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4"/></svg></div>
+          <h3>Notion</h3>
+          <p>Combine base de données, vue calendrier et notes. Pratique pour centraliser idées, textes et ressources.</p>
+          <span class="tag">Offre gratuite</span>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+          <h3>Meta Business Suite</h3>
+          <p>Permet de programmer directement des publications Facebook et Instagram depuis un seul espace.</p>
+          <span class="tag">Gratuit</span>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg></div>
+          <h3>Canva</h3>
+          <p>Crée les visuels et propose un planificateur de contenu pour programmer certaines publications.</p>
+          <span class="tag">Offre gratuite</span>
+        </div>
+        <div class="card">
+          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></div>
+          <h3>Outils de programmation (Buffer, Later…)</h3>
+          <p>Programment les publications sur plusieurs réseaux. Les offres gratuites sont limitées en nombre de comptes ou de publications.</p>
+          <span class="tag">Gratuit / abordable</span>
+        </div>
+      </div>
+      <p class="caption" style="max-width:720px;margin:0 auto">Les conditions et limites des offres gratuites évoluent : vérifiez-les sur le site officiel de chaque outil avant de vous engager.</p>
+    </div>
+    <div class="wrap fade">
+      <div class="callout" style="margin-top:34px">
+        <span class="ico" aria-hidden="true">💡</span>
+        <span class="t">À retenir</span>
+        <p>Le meilleur outil est celui que vous utilisez réellement. Commencez simple (un tableur suffit) et ne passez à un outil plus avancé que lorsque le besoin se fait sentir.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="lesson" id="evenements">
+    <div class="wrap fade">
+      <span class="sec-num">07</span>
+      <h2>Anticiper les événements et temps forts</h2>
+      <p>Certains moments de l’année offrent des occasions naturelles de prise de parole. Les repérer à l’avance permet de préparer des contenus soignés au lieu de réagir dans l’urgence.</p>
+      <h3>Trois familles de temps forts</h3>
+      <ul>
+        <li><strong>Le calendrier général :</strong> fêtes, congés, rentrée, journées mondiales ou nationales, saisons.</li>
+        <li><strong>Le calendrier du secteur :</strong> salons, conférences, périodes de forte activité propres à votre domaine.</li>
+        <li><strong>Le calendrier de la marque :</strong> lancements, anniversaires, promotions, annonces importantes, partenariats.</li>
+      </ul>
+      <svg class="diagram" viewBox="0 0 680 150" role="img" aria-labelledby="tl-t tl-d" xmlns="http://www.w3.org/2000/svg">
+        <title id="tl-t">Frise annuelle des temps forts</title>
+        <desc id="tl-d">Schéma d’une année divisée en quatre trimestres, avec un temps fort d’exemple pour chacun : lancement, événement du secteur, promotion et bilan.</desc>
+        <line x1="40" y1="70" x2="640" y2="70" stroke="#E5E8EE" stroke-width="3" stroke-linecap="round"/>
+        <g font-family="Inter,sans-serif" text-anchor="middle">
+          <circle cx="110" cy="70" r="11" fill="#fff" stroke="#2E5AAC" stroke-width="3"/>
+          <circle cx="260" cy="70" r="11" fill="#fff" stroke="#2E5AAC" stroke-width="3"/>
+          <circle cx="410" cy="70" r="11" fill="#fff" stroke="#2E5AAC" stroke-width="3"/>
+          <circle cx="560" cy="70" r="11" fill="#2E5AAC" stroke="#2E5AAC" stroke-width="3"/>
+          <text x="110" y="35" font-size="13" font-weight="600" fill="#0A0A0F">T1</text>
+          <text x="260" y="35" font-size="13" font-weight="600" fill="#0A0A0F">T2</text>
+          <text x="410" y="35" font-size="13" font-weight="600" fill="#0A0A0F">T3</text>
+          <text x="560" y="35" font-size="13" font-weight="600" fill="#0A0A0F">T4</text>
+          <text x="110" y="105" font-size="13" fill="#5B6472">Lancement</text>
+          <text x="260" y="105" font-size="13" fill="#5B6472">Salon du secteur</text>
+          <text x="410" y="105" font-size="13" fill="#5B6472">Rentrée / offre</text>
+          <text x="560" y="105" font-size="13" fill="#5B6472">Fêtes et bilan</text>
+        </g>
+      </svg>
+      <p class="caption">Exemple de vue annuelle : on y place les grands rendez-vous avant de détailler semaine par semaine.</p>
+      <div class="callout warn">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <span class="t">Attention</span>
+        <p>Toutes les occasions ne sont pas pertinentes pour votre marque. Ne participez à un temps fort que s’il a un lien réel avec votre activité et vos valeurs. Prévoyez aussi une marge pour ajuster votre calendrier en cas d’événement d’actualité sensible.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="lesson" id="resume">
+    <div class="wrap fade">
+      <span class="sec-num">08</span>
+      <h2>Points clés à retenir</h2>
+      <ol class="keys">
+        <li><span>Le calendrier éditorial planifie quoi, quand, où et sous quelle forme publier : il apporte organisation, régularité et cohérence.</span></li>
+        <li><span><strong>Régularité avant quantité</strong> : choisissez un rythme réaliste et tenable dans la durée.</span></li>
+        <li><span>Les meilleurs horaires se découvrent par les statistiques et les tests, pas par des « recettes » universelles.</span></li>
+        <li><span>Équilibrez piliers thématiques et formats variés, en limitant le contenu purement promotionnel.</span></li>
+        <li><span>Un calendrier contient au minimum : date, canal, sujet, format, texte, visuel et statut.</span></li>
+        <li><span>Le processus suit cinq étapes : idées, planification, création, programmation, publication.</span></li>
+        <li><span>Un tableur ou un outil gratuit suffit pour démarrer ; l’outil compte moins que la discipline.</span></li>
+        <li><span>Anticipez les temps forts pertinents, tout en gardant de la souplesse pour l’imprévu.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- NAV -->
+  <nav class="lnav" aria-label="Navigation entre les leçons">
+    <div class="wide">
+      <div class="grid">
+        <a class="nl prev" href="lecon-03-ligne-editoriale-identite-marque.html" rel="prev">
+          <small>← Leçon précédente</small>
+          <span>Leçon 03 — Définir une ligne éditoriale et une identité de marque sur les réseaux</span>
+        </a>
+        <a class="nl next" href="lecon-05-contenu-adapte-reseaux.html" rel="next">
+          <small>Leçon suivante →</small>
+          <span>Leçon 05 — Créer et publier du contenu adapté à chaque réseau</span>
+        </a>
+      </div>
+      <p class="back-toc"><a href="#debut">↑ Retour au sommaire de la leçon</a></p>
+    </div>
+  </nav>
+</main>
+
+<footer class="site-foot">
+  <div class="wide">Community Management et gestion des réseaux sociaux · Module 1 — Fondamentaux du community management</div>
+</footer>
+
+<button id="top" aria-label="Retour en haut de la page" type="button">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(function(){
+  /* Progress bar + back to top */
+  var bar=document.getElementById('progress'), topBtn=document.getElementById('top');
+  function onScroll(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    var p=max>0?(h.scrollTop/max)*100:0;
+    bar.style.width=p+'%';
+    topBtn.classList.toggle('show',h.scrollTop>600);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+  topBtn.addEventListener('click',function(){window.scrollTo({top:0})});
+
+  /* Menu */
+  var mb=document.getElementById('menuBtn'), mp=document.getElementById('menuPanel');
+  function closeMenu(){mp.classList.remove('open');mb.setAttribute('aria-expanded','false')}
+  mb.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=mp.classList.toggle('open');
+    mb.setAttribute('aria-expanded',open);
+  });
+  mp.addEventListener('click',function(e){if(e.target.tagName==='A')closeMenu()});
+  document.addEventListener('click',function(e){if(!mp.contains(e.target))closeMenu()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeMenu();mb.focus()}});
+
+  /* Tabs */
+  document.querySelectorAll('[data-tabs]').forEach(function(box){
+    var tabs=[].slice.call(box.querySelectorAll('[role=tab]'));
+    function select(t,focus){
+      tabs.forEach(function(x){
+        var on=x===t;
+        x.setAttribute('aria-selected',on);
+        x.tabIndex=on?0:-1;
+        document.getElementById(x.getAttribute('aria-controls')).hidden=!on;
+      });
+      if(focus)t.focus();
+    }
+    tabs.forEach(function(t,i){
+      t.addEventListener('click',function(){select(t)});
+      t.addEventListener('keydown',function(e){
+        var n=null;
+        if(e.key==='ArrowRight')n=tabs[(i+1)%tabs.length];
+        else if(e.key==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+        else if(e.key==='Home')n=tabs[0];
+        else if(e.key==='End')n=tabs[tabs.length-1];
+        if(n){e.preventDefault();select(n,true)}
+      });
+    });
+  });
+
+  /* Accordions */
+  document.querySelectorAll('.acc-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var open=b.getAttribute('aria-expanded')==='true';
+      b.setAttribute('aria-expanded',!open);
+      document.getElementById(b.getAttribute('aria-controls')).hidden=open;
+    });
+  });
+
+  /* Copy code */
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var code=btn.closest('.code').querySelectorAll('.ln');
+      var text=[].map.call(code,function(l){return l.textContent}).join('\n');
+      function done(){btn.textContent='Copié ✓';setTimeout(function(){btn.textContent='Copier'},1800)}
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done,fallback);
+      }else fallback();
+      function fallback(){
+        var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+        try{document.execCommand('copy');done()}catch(e){}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* Scroll animations + bars */
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var els=document.querySelectorAll('.fade');
+  function fillBars(root){
+    root.querySelectorAll('.bar i').forEach(function(i){i.style.width=i.getAttribute('data-w')+'%'});
+  }
+  if(reduce||!('IntersectionObserver' in window)){
+    els.forEach(function(e){e.classList.add('in')});
+    fillBars(document);
+  }else{
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('in');fillBars(en.target);io.unobserve(en.target)}
+      });
+    },{threshold:.12});
+    els.forEach(function(e){io.observe(e)});
+  }
+})();
+</script>
+</body>
+</html>

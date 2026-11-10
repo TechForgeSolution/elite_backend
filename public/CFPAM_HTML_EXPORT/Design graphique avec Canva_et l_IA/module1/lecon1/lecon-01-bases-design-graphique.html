@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 01 — Comprendre les bases du design graphique</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A0A0F'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%237C3AED'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F5FA;--color-text:#0A0A0F;--color-text-muted:#62616B;--color-accent:#7C3AED;--color-accent-soft:#F1EBFF;--color-border:#E5E1EB;--r:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.2;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(2.1rem,5.5vw,3.5rem)}
+h2{font-size:clamp(1.6rem,3.4vw,2.2rem);margin-bottom:1rem}
+h3{font-size:1.2rem;font-weight:600;margin-bottom:.4rem}
+p{margin:0 0 1.1rem}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+.small{font-size:.875rem;color:var(--color-text-muted)}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:30}
+header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:60px}
+.brand{font:700 1rem Sora,sans-serif;color:var(--color-text);text-decoration:none;display:flex;align-items:center;gap:.6rem}
+.brand i{width:22px;height:22px;border-radius:7px;background:var(--color-text);position:relative;display:block}
+.brand i:after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--color-accent)}
+.btn{display:inline-block;padding:.5rem 1rem;border:1px solid var(--color-border);border-radius:999px;color:var(--color-text);text-decoration:none;font-weight:500;font-size:.9rem;background:#fff;transition:border-color .2s,color .2s,transform .2s}
+.btn:hover{border-color:var(--color-accent);color:var(--color-accent);transform:translateY(-1px)}
+.hero{padding:4.5rem 0 3rem;background:var(--color-bg-alt)}
+.hero .wide{display:grid;grid-template-columns:1.3fr 1fr;gap:2.5rem;align-items:center}
+.hero p.lead{font-size:1.2rem;color:var(--color-text-muted);margin:1.2rem 0 1.5rem;max-width:34ch}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem}
+.badge{background:var(--color-accent-soft);color:#5B21B6;border-radius:999px;padding:.25rem .8rem;font-size:.85rem;font-weight:600}
+.badge.plain{background:#fff;border:1px solid var(--color-border);color:var(--color-text)}
+.hero-art{width:100%;height:auto}
+.toc{padding:3rem 0 1rem}
+.toc ol{list-style:none;counter-reset:t;margin:1rem 0 0;padding:0;display:grid;gap:.5rem}
+.toc a{display:flex;gap:1rem;align-items:center;padding:.8rem 1rem;border:1px solid var(--color-border);border-radius:12px;text-decoration:none;color:var(--color-text);font-weight:500;transition:border-color .2s,background .2s}
+.toc a:before{counter-increment:t;content:counter(t);width:1.9rem;height:1.9rem;border-radius:50%;background:var(--color-accent-soft);color:var(--color-accent);display:grid;place-items:center;font:700 .85rem Sora,sans-serif;flex:none}
+.toc a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+section.sec{padding:4rem 0}
+section.alt{background:var(--color-bg-alt)}
+.fig{margin:1.8rem 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem}
+.alt .fig{background:#fff}
+.fig svg{display:block;width:100%;height:auto}
+.fig figcaption{font-size:.875rem;color:var(--color-text-muted);margin-top:.6rem}
+.callout{display:flex;gap:.9rem;padding:1.1rem 1.2rem;margin:1.6rem 0;border-radius:var(--r);background:var(--color-accent-soft);border-left:4px solid var(--color-accent)}
+.callout b{display:block;font-family:Sora,sans-serif;margin-bottom:.15rem}
+.callout .ic{font-size:1.3rem;line-height:1.5}
+.callout p{margin:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin:1.6rem 0}
+.card{background:var(--color-bg-alt);border-radius:var(--r);padding:1.3rem;transition:transform .2s,box-shadow .2s}
+.alt .card{background:#fff;border:1px solid var(--color-border)}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(124,58,237,.12)}
+.card svg{width:44px;height:44px;margin-bottom:.7rem}
+.card p{margin:0;font-size:.97rem;color:var(--color-text-muted)}
+.tabs [role=tablist]{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.tabs [role=tab]{font:600 .95rem Inter,sans-serif;padding:.55rem 1rem;border-radius:999px;border:1px solid var(--color-border);background:#fff;color:var(--color-text);cursor:pointer;transition:all .2s}
+.tabs [role=tab]:hover{border-color:var(--color-accent)}
+.tabs [role=tab][aria-selected=true]{background:var(--color-text);color:#fff;border-color:var(--color-text)}
+.tabs [role=tabpanel]{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1.4rem}
+.tabs [role=tabpanel][hidden]{display:none}
+.tabs .row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:center}
+.tabs svg{width:100%;height:auto}
+.stepper{list-style:none;counter-reset:s;margin:1.8rem 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;position:relative}
+.stepper li{counter-increment:s;position:relative;padding-top:2.6rem;font-size:.95rem}
+.stepper li:before{content:counter(s);position:absolute;top:0;left:0;width:2rem;height:2rem;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;font:700 .9rem Sora,sans-serif;z-index:1}
+.stepper li:after{content:"";position:absolute;top:1rem;left:2rem;right:-.8rem;height:2px;background:var(--color-border)}
+.stepper li:last-child:after{display:none}
+.stepper b{display:block;font-family:Sora,sans-serif}
+details{background:#fff;border:1px solid var(--color-border);border-radius:12px;margin-bottom:.7rem;transition:border-color .2s}
+details[open]{border-color:var(--color-accent)}
+summary{cursor:pointer;padding:1rem 1.2rem;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";color:var(--color-accent);font:700 1.3rem/1 Sora,sans-serif;transition:transform .2s}
+details[open] summary:after{transform:rotate(45deg)}
+details .in{padding:0 1.2rem 1.1rem}
+details .in p{margin:0 0 .6rem}
+.code{position:relative;background:#0A0A0F;color:#EDEBF2;border-radius:var(--r);margin:1.6rem 0;overflow:hidden}
+.code .hd{display:flex;justify-content:space-between;align-items:center;padding:.5rem .6rem .5rem 1.1rem;border-bottom:1px solid #26232e;font-size:.8rem;color:#A9A6B5}
+.code button{background:#1c1925;color:#fff;border:1px solid #38334a;border-radius:8px;padding:.3rem .8rem;font:500 .8rem Inter,sans-serif;cursor:pointer}
+.code button:hover{border-color:#A78BFA}
+.code pre{margin:0;padding:1rem 1.1rem;overflow-x:auto;font:.9rem/1.7 ui-monospace,Menlo,Consolas,monospace}
+.code .k{color:#C4B5FD}.code .c{color:#8C8998}
+.sw{display:flex;gap:.5rem;margin:1rem 0}
+.sw span{flex:1;height:54px;border-radius:10px;border:1px solid var(--color-border);display:flex;align-items:end;padding:.3rem .5rem;font-size:.75rem}
+.keys{display:grid;gap:.7rem;margin:1.5rem 0;padding:0;list-style:none}
+.keys li{display:flex;gap:.9rem;background:#fff;border:1px solid var(--color-border);border-radius:12px;padding:.9rem 1.1rem}
+.keys li:before{content:"";flex:none;width:.6rem;height:.6rem;border-radius:50%;background:var(--color-accent);margin-top:.65rem}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:3rem 0 2rem}
+.pn a{display:block;padding:1.2rem;border:1px solid var(--color-border);border-radius:var(--r);text-decoration:none;color:var(--color-text);transition:border-color .2s,transform .2s}
+.pn a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.pn .off{opacity:.5;pointer-events:none}
+.pn a.nx{text-align:right}
+.pn small{display:block;color:var(--color-text-muted)}
+.pn b{font-family:Sora,sans-serif}
+footer{border-top:1px solid var(--color-border);padding:1.5rem 0;text-align:center}
+#top{position:fixed;right:1.2rem;bottom:1.2rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-text);color:#fff;font-size:1.1rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.on{opacity:1;pointer-events:auto}
+#top:hover{background:var(--color-accent)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media(max-width:760px){.hero .wide{grid-template-columns:1fr}.hero-art{max-width:320px}.tabs .row{grid-template-columns:1fr}.stepper{grid-template-columns:1fr}.stepper li{padding:0 0 0 2.8rem;min-height:2rem}.stepper li:after{top:2rem;left:1rem;right:auto;bottom:-.8rem;width:2px;height:auto}.pn{grid-template-columns:1fr}.pn a.nx{text-align:left}section.sec{padding:3rem 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+<a class="brand" href="#debut"><i></i>Design &amp; Canva</a>
+<a class="btn" href="#sommaire">Sommaire</a>
+</div></header>
+
+<main id="debut">
+<section class="hero"><div class="wide">
+<div>
+<div class="badges"><span class="badge">Module 1 — Fondamentaux du design graphique et maîtrise de Canva</span></div>
+<h1 style="margin-top:1.2rem">Leçon 01<br>Comprendre les bases du design graphique</h1>
+<p class="lead">Découvrez les principes qui rendent un visuel clair, lisible et efficace.</p>
+<div class="badges"><span class="badge plain">⏱ 15 min de lecture</span><span class="badge plain">Niveau débutant</span></div>
+</div>
+<svg class="hero-art" viewBox="0 0 320 300" role="img" aria-label="Composition d'affiche sur une grille : un grand cercle violet, un titre et des lignes de texte alignés">
+<rect x="10" y="10" width="300" height="280" rx="16" fill="#fff" stroke="#E5E1EB"/>
+<g stroke="#E5E1EB" stroke-dasharray="3 5"><path d="M110 10v280M210 10v280M10 100h300M10 200h300"/></g>
+<circle cx="210" cy="100" r="62" fill="#7C3AED"/>
+<rect x="40" y="168" width="150" height="16" rx="4" fill="#0A0A0F"/>
+<rect x="40" y="196" width="110" height="8" rx="4" fill="#62616B"/>
+<rect x="40" y="212" width="130" height="8" rx="4" fill="#E5E1EB"/>
+<rect x="40" y="228" width="90" height="8" rx="4" fill="#E5E1EB"/>
+<rect x="40" y="40" width="40" height="40" rx="8" fill="#F1EBFF" stroke="#7C3AED"/>
+</svg>
+</div></section>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire de la leçon"><div class="wrap">
+<h2>Au programme</h2>
+<p class="small" style="margin:0">Objectif : identifier les principes essentiels d’un visuel efficace et comprendre le rôle du design dans la communication.</p>
+<ol>
+<li><a href="#s1">Le rôle du design dans la communication</a></li>
+<li><a href="#s2">Composition et hiérarchie visuelle</a></li>
+<li><a href="#s3">Quatre principes fondamentaux</a></li>
+<li><a href="#s4">Lisibilité, couleurs et typographies</a></li>
+<li><a href="#s5">Erreurs fréquentes et corrections</a></li>
+<li><a href="#s6">Les règles d’or d’un visuel réussi</a></li>
+</ol></div></nav>
+
+<section class="sec" id="s1"><div class="wrap rv">
+<h2>Le rôle du design dans la communication</h2>
+<p>Un visuel est un message qui doit être compris en quelques secondes. Sur un réseau social, une affiche ou une présentation, le public ne lit pas : il balaie. Le design graphique organise ce que vous voulez dire pour que le bon élément soit vu en premier, puis le suivant.</p>
+<p>Le design n’est donc pas de la décoration. Il a trois missions : <strong>attirer</strong> l’attention, <strong>faire comprendre</strong> l’information et <strong>donner confiance</strong> grâce à un rendu soigné.</p>
+<ol class="stepper" aria-label="Parcours du regard">
+<li><b>Voir</b>Le visuel capte l’œil.</li>
+<li><b>Lire</b>Le message principal se comprend.</li>
+<li><b>Retenir</b>Les détails utiles restent en tête.</li>
+<li><b>Agir</b>Le public sait quoi faire ensuite.</li>
+</ol>
+<div class="callout"><span class="ic" aria-hidden="true">💡</span><div><b>À retenir</b><p>Un bon visuel n’est pas le plus chargé, c’est celui qui se comprend le plus vite.</p></div></div>
+</div></section>
+
+<section class="sec alt" id="s2"><div class="wrap rv">
+<h2>Composition et hiérarchie visuelle</h2>
+<p>La composition est la façon dont les éléments sont placés dans l’espace. La hiérarchie visuelle indique ce qui est important grâce à trois leviers :</p>
+<div class="cards">
+<div class="card"><svg viewBox="0 0 44 44" role="img" aria-label="Petit et grand carré"><rect x="4" y="22" width="14" height="14" rx="3" fill="#E5E1EB"/><rect x="18" y="6" width="22" height="30" rx="4" fill="#7C3AED"/></svg><h3>La taille</h3><p>Le plus grand élément est lu en premier.</p></div>
+<div class="card"><svg viewBox="0 0 44 44" role="img" aria-label="Forme claire et forme foncée"><circle cx="14" cy="22" r="10" fill="#E5E1EB"/><circle cx="30" cy="22" r="10" fill="#0A0A0F"/></svg><h3>Le poids visuel</h3><p>Une forme sombre, épaisse ou colorée attire davantage.</p></div>
+<div class="card"><svg viewBox="0 0 44 44" role="img" aria-label="Trois lignes en Z"><path d="M6 10h32L6 34h32" fill="none" stroke="#7C3AED" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>L’ordre de lecture</h3><p>Le regard suit souvent un Z ou un F, de haut en bas.</p></div>
+</div>
+<figure class="fig"><svg viewBox="0 0 600 260" role="img" aria-label="Affiche avec trois niveaux : 1 le titre, 2 l'image, 3 le texte de détail, reliés par une flèche de lecture">
+<rect x="20" y="15" width="200" height="230" rx="10" fill="#fff" stroke="#0A0A0F" stroke-width="1.5"/>
+<rect x="38" y="35" width="150" height="22" rx="4" fill="#0A0A0F"/>
+<circle cx="120" cy="115" r="38" fill="#7C3AED"/>
+<rect x="38" y="175" width="120" height="8" rx="4" fill="#62616B"/><rect x="38" y="193" width="140" height="8" rx="4" fill="#E5E1EB"/><rect x="38" y="211" width="100" height="8" rx="4" fill="#E5E1EB"/>
+<g font-family="Inter,sans-serif" font-size="15" fill="#0A0A0F">
+<text x="260" y="52" font-weight="600">1. Le titre : taille et contraste maximum</text>
+<text x="260" y="122" font-weight="600">2. L’image : point d’intérêt</text>
+<text x="260" y="196" font-weight="600">3. Le détail : petit et discret</text></g>
+<g stroke="#7C3AED" stroke-width="2" fill="none"><path d="M200 46h50M165 115h85M175 190h75"/></g>
+</svg><figcaption>Du plus important au moins important : le regard descend naturellement.</figcaption></figure>
+<div class="callout"><span class="ic" aria-hidden="true">🎨</span><div><b>Bonne pratique de design</b><p>Avant de créer, classez vos informations en trois niveaux : essentiel, utile, secondaire.</p></div></div>
+</div></section>
+
+<section class="sec" id="s3"><div class="wrap rv">
+<h2>Quatre principes fondamentaux</h2>
+<p>Ces quatre principes s’appliquent à tous les visuels, de la story Instagram à la présentation.</p>
+<div class="tabs">
+<div role="tablist" aria-label="Principes du design">
+<button role="tab" id="t1" aria-controls="p1" aria-selected="true">Contraste</button>
+<button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Alignement</button>
+<button role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">Proximité</button>
+<button role="tab" id="t4" aria-controls="p4" aria-selected="false" tabindex="-1">Équilibre</button>
+</div>
+<div role="tabpanel" id="p1" aria-labelledby="t1"><div class="row"><div><h3>Le contraste</h3><p>Opposer deux éléments (clair/foncé, grand/petit, gras/fin) crée un point focal et améliore la lisibilité.</p></div>
+<svg viewBox="0 0 200 120" role="img" aria-label="À gauche un texte gris sur fond gris peu lisible, à droite un texte noir sur fond blanc lisible"><rect x="4" y="4" width="92" height="112" rx="8" fill="#C9C6D0"/><text x="50" y="66" text-anchor="middle" font-family="Sora" font-weight="700" font-size="18" fill="#A5A2AE">Titre</text><rect x="104" y="4" width="92" height="112" rx="8" fill="#fff" stroke="#E5E1EB"/><text x="150" y="66" text-anchor="middle" font-family="Sora" font-weight="700" font-size="18" fill="#0A0A0F">Titre</text></svg></div></div>
+<div role="tabpanel" id="p2" aria-labelledby="t2" hidden><div class="row"><div><h3>L’alignement</h3><p>Chaque élément se place sur une ligne commune (gauche, centre ou droite). Cela donne de la structure et une impression de finition professionnelle.</p></div>
+<svg viewBox="0 0 200 120" role="img" aria-label="À gauche des blocs décalés, à droite des blocs alignés sur une même ligne"><g fill="#C9C6D0"><rect x="10" y="12" width="60" height="14" rx="3"/><rect x="22" y="44" width="50" height="14" rx="3"/><rect x="6" y="76" width="64" height="14" rx="3"/></g><g fill="#7C3AED"><rect x="116" y="12" width="60" height="14" rx="3"/><rect x="116" y="44" width="50" height="14" rx="3"/><rect x="116" y="76" width="64" height="14" rx="3"/></g><path d="M116 4v100" stroke="#0A0A0F" stroke-dasharray="3 3"/></svg></div></div>
+<div role="tabpanel" id="p3" aria-labelledby="t3" hidden><div class="row"><div><h3>La proximité</h3><p>Les éléments liés se rapprochent, les éléments différents s’éloignent. L’espace vide dit au lecteur ce qui va ensemble.</p></div>
+<svg viewBox="0 0 200 120" role="img" aria-label="Six barres espacées de façon égale, puis deux groupes de trois barres séparés"><g fill="#C9C6D0"><rect x="6" y="10" width="40" height="8" rx="3"/><rect x="6" y="34" width="40" height="8" rx="3"/><rect x="6" y="58" width="40" height="8" rx="3"/><rect x="6" y="82" width="40" height="8" rx="3"/><rect x="6" y="106" width="40" height="8" rx="3"/></g><g fill="#7C3AED"><rect x="110" y="10" width="70" height="10" rx="3"/><rect x="110" y="26" width="50" height="6" rx="3" fill="#62616B"/><rect x="110" y="38" width="60" height="6" rx="3" fill="#62616B"/><rect x="110" y="72" width="70" height="10" rx="3"/><rect x="110" y="88" width="50" height="6" rx="3" fill="#62616B"/><rect x="110" y="100" width="60" height="6" rx="3" fill="#62616B"/></g></svg></div></div>
+<div role="tabpanel" id="p4" aria-labelledby="t4" hidden><div class="row"><div><h3>L’équilibre</h3><p><strong>Symétrique</strong> : les masses se répondent de part et d’autre, effet stable et formel. <strong>Asymétrique</strong> : une grande masse est compensée par plusieurs petites, effet plus dynamique.</p></div>
+<svg viewBox="0 0 200 120" role="img" aria-label="Deux cercles identiques de chaque côté d'un axe, puis un grand cercle compensé par deux petits"><path d="M50 10v100M150 10v100" stroke="#E5E1EB"/><circle cx="26" cy="60" r="16" fill="#7C3AED"/><circle cx="74" cy="60" r="16" fill="#7C3AED"/><circle cx="128" cy="60" r="28" fill="#7C3AED"/><circle cx="178" cy="40" r="9" fill="#0A0A0F"/><circle cx="178" cy="78" r="9" fill="#0A0A0F"/></svg></div></div>
+</div>
+<div class="callout"><span class="ic" aria-hidden="true">💡</span><div><b>À retenir</b><p>Contraste pour attirer, alignement pour structurer, proximité pour relier, équilibre pour harmoniser.</p></div></div>
+</div></section>
+
+<section class="sec alt" id="s4"><div class="wrap rv">
+<h2>Lisibilité, couleurs et typographies</h2>
+<p>Un texte est lisible quand on le lit sans effort : taille suffisante, bon contraste avec le fond, police simple. Pour les couleurs, l’harmonie vient de la retenue : une couleur dominante, une couleur secondaire et une couleur d’accent.</p>
+<div class="sw" role="img" aria-label="Palette : blanc 60 %, gris clair 30 %, violet 10 %"><span style="flex:6;background:#fff">60 %</span><span style="flex:3;background:#F7F5FA">30 %</span><span style="flex:1;background:#7C3AED;color:#fff">10 %</span></div>
+<div class="code"><div class="hd"><span>Exemple de palette (règle 60-30-10)</span><button type="button" data-copy>Copier</button></div>
+<pre><code><span class="c">/* dominante */</span>   Fond      #FFFFFF
+<span class="c">/* secondaire */</span>  Cartes    #F7F5FA
+<span class="c">/* accent */</span>      Bouton    #7C3AED
+<span class="c">/* texte */</span>       Titres    #0A0A0F</code></pre></div>
+<p>Côté typographie, retenez deux idées : une police pour les titres, une pour le texte courant, et une vraie différence de taille entre les niveaux.</p>
+<details><summary>Quelle taille de texte choisir ?</summary><div class="in"><p>Sur un visuel pour mobile, évitez les textes inférieurs à environ 24 px sur un format 1080 px de large. Un titre doit être au moins deux fois plus grand que le texte courant.</p></div></details>
+<details><summary>Comment vérifier un bon contraste ?</summary><div class="in"><p>Réduisez le visuel ou plissez les yeux : si le texte reste lisible, le contraste est bon. Un texte noir sur fond blanc est la référence ; évitez le gris clair sur blanc.</p></div></details>
+<div class="callout"><span class="ic" aria-hidden="true">🔗</span><div><b>Pour aller plus loin</b><p>Dans la leçon 02, vous retrouverez ces notions directement dans Canva : palettes, polices et grilles.</p></div></div>
+</div></section>
+
+<section class="sec" id="s5"><div class="wrap rv">
+<h2>Erreurs fréquentes et comment les corriger</h2>
+<p>Ouvrez chaque erreur pour voir le symptôme et la correction.</p>
+<details><summary>Surcharge d’éléments</summary><div class="in"><p><strong>Symptôme :</strong> trop de textes, de formes et d’images, on ne sait plus où regarder.</p><p><strong>Correction :</strong> gardez un message principal, supprimez le reste et laissez de l’espace vide.</p></div></details>
+<details><summary>Mauvais contrastes</summary><div class="in"><p><strong>Symptôme :</strong> texte clair sur fond clair, ou texte posé sur une photo chargée.</p><p><strong>Correction :</strong> choisissez des couleurs opposées ou ajoutez un aplat uni derrière le texte.</p></div></details>
+<details><summary>Trop de polices</summary><div class="in"><p><strong>Symptôme :</strong> quatre ou cinq styles de lettres différents sur une même page.</p><p><strong>Correction :</strong> limitez-vous à deux polices et jouez sur la taille et la graisse.</p></div></details>
+<details><summary>Alignements incohérents</summary><div class="in"><p><strong>Symptôme :</strong> des blocs légèrement décalés, un mélange de textes centrés et alignés à gauche.</p><p><strong>Correction :</strong> choisissez un seul alignement et appuyez-vous sur les repères de la grille.</p></div></details>
+<div class="callout"><span class="ic" aria-hidden="true">⚠️</span><div><b>Attention</b><p>Quand un visuel paraît « bizarre » sans qu’on sache pourquoi, c’est souvent un problème d’alignement ou d’espacement.</p></div></div>
+</div></section>
+
+<section class="sec alt" id="s6"><div class="wrap rv">
+<h2>Les règles d’or d’un visuel réussi</h2>
+<p>Gardez cette liste à portée de main à chaque création.</p>
+<ul class="keys">
+<li><span><strong>Un message, un point focal.</strong> Le regard sait où aller en premier.</span></li>
+<li><span><strong>Une hiérarchie claire.</strong> Taille et poids visuel guident la lecture.</span></li>
+<li><span><strong>Du contraste.</strong> Le texte se lit sans effort.</span></li>
+<li><span><strong>Tout est aligné.</strong> Une structure, une grille.</span></li>
+<li><span><strong>Les liens sont visibles.</strong> Ce qui va ensemble est groupé.</span></li>
+<li><span><strong>Peu de couleurs, deux polices.</strong> L’harmonie vient de la retenue.</span></li>
+<li><span><strong>De l’espace vide.</strong> Respirer fait partie du design.</span></li>
+</ul>
+<div class="callout"><span class="ic" aria-hidden="true">💡</span><div><b>À retenir</b><p>Le design sert le message : en cas de doute, simplifiez.</p></div></div>
+</div></section>
+
+<div class="wrap">
+<nav class="pn" aria-label="Navigation entre les leçons">
+<a class="off" aria-disabled="true" href="#debut" tabindex="-1"><small>Leçon précédente</small><b>Aucune (première leçon)</b></a>
+<a class="nx" href="lecon-02-prendre-en-main-canva.html"><small>Leçon suivante</small><b>Leçon 02 — Prendre en main Canva et créer un premier visuel</b></a>
+</nav>
+<p style="text-align:center"><a class="btn" href="#sommaire">Retour au sommaire du module</a></p>
+</div>
+</main>
+<footer><p class="small" style="margin:0">Module 1 — Fondamentaux du design graphique et maîtrise de Canva</p></footer>
+<button id="top" type="button" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function sc(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';top.classList.toggle('on',h.scrollTop>600)}
+addEventListener('scroll',sc,{passive:true});sc();
+top.addEventListener('click',function(){scrollTo({top:0})});
+var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+function sel(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on});t.focus()}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){sel(t)});t.addEventListener('keydown',function(e){var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:null;if(n!==null){e.preventDefault();sel(tabs[(n+tabs.length)%tabs.length])}})});
+var cb=document.querySelector('[data-copy]');
+cb.addEventListener('click',function(){var t=cb.closest('.code').querySelector('code').innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(function(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()});cb.textContent='Copié';setTimeout(function(){cb.textContent='Copier'},1800)});
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(r){io.observe(r)})}else{rv.forEach(function(r){r.classList.add('in')})}
+})();
+</script>
+</body>
+</html>

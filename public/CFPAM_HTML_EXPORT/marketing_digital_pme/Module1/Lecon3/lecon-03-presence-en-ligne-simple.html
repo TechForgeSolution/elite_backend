@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2E2A8C">
+<title>Leçon 03 — Créer une présence en ligne simple</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232E2A8C'/%3E%3Cpath d='M17 20h30v24H17z' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Ccircle cx='25' cy='29' r='3' fill='%23C2410C'/%3E%3Cpath d='M23 38h18' stroke='%23fff' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;600;700&display=swap');
+:root{
+ --bg:#fff;--alt:#FFF6EE;--text:#1B1B2F;--muted:#5A5A6E;--primary:#2E2A8C;
+ --soft:#ECEBFA;--accent:#C2410C;--accent2:#9A3412;--accentsoft:#FFE9DA;
+ --border:#EBE4DC;--warn:#8A5A00;--warnsoft:#FBF1DC;--danger:#9B2C2C;--dangersoft:#FBEAEA;
+ --shadow:0 8px 24px rgba(27,27,47,.08);--radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--text);background:var(--bg);font-family:Figtree,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.65}
+h1,h2,h3{font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.12;letter-spacing:-.02em}
+h1{font-size:clamp(2.1rem,7vw,4rem);margin:.35rem 0 1rem}
+h2{font-size:clamp(1.7rem,4vw,2.45rem);margin:0 0 1rem}
+h3{font-size:1.2rem;margin:.2rem 0 .5rem}
+p{max-width:740px;margin:.65rem 0}
+a{color:var(--primary)}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:4px;width:100%;background:transparent}
+.progress i{display:block;height:100%;width:0;background:var(--accent)}
+header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(8px)}
+.navbar{max-width:1180px;margin:auto;padding:.8rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;color:var(--primary);text-decoration:none;line-height:1.1}
+.brand small{display:block;font-family:Figtree,sans-serif;font-size:.72rem;font-weight:600;color:var(--muted);margin-top:.15rem}
+.menu-btn{min-width:44px;min-height:44px;border:1px solid var(--border);background:#fff;border-radius:12px;color:var(--primary);font-weight:700}
+.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(120deg,#2E2A8C,#4B46A5);padding:3.2rem 1rem 3.5rem}
+.hero:after{content:"";position:absolute;inset:0;opacity:.12;background-image:radial-gradient(circle,#fff 1px,transparent 1.5px);background-size:20px 20px;pointer-events:none}
+.hero-inner{position:relative;z-index:1;max-width:1100px;margin:auto}
+.eyebrow{font-weight:700;color:#fff;opacity:.9}
+.hero p{font-size:1.08rem;max-width:720px}
+.badges{display:flex;flex-wrap:wrap;gap:.55rem;margin:1.2rem 0}
+.badge{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);border-radius:999px;padding:.4rem .7rem;font-size:.9rem;font-weight:700}
+.layout{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,740px);gap:3rem;padding:2.4rem 1rem}
+.toc{position:sticky;top:82px;align-self:start}
+.toc strong{display:block;margin-bottom:.65rem}
+.toc a{display:block;text-decoration:none;padding:.38rem .55rem;border-left:3px solid transparent;color:var(--muted);font-size:.92rem}
+.toc a.active{border-color:var(--accent);color:var(--text);font-weight:700;background:var(--accentsoft);border-radius:0 8px 8px 0}
+.mobile-toc{display:none;max-width:1180px;margin:1rem auto;padding:0 1rem}
+.mobile-toc summary{padding:.8rem 1rem;background:var(--alt);border:1px solid var(--border);border-radius:12px;font-weight:700;cursor:pointer}
+main section{scroll-margin-top:92px;padding:1.1rem 0 3rem}
+main section.alt{margin-left:-1rem;margin-right:-1rem;padding-left:1rem;padding-right:1rem;background:var(--alt)}
+.lead{font-size:1.08rem;color:var(--muted)}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.4rem 0}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow)}
+.card.soft{background:var(--soft)}
+.icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:var(--soft);color:var(--primary);margin-bottom:.7rem}
+.icon svg{width:25px;height:25px}
+.callout{border-radius:14px;padding:1rem 1.1rem;margin:1.2rem 0;border-left:5px solid var(--primary);background:var(--soft)}
+.callout.action{border-left-color:var(--accent);background:var(--accentsoft)}
+.callout.warn{border-left-color:var(--warn);background:var(--warnsoft)}
+.callout.danger{border-left-color:var(--danger);background:var(--dangersoft)}
+.callout .label{font-weight:800;display:flex;gap:.5rem;align-items:center;margin-bottom:.25rem}
+svg.diagram{display:block;width:100%;height:auto;margin:1.3rem auto;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
+.steps{display:grid;gap:.8rem;margin:1.4rem 0}
+.step{display:grid;grid-template-columns:48px 1fr;gap:.9rem;align-items:start;padding:1rem;border:1px solid var(--border);border-radius:14px;background:#fff}
+.stepno{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:#fff;font-weight:800}
+.tabs{margin:1.3rem 0}
+.tablist{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.7rem}
+.tab{min-height:44px;padding:.6rem .8rem;border:1px solid var(--border);background:#fff;border-radius:10px;font-weight:700;color:var(--text)}
+.tab[aria-selected=true]{background:var(--primary);color:#fff;border-color:var(--primary)}
+.panel{display:none;padding:1.1rem;background:var(--alt);border-radius:14px}
+.panel.active{display:block}
+.checklist{list-style:none;padding:0;margin:1rem 0}
+.checklist li{display:flex;gap:.7rem;align-items:flex-start;padding:.65rem 0;border-bottom:1px solid var(--border)}
+.checklist input{width:20px;height:20px;accent-color:var(--primary);margin-top:.2rem}
+.model{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1rem;box-shadow:var(--shadow)}
+.model label{display:block;font-weight:700;margin:.7rem 0 .25rem}
+.model input,.model textarea{width:100%;border:1px solid #CFC8BF;border-radius:10px;padding:.7rem;background:#fff;color:var(--text)}
+.model textarea{min-height:90px;resize:vertical}
+.actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}
+.btn{min-height:44px;border:0;border-radius:11px;padding:.7rem 1rem;font-weight:800}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.secondary{background:var(--soft);color:var(--primary);border:1px solid var(--border)}
+.faq{border-top:1px solid var(--border)}
+.faq details{border-bottom:1px solid var(--border);padding:.2rem 0}
+.faq summary{cursor:pointer;min-height:44px;padding:.75rem 0;font-weight:800}
+.bottom-nav{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:2rem 0}
+.navcard{padding:1rem;border:1px solid var(--border);border-radius:14px;text-decoration:none;background:#fff;box-shadow:var(--shadow)}
+.navcard small{display:block;color:var(--muted)}
+footer{padding:2rem 1rem;text-align:center;background:var(--text);color:#fff}
+.top{position:fixed;right:1rem;bottom:1rem;z-index:40;min-width:48px;min-height:48px;border:0;border-radius:50%;background:var(--primary);color:#fff;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+.vocab{border-bottom:2px dotted var(--accent);cursor:help;font-weight:700}
+.small{font-size:.9rem;color:var(--muted)}
+@media(max-width:1099px){.layout{display:block}.toc{display:none}.mobile-toc{display:block}}
+@media(max-width:700px){
+ body{font-size:16px}.hero{padding:2.4rem 1rem 2.8rem}.layout{padding:1.4rem 1rem}.card-grid{grid-template-columns:1fr}
+ .bottom-nav{grid-template-columns:1fr}.hero h1{font-size:2.35rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+@media print{
+ .progress,header.site,.mobile-toc,.toc,.top,.actions,footer,.bottom-nav{display:none!important}
+ body{font-size:12pt;color:#000}.hero{background:#fff;color:#000;padding:1rem 0;border-bottom:2px solid #000}
+ .hero:after{display:none}.layout{display:block;padding:0}.card,.model,.callout{box-shadow:none;break-inside:avoid}
+ a{color:#000;text-decoration:none}main section{padding:1rem 0;break-inside:auto}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
+<header class="site">
+ <nav class="navbar" aria-label="Navigation principale">
+  <a class="brand" href="index.html">Marketing digital pour petites entreprises<small>Module 1 · Comprendre et démarrer</small></a>
+  <button class="menu-btn" type="button" onclick="document.getElementById('sommaire-mobile').open=!document.getElementById('sommaire-mobile').open" aria-label="Ouvrir le sommaire">☰</button>
+ </nav>
+</header>
+
+<section class="hero">
+ <div class="hero-inner">
+  <div class="eyebrow">Leçon 03</div>
+  <h1>Créer une présence en ligne simple</h1>
+  <p>Mettre en place les éléments essentiels pour être trouvé facilement et inspirer confiance en quelques secondes.</p>
+  <div class="badges"><span class="badge">Module 1</span><span class="badge">25 min</span><span class="badge">Débutant</span></div>
+ </div>
+</section>
+
+<div class="mobile-toc">
+ <details id="sommaire-mobile">
+  <summary>Sommaire de la leçon</summary>
+  <nav aria-label="Sommaire mobile">
+   <a href="#socle">1. Le socle minimal</a><br><a href="#fiche">2. La fiche établissement</a><br>
+   <a href="#vitrine">3. La page ou le site vitrine</a><br><a href="#reseaux">4. Les profils sociaux</a><br>
+   <a href="#coherence">5. La cohérence partout</a><br><a href="#mise-a-jour">6. Mise à jour</a><br>
+   <a href="#modeles">7. Fiche à compléter</a><br><a href="#reperes">8. Repères professionnels</a><br>
+   <a href="#faq">9. Questions que l'on se pose</a><br><a href="#cles">10. Points clés</a>
+  </nav>
+ </details>
+</div>
+
+<div class="layout">
+ <aside class="toc" aria-label="Sommaire de la leçon">
+  <strong>Sommaire</strong>
+  <a href="#socle">Le socle minimal</a><a href="#fiche">Fiche établissement</a><a href="#vitrine">Page ou site vitrine</a>
+  <a href="#reseaux">Profils sociaux</a><a href="#coherence">Cohérence</a><a href="#mise-a-jour">Mise à jour</a>
+  <a href="#modeles">Fiche à compléter</a><a href="#reperes">Repères professionnels</a><a href="#faq">FAQ</a><a href="#cles">Points clés</a>
+ </aside>
+
+ <main>
+  <section id="socle">
+   <h2>Le socle minimal : être trouvé et rassurer</h2>
+   <p class="lead">Une présence en ligne crédible répond vite à trois questions : qui êtes-vous, que proposez-vous et comment vous joindre ?</p>
+   <svg class="diagram" viewBox="0 0 740 300" role="img" aria-labelledby="socleTitle socleDesc">
+    <title id="socleTitle">Les trois piliers d'une présence en ligne</title>
+    <desc id="socleDesc">Trois piliers : fiche établissement, vitrine et profil social, reliés par les mêmes informations.</desc>
+    <rect x="28" y="35" width="205" height="190" rx="18" fill="#ECEBFA"/>
+    <rect x="268" y="35" width="205" height="190" rx="18" fill="#FFF6EE"/>
+    <rect x="508" y="35" width="205" height="190" rx="18" fill="#ECEBFA"/>
+    <text x="130" y="75" text-anchor="middle" fill="#2E2A8C" font-size="18" font-weight="700">1</text>
+    <text x="130" y="112" text-anchor="middle" fill="#1B1B2F" font-size="20" font-weight="700">Fiche</text>
+    <text x="130" y="141" text-anchor="middle" fill="#5A5A6E" font-size="14">Être trouvé</text>
+    <path d="M92 177h76M110 160v34M150 160v34" stroke="#2E2A8C" stroke-width="4" stroke-linecap="round"/>
+    <text x="370" y="75" text-anchor="middle" fill="#2E2A8C" font-size="18" font-weight="700">2</text>
+    <text x="370" y="112" text-anchor="middle" fill="#1B1B2F" font-size="20" font-weight="700">Vitrine</text>
+    <text x="370" y="141" text-anchor="middle" fill="#5A5A6E" font-size="14">Comprendre l'offre</text>
+    <rect x="325" y="158" width="90" height="52" rx="8" fill="none" stroke="#C2410C" stroke-width="4"/>
+    <text x="610" y="75" text-anchor="middle" fill="#2E2A8C" font-size="18" font-weight="700">3</text>
+    <text x="610" y="112" text-anchor="middle" fill="#1B1B2F" font-size="20" font-weight="700">Profil social</text>
+    <text x="610" y="141" text-anchor="middle" fill="#5A5A6E" font-size="14">Échanger</text>
+    <circle cx="610" cy="180" r="25" fill="none" stroke="#2E2A8C" stroke-width="4"/><path d="M598 194h24" stroke="#C2410C" stroke-width="4" stroke-linecap="round"/>
+    <path d="M233 130h35M473 130h35" stroke="#C2410C" stroke-width="4" stroke-linecap="round"/>
+    <text x="370" y="263" text-anchor="middle" fill="#2E2A8C" font-size="15" font-weight="700">Mêmes informations partout</text>
+   </svg>
+   <div class="callout action"><div class="label">💡 À retenir</div><div>Vous n'avez pas besoin d'être présent partout. Un socle simple et cohérent est plus utile qu'une présence dispersée.</div></div>
+  </section>
+
+  <section id="fiche" class="alt">
+   <h2>1. La fiche établissement</h2>
+   <p>Une fiche établissement aide les personnes à trouver votre activité dans les recherches et sur une carte. Google Business Profile en est un exemple.</p>
+   <p>Renseignez des informations exactes et utiles. La personne doit pouvoir décider rapidement si elle peut vous contacter ou vous rendre visite.</p>
+   <svg class="diagram" viewBox="0 0 740 430" role="img" aria-labelledby="ficheTitle ficheDesc">
+    <title id="ficheTitle">Maquette d'une fiche établissement</title>
+    <desc id="ficheDesc">Maquette générique annotée avec sept éléments essentiels d'une fiche établissement.</desc>
+    <rect x="105" y="28" width="400" height="365" rx="18" fill="#fff" stroke="#EBE4DC" stroke-width="2"/>
+    <rect x="130" y="55" width="150" height="16" rx="8" fill="#ECEBFA"/><rect x="130" y="84" width="220" height="28" rx="8" fill="#1B1B2F"/>
+    <text x="130" y="104" fill="#fff" font-size="15" font-weight="700">Atelier Exemple</text>
+    <text x="130" y="132" fill="#5A5A6E" font-size="13">1 · Nom</text>
+    <rect x="130" y="155" width="160" height="52" rx="9" fill="#FFF6EE"/><text x="145" y="177" fill="#1B1B2F" font-size="13">2 · Catégorie</text><text x="145" y="197" fill="#5A5A6E" font-size="12">Atelier de couture</text>
+    <text x="315" y="177" fill="#1B1B2F" font-size="13">3 · Horaires</text><text x="315" y="197" fill="#5A5A6E" font-size="12">À vérifier</text>
+    <text x="130" y="237" fill="#1B1B2F" font-size="13">4 · Téléphone</text><text x="130" y="258" fill="#5A5A6E" font-size="12">Contact professionnel</text>
+    <rect x="130" y="278" width="160" height="70" rx="9" fill="#ECEBFA"/><text x="145" y="303" fill="#1B1B2F" font-size="13">5 · Photos</text><text x="145" y="324" fill="#5A5A6E" font-size="12">Lieu, produits, services</text>
+    <text x="315" y="303" fill="#1B1B2F" font-size="13">6 · Avis</text><text x="315" y="324" fill="#5A5A6E" font-size="12">Preuves de confiance</text>
+    <text x="130" y="374" fill="#1B1B2F" font-size="13">7 · Description</text>
+    <path d="M510 93h100M505 181h105M505 245h105M505 306h105M505 362h105" stroke="#C2410C" stroke-width="2"/>
+    <text x="620" y="98" fill="#C2410C" font-size="12" font-weight="700">Nom</text><text x="620" y="186" fill="#C2410C" font-size="12" font-weight="700">Catégorie / horaires</text><text x="620" y="250" fill="#C2410C" font-size="12" font-weight="700">Téléphone</text><text x="620" y="311" fill="#C2410C" font-size="12" font-weight="700">Photos / avis</text><text x="620" y="367" fill="#C2410C" font-size="12" font-weight="700">Description</text>
+   </svg>
+   <div class="card-grid">
+    <article class="card"><div class="icon">⌂</div><h3>Localisation</h3><p>Indiquez l'adresse ou la zone de service selon votre activité.</p></article>
+    <article class="card"><div class="icon">◷</div><h3>Horaires</h3><p>Gardez les horaires habituels et exceptionnels à jour.</p></article>
+    <article class="card"><div class="icon">✆</div><h3>Contact</h3><p>Ajoutez un téléphone professionnel et un moyen de contact clair.</p></article>
+   </div>
+   <div class="callout warn"><div class="label">⚠️ Erreur fréquente</div><div>Créer une fiche puis oublier de la vérifier ou de la mettre à jour peut laisser des informations incorrectes visibles.</div></div>
+  </section>
+
+  <section id="vitrine">
+   <h2>2. La page ou le site vitrine</h2>
+   <p>Une vitrine simple présente votre activité sans demander à la personne de chercher longtemps.</p>
+   <div class="card-grid">
+    <article class="card"><div class="icon">▣</div><h3>Constructeur de site</h3><p>Une solution simple pour présenter vos services, vos horaires et vos contacts.</p><p class="small">Limite : il faut maintenir les informations.</p></article>
+    <article class="card"><div class="icon">◎</div><h3>Page de réseau social</h3><p>Peut servir de vitrine lorsque votre clientèle utilise déjà ce réseau.</p><p class="small">Limite : les fonctions et la visibilité dépendent de la plateforme.</p></article>
+    <article class="card"><div class="icon">↗</div><h3>Lien unique</h3><p>Regroupe plusieurs contacts ou destinations depuis un seul lien.</p><p class="small">Limite : il ne remplace pas toujours une présentation complète.</p></article>
+   </div>
+   <div class="callout action"><div class="label">🎯 Réflexe petit budget</div><div>Commencez par une seule vitrine claire. Ajoutez des éléments lorsque vous savez qu'ils sont utiles à votre clientèle.</div></div>
+   <h3>Les informations essentielles</h3>
+   <ul>
+    <li>Qui vous êtes et ce que vous proposez.</li><li>Où et quand vous êtes disponible.</li><li>Comment vous contacter.</li>
+    <li>Des preuves : photos de votre activité, produits ou services, et avis lorsque vous en avez.</li>
+   </ul>
+   <div class="callout danger"><div class="label">🚫 À éviter</div><div>Trop de pages, des textes difficiles à lire sur mobile, des contacts cachés ou des informations contradictoires.</div></div>
+  </section>
+
+  <section id="reseaux" class="alt">
+   <h2>3. Choisir un ou deux profils sociaux</h2>
+   <p>Le bon réseau est celui où votre cible est présente et que vous pouvez tenir régulièrement.</p>
+   <div class="tabs" data-tabs>
+    <div class="tablist" role="tablist" aria-label="Types d'entreprises">
+     <button class="tab" role="tab" aria-selected="true" aria-controls="tab-bouche" id="t-bouche">Commerce de bouche</button>
+     <button class="tab" role="tab" aria-selected="false" aria-controls="tab-service" id="t-service">Service à domicile</button>
+     <button class="tab" role="tab" aria-selected="false" aria-controls="tab-artisan" id="t-artisan">Artisan</button>
+    </div>
+    <div class="panel active" id="tab-bouche" role="tabpanel" aria-labelledby="t-bouche"><h3>Commerce de bouche</h3><p>Montrez les produits, les nouveautés, les horaires et les informations pratiques. Privilégiez un réseau que votre clientèle consulte réellement.</p></div>
+    <div class="panel" id="tab-service" role="tabpanel" aria-labelledby="t-service"><h3>Service à domicile</h3><p>Présentez les services, la zone couverte, les créneaux de contact et une manière simple de demander des informations.</p></div>
+    <div class="panel" id="tab-artisan" role="tabpanel" aria-labelledby="t-artisan"><h3>Artisan</h3><p>Montrez le savoir-faire, les réalisations, les matières ou étapes utiles et les moyens de prendre contact.</p></div>
+   </div>
+   <svg class="diagram" viewBox="0 0 740 330" role="img" aria-labelledby="profileTitle profileDesc">
+    <title id="profileTitle">Maquette générique d'un profil social professionnel</title>
+    <desc id="profileDesc">Profil avec photo, nom, description, lien, bouton de contact et publication épinglée.</desc>
+    <rect x="75" y="28" width="590" height="270" rx="20" fill="#fff" stroke="#EBE4DC" stroke-width="2"/>
+    <circle cx="145" cy="102" r="45" fill="#ECEBFA" stroke="#2E2A8C" stroke-width="3"/>
+    <path d="M122 125c12-17 34-17 46 0M132 91a13 13 0 1 0 26 0" fill="none" stroke="#2E2A8C" stroke-width="4" stroke-linecap="round"/>
+    <text x="215" y="82" fill="#1B1B2F" font-size="20" font-weight="700">Nom de l'entreprise</text>
+    <text x="215" y="110" fill="#5A5A6E" font-size="14">Description courte et claire</text>
+    <text x="215" y="135" fill="#5A5A6E" font-size="14">Ce que vous proposez · zone · contact</text>
+    <rect x="215" y="157" width="145" height="40" rx="10" fill="#C2410C"/><text x="287" y="183" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Contacter</text>
+    <text x="215" y="222" fill="#2E2A8C" font-size="14">Lien · horaires · informations</text>
+    <rect x="105" y="242" width="530" height="35" rx="8" fill="#FFF6EE"/><text x="125" y="265" fill="#1B1B2F" font-size="13" font-weight="700">Publication épinglée : information essentielle</text>
+   </svg>
+   <div class="callout"><div class="label">💬 Messagerie professionnelle</div><div>Une messagerie dédiée aide à séparer les échanges clients des conversations personnelles. Répondez avec des informations claires et courtoises.</div></div>
+  </section>
+
+  <section id="coherence">
+   <h2>4. La cohérence des informations</h2>
+   <p>Votre nom, adresse ou zone, téléphone et horaires doivent rester cohérents sur vos différents supports.</p>
+   <div class="card-grid">
+    <article class="card soft"><div class="icon">✓</div><h3>Même identité</h3><p>Utilisez le même nom d'entreprise et des visuels reconnaissables.</p></article>
+    <article class="card soft"><div class="icon">◷</div><h3>Mêmes horaires</h3><p>Une personne ne doit pas découvrir des horaires différents selon le support.</p></article>
+    <article class="card soft"><div class="icon">☏</div><h3>Même contact</h3><p>Un numéro ou canal professionnel doit être facile à retrouver.</p></article>
+   </div>
+   <p>Les incohérences peuvent faire douter la clientèle. Elles peuvent aussi nuire à la visibilité de votre activité.</p>
+   <div class="callout action"><div class="label">💡 À retenir</div><div>Avant de publier, comparez vos principaux supports. Une minute de vérification peut éviter une information contradictoire.</div></div>
+  </section>
+
+  <section id="mise-a-jour" class="alt">
+   <h2>5. Créer sa fiche établissement en cinq étapes</h2>
+   <div class="steps">
+    <div class="step"><div class="stepno">1</div><div><h3>Préparer les informations</h3><p>Nom, catégorie, zone ou adresse, horaires, téléphone, description, photos et services.</p></div></div>
+    <div class="step"><div class="stepno">2</div><div><h3>Créer ou revendiquer la fiche</h3><p>Utilisez le service choisi et suivez son processus général de création.</p></div></div>
+    <div class="step"><div class="stepno">3</div><div><h3>Vérifier l'entreprise</h3><p>Suivez la méthode de vérification proposée. Les options dépendent du service et du pays.</p></div></div>
+    <div class="step"><div class="stepno">4</div><div><h3>Compléter les éléments utiles</h3><p>Ajoutez les informations et visuels qui permettent de comprendre votre activité.</p></div></div>
+    <div class="step"><div class="stepno">5</div><div><h3>Maintenir à jour</h3><p>Corrigez les horaires, congés, nouveautés et autres informations dès qu'elles changent.</p></div></div>
+   </div>
+   <div class="callout"><div class="label">🌍 À adapter à votre pays et à votre secteur</div><div>Les procédures de vérification, les règles de données personnelles et les fonctions disponibles varient. Vérifiez les conditions actuelles du service utilisé.</div></div>
+  </section>
+
+  <section id="modeles">
+   <h2>6. Votre check-list du socle minimal</h2>
+   <p>Cette fiche est un outil de préparation. Elle peut être imprimée ou téléchargée en texte pour être utilisée hors ligne.</p>
+   <div class="model" id="check">
+    <label for="nom">Nom de l'entreprise</label><input id="nom" placeholder="Ex. Atelier Exemple">
+    <label for="contact">Contact professionnel</label><input id="contact" placeholder="Téléphone ou canal de contact">
+    <label for="zone">Adresse ou zone de service</label><input id="zone" placeholder="Adresse ou quartier / zone">
+    <label for="horaires">Horaires habituels</label><textarea id="horaires" placeholder="Jours et horaires"></textarea>
+    <h3>Éléments à vérifier</h3>
+    <ul class="checklist">
+     <li><input type="checkbox" id="c1"><label for="c1">Fiche établissement créée et vérifiée</label></li>
+     <li><input type="checkbox" id="c2"><label for="c2">Nom, catégorie et description renseignés</label></li>
+     <li><input type="checkbox" id="c3"><label for="c3">Horaires et contact à jour</label></li>
+     <li><input type="checkbox" id="c4"><label for="c4">Photos utiles ajoutées</label></li>
+     <li><input type="checkbox" id="c5"><label for="c5">Une vitrine simple accessible sur mobile</label></li>
+     <li><input type="checkbox" id="c6"><label for="c6">Un ou deux profils sociaux soignés</label></li>
+     <li><input type="checkbox" id="c7"><label for="c7">Informations cohérentes sur les supports</label></li>
+    </ul>
+    <label for="maj">Prochaine vérification des informations</label><input id="maj" placeholder="Ex. début du mois prochain">
+    <div class="actions"><button class="btn primary" onclick="window.print()">Imprimer / Enregistrer en PDF</button><button class="btn secondary" onclick="downloadTxt()">Télécharger en .txt</button></div>
+   </div>
+   <div class="callout"><div class="label">🧰 Outil gratuit ou peu coûteux</div><div>Vous pouvez commencer avec les fonctions gratuites ou peu coûteuses des services disponibles sur smartphone. Les conditions changent : vérifiez toujours les offres et fonctionnalités actuelles.</div></div>
+  </section>
+
+  <section id="reperes" class="alt">
+   <h2>7. Repères professionnels</h2>
+   <div class="callout danger"><div class="label">🛡️ Règles du jeu</div><div>Publiez des informations exactes et à jour, notamment les horaires, l'adresse et les prix. Ne créez pas de faux profils et n'usurpez pas le nom d'une entreprise. Publiez les photos de personnes seulement avec leur accord. Respectez les droits d'auteur sur les images et les musiques.</div></div>
+   <div class="callout action"><div class="label">🎯 Réflexe petit budget</div><div>Commencez par la fiche établissement : elle est gratuite et souvent visible en premier. Un seul réseau bien tenu vaut mieux que trois profils vides.</div></div>
+   <div class="callout"><div class="label">🌍 À adapter à votre pays et à votre secteur</div><div>Les obligations liées aux données des clients, aux messages commerciaux, aux photos et aux services en ligne peuvent varier. Vérifiez les règles applicables à votre activité.</div></div>
+  </section>
+
+  <section id="faq">
+   <h2>8. Questions que l'on se pose</h2>
+   <div class="faq">
+    <details><summary>Faut-il absolument un site web ?</summary><p>Non. Une fiche établissement et une page vitrine simple peuvent constituer un premier socle. Le besoin dépend de votre activité et de votre clientèle.</p></details>
+    <details><summary>Que faire sans adresse de boutique ?</summary><p>Si votre activité fonctionne en déplacement ou à domicile, indiquez une zone de service lorsque le service utilisé le permet. Ne publiez pas une adresse qui ne correspond pas à votre activité.</p></details>
+    <details><summary>Combien de réseaux choisir ?</summary><p>Commencez par un ou deux réseaux que vous pouvez réellement tenir. La régularité et la qualité des informations comptent davantage que la multiplication des profils.</p></details>
+    <details><summary>Dois-je publier tous les jours ?</summary><p>La priorité est d'avoir des informations essentielles à jour. Ensuite, choisissez un rythme réaliste selon votre temps et votre activité.</p></details>
+    <details><summary>Que faire si deux supports affichent des informations différentes ?</summary><p>Corrigez la source erronée et vérifiez les autres supports. Faites une petite revue régulière des informations importantes.</p></details>
+   </div>
+  </section>
+
+  <section id="cles">
+   <h2>Points clés à retenir</h2>
+   <div class="card-grid">
+    <article class="card"><h3>01 · Soyez trouvable</h3><p>Une fiche établissement facilite la découverte de votre activité.</p></article>
+    <article class="card"><h3>02 · Soyez clair</h3><p>Votre vitrine doit expliquer rapidement l'offre, les horaires et le contact.</p></article>
+    <article class="card"><h3>03 · Choisissez peu</h3><p>Un ou deux réseaux bien tenus sont un bon départ.</p></article>
+    <article class="card"><h3>04 · Restez cohérent</h3><p>Nom, horaires, zone et contact doivent correspondre partout.</p></article>
+    <article class="card"><h3>05 · Mettez à jour</h3><p>Les congés, horaires exceptionnels et nouveautés doivent être corrigés rapidement.</p></article>
+    <article class="card"><h3>06 · Inspirez confiance</h3><p>Des informations exactes et des visuels utiles renforcent la crédibilité.</p></article>
+   </div>
+   <div class="bottom-nav">
+    <a class="navcard" href="lecon-02-cible-positionnement-en-ligne.html"><small>← Leçon précédente</small><strong>Définir sa cible et son positionnement en ligne</strong></a>
+    <a class="navcard" href="lecon-04-contenu-attire-prospects.html"><small>Leçon suivante →</small><strong>Créer du contenu qui attire des prospects</strong></a>
+   </div>
+   <p><a href="index.html">Retour au sommaire du module</a></p>
+  </section>
+ </main>
+</div>
+
+<button class="top" id="top" aria-label="Retour en haut" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<footer>Marketing digital pour petites entreprises · Leçon 03 · Support autonome</footer>
+
+<script>
+(function(){
+ const progress=document.getElementById('progress'), top=document.getElementById('top');
+ function update(){
+   const h=document.documentElement.scrollHeight-window.innerHeight;
+   progress.style.width=(h>0?(window.scrollY/h)*100:0)+'%';
+   top.classList.toggle('show',window.scrollY>500);
+ }
+ addEventListener('scroll',update,{passive:true}); update();
+
+ const links=[...document.querySelectorAll('.toc a')], sections=links.map(a=>document.querySelector(a.getAttribute('href')));
+ const io=new IntersectionObserver(entries=>{
+   entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}});
+ },{rootMargin:'-20% 0px -65% 0px',threshold:0});
+ sections.forEach(s=>s&&io.observe(s));
+
+ document.querySelectorAll('[data-tabs]').forEach(group=>{
+   const tabs=[...group.querySelectorAll('[role=tab]')], panels=[...group.querySelectorAll('[role=tabpanel]')];
+   function activate(i){
+    tabs.forEach((t,n)=>{const on=n===i;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[n].classList.toggle('active',on);});
+   }
+   tabs.forEach((t,i)=>{
+    t.addEventListener('click',()=>activate(i));
+    t.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();const n=(i+1)%tabs.length;activate(n);tabs[n].focus();}
+      if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();const n=(i-1+tabs.length)%tabs.length;activate(n);tabs[n].focus();}
+    });
+   });
+ });
+ window.downloadTxt=function(){
+   const fields=['nom','contact','zone','horaires','maj'].map(id=>[id,document.getElementById(id).value||'']).reduce((a,x)=>(a[x[0]]=x[1],a),{});
+   const labels=[...document.querySelectorAll('#check .checklist label')];
+   const checked=[...document.querySelectorAll('#check .checklist input')].map((x,i)=>(x.checked?'[x] ':'[ ] ')+labels[i].textContent.trim());
+   const txt=`FICHE — SOCLE MINIMAL\\n\\nEntreprise : ${fields.nom}\\nContact : ${fields.contact}\\nAdresse / zone : ${fields.zone}\\nHoraires : ${fields.horaires}\\n\\nÉléments à vérifier :\\n${checked.join('\\n')}\\n\\nProchaine vérification : ${fields.maj}\\n`;
+   const blob=new Blob([txt],{type:'text/plain;charset=utf-8'}), url=URL.createObjectURL(blob), a=document.createElement('a');
+   a.href=url;a.download='check-list-socle-minimal.txt';a.click();URL.revokeObjectURL(url);
+ };
+})();
+</script>
+</body>
+</html>

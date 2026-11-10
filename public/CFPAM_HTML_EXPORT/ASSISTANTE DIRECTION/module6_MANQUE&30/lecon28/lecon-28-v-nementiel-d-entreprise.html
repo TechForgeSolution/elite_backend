@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 28 — Événementiel d'entreprise</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EE%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .quiz-question .quiz-options, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 28 — Événementiel d'entreprise</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#cahier-charges">1. Cahier des charges</a>
+          <a href="#budget">2. Budget</a>
+          <a href="#prestataires">3. Prestataires</a>
+          <a href="#invitations">4. Invitations et confirmations</a>
+          <a href="#logistique-securite">5. Logistique et sécurité</a>
+          <a href="#deroule-minute">6. Déroulé minuté</a>
+          <a href="#bilan">7. Bilan</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 6 — Professionnalisation et projet</span>
+      <span class="badge brass">Niveau avancé</span>
+      <span class="badge">30 min</span>
+    </div>
+    <h1>Leçon 28 — Événementiel d'entreprise</h1>
+    <p class="subtitle">Organiser un événement interne ou externe de bout en bout : du cahier des charges au bilan, en passant par le budget, les prestataires, les invitations et la logistique du jour J.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Rédiger un cahier des charges événementiel complet et exploitable par des prestataires externes.</li>
+      <li>Construire et suivre un budget prévisionnel réaliste, avec marge de sécurité.</li>
+      <li>Sélectionner, comparer et coordonner des prestataires (traiteur, lieu, technique, transport).</li>
+      <li>Organiser l'envoi des invitations et le suivi des confirmations jusqu'au jour J.</li>
+      <li>Anticiper la logistique et la sécurité d'un événement, y compris les imprévus.</li>
+      <li>Construire un déroulé minuté fiable et rédiger un bilan post-événement exploitable.</li>
+    </ul>
+  </div>
+
+  <section id="cahier-charges">
+    <h2>1. Cahier des charges</h2>
+    <p>Le cahier des charges est le document fondateur de tout événement d'entreprise. Il formalise, avant toute prise de contact avec un prestataire, les attentes de la direction et sert de référence commune tout au long du projet. Sans lui, chaque interlocuteur (prestataire, direction, participants) se fait sa propre idée de l'événement, ce qui génère des malentendus coûteux.</p>
+    <p>Un cahier des charges événementiel professionnel répond systématiquement aux questions suivantes : quel est l'objectif de l'événement, qui sont les participants, quand et où se déroule-t-il, avec quel budget et selon quelles contraintes non négociables (accessibilité, sécurité, image de l'entreprise) ?</p>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Un cahier des charges se rédige avant de contacter le moindre prestataire. Il est daté, validé par le commanditaire (direction, service concerné) et sert de référence en cas de litige ou de changement de dernière minute.
+    </div>
+
+    <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma des cinq piliers du cahier des charges événementiel" style="width:100%; max-width:560px; display:block; margin:20px auto;">
+      <rect x="10" y="10" width="620" height="200" fill="none" stroke="#5E5A54" stroke-width="1.5"/>
+      <rect x="26" y="30" width="112" height="70" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="82" y="60" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Objectif</text>
+      <text x="82" y="76" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">et cible</text>
+      <rect x="148" y="30" width="112" height="70" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="204" y="60" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Date</text>
+      <text x="204" y="76" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">et lieu</text>
+      <rect x="270" y="30" width="112" height="70" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="326" y="60" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Budget</text>
+      <text x="326" y="76" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">enveloppe</text>
+      <rect x="392" y="30" width="112" height="70" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="448" y="60" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Format</text>
+      <text x="448" y="76" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">et déroulé</text>
+      <rect x="502" y="30" width="112" height="70" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="558" y="60" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Contraintes</text>
+      <text x="558" y="76" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">et sécurité</text>
+      <line x1="326" y1="100" x2="326" y2="130" stroke="#A8823C" stroke-width="1.5"/>
+      <rect x="176" y="130" width="300" height="60" fill="none" stroke="#A8823C" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="326" y="155" font-family="Inter" font-size="12" fill="#A8823C" text-anchor="middle">Cahier des charges validé</text>
+      <text x="326" y="173" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">Référence commune pour tous les prestataires</text>
+    </svg>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Rubrique</th><th>Contenu attendu</th><th>Exemple</th></tr></thead>
+        <tbody>
+          <tr><td>Contexte et objectif</td><td>Pourquoi l'événement est organisé, quel message il porte</td><td>Séminaire annuel de cohésion d'équipe</td></tr>
+          <tr><td>Cible et effectif</td><td>Public visé et nombre de participants attendus</td><td>50 collaborateurs, tous services confondus</td></tr>
+          <tr><td>Date et lieu</td><td>Fenêtre de dates possibles, zone géographique souhaitée</td><td>Un jeudi de mars, à moins d'une heure du siège</td></tr>
+          <tr><td>Budget indicatif</td><td>Enveloppe globale et éventuelle répartition par poste</td><td>12 000 € tout compris</td></tr>
+          <tr><td>Contraintes</td><td>Accessibilité PMR, allergies alimentaires, image de marque</td><td>Salle accessible, menu avec option végétarienne</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Contacter des prestataires avant d'avoir validé le budget global avec la direction. Les devis obtenus deviennent alors inexploitables et tout est à refaire une fois l'enveloppe réelle connue.
+    </div>
+  </section>
+
+  <section id="budget">
+    <h2>2. Budget</h2>
+    <p>Le budget prévisionnel traduit le cahier des charges en chiffres. Il se construit poste par poste, jamais comme une enveloppe globale non détaillée, afin de pouvoir arbitrer en connaissance de cause si un poste dépasse les prévisions.</p>
+    <p>Une règle simple s'applique systématiquement dans l'événementiel professionnel : prévoir une marge de sécurité de 10 à 15 % du budget total, destinée à absorber les imprévus (heures supplémentaires d'un prestataire, participant supplémentaire, matériel de dernière minute) sans devoir redemander une rallonge en urgence.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Poste</th><th>Exemple de dépense</th><th>Part indicative du budget</th></tr></thead>
+        <tbody>
+          <tr><td>Lieu et location de salle</td><td>Location de la salle, mobilier, vestiaire</td><td>25 à 35 %</td></tr>
+          <tr><td>Restauration</td><td>Traiteur, pauses café, boissons</td><td>20 à 30 %</td></tr>
+          <tr><td>Technique et animation</td><td>Sonorisation, écran, intervenant, animation</td><td>15 à 20 %</td></tr>
+          <tr><td>Transport et logistique</td><td>Navettes, parking, signalétique</td><td>10 à 15 %</td></tr>
+          <tr><td>Marge de sécurité</td><td>Imprévus, dépassements de dernière minute</td><td>10 à 15 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Un budget prévisionnel fiable distingue toujours les montants HT et TTC, indique un prestataire pressenti par poste, et prévoit une ligne « imprévus » clairement identifiée et non redistribuée par avance.
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Le budget prévisionnel initial doit être comparé au budget réel après l'événement (voir section 7 — Bilan) afin d'affiner les estimations des futurs événements de l'entreprise.
+    </div>
+  </section>
+
+  <section id="prestataires">
+    <h2>3. Prestataires</h2>
+    <p>La sélection des prestataires (lieu, traiteur, technique, transport, animation) suit une méthode identique quel que soit le type de prestation : consultation de plusieurs devis, comparaison sur des critères objectifs, puis contractualisation écrite avant tout versement d'acompte.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Présélectionner</h3><p>3 prestataires minimum par poste, sur recommandation ou réseau connu.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Demander devis</h3><p>Cahier des charges transmis à chacun, mêmes critères pour tous.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Comparer</h3><p>Prix, disponibilité, références, conditions d'annulation.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Contractualiser</h3><p>Devis signé ou contrat avant tout acompte versé.</p></div>
+    </div>
+
+    <div class="tabs" data-tabs="prestataire-vs">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Sans mise en concurrence</button>
+        <button class="tab-btn" role="tab" data-tab="b">Avec mise en concurrence structurée</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Un seul devis est demandé, souvent au prestataire déjà connu de l'entreprise. Le prix n'est jamais comparé, et une éventuelle indisponibilité de dernière minute laisse l'organisateur sans solution de repli.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Trois devis sont demandés en parallèle, sur la base du même cahier des charges. Le prestataire retenu est choisi sur un ensemble de critères (prix, disponibilité, références), et les deux autres restent des solutions de repli identifiées en cas de désistement.</p>
+      </div>
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Vérifier les conditions d'annulation <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Chaque contrat de prestation doit préciser les délais et pénalités d'annulation, aussi bien pour l'entreprise cliente que pour le prestataire. Ce point est trop souvent négligé alors qu'il devient central en cas de report ou d'annulation de l'événement.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Nommer un interlocuteur unique par prestataire <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Chaque prestataire doit avoir un point de contact unique côté entreprise, et réciproquement. Cela évite les instructions contradictoires données à un même prestataire par plusieurs collaborateurs différents.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Conserver une liste de prestataires de repli <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Au-delà de l'événement en préparation, tenir à jour un fichier de prestataires déjà testés (coordonnées, tarifs, points forts et faibles observés) accélère considérablement l'organisation des événements suivants.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="invitations">
+    <h2>4. Invitations et confirmations</h2>
+    <p>L'envoi des invitations et le suivi des confirmations conditionnent directement les chiffres transmis aux prestataires (nombre de repas, de badges, de places de parking). Un suivi rigoureux évite à la fois le gaspillage et la rupture de stock le jour J.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Échéance avant l'événement</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>6 à 8 semaines</td><td>Envoi de l'invitation avec date, lieu, programme prévisionnel et lien de confirmation</td></tr>
+          <tr><td>3 semaines</td><td>Relance des personnes n'ayant pas répondu</td></tr>
+          <tr><td>1 semaine</td><td>Transmission du chiffre définitif au traiteur et aux autres prestataires concernés</td></tr>
+          <tr><td>Veille</td><td>Envoi d'un rappel pratique (horaires, accès, tenue) aux confirmés</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Invitation avec confirmation</span><button class="copy-btn" data-copy-target="model-invitation">Copier</button></div>
+      <pre id="model-invitation">Objet : Invitation — [Nom de l'événement], le [date]
+
+[Civilité],
+
+Vous êtes convié(e) à [nom de l'événement], qui se tiendra le [date] à [lieu], de [heure de début] à [heure de fin].
+
+Programme prévisionnel :
+[Résumé en 2-3 lignes du déroulé]
+
+Merci de confirmer votre présence avant le [date limite] via [lien ou contact].
+Précisez, le cas échéant, toute contrainte alimentaire ou d'accessibilité.
+
+Cordialement,
+[Nom et fonction de l'organisateur]</pre>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Transmettre un chiffre « approximatif » au traiteur plusieurs semaines avant l'événement puis ne jamais l'actualiser. Le nombre de repas commandés doit toujours refléter les confirmations réelles, mises à jour jusqu'à la date limite convenue avec le prestataire.
+    </div>
+  </section>
+
+  <section id="logistique-securite">
+    <h2>5. Logistique et sécurité</h2>
+    <p>La logistique couvre tout ce qui permet le bon déroulement matériel de l'événement : accès, signalétique, matériel technique, accueil des participants. La sécurité couvre les dispositions permettant de protéger les personnes présentes et de réagir correctement en cas d'incident.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Accès et accueil</h3><p>Fléchage depuis l'entrée, badges ou liste d'émargement, vestiaire, point d'accueil identifiable.</p></div>
+      <div class="card"><h3>Matériel technique</h3><p>Sonorisation, vidéoprojecteur, connexion internet testés avant l'arrivée des participants.</p></div>
+      <div class="card"><h3>Sécurité des personnes</h3><p>Issues de secours dégagées, effectif maximum de la salle respecté, trousse de premiers secours identifiée.</p></div>
+      <div class="card"><h3>Plan B météo ou technique</h3><p>Solution de repli si l'événement est en extérieur, ou en cas de panne technique majeure.</p></div>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      La liste des participants (noms, allergies, éventuelles informations médicales transmises pour l'accessibilité) est une donnée sensible. Elle est partagée uniquement avec les personnes qui en ont besoin (accueil, traiteur pour les allergies) et supprimée une fois l'événement terminé si elle n'a plus d'utilité.
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Visite préalable du lieu <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Une visite du lieu quelques semaines avant l'événement permet de vérifier concrètement l'accès, les prises électriques disponibles, la configuration de la salle et les issues de secours, plutôt que de se fier uniquement aux photos ou au plan fourni par le lieu.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Désigner un référent sécurité le jour J <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Une personne doit être clairement identifiée comme référente en cas d'incident (malaise, évacuation), avec les numéros d'urgence à portée de main et une connaissance précise des issues de secours du lieu.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="deroule-minute">
+    <h2>6. Déroulé minuté</h2>
+    <p>Le déroulé minuté est le document opérationnel du jour J : il détaille, minute par minute ou par tranche de 15 à 30 minutes, chaque étape de l'événement, avec le responsable de chaque étape. Il est transmis à toutes les personnes impliquées (organisateurs, prestataires, intervenants) avant l'événement.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Horaire</th><th>Étape</th><th>Responsable</th></tr></thead>
+        <tbody>
+          <tr><td>8h00</td><td>Arrivée de l'équipe organisatrice, vérification de la salle</td><td>Assistante de direction</td></tr>
+          <tr><td>8h30</td><td>Installation technique (son, vidéo) et signalétique</td><td>Prestataire technique</td></tr>
+          <tr><td>9h00</td><td>Accueil des participants, émargement</td><td>Équipe d'accueil</td></tr>
+          <tr><td>9h30</td><td>Ouverture par la direction</td><td>Direction générale</td></tr>
+          <tr><td>12h30</td><td>Déjeuner</td><td>Traiteur</td></tr>
+          <tr><td>17h30</td><td>Clôture et remerciements</td><td>Direction générale</td></tr>
+          <tr><td>18h00</td><td>Débriefing à chaud avec les prestataires</td><td>Assistante de direction</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Le déroulé minuté prévoit toujours des marges de battement entre les étapes (10 à 15 minutes) : un dépassement sur une étape ne doit pas décaler mécaniquement l'ensemble de la journée.
+    </div>
+  </section>
+
+  <section id="bilan">
+    <h2>7. Bilan</h2>
+    <p>Le bilan post-événement clôture le projet et sert de base pour l'organisation des événements suivants. Il compare le budget prévisionnel au budget réel, recense les incidents survenus et leurs solutions, et recueille le retour des participants et des prestataires.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Volet du bilan</th><th>Contenu</th></tr></thead>
+        <tbody>
+          <tr><td>Bilan budgétaire</td><td>Comparaison prévisionnel / réel, poste par poste, écarts justifiés</td></tr>
+          <tr><td>Bilan organisationnel</td><td>Incidents survenus, solutions apportées, points à améliorer</td></tr>
+          <tr><td>Retour participants</td><td>Questionnaire de satisfaction court, envoyé dans les jours suivants</td></tr>
+          <tr><td>Retour prestataires</td><td>Points forts et faibles observés, à conserver dans le fichier prestataires</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Le bilan est rédigé dans les deux semaines suivant l'événement, pendant que les détails sont encore présents à l'esprit de toute l'équipe organisatrice, et archivé avec le cahier des charges initial pour référence future.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>La direction générale vous confie l'organisation d'un séminaire de cohésion réunissant 50 collaborateurs sur une journée, dans un lieu situé à moins d'une heure du siège. Le budget alloué est de 12 000 € tout compris.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 1 à 7, montez le dossier événementiel complet : cahier des charges, budget prévisionnel par poste, liste de prestataires à consulter, calendrier d'invitations, points de vigilance logistique et sécurité, déroulé minuté de la journée, et trame du bilan à produire après l'événement.</p>
+    </div>
+  </section>
+
+  <section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Le cahier des charges se rédige et se valide avant tout contact avec un prestataire.</li>
+      <li>Le budget se construit poste par poste, avec une marge de sécurité de 10 à 15 %.</li>
+      <li>Les prestataires se sélectionnent sur devis comparés, avec contractualisation avant tout acompte.</li>
+      <li>Les confirmations d'invitation doivent être actualisées jusqu'à la date limite transmise aux prestataires.</li>
+      <li>La logistique et la sécurité s'anticipent, y compris par une visite préalable du lieu et un plan B.</li>
+      <li>Le déroulé minuté prévoit des marges de battement et un responsable identifié par étape.</li>
+      <li>Le bilan compare prévisionnel et réel, et sert de référence pour les événements suivants.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : un <strong>dossier événementiel</strong> complet, comprenant le budget prévisionnel, le déroulé minuté, la liste des prestataires et le bilan prévisionnel, fourni en <strong>.docx</strong> et en <strong>.xlsx</strong>.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Budget prévisionnel par poste</span><button class="copy-btn" data-copy-target="model-budget">Copier</button></div>
+      <pre id="model-budget">DOSSIER ÉVÉNEMENTIEL — BUDGET PRÉVISIONNEL
+Événement : [nom] — Date : [date] — Effectif : [nombre] participants
+
+Poste                      Prestataire pressenti     Montant HT    Montant TTC
+Lieu / location salle      [nom]                     [montant]     [montant]
+Restauration               [nom]                     [montant]     [montant]
+Technique / animation      [nom]                     [montant]     [montant]
+Transport / logistique     [nom]                     [montant]     [montant]
+Marge de sécurité (10-15%) —                         [montant]     [montant]
+
+TOTAL PRÉVISIONNEL                                    [montant]     [montant]
+Budget alloué par la direction :                                    [montant]
+Écart :                                                              [montant]</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Trame de bilan post-événement</span><button class="copy-btn" data-copy-target="model-bilan">Copier</button></div>
+      <pre id="model-bilan">BILAN — [Nom de l'événement], le [date]
+
+1. Budget : prévisionnel [montant] / réel [montant] — écart et justification
+2. Fréquentation : [nombre] confirmés / [nombre] présents
+3. Organisation : incidents survenus et solutions apportées
+4. Retour participants : synthèse du questionnaire de satisfaction
+5. Retour prestataires : points forts, points faibles, à retenir pour la prochaine fois
+6. Recommandations pour le prochain événement</pre>
+    </div>
+
+    <h3>Checklist de livraison du dossier</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Cahier des charges rédigé et validé par la direction</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Budget prévisionnel détaillé par poste, marge de sécurité incluse</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Au moins trois devis comparés par poste de prestation</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Calendrier d'invitations et de relances établi</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Points logistique et sécurité vérifiés, plan B identifié</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Déroulé minuté transmis à toutes les parties prenantes</label></li>
+      <li><input type="checkbox" id="chk7"><label for="chk7">Trame de bilan prête à être complétée après l'événement</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 27 — Outils numériques et intelligence artificielle</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 29 — Insertion professionnelle</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 6 — Professionnalisation et projet · Leçon 28 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

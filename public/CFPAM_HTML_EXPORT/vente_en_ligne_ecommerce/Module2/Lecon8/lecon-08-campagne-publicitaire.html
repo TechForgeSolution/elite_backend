@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 08 — Lancer une campagne publicitaire en ligne</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23059669'/><path d='M25 35h50l-6 30H31zM38 35a12 12 0 0 1 24 0' fill='none' stroke='white' stroke-width='7' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* === Charte identique à la Leçon 01 (réutilisable pour toute la filière) === */
+:root{--bg:#FFFFFF;--bg-alt:#F4F9F6;--text:#0A0F0C;--muted:#626B65;--accent:#059669;--accent-soft:#E8F7F0;--border:#DDE9E2;--accent-text:#047857;
+--display:'Sora','Segoe UI',system-ui,sans-serif;--body:'Source Sans 3','Segoe UI',system-ui,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.125rem/1.7 var(--body)}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.bar{max-width:1040px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font:700 1rem var(--display);display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.brand svg{width:26px;height:26px}
+.menu-btn{font:600 .95rem var(--body);background:none;border:1px solid var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--text)}
+.menu-btn:hover{border-color:var(--accent)}
+#menu{display:none;position:absolute;right:20px;top:100%;background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:260px;box-shadow:0 10px 30px rgba(10,15,12,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:9px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-size:1rem}
+#menu a:hover{background:var(--accent-soft)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);border-bottom:1px solid var(--border);padding:72px 0 56px}
+.hero .wrap{max-width:1040px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--accent-soft);color:var(--accent-text);border:1px solid var(--border);padding:4px 12px;border-radius:99px;font-size:.9rem;font-weight:600}
+.badge.dark{background:var(--text);color:#fff;border-color:var(--text)}
+.course{color:var(--muted);font-size:1rem;margin:0 0 8px}
+h1{font:700 clamp(2rem,4.5vw,3rem)/1.15 var(--display);margin:0 0 18px;letter-spacing:-.02em}
+.lead{font-size:1.25rem;color:var(--muted);margin:0}
+.hero svg{width:100%;height:auto}
+.goal{margin-top:24px;padding-left:16px;border-left:3px solid var(--accent);font-size:1.05rem}
+h2{font:700 clamp(1.5rem,3vw,2rem)/1.25 var(--display);margin:0 0 20px;letter-spacing:-.01em}
+h3{font:600 1.2rem/1.35 var(--display);margin:32px 0 10px}
+section.lesson{padding:72px 0}
+section.alt{background:var(--bg-alt);border-block:1px solid var(--border)}
+p{margin:0 0 1.1em}
+.toc{padding:48px 0 0}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:t}
+.toc a{display:flex;gap:14px;align-items:baseline;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);counter-increment:t;transition:border-color .2s,background .2s}
+.toc a::before{content:counter(t);font:700 .95rem var(--display);color:var(--accent-text)}
+.toc a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0;max-width:1040px}
+.cards.two{grid-template-columns:repeat(2,1fr)}
+.full{max-width:1040px;margin:auto;padding:0 20px}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card svg{width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin:0 0 6px;font-size:1.1rem}
+.card p{margin:0;color:var(--muted);font-size:1rem;line-height:1.55}
+.note{border-radius:12px;padding:16px 20px;margin:28px 0;border:1px solid var(--border);background:var(--bg-alt)}
+.note strong{display:block;font:600 1rem var(--display);margin-bottom:4px}
+.note p{margin:0;font-size:1.02rem}
+.note.tip{background:var(--accent-soft);border-color:#bfe6d4}
+.note.warn{background:#fff;border-left:4px solid var(--text)}
+.note.best{border-left:4px solid var(--accent);background:#fff}
+.tabs [role=tablist]{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:22px;overflow-x:auto}
+.tabs [role=tab]{font:600 1rem var(--body);background:none;border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;color:var(--muted);white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--text);border-bottom-color:var(--accent)}
+.tabs [role=tab]:hover{color:var(--accent-text)}
+.panel[hidden]{display:none}
+.panel{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel ul,.wrap ul{padding-left:20px;margin:0 0 1em}
+.panel li,.wrap li{margin-bottom:6px}
+.ex{background:var(--bg-alt);border-radius:10px;padding:12px 16px;font-size:1rem;color:var(--muted)}
+.tw{overflow-x:auto;margin:24px 0}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:1rem;line-height:1.5;background:#fff}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+thead th{font:600 .95rem var(--display);background:var(--text);color:#fff}
+tbody th{font-weight:600;background:var(--bg-alt)}
+details{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent-text);font:700 1.3rem/1 var(--display);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details>div{padding:0 18px 14px;color:var(--muted);font-size:1.02rem}
+.fig{margin:28px 0;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{text-align:center;color:var(--muted);font-size:.95rem;margin-top:8px}
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:s;position:relative}
+.stepper li{counter-increment:s;position:relative;padding-top:52px;font-size:1rem;line-height:1.5;margin:0}
+.stepper li::before{content:counter(s);position:absolute;top:0;left:0;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 1rem var(--display);z-index:1}
+.stepper li::after{content:"";position:absolute;top:18px;left:38px;right:-14px;height:2px;background:var(--border)}
+.stepper li:last-child::after{display:none}
+.stepper b{display:block;font:600 1rem var(--display);margin-bottom:4px}
+.key{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:1040px;margin:auto}
+.key div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px 18px 52px;position:relative;font-size:1.02rem;line-height:1.55}
+.key div::before{content:"";position:absolute;left:18px;top:22px;width:20px;height:20px;border-radius:50%;background:var(--accent-soft) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5 10.5l3.5 3.5L15 7' fill='none' stroke='%23059669' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
+.pager{max-width:1040px;margin:0 auto;padding:56px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pager a,.pager span{display:block;padding:18px 22px;border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);line-height:1.4}
+.pager small{display:block;color:var(--muted);font-size:.9rem;margin-bottom:4px}
+.pager a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.pager .next{text-align:right}
+.back{text-align:center;padding-bottom:40px}
+.back a{font-weight:600}
+footer{border-top:1px solid var(--border);padding:28px 20px;text-align:center;color:var(--muted);font-size:.95rem}
+#top{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.3rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s;z-index:60}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{background:var(--accent)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+/* Bloc de code / message type (ajout propre à cette leçon) */
+.code{margin:22px 0;border-radius:12px;overflow:hidden;background:var(--text);color:#E8F7F0}
+.code .hd{display:flex;justify-content:space-between;align-items:center;padding:8px 8px 8px 16px;background:#141C17;font-size:.9rem;color:#9BB0A4}
+.code button{font:600 .85rem var(--body);background:transparent;color:#fff;border:1px solid #3a4a41;border-radius:6px;padding:4px 12px;cursor:pointer}
+.code button:hover{border-color:var(--accent);color:#6EE7B7}
+.code pre{margin:0;padding:16px;white-space:pre-wrap;font:400 .98rem/1.6 var(--body)}
+.code .v{color:#6EE7B7;font-weight:600}
+@media(max-width:820px){
+.hero .wrap{grid-template-columns:1fr}.hero{padding:48px 0 40px}
+.cards,.cards.two,.key{grid-template-columns:1fr}
+.stepper{grid-template-columns:1fr;gap:20px}
+.stepper li{padding:2px 0 0 54px}.stepper li::after{display:none}
+.pager{grid-template-columns:1fr}.pager .next{text-align:left}
+section.lesson{padding:52px 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top">
+ <div class="bar">
+  <a class="brand" href="#debut"><svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#059669"/><path d="M25 35h50l-6 30H31zM38 35a12 12 0 0 1 24 0" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"/></svg>Formation E-commerce</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire rapide">
+   <a href="#principe">Fonctionnement de la publicité</a>
+   <a href="#objectif">Choisir son objectif</a>
+   <a href="#audience">Cibler l'audience</a>
+   <a href="#budget">Budget et durée</a>
+   <a href="#creatif">Visuel et texte</a>
+   <a href="#destination">Page de destination</a>
+   <a href="#indicateurs">Suivre les performances</a>
+   <a href="#test">Tests A/B</a>
+   <a href="#erreurs">Erreurs courantes</a>
+   <a href="#retenir">Points clés</a>
+  </nav>
+ </div>
+</header>
+
+<main id="debut">
+<section class="hero">
+ <div class="wrap">
+  <div>
+   <div class="badges"><span class="badge dark">Module 2 — Marketing, vente et pilotage</span><span class="badge">20 min de lecture</span><span class="badge">Niveau débutant</span></div>
+   <p class="course">Leçon 08</p>
+   <h1>Lancer une campagne publicitaire en ligne</h1>
+   <p class="lead">Comprenez comment fonctionne la publicité payante et préparez une première campagne simple, orientée vente.</p>
+   <p class="goal"><strong>Objectif :</strong> comprendre les bases de la publicité digitale et préparer une campagne simple orientée vente.</p>
+  </div>
+  <svg viewBox="0 0 320 260" role="img" aria-label="Illustration : une annonce publicitaire envoyée vers un groupe de clients, avec un graphique de résultats">
+   <rect x="20" y="20" width="170" height="130" rx="14" fill="#fff" stroke="#DDE9E2" stroke-width="2"/>
+   <rect x="34" y="34" width="60" height="50" rx="8" fill="#E8F7F0"/><rect x="104" y="38" width="72" height="8" rx="4" fill="#0A0F0C"/><rect x="104" y="54" width="52" height="6" rx="3" fill="#DDE9E2"/><rect x="104" y="66" width="62" height="6" rx="3" fill="#DDE9E2"/>
+   <rect x="34" y="102" width="142" height="30" rx="15" fill="#059669"/><text x="105" y="122" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Sora,sans-serif">Acheter</text>
+   <path d="M190 85h40" stroke="#059669" stroke-width="3" stroke-linecap="round"/><path d="M224 77l8 8-8 8" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+   <g fill="#E8F7F0" stroke="#059669" stroke-width="2"><circle cx="262" cy="55" r="12"/><circle cx="290" cy="85" r="12"/><circle cx="262" cy="115" r="12"/></g>
+   <rect x="20" y="170" width="280" height="76" rx="12" fill="#F4F9F6" stroke="#DDE9E2" stroke-width="2"/>
+   <rect x="40" y="214" width="26" height="20" rx="3" fill="#059669" opacity=".4"/><rect x="78" y="198" width="26" height="36" rx="3" fill="#059669" opacity=".65"/><rect x="116" y="184" width="26" height="50" rx="3" fill="#059669"/>
+   <text x="260" y="213" text-anchor="middle" font-size="12" fill="#626B65" font-family="Source Sans 3,sans-serif">Résultats</text>
+  </svg>
+ </div>
+</section>
+
+<nav class="toc" aria-labelledby="toc-t">
+ <div class="wrap">
+  <h2 id="toc-t">Au programme</h2>
+  <ol>
+   <li><a href="#principe">Rôle et fonctionnement de la publicité payante</a></li>
+   <li><a href="#objectif">Définir l'objectif publicitaire</a></li>
+   <li><a href="#audience">Cibler la bonne audience</a></li>
+   <li><a href="#budget">Définir un budget et une durée</a></li>
+   <li><a href="#creatif">Créer un visuel et un texte percutants</a></li>
+   <li><a href="#destination">Préparer la page de destination</a></li>
+   <li><a href="#indicateurs">Comprendre et suivre les performances</a></li>
+   <li><a href="#test">Réaliser des tests A/B simples</a></li>
+   <li><a href="#erreurs">Erreurs courantes et comment les éviter</a></li>
+   <li><a href="#retenir">Points clés à retenir</a></li>
+  </ol>
+ </div>
+</nav>
+
+<section class="lesson" id="principe">
+ <div class="wrap rv">
+  <h2>Rôle et fonctionnement de la publicité payante</h2>
+  <p>La publicité payante (« ads ») consiste à payer une plateforme (réseau social, moteur de recherche…) pour afficher votre annonce à des personnes précises. Contrairement au contenu gratuit, qui demande du temps pour être vu, la publicité vous donne de la visibilité rapidement et vous permet de mesurer ce qu'elle rapporte.</p>
+  <p>Son rôle est d'amener vers votre boutique des personnes susceptibles d'acheter. Elle ne remplace pas un bon produit ni une bonne fiche produit : elle les met en lumière.</p>
+  <ol class="stepper" aria-label="Fonctionnement d'une campagne publicitaire">
+   <li><b>Vous créez l'annonce</b>Un visuel, un texte et un bouton d'action.</li>
+   <li><b>Vous choisissez l'audience</b>La plateforme sait qui afficher en priorité.</li>
+   <li><b>L'annonce est diffusée</b>Elle apparaît dans le fil des personnes ciblées.</li>
+   <li><b>Le client agit</b>Il clique, écrit ou achète. Vous payez selon le réglage choisi.</li>
+  </ol>
+  <div class="note tip"><strong>💡 À retenir</strong><p>Une campagne est un enchaînement : annonce, audience, destination, suivi. Si un maillon est faible, tout le budget en pâtit.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="objectif">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Définir le bon objectif publicitaire</h2>
+   <p>Chaque plateforme demande ce que vous voulez obtenir. Ce choix est essentiel : la plateforme montre votre annonce aux personnes les plus susceptibles de faire cette action. Pour un débutant, trois objectifs couvrent la plupart des besoins.</p>
+   <div class="tabs" data-tabs>
+    <div role="tablist" aria-label="Objectifs publicitaires">
+     <button role="tab" aria-selected="true">Trafic vers site</button><button role="tab" aria-selected="false">Messages WhatsApp</button><button role="tab" aria-selected="false">Conversions</button>
+    </div>
+    <div class="panel" role="tabpanel">
+     <p><strong>Amener des visiteurs</strong> sur votre boutique ou votre catalogue.</p>
+     <ul><li>Adapté pour faire connaître une boutique ou un nouveau produit.</li><li>Résultat suivi : nombre de clics.</li></ul>
+     <div class="ex">Exemple : une boutique de bougies qui veut faire découvrir sa nouvelle collection.</div>
+    </div>
+    <div class="panel" role="tabpanel" hidden>
+     <p><strong>Ouvrir des conversations</strong> avec des clients potentiels.</p>
+     <ul><li>Très utile pour les produits qui demandent des conseils ou un échange.</li><li>Résultat suivi : nombre de messages reçus. S'appuie sur la leçon 07.</li></ul>
+     <div class="ex">Exemple : un vendeur de vêtements qui prend les commandes par message.</div>
+    </div>
+    <div class="panel" role="tabpanel" hidden>
+     <p><strong>Encourager un achat</strong> ou une action précise (ajout au panier, achat).</p>
+     <ul><li>Adapté quand la boutique reçoit déjà des visites régulières.</li><li>Résultat suivi : nombre d'achats ; demande de configurer un suivi sur le site.</li></ul>
+     <div class="ex">Exemple : une boutique en ligne qui veut davantage de commandes validées.</div>
+    </div>
+   </div>
+   <div class="note best"><strong>🛒 Bonne pratique e-commerce</strong><p>Choisissez un seul objectif par campagne. Un débutant sans boutique complète commence souvent par « Messages » ou « Trafic ».</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="lesson" id="audience">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Cibler la bonne audience</h2>
+   <p>L'audience est le groupe de personnes à qui l'annonce est montrée. Cibler, c'est répondre à la question : « Qui a le plus de chances d'acheter ce produit ? ».</p>
+  </div>
+  <div class="cards two">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><h3>Géographie</h3><p>Pays, ville ou zone de livraison. Ciblez uniquement les lieux où vous pouvez livrer.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><h3>Démographie</h3><p>Tranche d'âge, genre, langue. Utile quand le produit s'adresse clairement à un public.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21l-8-8a5 5 0 0 1 8-6 5 5 0 0 1 8 6z"/></svg><h3>Centres d'intérêt</h3><p>Mode, cuisine, décoration, sport… Ce que les gens aiment et suivent en ligne.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.5 11h11L21 7H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg><h3>Comportements</h3><p>Habitudes d'achat en ligne, usage du mobile, visite de pages similaires.</p></div>
+  </div>
+  <div class="wrap" style="padding:0">
+   <details><summary>Quelle taille d'audience viser ?</summary><div>Ni trop étroite, ni trop large. Une audience très petite limite la diffusion ; une audience immense dilue le message. Les plateformes affichent un indicateur de taille : visez une audience cohérente avec votre offre.</div></details>
+   <details><summary>Exemple de ciblage réaliste</summary><div>Boutique de bougies décoratives : femmes et hommes de 25 à 45 ans, dans la ville de livraison, intéressés par la décoration d'intérieur et les cadeaux.</div></details>
+  </div>
+ </div>
+</section>
+
+<section class="lesson alt" id="budget">
+ <div class="wrap rv">
+  <h2>Définir un budget et une durée</h2>
+  <p>Un débutant n'a pas besoin d'un gros budget. L'idée est de dépenser une petite somme sur une période assez longue pour obtenir des données exploitables, sans risquer plus que ce qu'on peut perdre.</p>
+  <ul>
+   <li><strong>Budget quotidien :</strong> montant maximal dépensé chaque jour.</li>
+   <li><strong>Durée :</strong> nombre de jours de diffusion. Une campagne trop courte ne permet pas de conclure.</li>
+   <li><strong>Budget total :</strong> budget quotidien multiplié par la durée.</li>
+  </ul>
+  <div class="code"><div class="hd"><span>Exemple de calcul (montants à titre d'illustration)</span><button type="button" data-copy>Copier</button></div><pre>Budget quotidien : <span class="v">2 000 FCFA</span>
+Durée : <span class="v">7 jours</span>
+Budget total : 2 000 x 7 = <span class="v">14 000 FCFA</span></pre></div>
+  <div class="note warn"><strong>⚠️ Attention</strong><p>Les montants minimums varient selon la plateforme et le pays. Vérifiez-les avant de planifier, et surveillez la dépense les premiers jours.</p></div>
+ </div>
+</section>
+
+<section class="lesson" id="creatif">
+ <div class="wrap rv">
+  <h2>Créer un visuel et un texte percutants</h2>
+  <p>Le visuel (le « créatif ») attire l'œil ; le texte (le « copywriting ») donne la raison d'agir. Ensemble, ils doivent se comprendre en quelques secondes dans un fil d'actualité chargé.</p>
+  <h3>Le visuel</h3>
+  <ul><li>Un seul produit mis en valeur, photo nette et bien éclairée.</li><li>Un format adapté au mobile (carré ou vertical).</li><li>Peu de texte sur l'image.</li></ul>
+  <h3>Le texte publicitaire</h3>
+  <p>Une annonce efficace suit une structure simple : un accroche, un bénéfice, un appel à l'action.</p>
+  <div class="code"><div class="hd"><span>Exemple d'annonce (structure à adapter)</span><button type="button" data-copy>Copier</button></div><pre><span class="v">Accroche :</span> Un cadeau qui sent bon, livré chez vous.
+<span class="v">Bénéfice :</span> Bougies artisanales, 40 h de parfum, emballage cadeau inclus.
+<span class="v">Appel à l'action :</span> Écrivez-nous pour commander avant vendredi.</pre></div>
+  <div class="note best"><strong>🛒 Bonne pratique e-commerce</strong><p>Parlez du bénéfice pour le client (un cadeau réussi) plutôt que de simples caractéristiques. Un seul message, une seule action.</p></div>
+ </div>
+</section>
+
+<section class="lesson alt" id="destination">
+ <div class="wrap rv">
+  <h2>Préparer la page de destination</h2>
+  <p>La page de destination est l'endroit où arrive la personne après avoir cliqué : fiche produit, boutique ou conversation WhatsApp. Si cette étape est confuse, l'argent dépensé en publicité est perdu.</p>
+  <ol class="stepper" aria-label="Accueil du trafic">
+   <li><b>Cohérence</b>La page reprend le produit et la promesse de l'annonce.</li>
+   <li><b>Clarté</b>Prix, photos, livraison visibles sans chercher.</li>
+   <li><b>Rapidité</b>Page légère, qui s'affiche vite sur mobile.</li>
+   <li><b>Action simple</b>Un bouton visible : commander ou écrire.</li>
+  </ol>
+  <div class="note tip"><strong>💡 À retenir</strong><p>Le client qui clique attend de retrouver exactement ce qu'il a vu. Une annonce sur une bougie doit mener à cette bougie, pas à la page d'accueil générale.</p></div>
+ </div>
+</section>
+
+<section class="lesson" id="indicateurs">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Comprendre et suivre les performances</h2>
+   <p>La plateforme fournit des chiffres. Quatre indicateurs suffisent pour démarrer.</p>
+  </div>
+  <div class="cards two">
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><h3>Impressions</h3><p>Nombre de fois où l'annonce s'est affichée, même plusieurs fois à la même personne.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M17 11a3 3 0 1 0 0-6"/></svg><h3>Portée</h3><p>Nombre de personnes différentes qui ont vu l'annonce.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8-6 2-2 6z"/></svg><h3>Taux de clic (CTR)</h3><p>Part des affichages qui ont donné un clic. Il mesure si l'annonce attire.</p></div>
+   <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M16 7H10a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6H7"/></svg><h3>Coût par résultat</h3><p>Montant dépensé divisé par le nombre de résultats (clics, messages, achats).</p></div>
+  </div>
+  <div class="wrap" style="padding:0">
+   <div class="code"><div class="hd"><span>Exemple de lecture de résultats (chiffres fictifs)</span><button type="button" data-copy>Copier</button></div><pre>Impressions : <span class="v">10 000</span>  |  Clics : <span class="v">200</span>
+CTR = 200 / 10 000 x 100 = <span class="v">2 %</span>
+Dépense : 14 000 FCFA  |  Messages reçus : <span class="v">28</span>
+Coût par message = 14 000 / 28 = <span class="v">500 FCFA</span></pre></div>
+   <div class="note"><strong>🔗 Pour aller plus loin</strong><p>Un « bon » chiffre dépend du secteur et du produit. Comparez vos campagnes entre elles plutôt que de chercher un seuil universel.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="lesson alt" id="test">
+ <div class="wrap rv">
+  <h2>Réaliser des tests A/B simples</h2>
+  <p>Un test A/B consiste à comparer deux versions d'une même annonce pour voir laquelle fonctionne le mieux. La règle d'or : ne changer qu'un seul élément à la fois, sinon on ne sait pas ce qui a produit la différence.</p>
+  <div class="tw"><table>
+   <thead><tr><th>Élément testé</th><th>Version A</th><th>Version B</th></tr></thead>
+   <tbody>
+    <tr><th>Visuel</th><td>Photo du produit seul</td><td>Photo du produit en situation</td></tr>
+    <tr><th>Texte</th><td>Mise en avant du prix</td><td>Mise en avant du bénéfice</td></tr>
+    <tr><th>Appel à l'action</th><td>« Commander »</td><td>« Écrire un message »</td></tr>
+   </tbody>
+  </table></div>
+  <details><summary>Quand déclarer une version gagnante ?</summary><div>Laissez les deux versions tourner avec le même budget et la même durée, puis comparez le coût par résultat. Attendez d'avoir assez de données : quelques clics ne suffisent pas pour conclure.</div></details>
+  <details><summary>Que faire de la version perdante ?</summary><div>Arrêtez-la, gardez la gagnante, puis testez un nouvel élément. L'optimisation est une succession de petites améliorations.</div></details>
+ </div>
+</section>
+
+<section class="lesson" id="erreurs">
+ <div class="full rv">
+  <div class="wrap" style="padding:0">
+   <h2>Erreurs courantes des débutants</h2>
+   <p>Ces erreurs reviennent très souvent. Les connaître permet de les éviter dès la première campagne.</p>
+  </div>
+  <div class="tw"><table>
+   <thead><tr><th>Erreur</th><th>Conséquence</th><th>Comment l'éviter</th></tr></thead>
+   <tbody>
+    <tr><th>Objectif flou ou multiple</th><td>Résultats difficiles à lire</td><td>Un seul objectif par campagne</td></tr>
+    <tr><th>Audience trop large</th><td>Annonce montrée à des personnes peu intéressées</td><td>Cibler zone, âge et centres d'intérêt</td></tr>
+    <tr><th>Visuel de mauvaise qualité</th><td>Annonce ignorée</td><td>Photo nette, produit visible, peu de texte</td></tr>
+    <tr><th>Page de destination confuse</th><td>Visiteurs qui partent sans acheter</td><td>Page cohérente, rapide, avec action claire</td></tr>
+    <tr><th>Arrêt trop rapide</th><td>Décision prise sans données</td><td>Laisser tourner quelques jours</td></tr>
+    <tr><th>Plusieurs changements à la fois</th><td>Impossible de savoir ce qui marche</td><td>Tester un élément à la fois</td></tr>
+   </tbody>
+  </table></div>
+  <div class="wrap" style="padding:0">
+   <div class="note warn"><strong>⚠️ Attention</strong><p>La publicité amplifie ce qui existe déjà. Si le produit, le prix ou la livraison posent problème, corrigez-les avant d'investir.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="lesson alt" id="retenir">
+ <div class="full rv">
+  <div class="wrap" style="padding:0"><h2>Points clés à retenir</h2></div>
+  <div class="key">
+   <div>La publicité payante donne de la visibilité rapidement et se mesure.</div>
+   <div>Un objectif par campagne : trafic, messages WhatsApp ou conversions.</div>
+   <div>L'audience se définit par la géographie, la démographie, les centres d'intérêt et les comportements.</div>
+   <div>Un petit budget sur plusieurs jours vaut mieux qu'une grosse dépense très courte.</div>
+   <div>Un bon visuel et un texte simple : accroche, bénéfice, appel à l'action.</div>
+   <div>La page de destination doit être cohérente avec l'annonce, rapide et claire.</div>
+   <div>Impressions, portée, CTR et coût par résultat sont les repères de départ.</div>
+   <div>Un test A/B compare deux versions en ne changeant qu'un seul élément.</div>
+  </div>
+ </div>
+</section>
+</main>
+
+<nav class="pager" aria-label="Navigation entre les leçons">
+ <a class="prev" href="lecon-07-reseaux-sociaux-whatsapp-vente.html" rel="prev"><small>Leçon précédente</small>Leçon 07 — Utiliser les réseaux sociaux et WhatsApp pour vendre</a>
+ <a class="next" href="lecon-09-gerer-clients-ventes-fidelisation.html" rel="next"><small>Leçon suivante</small>Leçon 09 — Gérer les clients, les ventes et la fidélisation</a>
+</nav>
+<p class="back"><a href="#debut">Retour au sommaire du Module 2</a></p>
+
+<footer>Formation E-commerce · Module 2 — Marketing, vente et pilotage</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('progress'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.addEventListener('click',function(){scrollTo({top:0})});
+var mb=document.getElementById('menuBtn'),mn=document.getElementById('menu');
+mb.addEventListener('click',function(){var o=mn.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+mn.addEventListener('click',function(e){if(e.target.tagName==='A'){mn.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){mn.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('[data-tabs]').forEach(function(t){
+var tabs=[].slice.call(t.querySelectorAll('[role=tab]')),ps=[].slice.call(t.querySelectorAll('[role=tabpanel]'));
+function sel(i){tabs.forEach(function(b,j){b.setAttribute('aria-selected',i===j);b.tabIndex=i===j?0:-1;ps[j].hidden=i!==j})}
+tabs.forEach(function(b,i){b.addEventListener('click',function(){sel(i)});
+b.addEventListener('keydown',function(e){var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:null;
+if(n===null)return;n=(n+tabs.length)%tabs.length;sel(n);tabs[n].focus()})});sel(0)});
+document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+var txt=b.closest('.code').querySelector('pre').innerText;
+function ok(){b.textContent='Copié ✓';setTimeout(function(){b.textContent='Copier'},1800)}
+if(navigator.clipboard){navigator.clipboard.writeText(txt).then(ok)}else{var a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();ok()}})});
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(el){io.observe(el)})}
+else rv.forEach(function(el){el.classList.add('in')});
+})();
+</script>
+</body>
+</html>

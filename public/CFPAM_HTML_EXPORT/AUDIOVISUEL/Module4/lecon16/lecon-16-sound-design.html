@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 16 — Sound design : construire un univers sonore clair, crédible et immersif.">
+  <title>Leçon 16 — Sound Design | Formation Audiovisuelle</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231F6F54'/%3E%3Cpath d='M25 58h10V42H25zm20 10h10V32H45zm20-18h10V40H65z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --color-bg:#FFFFFF;
+      --color-bg-alt:#F6F8F6;
+      --color-text:#0B0F0D;
+      --color-text-muted:#5A6560;
+      --color-accent:#1F6F54;
+      --color-accent-soft:#E7F2ED;
+      --color-border:#E3E8E5;
+      --color-accent-alt:#B3541E;
+      --shadow:0 12px 35px rgba(11,15,13,.07);
+      --radius:18px;
+      --max:1120px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--color-bg);
+      color:var(--color-text);
+      font-family:Inter,Arial,sans-serif;
+      line-height:1.7;
+    }
+    a{color:var(--color-accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    button{font:inherit}
+    :focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+
+    .progress{
+      position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;
+      background:var(--color-accent);
+    }
+
+    header{
+      position:sticky;top:4px;z-index:100;
+      background:rgba(255,255,255,.94);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--color-border);
+    }
+    .nav{
+      max-width:var(--max);margin:auto;padding:14px 22px;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-family:"Space Grotesk",sans-serif;font-weight:700}
+    .brand-mark{
+      width:38px;height:38px;border:1px solid var(--color-accent);
+      border-radius:10px;display:grid;place-items:center;color:var(--color-accent);
+      font-weight:700;
+    }
+    .nav-links{display:flex;gap:18px;align-items:center;font-size:.9rem}
+    .nav-links a{color:var(--color-text-muted)}
+    .nav-links a:hover{color:var(--color-accent);text-decoration:none}
+
+    main{overflow:hidden}
+    .hero{
+      max-width:var(--max);margin:auto;padding:72px 22px 50px;
+    }
+    .eyebrow{
+      color:var(--color-accent);font-size:.78rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;
+    }
+    h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.15}
+    h1{font-size:clamp(2.4rem,6vw,5rem);letter-spacing:-.05em;max-width:850px;margin:14px 0 20px}
+    h2{font-size:clamp(1.65rem,3vw,2.4rem);margin:0 0 18px}
+    h3{font-size:1.15rem;margin:0 0 8px}
+    .lead{font-size:1.15rem;color:var(--color-text-muted);max-width:720px}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}
+    .badge{
+      padding:7px 11px;border:1px solid var(--color-border);border-radius:999px;
+      background:var(--color-bg-alt);font-size:.8rem;font-weight:600;
+    }
+    .badge.accent{background:var(--color-accent-soft);color:var(--color-accent);border-color:#cde2d8}
+
+    .toc{
+      max-width:var(--max);margin:0 auto 36px;padding:0 22px;
+    }
+    .toc-inner{
+      background:var(--color-bg-alt);border:1px solid var(--color-border);
+      border-radius:var(--radius);padding:24px;
+    }
+    .toc-title{font-family:"Space Grotesk";font-weight:700;margin-bottom:12px}
+    .toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 20px}
+    .toc a{font-size:.9rem;color:var(--color-text-muted)}
+    .toc a:hover{color:var(--color-accent)}
+
+    section.lesson-section{
+      max-width:var(--max);margin:0 auto;padding:68px 22px;
+    }
+    section.alt{max-width:none;background:var(--color-bg-alt)}
+    .section-inner{max-width:var(--max);margin:auto}
+    .content{max-width:760px}
+    .content p{margin:0 0 18px}
+    .section-number{
+      color:var(--color-accent);font-family:"Roboto Mono";font-size:.8rem;margin-bottom:8px;
+    }
+
+    .callout{
+      margin:26px 0;padding:20px 22px;border-left:4px solid var(--color-accent);
+      background:var(--color-accent-soft);border-radius:0 14px 14px 0;
+    }
+    .callout strong{display:block;margin-bottom:4px}
+
+    .visual{
+      margin:32px 0;padding:24px;background:#fff;border:1px solid var(--color-border);
+      border-radius:var(--radius);box-shadow:var(--shadow);
+    }
+    .visual figcaption{font-size:.82rem;color:var(--color-text-muted);margin-top:12px;text-align:center}
+
+    svg{width:100%;height:auto;display:block}
+    .svg-text{font-family:Inter,Arial,sans-serif;fill:var(--color-text)}
+    .svg-muted{fill:var(--color-text-muted)}
+    .svg-accent{fill:var(--color-accent)}
+    .svg-line{stroke:var(--color-border)}
+    .svg-accent-line{stroke:var(--color-accent)}
+
+    .cards{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;
+    }
+    .card{
+      border:1px solid var(--color-border);border-radius:var(--radius);
+      padding:22px;background:#fff;transition:.25s transform,.25s box-shadow;
+    }
+    .card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+    .icon{
+      width:42px;height:42px;border-radius:12px;background:var(--color-accent-soft);
+      color:var(--color-accent);display:grid;place-items:center;margin-bottom:15px;font-size:1.2rem;
+    }
+    .muted{color:var(--color-text-muted)}
+
+    .audio-map{
+      display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px;
+    }
+    .meter{
+      border:1px solid var(--color-border);border-radius:16px;padding:18px;background:#fff;
+    }
+    .meter-row{display:flex;align-items:center;gap:10px;margin:12px 0}
+    .meter-label{width:105px;font-size:.82rem}
+    .meter-track{height:12px;flex:1;background:#edf1ef;border-radius:999px;overflow:hidden}
+    .meter-fill{height:100%;background:var(--color-accent);border-radius:999px}
+    .meter-value{font-family:"Roboto Mono";font-size:.75rem;width:50px;text-align:right}
+
+    .table-wrap{overflow-x:auto;margin:28px 0}
+    table{width:100%;border-collapse:collapse;min-width:650px;font-size:.9rem}
+    th,td{padding:13px 15px;border-bottom:1px solid var(--color-border);text-align:left}
+    th{background:var(--color-bg-alt);font-family:"Space Grotesk";font-weight:700}
+    td:last-child,th:last-child{text-align:right}
+    tr:hover td{background:#fafcfb}
+    .mono{font-family:"Roboto Mono",monospace;font-variant-numeric:tabular-nums}
+
+    .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:30px}
+    .step{position:relative;padding:18px 12px;border:1px solid var(--color-border);background:#fff;border-radius:14px}
+    .step-num{font-family:"Roboto Mono";font-size:.72rem;color:var(--color-accent)}
+    .step h3{font-size:.95rem;margin-top:8px}
+    .step p{font-size:.78rem;color:var(--color-text-muted);line-height:1.5;margin:0}
+
+    .accordion{border-top:1px solid var(--color-border)}
+    .acc-item{border-bottom:1px solid var(--color-border)}
+    .acc-btn{
+      width:100%;border:0;background:none;padding:19px 0;text-align:left;
+      display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+      font-family:"Space Grotesk";font-weight:600;color:var(--color-text);
+    }
+    .acc-icon{color:var(--color-accent);font-size:1.3rem}
+    .acc-panel{display:none;padding:0 35px 20px 0;color:var(--color-text-muted)}
+    .acc-item.open .acc-panel{display:block}
+
+    .summary{
+      display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:25px;
+    }
+    .summary-item{
+      display:flex;gap:13px;padding:17px;border:1px solid var(--color-border);
+      border-radius:14px;background:#fff;
+    }
+    .check{color:var(--color-accent);font-weight:800}
+
+    .nav-bottom{
+      max-width:var(--max);margin:auto;padding:40px 22px 70px;
+      display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;
+    }
+    .lesson-nav{
+      border:1px solid var(--color-border);padding:18px;border-radius:15px;
+      color:var(--color-text);background:#fff;transition:.2s;
+    }
+    .lesson-nav:hover{border-color:var(--color-accent);text-decoration:none}
+    .lesson-nav.center{text-align:center}
+    .lesson-nav.right{text-align:right}
+    .nav-label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-muted);margin-bottom:5px}
+    footer{border-top:1px solid var(--color-border);padding:25px 22px;text-align:center;color:var(--color-text-muted);font-size:.8rem}
+
+    .top{
+      position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;
+      border:1px solid var(--color-border);background:#fff;color:var(--color-accent);
+      box-shadow:var(--shadow);cursor:pointer;opacity:0;pointer-events:none;transition:.2s;
+    }
+    .top.visible{opacity:1;pointer-events:auto}
+
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+    .reveal.show{opacity:1;transform:none}
+
+    @media(max-width:900px){
+      .cards{grid-template-columns:1fr 1fr}
+      .steps{grid-template-columns:repeat(3,1fr)}
+      .toc-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:650px){
+      .nav-links{display:none}
+      .hero{padding-top:48px}
+      h1{font-size:2.65rem}
+      section.lesson-section{padding:50px 18px}
+      .toc{padding:0 18px}
+      .toc-grid,.cards,.audio-map,.summary{grid-template-columns:1fr}
+      .steps{grid-template-columns:1fr 1fr}
+      .nav-bottom{grid-template-columns:1fr;padding:30px 18px 55px}
+      .lesson-nav.center,.lesson-nav.right{text-align:left}
+      .visual{padding:14px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+      .reveal{opacity:1;transform:none}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="brand" href="#top" aria-label="Retour au début">
+        <span class="brand-mark">AV</span>
+        <span>Formation Audiovisuelle</span>
+      </a>
+      <div class="nav-links">
+        <a href="#objectifs">Objectifs</a>
+        <a href="#nettoyage">Nettoyage</a>
+        <a href="#niveaux">Niveaux</a>
+        <a href="#ambiances">Ambiances</a>
+        <a href="#bruitages">Bruitages</a>
+        <a href="#musique">Musique</a>
+        <a href="#mixage">Mixage</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero reveal">
+      <div class="eyebrow">Module 4 · Montage vidéo — Narration et livraison</div>
+      <h1>Sound Design</h1>
+      <p class="lead">
+        Construire un univers sonore clair, crédible et immersif pour renforcer l'image,
+        guider l'attention du spectateur et donner une véritable identité à une vidéo.
+      </p>
+      <div class="badges">
+        <span class="badge accent">Leçon 16</span>
+        <span class="badge">Débutant → Intermédiaire</span>
+        <span class="badge">15 min</span>
+        <span class="badge">6 notions essentielles</span>
+      </div>
+    </section>
+
+    <aside class="toc reveal" aria-label="Sommaire">
+      <div class="toc-inner">
+        <div class="toc-title">Sommaire de la leçon</div>
+        <div class="toc-grid">
+          <a href="#objectifs">01 · Comprendre le sound design</a>
+          <a href="#nettoyage">02 · Nettoyage audio</a>
+          <a href="#niveaux">03 · Gérer les niveaux</a>
+          <a href="#ambiances">04 · Construire les ambiances</a>
+          <a href="#bruitages">05 · Ajouter les bruitages</a>
+          <a href="#musique">06 · Choisir la musique</a>
+          <a href="#mixage">07 · Le mixage final</a>
+          <a href="#workflow">08 · Chaîne de travail</a>
+          <a href="#resume">09 · Points clés</a>
+        </div>
+      </div>
+    </aside>
+
+    <section id="objectifs" class="lesson-section reveal">
+      <div class="section-inner">
+        <div class="section-number">01 / COMPRENDRE</div>
+        <h2>Le sound design : donner une dimension sonore à l'image</h2>
+        <div class="content">
+          <p>
+            Le <strong>sound design</strong> est l'ensemble des choix et traitements sonores
+            réalisés pour accompagner une œuvre audiovisuelle. Il ne consiste pas simplement
+            à « mettre du son » : il s'agit de créer une cohérence entre les dialogues,
+            les ambiances, les bruitages et la musique.
+          </p>
+          <p>
+            Un bon sound design permet de rendre une scène plus réaliste, de provoquer une
+            émotion, d'attirer l'attention sur un élément précis ou encore de faciliter
+            la compréhension d'une action invisible à l'image.
+          </p>
+        </div>
+
+        <figure class="visual">
+          <svg viewBox="0 0 1000 390" role="img" aria-label="Schéma montrant les différentes couches du sound design">
+            <rect x="25" y="25" width="950" height="340" rx="22" fill="#F6F8F6"/>
+            <text x="55" y="65" class="svg-text" font-size="22" font-weight="700">Les couches d'un univers sonore</text>
+
+            <rect x="65" y="95" width="870" height="38" rx="9" fill="#E7F2ED"/>
+            <text x="88" y="120" class="svg-text" font-size="16" font-weight="600">VOIX / DIALOGUES</text>
+            <text x="720" y="120" class="svg-muted" font-size="13">Comprendre</text>
+
+            <rect x="65" y="145" width="870" height="38" rx="9" fill="#fff" stroke="#E3E8E5"/>
+            <text x="88" y="170" class="svg-text" font-size="16" font-weight="600">AMBIANCES</text>
+            <text x="720" y="170" class="svg-muted" font-size="13">Croire au lieu</text>
+
+            <rect x="65" y="195" width="870" height="38" rx="9" fill="#fff" stroke="#E3E8E5"/>
+            <text x="88" y="220" class="svg-text" font-size="16" font-weight="600">BRUITAGES / FOLEY</text>
+            <text x="720" y="220" class="svg-muted" font-size="13">Ressentir l'action</text>
+
+            <rect x="65" y="245" width="870" height="38" rx="9" fill="#fff" stroke="#E3E8E5"/>
+            <text x="88" y="270" class="svg-text" font-size="16" font-weight="600">MUSIQUE</text>
+            <text x="720" y="270" class="svg-muted" font-size="13">Émotion</text>
+
+            <rect x="65" y="300" width="870" height="38" rx="9" fill="#1F6F54"/>
+            <text x="88" y="325" fill="white" font-size="16" font-weight="700">MIXAGE FINAL</text>
+            <text x="720" y="325" fill="white" font-size="13">Équilibre + cohérence</text>
+          </svg>
+          <figcaption>Le sound design fonctionne comme un empilement de couches qui doivent rester lisibles.</figcaption>
+        </figure>
+
+        <div class="callout">
+          <strong>💡 À retenir</strong>
+          Le son ne doit pas seulement accompagner l'image. Il doit raconter, préciser,
+          rythmer et parfois même annoncer ce que l'image ne montre pas.
+        </div>
+      </div>
+    </section>
+
+    <section id="nettoyage" class="lesson-section alt reveal">
+      <div class="section-inner">
+        <div class="section-number">02 / NETTOYAGE</div>
+        <h2>Nettoyer le son avant de le travailler</h2>
+        <div class="content">
+          <p>
+            Le nettoyage est la première étape. Avant d'ajouter de la musique ou des effets,
+            il faut éliminer autant que possible les défauts qui détournent l'attention :
+            souffle excessif, ronflette, clics, bruits parasites et variations brutales.
+          </p>
+          <p>
+            Le traitement doit rester modéré. Une réduction de bruit trop forte peut
+            dégrader la voix et produire un son artificiel. L'objectif est d'obtenir
+            une piste propre tout en conservant son caractère naturel.
+          </p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <div class="icon">⌁</div>
+            <h3>Souffle</h3>
+            <p class="muted">Bruit continu du microphone ou du préampli. À réduire avec modération.</p>
+          </article>
+          <article class="card">
+            <div class="icon">◌</div>
+            <h3>Ronflette</h3>
+            <p class="muted">Bourdonnement électrique, souvent situé autour de 50 Hz dans de nombreux contextes.</p>
+          </article>
+          <article class="card">
+            <div class="icon">×</div>
+            <h3>Clics &amp; pops</h3>
+            <p class="muted">Petits défauts ponctuels à corriger manuellement ou avec des outils de restauration.</p>
+          </article>
+        </div>
+
+        <figure class="visual">
+          <svg viewBox="0 0 1000 300" role="img" aria-label="Comparaison visuelle d'une onde audio avant et après nettoyage">
+            <text x="35" y="38" class="svg-text" font-size="18" font-weight="700">Avant nettoyage</text>
+            <line x1="35" y1="105" x2="965" y2="105" class="svg-line"/>
+            <path d="M35 105 L60 93 L80 114 L100 96 L120 111 L145 91 L165 116 L185 97 L205 108 L225 92 L245 120 L265 97 L285 110 L305 94 L325 115 L345 97 L365 111 L385 88 L405 118 L425 99 L445 110 L465 91 L485 117 L505 96 L525 109 L545 90 L565 120 L585 98 L605 111 L625 94 L645 116 L665 96 L685 110 L705 92 L725 118 L745 99 L765 109 L785 93 L805 115 L825 97 L845 111 L865 90 L885 119 L905 96 L925 111 L945 94 L965 106"
+                  fill="none" stroke="#5A6560" stroke-width="2"/>
+            <text x="35" y="177" class="svg-text" font-size="18" font-weight="700">Après nettoyage</text>
+            <line x1="35" y1="245" x2="965" y2="245" class="svg-line"/>
+            <path d="M35 245 L65 232 L95 254 L125 239 L155 247 L185 230 L215 256 L245 238 L275 249 L305 234 L335 254 L365 239 L395 247 L425 231 L455 257 L485 239 L515 249 L545 233 L575 255 L605 238 L635 248 L665 232 L695 256 L725 239 L755 249 L785 234 L815 254 L845 238 L875 248 L905 232 L935 255 L965 243"
+                  fill="none" stroke="#1F6F54" stroke-width="3"/>
+          </svg>
+          <figcaption>Le nettoyage vise une piste plus stable et lisible, pas une onde artificiellement « parfaite ».</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="niveaux" class="lesson-section reveal">
+      <div class="section-inner">
+        <div class="section-number">03 / NIVEAUX</div>
+        <h2>Gérer les niveaux et préserver la lisibilité</h2>
+        <div class="content">
+          <p>
+            Une vidéo peut contenir plusieurs sources simultanées. La voix doit généralement
+            rester l'élément prioritaire lorsqu'elle porte l'information principale.
+            La musique et les ambiances doivent donc être ajustées pour ne pas la masquer.
+          </p>
+          <p>
+            Surveillez les crêtes et évitez la saturation numérique. Une piste qui atteint
+            régulièrement 0 dBFS risque de produire de l'écrêtage. Travaillez avec une marge
+            suffisante et vérifiez toujours le résultat à l'écoute.
+          </p>
+        </div>
+
+        <div class="audio-map">
+          <div class="meter">
+            <h3>Hiérarchie d'une scène dialoguée</h3>
+            <div class="meter-row"><span class="meter-label">Voix</span><div class="meter-track"><div class="meter-fill" style="width:88%"></div></div><span class="meter-value">priorité</span></div>
+            <div class="meter-row"><span class="meter-label">Ambiance</span><div class="meter-track"><div class="meter-fill" style="width:42%"></div></div><span class="meter-value">support</span></div>
+            <div class="meter-row"><span class="meter-label">Musique</span><div class="meter-track"><div class="meter-fill" style="width:35%"></div></div><span class="meter-value">support</span></div>
+          </div>
+          <div class="meter">
+            <h3>Le principe du ducking</h3>
+            <p class="muted">
+              Lorsque la voix commence, la musique peut légèrement diminuer de niveau.
+              Quand la phrase se termine, elle remonte progressivement. Cette variation
+              doit être douce et presque invisible.
+            </p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Élément</th>
+                <th scope="col">Fonction</th>
+                <th scope="col">Risque</th>
+                <th scope="col">Priorité</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Voix</td><td>Information / narration</td><td>Masquage par musique</td><td class="mono">01</td></tr>
+              <tr><td>Ambiance</td><td>Réalisme / continuité</td><td>Accumulation</td><td class="mono">02</td></tr>
+              <tr><td>Bruitages</td><td>Impact / action</td><td>Surjeu sonore</td><td class="mono">03</td></tr>
+              <tr><td>Musique</td><td>Émotion / rythme</td><td>Envahissement</td><td class="mono">04</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="ambiances" class="lesson-section alt reveal">
+      <div class="section-inner">
+        <div class="section-number">04 / AMBIANCES</div>
+        <h2>Construire une ambiance crédible</h2>
+        <div class="content">
+          <p>
+            L'ambiance sonore représente le « fond » du monde dans lequel se déroule la scène :
+            circulation, vent, insectes, conversations lointaines, climatisation, oiseaux,
+            machines ou réverbération d'une pièce.
+          </p>
+          <p>
+            Elle permet de maintenir la continuité entre plusieurs plans. Même lorsqu'une
+            caméra change de cadre, le spectateur doit sentir qu'il se trouve toujours dans
+            le même espace.
+          </p>
+        </div>
+
+        <figure class="visual">
+          <svg viewBox="0 0 1000 390" role="img" aria-label="Diagramme de construction d'une ambiance sonore">
+            <rect x="30" y="30" width="940" height="330" rx="22" fill="#F6F8F6"/>
+            <text x="55" y="70" class="svg-text" font-size="20" font-weight="700">Une ambiance se construit en profondeur</text>
+
+            <circle cx="500" cy="205" r="64" fill="#E7F2ED" stroke="#1F6F54" stroke-width="2"/>
+            <text x="500" y="200" text-anchor="middle" class="svg-text" font-size="17" font-weight="700">ESPACE</text>
+            <text x="500" y="224" text-anchor="middle" class="svg-muted" font-size="13">cohérence</text>
+
+            <line x1="430" y1="175" x2="245" y2="120" class="svg-accent-line" stroke-width="2"/>
+            <circle cx="210" cy="110" r="42" fill="#fff" stroke="#E3E8E5"/>
+            <text x="210" y="106" text-anchor="middle" class="svg-text" font-size="13" font-weight="600">FOND</text>
+            <text x="210" y="126" text-anchor="middle" class="svg-muted" font-size="11">air / lieu</text>
+
+            <line x1="430" y1="235" x2="245" y2="290" class="svg-accent-line" stroke-width="2"/>
+            <circle cx="210" cy="300" r="42" fill="#fff" stroke="#E3E8E5"/>
+            <text x="210" y="296" text-anchor="middle" class="svg-text" font-size="13" font-weight="600">ACTIVITÉ</text>
+            <text x="210" y="316" text-anchor="middle" class="svg-muted" font-size="11">vie / mouvement</text>
+
+            <line x1="570" y1="175" x2="755" y2="120" class="svg-accent-line" stroke-width="2"/>
+            <circle cx="790" cy="110" r="42" fill="#fff" stroke="#E3E8E5"/>
+            <text x="790" y="106" text-anchor="middle" class="svg-text" font-size="13" font-weight="600">DISTANCE</text>
+            <text x="790" y="126" text-anchor="middle" class="svg-muted" font-size="11">profondeur</text>
+
+            <line x1="570" y1="235" x2="755" y2="290" class="svg-accent-line" stroke-width="2"/>
+            <circle cx="790" cy="300" r="42" fill="#fff" stroke="#E3E8E5"/>
+            <text x="790" y="296" text-anchor="middle" class="svg-text" font-size="13" font-weight="600">ACOUSTIQUE</text>
+            <text x="790" y="316" text-anchor="middle" class="svg-muted" font-size="11">réverbération</text>
+          </svg>
+          <figcaption>Une ambiance crédible combine plusieurs indices sonores qui donnent une sensation d'espace.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="bruitages" class="lesson-section reveal">
+      <div class="section-inner">
+        <div class="section-number">05 / BRUITAGES</div>
+        <h2>Donner du poids aux actions avec les bruitages</h2>
+        <div class="content">
+          <p>
+            Un bruitage accompagne une action visible ou suggérée : une porte qui se ferme,
+            des pas, un objet posé sur une table, un bouton pressé, un moteur qui démarre.
+            Ces sons rendent les gestes plus perceptibles et renforcent l'immersion.
+          </p>
+          <p>
+            Le <strong>Foley</strong> consiste notamment à recréer et enregistrer des sons
+            synchronisés avec les mouvements d'une scène. Il est souvent utilisé pour
+            remplacer ou renforcer des sons captés au tournage.
+          </p>
+        </div>
+
+        <figure class="visual">
+          <svg viewBox="0 0 1000 250" role="img" aria-label="Frise de synchronisation d'un bruitage avec une action vidéo">
+            <text x="35" y="38" class="svg-text" font-size="18" font-weight="700">Synchronisation image / son</text>
+            <line x1="80" y1="125" x2="920" y2="125" class="svg-line" stroke-width="2"/>
+            <line x1="190" y1="95" x2="190" y2="155" class="svg-accent-line" stroke-width="3"/>
+            <line x1="480" y1="75" x2="480" y2="175" class="svg-accent-line" stroke-width="3"/>
+            <line x1="730" y1="95" x2="730" y2="155" class="svg-accent-line" stroke-width="3"/>
+            <circle cx="190" cy="125" r="8" fill="#1F6F54"/>
+            <circle cx="480" cy="125" r="8" fill="#1F6F54"/>
+            <circle cx="730" cy="125" r="8" fill="#1F6F54"/>
+            <text x="190" y="85" text-anchor="middle" class="svg-text" font-size="13" font-weight="600">Mouvement</text>
+            <text x="480" y="65" text-anchor="middle" class="svg-text" font-size="13" font-weight="600">Impact</text>
+            <text x="730" y="85" text-anchor="middle" class="svg-text" font-size="13" font-weight="600">Réaction</text>
+            <text x="190" y="185" text-anchor="middle" class="svg-muted" font-size="12">pas / geste</text>
+            <text x="480" y="205" text-anchor="middle" class="svg-muted" font-size="12">bruitage principal</text>
+            <text x="730" y="185" text-anchor="middle" class="svg-muted" font-size="12">ambiance</text>
+          </svg>
+          <figcaption>Le bon timing compte autant que le choix du son.</figcaption>
+        </figure>
+
+        <div class="callout">
+          <strong>⚠️ Attention à la surenchère</strong>
+          Tous les gestes ne nécessitent pas un bruitage fort. Le réalisme vient aussi
+          de la hiérarchie : certains sons sont importants, d'autres doivent rester discrets.
+        </div>
+      </div>
+    </section>
+
+    <section id="musique" class="lesson-section alt reveal">
+      <div class="section-inner">
+        <div class="section-number">06 / MUSIQUE</div>
+        <h2>Utiliser la musique comme outil narratif</h2>
+        <div class="content">
+          <p>
+            La musique influence directement la perception d'une scène. Une même image peut
+            sembler chaleureuse, inquiétante, énergique ou mélancolique selon la musique qui
+            l'accompagne.
+          </p>
+          <p>
+            Le choix ne doit donc pas se limiter au genre musical. Il faut considérer le
+            rythme, la durée, l'intensité, les changements de section et surtout la place
+            disponible pour les dialogues.
+          </p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <div class="icon">↗</div>
+            <h3>Énergie</h3>
+            <p class="muted">Un rythme plus soutenu peut accompagner une séquence dynamique ou une montée en tension.</p>
+          </article>
+          <article class="card">
+            <div class="icon">≈</div>
+            <h3>Émotion</h3>
+            <p class="muted">Le choix harmonique et les timbres orientent la sensation produite par l'image.</p>
+          </article>
+          <article class="card">
+            <div class="icon">◷</div>
+            <h3>Rythme</h3>
+            <p class="muted">Les changements musicaux peuvent accompagner les coupes, transitions et moments forts.</p>
+          </article>
+        </div>
+
+        <div class="accordion" style="margin-top:30px">
+          <div class="acc-item">
+            <button class="acc-btn" aria-expanded="false">
+              Comment choisir une musique sous une voix ?
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-panel">
+              Privilégiez une musique qui laisse de l'espace fréquentiel et dynamique à la voix.
+              Une instrumentation trop dense peut rendre les paroles difficiles à comprendre,
+              même si le volume général semble raisonnable.
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-btn" aria-expanded="false">
+              Faut-il toujours utiliser de la musique ?
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-panel">
+              Non. Le silence, une ambiance seule ou quelques bruitages peuvent parfois être
+              plus efficaces qu'une musique permanente. L'absence de musique peut également
+              créer un contraste narratif.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mixage" class="lesson-section reveal">
+      <div class="section-inner">
+        <div class="section-number">07 / MIXAGE</div>
+        <h2>Le mixage : faire fonctionner toutes les couches ensemble</h2>
+        <div class="content">
+          <p>
+            Le mixage consiste à équilibrer les différentes pistes afin qu'elles forment
+            un ensemble cohérent. On agit notamment sur le volume, le panoramique,
+            l'égalisation, la dynamique et la réverbération.
+          </p>
+          <p>
+            Le mix doit être vérifié à plusieurs niveaux d'écoute : casque, haut-parleurs
+            d'ordinateur et, si possible, système de diffusion comparable à celui du public.
+            Un mix qui fonctionne uniquement sur un casque peut révéler des problèmes ailleurs.
+          </p>
+        </div>
+
+        <figure class="visual">
+          <svg viewBox="0 0 1000 430" role="img" aria-label="Chaîne de mixage montrant les traitements audio">
+            <rect x="30" y="25" width="940" height="370" rx="22" fill="#F6F8F6"/>
+            <text x="55" y="65" class="svg-text" font-size="20" font-weight="700">Chaîne simplifiée du mixage</text>
+
+            <g>
+              <rect x="65" y="105" width="145" height="80" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="137" y="137" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Égalisation</text>
+              <text x="137" y="159" text-anchor="middle" class="svg-muted" font-size="11">fréquences</text>
+            </g>
+            <path d="M210 145 H275" class="svg-accent-line" stroke-width="2"/><path d="M268 139 l10 6 -10 6" fill="#1F6F54"/>
+
+            <g>
+              <rect x="275" y="105" width="145" height="80" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="347" y="137" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Dynamique</text>
+              <text x="347" y="159" text-anchor="middle" class="svg-muted" font-size="11">contrôle</text>
+            </g>
+            <path d="M420 145 H485" class="svg-accent-line" stroke-width="2"/><path d="M478 139 l10 6 -10 6" fill="#1F6F54"/>
+
+            <g>
+              <rect x="485" y="105" width="145" height="80" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="557" y="137" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Panoramique</text>
+              <text x="557" y="159" text-anchor="middle" class="svg-muted" font-size="11">espace stéréo</text>
+            </g>
+            <path d="M630 145 H695" class="svg-accent-line" stroke-width="2"/><path d="M688 139 l10 6 -10 6" fill="#1F6F54"/>
+
+            <g>
+              <rect x="695" y="105" width="145" height="80" rx="14" fill="#fff" stroke="#E3E8E5"/>
+              <text x="767" y="137" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Réverbération</text>
+              <text x="767" y="159" text-anchor="middle" class="svg-muted" font-size="11">espace</text>
+            </g>
+
+            <rect x="210" y="245" width="580" height="78" rx="15" fill="#1F6F54"/>
+            <text x="500" y="278" text-anchor="middle" fill="white" font-size="17" font-weight="700">ÉCOUTE DE CONTRÔLE</text>
+            <text x="500" y="301" text-anchor="middle" fill="white" font-size="12">casque · enceintes · faible volume · différents environnements</text>
+          </svg>
+          <figcaption>Le mixage est un processus d'équilibre : chaque traitement doit servir la lisibilité et l'intention.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="workflow" class="lesson-section alt reveal">
+      <div class="section-inner">
+        <div class="section-number">08 / WORKFLOW</div>
+        <h2>Une méthode de travail simple et efficace</h2>
+        <div class="content">
+          <p>
+            Pour éviter de se perdre dans des dizaines de pistes, travaillez dans un ordre
+            logique. Commencez par rendre les éléments essentiels propres et compréhensibles,
+            puis construisez progressivement l'univers sonore.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step"><div class="step-num">01</div><h3>Écouter</h3><p>Repérer les défauts et besoins.</p></div>
+          <div class="step"><div class="step-num">02</div><h3>Nettoyer</h3><p>Réduire les parasites.</p></div>
+          <div class="step"><div class="step-num">03</div><h3>Niveler</h3><p>Créer une hiérarchie.</p></div>
+          <div class="step"><div class="step-num">04</div><h3>Ambiancer</h3><p>Créer la continuité.</p></div>
+          <div class="step"><div class="step-num">05</div><h3>Enrichir</h3><p>Ajouter bruitages et musique.</p></div>
+          <div class="step"><div class="step-num">06</div><h3>Finaliser</h3><p>Contrôler le mix.</p></div>
+        </div>
+
+        <div class="callout" style="margin-top:30px">
+          <strong>📌 Principe professionnel</strong>
+          Le meilleur sound design n'est pas nécessairement celui qui contient le plus de sons.
+          C'est celui où chaque son a une fonction claire et où aucun élément important
+          ne se bat avec un autre pour attirer l'attention.
+        </div>
+      </div>
+    </section>
+
+    <section id="resume" class="lesson-section reveal">
+      <div class="section-inner">
+        <div class="section-number">09 / SYNTHÈSE</div>
+        <h2>Points clés à retenir</h2>
+        <div class="summary">
+          <div class="summary-item"><span class="check">01</span><div><strong>Nettoyer</strong><br><span class="muted">Corriger les défauts avant de construire le mix.</span></div></div>
+          <div class="summary-item"><span class="check">02</span><div><strong>Hiérarchiser</strong><br><span class="muted">La voix et les informations importantes restent lisibles.</span></div></div>
+          <div class="summary-item"><span class="check">03</span><div><strong>Créer l'espace</strong><br><span class="muted">Les ambiances donnent une continuité et une profondeur.</span></div></div>
+          <div class="summary-item"><span class="check">04</span><div><strong>Renforcer l'action</strong><br><span class="muted">Les bruitages donnent du poids aux gestes et aux événements.</span></div></div>
+          <div class="summary-item"><span class="check">05</span><div><strong>Raconter avec la musique</strong><br><span class="muted">La musique accompagne l'émotion sans masquer le contenu.</span></div></div>
+          <div class="summary-item"><span class="check">06</span><div><strong>Contrôler le mix</strong><br><span class="muted">Toujours vérifier le résultat dans plusieurs conditions d'écoute.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="nav-bottom">
+      <a class="lesson-nav" href="#" aria-label="Leçon précédente">
+        <span class="nav-label">← Précédente</span>
+        Leçon 15
+      </a>
+      <a class="lesson-nav center" href="#top">
+        <span class="nav-label">Module 4</span>
+        Retour au début
+      </a>
+      <a class="lesson-nav right" href="#">
+        <span class="nav-label">Suivante →</span>
+        Leçon 17 · After Effects
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    Formation Audiovisuelle · Module 4 — Montage vidéo, narration et livraison · Leçon 16
+  </footer>
+
+  <button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+  <script>
+    // Barre de progression
+    const progress = document.getElementById('progress');
+    const topBtn = document.getElementById('topBtn');
+
+    function updateProgress(){
+      const scrollTop = window.scrollY;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      const percent = height > 0 ? (scrollTop / height) * 100 : 0;
+      progress.style.width = percent + '%';
+      topBtn.classList.toggle('visible', scrollTop > 500);
+    }
+    window.addEventListener('scroll', updateProgress, {passive:true});
+    updateProgress();
+
+    topBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Accordéons accessibles
+    document.querySelectorAll('.acc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const open = item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+        btn.querySelector('.acc-icon').textContent = open ? '−' : '+';
+      });
+    });
+
+    // Apparition au scroll
+    const reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {threshold:.08});
+      reveals.forEach(el => observer.observe(el));
+    } else {
+      reveals.forEach(el => el.classList.add('show'));
+    }
+  </script>
+</body>
+</html>

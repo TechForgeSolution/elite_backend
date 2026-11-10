@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 29 — Clôture et bilan du projet | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2314213D'/%3E%3Cpath d='M20 60 L45 35 L60 50 L80 25' stroke='%23FF9F1C' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='80' cy='25' r='7' fill='%23FF9F1C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#F4F6F8;
+    --color-text:#14213D;
+    --color-accent:#FF9F1C;
+    --color-neutral:#8D99AE;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --accent-tint: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-tint-strong: color-mix(in srgb, var(--color-accent) 18%, var(--color-bg));
+    --text-on-dark: var(--color-bg);
+    --neutral-tint: color-mix(in srgb, var(--color-neutral) 12%, var(--color-bg));
+
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--color-bg);
+    color:var(--color-text);
+    font-family:var(--font-body);
+    font-weight:400;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  img,svg{max-width:100%;}
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    color:var(--color-text);
+    line-height:1.25;
+    margin:0 0 0.6em 0;
+  }
+  h1{font-size:clamp(1.9rem, 4vw, 2.7rem); font-weight:800; letter-spacing:-0.01em;}
+  h2{font-size:clamp(1.4rem, 2.6vw, 1.85rem); font-weight:700;}
+  h3{font-size:1.15rem; font-weight:600;}
+  p{margin:0 0 1.1em 0;}
+  .lede{font-size:1.05rem; color:var(--text-muted);}
+
+  a{color:var(--color-accent); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .mono{
+    font-family:var(--font-mono);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .container{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .prose-width{max-width:720px;}
+
+  /* ---------- Progress bar ---------- */
+  #reading-progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent);
+    z-index:1000;
+    transition:width 0.1s linear;
+  }
+
+  /* ---------- Header ---------- */
+  header.site-header{
+    position:sticky; top:0; z-index:900;
+    background:color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px;
+    gap:16px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-display); font-weight:700; font-size:0.95rem;
+    color:var(--color-text);
+  }
+  .brand-mark{
+    width:30px; height:30px; border-radius:8px;
+    background:var(--color-text);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:16px; height:16px;}
+
+  nav.top-nav{display:flex; align-items:center; gap:4px;}
+  .nav-toggle{
+    display:none;
+    background:none; border:1px solid var(--border-soft); border-radius:8px;
+    padding:8px 10px; cursor:pointer; color:var(--color-text);
+    font-family:var(--font-body); font-size:0.85rem;
+  }
+  .toc-menu{display:flex; flex-wrap:wrap; gap:2px 4px;}
+  .toc-menu a{
+    font-size:0.8rem; color:var(--text-muted);
+    padding:6px 10px; border-radius:6px;
+    white-space:nowrap;
+  }
+  .toc-menu a:hover{background:var(--accent-tint); color:var(--color-text); text-decoration:none;}
+
+  @media (max-width: 860px){
+    .toc-menu{
+      display:none;
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; background:var(--color-bg);
+      border-bottom:1px solid var(--border-soft);
+      padding:10px 24px 16px;
+    }
+    .toc-menu.open{display:flex;}
+    .nav-toggle{display:inline-block;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:64px 0 40px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .badge{
+    font-family:var(--font-mono); font-size:0.72rem; font-weight:500;
+    text-transform:uppercase; letter-spacing:0.04em;
+    padding:5px 11px; border-radius:999px;
+    border:1px solid var(--border-soft);
+    color:var(--text-muted);
+    background:var(--color-bg);
+  }
+  .badge.accent{
+    border-color:color-mix(in srgb, var(--color-accent) 55%, var(--color-bg));
+    color:var(--color-text);
+    background:var(--accent-tint);
+  }
+  .hero .module-tag{
+    font-family:var(--font-mono); font-size:0.78rem; color:var(--color-accent);
+    text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px; display:block; font-weight:600;
+  }
+
+  /* ---------- Sommaire ---------- */
+  .toc-card{
+    background:var(--color-bg);
+    border:1px solid var(--border-soft);
+    border-radius:14px;
+    padding:22px 24px;
+    margin:36px 0 8px;
+  }
+  .toc-card h2{font-size:1rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:14px; color:var(--text-muted);}
+  .toc-list{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:6px 18px;}
+  @media (max-width:640px){.toc-list{grid-template-columns:1fr;}}
+  .toc-list li a{
+    display:flex; align-items:baseline; gap:8px;
+    color:var(--color-text); font-size:0.92rem; padding:5px 0;
+  }
+  .toc-list li a::before{
+    content:attr(data-num);
+    font-family:var(--font-mono); font-size:0.75rem; color:var(--color-accent);
+    flex-shrink:0;
+  }
+  .toc-list li a:hover{text-decoration:none; color:var(--color-accent);}
+
+  /* ---------- Sections ---------- */
+  section.lesson-section{
+    padding:56px 0;
+    opacity:0; transform:translateY(18px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  section.lesson-section.is-visible{opacity:1; transform:translateY(0);}
+  section.lesson-section.alt-bg{background:var(--bg-alt);}
+  .section-kicker{
+    font-family:var(--font-mono); font-size:0.75rem; color:var(--color-accent);
+    text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; display:block; font-weight:600;
+  }
+
+  /* ---------- Callouts ---------- */
+  .callout{
+    border:1px solid var(--border-soft);
+    border-left:4px solid var(--color-accent);
+    border-radius:10px;
+    padding:18px 20px;
+    margin:24px 0;
+    background:var(--color-bg);
+    display:flex; gap:14px;
+  }
+  .callout .icon{font-size:1.3rem; line-height:1; flex-shrink:0;}
+  .callout .callout-title{font-family:var(--font-display); font-weight:700; font-size:0.95rem; margin-bottom:4px; color:var(--color-text);}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p{font-size:0.94rem; color:var(--text-muted);}
+
+  /* ---------- Fiche de pilotage ---------- */
+  .pilot-card{
+    background:var(--accent-tint);
+    border:1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-bg));
+    border-radius:12px;
+    padding:20px 22px;
+    margin:24px 0;
+    position:relative;
+  }
+  .pilot-card .pilot-label{
+    font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em;
+    color:var(--color-accent); font-weight:600; display:block; margin-bottom:10px;
+  }
+  .pilot-card pre{
+    font-family:var(--font-mono); font-size:0.86rem; margin:0; white-space:pre-wrap;
+    color:var(--color-text); line-height:1.65;
+  }
+  .copy-btn{
+    position:absolute; top:14px; right:14px;
+    font-family:var(--font-mono); font-size:0.7rem;
+    background:var(--color-bg); border:1px solid var(--border-soft);
+    color:var(--text-muted); border-radius:6px; padding:5px 9px; cursor:pointer;
+  }
+  .copy-btn:hover{border-color:var(--color-accent); color:var(--color-text);}
+
+  /* ---------- Tables ---------- */
+  .table-scroll{overflow-x:auto; margin:24px 0; border:1px solid var(--border-soft); border-radius:12px;}
+  table{
+    border-collapse:collapse; width:100%; min-width:560px;
+    font-size:0.9rem;
+  }
+  thead th{
+    background:var(--color-text); color:var(--color-bg);
+    font-family:var(--font-display); font-weight:600; font-size:0.78rem;
+    text-transform:uppercase; letter-spacing:0.03em;
+    text-align:left; padding:12px 14px;
+  }
+  tbody td{
+    padding:11px 14px; border-bottom:1px solid var(--border-soft);
+    font-family:var(--font-body); color:var(--color-text);
+  }
+  tbody td.num, thead th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr.milestone-row{background:var(--accent-tint);}
+  tbody tr.milestone-row td:first-child{border-left:3px solid var(--color-accent);}
+  tbody tr:hover{background:var(--neutral-tint);}
+
+  /* ---------- Cards grid ---------- */
+  .cards-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px; margin:28px 0;
+  }
+  .info-card{
+    border:1px solid var(--border-soft); border-radius:12px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.2s ease, transform 0.2s ease;
+  }
+  .info-card:hover{border-color:var(--color-accent); transform:translateY(-2px);}
+  .info-card .card-icon{
+    width:38px; height:38px; border-radius:9px; background:var(--accent-tint);
+    display:flex; align-items:center; justify-content:center; margin-bottom:12px; font-size:1.1rem;
+  }
+  .info-card h3{font-size:1rem; margin-bottom:6px;}
+  .info-card p{font-size:0.88rem; color:var(--text-muted); margin-bottom:0;}
+
+  /* ---------- Tabs ---------- */
+  .tabs{margin:28px 0; border:1px solid var(--border-soft); border-radius:12px; overflow:hidden;}
+  .tab-list{display:flex; background:var(--neutral-tint); border-bottom:1px solid var(--border-soft);}
+  .tab-btn{
+    flex:1; padding:13px 16px; background:none; border:none; cursor:pointer;
+    font-family:var(--font-display); font-weight:600; font-size:0.88rem;
+    color:var(--text-muted); border-bottom:2px solid transparent;
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-text); border-bottom-color:var(--color-accent); background:var(--color-bg);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .tab-panel{padding:22px 22px 24px; display:none;}
+  .tab-panel.active{display:block;}
+  .tab-panel p:last-child{margin-bottom:0;}
+
+  /* ---------- Accordion ---------- */
+  .accordion{margin:28px 0; border:1px solid var(--border-soft); border-radius:12px; overflow:hidden;}
+  .accordion-item + .accordion-item{border-top:1px solid var(--border-soft);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:var(--color-bg); border:none; cursor:pointer;
+    padding:16px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px;
+    font-family:var(--font-display); font-weight:600; font-size:0.95rem; color:var(--color-text);
+  }
+  .accordion-trigger:hover{background:var(--bg-alt);}
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .chevron{
+    flex-shrink:0; width:18px; height:18px; transition:transform 0.25s ease; color:var(--color-accent);
+  }
+  .accordion-trigger[aria-expanded="true"] .chevron{transform:rotate(180deg);}
+  .accordion-panel{
+    max-height:0; overflow:hidden; transition:max-height 0.3s ease;
+    background:var(--color-bg);
+  }
+  .accordion-panel-inner{padding:0 20px 18px; font-size:0.92rem; color:var(--text-muted);}
+  .accordion-panel-inner p:last-child{margin-bottom:0;}
+
+  /* ---------- Stepper / frise ---------- */
+  .stepper-wrap{margin:32px 0; overflow-x:auto;}
+  .stepper{display:flex; min-width:640px; gap:0;}
+  .step{flex:1; position:relative; padding:0 10px 0 0; text-align:left;}
+  .step .step-line{
+    height:3px; background:var(--border-soft); position:relative; margin-bottom:14px;
+  }
+  .step:first-child .step-line{border-radius:3px 0 0 3px;}
+  .step:last-child .step-line{border-radius:0 3px 3px 0;}
+  .step .step-line.filled{background:var(--color-accent);}
+  .step .step-dot{
+    width:14px; height:14px; border-radius:50%; background:var(--color-accent);
+    border:3px solid var(--color-bg); position:absolute; top:-5.5px; left:0;
+    box-shadow:0 0 0 1px var(--color-accent);
+  }
+  .step .step-num{font-family:var(--font-mono); font-size:0.72rem; color:var(--color-accent); font-weight:600;}
+  .step h3{font-size:0.92rem; margin:4px 0 4px;}
+  .step p{font-size:0.8rem; color:var(--text-muted); margin-bottom:0;}
+
+  /* ---------- Key takeaways ---------- */
+  .takeaway-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:24px;}
+  .takeaway{
+    border:1px solid var(--border-soft); border-radius:12px; padding:18px 20px;
+    background:var(--color-bg); border-top:3px solid var(--color-accent);
+  }
+  .takeaway .num{font-family:var(--font-mono); color:var(--color-accent); font-weight:600; font-size:0.85rem;}
+  .takeaway p{font-size:0.92rem; margin:6px 0 0; color:var(--color-text);}
+
+  /* ---------- Back to top ---------- */
+  #back-to-top{
+    position:fixed; bottom:26px; right:26px; z-index:800;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--color-text); color:var(--color-bg);
+    border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity 0.25s ease, transform 0.25s ease;
+    box-shadow:0 4px 14px rgba(20,33,61,0.25);
+  }
+  #back-to-top.visible{opacity:1; pointer-events:auto;}
+  #back-to-top:hover{background:var(--color-accent); color:var(--color-text);}
+
+  /* ---------- Lesson nav ---------- */
+  .lesson-nav{
+    border-top:1px solid var(--border-soft);
+    padding:44px 0;
+  }
+  .lesson-nav-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){.lesson-nav-grid{grid-template-columns:1fr;}}
+  .lesson-nav-card{
+    border:1px solid var(--border-soft); border-radius:12px; padding:18px 20px;
+    display:block; color:var(--color-text);
+  }
+  .lesson-nav-card:hover{border-color:var(--color-accent); text-decoration:none;}
+  .lesson-nav-card .dir{
+    font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--color-accent); display:block; margin-bottom:6px;
+  }
+  .lesson-nav-card.next{text-align:right;}
+  .lesson-nav-card .lesson-title{font-family:var(--font-display); font-weight:700; font-size:0.98rem;}
+  .module-return{text-align:center; margin-top:20px;}
+  .module-return a{font-size:0.85rem; color:var(--text-muted);}
+
+  /* ---------- Footer ---------- */
+  footer.site-footer{
+    border-top:1px solid var(--border-soft);
+    padding:28px 0 40px;
+    text-align:center;
+  }
+  footer.site-footer p{font-size:0.8rem; color:var(--text-muted); margin:0;}
+
+  /* ---------- Misc ---------- */
+  .section-header{margin-bottom:20px;}
+  ul.plain{padding-left:1.2em; margin:0 0 1.1em;}
+  ul.plain li{margin-bottom:6px; color:var(--color-text);}
+  .kpi-row{display:flex; flex-wrap:wrap; gap:16px; margin:24px 0;}
+  .kpi{
+    flex:1; min-width:150px; border:1px solid var(--border-soft); border-radius:12px;
+    padding:16px 18px; background:var(--color-bg); text-align:center;
+  }
+  .kpi .kpi-val{font-family:var(--font-mono); font-size:1.5rem; font-weight:600; color:var(--color-text);}
+  .kpi .kpi-label{font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;}
+</style>
+</head>
+<body>
+
+<div id="reading-progress"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 15 L10 9 L14 13 L20 6" stroke="#FF9F1C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="6" r="1.8" fill="#FF9F1C"/>
+        </svg>
+      </span>
+      <span>Gestion de Projet — CFPAM</span>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="tocMenu">Sommaire ▾</button>
+    <nav class="top-nav">
+      <ul class="toc-menu" id="tocMenu">
+        <li><a href="#validation">Validation</a></li>
+        <li><a href="#reception">Réception</a></li>
+        <li><a href="#cloture-admin">Clôture admin.</a></li>
+        <li><a href="#bilan-financier">Bilan financier</a></li>
+        <li><a href="#archivage">Archivage</a></li>
+        <li><a href="#retex">Retour d'expérience</a></li>
+        <li><a href="#synthese">Synthèse</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container prose-width">
+      <span class="module-tag">Module 6 — Management, performance et clôture</span>
+      <h1>Leçon 29 — Clôture et bilan du projet</h1>
+      <p class="lede">Clôturer un projet ne se limite pas à livrer : c'est valider, réceptionner, solder et capitaliser. Cette leçon détaille les étapes qui transforment la fin d'un projet en point de départ pour les suivants.</p>
+      <div class="badges">
+        <span class="badge accent">Module 6</span>
+        <span class="badge">Niveau Avancé / Professionnel</span>
+        <span class="badge">⏱ 20 min de lecture</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="container prose-width">
+    <nav class="toc-card" aria-label="Sommaire de la leçon">
+      <h2>Sommaire</h2>
+      <ul class="toc-list">
+        <li><a href="#validation" data-num="01">Validation des livrables</a></li>
+        <li><a href="#reception" data-num="02">Réception</a></li>
+        <li><a href="#cloture-admin" data-num="03">Clôture administrative</a></li>
+        <li><a href="#bilan-financier" data-num="04">Bilan financier</a></li>
+        <li><a href="#archivage" data-num="05">Archivage</a></li>
+        <li><a href="#retex" data-num="06">Retour d'expérience</a></li>
+        <li><a href="#lessons-learned" data-num="07">Lessons learned</a></li>
+        <li><a href="#synthese" data-num="08">Points clés à retenir</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- 1. VALIDATION DES LIVRABLES -->
+  <section class="lesson-section" id="validation">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 01</span>
+        <h2>Validation des livrables</h2>
+      </div>
+      <p>La clôture démarre par la vérification que chaque livrable répond aux critères d'acceptation définis dans la charte de projet et le cahier des charges. Cette validation croise trois regards : celui de l'équipe projet, celui du client ou commanditaire, et celui du contrôle qualité lorsqu'il existe.</p>
+      <p>Un livrable n'est considéré « terminé » que lorsqu'il est <strong>conforme</strong> (respect des spécifications), <strong>complet</strong> (aucun élément manquant) et <strong>documenté</strong> (mode d'emploi, notice technique, conditions d'utilisation).</p>
+
+      <div class="callout">
+        <span class="icon">⚠️</span>
+        <div>
+          <div class="callout-title">Attention / erreur fréquente</div>
+          <p>Confondre « livraison » et « validation ». Un livrable envoyé au client n'est pas automatiquement accepté : sans validation formelle signée, le chef de projet reste responsable en cas de litige ultérieur sur la conformité.</p>
+        </div>
+      </div>
+
+      <h3>Schéma — Circuit de validation d'un livrable</h3>
+      <svg viewBox="0 0 700 200" role="img" aria-label="Circuit de validation d'un livrable en quatre étapes : soumission, contrôle qualité, revue client, décision d'acceptation ou de reprise">
+        <defs>
+          <marker id="arrow1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#8D99AE"/>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif">
+          <rect x="10" y="70" width="140" height="60" rx="10" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="80" y="95" text-anchor="middle" font-size="12" fill="#14213D" font-weight="600">Soumission</text>
+          <text x="80" y="112" text-anchor="middle" font-size="10" fill="#8D99AE">du livrable</text>
+
+          <line x1="150" y1="100" x2="190" y2="100" stroke="#8D99AE" stroke-width="1.5" marker-end="url(#arrow1)"/>
+
+          <rect x="192" y="70" width="140" height="60" rx="10" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="262" y="95" text-anchor="middle" font-size="12" fill="#14213D" font-weight="600">Contrôle qualité</text>
+          <text x="262" y="112" text-anchor="middle" font-size="10" fill="#8D99AE">vérif. interne</text>
+
+          <line x1="332" y1="100" x2="372" y2="100" stroke="#8D99AE" stroke-width="1.5" marker-end="url(#arrow1)"/>
+
+          <rect x="374" y="70" width="140" height="60" rx="10" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="444" y="95" text-anchor="middle" font-size="12" fill="#14213D" font-weight="600">Revue client</text>
+          <text x="444" y="112" text-anchor="middle" font-size="10" fill="#8D99AE">recette fonctionnelle</text>
+
+          <line x1="514" y1="100" x2="554" y2="100" stroke="#8D99AE" stroke-width="1.5" marker-end="url(#arrow1)"/>
+
+          <rect x="556" y="55" width="134" height="90" rx="10" fill="#FF9F1C" fill-opacity="0.12" stroke="#FF9F1C" stroke-width="1.5"/>
+          <text x="623" y="85" text-anchor="middle" font-size="12" fill="#14213D" font-weight="700">Décision</text>
+          <text x="623" y="102" text-anchor="middle" font-size="10" fill="#14213D">✔ Acceptation</text>
+          <text x="623" y="118" text-anchor="middle" font-size="10" fill="#14213D">↺ Reprise</text>
+
+          <path d="M556,60 C 480,20 340,20 262,68" stroke="#FF9F1C" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arrow1)"/>
+          <text x="410" y="28" text-anchor="middle" font-size="9.5" fill="#FF9F1C" font-weight="600">Boucle de reprise si non-conformité</text>
+        </g>
+      </svg>
+
+      <div class="pilot-card">
+        <span class="pilot-label">Fiche de pilotage — Critère d'acceptation</span>
+        <button class="copy-btn" data-copy-target="copy-1">Copier</button>
+        <pre id="copy-1">LIVRABLE : Module e-commerce v1
+CRITÈRES : conformité specs (100%), tests de charge validés,
+           documentation utilisateur livrée
+VALIDÉ PAR : Maîtrise d'ouvrage — le 12/03
+STATUT   : ACCEPTÉ SANS RÉSERVE</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. RÉCEPTION -->
+  <section class="lesson-section alt-bg" id="reception">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 02</span>
+        <h2>Réception</h2>
+      </div>
+      <p>La réception formalise l'acceptation par un acte écrit : le <strong>procès-verbal de réception (PV)</strong>. Il engage juridiquement les parties et déclenche souvent des effets contractuels (paiement du solde, démarrage des garanties, transfert de responsabilité).</p>
+      <p>Deux issues possibles : la <strong>réception sans réserve</strong>, qui clôt formellement le volet contractuel, ou la <strong>réception avec réserves</strong>, qui liste les écarts à corriger dans un délai défini avant réception définitive.</p>
+
+      <div class="tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Types de réception">
+          <button class="tab-btn" role="tab" aria-selected="true" id="tab-reserve-sans" aria-controls="panel-reserve-sans">Réception sans réserve</button>
+          <button class="tab-btn" role="tab" aria-selected="false" id="tab-reserve-avec" aria-controls="panel-reserve-avec" tabindex="-1">Réception avec réserves</button>
+        </div>
+        <div class="tab-panel active" id="panel-reserve-sans" role="tabpanel" aria-labelledby="tab-reserve-sans">
+          <p>Le client constate que l'ensemble des livrables est conforme. Le PV est signé en l'état, la garantie contractuelle démarre à cette date, et le solde de facturation devient exigible selon les conditions du contrat.</p>
+        </div>
+        <div class="tab-panel" id="panel-reserve-avec" role="tabpanel" aria-labelledby="tab-reserve-avec" hidden>
+          <p>Des écarts mineurs sont constatés mais ne bloquent pas l'usage du livrable. Ils sont consignés dans une annexe au PV avec un délai de levée des réserves. Une nouvelle réception (dite « définitive ») intervient une fois les réserves levées.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="icon">📐</span>
+        <div>
+          <div class="callout-title">Bonnes pratiques professionnelles</div>
+          <p>Toujours dater et faire signer le PV par un représentant habilité côté client. Un PV non signé, ou signé par une personne sans mandat, n'a pas de valeur probante en cas de litige.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CLÔTURE ADMINISTRATIVE -->
+  <section class="lesson-section" id="cloture-admin">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 03</span>
+        <h2>Clôture administrative</h2>
+      </div>
+      <p>La clôture administrative solde l'ensemble des engagements contractuels du projet : contrats fournisseurs, sous-traitance, prestations d'assistance technique, autorisations et assurances spécifiques au projet.</p>
+
+      <div class="cards-grid">
+        <div class="info-card">
+          <div class="card-icon">📄</div>
+          <h3>Contrats fournisseurs</h3>
+          <p>Vérification du service fait, levée des cautions, clôture des bons de commande ouverts.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">🤝</div>
+          <h3>Sous-traitance</h3>
+          <p>Réception des livrables sous-traités, solde des paiements, clôture des conventions.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">🔐</div>
+          <h3>Autorisations & accès</h3>
+          <p>Désactivation des accès temporaires, restitution du matériel prêté, clôture des habilitations.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">🗂️</div>
+          <h3>Obligations contractuelles</h3>
+          <p>Vérification des clauses de garantie, de confidentialité et de propriété intellectuelle encore actives.</p>
+        </div>
+      </div>
+
+      <div class="accordion" data-accordion>
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-1">
+            Checklist détaillée de clôture administrative
+            <svg class="chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="accordion-panel" id="acc-panel-1">
+            <div class="accordion-panel-inner">
+              <ul class="plain">
+                <li>Rapprochement des bons de commande et des factures reçues</li>
+                <li>Clôture ou renouvellement des contrats-cadres encore utiles à l'organisation</li>
+                <li>Restitution des cautions et garanties bancaires</li>
+                <li>Archivage des correspondances contractuelles (avenants, courriers de mise en demeure éventuels)</li>
+                <li>Libération des ressources humaines affectées au projet vers leurs entités d'origine</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-panel-2">
+            Cas particulier : clôture anticipée d'un projet
+            <svg class="chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="accordion-panel" id="acc-panel-2">
+            <div class="accordion-panel-inner">
+              <p>Un projet peut être clôturé avant son terme prévu (arrêt décidé par le commanditaire, contexte budgétaire, obsolescence du besoin). La même rigueur s'applique : bilan des livrables partiels, valorisation du travail réalisé, clôture des engagements en cours et justification formelle de l'arrêt dans le rapport de clôture.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. BILAN FINANCIER -->
+  <section class="lesson-section alt-bg" id="bilan-financier">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 04</span>
+        <h2>Bilan financier</h2>
+      </div>
+      <p>Le bilan financier de clôture compare le budget prévisionnel au réalisé, poste par poste. Il met en évidence les écarts, en explique les causes, et alimente les référentiels de coûts pour les projets futurs.</p>
+
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val mono">142 500 €</div><div class="kpi-label">Budget prévu</div></div>
+        <div class="kpi"><div class="kpi-val mono">151 800 €</div><div class="kpi-label">Coût réel</div></div>
+        <div class="kpi"><div class="kpi-val mono">+6,5%</div><div class="kpi-label">Écart budgétaire</div></div>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">Bilan financier prévisionnel versus réalisé, par poste de dépense</caption>
+          <thead>
+            <tr>
+              <th scope="col">Poste</th>
+              <th scope="col" class="num">Prévu (€)</th>
+              <th scope="col" class="num">Réalisé (€)</th>
+              <th scope="col" class="num">Écart</th>
+              <th scope="col">Commentaire</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ressources humaines</td>
+              <td class="num">86 000</td>
+              <td class="num">90 200</td>
+              <td class="num">+4,9%</td>
+              <td>Charge supplémentaire liée aux corrections post-tests</td>
+            </tr>
+            <tr>
+              <td>Matériel & licences</td>
+              <td class="num">28 000</td>
+              <td class="num">26 400</td>
+              <td class="num">−5,7%</td>
+              <td>Négociation fournisseur favorable</td>
+            </tr>
+            <tr class="milestone-row">
+              <td>Sous-traitance</td>
+              <td class="num">18 500</td>
+              <td class="num">24 100</td>
+              <td class="num">+30,3%</td>
+              <td>Écart prioritaire — avenant non anticipé</td>
+            </tr>
+            <tr>
+              <td>Divers & imprévus</td>
+              <td class="num">10 000</td>
+              <td class="num">11 100</td>
+              <td class="num">+11,0%</td>
+              <td>Réserve pour aléas quasi consommée</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Jauges de pilotage financier</h3>
+      <svg viewBox="0 0 700 170" role="img" aria-label="Trois jauges de pilotage financier : consommation budgétaire à 106%, taux de marge à 8%, indice de performance des coûts à 0,94">
+        <g font-family="Inter, sans-serif">
+          <text x="90" y="20" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Consommation budget</text>
+          <rect x="20" y="35" width="140" height="14" rx="7" fill="#8D99AE" fill-opacity="0.25"/>
+          <rect x="20" y="35" width="140" height="14" rx="7" fill="#FF9F1C"/>
+          <text x="90" y="65" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#14213D" font-weight="600">106%</text>
+
+          <text x="350" y="20" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Taux de marge</text>
+          <rect x="280" y="35" width="140" height="14" rx="7" fill="#8D99AE" fill-opacity="0.25"/>
+          <rect x="280" y="35" width="30" height="14" rx="7" fill="#14213D"/>
+          <text x="350" y="65" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#14213D" font-weight="600">8%</text>
+
+          <text x="610" y="20" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Indice de performance coûts (CPI)</text>
+          <rect x="540" y="35" width="140" height="14" rx="7" fill="#8D99AE" fill-opacity="0.25"/>
+          <rect x="540" y="35" width="131" height="14" rx="7" fill="#FF9F1C"/>
+          <text x="610" y="65" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#14213D" font-weight="600">0,94</text>
+
+          <text x="20" y="100" font-size="10" fill="#8D99AE">CPI = Valeur acquise ÷ Coût réel — un indice inférieur à 1 signale un dépassement de coûts.</text>
+        </g>
+      </svg>
+
+      <div class="callout">
+        <span class="icon">💡</span>
+        <div>
+          <div class="callout-title">À retenir</div>
+          <p>Un écart budgétaire n'est ni bon ni mauvais en soi : ce qui compte, c'est sa capacité à être expliqué et rattaché à une cause identifiée (avenant, aléa technique, sous-estimation initiale).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. ARCHIVAGE -->
+  <section class="lesson-section" id="archivage">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 05</span>
+        <h2>Archivage</h2>
+      </div>
+      <p>L'archivage constitue la mémoire du projet. Il doit être organisé, accessible et conservé pendant une durée cohérente avec les obligations légales (garanties, litiges éventuels) et les besoins de l'organisation.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Catégorie de document</th>
+              <th scope="col">Exemples</th>
+              <th scope="col">Durée de conservation indicative</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Documents de cadrage</td>
+              <td>Charte de projet, cahier des charges</td>
+              <td class="mono">Durée de vie du produit</td>
+            </tr>
+            <tr>
+              <td>Documents contractuels</td>
+              <td>Contrats, avenants, PV de réception</td>
+              <td class="mono">5 à 10 ans</td>
+            </tr>
+            <tr>
+              <td>Documents financiers</td>
+              <td>Budget, factures, bilan de clôture</td>
+              <td class="mono">10 ans</td>
+            </tr>
+            <tr class="milestone-row">
+              <td>Retour d'expérience</td>
+              <td>Rapport lessons learned</td>
+              <td class="mono">Illimitée (base de connaissances)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="icon">🔗</span>
+        <div>
+          <div class="callout-title">Pour aller plus loin</div>
+          <p>Un plan d'archivage efficace distingue toujours l'archivage « vivant » (consultable facilement par l'équipe) de l'archivage légal (conservation probante, accès restreint), avec une nomenclature de classement identique d'un projet à l'autre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. RETOUR D'EXPÉRIENCE -->
+  <section class="lesson-section alt-bg" id="retex">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 06</span>
+        <h2>Retour d'expérience</h2>
+      </div>
+      <p>Le retour d'expérience (RETEX) est une réunion structurée, organisée peu après la clôture, réunissant l'équipe projet et, selon les cas, les parties prenantes clés. Son objectif n'est pas de désigner des responsables, mais d'identifier ce qui a fonctionné et ce qui doit évoluer.</p>
+
+      <h3>Schéma — Organisation d'un atelier de retour d'expérience</h3>
+      <svg viewBox="0 0 700 210" role="img" aria-label="Cycle d'un atelier de retour d'expérience en quatre temps : préparation, collecte à chaud, analyse, restitution et capitalisation">
+        <g font-family="Inter, sans-serif">
+          <circle cx="350" cy="105" r="4" fill="#14213D"/>
+          <circle cx="350" cy="105" r="80" fill="none" stroke="#8D99AE" stroke-dasharray="3 4"/>
+
+          <g>
+            <circle cx="350" cy="25" r="34" fill="#F4F6F8" stroke="#FF9F1C" stroke-width="2"/>
+            <text x="350" y="21" text-anchor="middle" font-size="10.5" fill="#14213D" font-weight="600">Préparation</text>
+            <text x="350" y="33" text-anchor="middle" font-size="9" fill="#8D99AE">questionnaire</text>
+          </g>
+          <g>
+            <circle cx="596" cy="105" r="34" fill="#F4F6F8" stroke="#8D99AE" stroke-width="2"/>
+            <text x="596" y="101" text-anchor="middle" font-size="10.5" fill="#14213D" font-weight="600">Collecte</text>
+            <text x="596" y="113" text-anchor="middle" font-size="9" fill="#8D99AE">à chaud</text>
+          </g>
+          <g>
+            <circle cx="350" cy="185" r="34" fill="#F4F6F8" stroke="#8D99AE" stroke-width="2"/>
+            <text x="350" y="181" text-anchor="middle" font-size="10.5" fill="#14213D" font-weight="600">Analyse</text>
+            <text x="350" y="193" text-anchor="middle" font-size="9" fill="#8D99AE">causes racines</text>
+          </g>
+          <g>
+            <circle cx="104" cy="105" r="34" fill="#FF9F1C" fill-opacity="0.12" stroke="#FF9F1C" stroke-width="2"/>
+            <text x="104" y="101" text-anchor="middle" font-size="10.5" fill="#14213D" font-weight="700">Restitution</text>
+            <text x="104" y="113" text-anchor="middle" font-size="9" fill="#14213D">& capitalisation</text>
+          </g>
+        </g>
+      </svg>
+
+      <div class="tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Formats d'animation du RETEX">
+          <button class="tab-btn" role="tab" aria-selected="true" id="tab-retex-1" aria-controls="panel-retex-1">Format « À chaud »</button>
+          <button class="tab-btn" role="tab" aria-selected="false" id="tab-retex-2" aria-controls="panel-retex-2" tabindex="-1">Format « À froid »</button>
+        </div>
+        <div class="tab-panel active" id="panel-retex-1" role="tabpanel" aria-labelledby="tab-retex-1">
+          <p>Organisé dans les jours suivant la fin du projet, ce format capture les ressentis immédiats de l'équipe : ce qui a facilité le travail, ce qui a créé des tensions ou des retards. Rapide à mettre en place, il perd en recul.</p>
+        </div>
+        <div class="tab-panel" id="panel-retex-2" role="tabpanel" aria-labelledby="tab-retex-2" hidden>
+          <p>Mené plusieurs semaines ou mois après la clôture, ce format permet d'évaluer les effets réels des livrables en usage (adoption, bénéfices constatés) et de replacer les difficultés vécues dans une perspective plus objective.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. LESSONS LEARNED -->
+  <section class="lesson-section" id="lessons-learned">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 07</span>
+        <h2>Lessons learned</h2>
+      </div>
+      <p>Les « lessons learned » (enseignements tirés) formalisent par écrit les constats du RETEX pour qu'ils profitent aux projets futurs. Un enseignement utile combine trois éléments : le <strong>constat</strong>, la <strong>cause</strong> et la <strong>recommandation</strong> actionnable.</p>
+
+      <div class="pilot-card">
+        <span class="pilot-label">Fiche de pilotage — Enseignement type</span>
+        <button class="copy-btn" data-copy-target="copy-2">Copier</button>
+        <pre id="copy-2">CONSTAT   : Retard de 3 semaines sur le lot "intégration"
+CAUSE     : Dépendance externe non cadrée dans le planning initial
+RECOMMANDATION : Intégrer une marge de sécurité de 15% sur tout
+                 lot dépendant d'un prestataire tiers
+PORTÉE    : Applicable à tous les projets du portefeuille SI</pre>
+      </div>
+
+      <div class="cards-grid">
+        <div class="info-card">
+          <div class="card-icon">✅</div>
+          <h3>Réussites à reproduire</h3>
+          <p>Pratiques, outils ou décisions qui ont contribué positivement à l'atteinte des objectifs.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">🛠️</div>
+          <h3>Difficultés à corriger</h3>
+          <p>Obstacles rencontrés, avec leur cause racine identifiée plutôt qu'un simple constat de symptôme.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">📚</div>
+          <h3>Base de connaissances</h3>
+          <p>Centralisation des enseignements dans un référentiel consultable par les futurs chefs de projet.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="icon">💡</span>
+        <div>
+          <div class="callout-title">À retenir</div>
+          <p>Un enseignement non rattaché à une recommandation concrète reste un simple constat : il ne capitalise rien pour l'organisation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRISE DE CLÔTURE -->
+  <section class="lesson-section alt-bg">
+    <div class="container">
+      <div class="section-header prose-width">
+        <span class="section-kicker">Vue d'ensemble</span>
+        <h2>Frise de clôture d'un projet</h2>
+        <p>Les six étapes vues dans cette leçon s'enchaînent dans un ordre logique, même si certaines activités (archivage, RETEX) peuvent se chevaucher en pratique.</p>
+      </div>
+      <div class="stepper-wrap">
+        <div class="stepper">
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">01</span>
+            <h3>Validation</h3>
+            <p>Conformité des livrables</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">02</span>
+            <h3>Réception</h3>
+            <p>PV signé, réserves levées</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">03</span>
+            <h3>Clôture admin.</h3>
+            <p>Contrats soldés</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">04</span>
+            <h3>Bilan financier</h3>
+            <p>Prévu vs réalisé</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">05</span>
+            <h3>Archivage</h3>
+            <p>Documentation classée</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">06</span>
+            <h3>RETEX</h3>
+            <p>Enseignements tirés</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYNTHÈSE -->
+  <section class="lesson-section" id="synthese">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Synthèse</span>
+        <h2>Points clés à retenir</h2>
+      </div>
+      <div class="takeaway-grid">
+        <div class="takeaway">
+          <span class="num mono">01</span>
+          <p>La clôture n'est officielle qu'après validation ET réception formelle des livrables — pas de PV signé, pas de clôture juridique.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">02</span>
+          <p>La clôture administrative solde tous les engagements contractuels : fournisseurs, sous-traitants, autorisations et accès.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">03</span>
+          <p>Le bilan financier compare le prévu au réalisé poste par poste et explique chaque écart significatif.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">04</span>
+          <p>L'archivage distingue documentation vivante et conservation légale, avec des durées adaptées à chaque type de document.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">05</span>
+          <p>Le RETEX capture les ressentis « à chaud » et « à froid » pour un diagnostic plus complet.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">06</span>
+          <p>Un enseignement utile associe toujours constat, cause racine et recommandation actionnable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="container prose-width">
+    <div class="lesson-nav-grid">
+      <a class="lesson-nav-card prev" href="#">
+        <span class="dir">← Leçon précédente</span>
+        <span class="lesson-title">Leçon 28 — Qualité et performance du projet</span>
+      </a>
+      <a class="lesson-nav-card next" href="#">
+        <span class="dir">Leçon suivante →</span>
+        <span class="lesson-title">Leçon 30 — Projet final : piloter un projet de A à Z</span>
+      </a>
+    </div>
+    <div class="module-return">
+      <a href="#">↑ Retour au sommaire du Module 6</a>
+    </div>
+  </div>
+</nav>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>CFPAM GROUP — Filière Gestion de Projet · Module 6, Leçon 29 sur 30</p>
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- Reading progress bar ---- */
+  var progressBar = document.getElementById('reading-progress');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* ---- Back to top ---- */
+  var backBtn = document.getElementById('back-to-top');
+  function toggleBackBtn(){
+    if((window.scrollY||document.documentElement.scrollTop) > 500){ backBtn.classList.add('visible'); }
+    else{ backBtn.classList.remove('visible'); }
+  }
+  window.addEventListener('scroll', toggleBackBtn, {passive:true});
+  toggleBackBtn();
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+
+  /* ---- Mobile TOC toggle ---- */
+  var navToggle = document.getElementById('navToggle');
+  var tocMenu = document.getElementById('tocMenu');
+  navToggle.addEventListener('click', function(){
+    var open = tocMenu.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  tocMenu.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      tocMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ---- Tabs ---- */
+  document.querySelectorAll('[data-tabs]').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('[role="tab"]'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('[role="tabpanel"]'));
+
+    function activate(tab){
+      tabs.forEach(function(t){
+        var selected = t === tab;
+        t.setAttribute('aria-selected', selected ? 'true' : 'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.getAttribute('aria-labelledby') === tab.id;
+        p.hidden = !match;
+        p.classList.toggle('active', match);
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ activate(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        else if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){
+          e.preventDefault();
+          tabs[newIdx].focus();
+          activate(tabs[newIdx]);
+        }
+      });
+    });
+  });
+
+  /* ---- Accordion ---- */
+  document.querySelectorAll('[data-accordion]').forEach(function(accordion){
+    var triggers = accordion.querySelectorAll('.accordion-trigger');
+    triggers.forEach(function(trigger){
+      trigger.addEventListener('click', function(){
+        var expanded = trigger.getAttribute('aria-expanded') === 'true';
+        var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+        trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        if(expanded){
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+  });
+
+  /* ---- Copy buttons ---- */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.getAttribute('data-copy-target'));
+      if(!target) return;
+      var text = target.textContent;
+      var original = btn.textContent;
+      function done(ok){
+        btn.textContent = ok ? 'Copié !' : 'Erreur';
+        setTimeout(function(){ btn.textContent = original; }, 1600);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){done(true);}, function(){done(false);});
+      } else {
+        try{
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done(true);
+        }catch(err){ done(false); }
+      }
+    });
+  });
+
+  /* ---- Scroll fade-in animations ---- */
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = document.querySelectorAll('.lesson-section');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    sections.forEach(function(s){ s.classList.add('is-visible'); });
+  } else {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.1, rootMargin:'0px 0px -60px 0px'});
+    sections.forEach(function(s){ observer.observe(s); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

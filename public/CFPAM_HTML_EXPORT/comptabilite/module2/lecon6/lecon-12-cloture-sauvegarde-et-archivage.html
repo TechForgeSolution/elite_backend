@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 12 — Clôture, sauvegarde et archivage | Logiciels Comptables (Sage, Ciel)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:700px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:700px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .field-tag{display:inline-block; font-family:var(--font-mono); font-size:0.78rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filière comptabilité
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 2 — Logiciels comptables (Sage, Ciel)</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau débutant / intermédiaire</span>
+    </div>
+    <h1>Clôture, sauvegarde et archivage</h1>
+    <p class="lede">Leçon 12 — préparer la clôture d'un exercice, sécuriser les données par la sauvegarde, et répondre à l'obligation légale d'archivage inaltérable des écritures.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Pourquoi clôturer, sauvegarder et archiver" data-num="12.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">12.1</span><h2>Pourquoi clôturer, sauvegarder et archiver</h2></div>
+      <p>À la fin d'un exercice, trois opérations distinctes protègent le travail comptable de l'année : la <strong>clôture</strong> verrouille les écritures définitivement validées, la <strong>sauvegarde</strong> met les données à l'abri d'un incident technique, et l'<strong>archivage</strong> conserve les pièces dans le respect des obligations légales.</p>
+      <p>Ces trois étapes se suivent mais ne se confondent pas : on peut sauvegarder sans clôturer, mais on ne clôture jamais sans avoir sauvegardé au préalable.</p>
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Une clôture annuelle est définitive et irréversible dans le logiciel : une fois validée, aucune écriture de l'exercice clos ne peut plus être modifiée. C'est précisément pour cela qu'elle doit être précédée d'un contrôle complet et d'une sauvegarde.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chaîne de fin d'exercice : contrôles, sauvegarde, clôture annuelle, journal à-nouveaux, génération du FEC puis archivage">
+        <defs>
+          <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#1F6F54"></path>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif" font-size="12" fill="#0B0F0D">
+          <rect x="10" y="65" width="120" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="70" y="90" text-anchor="middle" font-weight="600" font-size="12">Contrôles</text>
+          <text x="70" y="106" text-anchor="middle" fill="#5A6560" font-size="10">lettrage, rappro.</text>
+
+          <rect x="150" y="65" width="120" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="210" y="90" text-anchor="middle" font-weight="600" font-size="12">Sauvegarde</text>
+          <text x="210" y="106" text-anchor="middle" fill="#5A6560" font-size="10">avant clôture</text>
+
+          <rect x="290" y="65" width="120" height="60" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="350" y="90" text-anchor="middle" font-weight="600" fill="#1F6F54" font-size="12">Clôture</text>
+          <text x="350" y="106" text-anchor="middle" fill="#1F6F54" font-size="10">annuelle définitive</text>
+
+          <rect x="430" y="65" width="120" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="490" y="86" text-anchor="middle" font-weight="600" font-size="12">Journal</text>
+          <text x="490" y="102" text-anchor="middle" font-weight="600" font-size="12">à-nouveaux</text>
+
+          <rect x="570" y="65" width="120" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="630" y="90" text-anchor="middle" font-weight="600" font-size="12">Génération</text>
+          <text x="630" y="106" text-anchor="middle" fill="#5A6560" font-size="10">fichier FEC</text>
+
+          <rect x="710" y="65" width="140" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="780" y="90" text-anchor="middle" font-weight="600" font-size="12">Archivage</text>
+          <text x="780" y="106" text-anchor="middle" fill="#5A6560" font-size="10">légal inaltérable</text>
+
+          <line x1="130" y1="95" x2="146" y2="95" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="270" y1="95" x2="286" y2="95" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="410" y1="95" x2="426" y2="95" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="550" y1="95" x2="566" y2="95" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+          <line x1="690" y1="95" x2="706" y2="95" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow3)"></line>
+
+          <text x="430" y="30" text-anchor="middle" fill="#5A6560" font-size="12">Chaîne de fin d'exercice</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Préparer la clôture annuelle" data-num="12.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">12.2</span><h2>Préparer la clôture annuelle</h2></div>
+      <p>La clôture ne se déclenche jamais à l'aveugle : elle suppose une suite de vérifications, toujours dans le même ordre, pour s'assurer que les comptes sont prêts à être verrouillés.</p>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step">
+        <div class="step-index">1</div>
+        <h3>Vérifier lettrage et rapprochement</h3>
+        <p>S'assurer que les comptes de tiers sont lettrés et le compte 512 rapproché à la banque.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">2</div>
+        <h3>Contrôler les journaux</h3>
+        <p>Éditer et relire chaque journal pour repérer une écriture manquante ou mal imputée.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">3</div>
+        <h3>Sauvegarder le dossier</h3>
+        <p>Réaliser une sauvegarde complète juste avant la clôture, comme point de retour en cas d'erreur.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">4</div>
+        <h3>Valider la clôture</h3>
+        <p>Lancer la clôture annuelle dans le logiciel : les écritures de l'exercice deviennent définitives.</p>
+      </div>
+      <div class="step">
+        <div class="step-index">5</div>
+        <h3>Générer le journal d'À-Nouveaux</h3>
+        <p>Le logiciel reporte automatiquement les soldes de clôture en soldes d'ouverture du nouvel exercice.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Lancer la clôture annuelle sans sauvegarde préalable. Comme elle est irréversible dans le logiciel, la moindre erreur détectée après coup (écriture oubliée, compte mal soldé) ne peut plus être corrigée dans l'exercice clos sans revenir à cette sauvegarde.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Clôture périodique ou clôture annuelle" data-num="12.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">12.3</span><h2>Clôture périodique ou clôture annuelle</h2></div>
+      <p>Le terme « clôture » recouvre deux opérations de nature différente, qu'il ne faut pas confondre.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Types de clôture">
+        <button class="tab-btn" role="tab" id="tab-clo-1" aria-controls="panel-clo-1" aria-selected="true">Clôture mensuelle / périodique</button>
+        <button class="tab-btn" role="tab" id="tab-clo-2" aria-controls="panel-clo-2" aria-selected="false" tabindex="-1">Clôture annuelle définitive</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-clo-1" role="tabpanel" aria-labelledby="tab-clo-1" tabindex="0">
+        <div class="prose">
+          <p>Réalisée chaque mois ou chaque trimestre, elle fige provisoirement une période pour produire des éditions fiables (bilan intermédiaire, déclaration de TVA) sans empêcher toute correction ultérieure.</p>
+          <p>Elle reste réversible : une écriture de la période peut encore être modifiée si une erreur est découverte, généralement via une procédure de déverrouillage dans le logiciel.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-clo-2" role="tabpanel" aria-labelledby="tab-clo-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Réalisée une fois par an après validation complète des comptes, elle verrouille définitivement l'exercice : plus aucune écriture ne peut y être ajoutée, modifiée ou supprimée.</p>
+          <p>Elle déclenche la génération automatique du journal d'à-nouveaux et rend le dossier prêt pour l'archivage légal et la génération du FEC.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Sauvegarde et restauration" data-num="12.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">12.4</span><h2>Sauvegarde et restauration</h2></div>
+      <p>Une sauvegarde est une copie complète du dossier comptable à un instant précis. En cas de problème (fichier corrompu, erreur de manipulation, panne), la restauration permet de revenir exactement à cet instant.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Modes de sauvegarde">
+        <button class="tab-btn" role="tab" id="tab-sav-1" aria-controls="panel-sav-1" aria-selected="true">Sauvegarde locale</button>
+        <button class="tab-btn" role="tab" id="tab-sav-2" aria-controls="panel-sav-2" aria-selected="false" tabindex="-1">Sauvegarde cloud sécurisée</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-sav-1" role="tabpanel" aria-labelledby="tab-sav-1" tabindex="0">
+        <div class="prose">
+          <p>Le fichier de sauvegarde est stocké sur le poste, un disque externe ou le serveur du cabinet. Rapide à réaliser et à restaurer, mais vulnérable en cas de vol, d'incendie ou de panne matérielle si aucune copie n'existe hors des locaux.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-sav-2" role="tabpanel" aria-labelledby="tab-sav-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Le dossier est répliqué automatiquement sur un serveur distant, souvent chiffré et versionné (plusieurs points de restauration dans le temps). Protège contre les sinistres physiques du cabinet, au prix d'une dépendance à la connexion internet et à un prestataire tiers.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🔗 Pour aller plus loin</div>
+        <p>Beaucoup de cabinets combinent les deux : une sauvegarde locale quotidienne pour une restauration rapide, doublée d'une sauvegarde cloud hebdomadaire pour se prémunir d'un sinistre sur site.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Le Fichier des Écritures Comptables" data-num="12.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">12.5</span><h2>Le Fichier des Écritures Comptables (FEC)</h2></div>
+      <p>Le FEC est un export standardisé de toutes les écritures validées de l'exercice, dans un format texte structuré et identique pour tous les logiciels. Il doit pouvoir être remis à l'administration fiscale sur simple demande en cas de contrôle.</p>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Extrait de la structure du fichier FEC (colonnes obligatoires, extrait)</caption>
+        <thead>
+          <tr><th scope="col">Colonne</th><th scope="col">Contenu</th><th scope="col">Exemple</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="field-tag">JournalCode</span></td><td>Code du journal d'origine</td><td class="mono">VE</td></tr>
+          <tr><td><span class="field-tag">EcritureNum</span></td><td>Numéro séquentiel de l'écriture</td><td class="mono">000452</td></tr>
+          <tr><td><span class="field-tag">EcritureDate</span></td><td>Date de l'écriture</td><td class="mono">20240612</td></tr>
+          <tr><td><span class="field-tag">CompteNum</span></td><td>Numéro de compte du plan comptable</td><td class="mono">411000</td></tr>
+          <tr><td><span class="field-tag">Debit / Credit</span></td><td>Montants, l'un des deux étant à zéro</td><td class="mono">1200,00 / 0,00</td></tr>
+          <tr><td><span class="field-tag">ValidDate</span></td><td>Date de validation, donc de verrouillage de la ligne</td><td class="mono">20241231</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Après clôture, le comptable contrôle le journal d'à-nouveaux généré : le total des soldes d'ouverture du nouvel exercice, compte par compte, doit être strictement égal aux soldes de clôture de l'exercice précédent pour les comptes de bilan. Un écart signale une clôture incomplète ou une écriture passée après coup.</p>
+      </div>
+      <div class="callout">
+        <div class="callout-label">📌 Rappel normatif</div>
+        <p>L'obligation de produire un FEC est fixée par l'article L47 A I du Livre des procédures fiscales (LPF), en cas de contrôle de l'administration fiscale. Le fichier doit correspondre exactement aux écritures telles que validées, sans retraitement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="L'archivage légal et l'inaltérabilité" data-num="12.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">12.6</span><h2>L'archivage légal et l'inaltérabilité</h2></div>
+      <p>Une fois validées, les écritures comptables doivent rester consultables et inaltérées pendant toute la durée de conservation légale. L'archivage repose sur quelques piliers simples :</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.6"></rect><path d="M8 10V7a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.6"></path></svg>
+        <h3>Inaltérabilité</h3>
+        <p>Une écriture validée ne peut plus être modifiée ni supprimée ; toute correction passe par une nouvelle écriture.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"></circle><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6"></path></svg>
+        <h3>Durée de conservation</h3>
+        <p>Les documents comptables sont conservés en principe pendant 6 ans, et les pièces justificatives commerciales pendant 10 ans.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.6"></path><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"></rect></svg>
+        <h3>Horodatage</h3>
+        <p>Chaque validation d'écriture ou de clôture est datée, permettant de reconstituer précisément la chronologie.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z" stroke="currentColor" stroke-width="1.6"></path></svg>
+        <h3>Accessibilité en cas de contrôle</h3>
+        <p>Les données archivées doivent rester restituables rapidement et intégralement à l'administration si elle en fait la demande.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Peut-on encore corriger une écriture après archivage définitif ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Non. Une fois l'exercice clos et archivé, une erreur détectée se corrige par une écriture complémentaire sur l'exercice suivant, jamais par une modification rétroactive de l'écriture d'origine.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Sauvegarde et archivage légal, est-ce la même chose ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Non. Une sauvegarde protège contre la perte de données et peut être écrasée ou remplacée. Un archivage légal garantit, lui, l'inaltérabilité et la conservation dans la durée d'une version figée et probante des écritures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="12.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">12.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>La clôture annuelle est définitive et irréversible : elle doit toujours être précédée d'une sauvegarde complète.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>Clôture périodique et clôture annuelle définitive ne se confondent pas : seule la seconde verrouille durablement l'exercice.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Après clôture, le journal d'à-nouveaux reporte automatiquement les soldes de bilan sur le nouvel exercice.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Le FEC est un export standardisé des écritures, exigible par l'administration fiscale en cas de contrôle.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>L'archivage légal garantit l'inaltérabilité et la conservation des écritures pendant toute la durée légale requise.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente</span>
+        <span class="dest">Éditions et contrôles comptables</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Fin du module</span>
+        <span class="dest">Quiz du Module 2</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 2</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Logiciels Comptables — Module 2</span>
+    <span>Leçon 12 sur 12</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

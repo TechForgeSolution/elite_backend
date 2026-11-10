@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 06 — Utiliser l'IA pour rédiger, résumer et trier automatiquement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FFFFFF;--color-bg-alt:#F6F8FA;--color-text:#090D12;
+  --color-accent:#0D9488;--color-accent-soft:#CCFBF1;--color-border:#E1E4E8;
+  --muted:#4B5563;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 1.0625rem/1.7 var(--font-body)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{background:var(--color-bg-alt);border-bottom:1px solid var(--color-border);padding:56px 0 40px}
+.crumb{font:500 .9rem var(--font-body);color:var(--muted);margin:0 0 16px}
+h1{font:700 clamp(2rem,5vw,2.75rem)/1.12 var(--font-head);letter-spacing:-.02em;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.meta li{background:var(--color-bg);border:1px solid var(--color-border);border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:500}
+.meta li.lvl{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.goal{margin:28px 0 0;padding:16px 20px;background:var(--color-bg);border-left:4px solid var(--color-accent);border-radius:0 8px 8px 0}
+.goal strong{font-family:var(--font-head)}
+nav.toc{margin:32px 0 0;padding:20px 24px;border:1px solid var(--color-border);border-radius:10px}
+nav.toc p{margin:0 0 8px;font:700 1rem var(--font-head)}
+nav.toc ol{margin:0;padding-left:1.25rem;columns:1}
+nav.toc a{color:var(--color-text);text-decoration:none;border-bottom:1px solid var(--color-accent)}
+nav.toc a:hover{background:var(--color-accent-soft)}
+section{padding:48px 0 8px}
+h2{font:700 1.65rem/1.25 var(--font-head);letter-spacing:-.01em;margin:0 0 16px;display:flex;gap:12px;align-items:baseline}
+h2 .n{color:var(--color-accent)}
+h3{font:700 1.15rem var(--font-head);margin:28px 0 8px}
+p{margin:0 0 16px}
+ul,ol{padding-left:1.25rem;margin:0 0 16px}
+li{margin-bottom:6px}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:24px 0;border:1px solid var(--color-border);background:var(--color-bg-alt)}
+.callout .ic{font-size:1.4rem;line-height:1.4}
+.callout p{margin:0}
+.callout b{font-family:var(--font-head)}
+.callout.tip{background:var(--color-accent-soft);border-color:#99E6DA}
+.callout.warn{background:#FFF8E6;border-color:#F3D98B}
+.callout.link{background:var(--color-bg);border-left:4px solid var(--color-accent)}
+.criteria{display:grid;gap:12px;margin:20px 0;padding:0;list-style:none}
+.criteria li{margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.criteria b{font-family:var(--font-head);color:#0B6F66}
+figure{margin:28px 0}
+figure svg{width:100%;height:auto;display:block;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}
+.cards{display:grid;gap:12px;margin:20px 0}
+.card{border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);overflow:hidden}
+.card button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card button:hover{background:var(--color-bg-alt)}
+.card button:focus-visible{outline:3px solid var(--color-accent);outline-offset:-3px}
+.card .t{font:700 1.05rem var(--font-head);display:block}
+.card .s{font-size:.9rem;color:var(--muted)}
+.tag{font:600 .8rem var(--font-body);padding:2px 10px;border-radius:999px;border:1px solid var(--color-border);white-space:nowrap}
+.tag.yes{background:var(--color-accent-soft);border-color:var(--color-accent);color:#065F56}
+.tag.mid{background:var(--color-bg-alt)}
+.card .chev{transition:transform .2s;color:var(--color-accent);font-weight:700}
+.card[data-open="true"] .chev{transform:rotate(90deg)}
+.card .body{display:none;padding:0 18px 16px;border-top:1px solid var(--color-border);background:var(--color-bg-alt)}
+.card[data-open="true"] .body{display:block}
+.card .body p{margin:12px 0 6px}
+.flow{display:grid;gap:0;margin:24px 0;padding:0;list-style:none}
+.flow li{position:relative;margin:0;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg)}
+.flow li+li{margin-top:22px}
+.flow li+li::before{content:"";position:absolute;left:28px;top:-23px;height:22px;border-left:2px solid var(--color-accent)}
+.flow b{font-family:var(--font-head)}
+.flow small{display:block;color:var(--muted)}
+.calc{border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-alt);padding:20px;margin:24px 0}
+.calc h3{margin-top:0}
+.fields{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media(max-width:560px){.fields{grid-template-columns:1fr}}
+label{display:block;font-size:.9rem;font-weight:500}
+input{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg)}
+.out{margin-top:18px;display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.out{grid-template-columns:1fr}}
+.out div{background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;padding:12px 14px}
+.out strong{display:block;font:700 1.4rem var(--font-head);color:#0B6F66}
+.out span{font-size:.85rem;color:var(--muted)}
+code{font:500 .92em ui-monospace,monospace;background:var(--color-bg-alt);padding:2px 6px;border-radius:4px}
+.formula{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:12px 16px;font-size:.95rem}
+.recap{margin:48px 0 0;padding:24px;border:2px solid var(--color-accent);border-radius:12px}
+.recap h2{font-size:1.3rem}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 64px}
+.pager a{display:block;padding:14px 18px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:500}
+.pager a:hover{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.pager small{display:block;color:var(--muted);font-weight:400}
+.pager .next{text-align:right}
+@media(max-width:560px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}}
+
+.tabs [role=tablist]{display:flex;gap:6px;border-bottom:1px solid var(--color-border);margin-top:20px}
+.tabs [role=tab]{font:600 .95rem var(--font-body);padding:9px 14px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;background:none;cursor:pointer;color:var(--muted)}
+.tabs [role=tab]:hover{background:var(--color-bg-alt)}
+.tabs [role=tab][aria-selected=true]{background:var(--color-accent-soft);color:#065F56;border-color:var(--color-border)}
+.tabs [role=tabpanel]{padding:16px 0 0}
+.tabs [role=tabpanel][hidden]{display:none}
+.code{position:relative;margin:16px 0}
+.code pre{margin:0;padding:16px 18px;background:#0D1117;color:#F0F6FC;border-radius:10px;overflow-x:auto;font:400 .86rem/1.6 ui-monospace,monospace;white-space:pre-wrap;word-break:break-word}
+.code .k{color:#5EEAD4}.code .s{color:#A5D6FF}.code .c{color:#8B949E}
+.code button{position:absolute;top:8px;right:8px;font:600 .75rem var(--font-body);padding:4px 10px;border-radius:6px;border:1px solid #30363D;background:#161B22;color:#F0F6FC;cursor:pointer}
+.code button:hover{background:#0F766E}
+.code .lbl{display:block;font:600 .8rem var(--font-body);color:var(--muted);margin-bottom:4px}
+.grid5{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:20px 0;padding:0;list-style:none}
+.grid5 li{margin:0;padding:14px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);transition:transform .2s,border-color .2s}
+.grid5 li:hover{transform:translateY(-2px);border-color:var(--color-accent)}
+.grid5 b{display:block;font-family:var(--font-head);color:#0B6F66}
+.grid5 span{font-size:.9rem;color:var(--muted)}
+details{border:1px solid var(--color-border);border-radius:10px;margin:12px 0;background:var(--color-bg)}
+summary{cursor:pointer;padding:14px 18px;font:700 1rem var(--font-head)}
+summary:hover{background:var(--color-bg-alt)}
+details>div{padding:0 18px 12px}
+.sim textarea{width:100%;margin-top:4px;padding:9px 12px;font:inherit;border:1px solid var(--color-border);border-radius:8px;min-height:80px}
+.btn{margin-top:12px;font:600 .95rem var(--font-body);padding:9px 18px;border-radius:8px;border:0;background:var(--color-accent);color:#fff;cursor:pointer}
+.btn:hover{background:#0F766E}
+.res{margin-top:14px;padding:12px 16px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px}
+.res .tag{margin-right:6px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:9}
+#top{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-bg);cursor:pointer;font-size:1.1rem;display:none}
+#top:hover{background:var(--color-accent-soft)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+.code pre code{background:none;padding:0;border-radius:0;color:inherit;font:inherit}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">Module 2 — Automatiser avec l'IA, sécuriser et piloter</p>
+    <h1>Leçon 06 — Utiliser l'IA pour rédiger, résumer et trier automatiquement</h1>
+    <ul class="meta">
+      <li class="lvl">Niveau : Débutant / Intermédiaire</li>
+      <li>⏱ 25 min</li>
+      <li>5 parties</li>
+    </ul>
+    <p class="goal"><strong>Objectif :</strong> intégrer l'IA dans vos automatisations pour traiter du texte : rédiger, résumer, trier et suggérer des réponses.</p>
+    <nav class="toc" aria-label="Sommaire">
+      <p>Dans cette leçon</p>
+      <ol>
+        <li><a href="#prompts">Rédiger des consignes efficaces</a></li>
+        <li><a href="#resume">Résumer messages et documents</a></li>
+        <li><a href="#tri">Classer et trier les demandes entrantes</a></li>
+        <li><a href="#reponses">Réponses suggérées et vérification humaine</a></li>
+        <li><a href="#exemples">Exemples de payloads et de prompts</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+
+<section id="prompts" class="fade">
+  <h2><span class="n">1.</span>Rédiger des consignes efficaces</h2>
+  <p>Dans une automatisation, l'IA n'a personne à qui poser une question : tout ce dont elle a besoin doit figurer dans la consigne (le <b>prompt</b>). Comme la tâche se répète des centaines de fois, une bonne consigne se rentabilise vite.</p>
+  <h3>Les 5 ingrédients d'une bonne consigne</h3>
+  <ul class="grid5">
+    <li><b>Rôle</b><span>Qui est l'IA ? (assistant RH, support…)</span></li>
+    <li><b>Contexte</b><span>D'où vient le texte, à quoi sert-il ?</span></li>
+    <li><b>Tâche</b><span>Un seul verbe d'action, précis.</span></li>
+    <li><b>Format</b><span>Longueur, structure, JSON ou texte.</span></li>
+    <li><b>Contraintes</b><span>Ton, interdits, « n'invente rien ».</span></li>
+  </ul>
+  <div class="tabs" id="tabs1">
+    <div role="tablist" aria-label="Comparer deux consignes">
+      <button role="tab" aria-selected="true" aria-controls="t1a" id="t1">Consigne vague</button>
+      <button role="tab" aria-selected="false" aria-controls="t1b" id="t2" tabindex="-1">Consigne structurée</button>
+    </div>
+    <div role="tabpanel" id="t1a" aria-labelledby="t1">
+      <p>Le résultat change à chaque exécution : parfois 2 lignes, parfois un paragraphe, parfois des détails inventés.</p><div class="code"><span class="lbl">Consigne vague</span><pre><code>Résume ce mail.</code></pre><button type="button" class="cp">Copier</button></div>
+    </div>
+    <div role="tabpanel" id="t1b" aria-labelledby="t2" hidden>
+      <p>Les <code>{{variables}}</code> sont remplacées automatiquement par les données de chaque message.</p><div class="code"><span class="lbl">Consigne structurée</span><pre><code><span class="k">Rôle</span> : tu es assistant administratif d'une PME.
+<span class="k">Contexte</span> : le texte ci-dessous est un e-mail client.
+<span class="k">Tâche</span> : résume-le en 3 puces maximum.
+<span class="k">Format</span> : une puce = une idée ; termine par « Action attendue : … ».
+<span class="k">Contraintes</span> : n'invente aucune information ; si une donnée manque, écris « non précisé ».
+
+E-mail : {{contenu_du_mail}}</code></pre><button type="button" class="cp">Copier</button></div>
+    </div>
+  </div>
+  <div class="callout tip"><span class="ic">💡</span><p><b>À retenir.</b> Une consigne = un rôle, un contexte, une tâche, un format, des contraintes. Testez-la sur 5 vrais exemples avant de l'automatiser.</p></div>
+</section>
+
+<section id="resume" class="fade">
+  <h2><span class="n">2.</span>Résumer messages et documents</h2>
+  <p>Le résumé est l'usage le plus sûr pour débuter : il fait gagner du temps sans que l'IA décide quoi que ce soit. Cas typiques : e-mails longs, comptes rendus, fils de discussion, contrats, rapports.</p>
+  <figure>
+    <svg viewBox="0 0 640 150" role="img" aria-labelledby="s1t s1d">
+      <title id="s1t">Flux de résumé automatique</title>
+      <desc id="s1d">Un e-mail arrive, l'IA le résume, le résumé est envoyé dans un canal de messagerie.</desc>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="14" text-anchor="middle">
+        <rect x="20" y="40" width="150" height="70" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="95" y="70" fill="#090D12">Nouvel e-mail</text><text x="95" y="90" font-family="Inter" font-weight="400" font-size="12" fill="#4B5563">déclencheur</text>
+        <rect x="245" y="40" width="150" height="70" rx="10" fill="#0D9488"/><text x="320" y="70" fill="#fff">IA : résumer</text><text x="320" y="90" font-family="Inter" font-weight="400" font-size="12" fill="#fff">3 puces max</text>
+        <rect x="470" y="40" width="150" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="545" y="70" fill="#090D12">Message équipe</text><text x="545" y="90" font-family="Inter" font-weight="400" font-size="12" fill="#4B5563">action</text>
+      </g>
+      <g stroke="#0D9488" stroke-width="2.5" fill="#0D9488"><line x1="172" y1="75" x2="240" y2="75"/><polygon points="244,75 234,69 234,81" stroke="none"/><line x1="397" y1="75" x2="465" y2="75"/><polygon points="469,75 459,69 459,81" stroke="none"/></g>
+    </svg>
+    <figcaption>Le même schéma fonctionne pour des documents : le déclencheur devient « nouveau fichier déposé ».</figcaption>
+  </figure>
+  <p>Pour un document long, demandez un résumé <b>structuré</b> (points clés, décisions, échéances) plutôt qu'un simple paragraphe : il est plus facile à relire et à réutiliser dans la suite du scénario.</p>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Attention.</b> Ne transmettez pas de données sensibles (santé, salaires, secrets d'affaires) à un service d'IA sans vérifier son cadre de confidentialité et l'accord de votre organisation. Nous y reviendrons dans les leçons sur la sécurité.</p></div>
+</section>
+
+<section id="tri" class="fade">
+  <h2><span class="n">3.</span>Classer et trier les demandes entrantes</h2>
+  <p>Sans IA, trier exige des règles rigides (« si le sujet contient <i>facture</i> »). L'IA comprend le sens du message : elle attribue une <b>catégorie</b> et une <b>urgence</b>, et le scénario n'a plus qu'à router selon son étiquette.</p>
+  <figure>
+    <svg viewBox="0 0 640 230" role="img" aria-labelledby="s2t s2d">
+      <title id="s2t">Tri automatique par l'IA</title>
+      <desc id="s2d">Un message entrant est classé par l'IA, puis envoyé vers la comptabilité, le support ou les ventes.</desc>
+      <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="14" text-anchor="middle">
+        <rect x="20" y="85" width="130" height="60" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="85" y="120" fill="#090D12">Message</text>
+        <rect x="215" y="85" width="140" height="60" rx="10" fill="#0D9488"/><text x="285" y="120" fill="#fff">IA : classer</text>
+        <rect x="450" y="15" width="170" height="50" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="535" y="46" fill="#090D12">Facture → Compta</text>
+        <rect x="450" y="90" width="170" height="50" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/><text x="535" y="121" fill="#090D12">Support → Ticket</text>
+        <rect x="450" y="165" width="170" height="50" rx="10" fill="#F6F8FA" stroke="#E1E4E8" stroke-width="2"/><text x="535" y="196" fill="#090D12">Autre → Humain</text>
+      </g>
+      <g stroke="#0D9488" stroke-width="2.5" fill="none"><line x1="152" y1="115" x2="212" y2="115"/><path d="M357 115 H400 V40 H446"/><line x1="357" y1="115" x2="446" y2="115"/><path d="M357 115 H400 V190 H446"/></g>
+    </svg>
+    <figcaption>La branche « Autre » évite qu'un message mal compris soit perdu : il part vers une personne.</figcaption>
+  </figure>
+  <details><summary>Bonnes pratiques pour un tri fiable</summary><div>
+    <ul><li>Fournissez une <b>liste fermée</b> de catégories (jamais « trouve une catégorie »).</li>
+    <li>Ajoutez une catégorie <b>« autre »</b> pour les cas ambigus.</li>
+    <li>Exigez une réponse en <b>JSON</b> pour que l'outil la lise sans erreur.</li>
+    <li>Donnez 2 ou 3 exemples (technique du <i>few-shot</i>) si les catégories se ressemblent.</li></ul></div></details>
+  <details><summary>Que faire quand l'IA hésite ?</summary><div>
+    <p>Demandez un score de confiance. Sous un seuil (par exemple 0,7), le scénario envoie le message à une personne plutôt que de risquer un mauvais routage.</p></div></details>
+</section>
+
+<section id="reponses" class="fade">
+  <h2><span class="n">4.</span>Réponses suggérées et vérification humaine</h2>
+  <p>L'IA peut préparer un <b>brouillon</b> de réponse à partir du message et d'informations fiables (fiche client, FAQ). Elle ne doit pas, au départ, envoyer seule : ses réponses sont fluides, mais parfois fausses.</p>
+  <ol class="flow">
+    <li><b>Réception</b> — Le message est classé et résumé.<small>Automatique.</small></li>
+    <li><b>Brouillon</b> — L'IA propose une réponse à partir de sources fiables.<small>Automatique.</small></li>
+    <li><b>Relecture</b> — Une personne vérifie faits, ton et engagements.<small>Étape humaine : à conserver.</small></li>
+    <li><b>Envoi</b> — Après validation, la réponse part.<small>Automatique, déclenchée par la validation.</small></li>
+  </ol>
+  <div class="callout warn"><span class="ic">⚠️</span><p><b>Erreur fréquente.</b> Faire confiance à un texte bien écrit. L'IA peut inventer un montant, un délai ou une politique commerciale avec beaucoup d'assurance. Relisez toujours les chiffres, les dates et les promesses.</p></div>
+  <details><summary>Checklist de relecture en 30 secondes</summary><div>
+    <ul><li>Les faits cités figurent-ils dans mes sources ?</li><li>Le ton convient-il à ce client ?</li><li>Y a-t-il un engagement (remboursement, délai) que je n'ai pas validé ?</li><li>Le message répond-il vraiment à la question posée ?</li></ul></div></details>
+  <div class="callout link"><span class="ic">🔗</span><p><b>Pour aller plus loin.</b> Plus l'enjeu est élevé (juridique, financier, sensible), plus la validation humaine doit être systématique. Pour les cas simples et très répétitifs, on peut l'alléger progressivement, après des semaines de résultats contrôlés.</p></div>
+</section>
+
+<section id="exemples" class="fade">
+  <h2><span class="n">5.</span>Exemples de payloads et de prompts</h2>
+  <p>Trois modèles à copier et à adapter. Remplacez les <code>{{variables}}</code> par les champs fournis par votre outil No-Code.</p>
+  <div class="tabs" id="tabs2">
+    <div role="tablist" aria-label="Exemples">
+      <button role="tab" aria-selected="true" aria-controls="e1" id="te1">Résumé</button>
+      <button role="tab" aria-selected="false" aria-controls="e2" id="te2" tabindex="-1">Tri</button>
+      <button role="tab" aria-selected="false" aria-controls="e3" id="te3" tabindex="-1">Réponse</button>
+    </div>
+    <div role="tabpanel" id="e1" aria-labelledby="te1"><div class="code"><span class="lbl">Payload envoyé à l'IA (JSON)</span><pre><code>{
+  <span class="s">"model"</span>: <span class="s">"nom-du-modele"</span>,
+  <span class="s">"temperature"</span>: 0.2,
+  <span class="s">"messages"</span>: [
+    { <span class="s">"role"</span>: <span class="s">"system"</span>, <span class="s">"content"</span>: <span class="s">"Tu résumes des e-mails en 3 puces. N'invente rien."</span> },
+    { <span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"{{corps_du_mail}}"</span> }
+  ]
+}</code></pre><button type="button" class="cp">Copier</button></div></div>
+    <div role="tabpanel" id="e2" aria-labelledby="te2" hidden><div class="code"><span class="lbl">Prompt de tri + réponse attendue</span><pre><code>Classe le message dans UNE catégorie : <span class="k">facture</span>, <span class="k">support</span>, <span class="k">commercial</span>, <span class="k">autre</span>.
+Évalue l'urgence : <span class="k">haute</span>, <span class="k">normale</span> ou <span class="k">basse</span>.
+Réponds uniquement en JSON, sans texte autour.
+
+Message : « Bonjour, ma facture de mars est fausse, merci de corriger avant vendredi. »
+
+<span class="c">// Réponse attendue</span>
+{ <span class="s">"categorie"</span>: <span class="s">"facture"</span>, <span class="s">"urgence"</span>: <span class="s">"haute"</span>, <span class="s">"confiance"</span>: 0.92 }</code></pre><button type="button" class="cp">Copier</button></div></div>
+    <div role="tabpanel" id="e3" aria-labelledby="te3" hidden><div class="code"><span class="lbl">Prompt de réponse suggérée</span><pre><code>Rédige un brouillon de réponse courtois (5 lignes max), en vouvoyant.
+Appuie-toi uniquement sur les informations ci-dessous.
+Si l'information manque, propose de revenir vers le client.
+
+Message client : {{message}}
+Infos internes : {{fiche_client}}
+Signature : Service client – Atelier Nova</code></pre><button type="button" class="cp">Copier</button></div></div>
+  </div>
+  <div class="recap">
+    <h2>Points clés à retenir</h2>
+    <ul>
+      <li>Une bonne consigne : rôle, contexte, tâche, format, contraintes.</li>
+      <li>Le résumé est le meilleur point de départ : utile et peu risqué.</li>
+      <li>Pour trier : catégories fermées, catégorie « autre », sortie en JSON.</li>
+      <li>L'IA propose des brouillons ; l'humain vérifie avant l'envoi.</li>
+      <li>Testez toujours sur de vrais exemples avant d'automatiser.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Navigation entre leçons">
+  <a href="lecon-05.html"><small>Leçon précédente</small>Leçon 05 — Automatiser la gestion des données</a>
+  <a class="next" href="lecon-07.html"><small>Leçon suivante</small>Leçon 07 — Automatiser la création et la publication de contenus</a>
+</nav>
+</main>
+<button id="top" type="button" aria-label="Retour en haut">↑</button>
+<script>
+document.querySelectorAll('.tabs').forEach(function(t){
+  var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+  function sel(i){tabs.forEach(function(b,j){
+    b.setAttribute('aria-selected',j===i);b.tabIndex=j===i?0:-1;
+    document.getElementById(b.getAttribute('aria-controls')).hidden=j!==i});tabs[i].focus()}
+  tabs.forEach(function(b,i){
+    b.addEventListener('click',function(){sel(i)});
+    b.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight')sel((i+1)%tabs.length);
+      if(e.key==='ArrowLeft')sel((i+tabs.length-1)%tabs.length)})})});
+document.querySelectorAll('.cp').forEach(function(b){
+  b.addEventListener('click',function(){
+    var txt=b.parentNode.querySelector('pre').innerText;
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){b.textContent='Copié ✓'},function(){b.textContent='Sélectionnez le texte'});
+    setTimeout(function(){b.textContent='Copier'},1800)})});
+var bar=document.getElementById('bar'),top_=document.getElementById('top');
+addEventListener('scroll',function(){
+  var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+  bar.style.width=(p*100)+'%';top_.style.display=h.scrollTop>600?'block':'none'});
+top_.addEventListener('click',function(){scrollTo({top:0})});
+var secs=document.querySelectorAll('.fade');
+if(window.IntersectionObserver&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
+  secs.forEach(function(s){io.observe(s)})}else{secs.forEach(function(s){s.classList.add('in')})}
+</script>
+</body>
+</html>

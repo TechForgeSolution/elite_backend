@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 06 — Sécuriser sa connexion Internet et sa navigation | Filière Cybersécurité</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232563EB' d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identiques sur tous les cours de la filière) ===== */
+:root{
+  --color-bg:#FFFFFF; --color-bg-alt:#F4F8FC; --color-text:#0A0F14; --color-text-muted:#5B6472;
+  --color-accent:#2563EB; --color-accent-soft:#EAF2FF; --color-border:#E2E8F0;
+  --font-display:'Sora','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font-body);font-size:1.0625rem;line-height:1.7;color:var(--color-text);background:var(--color-bg)}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.2;margin:0 0 .6em}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+.muted{color:var(--color-text-muted)}
+
+/* ===== Barre de progression + header ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:.95rem;text-decoration:none;color:var(--color-text)}
+.brand svg{width:22px;height:22px}
+.menu-btn{font:500 .9rem var(--font-body);background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--color-text);transition:border-color .2s}
+.menu-btn:hover{border-color:var(--color-accent)}
+#drawer{display:none;position:absolute;right:20px;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(10,15,20,.08)}
+#drawer.open{display:block}
+#drawer a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#drawer a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+
+/* ===== Hero ===== */
+.hero{padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.82rem;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent)}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted);border:1px solid var(--color-border)}
+.hero .lead{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.course{font-size:.95rem;color:var(--color-text-muted);margin-bottom:12px}
+
+/* ===== Sommaire ===== */
+.toc{background:var(--color-bg-alt);border-radius:var(--radius);padding:24px 28px;margin:40px auto}
+.toc ol{margin:0;padding-left:1.2em}
+.toc li{padding:3px 0}
+.toc a{text-decoration:none;color:var(--color-text);transition:color .2s}
+.toc a:hover{color:var(--color-accent)}
+
+/* ===== Sections ===== */
+section.lesson{padding:64px 0}
+section.lesson.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ===== Cartes ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;transition:border-color .2s,transform .2s}
+.alt .card{background:#fff}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card svg{width:28px;height:28px;stroke:var(--color-accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin-bottom:.3em}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+
+/* ===== Encadrés ===== */
+.note{display:flex;gap:14px;border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:28px 0}
+.note .ic{font-size:1.3rem;line-height:1.5}
+.note strong{display:block;font-family:var(--font-display);margin-bottom:2px}
+.note p{margin:0;font-size:.98rem}
+
+/* ===== Tabs ===== */
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;overflow:hidden}
+.tablist{display:flex;overflow-x:auto;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.tablist button{flex:1 0 auto;font:500 .95rem var(--font-body);padding:12px 18px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent;transition:color .2s}
+.tablist button:hover{color:var(--color-text)}
+.tablist button[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent);background:#fff}
+.tabpanel{padding:20px 22px}
+.tabpanel[hidden]{display:none}
+.tabpanel p:last-child{margin:0}
+
+/* ===== Accordéons ===== */
+details{border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;margin:10px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details>div{padding:0 18px 16px;color:var(--color-text-muted);font-size:.98rem}
+
+/* ===== Schémas ===== */
+figure{margin:32px 0}
+figure svg{width:100%;height:auto;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius)}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--font-body)}
+
+/* ===== Stepper ===== */
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;counter-reset:s}
+.stepper li{counter-increment:s;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:44px 14px 14px;font-size:.92rem}
+.stepper li::before{content:counter(s);position:absolute;top:12px;left:14px;width:24px;height:24px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem/24px var(--font-display);text-align:center}
+.stepper b{display:block;font-family:var(--font-display);margin-bottom:2px}
+.stepper span{color:var(--color-text-muted)}
+
+/* ===== Points clés, nav, footer ===== */
+.keys{list-style:none;padding:0;margin:24px 0;display:grid;gap:12px}
+.keys li{display:flex;gap:12px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:14px 18px}
+.keys li::before{content:"✓";color:var(--color-accent);font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding:48px 0}
+.nav a,.nav span{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px 20px;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}
+.nav small{display:block;color:var(--color-text-muted)}
+.nav .next{text-align:right}
+.nav span{color:var(--color-text-muted);background:var(--color-bg-alt)}
+.modlink{text-align:center;margin-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:28px 0;font-size:.9rem;color:var(--color-text-muted);text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,border-color .2s}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{border-color:var(--color-accent)}
+.pwd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1rem;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:nowrap}
+.bad{border-left:3px solid #5B6472}.good{border-left:3px solid var(--color-accent)}
+@media (max-width:600px){.hero{padding:48px 0 40px}section.lesson{padding:44px 0}.toc{padding:20px}}
+</style>
+</head>
+<body>
+<div id="progress" role="presentation"></div>
+
+<header class="top">
+  <div class="wide">
+    <a class="brand" href="#debut">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#2563EB" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="M8.5 12l2.4 2.4L15.5 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Filière Cybersécurité
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="drawer">Sommaire</button>
+  </div>
+  <nav id="drawer" aria-label="Sommaire rapide">
+    <a href="#wifi">1. Wi-Fi et box domestique</a>
+    <a href="#wpa">2. WPA2 et WPA3</a>
+    <a href="#public">3. Wi-Fi publics et ouverts</a>
+    <a href="#https">4. HTTP, HTTPS et certificat</a>
+    <a href="#navigateur">5. Protéger son navigateur</a>
+    <a href="#vpn">6. VPN et partage de connexion</a>
+    <a href="#cles">Points clés à retenir</a>
+  </nav>
+</header>
+
+<main id="debut">
+<div class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 2 — Protection des données, de l'identité et réaction aux incidents</span>
+      <span class="badge plain">⏱ 15 min de lecture</span>
+      <span class="badge plain">Niveau débutant</span>
+    </div>
+    <p class="course">Leçon 06</p>
+    <h1>Sécuriser sa connexion Internet et sa navigation</h1>
+    <p class="lead">Objectif : se connecter et naviguer en limitant les risques liés aux réseaux Wi-Fi et aux sites non fiables.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2 style="font-size:1.1rem">Dans cette leçon</h2>
+    <ol>
+      <li><a href="#wifi">Fonctionnement du Wi-Fi et sécurisation de sa box</a></li>
+      <li><a href="#wpa">Protocoles de chiffrement : WPA2 et WPA3</a></li>
+      <li><a href="#public">Risques des Wi-Fi publics ou ouverts</a></li>
+      <li><a href="#https">Navigation sécurisée : HTTP, HTTPS et certificat</a></li>
+      <li><a href="#navigateur">Protection du navigateur</a></li>
+      <li><a href="#vpn">VPN et partage de connexion mobile</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============ 1. Wi-Fi et box ============ -->
+<section class="lesson" id="wifi">
+  <div class="wrap reveal">
+    <h2>1. Fonctionnement du Wi-Fi et sécurisation de sa box</h2>
+    <p>Chez vous, tous les appareils passent par la <strong>box</strong> (routeur) : elle relie votre réseau local à Internet et diffuse le Wi-Fi par ondes radio. Ces ondes traversent les murs : sans protection, n'importe quel voisin pourrait écouter ou se connecter.</p>
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-labelledby="g1t g1d">
+        <title id="g1t">Réseau domestique</title>
+        <desc id="g1d">Plusieurs appareils se connectent en Wi-Fi à la box, qui les relie à Internet.</desc>
+        <defs><marker id="ar6" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l7 4-7 4z" fill="#2563EB"/></marker></defs>
+        <g fill="#fff" stroke="#2563EB" stroke-width="2"><rect x="10" y="20" width="140" height="38" rx="8"/><rect x="10" y="66" width="140" height="38" rx="8"/><rect x="10" y="112" width="140" height="38" rx="8"/><rect x="240" y="45" width="150" height="80" rx="12" fill="#EAF2FF"/><rect x="490" y="45" width="140" height="80" rx="12"/></g>
+        <g stroke="#2563EB" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar6)"><line x1="152" y1="39" x2="236" y2="75"/><line x1="152" y1="85" x2="236" y2="85"/><line x1="152" y1="131" x2="236" y2="97"/></g>
+        <line x1="392" y1="85" x2="486" y2="85" stroke="#2563EB" stroke-width="2" marker-end="url(#ar6)"/>
+        <g font-size="13" text-anchor="middle" fill="#0A0F14"><text x="80" y="44">Smartphone</text><text x="80" y="90">Ordinateur</text><text x="80" y="136">Objets connectés</text><text x="315" y="80">Box / routeur</text><text x="315" y="98">(pare-feu, Wi-Fi)</text><text x="560" y="90">Internet</text></g>
+      </svg>
+      <figcaption>La box est la porte d'entrée de tout votre réseau : sa configuration est donc déterminante.</figcaption>
+    </figure>
+    <div class="cards">
+      <div class="card"><h3>Mot de passe Wi-Fi</h3><p>Une phrase de passe longue, différente du code imprimé sur la box si celui-ci est standard.</p></div>
+      <div class="card"><h3>Accès à l'administration</h3><p>Remplacez l'identifiant et le mot de passe d'administration d'origine de la box.</p></div>
+      <div class="card"><h3>Mises à jour</h3><p>Gardez le logiciel de la box à jour : elle aussi a des failles corrigées par des mises à jour.</p></div>
+    </div>
+    <details><summary>Autres réglages utiles</summary><div>Désactiver le WPS (connexion par bouton ou code court, plus fragile), proposer un <strong>réseau invité</strong> séparé pour les visiteurs et les objets connectés, et désactiver l'administration à distance si vous n'en avez pas besoin.</div></details>
+  </div>
+</section>
+
+<!-- ============ 2. WPA ============ -->
+<section class="lesson alt" id="wpa">
+  <div class="wrap reveal">
+    <h2>2. Protocoles de chiffrement sans fil : WPA2 vs WPA3</h2>
+    <p>Le protocole de sécurité du Wi-Fi <strong>chiffre</strong> les échanges entre vos appareils et la box. Sans lui, tout ce qui circule peut être lu par quelqu'un à portée.</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Comparaison WPA2 et WPA3">
+        <button role="tab">WPA2</button><button role="tab">WPA3</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Standard depuis 2004, encore très répandu. Avec un mot de passe long et un chiffrement <strong>AES</strong>, il reste acceptable. Sa faiblesse : un mot de passe court ou courant peut être deviné par un essai répété hors ligne.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Plus récent et plus robuste. Il renforce la protection contre les essais de mots de passe, et chiffre individuellement chaque connexion même sur certains réseaux ouverts (option Enhanced Open / OWE). À privilégier quand tous vos appareils le gèrent.</p></div>
+    </div>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Attention</strong><p>Évitez les réglages <strong>WEP</strong> (obsolète, cassable très vite) et « réseau ouvert » sans mot de passe sur votre box. Si besoin, choisissez le mode mixte WPA2/WPA3.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 3. Wi-Fi publics ============ -->
+<section class="lesson" id="public">
+  <div class="wrap reveal">
+    <h2>3. Risques des Wi-Fi publics ou ouverts</h2>
+    <p>Dans un café, un hôtel ou une gare, vous partagez le réseau avec des inconnus, et vous ne contrôlez pas l'équipement. Voici les risques, vus du côté de la défense.</p>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div class="card"><h3>Interception</h3><p>Sur un réseau non chiffré, le trafic peut être observé par d'autres personnes connectées.</p></div>
+      <div class="card"><h3>Faux point d'accès</h3><p>Un réseau au nom crédible (« Cafe_Gratuit ») peut être créé par un tiers pour attirer les connexions.</p></div>
+      <div class="card"><h3>Man-in-the-Middle</h3><p>Un intermédiaire s'insère dans la communication pour lire ou modifier les échanges.</p></div>
+    </div>
+    <figure>
+      <svg viewBox="0 0 640 150" role="img" aria-labelledby="g3t g3d">
+        <title id="g3t">Attaque de l'homme du milieu</title>
+        <desc id="g3d">Normalement l'utilisateur échange avec le site. Dans l'attaque, un intermédiaire malveillant se place entre les deux.</desc>
+        <defs><marker id="ar7" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l7 4-7 4z" fill="#2563EB"/></marker></defs>
+        <g fill="#fff" stroke="#2563EB" stroke-width="2"><rect x="10" y="50" width="120" height="50" rx="10"/><rect x="260" y="50" width="130" height="50" rx="10" fill="#EAF2FF" stroke-dasharray="6 4"/><rect x="510" y="50" width="120" height="50" rx="10"/></g>
+        <g stroke="#2563EB" stroke-width="2" marker-end="url(#ar7)"><line x1="132" y1="75" x2="256" y2="75"/><line x1="392" y1="75" x2="506" y2="75"/></g>
+        <g font-size="13" text-anchor="middle" fill="#0A0F14"><text x="70" y="80">Vous</text><text x="325" y="72">Intermédiaire</text><text x="325" y="90">non autorisé</text><text x="570" y="80">Site visité</text><text x="325" y="130" fill="#5B6472">La communication passe par un tiers à votre insu.</text></g>
+      </svg>
+      <figcaption>Le chiffrement de bout en bout (HTTPS) rend ce type d'interception bien moins exploitable.</figcaption>
+    </figure>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Sur un Wi-Fi public, évitez les opérations sensibles (banque, achats), vérifiez le nom exact du réseau auprès de l'établissement, et préférez le réseau mobile de votre téléphone pour les besoins importants.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 4. HTTPS ============ -->
+<section class="lesson alt" id="https">
+  <div class="wrap reveal">
+    <h2>4. Navigation sécurisée : HTTP, HTTPS et certificat</h2>
+    <p>Le <strong>HTTP</strong> est le protocole du Web ; <strong>HTTPS</strong> en est la version chiffrée (le « S » signifie <em>Secure</em>).</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="HTTP et HTTPS">
+        <button role="tab">HTTP</button><button role="tab">HTTPS</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Les données circulent <strong>en clair</strong> : mots de passe ou formulaires pourraient être lus ou modifiés par un intermédiaire. Votre navigateur le signale par « Non sécurisé ».</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Les échanges sont <strong>chiffrés</strong> et le site est authentifié grâce à son <strong>certificat</strong> : confidentialité et intégrité sont assurées entre vous et le site.</p></div>
+    </div>
+    <p>Un <strong>certificat</strong> est une carte d'identité numérique délivrée au site par une autorité de confiance. Le navigateur le vérifie, puis affiche un <strong>cadenas</strong> près de l'adresse.</p>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Erreur fréquente</strong><p>Le cadenas signifie que la <em>connexion</em> est chiffrée, pas que le site est honnête : un site frauduleux peut aussi utiliser HTTPS. Vérifiez toujours le nom de domaine, comme vu dans la leçon sur le phishing.</p></div></div>
+    <details><summary>Que faire face à un avertissement de certificat ?</summary><div>Si le navigateur signale un certificat expiré ou invalide, n'allez pas plus loin et ne saisissez aucune donnée. Cela peut être une erreur de configuration, mais aussi une tentative d'interception.</div></details>
+  </div>
+</section>
+
+<!-- ============ 5. Navigateur ============ -->
+<section class="lesson" id="navigateur">
+  <div class="wrap reveal">
+    <h2>5. Protection du navigateur</h2>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Protections du navigateur">
+        <button role="tab">Extensions</button><button role="tab">Cookies</button><button role="tab">Navigation privée</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Les <strong>bloqueurs de publicités et de traqueurs</strong> réduisent le suivi et le risque de publicités piégées. Mais une extension a de larges droits sur ce que vous consultez : installez-en peu, depuis le magasin officiel, et vérifiez l'éditeur.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Un <strong>cookie</strong> est un petit fichier déposé par un site : il garde votre session ou vos préférences, mais peut aussi servir au suivi publicitaire. Acceptez le nécessaire, refusez le reste, et videz-les de temps en temps.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>La navigation privée <strong>n'enregistre pas</strong> historique, cookies et formulaires sur l'appareil, une fois la fenêtre fermée. Utile sur un ordinateur partagé.</p><p><strong>Limites :</strong> elle ne vous rend pas anonyme. Les sites, votre fournisseur d'accès, votre employeur ou le réseau Wi-Fi peuvent toujours voir votre activité.</p></div>
+    </div>
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>Gardez le navigateur à jour : c'est le logiciel le plus exposé aux contenus venant d'Internet.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 6. VPN ============ -->
+<section class="lesson alt" id="vpn">
+  <div class="wrap reveal">
+    <h2>6. VPN et partage de connexion mobile</h2>
+    <p>Un <strong>VPN</strong> (réseau privé virtuel) crée un tunnel chiffré entre votre appareil et un serveur du service VPN, qui relaie ensuite votre trafic vers Internet.</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Apports et limites du VPN">
+        <button role="tab">Ce qu'il apporte</button><button role="tab">Ses limites</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Il protège votre trafic <strong>sur un réseau non fiable</strong> comme un Wi-Fi public, et masque votre adresse IP aux sites visités. Les entreprises l'utilisent aussi pour donner un accès sécurisé au réseau interne.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Il ne vous rend pas anonyme : le fournisseur de VPN voit votre trafic, donc choisissez un service réputé. Il ne protège pas d'un site de phishing, d'un logiciel malveillant ni d'un mot de passe faible.</p></div>
+    </div>
+    <h3>Partage de connexion mobile</h3>
+    <p>Le <strong>partage de connexion</strong> transforme votre téléphone en point d'accès. C'est souvent plus sûr qu'un Wi-Fi public, à condition de le configurer correctement.</p>
+    <ul class="keys">
+      <li>Protégez-le avec un mot de passe solide, et changez le nom et le code par défaut.</li>
+      <li>Activez-le seulement quand vous en avez besoin, puis désactivez-le.</li>
+      <li>Vérifiez la liste des appareils connectés et surveillez votre forfait de données.</li>
+    </ul>
+    <div class="note"><span class="ic">🔗</span><div><strong>Pour aller plus loin</strong><p>La leçon suivante traite d'une protection complémentaire : sauvegarder et protéger ses données.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ Points clés ============ -->
+<section class="lesson" id="cles">
+  <div class="wrap reveal">
+    <h2>Points clés à retenir</h2>
+    <ul class="keys">
+      <li>La box est la porte d'entrée de votre réseau : mots de passe, mises à jour et réseau invité.</li>
+      <li>WPA3 est plus robuste que WPA2 ; WEP et les réseaux ouverts sont à éviter chez soi.</li>
+      <li>Les Wi-Fi publics exposent à l'interception, aux faux points d'accès et à l'homme du milieu.</li>
+      <li>HTTPS chiffre la connexion, mais le cadenas ne prouve pas qu'un site est honnête.</li>
+      <li>Extensions, cookies et navigation privée ont chacun des atouts et des limites.</li>
+      <li>Un VPN protège le trajet sur un réseau non fiable, sans remplacer la vigilance.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="nav">
+    <a href="lecon-05-securiser-son-ordinateur-et-son-smartphone.html" rel="prev"><small>Leçon précédente (Module 1)</small>Leçon 05 — Sécuriser son ordinateur et son smartphone</a>
+    <a class="next" href="lecon-07-sauvegarder-et-proteger-ses-donnees.html" rel="next"><small>Leçon suivante</small>Leçon 07 — Sauvegarder et protéger ses données</a>
+  </div>
+  <p class="modlink"><a href="module-2.html">Retour au sommaire du module 2</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière Cybersécurité · Module 2 · Leçon 06</div></footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* Barre de progression, bouton retour haut */
+const bar=document.getElementById('progress'),topBtn=document.getElementById('top');
+function onScroll(){
+  const h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+  bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+  topBtn.classList.toggle('show',h.scrollTop>600);
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+/* Menu sommaire */
+const mb=document.getElementById('menuBtn'),dr=document.getElementById('drawer');
+mb.onclick=()=>{const o=dr.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+dr.addEventListener('click',e=>{if(e.target.tagName==='A'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+
+/* Onglets accessibles (flèches, Home, End) */
+document.querySelectorAll('[data-tabs]').forEach((box,n)=>{
+  const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+  tabs.forEach((t,i)=>{t.id=`t${n}-${i}`;panels[i].setAttribute('aria-labelledby',t.id);panels[i].tabIndex=0});
+  function select(i){tabs.forEach((t,j)=>{const on=i===j;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[j].hidden=!on})}
+  tabs.forEach((t,i)=>{
+    t.onclick=()=>select(i);
+    t.onkeydown=e=>{
+      let k=null;
+      if(e.key==='ArrowRight')k=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft')k=(i-1+tabs.length)%tabs.length;
+      if(e.key==='Home')k=0;if(e.key==='End')k=tabs.length-1;
+      if(k!==null){e.preventDefault();select(k);tabs[k].focus()}
+    };
+  });
+  select(0);
+});
+
+/* Apparition douce des sections (désactivée si prefers-reduced-motion) */
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+  els.forEach(el=>io.observe(el));
+}else els.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>

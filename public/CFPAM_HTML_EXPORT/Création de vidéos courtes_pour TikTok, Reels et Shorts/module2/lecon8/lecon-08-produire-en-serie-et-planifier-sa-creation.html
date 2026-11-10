@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 08 — Produire en série et planifier sa création</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='9' y='2' width='14' height='28' rx='4' fill='%237C3AED'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F5FA;--color-text:#0A0A0F;--color-text-muted:#5B6472;--color-accent:#7C3AED;--color-accent-soft:#F0EAFE;--color-border:#E5E8EE;--accent-text:#6D28D9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.2;margin:0 0 .6em;letter-spacing:-.02em}
+h1{font-size:clamp(2rem,5vw,3.25rem);font-weight:700}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1em}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font:700 1rem Sora,sans-serif;display:flex;align-items:center;gap:8px}
+.logo i{width:12px;height:20px;border-radius:4px;background:var(--color-accent);display:inline-block}
+header.top a.menu{font-size:.9rem;text-decoration:none;color:var(--color-text);padding:6px 12px;border:1px solid var(--color-border);border-radius:99px;transition:.2s}
+header.top a.menu:hover{border-color:var(--color-accent);color:var(--accent-text)}
+.hero{padding:72px 0 48px;background:var(--color-bg-alt)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.85rem;padding:4px 12px;border-radius:99px;background:var(--color-accent-soft);color:var(--accent-text);font-weight:500}
+.badge.plain{background:#fff;border:1px solid var(--color-border);color:var(--color-text-muted)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.hero .lesson{color:var(--accent-text);font:600 .95rem Sora,sans-serif;margin-bottom:12px}
+.toc{padding:40px 0}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:block;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);transition:.2s}
+.toc a:hover{border-color:var(--color-accent);transform:translateX(4px)}
+section.s{padding:64px 0}
+section.s.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+.callout{display:flex;gap:14px;padding:16px 18px;margin:24px 0;border-left:4px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 12px 12px 0}
+.callout b{display:block;font-family:Sora,sans-serif}
+.callout p{margin:0}
+.fig{margin:28px 0;padding:16px;background:#fff;border:1px solid var(--color-border);border-radius:14px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{font-size:.875rem;color:var(--color-text-muted);margin-top:8px}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:24px 0}
+.card{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-3px)}
+.card .ic{font-size:1.5rem}
+.card h3{font-size:1.05rem;margin:.4em 0}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+.tabs [role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{font:600 .95rem Sora,sans-serif;padding:10px 16px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--accent-text);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:20px 0}
+.tabs [role=tabpanel][hidden]{display:none}
+.tabs ul{padding-left:1.1em;margin:0}
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));counter-reset:st}
+.stepper li{counter-increment:st;position:relative;padding:44px 14px 14px;background:#fff;border:1px solid var(--color-border);border-radius:12px;font-size:.95rem}
+.stepper li::before{content:counter(st);position:absolute;top:10px;left:14px;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .85rem/26px Sora,sans-serif;text-align:center}
+.stepper b{display:block;font-family:Sora,sans-serif}
+details{border:1px solid var(--color-border);border-radius:12px;background:#fff;margin:10px 0;padding:0 16px}
+summary{cursor:pointer;padding:14px 0;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--accent-text);font-weight:700}
+details[open] summary::after{content:"–"}
+details p{color:var(--color-text-muted)}
+.example{padding:16px 18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;margin:20px 0}
+.example b{font-family:Sora,sans-serif}
+.example p{margin:.4em 0 0;color:var(--color-text-muted);font-size:.97rem}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:20px 0}
+.week div{padding:8px 4px;text-align:center;font-size:.8rem;background:#fff;border:1px solid var(--color-border);border-radius:10px;min-height:76px}
+.week b{display:block;font:600 .8rem Sora,sans-serif;margin-bottom:4px}
+.week .on{background:var(--color-accent-soft);border-color:var(--color-accent)}
+.week .rest{color:var(--color-text-muted);background:var(--color-bg-alt)}
+@media (max-width:520px){.week{grid-template-columns:1fr 1fr}}
+.quiz .q{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;margin:14px 0}
+.quiz .q p{font-weight:500}
+.opts{display:grid;gap:8px}
+.opts button{font:inherit;text-align:left;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;background:#fff;cursor:pointer;transition:.2s}
+.opts button:hover:not(:disabled){border-color:var(--color-accent);background:var(--color-accent-soft)}
+.opts button.ok{border-color:var(--color-accent);background:var(--color-accent-soft);font-weight:500}
+.opts button.ko{border-style:dashed;color:var(--color-text-muted);text-decoration:line-through}
+.fb{font-size:.95rem;margin:10px 0 0;color:var(--color-text-muted);min-height:1.4em}
+.score{font:600 1.1rem Sora,sans-serif;margin-top:16px}
+.key ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.key li{padding:12px 16px 12px 44px;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:12px}
+.key li::before{content:"✓";position:absolute;left:14px;color:var(--color-accent);font-weight:700}
+.pager{display:grid;gap:12px;grid-template-columns:1fr 1fr;padding:48px 0 24px}
+.pager a{padding:16px;border:1px solid var(--color-border);border-radius:14px;text-decoration:none;color:var(--color-text);display:block;transition:.2s}
+.pager a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.pager small{display:block;color:var(--color-text-muted)}
+.pager .next{text-align:right}
+.back{text-align:center;padding-bottom:32px}
+footer{border-top:1px solid var(--color-border);padding:24px 0;color:var(--color-text-muted);font-size:.9rem;text-align:center}
+#top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:.3s}
+#top.show{opacity:1;pointer-events:auto}
+@media (max-width:520px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}.hero{padding:48px 0 32px}section.s{padding:48px 0}}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="logo"><i></i>Création de contenu vidéo court</span>
+  <a class="menu" href="#sommaire">Sommaire</a>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge">Module 2 — Publier, optimiser et développer sa présence</span><span class="badge plain">⏱ 15 min</span><span class="badge plain">Niveau débutant</span></div>
+  <p class="lesson">Leçon 08</p>
+  <h1>Produire en série et planifier sa création</h1>
+  <p class="sub">À la fin de cette leçon, vous saurez créer des formats récurrents, tourner par lots, tenir un calendrier et réutiliser vos contenus, sans vous épuiser.</p>
+</div></div>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire"><div class="wrap">
+  <h2>Sommaire</h2>
+  <ol>
+    <li><a href="#series">Formats récurrents et séries</a></li>
+    <li><a href="#batching">Le tournage par lots</a></li>
+    <li><a href="#calendrier">Le calendrier éditorial</a></li>
+    <li><a href="#repurposing">Recycler ses contenus</a></li>
+    <li><a href="#energie">Gérer son temps et son énergie</a></li>
+    <li><a href="#quiz">Vérifiez vos acquis</a></li>
+    <li><a href="#cles">Points clés à retenir</a></li>
+  </ol>
+</div></nav>
+
+<section class="s alt reveal" id="series"><div class="wrap">
+  <h2>Formats récurrents et séries</h2>
+  <p>Un <strong>format récurrent</strong> est une structure de vidéo que vous répétez : même durée approximative, même déroulé, même ambiance. Une <strong>série thématique</strong> regroupe plusieurs vidéos autour d'un même fil, avec un titre ou un rendez-vous reconnaissable.</p>
+  <div class="cards">
+    <div class="card"><div class="ic">⚡</div><h3>Moins de décisions</h3><p>Le schéma est déjà prêt : vous n'inventez que le contenu.</p></div>
+    <div class="card"><div class="ic">🔁</div><h3>Un public fidèle</h3><p>Vos abonnés savent ce qu'ils vont retrouver et reviennent.</p></div>
+    <div class="card"><div class="ic">🎬</div><h3>Montage plus rapide</h3><p>Même structure, même habillage : vous réutilisez vos modèles.</p></div>
+  </div>
+  <div class="example"><b>Exemple : une série sur la cuisine étudiante</b>
+    <p>Titre de série : « Le repas à 3 euros ». Structure fixe : ingrédients à l'écran, 3 étapes, plan final. Chaque épisode change la recette, pas le format.</p></div>
+  <div class="callout" role="note"><span aria-hidden="true">💡</span><div><b>À retenir</b><p>Choisissez un format simple à répéter pendant plusieurs semaines. S'il vous épuise dès le deuxième épisode, simplifiez-le.</p></div></div>
+</div></section>
+
+<section class="s reveal" id="batching"><div class="wrap">
+  <h2>Le tournage par lots</h2>
+  <p>Le <strong>batching</strong> consiste à regrouper la même tâche pour plusieurs vidéos : on écrit tous les scénarios ensemble, puis on tourne tout, puis on monte tout. On évite ainsi de réinstaller le matériel et de changer sans cesse d'activité.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 600 230" role="img" aria-label="Comparaison : sans batching, chaque vidéo enchaîne écrire, tourner, monter, et le matériel est réinstallé trois fois. Avec batching, on écrit tout, on tourne tout, puis on monte tout.">
+      <text x="20" y="28" font-family="Sora,sans-serif" font-size="14" font-weight="600" fill="#0A0A0F">Sans batching</text>
+      <g font-family="Inter,sans-serif" font-size="11" fill="#0A0A0F" text-anchor="middle">
+        <g fill="#fff" stroke="#E5E8EE"><rect x="20" y="40" width="58" height="30" rx="6"/><rect x="82" y="40" width="58" height="30" rx="6"/><rect x="144" y="40" width="58" height="30" rx="6"/><rect x="216" y="40" width="58" height="30" rx="6"/><rect x="278" y="40" width="58" height="30" rx="6"/><rect x="340" y="40" width="58" height="30" rx="6"/><rect x="412" y="40" width="58" height="30" rx="6"/><rect x="474" y="40" width="58" height="30" rx="6"/><rect x="536" y="40" width="48" height="30" rx="6"/></g>
+        <text x="49" y="60">Écrire</text><text x="111" y="60">Tourner</text><text x="173" y="60">Monter</text><text x="245" y="60">Écrire</text><text x="307" y="60">Tourner</text><text x="369" y="60">Monter</text><text x="441" y="60">Écrire</text><text x="503" y="60">Tourner</text><text x="560" y="60">…</text>
+      </g>
+      <text x="20" y="110" font-family="Inter,sans-serif" font-size="12" fill="#5B6472">Vidéo 1, puis vidéo 2, puis vidéo 3 : on change d'activité en permanence.</text>
+      <text x="20" y="150" font-family="Sora,sans-serif" font-size="14" font-weight="600" fill="#6D28D9">Avec batching</text>
+      <g font-family="Inter,sans-serif" font-size="12" fill="#0A0A0F" text-anchor="middle">
+        <rect x="20" y="162" width="170" height="36" rx="8" fill="#F0EAFE" stroke="#7C3AED"/><text x="105" y="185">Écrire les 3 scénarios</text>
+        <rect x="215" y="162" width="170" height="36" rx="8" fill="#F0EAFE" stroke="#7C3AED"/><text x="300" y="185">Tourner les 3 vidéos</text>
+        <rect x="410" y="162" width="170" height="36" rx="8" fill="#F0EAFE" stroke="#7C3AED"/><text x="495" y="185">Monter les 3 vidéos</text>
+      </g>
+      <path d="M190 180 H215 M385 180 H410" stroke="#7C3AED" stroke-width="2"/>
+    </svg>
+    <figcaption>Même travail, mais regroupé par type de tâche.</figcaption>
+  </figure>
+  <h3>Organiser une session de tournage par lots</h3>
+  <ol class="stepper">
+    <li><b>Préparer</b>Écrivez tous les scénarios avant la session.</li>
+    <li><b>Regrouper</b>Classez les vidéos par lieu, tenue ou décor.</li>
+    <li><b>Installer</b>Réglez lumière et son une seule fois.</li>
+    <li><b>Enchaîner</b>Tournez toutes les vidéos à la suite.</li>
+  </ol>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Erreur fréquente</b><p>Vouloir tourner trop de vidéos dans la même session. Commencez avec 2 ou 3 : la fatigue se voit à l'image.</p></div></div>
+</div></section>
+
+<section class="s alt reveal" id="calendrier"><div class="wrap">
+  <h2>Le calendrier éditorial</h2>
+  <p>Un <strong>calendrier éditorial</strong> est un planning qui indique ce que vous publiez, quand, et sur quelle plateforme. Il vous évite de chercher une idée au dernier moment, et vous aide à garder un rythme régulier.</p>
+  <div class="tabs" id="tabs1">
+    <div role="tablist" aria-label="Types de planning">
+      <button role="tab" id="t1" aria-controls="p1" aria-selected="true">Semaine type</button>
+      <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Planning du mois</button>
+    </div>
+    <div role="tabpanel" id="p1" aria-labelledby="t1">
+      <p>Exemple d'une semaine pour 3 publications. Adaptez-la à votre emploi du temps.</p>
+      <div class="week" role="list">
+        <div role="listitem" class="on"><b>Lundi</b>Idées et scénarios</div>
+        <div role="listitem" class="rest"><b>Mardi</b>Repos</div>
+        <div role="listitem" class="on"><b>Mercredi</b>Tournage par lots</div>
+        <div role="listitem" class="on"><b>Jeudi</b>Montage</div>
+        <div role="listitem" class="on"><b>Vendredi</b>Publication</div>
+        <div role="listitem" class="rest"><b>Samedi</b>Repos</div>
+        <div role="listitem" class="on"><b>Dimanche</b>Bilan et veille</div>
+      </div>
+    </div>
+    <div role="tabpanel" id="p2" aria-labelledby="t2" hidden><ul>
+      <li>Fixez le <strong>nombre de vidéos</strong> par semaine que vous pouvez tenir.</li>
+      <li>Répartissez vos <strong>piliers de contenu</strong> sur les semaines pour varier.</li>
+      <li>Placez les dates importantes : événements, saisons, lancements.</li>
+      <li>Gardez des cases libres pour une idée d'actualité.</li></ul></div>
+  </div>
+  <div class="callout" role="note"><span aria-hidden="true">🔗</span><div><b>Pour aller plus loin</b><p>Un simple tableau, un agenda ou une application de notes suffit. L'outil compte moins que l'habitude de le consulter.</p></div></div>
+</div></section>
+
+<section class="s reveal" id="repurposing"><div class="wrap">
+  <h2>Recycler ses contenus</h2>
+  <p>Le <strong>repurposing</strong> consiste à réutiliser un contenu existant sous une autre forme. Une même idée peut ainsi vivre plusieurs fois, sans repartir de zéro.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 600 240" role="img" aria-label="Schéma : une vidéo qui a bien fonctionné est reprise sous quatre formes : nouvelle accroche, version à la suite, extrait pour une autre plateforme, réponse à un commentaire.">
+      <g stroke="#7C3AED" stroke-width="2"><line x1="300" y1="120" x2="110" y2="45"/><line x1="300" y1="120" x2="490" y2="45"/><line x1="300" y1="120" x2="110" y2="195"/><line x1="300" y1="120" x2="490" y2="195"/></g>
+      <circle cx="300" cy="120" r="50" fill="#7C3AED"/>
+      <text x="300" y="116" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#fff" text-anchor="middle">Vidéo qui</text>
+      <text x="300" y="134" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#fff" text-anchor="middle">a marché</text>
+      <g fill="#F0EAFE" stroke="#7C3AED"><rect x="30" y="25" width="160" height="40" rx="10"/><rect x="410" y="25" width="160" height="40" rx="10"/><rect x="30" y="175" width="160" height="40" rx="10"/><rect x="410" y="175" width="160" height="40" rx="10"/></g>
+      <g font-family="Inter,sans-serif" font-size="13" fill="#0A0A0F" text-anchor="middle"><text x="110" y="50">Nouvelle accroche</text><text x="490" y="50">Suite (partie 2)</text><text x="110" y="200">Autre plateforme</text><text x="490" y="200">Réponse commentaire</text></g>
+    </svg>
+    <figcaption>Une vidéo réussie peut nourrir quatre autres publications.</figcaption>
+  </figure>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Attention</b><p>Recycler ne veut pas dire republier à l'identique. Adaptez le début, le format et le ton à chaque plateforme, et évitez de laisser le filigrane d'une autre application.</p></div></div>
+</div></section>
+
+<section class="s alt reveal" id="energie"><div class="wrap">
+  <h2>Gérer son temps et son énergie</h2>
+  <p>Le <strong>burn-out créatif</strong> est un épuisement qui vient d'un rythme trop exigeant : on n'a plus d'idées ni d'envie. Mieux vaut un rythme modeste tenu longtemps qu'un rythme intense qui s'arrête.</p>
+  <div class="cards">
+    <div class="card"><div class="ic">🎚️</div><h3>Rythme réaliste</h3><p>Commencez par moins de vidéos que vous ne pensez pouvoir en faire.</p></div>
+    <div class="card"><div class="ic">📦</div><h3>Réserve d'avance</h3><p>Gardez quelques vidéos prêtes pour les semaines chargées.</p></div>
+    <div class="card"><div class="ic">🛌</div><h3>Jours de repos</h3><p>Prévoyez-les dans votre planning, comme un rendez-vous.</p></div>
+  </div>
+  <details><summary>Que faire en panne d'idées ?</summary>
+    <p>Reprenez votre banque d'idées, relisez vos piliers de contenu, déclinez une ancienne vidéo, ou répondez à une question reçue en commentaire.</p></details>
+  <details><summary>Faut-il publier tous les jours ?</summary>
+    <p>Non. La régularité compte plus que la fréquence. Choisissez un rythme que vous pouvez tenir, puis ajustez-le avec le temps.</p></details>
+  <details><summary>Comment me protéger de la comparaison ?</summary>
+    <p>Comparez-vous à vos propres débuts plutôt qu'aux comptes établis. Limitez le temps passé à regarder les chiffres des autres.</p></details>
+</div></section>
+
+<section class="s reveal quiz" id="quiz"><div class="wrap">
+  <h2>Vérifiez vos acquis</h2>
+  <p>Trois questions. Cliquez sur une réponse pour voir la correction.</p>
+  <div id="qz"></div>
+  <div class="score" id="score" aria-live="polite"></div>
+</div></section>
+
+<section class="s alt reveal key" id="cles"><div class="wrap">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Un format récurrent réduit les décisions et fidélise le public.</li>
+    <li>Le batching regroupe écriture, tournage et montage par type de tâche.</li>
+    <li>Un calendrier éditorial fixe un rythme réaliste et évite l'improvisation.</li>
+    <li>Le repurposing réutilise une idée sous une autre forme, sans republier à l'identique.</li>
+    <li>La régularité sur la durée compte plus qu'un rythme intense qui s'arrête.</li>
+  </ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pager" aria-label="Navigation entre leçons">
+    <a href="lecon-07-publier-adapter-video-plateformes.html"><small>Leçon précédente</small>Leçon 07 — Publier et adapter une vidéo à chaque plateforme</a>
+    <a class="next" href="lecon-09-suivre-analyser-performances.html"><small>Leçon suivante</small>Leçon 09 — Suivre et analyser les performances de ses vidéos</a>
+  </nav>
+  <p class="back"><a href="#sommaire">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer><div class="wide">Module 2 — Publier, optimiser et développer sa présence</div></footer>
+<button id="top" aria-label="Retour en haut de la page">↑</button>
+
+<script>
+const bar=document.getElementById('bar'),topBtn=document.getElementById('top');
+function onScroll(){const h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';topBtn.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08}):null;
+document.querySelectorAll('.reveal').forEach(el=>io?io.observe(el):el.classList.add('in'));
+document.querySelectorAll('.tabs').forEach(t=>{
+  const tabs=[...t.querySelectorAll('[role=tab]')];
+  const sel=i=>tabs.forEach((b,j)=>{const on=i===j;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on;if(on)b.focus()});
+  tabs.forEach((b,i)=>{b.onclick=()=>sel(i);b.onkeydown=e=>{const k={ArrowRight:(i+1)%tabs.length,ArrowLeft:(i-1+tabs.length)%tabs.length,Home:0,End:tabs.length-1}[e.key];if(k!==undefined){e.preventDefault();sel(k)}}});
+});
+const Q=[
+ {q:"Qu'est-ce que le tournage par lots (batching) ?",o:["Tourner une seule vidéo très longue","Regrouper la même tâche pour plusieurs vidéos à la suite","Publier plusieurs vidéos le même jour"],a:1,f:"On écrit, tourne puis monte plusieurs vidéos en regroupant les tâches."},
+ {q:"À quoi sert un calendrier éditorial ?",o:["À savoir quoi publier, quand et où, sans improviser","À augmenter automatiquement le nombre d'abonnés","À remplacer le montage"],a:0,f:"Il fixe un rythme réaliste et évite le stress du dernier moment."},
+ {q:"Que veut dire « recycler » une vidéo qui a bien marché ?",o:["La republier à l'identique","La reprendre sous une autre forme, avec un nouvel angle","La supprimer et l'oublier"],a:1,f:"On réutilise l'idée en adaptant l'accroche, le format ou la plateforme."}
+];
+const qz=document.getElementById('qz'),sc=document.getElementById('score');let done=0,good=0;
+Q.forEach((it,i)=>{
+  const d=document.createElement('div');d.className='q';
+  d.innerHTML='<p>'+(i+1)+'. '+it.q+'</p><div class="opts"></div><p class="fb"></p>';
+  const box=d.querySelector('.opts'),fb=d.querySelector('.fb');
+  it.o.forEach((t,j)=>{const b=document.createElement('button');b.type='button';b.textContent=t;
+    b.onclick=()=>{[...box.children].forEach((x,k)=>{x.disabled=true;if(k===it.a)x.classList.add('ok');else if(k===j)x.classList.add('ko')});
+      const ok=j===it.a;if(ok)good++;fb.textContent=(ok?'Correct. ':'Pas tout à fait. ')+it.f;
+      if(++done===Q.length)sc.textContent='Résultat : '+good+' / '+Q.length};
+    box.appendChild(b)});
+  qz.appendChild(d);
+});
+</script>
+</body>
+</html>

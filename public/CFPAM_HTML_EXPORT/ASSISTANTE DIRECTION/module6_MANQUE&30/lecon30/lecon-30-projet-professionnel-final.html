@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 30 — Projet professionnel final</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .quiz-question .quiz-options, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 30 — Projet professionnel final</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#analyse-besoin">1. Analyse du besoin</a>
+          <a href="#planning">2. Planning</a>
+          <a href="#production-documents">3. Production des documents</a>
+          <a href="#coordination">4. Coordination</a>
+          <a href="#controle-qualite">5. Contrôle qualité</a>
+          <a href="#livraison">6. Livraison</a>
+          <a href="#soutenance">7. Soutenance</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 6 — Professionnalisation et projet</span>
+      <span class="badge brass">Niveau avancé</span>
+      <span class="badge">45 min</span>
+    </div>
+    <h1>Leçon 30 — Projet professionnel final</h1>
+    <p class="subtitle">Mobiliser l'ensemble des compétences du parcours pour assurer, sur un cas réel, le secrétariat complet d'une direction : de l'analyse du besoin à la soutenance devant jury.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Analyser le besoin d'une direction et le traduire en périmètre de mission clair.</li>
+      <li>Construire un planning réaliste couvrant un mois d'activité simulée.</li>
+      <li>Produire l'ensemble des documents attendus (courriers, comptes rendus, dossiers, reporting).</li>
+      <li>Coordonner les échanges avec les différentes parties prenantes tout au long du projet.</li>
+      <li>Mettre en place un contrôle qualité systématique avant toute livraison.</li>
+      <li>Livrer un dossier professionnel complet et le défendre lors d'une soutenance de 15 minutes.</li>
+    </ul>
+  </div>
+
+  <section id="analyse-besoin">
+    <h2>1. Analyse du besoin</h2>
+    <p>Le projet professionnel final reproduit les conditions réelles d'une mission d'assistance de direction : il commence toujours par une analyse du besoin, avant toute production de document. Cette étape consiste à formaliser ce que la direction attend précisément, sur quelle période, avec quelles priorités.</p>
+    <p>Dans le cas de ce projet, la mission consiste à assurer le secrétariat complet d'une direction sur un mois d'activité simulée : gestion de l'agenda, organisation des réunions, rédaction des courriers, suivi des dossiers, tenue du budget et production du reporting mensuel. L'analyse du besoin permet de lister, avant de commencer, les livrables attendus et leurs échéances.</p>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Une mission mal cadrée au départ se traduit toujours par des reprises en fin de parcours. Le temps investi dans l'analyse du besoin est le temps le plus rentable de tout le projet.
+    </div>
+
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma du périmètre de mission d'un mois d'activité simulée" style="width:100%; max-width:560px; display:block; margin:20px auto;">
+      <rect x="10" y="10" width="620" height="180" fill="none" stroke="#5E5A54" stroke-width="1.5"/>
+      <rect x="26" y="26" width="176" height="60" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="114" y="52" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Agenda et réunions</text>
+      <text x="114" y="68" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">planification, comptes rendus</text>
+      <rect x="232" y="26" width="176" height="60" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="320" y="52" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Courriers et dossiers</text>
+      <text x="320" y="68" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">production et suivi</text>
+      <rect x="438" y="26" width="176" height="60" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1"/>
+      <text x="526" y="52" font-family="Inter" font-size="11" fill="#2F5D50" text-anchor="middle">Budget et reporting</text>
+      <text x="526" y="68" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">suivi mensuel</text>
+      <line x1="320" y1="86" x2="320" y2="112" stroke="#A8823C" stroke-width="1.5"/>
+      <rect x="170" y="112" width="300" height="56" fill="none" stroke="#A8823C" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="320" y="136" font-family="Inter" font-size="12" fill="#A8823C" text-anchor="middle">Dossier professionnel complet</text>
+      <text x="320" y="154" font-family="Inter" font-size="9" fill="#5E5A54" text-anchor="middle">Livré et soutenu devant jury</text>
+    </svg>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Question à se poser</th><th>Objectif</th></tr></thead>
+        <tbody>
+          <tr><td>Quels livrables sont attendus, sous quel format ?</td><td>Éviter toute production non exploitable par le jury</td></tr>
+          <tr><td>Quelles échéances internes se fixer sur le mois ?</td><td>Répartir la charge de travail sans surcharge de fin de projet</td></tr>
+          <tr><td>Quelles informations manquent encore ?</td><td>Identifier ce qu'il reste à clarifier avant de commencer à produire</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Commencer à produire des documents avant d'avoir listé l'ensemble des livrables attendus. Des pièces essentielles (comme le reporting mensuel) sont alors découvertes tardivement et bâclées faute de temps.
+    </div>
+  </section>
+
+  <section id="planning">
+    <h2>2. Planning</h2>
+    <p>Le planning traduit l'analyse du besoin en calendrier de travail. Sur un mois d'activité simulée, il répartit les livrables entre les quatre semaines, en tenant compte des dépendances (par exemple, le reporting mensuel ne peut être finalisé qu'après le suivi des dossiers du mois).</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Semaine 1</h3><p>Cadrage, agenda du mois posé, premiers courriers et convocations.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Semaine 2</h3><p>Réunions tenues, comptes rendus rédigés, dossiers ouverts et suivis.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Semaine 3</h3><p>Suivi budgétaire consolidé, dossiers avancés, points d'étape.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Semaine 4</h3><p>Reporting final, contrôle qualité, mise en forme du dossier complet.</p></div>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Un planning réaliste laisse toujours une marge en semaine 4 pour le contrôle qualité et la relecture finale : ces étapes ne doivent jamais être compressées par un retard pris plus tôt dans le mois.
+    </div>
+  </section>
+
+  <section id="production-documents">
+    <h2>3. Production des documents</h2>
+    <p>La production des documents mobilise l'ensemble des compétences acquises tout au long du parcours : mise en forme professionnelle, gestion de tableaux et de budgets, rédaction de courriers, comptes rendus de réunion, dossiers structurés. Chaque document produit doit être daté, nommé de façon cohérente et classé dans une arborescence claire.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type de document</th><th>Fréquence sur le mois</th><th>Compétence mobilisée</th></tr></thead>
+        <tbody>
+          <tr><td>Agenda et convocations</td><td>Hebdomadaire</td><td>Gestion de l'agenda de direction</td></tr>
+          <tr><td>Comptes rendus de réunion</td><td>Après chaque réunion</td><td>Prise de notes et rédaction structurée</td></tr>
+          <tr><td>Courriers et correspondances</td><td>Selon les besoins</td><td>Rédaction professionnelle</td></tr>
+          <tr><td>Suivi de dossiers</td><td>Continu</td><td>Organisation et classement</td></tr>
+          <tr><td>Suivi budgétaire</td><td>Hebdomadaire</td><td>Tableaux et calculs</td></tr>
+          <tr><td>Reporting mensuel</td><td>Fin de mois</td><td>Synthèse et mise en forme</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Nommer les fichiers de façon incohérente ou approximative (« doc1 », « final2 », « dernière version ») : au bout d'un mois d'activité, le dossier devient impossible à parcourir sans une convention de nommage claire posée dès le départ.
+    </div>
+  </section>
+
+  <section id="coordination">
+    <h2>4. Coordination</h2>
+    <p>Sur un mois d'activité, l'assistante de direction est en contact avec de multiples interlocuteurs : la direction elle-même, les autres services, d'éventuels prestataires ou partenaires externes. La coordination consiste à s'assurer que chacun dispose de l'information dont il a besoin, au bon moment, sans sollicitation excessive ni oubli.</p>
+
+    <div class="tabs" data-tabs="coordination-vs">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Coordination informelle</button>
+        <button class="tab-btn" role="tab" data-tab="b">Coordination structurée</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Les informations circulent au fil de l'eau, sans support écrit ni suivi centralisé. Certaines décisions prises en réunion ne sont jamais formalisées, et il devient difficile de reconstituer l'historique du mois en fin de projet.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Chaque échange important donne lieu à une trace écrite (compte rendu, courriel de synthèse), et un tableau de suivi centralise l'état des dossiers en cours. En fin de mois, l'historique complet de l'activité est reconstituable en quelques minutes.</p>
+      </div>
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Tenir un tableau de suivi centralisé <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Un tableau unique, mis à jour au fil du mois, recense l'état de chaque dossier, son responsable et son échéance. Il évite d'avoir à reconstituer l'information dispersée dans plusieurs courriels au moment de produire le reporting.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Formaliser les décisions prises en réunion <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Toute décision prise oralement en réunion doit apparaître dans le compte rendu correspondant, avec la personne responsable de sa mise en œuvre et l'échéance associée.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="controle-qualite">
+    <h2>5. Contrôle qualité</h2>
+    <p>Avant toute livraison, chaque document produit sur le mois fait l'objet d'un contrôle qualité systématique : cohérence des informations d'un document à l'autre, orthographe, mise en forme homogène, absence de mentions provisoires oubliées (« à compléter », commentaires internes).</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Cohérence</h3><p>Les chiffres et dates se recoupent d'un document à l'autre (budget, reporting, comptes rendus).</p></div>
+      <div class="card"><h3>Forme</h3><p>Styles, en-têtes et numérotation homogènes sur l'ensemble du dossier.</p></div>
+      <div class="card"><h3>Fond</h3><p>Aucune mention provisoire, aucun commentaire interne resté visible.</p></div>
+      <div class="card"><h3>Relecture croisée</h3><p>Une seconde lecture, si possible par une autre personne, avant la livraison finale.</p></div>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Le contrôle qualité se fait document par document, puis sur le dossier complet assemblé : une erreur peut apparaître uniquement au moment de l'assemblage (numérotation des pages, sommaire non actualisé).
+    </div>
+  </section>
+
+  <section id="livraison">
+    <h2>6. Livraison</h2>
+    <p>La livraison du dossier professionnel complet marque la fin de la phase de production. Le dossier assemblé doit être autoportant : une personne extérieure au projet doit pouvoir le comprendre sans explication orale complémentaire.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Élément du dossier</th><th>Rôle</th></tr></thead>
+        <tbody>
+          <tr><td>Page de garde et sommaire</td><td>Présenter le contenu et faciliter la navigation</td></tr>
+          <tr><td>Synthèse de l'activité du mois</td><td>Donner une vue d'ensemble avant le détail</td></tr>
+          <tr><td>Documents produits (classés)</td><td>Preuve de l'activité réalisée, organisée par catégorie</td></tr>
+          <tr><td>Reporting mensuel</td><td>Bilan chiffré et qualitatif de l'activité</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Un export PDF final du dossier assemblé (voir Leçon 1) reste le format attendu pour la livraison, garantissant que la mise en forme reste identique quel que soit le poste sur lequel le jury consulte le document.
+    </div>
+  </section>
+
+  <section id="soutenance">
+    <h2>7. Soutenance</h2>
+    <p>La soutenance de 15 minutes devant jury permet de présenter et de défendre le travail réalisé. Elle ne consiste pas à relire le dossier, mais à en dégager les points essentiels : le périmètre de la mission, les choix d'organisation retenus, les difficultés rencontrées et la façon dont elles ont été résolues.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Présentation</h3><p>2-3 minutes : mission, périmètre, contexte simulé.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Démonstration</h3><p>7-8 minutes : choix d'organisation, documents clés, reporting.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Bilan critique</h3><p>2-3 minutes : difficultés rencontrées, solutions apportées.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Questions du jury</h3><p>Temps variable : réponses argumentées, sans se justifier.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Consacrer la majorité du temps de parole à décrire le contenu du dossier plutôt qu'à expliquer les choix d'organisation retenus : le jury évalue avant tout le raisonnement professionnel, pas seulement le résultat final.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Vous assurez, pour ce projet final, le secrétariat complet d'une direction sur un mois d'activité simulée : gestion de l'agenda, organisation de réunions, rédaction de courriers, suivi de plusieurs dossiers, tenue du budget et production du reporting mensuel.</p>
+      <p style="margin-bottom:0;">En vous appuyant sur les sections 1 à 7, construisez le plan de votre projet : analyse du besoin, planning sur quatre semaines, liste des documents à produire, points de coordination à anticiper, méthode de contrôle qualité, contenu du dossier final et trame de votre soutenance de 15 minutes.</p>
+    </div>
+  </section>
+
+  <section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>L'analyse du besoin précède toute production et fixe le périmètre exact de la mission.</li>
+      <li>Le planning répartit les livrables sur le mois en respectant leurs dépendances.</li>
+      <li>Chaque document produit est daté, nommé selon une convention claire et classé.</li>
+      <li>La coordination s'appuie sur des traces écrites et un tableau de suivi centralisé.</li>
+      <li>Le contrôle qualité s'effectue document par document, puis sur le dossier assemblé.</li>
+      <li>Le dossier livré doit être autoportant, compréhensible sans explication orale.</li>
+      <li>La soutenance valorise le raisonnement et les choix d'organisation, pas seulement le résultat.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : le <strong>dossier professionnel complet</strong> couvrant le mois d'activité simulée, accompagné de la trame de <strong>soutenance de 15 minutes</strong> devant jury, fournis en <strong>.docx</strong> et en <strong>PDF</strong>.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Sommaire du dossier professionnel</span><button class="copy-btn" data-copy-target="model-sommaire">Copier</button></div>
+      <pre id="model-sommaire">DOSSIER PROFESSIONNEL — Secrétariat de direction, [mois/année]
+
+Page de garde
+Sommaire
+1. Synthèse de l'activité du mois
+2. Analyse du besoin et périmètre de la mission
+3. Planning réalisé (semaines 1 à 4)
+4. Agenda et comptes rendus de réunion
+5. Courriers et correspondances
+6. Suivi des dossiers
+7. Suivi budgétaire
+8. Reporting mensuel
+Annexes (documents complémentaires)</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Trame de soutenance (15 minutes)</span><button class="copy-btn" data-copy-target="model-soutenance">Copier</button></div>
+      <pre id="model-soutenance">SOUTENANCE — Projet professionnel final
+
+1. Présentation (2-3 min)
+   - Contexte simulé et périmètre de la mission
+   - Interlocuteurs et livrables attendus
+
+2. Démonstration (7-8 min)
+   - Choix d'organisation retenus (planning, coordination)
+   - Présentation de 2 à 3 documents clés produits
+   - Reporting mensuel : méthode et résultats
+
+3. Bilan critique (2-3 min)
+   - Principales difficultés rencontrées
+   - Solutions apportées et enseignements tirés
+
+4. Questions du jury
+   - Réponses argumentées, en s'appuyant sur le dossier</pre>
+    </div>
+
+    <h3>Checklist de livraison du dossier final</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Analyse du besoin et périmètre de mission formalisés</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Planning des quatre semaines complet et respecté</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Ensemble des documents produits, nommés et classés</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Tableau de suivi et traces des points de coordination</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Contrôle qualité effectué document par document puis sur le dossier assemblé</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Dossier final exporté en PDF, sommaire et pagination vérifiés</label></li>
+      <li><input type="checkbox" id="chk7"><label for="chk7">Trame de soutenance préparée et minutée</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 29 — Insertion professionnelle</a>
+    <span class="disabled"><span class="dir-label">Suivant →</span>Aucune — projet final du parcours</span>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 6 — Professionnalisation et projet · Leçon 30 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

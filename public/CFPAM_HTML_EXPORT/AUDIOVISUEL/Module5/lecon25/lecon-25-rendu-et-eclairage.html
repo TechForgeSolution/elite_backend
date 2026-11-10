@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 25 — Rendu et éclairage : comprendre la lumière, les HDRI, l'exposition, la caméra et les moteurs de rendu 3D.">
+<title>LEÇON 25 — Rendu et éclairage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#FFFFFF;--color-bg-alt:#F6F8F6;--color-text:#0B0F0D;--color-text-muted:#5A6560;
+ --color-accent:#1F6F54;--color-accent-soft:#E7F2ED;--color-border:#E3E8E5;--color-accent-alt:#B3541E;
+ --shadow:0 16px 45px rgba(11,15,13,.06);--radius:20px;--max:1180px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.72}
+a{color:inherit;text-decoration:none}a:focus-visible,button:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:transparent;z-index:1000}.progress>span{display:block;width:0;height:100%;background:var(--color-accent)}
+.header{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--color-border)}
+.header-inner{max-width:var(--max);margin:auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-family:"Space Grotesk";font-weight:700}.brand b{color:var(--color-accent)}.header nav{display:flex;gap:18px;font-size:.9rem;color:var(--color-text-muted)}.header nav a:hover{color:var(--color-accent)}
+.container{max-width:var(--max);margin:auto;padding:0 28px}.hero{padding:82px 0 58px;border-bottom:1px solid var(--color-border)}
+.eyebrow,.badge{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.eyebrow{color:var(--color-accent);margin-bottom:18px}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}.hero h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12;letter-spacing:-.03em}.hero h1{font-size:clamp(3rem,7vw,6.5rem);margin:0 0 22px}.hero h1 span{color:var(--color-accent)}.lead{max-width:680px;font-size:1.18rem;color:var(--color-text-muted);margin-bottom:28px}.badges{display:flex;flex-wrap:wrap;gap:10px}.badge{padding:8px 12px;border:1px solid var(--color-border);border-radius:999px;background:var(--color-bg-alt);color:var(--color-text-muted);letter-spacing:.03em}.badge.accent{background:var(--color-accent-soft);border-color:#cce1d7;color:var(--color-accent)}
+.visual{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:28px;padding:18px;box-shadow:var(--shadow)}svg{width:100%;height:auto;display:block}
+.toc{padding:42px 0}.toc-box{border:1px solid var(--color-border);border-radius:var(--radius);padding:28px;background:#fff}.toc-title{font-family:"Space Grotesk";font-size:1.25rem;margin:0 0 18px}.toc-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.toc-list a{padding:12px 14px;border-radius:10px;border:1px solid transparent;color:var(--color-text-muted);font-size:.93rem}.toc-list a:hover{background:var(--color-accent-soft);color:var(--color-accent);border-color:#d4e6dd}
+.section{padding:84px 0}.section.alt{background:var(--color-bg-alt)}.section-head{max-width:760px;margin-bottom:40px}.kicker{color:var(--color-accent);font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.08em}.section h2{font-size:clamp(2rem,4vw,3.6rem);margin:10px 0 16px}.section p{max-width:740px;color:var(--color-text-muted)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid var(--color-border);border-radius:18px;padding:24px;transition:.25s transform,.25s box-shadow}.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.icon{width:46px;height:46px;border-radius:13px;background:var(--color-accent-soft);display:grid;place-items:center;color:var(--color-accent);font-size:1.35rem;margin-bottom:16px}.card h3{margin:0 0 9px;font-size:1.22rem}.card p{font-size:.94rem;margin:0}
+.note{max-width:850px;margin:30px auto 0;padding:20px 22px;border-left:4px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 14px 14px 0}.note strong{display:block;margin-bottom:5px}.note.warning{border-color:var(--color-accent-alt);background:#faf1eb}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}.figure{background:#fff;border:1px solid var(--color-border);border-radius:22px;padding:18px;overflow:hidden}.caption{font-size:.85rem;color:var(--color-text-muted);margin-top:12px}
+.stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:32px}.step{position:relative;padding:22px 18px;background:#fff;border:1px solid var(--color-border)}.step:first-child{border-radius:16px 0 0 16px}.step:last-child{border-radius:0 16px 16px 0}.step-num{font-family:"IBM Plex Mono";color:var(--color-accent);font-weight:600;font-size:.85rem}.step h3{font-size:1rem;margin:8px 0}.step p{font-size:.85rem;margin:0}
+.tabs{max-width:920px;margin:25px auto}.tab-buttons{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--color-border);padding-bottom:10px}.tab-btn{border:1px solid var(--color-border);background:#fff;padding:10px 16px;border-radius:10px;font:600 .9rem Inter;cursor:pointer}.tab-btn[aria-selected="true"]{background:var(--color-accent);color:#fff;border-color:var(--color-accent)}.tab-panel{display:none;padding:26px 0}.tab-panel.active{display:block}.tab-panel h3{font-size:1.5rem;margin-top:0}
+.table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:16px;background:#fff}.data-table{width:100%;border-collapse:collapse;min-width:650px;font-family:"IBM Plex Mono";font-size:.88rem}.data-table th,.data-table td{padding:15px 18px;border-bottom:1px solid var(--color-border);text-align:left}.data-table th{background:var(--color-bg-alt);font-family:Inter;text-transform:uppercase;font-size:.75rem;letter-spacing:.06em}.data-table td.num{text-align:right}.data-table tr:hover td{background:#f9fbfa}.data-table tr:last-child td{border-bottom:0}.good{color:var(--color-accent);font-weight:600}.muted{color:var(--color-text-muted)}
+.accordion{max-width:850px;margin:18px auto}.acc{border:1px solid var(--color-border);border-radius:14px;margin-bottom:10px;background:#fff;overflow:hidden}.acc button{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:19px 20px;background:#fff;border:0;font:600 1rem "Space Grotesk";cursor:pointer;color:var(--color-text)}.acc button span{color:var(--color-accent);font-size:1.3rem}.acc-content{display:none;padding:0 20px 20px;color:var(--color-text-muted)}.acc.open .acc-content{display:block}.acc.open button span{transform:rotate(45deg)}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.key{padding:24px;border:1px solid var(--color-border);background:#fff;border-radius:18px}.key b{display:block;color:var(--color-accent);font-family:"IBM Plex Mono";font-size:.82rem;margin-bottom:8px}
+.nav-lessons{padding:55px 0;border-top:1px solid var(--color-border)}.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.lesson-link{padding:24px;border:1px solid var(--color-border);border-radius:18px;background:#fff;transition:.2s}.lesson-link:hover{border-color:var(--color-accent);box-shadow:var(--shadow)}.lesson-link small{color:var(--color-text-muted);display:block}.lesson-link strong{font-family:"Space Grotesk";font-size:1.25rem}.next{text-align:right}.top-btn{display:inline-block;margin-top:22px;padding:12px 17px;border-radius:10px;background:var(--color-accent);color:#fff;font-weight:600}.footer{padding:32px 0;color:var(--color-text-muted);font-size:.86rem;border-top:1px solid var(--color-border)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero-grid,.two{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.toc-list{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr 1fr}.step{border-radius:0!important}.header nav{display:none}}
+@media(max-width:560px){.container{padding:0 18px}.header-inner{padding:14px 18px}.hero{padding:55px 0 42px}.hero h1{font-size:3rem}.section{padding:58px 0}.cards,.key-grid,.toc-list,.nav-grid{grid-template-columns:1fr}.stepper{grid-template-columns:1fr}.step:first-child{border-radius:14px 14px 0 0!important}.step:last-child{border-radius:0 0 14px 14px!important}.visual{padding:10px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card,.lesson-link{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+<div class="header-inner">
+<a class="brand" href="#top">FORMATION <b>CRÉATIVE</b></a>
+<nav aria-label="Navigation principale">
+<a href="#sommaire">Sommaire</a><a href="#points-cles">Points clés</a><a href="#navigation">Navigation</a>
+</nav>
+</div>
+</header>
+
+<main id="top">
+<section class="hero container">
+<div class="hero-grid">
+<div>
+<div class="eyebrow">Module 5 · Graphisme 2D/3D — Création et animation</div>
+<h1>Rendu &amp;<br><span>éclairage.</span></h1>
+<p class="lead">Produire une image lisible, réaliste ou stylisée en maîtrisant la lumière, l'environnement, la caméra et le moteur de rendu.</p>
+<div class="badges">
+<span class="badge accent">LEÇON 25</span><span class="badge">15 min</span><span class="badge">Débutant → Intermédiaire</span>
+</div>
+</div>
+<div class="visual reveal" aria-label="Illustration d'une scène 3D éclairée">
+<svg viewBox="0 0 640 470" role="img" aria-labelledby="heroTitle heroDesc">
+<title id="heroTitle">Scène 3D avec caméra et sources lumineuses</title><desc id="heroDesc">Un objet central est éclairé par une lumière principale, une lumière de remplissage et un environnement HDRI, puis capturé par une caméra.</desc>
+<rect width="640" height="470" rx="20" fill="#F6F8F6"/>
+<path d="M70 390H570" stroke="#C9D3CE" stroke-width="2"/>
+<ellipse cx="330" cy="385" rx="120" ry="25" fill="#DCE8E2"/>
+<circle cx="330" cy="225" r="88" fill="#1F6F54"/><path d="M330 137v176M242 225h176" stroke="#E7F2ED" stroke-width="2" opacity=".7"/>
+<circle cx="120" cy="105" r="32" fill="#0B0F0D"/><path d="M142 125L267 198" stroke="#1F6F54" stroke-width="4" stroke-dasharray="9 8"/><text x="70" y="65" fill="#1F6F54" font-family="Inter" font-weight="700">KEY LIGHT</text>
+<circle cx="515" cy="165" r="24" fill="#B3541E"/><path d="M495 178L410 215" stroke="#B3541E" stroke-width="3" stroke-dasharray="8 7"/><text x="474" y="125" fill="#B3541E" font-family="Inter" font-weight="700">FILL</text>
+<path d="M490 335l75 18-8 40-75-18z" fill="#0B0F0D"/><circle cx="515" cy="365" r="10" fill="#E7F2ED"/><path d="M490 350L405 280" stroke="#0B0F0D" stroke-width="3"/><text x="478" y="420" fill="#5A6560" font-family="Inter">CAMÉRA</text>
+<path d="M70 250C115 205 150 310 205 275" fill="none" stroke="#1F6F54" stroke-width="2"/><text x="55" y="325" fill="#5A6560" font-family="Inter" font-size="13">ENVIRONNEMENT HDRI</text>
+</svg>
+</div>
+</div>
+</section>
+
+<section class="toc container" id="sommaire">
+<div class="toc-box reveal">
+<h2 class="toc-title">Sommaire de la leçon</h2>
+<div class="toc-list">
+<a href="#sources">01 · Sources lumineuses</a><a href="#hdri">02 · HDRI & environnement</a><a href="#exposition">03 · Exposition</a>
+<a href="#camera">04 · Caméra</a><a href="#moteurs">05 · Moteurs de rendu</a><a href="#samples">06 · Samples & débruitage</a>
+<a href="#workflow">07 · Pipeline de rendu</a><a href="#points-cles">08 · Points clés</a>
+</div>
+</div>
+</section>
+
+<section class="section" id="sources">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">01 · La lumière</div><h2>Une image commence par ce que la lumière révèle.</h2><p>En 3D, une source lumineuse ne sert pas seulement à éclairer un objet. Elle construit les volumes, guide le regard et définit l'ambiance de la scène.</p></div>
+<div class="cards">
+<article class="card reveal"><div class="icon">☀</div><h3>Key light</h3><p>La lumière principale. Elle définit la direction dominante, les ombres et la lecture générale du sujet.</p></article>
+<article class="card reveal"><div class="icon">◐</div><h3>Fill light</h3><p>Une lumière de remplissage qui réduit le contraste et récupère les détails dans les zones sombres.</p></article>
+<article class="card reveal"><div class="icon">◌</div><h3>Rim light</h3><p>Placée derrière le sujet, elle dessine un contour lumineux et sépare l'objet de son arrière-plan.</p></article>
+</div>
+<div class="two" style="margin-top:42px">
+<div class="figure reveal">
+<svg viewBox="0 0 620 390" role="img" aria-label="Schéma du principe d'éclairage à trois points">
+<rect width="620" height="390" fill="#FFFFFF"/><circle cx="310" cy="205" r="75" fill="#1F6F54"/><ellipse cx="310" cy="310" rx="100" ry="16" fill="#E7F2ED"/>
+<circle cx="110" cy="90" r="26" fill="#0B0F0D"/><path d="M132 110L245 174" stroke="#1F6F54" stroke-width="4"/><text x="65" y="55" font-family="Inter" fill="#1F6F54" font-weight="700">1 · PRINCIPALE</text>
+<circle cx="515" cy="125" r="20" fill="#B3541E"/><path d="M497 138L380 190" stroke="#B3541E" stroke-width="3"/><text x="455" y="90" font-family="Inter" fill="#B3541E" font-weight="700">2 · FILL</text>
+<circle cx="310" cy="55" r="18" fill="#1F6F54"/><path d="M310 74v56" stroke="#1F6F54" stroke-width="3"/><text x="275" y="25" font-family="Inter" fill="#1F6F54" font-weight="700">3 · RIM</text>
+</svg><div class="caption">Le schéma « trois points » est une base de compréhension, pas une règle obligatoire.</div>
+</div>
+<div class="reveal"><h3 style="font-size:2rem">Direction, taille, distance.</h3><p>Ces trois paramètres influencent fortement le résultat. Une grande source produit généralement des transitions d'ombre plus douces. Une petite source crée des ombres plus nettes.</p><div class="note"><strong>💡 À retenir</strong>Avant d'ajouter plusieurs lumières, observez d'abord ce qu'une seule source bien placée produit sur votre sujet.</div></div>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="hdri">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">02 · Environnement</div><h2>HDRI : quand le monde devient une source de lumière.</h2><p>Une image HDRI contient une large plage de luminosité. Dans une scène 3D, elle peut fournir simultanément un décor visuel, des reflets et un éclairage environnemental.</p></div>
+<div class="two">
+<div class="reveal">
+<div class="figure">
+<svg viewBox="0 0 600 420" role="img" aria-label="Sphère d'environnement HDRI entourant un objet 3D">
+<rect width="600" height="420" fill="#FFFFFF"/>
+<circle cx="300" cy="210" r="170" fill="#E7F2ED" stroke="#1F6F54" stroke-width="3" stroke-dasharray="10 8"/>
+<path d="M140 160c40-70 105-85 160-20s105 50 160-25" fill="none" stroke="#1F6F54" stroke-width="10" opacity=".35"/>
+<circle cx="300" cy="215" r="72" fill="#1F6F54"/><ellipse cx="300" cy="300" rx="85" ry="16" fill="#D5E5DD"/>
+<text x="225" y="55" fill="#1F6F54" font-family="Inter" font-weight="700">SPHÈRE D'ENVIRONNEMENT</text>
+<text x="262" y="223" fill="#FFFFFF" font-family="Inter" font-weight="700">OBJET</text>
+</svg>
+</div>
+</div>
+<div class="reveal">
+<h3 style="font-size:2rem">Ce qu'un HDRI apporte</h3>
+<div class="cards" style="grid-template-columns:1fr;margin-top:18px">
+<div class="card"><h3>Éclairage global</h3><p>La lumière arrive de plusieurs directions selon les informations contenues dans l'image HDR.</p></div>
+<div class="card"><h3>Reflets cohérents</h3><p>Les matériaux réfléchissants peuvent reproduire l'environnement autour de l'objet.</p></div>
+<div class="card"><h3>Ambiance immédiate</h3><p>Un studio, un ciel couvert ou une scène extérieure donnent instantanément une identité lumineuse différente.</p></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section" id="exposition">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">03 · Contrôle de l'image</div><h2>Exposition : trouver le bon équilibre.</h2><p>Une scène peut être techniquement éclairée mais visuellement déséquilibrée. L'exposition contrôle la quantité de lumière enregistrée dans l'image finale.</p></div>
+<div class="two">
+<div class="reveal">
+<div class="table-wrap">
+<table class="data-table">
+<thead><tr><th scope="col">Réglage</th><th scope="col">Effet</th><th scope="col">Usage</th></tr></thead>
+<tbody>
+<tr><td>ISO</td><td class="good">Sensibilité</td><td>Image plus claire</td></tr>
+<tr><td>Ouverture</td><td class="good">Quantité de lumière</td><td>Profondeur de champ</td></tr>
+<tr><td>Vitesse</td><td class="good">Temps d'exposition</td><td>Mouvement / lumière</td></tr>
+<tr><td>Exposure</td><td class="good">Correction globale</td><td>Ajustement final</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="figure reveal">
+<svg viewBox="0 0 560 330" role="img" aria-label="Comparaison entre sous-exposition, exposition correcte et surexposition">
+<rect width="560" height="330" fill="#fff"/>
+<g transform="translate(20 35)"><rect width="150" height="210" rx="12" fill="#25312b"/><circle cx="75" cy="105" r="40" fill="#3D5C4F"/><text x="20" y="280" fill="#5A6560" font-family="Inter">Sous-exposée</text></g>
+<g transform="translate(205 35)"><rect width="150" height="210" rx="12" fill="#E7F2ED"/><circle cx="75" cy="105" r="40" fill="#1F6F54"/><text x="28" y="280" fill="#1F6F54" font-family="Inter" font-weight="700">Équilibrée</text></g>
+<g transform="translate(390 35)"><rect width="150" height="210" rx="12" fill="#F4F7F5"/><circle cx="75" cy="105" r="40" fill="#FFFFFF" stroke="#E3E8E5"/><text x="24" y="280" fill="#5A6560" font-family="Inter">Surexposée</text></g>
+</svg>
+</div>
+</div>
+<div class="note warning"><strong>⚠️ Attention</strong>Augmenter l'exposition n'est pas toujours la meilleure solution. Une image trop lumineuse peut perdre ses détails dans les hautes lumières.</div>
+</div>
+</section>
+
+<section class="section alt" id="camera">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">04 · Point de vue</div><h2>La caméra transforme une scène en composition.</h2><p>La position de la caméra, sa focale et son cadrage influencent la perception des volumes et la hiérarchie visuelle.</p></div>
+<div class="cards">
+<article class="card reveal"><div class="icon">↔</div><h3>Focale</h3><p>Elle modifie le champ de vision et la sensation de perspective dans l'image.</p></article>
+<article class="card reveal"><div class="icon">◉</div><h3>Profondeur de champ</h3><p>Elle permet de guider l'œil en laissant certaines zones nettes et d'autres volontairement floues.</p></article>
+<article class="card reveal"><div class="icon">⌑</div><h3>Composition</h3><p>Un cadrage clair organise les éléments et aide le spectateur à comprendre immédiatement l'image.</p></article>
+</div>
+<div class="stepper reveal">
+<div class="step"><div class="step-num">01</div><h3>Positionner</h3><p>Choisir le point de vue.</p></div>
+<div class="step"><div class="step-num">02</div><h3>Cadrer</h3><p>Définir ce qui entre dans l'image.</p></div>
+<div class="step"><div class="step-num">03</div><h3>Régler</h3><p>Adapter focale et profondeur.</p></div>
+<div class="step"><div class="step-num">04</div><h3>Composer</h3><p>Vérifier la lecture finale.</p></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="moteurs">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">05 · Calcul</div><h2>Le moteur de rendu décide comment la lumière est calculée.</h2><p>Deux grandes approches sont fréquemment rencontrées : le rendu temps réel et le rendu physiquement plus complet.</p></div>
+<div class="tabs reveal">
+<div class="tab-buttons" role="tablist" aria-label="Comparaison des moteurs de rendu">
+<button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab1" id="btn1">Temps réel</button>
+<button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab2" id="btn2">Physique / Ray tracing</button>
+</div>
+<div class="tab-panel active" id="tab1" role="tabpanel" aria-labelledby="btn1"><h3>Rapidité et itération</h3><p>Le moteur privilégie la vitesse d'affichage. Il est particulièrement utile lorsque l'artiste doit tester rapidement les matériaux, les lumières et la composition.</p><div class="note"><strong>Usage courant</strong>Prévisualisation, animation interactive et workflows nécessitant des retours rapides.</div></div>
+<div class="tab-panel" id="tab2" role="tabpanel" aria-labelledby="btn2"><h3>Simulation plus complète</h3><p>Le moteur calcule les interactions lumineuses de manière plus approfondie. Le résultat peut être très réaliste, mais le temps de calcul peut augmenter.</p><div class="note"><strong>Usage courant</strong>Images finales, rendu produit, visualisation architecturale et scènes nécessitant une lumière complexe.</div></div>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="samples">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">06 · Qualité</div><h2>Samples et débruitage : qualité contre temps de calcul.</h2><p>Un rendu est souvent calculé par échantillonnage. Plus le moteur collecte d'informations, plus l'image peut devenir propre, au prix d'un calcul plus long.</p></div>
+<div class="two">
+<div class="figure reveal">
+<svg viewBox="0 0 600 350" role="img" aria-label="Illustration montrant la réduction du bruit avec davantage de samples">
+<rect width="600" height="350" fill="#fff"/>
+<g transform="translate(30 40)"><rect width="160" height="190" rx="12" fill="#E7F2ED"/><circle cx="80" cy="90" r="52" fill="#1F6F54"/><g fill="#fff" opacity=".8"><circle cx="35" cy="50" r="4"/><circle cx="120" cy="60" r="3"/><circle cx="70" cy="150" r="5"/><circle cx="130" cy="130" r="4"/><circle cx="45" cy="120" r="3"/><circle cx="105" cy="175" r="4"/></g><text x="40" y="270" fill="#5A6560" font-family="IBM Plex Mono">16 samples</text></g>
+<g transform="translate(220 40)"><rect width="160" height="190" rx="12" fill="#E7F2ED"/><circle cx="80" cy="90" r="52" fill="#1F6F54"/><g fill="#fff" opacity=".45"><circle cx="35" cy="50" r="2"/><circle cx="120" cy="60" r="2"/><circle cx="70" cy="150" r="2"/><circle cx="130" cy="130" r="2"/></g><text x="38" y="270" fill="#5A6560" font-family="IBM Plex Mono">128 samples</text></g>
+<g transform="translate(410 40)"><rect width="160" height="190" rx="12" fill="#E7F2ED"/><circle cx="80" cy="90" r="52" fill="#1F6F54"/><text x="33" y="270" fill="#1F6F54" font-family="IBM Plex Mono" font-weight="700">DENOISED</text></g>
+</svg>
+</div>
+<div class="reveal"><h3 style="font-size:2rem">Comprendre le compromis</h3><p>Les samples réduisent progressivement le bruit, mais chaque amélioration a un coût. Le débruitage peut accélérer le workflow en supprimant une partie du bruit résiduel.</p><div class="note"><strong>💡 À retenir</strong>Commencez avec une qualité modérée pendant la production. Augmentez les réglages pour la sortie finale seulement lorsque la scène est validée.</div></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="workflow">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">07 · Méthode</div><h2>Un pipeline simple pour construire une image maîtrisée.</h2><p>Le rendu devient plus facile à contrôler lorsque les décisions sont prises dans un ordre cohérent.</p></div>
+<div class="stepper reveal">
+<div class="step"><div class="step-num">01</div><h3>Intention</h3><p>Définir le style et le message de l'image.</p></div>
+<div class="step"><div class="step-num">02</div><h3>Caméra</h3><p>Installer le point de vue et le cadrage.</p></div>
+<div class="step"><div class="step-num">03</div><h3>Lumière</h3><p>Construire la hiérarchie lumineuse.</p></div>
+<div class="step"><div class="step-num">04</div><h3>Rendu</h3><p>Ajuster moteur, samples et débruitage.</p></div>
+</div>
+<div class="accordion reveal" style="margin-top:40px">
+<div class="acc"><button aria-expanded="false">Pourquoi tester le rendu régulièrement ? <span>+</span></button><div class="acc-content">Le rendu final révèle des problèmes parfois invisibles dans la vue de travail : reflets, bruit, exposition ou matériaux mal équilibrés.</div></div>
+<div class="acc"><button aria-expanded="false">Faut-il toujours rechercher le photoréalisme ? <span>+</span></button><div class="acc-content">Non. Un rendu peut être réaliste, graphique, illustratif ou volontairement stylisé. L'important est la cohérence entre lumière, matériaux et intention visuelle.</div></div>
+<div class="acc"><button aria-expanded="false">Quel réglage optimiser en premier ? <span>+</span></button><div class="acc-content">Commencez par la composition et la lumière. Une image mal composée ne devient pas automatiquement meilleure avec davantage de samples.</div></div>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="points-cles">
+<div class="container">
+<div class="section-head reveal"><div class="kicker">08 · Synthèse</div><h2>Points clés à retenir.</h2></div>
+<div class="key-grid">
+<div class="key reveal"><b>01 / LUMIÈRE</b>La lumière révèle les formes et construit l'ambiance.</div>
+<div class="key reveal"><b>02 / HDRI</b>Un environnement HDRI peut éclairer, réfléchir et contextualiser une scène.</div>
+<div class="key reveal"><b>03 / EXPOSITION</b>Une image équilibrée conserve une lecture claire des zones sombres et lumineuses.</div>
+<div class="key reveal"><b>04 / CAMÉRA</b>Le cadrage et la focale influencent directement la perception des volumes.</div>
+<div class="key reveal"><b>05 / MOTEUR</b>Le choix du moteur dépend du compromis entre vitesse, qualité et réalisme.</div>
+<div class="key reveal"><b>06 / QUALITÉ</b>Samples et débruitage doivent être réglés selon l'étape du workflow.</div>
+</div>
+</div>
+</section>
+
+<section class="nav-lessons" id="navigation">
+<div class="container">
+<div class="nav-grid">
+<a href="#" class="lesson-link"><small>← LEÇON PRÉCÉDENTE</small><strong>LEÇON 24 · Animation 3D</strong></a>
+<a href="#" class="lesson-link next"><small>LEÇON SUIVANTE →</small><strong>LEÇON 26 · Texturing</strong></a>
+</div>
+<div style="text-align:center"><a class="top-btn" href="#sommaire">Retour au sommaire ↑</a></div>
+</div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">Module 5 · Graphisme 2D/3D — Création et animation · LEÇON 25</div></footer>
+
+<script>
+const progress=()=>{const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;document.getElementById('progressBar').style.width=(max?scrollY/max*100:0)+'%'};addEventListener('scroll',progress,{passive:true});progress();
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(b=>b.setAttribute('aria-selected','false'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));btn.setAttribute('aria-selected','true');document.getElementById(btn.getAttribute('aria-controls')).classList.add('active')}));
+document.querySelectorAll('.acc button').forEach(btn=>btn.addEventListener('click',()=>{const box=btn.parentElement;const open=box.classList.toggle('open');btn.setAttribute('aria-expanded',open)}));
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

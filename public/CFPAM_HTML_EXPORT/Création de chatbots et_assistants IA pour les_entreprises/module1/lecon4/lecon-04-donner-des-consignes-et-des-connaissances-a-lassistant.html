@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 4 — Donner des consignes et des connaissances à l’assistant</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235B4BDB'/%3E%3Cpath d='M8 11h16v9H15l-4 4v-4H8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F7FB;--color-text:#0A0A0F;--color-text-muted:#5F6370;--color-accent:#5B4BDB;--color-accent-soft:#EEECFF;--color-border:#E4E3EC;--r:12px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.25;margin:0 0 .6em}
+h1{font-size:clamp(1.9rem,5vw,2.9rem)}h2{font-size:clamp(1.5rem,3.5vw,2rem)}h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1.1em}a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:960px;margin:0 auto;padding:0 1.25rem}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px;gap:1rem}
+.brand{font:600 .9rem Sora,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu-btn{background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:.45rem .9rem;font:600 .9rem Inter;cursor:pointer}
+#menu{display:none;position:absolute;right:1.25rem;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:.5rem;width:min(320px,calc(100vw - 2.5rem));box-shadow:0 8px 30px rgba(10,10,15,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:.5rem .75rem;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#menu a:hover{background:var(--color-accent-soft)}
+.hero{background:var(--color-bg-alt);padding:4rem 0 3rem;border-bottom:1px solid var(--color-border)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.badge{font-size:.82rem;font-weight:600;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--color-border);background:#fff;color:var(--color-text-muted)}
+.badge.mod{background:var(--color-accent-soft);color:#4536c4;border-color:transparent}
+.toc{padding:2.5rem 0}
+.toc ol{margin:0;padding-left:1.2rem;columns:1;color:var(--color-text-muted)}
+.toc li{padding:.15rem 0}.toc a{text-decoration:none;color:var(--color-text)}.toc a:hover{color:var(--color-accent)}
+section.s{padding:3.5rem 0}section.s:nth-of-type(even){background:var(--color-bg-alt)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+.callout{border-radius:var(--r);padding:1rem 1.25rem;margin:1.5rem 0;border:1px solid var(--color-border);background:#fff;border-left:4px solid var(--color-accent)}
+.callout strong{display:block;margin-bottom:.25rem}.callout.warn{border-left-color:#0A0A0F}.callout.more{background:var(--color-accent-soft);border-color:transparent}
+.callout p:last-child{margin:0}
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:1.5rem 0}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1.25rem;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .ic{width:40px;height:40px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;font-size:1.3rem;margin-bottom:.75rem}
+.card h3{font-size:1.05rem;margin-bottom:.3rem}.card p{margin:0;color:var(--color-text-muted);font-size:.95rem;line-height:1.55}
+.tabs [role=tablist]{display:flex;gap:.25rem;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{background:none;border:0;padding:.7rem 1rem;font:600 .95rem Inter;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:1.25rem 0}.tabs [role=tabpanel][hidden]{display:none}
+.acc{border:1px solid var(--color-border);border-radius:var(--r);background:#fff;margin:.75rem 0}
+.acc button{width:100%;text-align:left;background:none;border:0;padding:1rem 1.25rem;font:600 1rem Inter;cursor:pointer;display:flex;justify-content:space-between;gap:1rem;color:var(--color-text)}
+.acc button::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+.acc button[aria-expanded=true]::after{content:"−"}
+.acc .body{padding:0 1.25rem 1rem}.acc .body[hidden]{display:none}.acc .body p:last-child{margin:0}
+.stepper{list-style:none;padding:0;margin:1.5rem 0;display:grid;gap:.75rem;counter-reset:st}
+.stepper li{counter-increment:st;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem;position:relative;font-size:.95rem;line-height:1.5}
+.stepper li::before{content:counter(st);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem Sora;margin-bottom:.5rem}
+.stepper b{display:block}
+.fig{margin:1.5rem 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem}
+.fig svg{width:100%;height:auto;display:block}.fig figcaption{font-size:.85rem;color:var(--color-text-muted);margin-top:.5rem}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.95rem;line-height:1.5}
+th,td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--color-border);vertical-align:top}th{font-family:Sora;font-size:.9rem}
+.pros-cons{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pros-cons ul{margin:0;padding-left:1.1rem}.pros-cons li{margin:.4rem 0}
+.code{margin:1.25rem 0;border:1px solid var(--color-border);border-radius:var(--r);background:var(--color-bg-alt);overflow:hidden}
+.code-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.5rem .5rem .5rem 1rem;border-bottom:1px solid var(--color-border);background:#fff;font-size:.85rem;font-weight:600;color:var(--color-text-muted)}
+.copy{background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:.35rem .8rem;font:600 .82rem Inter;cursor:pointer}
+.copy:hover{background:#e0dcff}
+.code pre{margin:0;padding:1rem;overflow-x:auto;font:400 .88rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--color-text);white-space:pre-wrap;word-break:break-word}
+.code .k{color:var(--color-accent);font-weight:600}
+.chat{display:grid;gap:.6rem;margin:1rem 0}
+.bubble{max-width:90%;padding:.7rem 1rem;border-radius:14px;font-size:.95rem;line-height:1.55}
+.bubble.u{background:#fff;border:1px solid var(--color-border);justify-self:start;border-bottom-left-radius:4px}
+.bubble.a{background:var(--color-accent-soft);justify-self:end;border-bottom-right-radius:4px}
+.bubble small{display:block;color:var(--color-text-muted);font-weight:600;margin-bottom:.15rem}
+.key{background:var(--color-text);color:#fff;padding:4rem 0}.key h2{color:#fff}
+.key ul{padding-left:1.2rem;margin:0}.key li{margin:.7rem 0}.key li::marker{color:#a99fff}
+.nav{display:flex;justify-content:space-between;gap:1rem;padding:2.5rem 0;flex-wrap:wrap}
+.nav a{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem 1.25rem;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}.nav small{display:block;color:var(--color-text-muted)}.nav .next{text-align:right}
+footer{border-top:1px solid var(--color-border);padding:1.5rem 0;color:var(--color-text-muted);font-size:.85rem;text-align:center}
+#top{position:fixed;right:1.25rem;bottom:1.25rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+#top.show{opacity:1;pointer-events:auto}
+@media(min-width:768px){.toc ol{columns:2}.stepper{grid-template-columns:repeat(4,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade{opacity:1;transform:none;transition:none}.card{transition:none}.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="brand">Création de chatbots et assistants IA pour les entreprises</span>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire de la leçon">
+    <a href="#principes">1. Principes du prompt système</a><a href="#role">2. Le rôle</a><a href="#contexte">3. Le contexte</a><a href="#regles">4. Les règles</a><a href="#format">5. Le format de réponse</a><a href="#base">6. Base de connaissances</a><a href="#contenus">7. Exemples de contenus</a><a href="#reponses">8. Exemples de réponses</a><a href="#maj">9. Mise à jour</a><a href="#synthese">Synthèse</a>
+  </nav>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge mod">Module 1 — Fondamentaux et conception d’un assistant IA</span><span class="badge">⏱ 45 min</span><span class="badge">Niveau : Débutant</span></div>
+  <p class="sub" style="margin-bottom:.5rem">Leçon 4</p>
+  <h1>Donner des consignes et des connaissances à l’assistant</h1>
+  <p class="sub">Rédiger un prompt système clair et constituer une base de connaissances fiable, pour que l’assistant réponde juste et dans le ton de l’entreprise.</p>
+  <p style="margin:0"><b>Objectif :</b> donner à l’assistant des consignes précises et des informations fiables sur l’entreprise.</p>
+</div></div>
+
+<div class="toc"><div class="wrap">
+  <h2 style="font-size:1.2rem">Dans cette leçon</h2>
+  <ol>
+    <li><a href="#principes">Principes d’un bon prompt système</a></li>
+    <li><a href="#role">Définir le rôle</a></li>
+    <li><a href="#contexte">Définir le contexte</a></li>
+    <li><a href="#regles">Définir les règles</a></li>
+    <li><a href="#format">Définir le format de réponse</a></li>
+    <li><a href="#base">Constituer une base de connaissances</a></li>
+    <li><a href="#contenus">Exemples : FAQ, tarifs, horaires, services</a></li>
+    <li><a href="#reponses">Exemples de réponses</a></li>
+    <li><a href="#maj">Mettre à jour les contenus</a></li>
+  </ol>
+</div></div>
+
+<section class="s" id="principes"><div class="wrap fade">
+  <h2>1. Principes d’un bon prompt système</h2>
+  <p>Le <b>prompt système</b> est un texte de consignes, rédigé une fois par le créateur de l’assistant. Il n’est pas visible par les clients, mais il est lu à chaque conversation. C’est lui qui dit à l’assistant <b>qui il est, ce qu’il doit faire et comment répondre</b>.</p>
+  <p>Un assistant ne devine pas ce que vous attendez de lui. Plus les consignes sont précises, plus ses réponses sont régulières. Deux ingrédients déterminent la qualité des réponses : <b>les consignes</b> (le prompt système) et <b>les informations disponibles</b> (la base de connaissances).</p>
+  <figure class="fig">
+    <svg viewBox="0 0 700 210" role="img" aria-labelledby="t1 d1"><title id="t1">Ce qui produit une bonne réponse</title><desc id="d1">Le prompt système et la base de connaissances alimentent l’assistant, qui produit une réponse à la question du client.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="20" width="190" height="70" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="105" y="52">Prompt système</text><text x="105" y="72" font-size="12" font-weight="400" fill="#5F6370">comment répondre</text>
+      <rect x="10" y="120" width="190" height="70" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="105" y="152">Base de connaissances</text><text x="105" y="172" font-size="12" font-weight="400" fill="#5F6370">quoi répondre</text>
+      <rect x="280" y="65" width="150" height="80" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="355" y="100">Assistant</text><text x="355" y="120" font-size="12" font-weight="400" fill="#5F6370">+ question du client</text>
+      <rect x="510" y="65" width="180" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="600" y="100">Réponse</text><text x="600" y="120" font-size="12" font-weight="400" fill="#5F6370">juste, claire, dans le ton</text></g>
+      <path d="M200 55L280 90M200 155L280 120M430 105H510" stroke="#5B4BDB" stroke-width="2" fill="none"/>
+    </svg>
+    <figcaption>Les consignes cadrent la manière de répondre ; la base de connaissances fournit le contenu.</figcaption>
+  </figure>
+  <h3>Quatre principes simples</h3>
+  <div class="cards">
+    <div class="card"><div class="ic">🎯</div><h3>Être précis</h3><p>« Réponds poliment » vaut moins que « Vouvoie le client, réponds en trois phrases maximum ».</p></div>
+    <div class="card"><div class="ic">🗂</div><h3>Structurer</h3><p>Séparer le rôle, le contexte, les règles et le format avec des titres courts.</p></div>
+    <div class="card"><div class="ic">✅</div><h3>Dire quoi faire</h3><p>Préférer une consigne positive à une longue liste d’interdits.</p></div>
+    <div class="card"><div class="ic">🔁</div><h3>Tester et ajuster</h3><p>Poser de vraies questions, repérer les écarts, corriger le texte.</p></div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><p>Des consignes précises sans informations fiables donnent un assistant bien élevé mais mal renseigné. Des informations fiables sans consignes donnent un assistant renseigné mais imprévisible. Il faut les deux.</p></div>
+</div></section>
+
+<section class="s" id="role"><div class="wrap fade">
+  <h2>2. Définir le rôle de l’assistant</h2>
+  <p>Le rôle répond à la question : <b>« Qui est l’assistant, et que fait-il ? »</b> Il fixe un métier, une mission et un ton. Un rôle précis évite les réponses hors sujet.</p>
+  <p>Dans cette leçon, nous suivons un exemple fil rouge : <b>« Salon Éclat »</b>, un petit salon de coiffure fictif. Les prix et horaires cités sont inventés pour l’illustration.</p>
+  <div class="code"><div class="code-head"><span>Exemple — Rôle</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">## RÔLE</span>
+Tu es l’assistant virtuel du Salon Éclat, un salon de coiffure de quartier.
+Ta mission : renseigner les clients sur les prestations, les tarifs et les
+horaires, et les aider à prendre rendez-vous.
+Ton ton : chaleureux, simple et professionnel. Tu vouvoies le client.</code></pre></div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Un rôle trop vague (« Tu es un assistant utile ») ou trop large (« Tu sais tout sur la coiffure et la beauté »). L’assistant sort alors de son périmètre.</p></div>
+</div></section>
+
+<section class="s" id="contexte"><div class="wrap fade">
+  <h2>3. Définir le contexte</h2>
+  <p>Le contexte répond à : <b>« Dans quelle situation l’assistant travaille-t-il ? »</b> Il décrit l’entreprise, son public, ses canaux et ce que l’assistant peut ou ne peut pas faire concrètement.</p>
+  <ul>
+    <li>Qui est l’entreprise et ce qu’elle propose</li>
+    <li>Qui sont les clients et ce qu’ils demandent le plus souvent</li>
+    <li>Où l’assistant est déployé (site web, messagerie)</li>
+    <li>Ses capacités réelles : peut-il réserver, ou seulement renseigner ?</li>
+  </ul>
+  <div class="code"><div class="code-head"><span>Exemple — Contexte</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">## CONTEXTE</span>
+Le Salon Éclat est un salon de coiffure indépendant (4 coiffeuses) ouvert
+depuis 8 ans. Les clients écrivent depuis le site web : le plus souvent pour
+connaître les tarifs, les horaires ou la disponibilité d’un rendez-vous.
+Tu ne peux pas consulter l’agenda : pour réserver, tu orientes le client
+vers la page de réservation ou vers l’accueil par téléphone.</code></pre></div>
+  <div class="callout more"><strong>🔗 Pour aller plus loin</strong><p>Préciser ce que l’assistant ne peut pas faire évite qu’il promette une action qu’il ne sait pas réaliser.</p></div>
+</div></section>
+
+<section class="s" id="regles"><div class="wrap fade">
+  <h2>4. Définir les règles</h2>
+  <p>Les règles répondent à : <b>« Que doit-il toujours faire, et que ne doit-il jamais faire ? »</b> Elles protègent l’entreprise et le client. Quatre catégories reviennent presque toujours :</p>
+  <div class="cards">
+    <div class="card"><div class="ic">📖</div><h3>S’appuyer sur les sources</h3><p>Répondre uniquement à partir de la base de connaissances.</p></div>
+    <div class="card"><div class="ic">🙋</div><h3>Reconnaître ses limites</h3><p>Dire « je ne sais pas » plutôt qu’inventer une réponse.</p></div>
+    <div class="card"><div class="ic">🚧</div><h3>Rester dans son périmètre</h3><p>Refuser poliment les sujets qui ne concernent pas l’entreprise.</p></div>
+    <div class="card"><div class="ic">🤝</div><h3>Passer le relais</h3><p>Orienter vers une personne pour les cas sensibles ou imprévus.</p></div>
+  </div>
+  <div class="code"><div class="code-head"><span>Exemple — Règles</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">## RÈGLES</span>
+- Réponds uniquement à partir des informations de la base de connaissances.
+- Si l’information n’y figure pas, dis-le simplement et propose de contacter
+  le salon au 01 23 45 67 89. N’invente jamais un prix ni un horaire.
+- Ne donne aucun conseil médical (cuir chevelu, allergies, produits).
+- Ne traite pas les sujets étrangers au salon.
+- Ne demande jamais de données bancaires.
+- Si le client est mécontent, remercie-le, reste calme et propose de
+  transmettre sa demande à la responsable.</code></pre></div>
+  <div class="callout warn"><strong>⚠️ Attention</strong><p>Sans règle sur les informations manquantes, un assistant peut « combler » une lacune avec une réponse plausible mais fausse. C’est la règle la plus importante pour la fiabilité.</p></div>
+</div></section>
+
+<section class="s" id="format"><div class="wrap fade">
+  <h2>5. Définir le format de réponse</h2>
+  <p>Le format répond à : <b>« À quoi doit ressembler la réponse ? »</b> Longueur, structure, ton, langue, présence d’une question de suite. Sur un petit écran de messagerie, des réponses courtes sont plus lisibles.</p>
+  <div class="code"><div class="code-head"><span>Exemple — Format de réponse</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">## FORMAT DE RÉPONSE</span>
+- Réponds en français, en 2 à 4 phrases courtes.
+- Utilise une liste à puces uniquement pour comparer plusieurs tarifs.
+- Termine par une proposition d’aide : « Souhaitez-vous réserver ? ».
+- Si le client écrit dans une autre langue, réponds dans cette langue.</code></pre></div>
+  <h3>Assembler le prompt</h3>
+  <p>Le prompt système complet est simplement la suite des quatre blocs : rôle, contexte, règles et format.</p>
+  <ol class="stepper" aria-label="Structure du prompt système">
+    <li><b>Rôle</b>Qui est l’assistant ?</li>
+    <li><b>Contexte</b>Dans quelle situation travaille-t-il ?</li>
+    <li><b>Règles</b>Que fait-il, que ne fait-il pas ?</li>
+    <li><b>Format</b>Comment présente-t-il ses réponses ?</li>
+  </ol>
+  <div class="callout"><strong>💡 À retenir</strong><p>Un prompt système efficace tient souvent sur une page. Mieux vaut un texte court et clair qu’un long texte où les consignes se contredisent.</p></div>
+</div></section>
+
+<section class="s" id="base"><div class="wrap fade">
+  <h2>6. Constituer une base de connaissances</h2>
+  <p>La <b>base de connaissances</b> est l’ensemble des informations de l’entreprise que l’assistant peut consulter pour répondre : documents, pages de site, fiches de questions-réponses. Le prompt dit comment répondre ; la base dit <b>quoi répondre</b>.</p>
+  <p>Un assistant ne connaît pas votre entreprise par défaut. Sans base, il répond avec des généralités, voire invente.</p>
+  <ol class="stepper" aria-label="Constitution d’une base de connaissances">
+    <li><b>Lister</b>Recenser les questions que les clients posent réellement.</li>
+    <li><b>Rassembler</b>Réunir les documents existants (site, tarifs, conditions).</li>
+    <li><b>Rédiger</b>Écrire des fiches courtes, claires, une idée par fiche.</li>
+    <li><b>Vérifier</b>Faire relire par la personne qui connaît l’activité.</li>
+  </ol>
+  <h3>Qualités d’une bonne base</h3>
+  <div class="pros-cons">
+    <div class="card"><h3>À privilégier</h3><ul><li>Informations exactes et datées</li><li>Textes courts, une idée par fiche</li><li>Mêmes mots que ceux des clients</li><li>Une seule version de chaque information</li></ul></div>
+    <div class="card"><h3>À éviter</h3><ul><li>Documents contradictoires ou obsolètes</li><li>Longs PDF mélangeant tous les sujets</li><li>Jargon interne incompréhensible</li><li>Informations confidentielles non nécessaires</li></ul></div>
+  </div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Importer tous les documents de l’entreprise « au cas où ». Des tarifs anciens et récents côte à côte produisent des réponses incohérentes. Mieux vaut peu de contenu, mais juste.</p></div>
+</div></section>
+
+<section class="s" id="contenus"><div class="wrap fade">
+  <h2>7. Exemples de contenus : FAQ, tarifs, horaires et services</h2>
+  <p>Pour une petite entreprise, quatre types de contenus couvrent la majorité des demandes. Voici à quoi ils peuvent ressembler pour le Salon Éclat (informations fictives).</p>
+  <div class="tabs">
+    <div role="tablist" aria-label="Types de contenus">
+      <button role="tab" id="tb1" aria-selected="true" aria-controls="tp1">FAQ</button>
+      <button role="tab" id="tb2" aria-selected="false" aria-controls="tp2" tabindex="-1">Tarifs</button>
+      <button role="tab" id="tb3" aria-selected="false" aria-controls="tp3" tabindex="-1">Horaires</button>
+      <button role="tab" id="tb4" aria-selected="false" aria-controls="tp4" tabindex="-1">Services</button>
+    </div>
+    <div role="tabpanel" id="tp1" aria-labelledby="tb1">
+      <p>Des questions réelles, avec des réponses courtes et définitives.</p>
+      <div class="code"><div class="code-head"><span>Base de connaissances — FAQ</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">Q : Faut-il prendre rendez-vous ?</span>
+R : Oui, nous recommandons de réserver. Les passages sans rendez-vous
+sont possibles selon les disponibilités.
+
+<span class="k">Q : Comment annuler ou déplacer un rendez-vous ?</span>
+R : Prévenez-nous au moins 24 heures à l’avance, par téléphone ou
+sur la page de réservation.
+
+<span class="k">Q : Quels moyens de paiement acceptez-vous ?</span>
+R : Carte bancaire, espèces et chèques.</code></pre></div>
+    </div>
+    <div role="tabpanel" id="tp2" aria-labelledby="tb2" hidden>
+      <p>Des prix clairs, avec ce qu’ils incluent et la date de mise à jour.</p>
+      <div class="code"><div class="code-head"><span>Base de connaissances — Tarifs</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">Tarifs (mis à jour : 1er septembre)</span>
+- Coupe femme, shampoing et brushing inclus : 38 €
+- Coupe homme : 22 €
+- Coupe enfant (moins de 12 ans) : 15 €
+- Couleur racines : 45 €
+- Brushing seul : 25 €
+Les tarifs peuvent varier selon la longueur des cheveux : un devis
+est donné sur place.</code></pre></div>
+    </div>
+    <div role="tabpanel" id="tp3" aria-labelledby="tb3" hidden>
+      <p>Les jours, les heures et les exceptions.</p>
+      <div class="code"><div class="code-head"><span>Base de connaissances — Horaires</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">Horaires d’ouverture</span>
+- Mardi au vendredi : 9 h – 18 h 30
+- Samedi : 9 h – 17 h
+- Dimanche et lundi : fermé
+Fermeture annuelle : deux semaines en août (dates annoncées sur le site).</code></pre></div>
+    </div>
+    <div role="tabpanel" id="tp4" aria-labelledby="tb4" hidden>
+      <p>Ce que propose l’entreprise, et ce qu’elle ne propose pas.</p>
+      <div class="code"><div class="code-head"><span>Base de connaissances — Services</span><button class="copy" type="button">Copier</button></div>
+<pre><code><span class="k">Services proposés</span>
+- Coupe, brushing, couleur, mèches, soins du cheveu
+- Coiffure de mariage (sur rendez-vous, essai préalable conseillé)
+<span class="k">Services non proposés</span>
+- Extensions, lissage chimique, soins esthétiques</code></pre></div>
+    </div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><p>Indiquer aussi ce qui n’est <em>pas</em> proposé évite que l’assistant promette un service inexistant.</p></div>
+</div></section>
+
+<section class="s" id="reponses"><div class="wrap fade">
+  <h2>8. Exemples de réponses</h2>
+  <p>La même question donne des résultats très différents selon la qualité des consignes et de la base. Voici le lien concret entre les deux.</p>
+  <div class="tabs">
+    <div role="tablist" aria-label="Exemples de réponses">
+      <button role="tab" id="rb1" aria-selected="true" aria-controls="rp1">Consignes + base</button>
+      <button role="tab" id="rb2" aria-selected="false" aria-controls="rp2" tabindex="-1">Sans base</button>
+      <button role="tab" id="rb3" aria-selected="false" aria-controls="rp3" tabindex="-1">Sans règles</button>
+      <button role="tab" id="rb4" aria-selected="false" aria-controls="rp4" tabindex="-1">Info manquante</button>
+    </div>
+    <div role="tabpanel" id="rp1" aria-labelledby="rb1">
+      <div class="chat">
+        <div class="bubble u"><small>Client</small>Combien coûte une coupe homme ?</div>
+        <div class="bubble a"><small>Assistant</small>La coupe homme est à 22 €. Souhaitez-vous réserver un créneau ?</div>
+      </div>
+      <p><b>Pourquoi ça marche :</b> la base contient le tarif, le prompt impose une réponse courte et une proposition d’aide.</p>
+    </div>
+    <div role="tabpanel" id="rp2" aria-labelledby="rb2" hidden>
+      <div class="chat">
+        <div class="bubble u"><small>Client</small>Combien coûte une coupe homme ?</div>
+        <div class="bubble a"><small>Assistant</small>En général, une coupe homme coûte entre 15 et 40 € selon les salons.</div>
+      </div>
+      <p><b>Le problème :</b> sans base de connaissances, l’assistant répond avec des moyennes générales. Ce n’est pas le prix du salon.</p>
+    </div>
+    <div role="tabpanel" id="rp3" aria-labelledby="rb3" hidden>
+      <div class="chat">
+        <div class="bubble u"><small>Client</small>Ma peau me gratte après votre coloration, que faire ?</div>
+        <div class="bubble a"><small>Assistant</small>Il s’agit sûrement d’une allergie. Appliquez une crème apaisante et évitez les colorations.</div>
+      </div>
+      <p><b>Le problème :</b> faute de règle, l’assistant donne un avis médical. Avec la règle « aucun conseil médical », il orienterait le client vers un professionnel de santé.</p>
+    </div>
+    <div role="tabpanel" id="rp4" aria-labelledby="rb4" hidden>
+      <div class="chat">
+        <div class="bubble u"><small>Client</small>Faites-vous des extensions ?</div>
+        <div class="bubble a"><small>Assistant</small>Non, nous ne proposons pas d’extensions. Nous faisons coupes, couleurs, mèches et soins. Souhaitez-vous plus de détails ?</div>
+        <div class="bubble u"><small>Client</small>Avez-vous un parking ?</div>
+        <div class="bubble a"><small>Assistant</small>Je n’ai pas cette information. Vous pouvez contacter le salon au 01 23 45 67 89.</div>
+      </div>
+      <p><b>Pourquoi ça marche :</b> la base mentionne les services non proposés, et la règle prévoit quoi faire quand l’information n’existe pas.</p>
+    </div>
+  </div>
+  <figure class="fig">
+    <svg viewBox="0 0 640 150" role="img" aria-labelledby="t2 d2"><title id="t2">Lien entre consignes, informations et qualité</title><desc id="d2">Si les consignes et les informations sont bonnes, la réponse est fiable. Si l’un des deux manque, la réponse devient imprécise ou risquée.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="20" width="200" height="50" rx="10" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="110" y="50">Consignes + informations</text>
+      <rect x="10" y="85" width="200" height="50" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="110" y="115">Un des deux manque</text>
+      <rect x="330" y="20" width="300" height="50" rx="10" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="480" y="50">Réponse fiable et cohérente</text>
+      <rect x="330" y="85" width="300" height="50" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="480" y="115">Réponse vague, inventée ou hors sujet</text></g>
+      <path d="M210 45H330M210 110H330" stroke="#5B4BDB" stroke-width="2" fill="none"/>
+    </svg>
+    <figcaption>La qualité de la réponse dépend des deux à la fois.</figcaption>
+  </figure>
+</div></section>
+
+<section class="s" id="maj"><div class="wrap fade">
+  <h2>9. Mettre à jour les contenus</h2>
+  <p>Une base de connaissances est <b>vivante</b>. Un tarif change, un horaire est modifié, un service s’arrête : si la base n’est pas corrigée, l’assistant continue de donner l’ancienne information, avec assurance.</p>
+  <ol class="stepper" aria-label="Cycle de mise à jour">
+    <li><b>Désigner</b>Une personne responsable de la base.</li>
+    <li><b>Planifier</b>Une revue régulière, et à chaque changement important.</li>
+    <li><b>Corriger</b>Modifier la fiche concernée, une seule version à la fois.</li>
+    <li><b>Re-tester</b>Poser les questions habituelles et contrôler les réponses.</li>
+  </ol>
+  <div class="acc"><button aria-expanded="false" aria-controls="a1">Quand mettre à jour ?</button>
+    <div class="body" id="a1" hidden><p>À chaque changement de tarif, d’horaire ou de service, avant les périodes particulières (fêtes, vacances, fermetures) et après avoir repéré des questions sans réponse satisfaisante dans les conversations.</p></div></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a2">Comment repérer ce qui manque ?</button>
+    <div class="body" id="a2" hidden><p>En relisant les conversations réelles : les questions restées sans réponse ou les réponses imprécises indiquent les fiches à créer ou à corriger.</p></div></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a3">Faut-il aussi mettre à jour le prompt ?</button>
+    <div class="body" id="a3" hidden><p>Oui, mais plus rarement : lorsque le rôle, les règles ou le ton changent (nouvelle politique d’annulation, nouveau canal, nouvelle offre de réservation).</p></div></div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Mettre à jour le site web mais oublier la base de connaissances : le client reçoit deux informations différentes.</p></div>
+  <div class="callout more"><strong>🔗 Pour aller plus loin</strong><p>Le test et l’amélioration d’un assistant à partir des conversations seront abordés dans les leçons suivantes.</p></div>
+</div></section>
+
+<section class="s" id="synthese"><div class="wide fade">
+  <h2 style="max-width:720px">Synthèse visuelle</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 800 220" role="img" aria-labelledby="t3 d3"><title id="t3">Synthèse de la leçon</title><desc id="d3">Le prompt système, composé du rôle, du contexte, des règles et du format, s’associe à la base de connaissances, entretenue par des mises à jour, pour produire des réponses fiables.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="20" width="360" height="90" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="190" y="50">Prompt système</text><text x="190" y="78" font-size="12" font-weight="400" fill="#5F6370">Rôle · Contexte · Règles · Format</text>
+      <rect x="430" y="20" width="360" height="90" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="610" y="50">Base de connaissances</text><text x="610" y="78" font-size="12" font-weight="400" fill="#5F6370">FAQ · Tarifs · Horaires · Services</text>
+      <rect x="230" y="150" width="340" height="60" rx="12" fill="#fff" stroke="#5B4BDB" stroke-width="2"/><text x="400" y="186">Réponses fiables et cohérentes</text></g>
+      <path d="M190 110L330 150M610 110L470 150" stroke="#5B4BDB" stroke-width="2" fill="none"/>
+      <text x="400" y="132" text-anchor="middle" font-size="12" fill="#5F6370">+ mises à jour régulières</text>
+    </svg>
+    <figcaption>Fil conducteur de la leçon : consignes précises, informations fiables, mises à jour régulières.</figcaption>
+  </figure>
+</div></section>
+
+<section class="key" id="points-cles"><div class="wrap fade">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Le prompt système donne à l’assistant ses consignes : il est lu à chaque conversation, mais invisible pour le client.</li>
+    <li>Quatre blocs le structurent : rôle, contexte, règles et format de réponse.</li>
+    <li>La règle « ne pas inventer, dire quand on ne sait pas » est essentielle pour la fiabilité.</li>
+    <li>La base de connaissances apporte le contenu : fiches courtes, exactes, sans doublons.</li>
+    <li>FAQ, tarifs, horaires et services couvrent l’essentiel des demandes d’une petite entreprise.</li>
+    <li>La qualité des réponses dépend à la fois des consignes et des informations disponibles.</li>
+    <li>Les contenus se mettent à jour régulièrement, avec un responsable et un nouveau test à chaque changement.</li>
+  </ul>
+</div></section>
+
+<div class="wrap"><nav class="nav" aria-label="Navigation entre leçons">
+  <a href="lecon-03.html"><small>Leçon précédente</small>Leçon 3</a>
+  <a class="next" href="lecon-05.html"><small>Leçon suivante</small>Leçon 5</a>
+</nav></div>
+</main>
+<footer><div class="wrap">Création de chatbots et assistants IA pour les entreprises — Module 1, Leçon 4</div></footer>
+<button id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);bar.style.width=(p*100)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.onclick=function(){scrollTo({top:0})};
+var mb=document.getElementById('menuBtn'),m=document.getElementById('menu');
+mb.onclick=function(){var o=m.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+m.addEventListener('click',function(e){if(e.target.tagName==='A'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('.acc button').forEach(function(b){b.onclick=function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',!o);document.getElementById(b.getAttribute('aria-controls')).hidden=o}});
+document.querySelectorAll('.tabs').forEach(function(t){var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+function sel(x){tabs.forEach(function(y){var on=y===x;y.setAttribute('aria-selected',on);y.tabIndex=on?0:-1;document.getElementById(y.getAttribute('aria-controls')).hidden=!on});x.focus()}
+tabs.forEach(function(x,i){x.onclick=function(){sel(x)};x.onkeydown=function(e){if(e.key==='ArrowRight')sel(tabs[(i+1)%tabs.length]);if(e.key==='ArrowLeft')sel(tabs[(i-1+tabs.length)%tabs.length])}})});
+document.querySelectorAll('.copy').forEach(function(b){b.onclick=function(){var txt=b.closest('.code').querySelector('pre').innerText;
+function ok(){b.textContent='Copié ✓';setTimeout(function(){b.textContent='Copier'},1800)}
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb)}else{fb()}
+function fb(){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(e){}document.body.removeChild(ta)}}});
+var els=document.querySelectorAll('.fade');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
+})();
+</script>
+</body>
+</html>

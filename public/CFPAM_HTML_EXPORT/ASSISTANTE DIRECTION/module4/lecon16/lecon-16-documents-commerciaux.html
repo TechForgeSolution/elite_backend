@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 16 — Documents commerciaux</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EW%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+
+  .hero .subtitle{max-width:720px;}
+  .callout ul{margin:8px 0 0 1.1rem;}
+  .accordion-trigger:focus-visible,.tab-btn:focus-visible,.somm-btn:focus-visible,.theme-btn:focus-visible,.copy-btn:focus-visible,.checklist input:focus-visible,a:focus-visible,#back-to-top:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;}
+  @media(max-width:639px){
+    .wrap{padding:0 18px;}
+    .header-inner{padding:0 18px;}
+    .hero{padding-top:38px;}
+    h1{font-size:1.8rem;}
+    h2{font-size:1.35rem;}
+    .prevnext{flex-direction:column;}
+    .stepper{padding-bottom:12px;}
+    .step{min-width:185px;}
+    .somm-menu{right:-8px; min-width:245px;}
+  }
+  @media(min-width:1000px){
+    .wrap{max-width:800px;}
+    .header-inner{max-width:800px;}
+  }
+
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 16 — Documents commerciaux</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#cycle-commercial">1. Cycle des documents commerciaux</a>
+          <a href="#devis-commande">2. Devis et bon de commande</a>
+          <a href="#livraison">3. Bon de livraison</a>
+          <a href="#facture">4. Facture et TVA</a>
+          <a href="#avoir">5. Avoir</a>
+          <a href="#relance">6. Relance des impayés</a>
+          <a href="#mise-pratique">7. Procédure complète</a>
+          
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 4 — Gestion administrative, comptable et du personnel</span>
+      <span class="badge brass">Niveau intermédiaire</span>
+      <span class="badge">30 min</span>
+    </div>
+    <h1>Leçon 16 — Documents commerciaux</h1>
+    <p class="subtitle">Établir, contrôler et suivre les pièces d’un cycle d’achat ou de vente, du devis à la facture et à la relance.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Identifier les pièces qui jalonnent un cycle d'achat ou de vente.</li>
+      <li>Établir un devis et suivre sa transformation en commande.</li>
+      <li>Contrôler un bon de commande et un bon de livraison.</li>
+      <li>Préparer une facture cohérente en vérifiant les montants, la TVA et les mentions nécessaires.</li>
+      <li>Comprendre l'usage d'un avoir et assurer le suivi d'une facture impayée.</li>
+      <li>Construire un jeu de pièces cohérent et un échéancier de relance.</li>
+    </ul>
+  </div>
+
+  <section id="cycle-commercial">
+    <h2>1. Comprendre le cycle des documents commerciaux</h2>
+    <p>Un cycle commercial relie plusieurs documents. Chaque pièce correspond à une étape et permet de garder une trace de l'opération. L'assistante de direction doit savoir <strong>identifier le document attendu, vérifier sa cohérence et assurer son suivi</strong>.</p>
+
+    <div class="stepper" aria-label="Cycle des documents commerciaux">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Devis</h3><p>Proposition chiffrée avant l'engagement.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Commande</h3><p>Le client confirme les éléments retenus.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Livraison</h3><p>Les biens ou services sont livrés.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Facture</h3><p>La somme due est formalisée.</p></div>
+      <div class="step"><div class="step-num">5</div><h3>Suivi</h3><p>Paiement, avoir éventuel et relances.</p></div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      La cohérence est la règle centrale : les références, quantités, prix et dates doivent pouvoir être rapprochés d'un document à l'autre.
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Devis</h3><p>Il présente une proposition commerciale : produits ou prestations, quantités, prix, conditions et durée de validité.</p></div>
+      <div class="card"><h3>Bon de commande</h3><p>Il formalise la commande passée et sert de repère pour préparer la livraison.</p></div>
+      <div class="card"><h3>Bon de livraison</h3><p>Il permet de vérifier ce qui a effectivement été livré par rapport à la commande.</p></div>
+      <div class="card"><h3>Facture</h3><p>Elle récapitule les éléments facturés, les montants, la TVA applicable et les informations nécessaires au règlement.</p></div>
+    </div>
+  </section>
+
+  <section id="devis-commande">
+    <h2>2. Du devis au bon de commande</h2>
+    <p>Le <strong>devis</strong> intervient avant la commande. Il donne au client une vision claire de la proposition chiffrée. Une fois la proposition acceptée, les informations utiles sont reprises dans le <strong>bon de commande</strong>.</p>
+
+    <div class="tabs" data-tabs="devis-commande-tabs">
+      <div class="tab-list" role="tablist" aria-label="Comparer devis et bon de commande">
+        <button class="tab-btn active" role="tab" data-tab="a" aria-selected="true">Devis</button>
+        <button class="tab-btn" role="tab" data-tab="b" aria-selected="false">Bon de commande</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <h3>Ce qu'on vérifie</h3>
+        <ul>
+          <li>Identité et coordonnées des parties.</li>
+          <li>Référence et date du document.</li>
+          <li>Désignation des produits ou prestations.</li>
+          <li>Quantités, prix unitaires et montants.</li>
+          <li>Conditions commerciales et durée de validité.</li>
+        </ul>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <h3>Ce qu'on rapproche</h3>
+        <ul>
+          <li>La référence de la commande et la date.</li>
+          <li>Les lignes commandées par rapport au devis accepté.</li>
+          <li>Les quantités et prix convenus.</li>
+          <li>Les informations nécessaires à la livraison et à la facturation.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Recopier une commande sans comparer les quantités et les prix au devis accepté. Une petite différence à ce stade peut se retrouver sur le bon de livraison puis sur la facture.
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Vérification avant enregistrement</span><button class="copy-btn" data-copy-target="model-devis">Copier</button></div>
+      <pre id="model-devis">RÉFÉRENCE DOSSIER : CMD-2026-041
+
+□ Devis accepté identifié
+□ Client / fournisseur correctement renseigné
+□ Désignation des lignes vérifiée
+□ Quantités vérifiées
+□ Prix unitaires vérifiés
+□ Conditions et date vérifiées
+□ Bon de commande enregistré et classé</pre>
+    </div>
+  </section>
+
+  <section id="livraison">
+    <h2>3. Contrôler le bon de livraison</h2>
+    <p>Le bon de livraison sert à constater les éléments effectivement remis. Avant de valider le dossier, on rapproche le document de la commande : références, désignations et quantités doivent être contrôlées.</p>
+
+    <svg viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma du rapprochement entre commande, livraison et facture" style="width:100%; max-width:560px; display:block; margin:22px auto;">
+      <rect x="15" y="30" width="165" height="75" fill="#F5F2EC" stroke="#5E5A54"/>
+      <rect x="238" y="30" width="165" height="75" fill="#E8EFEB" stroke="#5E5A54"/>
+      <rect x="461" y="30" width="165" height="75" fill="#F5F2EC" stroke="#5E5A54"/>
+      <text x="97" y="62" text-anchor="middle" font-family="Inter" font-size="13" fill="#16181C">BON DE COMMANDE</text>
+      <text x="320" y="62" text-anchor="middle" font-family="Inter" font-size="13" fill="#2F5D50">BON DE LIVRAISON</text>
+      <text x="543" y="62" text-anchor="middle" font-family="Inter" font-size="13" fill="#16181C">FACTURE</text>
+      <line x1="180" y1="67" x2="238" y2="67" stroke="#A8823C" stroke-width="2"/>
+      <polygon points="238,67 228,62 228,72" fill="#A8823C"/>
+      <line x1="403" y1="67" x2="461" y2="67" stroke="#A8823C" stroke-width="2"/>
+      <polygon points="461,67 451,62 451,72" fill="#A8823C"/>
+      <text x="320" y="145" text-anchor="middle" font-family="Inter" font-size="12" fill="#5E5A54">Rapprocher les informations</text>
+      <text x="320" y="171" text-anchor="middle" font-family="Inter" font-size="12" fill="#5E5A54">Références · Quantités · Prix · Dates</text>
+      <line x1="120" y1="205" x2="520" y2="205" stroke="#E4DFD6"/>
+      <text x="320" y="230" text-anchor="middle" font-family="Inter" font-size="11" fill="#2F5D50">Toute anomalie doit être signalée avant de poursuivre le traitement.</text>
+    </svg>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist de contrôle</span>
+      <ul>
+        <li>Comparer le bon de livraison au bon de commande.</li>
+        <li>Repérer les quantités manquantes ou différentes.</li>
+        <li>Identifier toute ligne non livrée ou livrée en supplément.</li>
+        <li>Conserver la référence du dossier pour le rapprochement avec la facture.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="facture">
+    <h2>4. Établir et contrôler une facture</h2>
+    <p>La facture transforme les éléments de la vente ou de la prestation en une pièce de règlement. Pour le suivi administratif, elle doit être lisible, cohérente avec les pièces précédentes et comporter les informations nécessaires à son identification et à son paiement.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Élément</th><th>Exemple dans le dossier</th><th>Contrôle</th></tr></thead>
+        <tbody>
+          <tr><td>Référence facture</td><td>FAC-2026-041</td><td>Unique et clairement visible</td></tr>
+          <tr><td>Date</td><td>17/09/2026</td><td>Cohérente avec le dossier</td></tr>
+          <tr><td>Client</td><td>Société Alpha</td><td>Identité et coordonnées exactes</td></tr>
+          <tr><td>Désignation</td><td>Fournitures de bureau</td><td>Correspond à la commande / livraison</td></tr>
+          <tr><td>Quantité</td><td>10</td><td>Rapprochée du bon de livraison</td></tr>
+          <tr><td>Prix unitaire HT</td><td>25 000 F CFA</td><td>Vérifié avec le document commercial</td></tr>
+          <tr><td>Montant HT</td><td>250 000 F CFA</td><td>Quantité × prix unitaire</td></tr>
+          <tr><td>TVA</td><td>19,25 % dans l'exemple</td><td>Vérifier le taux applicable au dossier</td></tr>
+          <tr><td>Total TTC</td><td>298 125 F CFA</td><td>HT + TVA</td></tr>
+          <tr><td>Échéance</td><td>17/10/2026</td><td>À reporter dans le suivi des règlements</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 Exemple chiffré</span>
+      Pour 10 unités à 25 000 F CFA HT : <strong>250 000 F CFA HT</strong>. Avec une TVA d'exemple de 19,25 %, la TVA est de <strong>48 125 F CFA</strong> et le total TTC de <strong>298 125 F CFA</strong>. Dans un dossier réel, le taux de TVA doit être vérifié avant émission.
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Utiliser automatiquement un taux de TVA sans vérifier qu'il correspond à l'opération concernée. Le taux appliqué doit être celui qui est effectivement applicable au dossier.
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">Mentions et informations à contrôler <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Dans la pratique, contrôlez notamment l'identification du vendeur et du client, les références et dates, la désignation des biens ou services, les quantités, les prix, les montants HT et TTC, la TVA lorsqu'elle s'applique, ainsi que les informations utiles au règlement et à l'échéance. Les exigences exactes dépendent du cadre juridique et fiscal applicable.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">Pourquoi conserver le lien entre les pièces ? <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Un dossier cohérent permet de retrouver rapidement l'origine d'une facture : devis, commande et livraison. Cela facilite le contrôle, le classement et le traitement d'une éventuelle réclamation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="avoir">
+    <h2>5. Comprendre l'avoir et traiter une correction</h2>
+    <p>Un <strong>avoir</strong> est une pièce utilisée pour corriger ou réduire une facturation antérieure, par exemple lorsqu'une partie de la facturation doit être annulée ou rectifiée. Il doit rester clairement rattaché à la facture concernée.</p>
+
+    <div class="tabs" data-tabs="avoir-tabs">
+      <div class="tab-list" role="tablist" aria-label="Cas d'utilisation de l'avoir">
+        <button class="tab-btn active" role="tab" data-tab="a" aria-selected="true">Cas pratique</button>
+        <button class="tab-btn" role="tab" data-tab="b" aria-selected="false">Contrôle</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Une facture porte sur 10 articles. Après livraison, 2 articles sont retournés. L'avoir doit identifier la facture initiale et corriger le montant correspondant aux 2 articles, selon les conditions du dossier.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <ul>
+          <li>Référence de l'avoir clairement identifiée.</li>
+          <li>Facture d'origine retrouvée.</li>
+          <li>Motif de la correction indiqué.</li>
+          <li>Quantité et montant corrigés vérifiés.</li>
+          <li>Impact sur le suivi du solde à payer pris en compte.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Un avoir ne doit pas « effacer » la facture dans le suivi : il doit permettre de comprendre la correction et de calculer le nouveau solde.
+    </div>
+  </section>
+
+  <section id="relance">
+    <h2>6. Suivre les impayés et organiser les relances</h2>
+    <p>Une relance efficace repose d'abord sur un suivi précis : référence de facture, montant, date d'émission, échéance, statut du paiement et historique des contacts. La relance est ensuite progressive, factuelle et traçable.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Échéance proche</h3><p>Vérifier la facture et les coordonnées du contact.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Échéance dépassée</h3><p>Identifier les factures réellement impayées.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Relance</h3><p>Envoyer un message clair avec la référence et le montant.</p></div>
+      <div class="step"><div class="step-num">4</div><h3>Suivi</h3><p>Noter la réponse et programmer la prochaine action.</p></div>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Relance d'une facture échue</span><button class="copy-btn" data-copy-target="model-relance">Copier</button></div>
+      <pre id="model-relance">Objet : Relance — facture FAC-2026-041 arrivée à échéance
+
+Madame, Monsieur,
+
+Sauf erreur de notre part, la facture FAC-2026-041 d'un montant de 298 125 F CFA, arrivée à échéance le 17/10/2026, reste à ce jour indiquée comme non réglée dans notre suivi.
+
+Nous vous remercions de bien vouloir nous confirmer la situation de ce règlement ou, le cas échéant, nous indiquer sa date prévisionnelle.
+
+Nous restons à votre disposition pour toute vérification utile.
+
+Cordialement,
+
+[Nom]
+[Service / Direction]</pre>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      Les factures, montants et échanges de relance sont des informations administratives à traiter avec discrétion. Adressez les documents uniquement aux interlocuteurs concernés et évitez de diffuser inutilement les données du dossier.
+    </div>
+  </section>
+
+  <section id="mise-pratique">
+    <h2>7. Procédure complète : traiter une commande de bout en bout</h2>
+    <p>Pour éviter les ruptures de suivi, traitez le dossier comme une chaîne documentaire. À chaque étape, le contrôle consiste à vérifier la cohérence avant de passer à la suivante.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Recevoir le devis</h3><p>Identifier la proposition et vérifier les informations.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Enregistrer la commande</h3><p>Reprendre les éléments validés.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Contrôler la livraison</h3><p>Comparer les quantités réellement livrées.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Établir la facture</h3><p>Calculer HT, TVA et TTC puis vérifier les mentions.</p></div>
+      <div class="step"><div class="step-num">5</div><h3>Suivre le paiement</h3><p>Enregistrer le règlement ou programmer la relance.</p></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pièce</th><th>Référence</th><th>Montant</th><th>Date</th><th>Action de suivi</th></tr></thead>
+        <tbody>
+          <tr><td>Devis</td><td>DEV-2026-041</td><td>298 125 F CFA TTC</td><td>10/09/2026</td><td>Conserver l'acceptation</td></tr>
+          <tr><td>Bon de commande</td><td>CMD-2026-041</td><td>298 125 F CFA TTC</td><td>12/09/2026</td><td>Rapprocher du devis</td></tr>
+          <tr><td>Bon de livraison</td><td>BL-2026-041</td><td>10 unités</td><td>17/09/2026</td><td>Contrôler la livraison</td></tr>
+          <tr><td>Facture</td><td>FAC-2026-041</td><td>298 125 F CFA TTC</td><td>17/09/2026</td><td>Suivre l'échéance</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation professionnelle</span>
+      <p>La direction vous confie une commande de 10 unités de fournitures de bureau à 25 000 F CFA HT l'unité. Le devis accepté indique une TVA d'exemple de 19,25 %. La livraison est effectuée le 17 septembre 2026 et la facture est payable à 30 jours.</p>
+      <p style="margin-bottom:0;"><strong>Votre mission :</strong> reconstituer le jeu de pièces, vérifier les montants, inscrire l'échéance du 17 octobre 2026 et préparer la relance si le paiement n'est pas constaté à cette date.</p>
+    </div>
+  </section>
+<section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Le devis présente une proposition ; le bon de commande formalise la commande ; le bon de livraison permet le contrôle de la livraison ; la facture formalise la somme due.</li>
+      <li>La cohérence entre les pièces est essentielle : références, quantités, prix et dates doivent être rapprochés.</li>
+      <li>Une facture doit être lisible et comporter les informations nécessaires à son identification, son calcul et son règlement.</li>
+      <li>La TVA doit être calculée avec le taux applicable à l'opération ; l'exemple de cette leçon utilise 19,25 % à des fins pédagogiques.</li>
+      <li>L'avoir doit être rattaché à la facture concernée et son impact sur le solde doit être suivi.</li>
+      <li>Une relance impayée doit être factuelle, traçable et intégrée à un échéancier de suivi.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p><strong>Livrable de la leçon :</strong> un jeu de pièces cohérent et chiffré, accompagné d'un échéancier de relance.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Jeu de pièces cohérent et chiffré</span><button class="copy-btn" data-copy-target="model-jeu">Copier</button></div>
+      <pre id="model-jeu">DOSSIER COMMERCIAL : 2026-041
+
+1. DEVIS
+Référence : DEV-2026-041
+Date : 10/09/2026
+10 unités × 25 000 F CFA HT = 250 000 F CFA HT
+TVA pédagogique 19,25 % = 48 125 F CFA
+Total TTC = 298 125 F CFA
+
+2. BON DE COMMANDE
+Référence : CMD-2026-041
+Date : 12/09/2026
+Commande conforme au devis DEV-2026-041
+Total TTC : 298 125 F CFA
+
+3. BON DE LIVRAISON
+Référence : BL-2026-041
+Date : 17/09/2026
+10 unités livrées
+Contrôle : conforme à la commande
+
+4. FACTURE
+Référence : FAC-2026-041
+Date : 17/09/2026
+HT : 250 000 F CFA
+TVA 19,25 % : 48 125 F CFA
+TTC : 298 125 F CFA
+Échéance : 17/10/2026
+
+5. SUIVI
+Statut initial : À régler
+Action si non-paiement à l'échéance : relance
+Référence à rappeler : FAC-2026-041</pre>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Échéancier de relance</span><button class="copy-btn" data-copy-target="model-echeancier">Copier</button></div>
+      <pre id="model-echeancier">ÉCHÉANCIER — FACTURE FAC-2026-041
+
+| Date        | Action                         | Statut |
+|-------------|--------------------------------|--------|
+| 17/09/2026  | Facture émise                  | Fait   |
+| 17/10/2026  | Échéance de règlement          | À suivre |
+| 20/10/2026  | Première relance si impayé     | À faire |
+| 27/10/2026  | Vérification / seconde relance | À faire |
+| 03/11/2026  | Escalade selon procédure interne | À faire |
+
+À chaque action : noter la date, le contact, la réponse obtenue et la prochaine action prévue.</pre>
+    </div>
+
+    <h3>Checklist de traitement d'une commande</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Devis identifié et informations vérifiées</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Bon de commande rapproché du devis</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Bon de livraison contrôlé par rapport à la commande</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Facture contrôlée : références, montants, TVA et échéance</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Avoir traité et rattaché à la facture si nécessaire</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Échéancier de relance complété si la facture est impayée</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 15 — Outils collaboratifs numériques</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 17 — Caisse et notions comptables</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 4 — Gestion administrative, comptable et du personnel · Leçon 16 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

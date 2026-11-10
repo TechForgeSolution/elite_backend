@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 15 — Gestion des réclamations clients — Filière Restauration, Module 3, niveau BAC Pro.">
+<title>Leçon 15 — Gestion des réclamations clients | Chef & Terracotta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#FDF3E7;--color-text:#3B2314;--color-accent:#E8752C;--color-neutral:#8A6E5C;
+ --soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --soft2:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --shadow:0 14px 38px color-mix(in srgb,var(--color-text) 10%,transparent);
+ --radius:18px;--max:1160px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,Arial,sans-serif;line-height:1.7}
+a{color:inherit}button,summary{font:inherit}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--color-accent);width:0;z-index:100}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:var(--max);margin:auto;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Playfair Display",serif;font-size:1.15rem;font-weight:700}
+.module{font:600 .75rem "IBM Plex Mono",monospace;letter-spacing:.08em;color:var(--color-neutral);text-transform:uppercase}
+main{max-width:var(--max);margin:auto;padding:0 22px 70px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:42px;align-items:center;padding:76px 0 48px}
+.eyebrow,.kicker{font:600 .76rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--color-accent)}
+h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.15;margin:0 0 15px}
+h1{font-size:clamp(2.7rem,6vw,5rem);letter-spacing:-.045em}
+h2{font-size:clamp(1.9rem,3.4vw,2.75rem);margin-top:5px}
+h3{font-size:1.3rem}
+.lead{font-size:1.1rem;color:var(--muted);max-width:700px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
+.badge{padding:7px 12px;border:1px solid var(--border);border-radius:999px;font:500 .75rem "IBM Plex Mono",monospace}
+.hero-visual,.visual{background:var(--soft2);border:1px solid var(--border);border-radius:26px;padding:18px;box-shadow:var(--shadow)}
+.hero-visual svg,.visual svg{display:block;width:100%;height:auto}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:22px 0;margin-bottom:38px}
+.toc-title{font-family:"Playfair Display",serif;font-size:1.15rem}
+.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.toc a{padding:10px 12px;border:1px solid var(--border);border-radius:12px;text-decoration:none;font-size:.88rem;transition:.2s}
+.toc a:hover,.nav-card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+section{padding:42px 0;border-bottom:1px solid var(--border)}
+.intro{max-width:740px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.card{border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:var(--soft2);transition:.2s}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card .icon{width:52px;height:52px;margin-bottom:10px}
+.card p,.protocol p{margin:.4rem 0;color:var(--muted)}
+.callout{margin:23px 0;padding:19px 21px;border-left:6px solid var(--color-accent);border-radius:12px;background:var(--soft)}
+.callout .label{font-weight:700;margin-bottom:4px}
+.visual{margin-top:23px;box-shadow:none}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-top:23px}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font:600 .76rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:0}tbody tr:hover{background:var(--soft2)}
+.mono{font-family:"IBM Plex Mono",monospace}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:23px}
+.step{position:relative;border:1px solid var(--border);border-radius:15px;padding:18px 14px;min-height:170px;background:var(--soft2)}
+.step:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:55px;color:var(--color-accent);font-size:1.3rem;font-weight:700}
+.step-num{font:600 1.15rem "IBM Plex Mono",monospace;color:var(--color-accent)}
+.step h3{font-size:1.05rem;margin:9px 0 5px}.step p{font-size:.9rem;color:var(--muted);margin:0}
+.tabs{margin-top:23px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.tab-buttons{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--soft2)}
+.tab-button{border:0;background:transparent;color:var(--color-text);padding:13px 17px;cursor:pointer;font-weight:700}
+.tab-button[aria-selected="true"]{color:var(--color-accent);box-shadow:inset 0 -3px 0 var(--color-accent)}
+.tab-panel{display:none;padding:23px}.tab-panel.active{display:block}
+details{border:1px solid var(--border);border-radius:14px;margin-top:12px;padding:0 17px;background:var(--soft2)}
+summary{cursor:pointer;font-weight:700;padding:15px 0}
+details p{color:var(--muted);margin:0 0 16px}
+.phrases{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:22px}
+.phrase{border:1px solid var(--border);border-radius:15px;padding:18px;background:var(--soft2)}
+.phrase strong{display:block;margin-bottom:7px;color:var(--color-accent)}
+.takeaways{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:22px}
+.takeaway{padding:19px;border-radius:15px;background:var(--color-text);color:var(--color-bg)}
+.takeaway strong{display:block;font-family:"Playfair Display",serif;font-size:1.15rem;margin-bottom:5px}
+.nav-lessons{display:flex;justify-content:space-between;gap:15px;padding:34px 0}
+.nav-card{text-decoration:none;border:1px solid var(--border);border-radius:14px;padding:14px 17px;transition:.2s;max-width:48%}
+.nav-card.next{text-align:right}
+.top{position:fixed;right:20px;bottom:20px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);border-radius:50%;width:46px;height:46px;cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);padding:29px 22px;color:var(--color-neutral);font-size:.87rem}
+.footer-inner{max-width:var(--max);margin:auto;display:flex;justify-content:space-between;gap:20px}
+.reveal{opacity:0;transform:translateY(15px);transition:.55s ease}.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:900px){
+ .hero{grid-template-columns:1fr}.toc-grid{grid-template-columns:repeat(2,1fr)}
+ .cards,.takeaways{grid-template-columns:repeat(2,1fr)}.stepper{grid-template-columns:repeat(2,1fr)}
+ .step:not(:last-child)::after{display:none}
+}
+@media(max-width:560px){
+ main{padding:0 16px 50px}.nav{padding:12px 16px}.module{font-size:.68rem}
+ .hero{padding-top:48px}.toc-grid,.grid,.cards,.phrases,.takeaways,.stepper{grid-template-columns:1fr}
+ h1{font-size:2.85rem}.nav-lessons{flex-direction:column}.nav-card{max-width:none}
+ .nav-card.next{text-align:left}.footer-inner{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card,.toc a,.nav-card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header>
+ <div class="nav">
+  <div class="brand">Chef &amp; Terracotta</div>
+  <div class="module">Module 3 · Leçon 15</div>
+ </div>
+</header>
+
+<main>
+<section class="hero reveal">
+ <div>
+  <div class="eyebrow">Service en salle · BAC Pro</div>
+  <h1>Gestion des<br>réclamations clients</h1>
+  <p class="lead">Traiter une réclamation avec calme et professionnalisme : écouter, reconnaître la situation, proposer une solution adaptée, transmettre l'information et assurer le suivi.</p>
+  <div class="meta">
+   <span class="badge">BAC PRO</span><span class="badge">20 MIN</span><span class="badge">MODULE 3</span>
+  </div>
+ </div>
+ <div class="hero-visual">
+  <svg viewBox="0 0 520 430" role="img" aria-label="Illustration d'un échange professionnel entre un serveur et un client">
+   <rect x="55" y="55" width="410" height="290" rx="28" fill="var(--soft)" stroke="var(--color-text)" stroke-width="4"/>
+   <circle cx="170" cy="170" r="48" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="4"/>
+   <circle cx="350" cy="170" r="48" fill="var(--color-bg)" stroke="var(--color-text)" stroke-width="4"/>
+   <path d="M140 160 q30-25 60 0 M320 160 q30-25 60 0" fill="none" stroke="var(--color-neutral)" stroke-width="5" stroke-linecap="round"/>
+   <circle cx="155" cy="175" r="5" fill="var(--color-text)"/><circle cx="185" cy="175" r="5" fill="var(--color-text)"/>
+   <circle cx="335" cy="175" r="5" fill="var(--color-text)"/><circle cx="365" cy="175" r="5" fill="var(--color-text)"/>
+   <path d="M155 195 q15 12 30 0 M335 195 q15 12 30 0" fill="none" stroke="var(--color-text)" stroke-width="4" stroke-linecap="round"/>
+   <path d="M215 150 H305" stroke="var(--color-accent)" stroke-width="5" stroke-linecap="round"/>
+   <path d="M230 145 l-15 5 15 5 M290 145 l15 5-15 5" fill="none" stroke="var(--color-accent)" stroke-width="3"/>
+   <rect x="120" y="255" width="280" height="55" rx="14" fill="var(--color-bg)" stroke="var(--color-neutral)" stroke-width="3"/>
+   <text x="260" y="289" text-anchor="middle" font-family="IBM Plex Mono" font-size="16" fill="var(--color-text)">ÉCOUTER · COMPRENDRE · AGIR</text>
+   <path d="M260 105 v-30" stroke="var(--color-accent)" stroke-width="5"/>
+   <circle cx="260" cy="62" r="17" fill="var(--color-accent)"/>
+   <text x="260" y="68" text-anchor="middle" font-family="Inter" font-weight="700" font-size="16" fill="var(--color-bg)">✓</text>
+  </svg>
+ </div>
+</section>
+
+<nav class="toc" aria-label="Sommaire">
+ <div class="toc-title">Sommaire</div>
+ <div class="toc-grid">
+  <a href="#definition">01 · Comprendre</a><a href="#ecoute">02 · Écoute active</a>
+  <a href="#protocole">03 · Protocole</a><a href="#solutions">04 · Solutions</a>
+  <a href="#phrases">05 · Phrases-clés</a><a href="#scenarios">06 · Scénarios</a>
+  <a href="#suivi">07 · Remontée &amp; suivi</a><a href="#synthese">08 · Points clés</a>
+ </div>
+</nav>
+
+<section id="definition" class="reveal">
+ <div class="kicker">01 · Comprendre</div>
+ <h2>Qu'est-ce qu'une réclamation ?</h2>
+ <p class="intro">Une réclamation est l'expression d'une insatisfaction par un client concernant son expérience. En salle, elle peut porter sur le produit, le service, l'attente, la communication ou tout autre élément vécu comme insatisfaisant.</p>
+ <div class="cards">
+  <article class="card">
+   <svg class="icon" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="21" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><path d="M16 22h20M16 29h13M16 36h8" stroke="var(--color-text)" stroke-width="3" stroke-linecap="round"/></svg>
+   <h3>Écouter</h3><p>Laisser le client expliquer la situation sans l'interrompre inutilement.</p>
+  </article>
+  <article class="card">
+   <svg class="icon" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="21" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><path d="M15 28q11-18 22 0M19 33h14" fill="none" stroke="var(--color-text)" stroke-width="3" stroke-linecap="round"/></svg>
+   <h3>Reconnaître</h3><p>Montrer que la remarque est prise au sérieux et reformuler les faits.</p>
+  </article>
+  <article class="card">
+   <svg class="icon" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="21" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><path d="M15 27l7 7 15-17" fill="none" stroke="var(--color-text)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+   <h3>Agir</h3><p>Proposer une réponse adaptée dans le cadre des responsabilités du service.</p>
+  </article>
+ </div>
+ <div class="callout">
+  <div class="label">💡 À retenir</div>
+  Une réclamation n'est pas seulement un problème à faire disparaître : c'est une situation de service à traiter avec méthode, respect et traçabilité.
+ </div>
+</section>
+
+<section id="ecoute" class="reveal">
+ <div class="kicker">02 · Communication</div>
+ <h2>L'écoute active</h2>
+ <p class="intro">L'écoute active consiste à porter attention au message du client, à ses faits et à son ressenti, puis à vérifier que l'on a correctement compris avant d'agir.</p>
+ <div class="visual">
+  <svg viewBox="0 0 1000 310" role="img" aria-label="Diagramme de l'écoute active">
+   <text x="500" y="35" text-anchor="middle" font-family="Playfair Display" font-size="25" fill="var(--color-text)">Écouter avant de répondre</text>
+   <g transform="translate(55,85)"><circle cx="80" cy="65" r="55" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="4"/><text x="80" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">01</text><text x="80" y="84" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-text)">ÉCOUTER</text></g>
+   <path d="M205 150H285" stroke="var(--color-accent)" stroke-width="5"/><path d="M275 140l15 10-15 10" fill="none" stroke="var(--color-accent)" stroke-width="4"/>
+   <g transform="translate(300,85)"><circle cx="80" cy="65" r="55" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="4"/><text x="80" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">02</text><text x="80" y="84" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-text)">REFORMULER</text></g>
+   <path d="M450 150H530" stroke="var(--color-accent)" stroke-width="5"/><path d="M520 140l15 10-15 10" fill="none" stroke="var(--color-accent)" stroke-width="4"/>
+   <g transform="translate(545,85)"><circle cx="80" cy="65" r="55" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="4"/><text x="80" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">03</text><text x="80" y="84" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-text)">CLARIFIER</text></g>
+   <path d="M695 150H775" stroke="var(--color-accent)" stroke-width="5"/><path d="M765 140l15 10-15 10" fill="none" stroke="var(--color-accent)" stroke-width="4"/>
+   <g transform="translate(790,85)"><circle cx="80" cy="65" r="55" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="4"/><text x="80" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">04</text><text x="80" y="84" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-text)">RÉPONDRE</text></g>
+  </svg>
+ </div>
+ <div class="grid">
+  <div class="callout"><div class="label">⚠️ Attention / erreur fréquente</div>Couper la parole, se justifier immédiatement ou contredire le client avant d'avoir établi les faits peut amplifier la tension.</div>
+  <div class="callout"><div class="label">👨‍🍳 Conseil de chef</div>Adopter une posture calme, un ton posé et une formulation factuelle. Se concentrer sur la situation plutôt que sur la personne.</div>
+ </div>
+</section>
+
+<section id="protocole" class="reveal">
+ <div class="kicker">03 · Méthode</div>
+ <h2>Le protocole de résolution</h2>
+ <div class="stepper">
+  <div class="step"><div class="step-num">01</div><h3>Accueillir</h3><p>Recevoir la remarque avec calme et disponibilité.</p></div>
+  <div class="step"><div class="step-num">02</div><h3>Écouter</h3><p>Laisser le client exposer les faits et son attente.</p></div>
+  <div class="step"><div class="step-num">03</div><h3>Reformuler</h3><p>Vérifier la compréhension de la situation.</p></div>
+  <div class="step"><div class="step-num">04</div><h3>Résoudre</h3><p>Proposer une solution dans le cadre autorisé.</p></div>
+  <div class="step"><div class="step-num">05</div><h3>Suivre</h3><p>Vérifier la satisfaction et transmettre si nécessaire.</p></div>
+ </div>
+ <div class="table-wrap">
+  <table>
+   <thead><tr><th scope="col">Moment</th><th scope="col">Action du professionnel</th><th scope="col">Objectif</th></tr></thead>
+   <tbody>
+    <tr><td class="mono">Accueil</td><td>Se rendre disponible, rester courtois.</td><td>Créer un cadre calme.</td></tr>
+    <tr><td class="mono">Écoute</td><td>Questionner avec mesure et ne pas interrompre.</td><td>Comprendre les faits.</td></tr>
+    <tr><td class="mono">Réponse</td><td>Reconnaître la situation et présenter une solution.</td><td>Rétablir la qualité du service.</td></tr>
+    <tr><td class="mono">Après action</td><td>Contrôler que la solution a bien été prise en compte.</td><td>Éviter qu'une insatisfaction persiste.</td></tr>
+    <tr><td class="mono">Transmission</td><td>Remonter l'information selon la procédure interne.</td><td>Assurer la continuité et l'amélioration.</td></tr>
+   </tbody>
+  </table>
+ </div>
+</section>
+
+<section id="solutions" class="reveal">
+ <div class="kicker">04 · Adapter la réponse</div>
+ <h2>Des solutions proportionnées</h2>
+ <div class="tabs" role="tablist" aria-label="Types de situations">
+  <div class="tab-buttons">
+   <button class="tab-button" role="tab" aria-selected="true" aria-controls="tab-produit" id="btn-produit">Problème produit</button>
+   <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-service" id="btn-service">Problème de service</button>
+   <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-attente" id="btn-attente">Temps d'attente</button>
+  </div>
+  <div class="tab-panel active" id="tab-produit" role="tabpanel" aria-labelledby="btn-produit">
+   <h3>Exemple : plat non conforme à la demande</h3>
+   <p>Écouter précisément la demande initiale, vérifier les faits, reconnaître le problème et solliciter la personne responsable lorsque la solution dépasse les possibilités du serveur.</p>
+  </div>
+  <div class="tab-panel" id="tab-service" role="tabpanel" aria-labelledby="btn-service">
+   <h3>Exemple : attitude ou prestation insatisfaisante</h3>
+   <p>Éviter la confrontation personnelle. Reconnaître l'expérience vécue par le client, recueillir les informations utiles et transmettre la situation selon l'organisation de l'établissement.</p>
+  </div>
+  <div class="tab-panel" id="tab-attente" role="tabpanel" aria-labelledby="btn-attente">
+   <h3>Exemple : attente jugée trop longue</h3>
+   <p>Présenter des excuses appropriées, expliquer brièvement sans chercher d'excuse personnelle, puis donner une information claire sur la suite du service.</p>
+  </div>
+ </div>
+ <div class="callout"><div class="label">📌 Rappel HACCP / sécurité alimentaire</div>Lorsqu'une réclamation concerne la sécurité, l'hygiène, une allergie ou une suspicion de problème alimentaire, ne pas improviser : appliquer immédiatement les procédures de l'établissement et alerter la personne responsable.</div>
+</section>
+
+<section id="phrases" class="reveal">
+ <div class="kicker">05 · Communication professionnelle</div>
+ <h2>Phrases-clés</h2>
+ <div class="phrases">
+  <div class="phrase"><strong>Pour écouter</strong>« Je vous écoute. Pouvez-vous me préciser ce qui s'est passé ? »</div>
+  <div class="phrase"><strong>Pour reformuler</strong>« Si je comprends bien, votre remarque concerne… »</div>
+  <div class="phrase"><strong>Pour reconnaître</strong>« Je comprends que cette situation soit insatisfaisante pour vous. »</div>
+  <div class="phrase"><strong>Pour proposer</strong>« Je vais vérifier ce que nous pouvons vous proposer immédiatement. »</div>
+  <div class="phrase"><strong>Pour transmettre</strong>« Je vais en informer la personne responsable afin que votre demande soit suivie. »</div>
+  <div class="phrase"><strong>Pour conclure</strong>« Je voulais m'assurer que la solution apportée vous convient. »</div>
+ </div>
+ <div class="callout"><div class="label">⚠️ À éviter</div>Les formulations accusatrices, les promesses impossibles à tenir, les réponses ironiques, les discussions publiques avec le client ou les justifications trop longues.</div>
+</section>
+
+<section id="scenarios" class="reveal">
+ <div class="kicker">06 · Mise en situation</div>
+ <h2>Scénarios d'exemple</h2>
+ <details open>
+  <summary>Scénario 1 — Le plat arrive froid</summary>
+  <p><strong>Réflexe professionnel :</strong> écouter, reconnaître l'insatisfaction, vérifier la situation puis proposer la suite possible dans le cadre de l'établissement. Une information claire doit être donnée au client sur l'action engagée.</p>
+ </details>
+ <details>
+  <summary>Scénario 2 — Une erreur dans la commande</summary>
+  <p><strong>Réflexe professionnel :</strong> reprendre calmement la commande et les faits, éviter de rechercher immédiatement un responsable à blâmer, puis coordonner la correction avec la cuisine ou la personne compétente.</p>
+ </details>
+ <details>
+  <summary>Scénario 3 — Un client reste mécontent après une première solution</summary>
+  <p><strong>Réflexe professionnel :</strong> écouter à nouveau, reformuler l'attente et transmettre la situation au responsable si le niveau de décision nécessaire dépasse celui du serveur.</p>
+ </details>
+</section>
+
+<section id="suivi" class="reveal">
+ <div class="kicker">07 · Après la réclamation</div>
+ <h2>Remontée d'information et suivi</h2>
+ <p class="intro">Une réclamation utile à l'établissement doit pouvoir être comprise après coup. La remontée d'information permet d'identifier les répétitions et d'améliorer l'organisation.</p>
+ <div class="visual">
+  <svg viewBox="0 0 1000 280" role="img" aria-label="Processus de remontée et suivi d'une réclamation">
+   <text x="500" y="32" text-anchor="middle" font-family="Playfair Display" font-size="25" fill="var(--color-text)">Transformer l'incident en information utile</text>
+   <g transform="translate(45,78)"><rect width="185" height="125" rx="17" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><text x="92" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">FAITS</text><text x="92" y="78" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-neutral)">Que s'est-il passé ?</text></g>
+   <path d="M240 140h45" stroke="var(--color-accent)" stroke-width="5"/>
+   <g transform="translate(295,78)"><rect width="185" height="125" rx="17" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><text x="92" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">ACTION</text><text x="92" y="78" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-neutral)">Qu'a-t-on fait ?</text></g>
+   <path d="M490 140h45" stroke="var(--color-accent)" stroke-width="5"/>
+   <g transform="translate(545,78)"><rect width="185" height="125" rx="17" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><text x="92" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">SUIVI</text><text x="92" y="78" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-neutral)">Le client est-il satisfait ?</text></g>
+   <path d="M740 140h45" stroke="var(--color-accent)" stroke-width="5"/>
+   <g transform="translate(795,78)"><rect width="160" height="125" rx="17" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="3"/><text x="80" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="15" fill="var(--color-text)">AMÉLIORER</text><text x="80" y="78" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--color-neutral)">Que retenir ?</text></g>
+  </svg>
+ </div>
+ <div class="callout"><div class="label">💡 À retenir</div>Une remontée efficace reste factuelle : situation observée, réponse apportée, résultat obtenu et information utile pour prévenir la répétition.</div>
+</section>
+
+<section id="synthese" class="reveal">
+ <div class="kicker">08 · Synthèse</div>
+ <h2>Points clés à retenir</h2>
+ <div class="takeaways">
+  <div class="takeaway"><strong>Écouter</strong>Ne pas interrompre inutilement et recueillir les faits.</div>
+  <div class="takeaway"><strong>Reconnaître</strong>Montrer que la remarque est prise au sérieux.</div>
+  <div class="takeaway"><strong>Résoudre</strong>Proposer une réponse adaptée et réaliste.</div>
+  <div class="takeaway"><strong>Suivre</strong>Contrôler le résultat et transmettre l'information.</div>
+ </div>
+ <div class="callout"><div class="label">👨‍🍳 Le réflexe professionnel</div><span class="mono">CALME → ÉCOUTE → REFORMULATION → SOLUTION → SUIVI</span></div>
+</section>
+
+<div class="nav-lessons">
+ <a class="nav-card" href="#" aria-label="Leçon précédente">← <strong>Leçon 14</strong><br>Prise de commande et communication avec la cuisine</a>
+ <a class="nav-card next" href="#top" aria-label="Retour au sommaire du module"><strong>Module 3</strong><br>Retour au sommaire ↑</a>
+</div>
+</main>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+<footer><div class="footer-inner"><span>Chef &amp; Terracotta · Filière Restauration</span><span>Module 3 · Leçon 15 · Gestion des réclamations clients</span></div></footer>
+
+<script>
+const progress=document.getElementById("progress"),topBtn=document.getElementById("topBtn");
+function scrollState(){
+ const d=document.documentElement,max=d.scrollHeight-d.clientHeight;
+ progress.style.width=(max?window.scrollY/max*100:0)+"%";
+ topBtn.classList.toggle("show",window.scrollY>500);
+}
+window.addEventListener("scroll",scrollState,{passive:true});
+topBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")});
+},{threshold:.08});
+document.querySelectorAll(".reveal").forEach(e=>observer.observe(e));
+
+document.querySelectorAll(".tab-button").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  const group=btn.closest(".tabs");
+  group.querySelectorAll(".tab-button").forEach(b=>b.setAttribute("aria-selected",String(b===btn)));
+  group.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===btn.getAttribute("aria-controls")));
+ });
+ btn.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+   const buttons=[...btn.parentElement.querySelectorAll(".tab-button")],i=buttons.indexOf(btn);
+   const next=buttons[(i+(e.key==="ArrowRight"?1:-1)+buttons.length)%buttons.length];
+   next.focus();next.click();
+  }
+ });
+});
+scrollState();
+</script>
+</body>
+</html>

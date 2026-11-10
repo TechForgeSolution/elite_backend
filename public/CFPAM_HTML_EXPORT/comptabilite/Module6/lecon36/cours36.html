@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leçon 36 — Méthode ABC et amélioration des coûts — Comptabilité analytique">
+  <title>Leçon 36 — Méthode ABC et amélioration des coûts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#FFFFFF;--color-bg-alt:#F6F8F6;--color-text:#0B0F0D;
+      --color-text-muted:#5A6560;--color-accent:#1F6F54;--color-accent-soft:#E7F2ED;
+      --color-border:#E3E8E5;--color-accent-alt:#B3541E;
+      --shadow:0 18px 50px rgba(11,15,13,.07);--radius:18px;
+      --max:1160px;--mono:"IBM Plex Mono",monospace;--display:"Sora",sans-serif;--body:"Inter",sans-serif;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;color:var(--color-text);background:var(--color-bg);font-family:var(--body);line-height:1.7}
+    a{color:inherit;text-decoration:none}.container{width:min(var(--max),calc(100% - 40px));margin:auto}
+    .progress{position:fixed;top:0;left:0;width:100%;height:3px;background:transparent;z-index:1000}
+    .progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+    header{position:sticky;top:3px;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--color-border)}
+    .nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{font-family:var(--display);font-weight:700;letter-spacing:-.03em}.brand small{display:block;color:var(--color-text-muted);font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+    .menu-btn{display:none;border:1px solid var(--color-border);background:white;border-radius:10px;padding:9px 12px;cursor:pointer}
+    .toc-mini{display:flex;gap:20px;font-size:13px;color:var(--color-text-muted)}.toc-mini a:hover{color:var(--color-accent)}
+    .hero{padding:82px 0 58px;background:linear-gradient(180deg,#fff 0%,var(--color-bg-alt) 100%)}
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+    .eyebrow{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px}
+    .badge{display:inline-flex;align-items:center;border:1px solid var(--color-border);border-radius:999px;padding:6px 11px;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;background:#fff}
+    .badge.accent{background:var(--color-accent-soft);border-color:#cde4da;color:var(--color-accent)}
+    h1,h2,h3{font-family:var(--display);line-height:1.15;letter-spacing:-.035em}
+    h1{font-size:clamp(40px,6vw,72px);margin:0 0 22px;max-width:800px}
+    h2{font-size:clamp(28px,4vw,42px);margin:0 0 18px}h3{font-size:20px;margin:0 0 9px}
+    .lead{font-size:19px;color:var(--color-text-muted);max-width:700px}.meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:26px;font-size:13px;color:var(--color-text-muted)}
+    .hero-visual{background:#fff;border:1px solid var(--color-border);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+    svg{max-width:100%;height:auto}.section{padding:82px 0}.section.alt{background:var(--color-bg-alt)}
+    .section-head{max-width:760px;margin-bottom:34px}.section-kicker{font:600 11px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent);margin-bottom:10px}
+    .prose{max-width:720px}.prose p{margin:0 0 18px}.prose strong{font-weight:700}
+    .toc{border:1px solid var(--color-border);border-radius:20px;background:#fff;padding:25px;box-shadow:0 10px 30px rgba(11,15,13,.04)}
+    .toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.toc a{padding:12px;border-radius:10px;background:var(--color-bg-alt);font-size:14px;border:1px solid transparent}.toc a:hover{border-color:#cde4da;color:var(--color-accent)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{border:1px solid var(--color-border);border-radius:var(--radius);padding:24px;background:#fff;transition:.2s}.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+    .icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--color-accent-soft);color:var(--color-accent);font-weight:700;margin-bottom:18px}
+    .diagram{border:1px solid var(--color-border);border-radius:20px;background:#fff;padding:20px;margin:34px 0;overflow:auto}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:center;min-width:760px}.flow-item{text-align:center;padding:17px 12px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-bg-alt);font-weight:600}.flow-item small{display:block;color:var(--color-text-muted);font-weight:400;font-size:11px;margin-top:4px}.arrow{text-align:center;color:var(--color-accent);font-size:22px}
+    .callout{border-left:4px solid var(--color-accent);background:var(--color-accent-soft);padding:19px 22px;border-radius:0 14px 14px 0;margin:28px 0}.callout.warn{border-left-color:var(--color-accent-alt);background:#fbf1eb}.callout h3{font-size:15px;margin-bottom:4px}.callout p{margin:0;color:#33403a}
+    .table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:16px;margin:28px 0;background:#fff}
+    table{width:100%;border-collapse:collapse;min-width:650px}.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+    th,td{padding:13px 16px;border-bottom:1px solid var(--color-border);text-align:left;font-size:14px}th{background:var(--color-bg-alt);font-size:12px;text-transform:uppercase;letter-spacing:.06em}td.num,th.num{text-align:right}tbody tr:hover{background:#fafcfb}tr:last-child td{border-bottom:0}.total td{font-weight:700;color:var(--color-accent);border-top:2px solid var(--color-accent)}
+    .example{border:1px solid var(--color-border);border-radius:20px;padding:26px;background:#fff;box-shadow:0 10px 30px rgba(11,15,13,.04);margin:28px 0}.calc{font:600 16px/1.9 var(--mono);background:#0B0F0D;color:#f4f7f5;border-radius:14px;padding:20px;overflow:auto}.result{display:inline-block;margin-top:16px;padding:8px 12px;border-radius:9px;background:var(--color-accent-soft);color:var(--color-accent);font:600 15px var(--mono)}
+    .tabs{margin:28px 0}.tab-buttons{display:flex;gap:6px;border-bottom:1px solid var(--color-border);flex-wrap:wrap}.tab-btn{border:0;background:transparent;padding:12px 15px;cursor:pointer;font:600 13px var(--body);color:var(--color-text-muted);border-bottom:2px solid transparent}.tab-btn[aria-selected="true"]{color:var(--color-accent);border-bottom-color:var(--color-accent)}.tab-panel{padding:24px;border:1px solid var(--color-border);border-top:0;border-radius:0 0 16px 16px}.tab-panel[hidden]{display:none}
+    .stepper{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:32px 0}.step{position:relative;padding:17px 9px;border:1px solid var(--color-border);border-radius:13px;background:#fff;text-align:center}.step b{display:grid;place-items:center;margin:0 auto 9px;width:30px;height:30px;border-radius:50%;background:var(--color-accent-soft);color:var(--color-accent);font:600 12px var(--mono)}.step span{font-size:11px;line-height:1.3;display:block}
+    .bar-chart{display:grid;gap:13px;margin:25px 0}.bar-row{display:grid;grid-template-columns:180px 1fr 90px;gap:12px;align-items:center;font-size:13px}.bar{height:13px;border-radius:99px;background:var(--color-accent-soft);overflow:hidden}.bar i{display:block;height:100%;background:var(--color-accent);border-radius:99px}.bar-value{text-align:right;font:500 12px var(--mono)}
+    .accordion{border-top:1px solid var(--color-border)}.acc-btn{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--color-border);padding:18px 0;cursor:pointer;font:600 15px var(--body)}.acc-btn span{font-size:20px;color:var(--color-accent)}.acc-panel{display:none;padding:0 0 18px;color:var(--color-text-muted);max-width:720px}.acc-panel.open{display:block}
+    .key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.key{padding:20px;border:1px solid var(--color-border);border-radius:15px;background:#fff}.key strong{display:block;font-family:var(--display);font-size:18px;margin-bottom:8px}.key p{font-size:13px;color:var(--color-text-muted);margin:0}
+    .nav-bottom{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:stretch}.nav-card{border:1px solid var(--color-border);border-radius:15px;padding:18px;background:#fff}.nav-card.next{text-align:right}.nav-card small{display:block;color:var(--color-text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.nav-card:hover{border-color:#b9d7ca}.top-btn{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border:1px solid var(--color-border);background:#fff;border-radius:50%;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,.08);display:none}.top-btn.show{display:block}
+    footer{border-top:1px solid var(--color-border);padding:35px 0;color:var(--color-text-muted);font-size:12px}.fade{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}.fade.visible{opacity:1;transform:none}
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.key-grid{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:repeat(4,1fr)}.toc-grid{grid-template-columns:1fr 1fr}.toc-mini{display:none}.menu-btn{display:block}}
+    @media(max-width:600px){.container{width:min(100% - 28px,var(--max))}.hero{padding:55px 0 40px}.section{padding:58px 0}.cards,.key-grid{grid-template-columns:1fr}.toc-grid{grid-template-columns:1fr}.stepper{grid-template-columns:1fr 1fr}.nav-bottom{grid-template-columns:1fr}.nav-card.next{text-align:left}.lead{font-size:17px}.bar-row{grid-template-columns:120px 1fr 75px}.hero-visual{padding:8px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade{opacity:1;transform:none;transition:none}.card{transition:none}}
+    :focus-visible{outline:3px solid rgba(31,111,84,.35);outline-offset:3px}
+  </style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header>
+  <div class="container nav">
+    <a class="brand" href="#top">COMPTABILITÉ <small>Filière professionnelle</small></a>
+    <nav class="toc-mini" aria-label="Navigation rapide">
+      <a href="#objectifs">Objectifs</a><a href="#abc">Méthode ABC</a><a href="#exemple">Exemple</a><a href="#amelioration">Amélioration</a><a href="#synthese">Synthèse</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">☰</button>
+  </div>
+  <div id="mobileNav" hidden>
+    <div class="container" style="padding:12px 0 18px;display:grid;gap:8px">
+      <a href="#objectifs">Objectifs</a><a href="#abc">Méthode ABC</a><a href="#exemple">Exemple chiffré</a><a href="#amelioration">Amélioration des coûts</a><a href="#synthese">Synthèse</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="fade">
+      <div class="eyebrow"><span class="badge accent">Comptabilité analytique</span><span class="badge">Leçon 36</span><span class="badge">Intermédiaire</span></div>
+      <h1>Méthode ABC et amélioration des coûts</h1>
+      <p class="lead">Comprendre comment la méthode <strong>Activity-Based Costing</strong> relie les ressources, les activités et les objets de coûts afin d'obtenir une vision plus précise des consommations et d'identifier les leviers d'amélioration.</p>
+      <div class="meta"><span>◷ 15–20 min</span><span>● Lecture guidée</span><span>▣ Sans évaluation</span></div>
+    </div>
+    <div class="hero-visual fade">
+      <svg viewBox="0 0 560 400" role="img" aria-label="Illustration du passage des ressources aux activités puis aux produits">
+        <rect x="20" y="20" width="520" height="360" rx="22" fill="#F6F8F6"/>
+        <g font-family="Inter, sans-serif">
+          <rect x="55" y="58" width="130" height="70" rx="14" fill="#fff" stroke="#E3E8E5"/>
+          <text x="120" y="88" text-anchor="middle" font-size="12" fill="#5A6560">RESSOURCES</text>
+          <text x="120" y="111" text-anchor="middle" font-size="20" font-weight="700" fill="#0B0F0D">1 200 k</text>
+          <path d="M185 93 H235" stroke="#1F6F54" stroke-width="2"/><path d="M229 87 L237 93 L229 99" fill="none" stroke="#1F6F54" stroke-width="2"/>
+          <rect x="238" y="58" width="130" height="70" rx="14" fill="#E7F2ED" stroke="#cde4da"/>
+          <text x="303" y="88" text-anchor="middle" font-size="12" fill="#1F6F54">ACTIVITÉS</text>
+          <text x="303" y="111" text-anchor="middle" font-size="18" font-weight="700" fill="#0B0F0D">3 pools</text>
+          <path d="M368 93 H418" stroke="#1F6F54" stroke-width="2"/><path d="M412 87 L420 93 L412 99" fill="none" stroke="#1F6F54" stroke-width="2"/>
+          <rect x="421" y="58" width="84" height="70" rx="14" fill="#fff" stroke="#E3E8E5"/>
+          <text x="463" y="88" text-anchor="middle" font-size="12" fill="#5A6560">OBJETS</text>
+          <text x="463" y="111" text-anchor="middle" font-size="16" font-weight="700" fill="#0B0F0D">Produits</text>
+          <circle cx="130" cy="230" r="58" fill="#fff" stroke="#E3E8E5"/><text x="130" y="224" text-anchor="middle" font-size="12" fill="#5A6560">INDUCTEUR</text><text x="130" y="247" text-anchor="middle" font-size="17" font-weight="700" fill="#1F6F54">Commandes</text>
+          <path d="M188 230 H245" stroke="#1F6F54" stroke-width="2"/><path d="M239 224 L247 230 L239 236" fill="none" stroke="#1F6F54" stroke-width="2"/>
+          <rect x="248" y="187" width="250" height="86" rx="16" fill="#0B0F0D"/>
+          <text x="373" y="217" text-anchor="middle" font-size="12" fill="#aebbb4">COÛT PAR INDUCTEUR</text>
+          <text x="373" y="248" text-anchor="middle" font-size="27" font-family="IBM Plex Mono, monospace" font-weight="600" fill="#fff">2 000 FCFA</text>
+          <path d="M130 288 V322 H373 V275" fill="none" stroke="#B3541E" stroke-width="2" stroke-dasharray="5 5"/>
+          <text x="250" y="350" text-anchor="middle" font-size="12" fill="#5A6560">Mesurer → comprendre → améliorer</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="sommaire">
+  <div class="container fade">
+    <div class="toc">
+      <div class="section-kicker">Sommaire</div>
+      <h2 style="font-size:28px">Parcours de la leçon</h2>
+      <div class="toc-grid">
+        <a href="#objectifs">01 — Objectifs et contexte</a><a href="#limites">02 — Limites des méthodes traditionnelles</a><a href="#abc">03 — Principe de la méthode ABC</a>
+        <a href="#processus">04 — Processus ABC</a><a href="#exemple">05 — Exemple chiffré</a><a href="#comparaison">06 — Traditionnelle vs ABC</a>
+        <a href="#valeur">07 — Valeur ajoutée</a><a href="#amelioration">08 — Amélioration des coûts</a><a href="#limites-abc">09 — Avantages et limites</a>
+        <a href="#synthese">10 — Points clés</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="objectifs">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">01 · Objectifs</div><h2>Pourquoi s'intéresser à la méthode ABC ?</h2><p class="lead">La comptabilité analytique cherche à expliquer les coûts, pas seulement à les constater.</p></div>
+    <div class="cards">
+      <article class="card fade"><div class="icon">01</div><h3>Identifier les activités</h3><p>Comprendre les tâches réellement consommées par l'entreprise : commandes, contrôles, réglages, livraisons, facturation, etc.</p></article>
+      <article class="card fade"><div class="icon">02</div><h3>Mesurer la consommation</h3><p>Relier les ressources aux activités grâce à des inducteurs qui expliquent pourquoi un coût apparaît.</p></article>
+      <article class="card fade"><div class="icon">03</div><h3>Améliorer les coûts</h3><p>Repérer les activités coûteuses, les sources de gaspillage et les possibilités de simplification.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="limites">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">02 · Contexte</div><h2>Les limites d'une répartition traditionnelle</h2></div>
+    <div class="prose fade">
+      <p>Dans une méthode traditionnelle, les charges indirectes sont souvent réparties à partir d'une seule clé ou d'un nombre limité de centres de coûts. Cette approche est simple, mais elle peut devenir imprécise lorsque les produits consomment les activités de manière très différente.</p>
+      <p>Deux produits peuvent par exemple utiliser la même heure de main-d'œuvre tout en générant des volumes très différents de commandes, de contrôles qualité ou de changements de série.</p>
+    </div>
+    <div class="diagram fade">
+      <svg viewBox="0 0 900 250" role="img" aria-label="Comparaison visuelle d'une répartition traditionnelle et d'une approche par activités">
+        <rect x="20" y="20" width="410" height="210" rx="18" fill="#F6F8F6" stroke="#E3E8E5"/>
+        <rect x="470" y="20" width="410" height="210" rx="18" fill="#E7F2ED" stroke="#cde4da"/>
+        <text x="225" y="55" text-anchor="middle" font-family="Sora" font-size="19" font-weight="700" fill="#0B0F0D">Méthode traditionnelle</text>
+        <text x="675" y="55" text-anchor="middle" font-family="Sora" font-size="19" font-weight="700" fill="#0B0F0D">Méthode ABC</text>
+        <rect x="70" y="85" width="110" height="45" rx="9" fill="#fff" stroke="#E3E8E5"/><text x="125" y="113" text-anchor="middle" font-family="Inter" font-size="13">Charges</text>
+        <path d="M180 107 H250" stroke="#1F6F54" stroke-width="2"/><path d="M244 101 L252 107 L244 113" fill="none" stroke="#1F6F54" stroke-width="2"/>
+        <rect x="250" y="85" width="110" height="45" rx="9" fill="#fff" stroke="#E3E8E5"/><text x="305" y="113" text-anchor="middle" font-family="Inter" font-size="13">Une clé</text>
+        <path d="M305 130 V163" stroke="#1F6F54" stroke-width="2"/><text x="305" y="190" text-anchor="middle" font-family="Inter" font-size="13">Produits</text>
+        <rect x="510" y="75" width="105" height="40" rx="8" fill="#fff" stroke="#cde4da"/><text x="562" y="100" text-anchor="middle" font-family="Inter" font-size="12">Ressources</text>
+        <path d="M615 95 H655" stroke="#1F6F54" stroke-width="2"/>
+        <rect x="655" y="75" width="105" height="40" rx="8" fill="#fff" stroke="#cde4da"/><text x="707" y="100" text-anchor="middle" font-family="Inter" font-size="12">Activités</text>
+        <path d="M707 115 V145" stroke="#1F6F54" stroke-width="2"/>
+        <rect x="605" y="145" width="105" height="40" rx="8" fill="#fff" stroke="#cde4da"/><text x="657" y="170" text-anchor="middle" font-family="Inter" font-size="12">Inducteurs</text>
+        <path d="M710 165 H760" stroke="#1F6F54" stroke-width="2"/>
+        <rect x="760" y="145" width="80" height="40" rx="8" fill="#fff" stroke="#cde4da"/><text x="800" y="170" text-anchor="middle" font-family="Inter" font-size="12">Produits</text>
+      </svg>
+    </div>
+    <div class="callout warn fade"><h3>⚠ Attention — une clé unique peut masquer la réalité</h3><p>Lorsque les produits ne consomment pas les activités dans les mêmes proportions, une répartition uniforme peut surévaluer certains produits et en sous-évaluer d'autres.</p></div>
+  </div>
+</section>
+
+<section class="section alt" id="abc">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">03 · Principe</div><h2>La méthode ABC : relier les coûts à ce qui les provoque</h2><p class="lead">ABC signifie <em>Activity-Based Costing</em>, ou méthode des coûts par activités.</p></div>
+    <div class="prose fade"><p>Le raisonnement central est simple : <strong>les ressources sont consommées par des activités, et les objets de coûts consomment ces activités.</strong> L'analyse devient donc plus fine.</p></div>
+    <div class="diagram fade">
+      <div class="flow">
+        <div class="flow-item">Ressources<small>Salaires, énergie, systèmes</small></div><div class="arrow">→</div>
+        <div class="flow-item">Activités<small>Commander, contrôler, livrer</small></div><div class="arrow">→</div>
+        <div class="flow-item">Objets de coûts<small>Produits, services, clients</small></div>
+      </div>
+    </div>
+    <div class="cards">
+      <article class="card fade"><div class="icon">R</div><h3>Ressource</h3><p>Élément consommé pour réaliser les activités : personnel, locaux, informatique, énergie ou matériel.</p></article>
+      <article class="card fade"><div class="icon">A</div><h3>Activité</h3><p>Ensemble cohérent de tâches réalisé pour produire un résultat identifiable.</p></article>
+      <article class="card fade"><div class="icon">I</div><h3>Inducteur</h3><p>Facteur qui explique la consommation d'une activité : nombre de commandes, heures de réglage, livraisons, etc.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="processus">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">04 · Processus</div><h2>Les étapes d'une analyse ABC</h2></div>
+    <div class="stepper fade">
+      <div class="step"><b>1</b><span>Identifier les ressources</span></div><div class="step"><b>2</b><span>Identifier les activités</span></div><div class="step"><b>3</b><span>Affecter les ressources</span></div><div class="step"><b>4</b><span>Choisir les inducteurs</span></div><div class="step"><b>5</b><span>Calculer les coûts</span></div><div class="step"><b>6</b><span>Mesurer la consommation</span></div><div class="step"><b>7</b><span>Affecter aux produits</span></div><div class="step"><b>8</b><span>Analyser et améliorer</span></div>
+    </div>
+    <div class="callout fade"><h3>💡 À retenir</h3><p>L'ABC ne consiste pas uniquement à produire un coût plus précis. Elle sert aussi à <strong>comprendre pourquoi ce coût existe</strong> et donc à agir sur ses causes.</p></div>
+  </div>
+</section>
+
+<section class="section alt" id="exemple">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">05 · Exemple chiffré</div><h2>Calcul du coût d'une activité</h2><p class="lead">Exemple entièrement expliqué : une activité de traitement des commandes coûte 1 200 000 FCFA.</p></div>
+    <div class="example fade">
+      <h3>Données de l'activité</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Élément</th><th scope="col" class="num">Valeur</th></tr></thead>
+          <tbody>
+            <tr><td>Coût total de l'activité</td><td class="num mono">1 200 000 FCFA</td></tr>
+            <tr><td>Nombre total de commandes</td><td class="num mono">600</td></tr>
+            <tr class="total"><td>Coût d'une commande</td><td class="num mono">2 000 FCFA</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="calc">Coût par inducteur = Coût total de l'activité ÷ Volume d'inducteur
+= 1 200 000 ÷ 600
+= 2 000 FCFA / commande</div>
+      <span class="result">→ 2 000 FCFA par commande</span>
+    </div>
+    <div class="example fade">
+      <h3>Application à deux produits</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Produit</th><th scope="col" class="num">Commandes</th><th scope="col" class="num">Coût / commande</th><th scope="col" class="num">Coût affecté</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Produit A</th><td class="num mono">120</td><td class="num mono">2 000</td><td class="num mono">240 000 FCFA</td></tr>
+            <tr><th scope="row">Produit B</th><td class="num mono">480</td><td class="num mono">2 000</td><td class="num mono">960 000 FCFA</td></tr>
+            <tr class="total"><th scope="row">Total</th><td class="num mono">600</td><td></td><td class="num mono">1 200 000 FCFA</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Le produit B consomme quatre fois plus de commandes que le produit A ; il reçoit donc quatre fois plus de coût lié à cette activité.</p>
+    </div>
+    <div class="callout fade"><h3>🧮 Lecture du résultat</h3><p>Le coût ABC devient un outil de décision : l'entreprise peut maintenant rechercher pourquoi certaines familles de produits ou certains clients génèrent davantage de commandes et déterminer si cette consommation est économiquement justifiée.</p></div>
+  </div>
+</section>
+
+<section class="section" id="comparaison">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">06 · Comparaison</div><h2>Approche traditionnelle ou ABC ?</h2></div>
+    <div class="tabs fade">
+      <div class="tab-buttons" role="tablist" aria-label="Comparaison des méthodes">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-classique" id="btn-classique">Méthode traditionnelle</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-abc" id="btn-abc">Méthode ABC</button>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="tab-classique" aria-labelledby="btn-classique">
+        <h3>Une logique simple de répartition</h3><p>Les charges indirectes sont regroupées puis réparties à partir d'une ou de quelques bases : heures de main-d'œuvre, heures machine, chiffre d'affaires ou volume produit.</p>
+        <div class="bar-chart"><div class="bar-row"><span>Produits</span><div class="bar"><i style="width:70%"></i></div><span class="bar-value">clé globale</span></div><div class="bar-row"><span>Activités</span><div class="bar"><i style="width:35%"></i></div><span class="bar-value">peu détaillées</span></div></div>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="tab-abc" aria-labelledby="btn-abc" hidden>
+        <h3>Une logique fondée sur la consommation</h3><p>Les ressources sont affectées aux activités puis les activités aux objets de coûts grâce à des inducteurs adaptés.</p>
+        <div class="bar-chart"><div class="bar-row"><span>Ressources</span><div class="bar"><i style="width:95%"></i></div><span class="bar-value">mesurées</span></div><div class="bar-row"><span>Activités</span><div class="bar"><i style="width:85%"></i></div><span class="bar-value">détaillées</span></div><div class="bar-row"><span>Inducteurs</span><div class="bar"><i style="width:78%"></i></div><span class="bar-value">adaptés</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="valeur">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">07 · Analyse</div><h2>Valeur ajoutée et activités sans valeur ajoutée</h2></div>
+    <div class="cards">
+      <article class="card fade"><div class="icon">+</div><h3>Activités à valeur ajoutée</h3><p>Elles contribuent directement à la création de valeur perçue par le client ou à la transformation attendue du produit ou service.</p></article>
+      <article class="card fade"><div class="icon">0</div><h3>Activités nécessaires</h3><p>Certaines activités ne créent pas directement de valeur pour le client mais restent nécessaires pour des raisons techniques, réglementaires ou organisationnelles.</p></article>
+      <article class="card fade"><div class="icon">−</div><h3>Activités sans valeur ajoutée</h3><p>Retouches, attentes, doubles saisies ou déplacements inutiles peuvent signaler des opportunités de simplification.</p></article>
+    </div>
+    <div class="diagram fade">
+      <h3 style="margin-bottom:22px">Lecture possible d'un portefeuille d'activités</h3>
+      <div class="bar-chart">
+        <div class="bar-row"><span>Production</span><div class="bar"><i style="width:90%"></i></div><span class="bar-value">forte valeur</span></div>
+        <div class="bar-row"><span>Contrôle</span><div class="bar"><i style="width:65%"></i></div><span class="bar-value">nécessaire</span></div>
+        <div class="bar-row"><span>Retouches</span><div class="bar"><i style="width:28%"></i></div><span class="bar-value">à réduire</span></div>
+        <div class="bar-row"><span>Attentes</span><div class="bar"><i style="width:18%"></i></div><span class="bar-value">à analyser</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="amelioration">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">08 · Amélioration</div><h2>Passer de la mesure à l'action</h2><p class="lead">Une bonne analyse des coûts doit déboucher sur des décisions opérationnelles.</p></div>
+    <div class="stepper fade" style="grid-template-columns:repeat(5,1fr)">
+      <div class="step"><b>1</b><span>Repérer les activités coûteuses</span></div><div class="step"><b>2</b><span>Comprendre les causes</span></div><div class="step"><b>3</b><span>Réduire les consommations inutiles</span></div><div class="step"><b>4</b><span>Standardiser les processus</span></div><div class="step"><b>5</b><span>Suivre les résultats</span></div>
+    </div>
+    <div class="prose fade">
+      <p>L'ABC peut révéler qu'un produit apparemment rentable mobilise beaucoup de ressources indirectes. À l'inverse, un produit dont la marge semble faible peut être relativement peu exigeant en activités de support.</p>
+      <p>L'amélioration des coûts consiste alors à agir sur les inducteurs : réduire le nombre de commandes urgentes, simplifier les contrôles, automatiser certaines saisies, diminuer les changements de série ou mieux regrouper les livraisons.</p>
+    </div>
+    <div class="callout fade"><h3>💡 Principe d'amélioration</h3><p><strong>Mesurer le coût → identifier le facteur de consommation → agir sur le processus → mesurer à nouveau.</strong> L'analyse devient ainsi une boucle continue d'amélioration.</p></div>
+  </div>
+</section>
+
+<section class="section alt" id="limites-abc">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">09 · Évaluation de la méthode</div><h2>Avantages, limites et conditions de réussite</h2></div>
+    <div class="accordion fade">
+      <button class="acc-btn" aria-expanded="false">Avantages de l'ABC <span>+</span></button><div class="acc-panel">L'ABC améliore la compréhension des charges indirectes, rend les coûts plus explicables, aide à comparer les produits et clients et met en évidence les activités qui consomment le plus de ressources.</div>
+      <button class="acc-btn" aria-expanded="false">Limites de l'ABC <span>+</span></button><div class="acc-panel">La méthode peut demander du temps, des données fiables et une bonne connaissance des processus. Un modèle trop détaillé peut devenir coûteux à maintenir et perdre son intérêt opérationnel.</div>
+      <button class="acc-btn" aria-expanded="false">Conditions de réussite <span>+</span></button><div class="acc-panel">Il faut choisir des activités pertinentes, limiter le nombre d'inducteurs à ceux qui expliquent réellement les consommations, maintenir les données à jour et associer les équipes opérationnelles à l'analyse.</div>
+      <button class="acc-btn" aria-expanded="false">Quand utiliser l'ABC ? <span>+</span></button><div class="acc-panel">L'approche est particulièrement utile lorsque les charges indirectes sont importantes, que les produits ou services sont diversifiés et que les processus présentent des niveaux de complexité différents.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="synthese">
+  <div class="container">
+    <div class="section-head fade"><div class="section-kicker">10 · Synthèse</div><h2>Points clés à retenir</h2></div>
+    <div class="key-grid">
+      <article class="key fade"><strong>Ressources</strong><p>Ce que l'entreprise consomme pour fonctionner.</p></article>
+      <article class="key fade"><strong>Activités</strong><p>Ce que l'entreprise réalise avec ces ressources.</p></article>
+      <article class="key fade"><strong>Inducteurs</strong><p>Ce qui explique la consommation des activités.</p></article>
+      <article class="key fade"><strong>Objets de coûts</strong><p>Produits, services ou clients auxquels les coûts sont attribués.</p></article>
+      <article class="key fade"><strong>Coût ABC</strong><p>Un coût construit à partir de la consommation réelle des activités.</p></article>
+      <article class="key fade"><strong>Analyse</strong><p>Identifier les activités qui mobilisent le plus de ressources.</p></article>
+      <article class="key fade"><strong>Amélioration</strong><p>Agir sur les causes et les inducteurs de coûts.</p></article>
+      <article class="key fade"><strong>Objectif final</strong><p>Prendre de meilleures décisions grâce à une information de coût plus pertinente.</p></article>
+    </div>
+    <div class="diagram fade" style="margin-top:40px">
+      <svg viewBox="0 0 900 190" role="img" aria-label="Synthèse du raisonnement ABC">
+        <rect x="20" y="50" width="150" height="70" rx="14" fill="#F6F8F6" stroke="#E3E8E5"/><text x="95" y="80" text-anchor="middle" font-family="Sora" font-size="16">Ressources</text><text x="95" y="103" text-anchor="middle" font-family="Inter" font-size="11" fill="#5A6560">consommer</text>
+        <path d="M170 85 H240" stroke="#1F6F54" stroke-width="2"/><path d="M234 79 L242 85 L234 91" fill="none" stroke="#1F6F54" stroke-width="2"/>
+        <rect x="242" y="50" width="150" height="70" rx="14" fill="#E7F2ED" stroke="#cde4da"/><text x="317" y="80" text-anchor="middle" font-family="Sora" font-size="16">Activités</text><text x="317" y="103" text-anchor="middle" font-family="Inter" font-size="11" fill="#5A6560">transformer</text>
+        <path d="M392 85 H462" stroke="#1F6F54" stroke-width="2"/><path d="M456 79 L464 85 L456 91" fill="none" stroke="#1F6F54" stroke-width="2"/>
+        <rect x="464" y="50" width="150" height="70" rx="14" fill="#F6F8F6" stroke="#E3E8E5"/><text x="539" y="80" text-anchor="middle" font-family="Sora" font-size="16">Inducteurs</text><text x="539" y="103" text-anchor="middle" font-family="Inter" font-size="11" fill="#5A6560">expliquer</text>
+        <path d="M614 85 H684" stroke="#1F6F54" stroke-width="2"/><path d="M678 79 L686 85 L678 91" fill="none" stroke="#1F6F54" stroke-width="2"/>
+        <rect x="686" y="50" width="190" height="70" rx="14" fill="#0B0F0D"/><text x="781" y="80" text-anchor="middle" font-family="Sora" font-size="16" fill="#fff">Décisions</text><text x="781" y="103" text-anchor="middle" font-family="Inter" font-size="11" fill="#aebbb4">mesurer → améliorer</text>
+        <text x="450" y="157" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1F6F54">COMPRENDRE LES CAUSES DES COÛTS POUR MIEUX AGIR</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <div class="nav-bottom fade">
+      <a class="nav-card" href="#top"><small>Leçon précédente</small><strong>← Revenir au début du module</strong></a>
+      <a class="nav-card" href="#sommaire"><small>Module</small><strong>↑ Sommaire</strong></a>
+      <a class="nav-card next" href="#top"><small>Leçon suivante</small><strong>Leçon 37 — Principes de la fiscalité d'entreprise →</strong></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">Filière Comptabilité · Comptabilité analytique · Leçon 36 — Méthode ABC et amélioration des coûts</div>
+</footer>
+
+<button class="top-btn" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+  const progress=document.getElementById('progress'), topBtn=document.getElementById('topBtn');
+  function updateScroll(){
+    const h=document.documentElement.scrollHeight-window.innerHeight;
+    progress.style.width=(h>0?(window.scrollY/h)*100:0)+'%';
+    topBtn.classList.toggle('show',window.scrollY>500);
+  }
+  window.addEventListener('scroll',updateScroll,{passive:true}); updateScroll();
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  const menuBtn=document.getElementById('menuBtn'), mobileNav=document.getElementById('mobileNav');
+  menuBtn.addEventListener('click',()=>{
+    const open=menuBtn.getAttribute('aria-expanded')==='true';
+    menuBtn.setAttribute('aria-expanded',String(!open)); mobileNav.hidden=open;
+  });
+  mobileNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menuBtn.setAttribute('aria-expanded','false');mobileNav.hidden=true;}));
+
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const group=btn.closest('.tabs');
+      group.querySelectorAll('.tab-btn').forEach(b=>b.setAttribute('aria-selected','false'));
+      group.querySelectorAll('.tab-panel').forEach(p=>p.hidden=true);
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.getAttribute('aria-controls')).hidden=false;
+    });
+    btn.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        const buttons=[...btn.parentElement.querySelectorAll('.tab-btn')];
+        const i=buttons.indexOf(btn), next=e.key==='ArrowRight'?(i+1)%buttons.length:(i-1+buttons.length)%buttons.length;
+        buttons[next].focus();buttons[next].click();
+      }
+    });
+  });
+
+  document.querySelectorAll('.acc-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const panel=btn.nextElementSibling, open=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',String(!open)); panel.classList.toggle('open',!open);
+      btn.querySelector('span').textContent=open?'+':'−';
+    });
+  });
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')});
+  },{threshold:.08});
+  document.querySelectorAll('.fade').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

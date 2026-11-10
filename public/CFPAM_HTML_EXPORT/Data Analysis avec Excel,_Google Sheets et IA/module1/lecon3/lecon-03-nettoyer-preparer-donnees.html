@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 03 — Nettoyer et préparer les données</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+.stepper{display:flex;overflow-x:auto;margin:28px 0;padding-bottom:8px}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.step button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}
+td.err{background:#fff;outline:2px solid var(--accent);outline-offset:-2px;font-weight:600}
+td.dup{background:var(--soft)}
+code.i{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 6px;border-radius:5px}
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">Anomalies</a><a href="#s2">Texte</a><a href="#s3">Formats</a><a href="#s4">Saisie</a><a href="#s6">IA</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 1 — Fondamentaux : préparer et calculer avec les tableurs</span><span class="badge">⏱ 20 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Nettoyer et préparer les données</h1>
+  <p class="sub">Leçon 03 — Vous apprenez à repérer et corriger les anomalies d'un jeu de données avant toute analyse.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>Repérer les anomalies principales</a></li>
+<li><a href="#s2"><b>2</b>Les fonctions de nettoyage de texte</a></li>
+<li><a href="#s3"><b>3</b>Convertir et normaliser les formats</a></li>
+<li><a href="#s4"><b>4</b>Contrôler la saisie : validation et listes déroulantes</a></li>
+<li><a href="#s5"><b>5</b>Rechercher et remplacer</a></li>
+<li><a href="#s6"><b>6</b>L'IA et la vérification manuelle</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. Repérer les anomalies principales</h2>
+<p>Des données issues d'un export, d'un formulaire ou d'une saisie manuelle sont rarement parfaites. Avant de calculer quoi que ce soit, on commence par les inspecter : un total calculé sur des données fautives reste faux, même avec une formule exacte.</p>
+<figure>
+<svg viewBox="0 0 640 110" role="img" aria-label="Flux de préparation : données brutes, détection des anomalies, correction, données prêtes pour l'analyse">
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="10" y="25" width="130" height="50" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="75" y="55">Données brutes</text>
+<rect x="175" y="25" width="130" height="50" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="240" y="55">Détecter</text>
+<rect x="340" y="25" width="130" height="50" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="405" y="55">Corriger</text>
+<rect x="505" y="25" width="125" height="50" rx="8" fill="#0A0F14"/><text x="567" y="55" fill="#fff">Prêtes à analyser</text></g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M140 50h33"/><path d="M305 50h33"/><path d="M470 50h33"/></g>
+</svg><figcaption>Le nettoyage se situe entre la collecte et l'analyse.</figcaption></figure>
+<div class="cards">
+  <div class="card"><div class="ic">👯</div><h4>Doublons</h4><p>Une même ligne saisie deux fois : elle fausse les totaux et les comptages.</p></div>
+  <div class="card"><div class="ic">⬜</div><h4>Cellules vides</h4><p>Information manquante : les moyennes et les comptages peuvent être biaisés.</p></div>
+  <div class="card"><div class="ic">📏</div><h4>Valeurs aberrantes</h4><p>Une valeur anormale ou incohérente, comme un âge de 250 ans ou un prix négatif.</p></div>
+</div>
+<p>Voici un extrait de tableau de commandes avec ses anomalies mises en évidence :</p>
+<div class="tbl"><table>
+<caption style="position:absolute;left:-9999px">Tableau de commandes avec doublon, cellule vide et valeur aberrante</caption>
+<tr><th>N° commande</th><th>Client</th><th style="text-align:right">Quantité</th><th style="text-align:right">Prix (€)</th></tr>
+<tr><td>C-101</td><td>Awa Diallo</td><td class="r">3</td><td class="r">12,00</td></tr>
+<tr><td class="dup">C-102</td><td class="dup">Paul Martin</td><td class="r dup">2</td><td class="r dup">8,50</td></tr>
+<tr><td class="dup">C-102</td><td class="dup">Paul Martin</td><td class="r dup">2</td><td class="r dup">8,50</td></tr>
+<tr><td>C-103</td><td class="err">&nbsp;(vide)</td><td class="r">1</td><td class="r">15,00</td></tr>
+<tr><td>C-104</td><td>Sara Lopez</td><td class="r err">-40</td><td class="r">9,90</td></tr>
+</table></div>
+<p><small style="color:var(--muted)">Fond vert clair : ligne en doublon. Cadre vert : cellule vide (client) et valeur incohérente (quantité négative).</small></p>
+<div class="note"><strong>💡 À retenir</strong><p>Détecter n'est pas supprimer : on identifie d'abord chaque anomalie, puis on décide si elle se corrige, se complète ou s'écarte, en gardant une trace de ce qui a été modifié.</p></div>
+<details><summary>Comment le tableur aide-t-il à repérer ces anomalies ?</summary><div><p>Un tri croissant fait remonter les valeurs extrêmes, un filtre isole les cellules vides, et la mise en forme conditionnelle peut colorer les doublons. Excel propose aussi <em>Données › Supprimer les doublons</em>, Google Sheets <em>Données › Nettoyage des données</em>.</p></div></details>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. Les fonctions de nettoyage de texte</h2>
+<p>Les erreurs de texte sont les plus fréquentes : espaces en trop, casse incohérente, informations collées dans une seule cellule. Cinq fonctions suffisent pour la plupart des cas.</p>
+<div class="tbl"><table>
+<tr><th>Fonction</th><th>Rôle</th><th>Avant → Après</th></tr>
+<tr><td><code class="i">SUPPRESPACE</code><br><small>TRIM</small></td><td>Supprime les espaces en trop</td><td>« &nbsp;Awa&nbsp;&nbsp;Diallo&nbsp; » → « Awa Diallo »</td></tr>
+<tr><td><code class="i">MAJUSCULE</code><br><small>UPPER</small></td><td>Met tout en majuscules</td><td>diallo → DIALLO</td></tr>
+<tr><td><code class="i">GAUCHE</code><br><small>LEFT</small></td><td>Extrait les premiers caractères</td><td>SN-2025-014 → SN</td></tr>
+<tr><td><code class="i">CONCAT</code></td><td>Assemble plusieurs textes</td><td>Awa + Diallo → AwaDiallo</td></tr>
+<tr><td><code class="i">FRACTIONNER</code><br><small>SPLIT</small></td><td>Découpe un texte en colonnes</td><td>Awa Diallo → Awa | Diallo</td></tr>
+</table></div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Exemples">
+    <button role="tab" aria-selected="true">Nettoyer un nom</button>
+    <button role="tab" aria-selected="false">Extraire un code</button>
+    <button role="tab" aria-selected="false">Assembler et découper</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>On combine les fonctions en les imbriquant : on supprime les espaces, puis on met en majuscules.</p>
+  <div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// A2 contient "  awa   diallo "</span>
+=<span class="fn">MAJUSCULE</span>(<span class="fn">SUPPRESPACE</span>(A2))
+<span class="cm">// Résultat : AWA DIALLO</span></code></pre></div></div>
+  <div class="panel" role="tabpanel" hidden><p>Les 2 premiers caractères d'un code correspondent ici au pays.</p>
+  <div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// A2 contient "SN-2025-014"</span>
+=<span class="fn">GAUCHE</span>(A2;2)
+<span class="cm">// Résultat : SN</span></code></pre></div></div>
+  <div class="panel" role="tabpanel" hidden><p>On assemble un prénom et un nom, puis on découpe un nom complet en deux colonnes.</p>
+  <div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Assembler (avec un espace entre les deux)</span>
+=<span class="fn">CONCAT</span>(A2;" ";B2)
+
+<span class="cm">// Découper un nom complet en colonnes (Google Sheets)</span>
+=<span class="fn">SPLIT</span>(A2;" ")
+<span class="cm">// Excel 365 : =FRACTIONNER.TEXTE(A2;" ")</span></code></pre></div></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Selon la langue du tableur, les noms de fonctions et le séparateur d'arguments changent (<code class="i">;</code> en version française, <code class="i">,</code> en version anglaise). Les exemples ci-dessus suivent la version française.</p></div>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. Convertir et normaliser les formats</h2>
+<p>Un nombre ou une date importé d'un fichier externe est parfois stocké comme du <strong>texte</strong>. Il s'affiche normalement, mais le tableur ne peut ni l'additionner ni le trier correctement. On reconnaît ce cas à l'alignement à gauche ou à une petite alerte dans la cellule.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Avant et après">
+    <button role="tab" aria-selected="true">Données brutes</button>
+    <button role="tab" aria-selected="false">Données nettoyées</button>
+  </div>
+  <div class="panel" role="tabpanel"><div class="tbl"><table>
+  <tr><th>Montant</th><th>Date</th><th>Statut</th></tr>
+  <tr><td>"1250"</td><td>"15/03/2025"</td><td>Texte : calcul impossible</td></tr>
+  <tr><td>"980"</td><td>"16/03/2025"</td><td>Texte : tri incorrect</td></tr></table></div></div>
+  <div class="panel" role="tabpanel" hidden><div class="tbl"><table>
+  <tr><th style="text-align:right">Montant</th><th style="text-align:right">Date</th><th>Statut</th></tr>
+  <tr><td class="r">1 250</td><td class="r">15/03/2025</td><td>Nombre et date valides</td></tr>
+  <tr><td class="r">980</td><td class="r">16/03/2025</td><td>Prêts pour les calculs</td></tr></table></div></div>
+</div>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Convertir un nombre stocké en texte</span>
+=<span class="fn">CNUM</span>(A2)          <span class="cm">// Sheets : =VALUE(A2)</span>
+
+<span class="cm">// Convertir une date stockée en texte</span>
+=<span class="fn">DATEVAL</span>(B2)       <span class="cm">// Excel : =DATEVAL(B2)  |  Sheets : =DATEVALUE(B2)</span></code></pre></div>
+<p>La <strong>normalisation</strong> consiste aussi à unifier les formats : une seule écriture pour les dates (JJ/MM/AAAA), les unités et les noms de catégories (« Dakar » plutôt que « dakar » ou « DAKAR »).</p>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Conservez la colonne d'origine et placez la version convertie dans une colonne à côté : vous pourrez toujours revenir à la donnée source.</p></div>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Contrôler la saisie : validation et listes déroulantes</h2>
+<p>Le meilleur nettoyage est celui qu'on n'a pas besoin de faire. La <strong>validation des données</strong> limite ce qu'une cellule accepte : un nombre entre deux bornes, une date, ou un choix dans une liste.</p>
+<div class="cards">
+  <div class="card"><div class="ic">📋</div><h4>Liste déroulante</h4><p>Propose des choix prédéfinis, ce qui évite les fautes de frappe.</p></div>
+  <div class="card"><div class="ic">🔢</div><h4>Plage de valeurs</h4><p>Refuse une quantité négative ou un âge irréaliste.</p></div>
+  <div class="card"><div class="ic">📅</div><h4>Format de date</h4><p>N'accepte que de vraies dates dans une période donnée.</p></div>
+</div>
+<h3>Créer une liste déroulante</h3>
+<div class="stepper" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<div class="note"><strong>💡 À retenir</strong><p>Une liste déroulante garantit qu'une catégorie s'écrit toujours de la même façon : les tris, filtres et regroupements ultérieurs en deviennent fiables.</p></div>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Rechercher et remplacer</h2>
+<p>Pour corriger rapidement une erreur répétée (une ville mal orthographiée, un symbole parasite), la fonction <strong>Rechercher et remplacer</strong> agit sur toute la feuille ou sur une sélection. Le raccourci est <code class="i">Ctrl + H</code> dans Excel comme dans Google Sheets (<code class="i">Cmd + Maj + H</code> sur Mac pour Sheets).</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Outils">
+    <button role="tab" aria-selected="true">Excel</button>
+    <button role="tab" aria-selected="false">Google Sheets</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Ruban <em>Accueil › Rechercher et sélectionner › Remplacer</em></li><li>Option « Cellule entière » pour ne remplacer que les correspondances exactes</li><li>Portée : feuille active ou classeur entier</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Menu <em>Édition › Rechercher et remplacer</em></li><li>Cases « Respecter la casse » et « Rechercher dans les formules »</li><li>Portée : toutes les feuilles, la feuille active ou une plage</li></ul></div>
+</div>
+<details><summary>Remplacer dans une formule : la fonction SUBSTITUE</summary><div><p>Quand le remplacement doit se faire par formule, sans toucher à la donnée d'origine, <code class="i">SUBSTITUE</code> retire ou remplace un morceau de texte.</p>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Retirer le symbole € d'un montant stocké en texte</span>
+=<span class="fn">SUBSTITUE</span>(A2;"€";"")</code></pre></div></div></details>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Un remplacement appliqué à toute la feuille peut modifier des cellules que l'on n'avait pas prévues (par exemple « Pa » dans « Paris » et « Paul »). Il est plus sûr de sélectionner d'abord la plage concernée.</p></div>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. L'IA et la vérification manuelle</h2>
+<p>Les assistants d'IA (Copilot, Gemini, ChatGPT) savent repérer des incohérences : formats mélangés, noms écrits de plusieurs façons, valeurs qui sortent du lot. Ils proposent aussi la formule adaptée à un problème décrit en langage courant.</p>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Approches">
+    <button role="tab" aria-selected="true">Ce que l'IA apporte</button>
+    <button role="tab" aria-selected="false">Ce qu'elle ne garantit pas</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Une première détection rapide sur un grand tableau</li><li>Des suggestions de formules ou de règles de nettoyage</li><li>Une explication des anomalies repérées</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Elle peut manquer une anomalie ou en signaler une qui n'en est pas une</li><li>Elle ne connaît pas toujours le contexte métier (un prix de 0 € peut être légitime)</li><li>Elle ne remplace pas la validation par l'analyste</li></ul></div>
+</div>
+<div class="note warn"><strong>⚠️ Confidentialité</strong><p>Évitez de transmettre à un outil d'IA externe des données personnelles ou sensibles ; préférez un extrait anonymisé.</p></div>
+<h3>Méthodologie de vérification manuelle</h3>
+<p>Quel que soit l'outil utilisé, une vérification systématique suit toujours la même séquence :</p>
+<div class="cards">
+  <div class="card"><div class="ic">1️⃣</div><h4>Compter</h4><p>Vérifier le nombre de lignes avant et après nettoyage.</p></div>
+  <div class="card"><div class="ic">2️⃣</div><h4>Trier et filtrer</h4><p>Observer les valeurs extrêmes, les vides et les variantes d'écriture.</p></div>
+  <div class="card"><div class="ic">3️⃣</div><h4>Échantillonner</h4><p>Comparer quelques lignes corrigées avec la source d'origine.</p></div>
+  <div class="card"><div class="ic">4️⃣</div><h4>Documenter</h4><p>Noter chaque correction effectuée pour garder la traçabilité.</p></div>
+</div>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>Les anomalies courantes sont les doublons, les cellules vides et les valeurs aberrantes ou incohérentes.</li>
+<li>SUPPRESPACE, MAJUSCULE, GAUCHE, CONCAT et FRACTIONNER règlent la plupart des problèmes de texte.</li>
+<li>Un nombre ou une date stocké en texte doit être converti pour devenir exploitable.</li>
+<li>La validation des données et les listes déroulantes préviennent les erreurs à la source.</li>
+<li>Rechercher et remplacer corrige vite les erreurs répétées, à condition de bien cibler la plage.</li>
+<li>L'IA accélère la détection, mais la vérification manuelle reste indispensable et doit être documentée.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <a href="lecon-02-saisir-organiser-structurer.html">Leçon précédente<small>Leçon 02 — Saisir, organiser et structurer ses données</small></a>
+    <a href="lecon-04-maitriser-formules-fonctions-essentielles.html">Leçon suivante<small>Leçon 04 — Maîtriser les formules et fonctions essentielles</small></a>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 1 · Leçon 03</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Stepper (données modifiables) ===== */
+const steps=[
+["Sélectionner","Sélectionnez les cellules qui recevront la liste, par exemple la colonne « Statut »."],
+["Ouvrir","Ouvrez Données › Validation des données (Excel et Google Sheets)."],
+["Choisir Liste","Dans « Autoriser » (Excel) ou « Critères » (Sheets), choisissez « Liste »."],
+["Saisir les choix","Tapez les valeurs séparées par un point-virgule ou une virgule, ou désignez une plage de cellules."],
+["Valider","Confirmez : une flèche apparaît dans chaque cellule et les saisies hors liste sont refusées ou signalées."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Étape '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

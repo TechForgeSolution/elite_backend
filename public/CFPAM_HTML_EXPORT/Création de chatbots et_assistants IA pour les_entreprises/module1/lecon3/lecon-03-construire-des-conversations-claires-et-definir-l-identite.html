@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 3 — Construire des conversations claires et définir l’identité de l’assistant</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235B4BDB'/%3E%3Cpath d='M8 11h16v9H15l-4 4v-4H8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F7FB;--color-text:#0A0A0F;--color-text-muted:#5F6370;--color-accent:#5B4BDB;--color-accent-soft:#EEECFF;--color-border:#E4E3EC;--r:12px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.25;margin:0 0 .6em}
+h1{font-size:clamp(1.9rem,5vw,2.9rem)}h2{font-size:clamp(1.5rem,3.5vw,2rem)}h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1.1em}a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:960px;margin:0 auto;padding:0 1.25rem}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px;gap:1rem}
+.brand{font:600 .9rem Sora,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu-btn{background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:.45rem .9rem;font:600 .9rem Inter;cursor:pointer}
+#menu{display:none;position:absolute;right:1.25rem;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:.5rem;width:min(320px,calc(100vw - 2.5rem));box-shadow:0 8px 30px rgba(10,10,15,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:.5rem .75rem;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#menu a:hover{background:var(--color-accent-soft)}
+.hero{background:var(--color-bg-alt);padding:4rem 0 3rem;border-bottom:1px solid var(--color-border)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.badge{font-size:.82rem;font-weight:600;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--color-border);background:#fff;color:var(--color-text-muted)}
+.badge.mod{background:var(--color-accent-soft);color:#4536c4;border-color:transparent}
+.toc{padding:2.5rem 0}
+.toc ol{margin:0;padding-left:1.2rem;columns:1;color:var(--color-text-muted)}
+.toc li{padding:.15rem 0}.toc a{text-decoration:none;color:var(--color-text)}.toc a:hover{color:var(--color-accent)}
+section.s{padding:3.5rem 0}section.s:nth-of-type(even){background:var(--color-bg-alt)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+.callout{border-radius:var(--r);padding:1rem 1.25rem;margin:1.5rem 0;border:1px solid var(--color-border);background:#fff;border-left:4px solid var(--color-accent)}
+.callout strong{display:block;margin-bottom:.25rem}.callout.warn{border-left-color:#0A0A0F}.callout.more{background:var(--color-accent-soft);border-color:transparent}
+.callout p:last-child{margin:0}
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:1.5rem 0}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1.25rem;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .ic{width:40px;height:40px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;font-size:1.3rem;margin-bottom:.75rem}
+.card h3{font-size:1.05rem;margin-bottom:.3rem}.card p{margin:0;color:var(--color-text-muted);font-size:.95rem;line-height:1.55}
+.tabs [role=tablist]{display:flex;gap:.25rem;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{background:none;border:0;padding:.7rem 1rem;font:600 .95rem Inter;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:1.25rem 0}.tabs [role=tabpanel][hidden]{display:none}
+.acc{border:1px solid var(--color-border);border-radius:var(--r);background:#fff;margin:.75rem 0}
+.acc button{width:100%;text-align:left;background:none;border:0;padding:1rem 1.25rem;font:600 1rem Inter;cursor:pointer;display:flex;justify-content:space-between;gap:1rem;color:var(--color-text)}
+.acc button::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+.acc button[aria-expanded=true]::after{content:"−"}
+.acc .body{padding:0 1.25rem 1rem}.acc .body[hidden]{display:none}.acc .body p:last-child{margin:0}
+.stepper{list-style:none;padding:0;margin:1.5rem 0;display:grid;gap:.75rem;counter-reset:st}
+.stepper li{counter-increment:st;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem;position:relative;font-size:.95rem;line-height:1.5}
+.stepper li::before{content:counter(st);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem Sora;margin-bottom:.5rem}
+.stepper b{display:block}
+.fig{margin:1.5rem 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem}
+.fig svg{width:100%;height:auto;display:block}.fig figcaption{font-size:.85rem;color:var(--color-text-muted);margin-top:.5rem}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.95rem;line-height:1.5}
+th,td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--color-border);vertical-align:top}th{font-family:Sora;font-size:.9rem}
+.pros-cons{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pros-cons ul{margin:0;padding-left:1.1rem}.pros-cons li{margin:.4rem 0}
+.key{background:var(--color-text);color:#fff;padding:4rem 0}.key h2{color:#fff}
+.key ul{padding-left:1.2rem;margin:0}.key li{margin:.7rem 0}.key li::marker{color:#a99fff}
+.nav{display:flex;justify-content:space-between;gap:1rem;padding:2.5rem 0;flex-wrap:wrap}
+.nav a{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem 1.25rem;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}.nav small{display:block;color:var(--color-text-muted)}.nav .next{text-align:right}
+.nav .off{opacity:.45;pointer-events:none}
+footer{border-top:1px solid var(--color-border);padding:1.5rem 0;color:var(--color-text-muted);font-size:.85rem;text-align:center}
+#top{position:fixed;right:1.25rem;bottom:1.25rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+#top.show{opacity:1;pointer-events:auto}
+@media(min-width:768px){.toc ol{columns:2}.stepper{grid-template-columns:repeat(4,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade{opacity:1;transform:none;transition:none}.card{transition:none}.card:hover{transform:none}}
+.chat{display:grid;gap:.5rem;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem;margin:1.25rem 0}
+.chat .b{padding:.6rem .9rem;border-radius:14px;max-width:88%;font-size:.95rem;line-height:1.5}
+.chat .u{background:var(--color-bg-alt);border:1px solid var(--color-border);justify-self:end}.chat .a{background:var(--color-accent-soft)}
+.chat small{display:block;color:var(--color-text-muted);font-size:.78rem}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="brand">Création de chatbots et assistants IA pour les entreprises</span>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire de la leçon">
+    <a href="#nom">1. Nom de l’assistant</a><a href="#ton">2. Ton et personnalité</a><a href="#accueil">3. Message d’accueil</a><a href="#scenarios">4. Scénarios</a><a href="#arbre">5. Arbre de décision</a><a href="#hors-sujet">6. Questions hors sujet</a><a href="#erreurs">7. Messages d’erreur</a><a href="#humain">8. Passage vers un humain</a><a href="#synthese">Synthèse</a>
+  </nav>
+</div></header>
+<main>
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge mod">Module 1 — Fondamentaux et conception d’un assistant IA</span><span class="badge">⏱ 45 min</span><span class="badge">Niveau : Débutant</span></div>
+  <p class="sub" style="margin-bottom:.5rem">Leçon 3</p>
+  <h1>Construire des conversations claires et définir l’identité de l’assistant</h1>
+  <p class="sub">Un assistant se juge à la façon dont il parle : son nom, son ton, ses parcours et sa manière de gérer l’imprévu.</p>
+  <p style="margin:0"><b>Objectif :</b> construire des conversations claires et définir l’identité de l’assistant.</p>
+</div></div>
+<div class="toc"><div class="wrap">
+  <h2 style="font-size:1.2rem">Dans cette leçon</h2>
+  <ol>
+    <li><a href="#nom">Nom de l’assistant</a></li>
+    <li><a href="#ton">Ton et personnalité</a></li>
+    <li><a href="#accueil">Message d’accueil</a></li>
+    <li><a href="#scenarios">Scénarios de conversation</a></li>
+    <li><a href="#arbre">Arbre de décision</a></li>
+    <li><a href="#hors-sujet">Questions hors sujet</a></li>
+    <li><a href="#erreurs">Messages d’erreur</a></li>
+    <li><a href="#humain">Passage vers un humain</a></li>
+  </ol>
+</div></div>
+
+<section class="s"><div class="wrap fade">
+  <h2>Deux couches à concevoir</h2>
+  <p>Cette leçon réunit deux dimensions. L’<b>identité</b> (qui parle ?) donne une cohérence à l’assistant. Le <b>parcours</b> (que se dit-on ?) guide l’utilisateur jusqu’à son but. Les deux se conçoivent avant de choisir un outil.</p>
+  <div class="callout"><strong>💡 À retenir</strong><p>Une bonne conversation est claire (on comprend ce qui est demandé), cohérente (même ton partout) et professionnelle (honnête sur ce que l’assistant sait faire).</p></div>
+</div></section>
+
+<section class="s" id="nom"><div class="wrap fade">
+  <h2>1. Le nom de l’assistant</h2>
+  <p>Le nom donne un repère à l’utilisateur. Un bon nom est <b>court, facile à prononcer, en lien avec l’entreprise</b> et ne prétend pas que l’assistant est une personne.</p>
+  <div class="cards">
+    <div class="card"><div class="ic">✅</div><h3>Bon choix</h3><p>« Léa, l’assistante virtuelle de Maison Verdier » : simple, clair, on sait qu’il s’agit d’un assistant.</p></div>
+    <div class="card"><div class="ic">⚠️</div><h3>À éviter</h3><p>Un nom trop long, difficile à épeler, ou qui laisse croire à un vrai conseiller humain.</p></div>
+  </div>
+  <div class="callout warn"><strong>⚠️ Attention</strong><p>Indiquez toujours que l’utilisateur parle à un assistant virtuel. La transparence renforce la confiance.</p></div>
+</div></section>
+
+<section class="s" id="ton"><div class="wrap fade">
+  <h2>2. Le ton et la personnalité</h2>
+  <p>Le ton se choisit selon l’entreprise et son public. Il doit rester le même du début à la fin.</p>
+  <div class="tabs">
+    <div role="tablist" aria-label="Exemples de ton">
+      <button role="tab" id="tb1" aria-selected="true" aria-controls="tp1">Cabinet comptable</button>
+      <button role="tab" id="tb2" aria-selected="false" aria-controls="tp2" tabindex="-1">Boutique de sport</button>
+      <button role="tab" id="tb3" aria-selected="false" aria-controls="tp3" tabindex="-1">Banque</button>
+    </div>
+    <div role="tabpanel" id="tp1" aria-labelledby="tb1"><p><b>Posé, précis, rassurant.</b> Vouvoiement, phrases courtes.</p><p><i>« Bonjour, je vous aide à préparer vos documents. Quel est votre besoin ? »</i></p></div>
+    <div role="tabpanel" id="tp2" aria-labelledby="tb2" hidden><p><b>Dynamique, chaleureux.</b> Tutoiement possible si c’est la marque.</p><p><i>« Salut ! Tu cherches des chaussures de course ? Dis-m’en un peu plus. »</i></p></div>
+    <div role="tabpanel" id="tp3" aria-labelledby="tb3" hidden><p><b>Sobre, rigoureux, sans familiarité.</b> Aucune promesse hasardeuse.</p><p><i>« Bonjour. Je peux vous renseigner sur vos démarches courantes. »</i></p></div>
+  </div>
+  <p style="margin-top:1rem">Définissez la personnalité en trois mots (par exemple : aimable, précis, concis) et deux interdits (par exemple : pas d’argot, pas d’humour sur les problèmes du client).</p>
+</div></section>
+
+<section class="s" id="accueil"><div class="wrap fade">
+  <h2>3. Le message d’accueil</h2>
+  <p>Il doit remplir quatre fonctions en quelques lignes : se présenter, dire ce que l’assistant sait faire, guider la suite et rassurer sur l’accès à un humain.</p>
+  <div class="chat" role="img" aria-label="Exemple de message d’accueil">
+    <div class="b a"><small>Léa, assistante virtuelle</small>Bonjour, je suis Léa, l’assistante virtuelle de Maison Verdier. Je peux suivre une commande, vous renseigner sur un retour ou vous orienter. Que souhaitez-vous faire ?</div>
+    <div class="b a"><small>Suggestions</small>[Suivre ma commande] [Faire un retour] [Parler à un conseiller]</div>
+  </div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Un accueil trop vague (« Comment puis-je vous aider ? ») laisse l’utilisateur sans idée de ce qu’il peut demander. Proposer des choix concrets aide.</p></div>
+</div></section>
+
+<section class="s" id="scenarios"><div class="wrap fade">
+  <h2>4. Les scénarios de conversation</h2>
+  <p>Un scénario décrit le déroulé d’une conversation pour un besoin précis. Il suit toujours la même trame.</p>
+  <ol class="stepper" aria-label="Trame d’un scénario">
+    <li><b>Déclencheur</b>Ce que dit l’utilisateur.</li>
+    <li><b>Informations</b>Ce que l’assistant doit demander.</li>
+    <li><b>Réponse</b>Ce qu’il répond ou fait.</li>
+    <li><b>Clôture</b>Confirmation et question de suite.</li>
+  </ol>
+  <p><b>Exemple : suivi de commande.</b></p>
+  <div class="chat" role="img" aria-label="Exemple de scénario de suivi de commande">
+    <div class="b u">Où est mon colis ?</div>
+    <div class="b a">Je vérifie cela avec plaisir. Pouvez-vous me donner votre numéro de commande ?</div>
+    <div class="b u">MV-48213</div>
+    <div class="b a">Votre commande est en cours de livraison, arrivée prévue demain. Puis-je faire autre chose pour vous ?</div>
+  </div>
+  <div class="callout more"><strong>🔗 Pour aller plus loin</strong><p>Rédigez d’abord les 3 à 5 scénarios les plus fréquents, comme vu dans la leçon 2.</p></div>
+</div></section>
+
+<section class="s" id="arbre"><div class="wrap fade">
+  <h2>5. L’arbre de décision</h2>
+  <p>L’arbre de décision relie les scénarios : à chaque étape, la réponse de l’utilisateur oriente vers une branche. Il évite les impasses en prévoyant toujours une suite.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 640 300" role="img" aria-labelledby="t1 d1"><title id="t1">Arbre de décision d’une conversation</title><desc id="d1">Après l’accueil, trois branches : suivi de commande, retour produit, autre demande. Le suivi demande un numéro de commande ; le retour vérifie le délai ; l’autre demande est transférée à un conseiller.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="240" y="10" width="160" height="44" rx="10" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="320" y="37">Accueil et choix</text>
+      <rect x="20" y="120" width="170" height="50" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="105" y="150">Suivi de commande</text>
+      <rect x="235" y="120" width="170" height="50" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="320" y="150">Retour produit</text>
+      <rect x="450" y="120" width="170" height="50" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="535" y="150">Autre demande</text>
+      <rect x="20" y="230" width="170" height="50" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="105" y="252" font-weight="500" font-size="12">Demande le n° de commande</text><text x="105" y="268" font-weight="500" font-size="12" fill="#5F6370">puis donne le statut</text>
+      <rect x="235" y="230" width="170" height="50" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="320" y="252" font-weight="500" font-size="12">Vérifie le délai</text><text x="320" y="268" font-weight="500" font-size="12" fill="#5F6370">puis explique la marche à suivre</text>
+      <rect x="450" y="230" width="170" height="50" rx="10" fill="#0A0A0F"/><text x="535" y="260" fill="#fff" font-weight="500" font-size="12">Transfert à un conseiller</text></g>
+      <path d="M320 54V80M105 80H535M105 80V120M320 80V120M535 80V120M105 170v60M320 170v60M535 170v60" stroke="#5B4BDB" stroke-width="2" fill="none"/>
+    </svg>
+    <figcaption>Chaque branche aboutit à une réponse ou à un transfert : jamais d’impasse.</figcaption>
+  </figure>
+</div></section>
+
+<section class="s" id="hors-sujet"><div class="wrap fade">
+  <h2>6. La gestion des questions hors sujet</h2>
+  <p>Les utilisateurs poseront des questions que l’assistant n’est pas là pour traiter. La bonne réaction tient en trois temps : <b>reconnaître, expliquer le périmètre, réorienter</b>.</p>
+  <div class="chat" role="img" aria-label="Exemple de gestion d’une question hors sujet">
+    <div class="b u">Tu as une recette de gâteau ?</div>
+    <div class="b a">Je ne peux pas vous aider sur ce sujet : je suis là pour vos commandes et retours chez Maison Verdier. Souhaitez-vous suivre une commande ou parler à un conseiller ?</div>
+  </div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Répondre quand même à tout. Hors de son périmètre, un assistant risque de donner une information inexacte ou inadaptée à l’entreprise.</p></div>
+</div></section>
+
+<section class="s" id="erreurs"><div class="wrap fade">
+  <h2>7. Les messages d’erreur</h2>
+  <p>Quand l’assistant ne comprend pas ou ne peut pas agir, le message doit dire <b>ce qui se passe</b> et <b>ce que l’utilisateur peut faire</b>.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Situation</th><th>Message peu utile</th><th>Message clair</th></tr>
+    <tr><td>Demande non comprise</td><td>« Erreur. »</td><td>« Je n’ai pas bien compris. Pouvez-vous reformuler, ou choisir une option ci-dessous ? »</td></tr>
+    <tr><td>Numéro introuvable</td><td>« Données invalides. »</td><td>« Je ne trouve pas cette commande. Vérifiez le numéro dans votre e-mail de confirmation. »</td></tr>
+    <tr><td>Service indisponible</td><td>« Impossible. »</td><td>« Le suivi est momentanément indisponible. Je peux vous mettre en relation avec un conseiller. »</td></tr>
+  </table></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a1">Pourquoi limiter les relances ?</button>
+    <div class="body" id="a1" hidden><p>Après deux incompréhensions successives, mieux vaut proposer un conseiller plutôt que de redemander indéfiniment : la frustration monte vite.</p></div></div>
+</div></section>
+
+<section class="s" id="humain"><div class="wrap fade">
+  <h2>8. Le passage vers un humain</h2>
+  <p>Le transfert est une étape prévue du parcours, pas un échec. Il se déclenche dans plusieurs situations :</p>
+  <div class="cards">
+    <div class="card"><div class="ic">🙋</div><h3>Demande de l’utilisateur</h3><p>Il écrit « conseiller » ou clique sur le bouton prévu.</p></div>
+    <div class="card"><div class="ic">🔁</div><h3>Incompréhensions répétées</h3><p>Deux échecs de suite déclenchent la proposition.</p></div>
+    <div class="card"><div class="ic">😠</div><h3>Sujet sensible</h3><p>Réclamation, litige, urgence, émotion forte.</p></div>
+  </div>
+  <figure class="fig">
+    <svg viewBox="0 0 640 150" role="img" aria-labelledby="t2 d2"><title id="t2">Parcours de transfert vers un conseiller</title><desc id="d2">L’assistant détecte une situation, annonce le transfert, transmet le résumé de la conversation, puis le conseiller reprend.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="5" y="40" width="140" height="70" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="75" y="80">Détection</text>
+      <rect x="170" y="40" width="140" height="70" rx="10" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="240" y="80">Annonce</text>
+      <rect x="335" y="40" width="140" height="70" rx="10" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="405" y="72">Résumé</text><text x="405" y="92">transmis</text>
+      <rect x="500" y="40" width="135" height="70" rx="10" fill="#0A0A0F"/><text x="567" y="80" fill="#fff">Conseiller</text></g>
+      <path d="M145 75h25M310 75h25M475 75h25" stroke="#5B4BDB" stroke-width="2"/>
+    </svg>
+    <figcaption>Le client ne répète pas son problème : le conseiller reçoit le contexte.</figcaption>
+  </figure>
+  <div class="chat" role="img" aria-label="Exemple de message de transfert">
+    <div class="b a">Je vous mets en relation avec un conseiller, qui verra le résumé de notre échange. Délai estimé : quelques minutes. Hors horaires d’ouverture, laissez votre e-mail et vous serez recontacté.</div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><p>Prévoyez aussi le cas où personne n’est disponible : proposer un rappel ou un e-mail évite une impasse.</p></div>
+</div></section>
+
+<section class="s" id="synthese"><div class="wide fade">
+  <h2 style="max-width:720px">Synthèse visuelle</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 800 160" role="img" aria-labelledby="t3 d3"><title id="t3">Synthèse de la leçon</title><desc id="d3">L’identité (nom, ton, accueil) puis le parcours (scénarios, arbre) puis les situations particulières (hors sujet, erreurs, humain).</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="40" width="230" height="80" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="125" y="76">Identité</text><text x="125" y="98" font-weight="500" fill="#5F6370">nom · ton · accueil</text>
+      <rect x="285" y="40" width="230" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="400" y="76">Parcours</text><text x="400" y="98" font-weight="500" fill="#5F6370">scénarios · arbre</text>
+      <rect x="560" y="40" width="230" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="675" y="76">Imprévus</text><text x="675" y="98" font-weight="500" fill="#5F6370">hors sujet · erreurs · humain</text></g>
+      <path d="M240 80h45M515 80h45" stroke="#5B4BDB" stroke-width="2"/>
+    </svg>
+    <figcaption>Qui parle, comment la conversation avance, et que faire quand elle dévie.</figcaption>
+  </figure>
+</div></section>
+
+<section class="key" id="points-cles"><div class="wrap fade">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Le nom est court, lié à l’entreprise, et signale que l’on parle à un assistant virtuel.</li>
+    <li>Le ton est choisi selon le public et reste identique tout au long de la conversation.</li>
+    <li>Le message d’accueil se présente, annonce les capacités, propose des choix et rassure sur l’accès à un humain.</li>
+    <li>Un scénario suit une trame : déclencheur, informations, réponse, clôture.</li>
+    <li>L’arbre de décision relie les scénarios et ne laisse aucune impasse.</li>
+    <li>Hors sujet : reconnaître, expliquer le périmètre, réorienter.</li>
+    <li>Erreurs : dire ce qui se passe et proposer une action ; transférer à un humain avec le contexte quand c’est nécessaire.</li>
+  </ul>
+</div></section>
+
+<div class="wrap"><nav class="nav" aria-label="Navigation entre leçons">
+  <a href="lecon-02-reperer-les-taches-a-automatiser-et-formuler-un-besoin.html"><small>Leçon précédente</small>Leçon 2 — Repérer les tâches à automatiser</a>
+  <a class="next" href="lecon-04.html"><small>Leçon suivante</small>Leçon 4</a>
+</nav></div>
+</main>
+<footer><div class="wrap">Création de chatbots et assistants IA pour les entreprises — Module 1, Leçon 3</div></footer>
+<button id="top" aria-label="Retour en haut">↑</button>
+<script>
+(function(){
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);bar.style.width=(p*100)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.onclick=function(){scrollTo({top:0})};
+var mb=document.getElementById('menuBtn'),m=document.getElementById('menu');
+mb.onclick=function(){var o=m.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+m.addEventListener('click',function(e){if(e.target.tagName==='A'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('.acc button').forEach(function(b){b.onclick=function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',!o);document.getElementById(b.getAttribute('aria-controls')).hidden=o}});
+document.querySelectorAll('.tabs').forEach(function(t){var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+function sel(x){tabs.forEach(function(y){var on=y===x;y.setAttribute('aria-selected',on);y.tabIndex=on?0:-1;document.getElementById(y.getAttribute('aria-controls')).hidden=!on});x.focus()}
+tabs.forEach(function(x,i){x.onclick=function(){sel(x)};x.onkeydown=function(e){if(e.key==='ArrowRight')sel(tabs[(i+1)%tabs.length]);if(e.key==='ArrowLeft')sel(tabs[(i-1+tabs.length)%tabs.length])}})});
+var els=document.querySelectorAll('.fade');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
+})();
+</script>
+</body>
+</html>

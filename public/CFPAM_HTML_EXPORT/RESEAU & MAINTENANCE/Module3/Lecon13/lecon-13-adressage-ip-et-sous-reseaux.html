@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 13 — Adressage IP et sous-réseaux">
+<title>Leçon 13 — Adressage IP et sous-réseaux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}a:hover{text-decoration:underline}:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:999}
+header{position:sticky;top:4px;z-index:900;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px)}
+.nav,.container{max-width:1180px;margin:auto}.nav{padding:14px 24px;display:flex;justify-content:space-between;align-items:center}.brand{font:700 1rem "Space Grotesk";letter-spacing:.02em}.brand span{color:var(--color-accent)}
+.container{padding:0 24px}.hero{padding:72px 0 52px}.eyebrow{font:600 .78rem "IBM Plex Mono";color:var(--color-accent);letter-spacing:.09em;text-transform:uppercase}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.15;letter-spacing:-.03em}h1{font-size:clamp(2.6rem,6vw,5rem);max-width:900px;margin:14px 0 18px}h2{font-size:clamp(1.9rem,3vw,2.8rem);margin:0 0 20px}h3{font-size:1.25rem;margin:0 0 10px}
+.lead{font-size:1.16rem;color:var(--muted);max-width:720px}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.badge{padding:6px 11px;border:1px solid var(--line);border-radius:999px;background:var(--soft);font:500 .78rem "IBM Plex Mono"}
+.toc{background:var(--soft);border:1px solid var(--line);border-radius:15px;padding:24px;margin-bottom:50px}.toc strong{font-family:"Space Grotesk"}.toc ol{columns:2;margin:12px 0 0;padding-left:23px}.toc li{margin:5px 0}
+section{padding:72px 0;scroll-margin-top:75px}section:nth-of-type(even){background:var(--soft);box-shadow:0 0 0 100vmax var(--soft);clip-path:inset(0 -100vmax)}
+.prose{max-width:720px}.diagram{margin:30px 0;border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--color-bg);overflow:auto}.diagram svg{display:block;width:100%;min-width:700px;height:auto}.caption{font-size:.84rem;color:var(--muted);margin-top:9px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}.card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}.icon{font-size:1.6rem;color:var(--color-accent);margin-bottom:8px}
+.callout{border:1px solid var(--line);border-left:5px solid var(--color-accent);border-radius:10px;background:var(--soft10);padding:20px 22px;margin:28px 0}.callout b{font-family:"Space Grotesk"}
+table{width:100%;border-collapse:collapse;margin:28px 0;font:500 .86rem "IBM Plex Mono"}.table-wrap{overflow-x:auto}th,td{padding:13px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--color-accent)}tr:hover td{background:var(--soft)}
+.binary{font:600 1rem "IBM Plex Mono";letter-spacing:.04em}.bits{display:grid;grid-template-columns:repeat(32,1fr);gap:3px;margin:18px 0}.bit{border:1px solid var(--line);padding:8px 2px;text-align:center;font:600 .68rem "IBM Plex Mono";background:var(--soft)}.bit.network{background:var(--soft10);color:var(--color-accent)}
+.tabs{margin:30px 0}.tab-buttons{display:flex;border-bottom:1px solid var(--line);overflow:auto}.tab-buttons button{border:0;border-bottom:3px solid transparent;background:none;padding:12px 17px;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--color-text)}.tab-buttons button[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent)}.tab-panel{display:none;padding:22px;border:1px solid var(--line);border-top:0}.tab-panel.active{display:block}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:30px 0}.step{border-top:3px solid var(--color-accent);background:var(--soft);padding:16px}.step small{display:block;font:500 .75rem "IBM Plex Mono";color:var(--muted);margin-bottom:6px}
+.code{background:var(--soft10);border:1px solid var(--line);border-radius:12px;padding:18px;font:500 .9rem "IBM Plex Mono";overflow:auto;white-space:pre}
+details{border-top:1px solid var(--line);padding:17px 0}summary{cursor:pointer;font-family:"Space Grotesk";font-weight:700}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.key{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--color-bg)}.key strong{display:block;color:var(--color-accent);margin-bottom:7px}
+footer{border-top:1px solid var(--line);padding:34px 0;margin-top:30px}.footer-nav{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.top{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border:1px solid var(--color-accent);border-radius:50%;background:var(--color-bg);color:var(--color-accent);font-weight:700;cursor:pointer}
+.reveal{opacity:0;transform:translateY(16px);transition:.6s}.reveal.visible{opacity:1;transform:none}
+@media(max-width:800px){.cards,.keys{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr 1fr}.toc ol{columns:1}}
+@media(max-width:520px){.container,.nav{padding-left:16px;padding-right:16px}.nav a{display:none}.cards,.keys,.stepper{grid-template-columns:1fr}h1{font-size:2.55rem}section{padding:54px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><nav class="nav" aria-label="Navigation"><div class="brand">MAINTENANCE <span>&amp;</span> RÉSEAU</div><a href="#sommaire">Sommaire</a></nav></header>
+
+<main>
+<div class="container">
+<section class="hero" id="accueil">
+ <div class="eyebrow">Module 3 · Réseaux informatiques – Fondamentaux</div>
+ <h1>Adressage IP et sous-réseaux</h1>
+ <p class="lead">Comprendre les classes IP, les masques, le découpage en sous-réseaux, le VLSM et la distinction entre adressage privé et public.</p>
+ <div class="badges"><span class="badge">LEÇON 13</span><span class="badge">Intermédiaire</span><span class="badge">15 min</span><span class="badge">IPv4</span></div>
+</section>
+
+<nav class="toc reveal" id="sommaire" aria-label="Sommaire">
+ <strong>Sommaire de la leçon</strong>
+ <ol>
+  <li><a href="#classes">Classes IP</a></li><li><a href="#masques">Masques de sous-réseau</a></li>
+  <li><a href="#calcul">Calcul de sous-réseaux</a></li><li><a href="#vlsm">VLSM</a></li>
+  <li><a href="#prive-public">Adressage privé / public</a></li><li><a href="#synthese">Points clés à retenir</a></li>
+ </ol>
+</nav>
+
+<section id="classes" class="reveal">
+ <div class="eyebrow">01 · Structure IPv4</div><h2>Classes IP</h2>
+ <div class="prose">
+  <p>Une adresse IPv4 est composée de <strong>32 bits</strong>, généralement écrits sous la forme de quatre octets décimaux séparés par des points, par exemple <span class="code">192.168.10.25</span>.</p>
+  <p>Historiquement, les adresses IPv4 ont été organisées en classes A, B et C. Ce classement permet de comprendre la logique d'origine des réseaux, même si les réseaux modernes utilisent principalement la notation CIDR et les préfixes.</p>
+ </div>
+ <div class="diagram" role="img" aria-label="Illustration d'une adresse IPv4 en quatre octets">
+  <svg viewBox="0 0 900 245" xmlns="http://www.w3.org/2000/svg">
+   <text x="450" y="30" text-anchor="middle" font-family="IBM Plex Mono" font-size="18" fill="var(--color-text)">192 . 168 . 10 . 25</text>
+   <g font-family="IBM Plex Sans" font-weight="600" font-size="15" text-anchor="middle">
+    <rect x="55" y="65" width="185" height="85" rx="10" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/><text x="147" y="103" fill="var(--color-text)">Octet 1</text><text x="147" y="129" font-family="IBM Plex Mono" fill="var(--color-accent)">192</text>
+    <rect x="255" y="65" width="185" height="85" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="347" y="103" fill="var(--color-text)">Octet 2</text><text x="347" y="129" font-family="IBM Plex Mono" fill="var(--color-text)">168</text>
+    <rect x="455" y="65" width="185" height="85" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="547" y="103" fill="var(--color-text)">Octet 3</text><text x="547" y="129" font-family="IBM Plex Mono" fill="var(--color-text)">10</text>
+    <rect x="655" y="65" width="185" height="85" rx="10" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="747" y="103" fill="var(--color-text)">Octet 4</text><text x="747" y="129" font-family="IBM Plex Mono" fill="var(--color-text)">25</text>
+   </g>
+   <text x="450" y="190" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--muted)">4 × 8 bits = 32 bits</text>
+  </svg>
+  <div class="caption">Une adresse IPv4 contient quatre octets, chacun représentant 8 bits.</div>
+ </div>
+ <div class="table-wrap"><table><thead><tr><th>Classe</th><th>Premier octet</th><th>Masque historique</th><th>Usage historique</th></tr></thead>
+ <tbody><tr><td>A</td><td>1–126</td><td>/8 · 255.0.0.0</td><td>Très grands réseaux</td></tr><tr><td>B</td><td>128–191</td><td>/16 · 255.255.0.0</td><td>Réseaux moyens</td></tr><tr><td>C</td><td>192–223</td><td>/24 · 255.255.255.0</td><td>Réseaux plus petits</td></tr></tbody></table></div>
+ <div class="callout"><b>💡 À retenir</b><br>Les classes A/B/C sont surtout utiles pour comprendre l'histoire de l'adressage IPv4. Pour concevoir un réseau actuel, on raisonne surtout avec un <strong>préfixe CIDR</strong>, comme <span class="binary">/24</span> ou <span class="binary">/27</span>.</div>
+</section>
+
+<section id="masques" class="reveal">
+ <div class="eyebrow">02 · Réseau et hôtes</div><h2>Masques de sous-réseau</h2>
+ <div class="prose">
+  <p>Le masque indique quelle partie de l'adresse correspond au <strong>réseau</strong> et quelle partie reste disponible pour les <strong>hôtes</strong>. En notation CIDR, le nombre après le slash indique le nombre de bits réservés au réseau.</p>
+ </div>
+ <div class="diagram" role="img" aria-label="Découpage binaire d'une adresse IPv4 en bits réseau et bits hôte pour un préfixe 24">
+  <svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg">
+   <text x="450" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="17" fill="var(--color-text)">192.168.10.25 / 24</text>
+   <rect x="55" y="62" width="590" height="82" rx="8" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+   <rect x="645" y="62" width="200" height="82" rx="8" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+   <text x="350" y="101" text-anchor="middle" font-family="IBM Plex Sans" font-weight="700" fill="var(--color-text)">24 bits réseau</text>
+   <text x="350" y="127" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="var(--color-accent)">11111111.11111111.11111111</text>
+   <text x="745" y="101" text-anchor="middle" font-family="IBM Plex Sans" font-weight="700" fill="var(--color-text)">8 bits hôte</text>
+   <text x="745" y="127" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">.00000000</text>
+   <text x="450" y="190" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="var(--color-text)">Masque : 255.255.255.0</text>
+   <text x="450" y="222" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="var(--muted)">Le préfixe /24 laisse 8 bits pour les hôtes.</text>
+  </svg>
+  <div class="caption">Avec /24, 24 bits identifient le réseau et 8 bits sont disponibles pour la partie hôte.</div>
+ </div>
+ <div class="cards">
+  <article class="card"><div class="icon">01</div><h3>/24</h3><p>Masque <span class="binary">255.255.255.0</span>. Configuration courante pour un petit réseau IPv4.</p></article>
+  <article class="card"><div class="icon">02</div><h3>/26</h3><p>26 bits réseau et 6 bits hôte. Le réseau est découpé en blocs plus petits.</p></article>
+  <article class="card"><div class="icon">03</div><h3>/30</h3><p>30 bits réseau et 2 bits hôte. Utile pour certains liens point à point.</p></article>
+ </div>
+</section>
+
+<section id="calcul" class="reveal">
+ <div class="eyebrow">03 · Méthode</div><h2>Calcul de sous-réseaux</h2>
+ <div class="prose">
+  <p>Découper un réseau consiste à emprunter des bits à la partie hôte pour créer davantage de réseaux. Plus le préfixe augmente, plus chaque sous-réseau contient peu d'adresses hôtes.</p>
+ </div>
+ <div class="diagram" role="img" aria-label="Découpage d'un réseau /24 en quatre sous-réseaux /26">
+  <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg">
+   <text x="450" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="17" fill="var(--color-text)">192.168.10.0 / 24 → quatre sous-réseaux / 26</text>
+   <g font-family="IBM Plex Mono" font-size="13">
+    <rect x="60" y="70" width="780" height="48" rx="7" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/><text x="450" y="100" text-anchor="middle" fill="var(--color-text)">Réseau initial : 192.168.10.0 – 192.168.10.255</text>
+    <rect x="60" y="145" width="365" height="55" rx="7" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="242" y="178" text-anchor="middle">.0 /26 → .63</text>
+    <rect x="475" y="145" width="365" height="55" rx="7" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="657" y="178" text-anchor="middle">.64 /26 → .127</text>
+    <rect x="60" y="225" width="365" height="55" rx="7" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="242" y="258" text-anchor="middle">.128 /26 → .191</text>
+    <rect x="475" y="225" width="365" height="55" rx="7" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/><text x="657" y="258" text-anchor="middle">.192 /26 → .255</text>
+   </g>
+   <text x="450" y="325" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="var(--muted)">Taille d'un bloc /26 : 64 adresses. Les adresses réseau et broadcast ne sont pas attribuées à des hôtes dans le modèle classique.</text>
+  </svg>
+  <div class="caption">Exemple de découpage d'un /24 en quatre blocs /26.</div>
+ </div>
+ <div class="callout"><b>🧭 Méthode de lecture</b><br>Pour déterminer les blocs, on identifie la taille du bloc dans l'octet concerné, puis on fait progresser les adresses de ce pas. Pour un <span class="binary">/26</span>, le dernier octet progresse par blocs de <span class="binary">64</span>.</div>
+ <div class="table-wrap"><table><thead><tr><th>Préfixe</th><th>Masque</th><th>Bits hôte</th><th>Adresses par sous-réseau</th></tr></thead><tbody>
+ <tr><td>/24</td><td>255.255.255.0</td><td>8</td><td>256</td></tr>
+ <tr><td>/25</td><td>255.255.255.128</td><td>7</td><td>128</td></tr>
+ <tr><td>/26</td><td>255.255.255.192</td><td>6</td><td>64</td></tr>
+ <tr><td>/27</td><td>255.255.255.224</td><td>5</td><td>32</td></tr>
+ <tr><td>/28</td><td>255.255.255.240</td><td>4</td><td>16</td></tr>
+ </tbody></table></div>
+</section>
+
+<section id="vlsm" class="reveal">
+ <div class="eyebrow">04 · Allocation variable</div><h2>VLSM</h2>
+ <div class="prose">
+  <p>Le <strong>VLSM</strong> (<em>Variable Length Subnet Mask</em>) permet d'utiliser des préfixes de tailles différentes au sein d'un même espace d'adressage. On peut ainsi attribuer un sous-réseau plus grand à un service ayant beaucoup de machines et un plus petit à un service ayant peu de machines.</p>
+ </div>
+ <div class="diagram" role="img" aria-label="Exemple visuel d'un plan VLSM avec trois sous-réseaux de tailles différentes">
+  <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+   <text x="450" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="17" fill="var(--color-text)">192.168.10.0 / 24 — allocation VLSM</text>
+   <rect x="55" y="65" width="780" height="62" rx="8" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+   <rect x="55" y="65" width="390" height="62" rx="8" fill="var(--soft)" stroke="var(--color-accent)" stroke-width="2"/>
+   <rect x="445" y="65" width="195" height="62" rx="8" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+   <rect x="640" y="65" width="98" height="62" rx="8" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+   <rect x="738" y="65" width="97" height="62" rx="8" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+   <g font-family="IBM Plex Mono" font-size="12" text-anchor="middle" fill="var(--color-text)">
+    <text x="250" y="101">Service A · /25</text><text x="542" y="101">Service B · /26</text><text x="689" y="101">C · /27</text><text x="786" y="101">D · /27</text>
+   </g>
+   <g font-family="IBM Plex Sans" font-size="14" fill="var(--muted)">
+    <text x="250" y="173" text-anchor="middle">Grand besoin → préfixe plus petit</text>
+    <text x="542" y="207" text-anchor="middle">Besoin moyen</text>
+    <text x="689" y="241" text-anchor="middle">Petit besoin</text>
+   </g>
+   <path d="M250 135 L250 160" stroke="var(--color-accent)" stroke-width="2"/><path d="M542 135 L542 194" stroke="var(--color-accent)" stroke-width="2"/><path d="M689 135 L689 228" stroke="var(--color-accent)" stroke-width="2"/>
+  </svg>
+  <div class="caption">Le VLSM adapte la taille des sous-réseaux aux besoins des différents segments.</div>
+ </div>
+ <div class="callout"><b>💡 Principe</b><br>Avec le VLSM, on réserve généralement d'abord les blocs correspondant aux besoins les plus importants, puis on répartit l'espace restant pour les besoins plus petits.</div>
+</section>
+
+<section id="prive-public" class="reveal">
+ <div class="eyebrow">05 · Connectivité</div><h2>Adressage privé et public</h2>
+ <div class="prose">
+  <p>Une adresse <strong>privée</strong> est utilisée à l'intérieur des réseaux locaux et n'est pas routée directement sur Internet. Les adresses <strong>publiques</strong> servent à l'identification sur Internet et doivent être attribuées selon les mécanismes prévus par les opérateurs et registres.</p>
+ </div>
+ <div class="tabs">
+  <div class="tab-buttons" role="tablist" aria-label="Comparaison des adresses"><button role="tab" aria-selected="true" data-tab="private">Privé</button><button role="tab" aria-selected="false" data-tab="public">Public</button></div>
+  <div id="private" class="tab-panel active" role="tabpanel">
+   <h3>Plages privées IPv4</h3>
+   <div class="table-wrap"><table><thead><tr><th>Plage</th><th>Préfixe</th><th>Exemple</th></tr></thead><tbody>
+   <tr><td>10.0.0.0 – 10.255.255.255</td><td>/8</td><td>10.20.5.12</td></tr>
+   <tr><td>172.16.0.0 – 172.31.255.255</td><td>/12</td><td>172.20.4.8</td></tr>
+   <tr><td>192.168.0.0 – 192.168.255.255</td><td>/16</td><td>192.168.1.10</td></tr>
+   </tbody></table></div>
+  </div>
+  <div id="public" class="tab-panel" role="tabpanel">
+   <h3>Adresse publique</h3>
+   <p>Une adresse publique est routable sur Internet dans les conditions définies par l'opérateur et la configuration réseau. Dans un réseau local, une traduction d'adresses (NAT) peut permettre à plusieurs adresses privées de partager une adresse publique.</p>
+  </div>
+ </div>
+ <div class="diagram" role="img" aria-label="Schéma d'un réseau local privé relié à Internet par un routeur NAT">
+  <svg viewBox="0 0 900 290" xmlns="http://www.w3.org/2000/svg">
+   <rect x="40" y="55" width="315" height="180" rx="15" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+   <text x="197" y="82" text-anchor="middle" font-family="IBM Plex Sans" font-weight="700">Réseau local privé</text>
+   <g font-family="IBM Plex Mono" font-size="12" text-anchor="middle">
+    <rect x="70" y="105" width="115" height="48" rx="7" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="2"/><text x="127" y="134">192.168.1.10</text>
+    <rect x="210" y="105" width="115" height="48" rx="7" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="2"/><text x="267" y="134">192.168.1.20</text>
+   </g>
+   <rect x="395" y="100" width="125" height="90" rx="12" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="3"/>
+   <text x="457" y="132" text-anchor="middle" font-family="IBM Plex Sans" font-weight="700">Routeur</text><text x="457" y="157" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">NAT</text>
+   <line x1="355" y1="145" x2="395" y2="145" stroke="var(--color-accent)" stroke-width="3"/>
+   <line x1="520" y1="145" x2="585" y2="145" stroke="var(--color-accent)" stroke-width="3"/>
+   <rect x="585" y="55" width="275" height="180" rx="15" fill="var(--soft)" stroke="var(--color-neutral)" stroke-width="2"/>
+   <text x="722" y="87" text-anchor="middle" font-family="IBM Plex Sans" font-weight="700">Internet</text>
+   <text x="722" y="125" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">Adresse publique</text>
+   <text x="722" y="151" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">ex. attribuée par FAI</text>
+   <text x="722" y="197" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="var(--muted)">Les hôtes privés sortent</text><text x="722" y="218" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="var(--muted)">via la passerelle.</text>
+  </svg>
+  <div class="caption">Schéma conceptuel d'un réseau privé utilisant un routeur et une traduction NAT.</div>
+ </div>
+ <div class="callout"><b>🔒 Sécurité / bonne pratique</b><br>Le fait qu'une adresse soit privée ne constitue pas à lui seul une mesure de sécurité. La protection du réseau repose aussi sur le filtrage, la segmentation, l'authentification et une configuration correcte des équipements.</div>
+</section>
+
+<section id="synthese" class="reveal">
+ <div class="eyebrow">Synthèse</div><h2>Points clés à retenir</h2>
+ <div class="keys">
+  <div class="key"><strong>IPv4</strong>Une adresse IPv4 contient 32 bits répartis en quatre octets.</div>
+  <div class="key"><strong>Masque</strong>Le préfixe CIDR sépare la partie réseau de la partie hôte.</div>
+  <div class="key"><strong>Sous-réseaux</strong>Augmenter le préfixe crée des réseaux plus petits et plus nombreux.</div>
+  <div class="key"><strong>VLSM</strong>Des préfixes différents permettent d'adapter les tailles aux besoins.</div>
+ </div>
+ <div class="callout"><b>🧩 Vue d'ensemble</b><br><span class="code">Adresse IPv4 → préfixe → réseau + hôtes → sous-réseaux → plan d'adressage</span></div>
+ <details><summary>Pourquoi utilise-t-on des sous-réseaux ?</summary><p>Ils permettent d'organiser l'espace d'adressage en segments adaptés à différents réseaux ou services. Cette organisation facilite notamment la structuration et la gestion du réseau.</p></details>
+ <details><summary>Pourquoi distinguer privé et public ?</summary><p>Les adresses privées sont destinées aux réseaux internes, tandis que les adresses publiques permettent la connectivité et l'identification sur Internet selon les règles de routage et d'attribution.</p></details>
+</section>
+</div>
+</main>
+
+<footer><div class="container"><div class="footer-nav">
+<a href="#accueil">← Leçon 12 · Câblage et équipements réseau</a><a href="#sommaire">↑ Sommaire du module</a><a href="#accueil">Leçon 14 · Configuration de routeurs et switches →</a>
+</div><p class="caption">Module 3 · Réseaux informatiques – Fondamentaux · Leçon 13</p></div></footer>
+<button class="top" id="top" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById("progress"),topBtn=document.getElementById("top");
+function update(){const d=document.documentElement,m=d.scrollHeight-d.clientHeight;progress.style.width=(m?scrollY/m*100:0)+"%"}addEventListener("scroll",update,{passive:true});update();
+topBtn.onclick=()=>scrollTo({top:0,behavior:"smooth"});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(e=>io.observe(e));
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("[data-tab]").forEach(x=>x.setAttribute("aria-selected",x===b));
+ document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.tab));
+});
+document.querySelectorAll(".tab-buttons button").forEach((b,i,a)=>b.onkeydown=e=>{
+ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.preventDefault();a[(i+(e.key==="ArrowRight"?1:-1)+a.length)%a.length].focus()}
+});
+</script>
+</body>
+</html>

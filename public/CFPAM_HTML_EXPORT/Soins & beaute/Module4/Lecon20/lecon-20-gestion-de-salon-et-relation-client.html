@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leçon 20 — Gestion de salon et relation client. Support pédagogique pour organiser une prestation en salon, de la prise de rendez-vous au suivi.">
+<title>Leçon 20 — Gestion de salon et relation client</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FDFBFA;--color-text:#201716;--color-accent:#8C3B4A;--color-neutral:#C9BEB9;
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;height:3px;width:0;background:var(--color-accent)}
+.site-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.02em}
+.brand-mark{width:30px;height:30px;border:1.5px solid var(--color-accent);border-radius:50%;display:grid;place-items:center;color:var(--color-accent);font-family:"IBM Plex Mono",monospace;font-size:11px}
+.menu-toggle{display:none;border:1px solid var(--border);background:var(--color-bg);padding:8px 11px;cursor:pointer}
+.toc{display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end;font-size:13px}
+.toc a{color:var(--muted)}
+.toc a:hover{color:var(--color-accent)}
+main{overflow:hidden}
+.container{max-width:1120px;margin:auto;padding:0 24px}
+.hero{padding:76px 0 62px;display:grid;grid-template-columns:1.35fr .65fr;gap:48px;align-items:center}
+.kicker{font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.12;margin:0}
+h1{font-size:clamp(42px,6vw,76px);max-width:780px;margin-top:12px}
+.lead{font-size:19px;max-width:720px;color:var(--muted);margin:22px 0 0}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}
+.badge{border:1px solid var(--border);padding:7px 10px;border-radius:999px;font:500 11px "IBM Plex Mono",monospace;background:var(--color-bg)}
+.hero-art{border:1px solid var(--border);background:var(--soft);padding:20px}
+.hero-art svg{display:block;width:100%;height:auto}
+.section{padding:74px 0;position:relative}
+.section.alt{background:var(--soft)}
+.section-head{display:grid;grid-template-columns:230px 1fr;gap:38px;margin-bottom:34px}
+.section-num{font:500 12px "IBM Plex Mono",monospace;color:var(--color-accent);padding-top:6px}
+h2{font-size:clamp(31px,4vw,48px)}
+h3{font-size:23px;margin-bottom:10px}
+.prose{max-width:720px}
+.prose p{margin:0 0 17px}
+.grid{display:grid;gap:18px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.card{border:1px solid var(--border);padding:24px;background:var(--color-bg);transition:.2s ease}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card-icon{width:42px;height:42px;border:1px solid var(--color-accent);border-radius:50%;display:grid;place-items:center;color:var(--color-accent);margin-bottom:16px}
+.card p{color:var(--muted);margin:0}
+.callout{margin:28px 0;border-left:4px solid var(--color-accent);padding:20px 22px;background:var(--accent-soft)}
+.callout strong{display:block;margin-bottom:5px}
+.callout p{margin:0;color:var(--muted)}
+.visual{border:1px solid var(--border);padding:18px;background:var(--color-bg);margin:25px 0}
+.visual svg{width:100%;height:auto;display:block}
+.caption{font:400 11px "IBM Plex Mono",monospace;color:var(--muted);margin-top:10px}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);margin:24px 0}
+table{border-collapse:collapse;width:100%;min-width:680px}
+th,td{padding:14px 16px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{font:600 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--soft)}
+tr:hover td{background:var(--accent-soft)}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.step{padding:20px 14px;border-right:1px solid var(--border);position:relative}
+.step:last-child{border-right:0}
+.step .n{font:600 11px "IBM Plex Mono",monospace;color:var(--color-accent)}
+.step strong{display:block;margin:8px 0 4px}
+.step span{font-size:13px;color:var(--muted)}
+.tabs{margin-top:25px}
+.tab-buttons{display:flex;border-bottom:1px solid var(--border);gap:4px;flex-wrap:wrap}
+.tab-btn{border:0;background:none;padding:12px 15px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.tab-btn[aria-selected="true"]{color:var(--color-accent);border-color:var(--color-accent)}
+.tab-panel{padding:22px 0;display:none}
+.tab-panel.active{display:block}
+.accordion{border-top:1px solid var(--border)}
+.acc-item{border-bottom:1px solid var(--border)}
+.acc-btn{width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:none;text-align:left;padding:19px 0;cursor:pointer;color:var(--color-text);font-weight:600}
+.acc-btn span:last-child{color:var(--color-accent);font:500 18px "IBM Plex Mono",monospace}
+.acc-content{display:none;padding:0 0 18px;max-width:720px;color:var(--muted)}
+.acc-item.open .acc-content{display:block}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{border:1px solid var(--border);padding:20px;background:var(--color-bg)}
+.key b{font:600 11px "IBM Plex Mono",monospace;color:var(--color-accent)}
+.key p{margin:8px 0 0;font-size:14px}
+.nav-lessons{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch;padding:55px 0}
+.lesson-link{border:1px solid var(--border);padding:18px;background:var(--color-bg)}
+.lesson-link.next{text-align:right}
+.lesson-link small{display:block;font:500 10px "IBM Plex Mono",monospace;color:var(--muted);text-transform:uppercase}
+.lesson-link strong{display:block;margin-top:5px}
+footer{border-top:1px solid var(--border);padding:28px 0;color:var(--muted);font-size:12px}
+.top{position:fixed;right:20px;bottom:20px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);width:42px;height:42px;border-radius:50%;cursor:pointer;opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:900px){
+ .hero{grid-template-columns:1fr}
+ .section-head{grid-template-columns:1fr;gap:10px}
+ .grid-3{grid-template-columns:1fr}
+ .key-grid{grid-template-columns:repeat(2,1fr)}
+ .stepper{grid-template-columns:1fr 1fr}
+ .step:nth-child(2n){border-right:0}
+ .step{border-bottom:1px solid var(--border)}
+}
+@media(max-width:700px){
+ .nav{padding:12px 16px}
+ .menu-toggle{display:block}
+ .toc{display:none;width:100%;padding-top:10px}
+ .toc.open{display:flex}
+ .nav{flex-wrap:wrap}
+ .container{padding:0 17px}
+ .hero{padding:52px 0 45px}
+ .section{padding:55px 0}
+ .grid-2{grid-template-columns:1fr}
+ .key-grid{grid-template-columns:1fr}
+ .stepper{grid-template-columns:1fr}
+ .step{border-right:0}
+ .nav-lessons{grid-template-columns:1fr}
+ .lesson-link.next{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{animation:none!important;transition:none!important}
+ .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="site-header">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="brand" href="#top"><span class="brand-mark">S&B</span><span>Soins & Beauté</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="toc">Sommaire</button>
+    <div class="toc" id="toc">
+      <a href="#objectifs">Objectifs</a>
+      <a href="#accueil">Accueil</a>
+      <a href="#temps">Temps</a>
+      <a href="#fidelisation">Fidélisation</a>
+      <a href="#hygiene">Hygiène</a>
+      <a href="#synthese">Synthèse</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero container">
+  <div>
+    <div class="kicker">Module 4 · Coiffure — Techniques avancées</div>
+    <h1>Gestion de salon et relation client</h1>
+    <p class="lead">Organiser une prestation en salon, de la prise de rendez-vous au suivi.</p>
+    <div class="badges">
+      <span class="badge">LEÇON 20</span><span class="badge">INTERMÉDIAIRE</span><span class="badge">15 MIN</span>
+    </div>
+  </div>
+  <div class="hero-art" aria-label="Illustration informative : parcours d'une cliente en salon">
+    <svg viewBox="0 0 500 390" role="img">
+      <rect x="28" y="28" width="444" height="334" fill="none" stroke="#C9BEB9"/>
+      <circle cx="250" cy="105" r="48" fill="none" stroke="#8C3B4A" stroke-width="2"/>
+      <path d="M210 110c10-32 70-34 82 0M223 94c9 12 45 12 54 0" fill="none" stroke="#201716" stroke-width="3"/>
+      <path d="M206 165c25-23 63-23 88 0l32 78H174z" fill="none" stroke="#201716" stroke-width="2"/>
+      <path d="M142 266h216M142 290h216" stroke="#C9BEB9"/>
+      <circle cx="116" cy="266" r="17" fill="none" stroke="#8C3B4A"/>
+      <path d="M108 266h16M116 258v16" stroke="#8C3B4A"/>
+      <text x="250" y="325" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#201716">RENDEZ-VOUS · PRESTATION · SUIVI</text>
+    </svg>
+  </div>
+</section>
+
+<section class="section alt reveal" id="objectifs">
+<div class="container">
+  <div class="section-head"><div class="section-num">01 / OBJECTIFS</div><div><h2>Une organisation fluide, du premier contact au suivi</h2></div></div>
+  <div class="grid grid-3">
+    <article class="card"><div class="card-icon">01</div><h3>Accueillir</h3><p>Installer une relation professionnelle dès la prise de rendez-vous et à l’arrivée au salon.</p></article>
+    <article class="card"><div class="card-icon">02</div><h3>Organiser</h3><p>Structurer le temps de fauteuil pour enchaîner les prestations avec méthode.</p></article>
+    <article class="card"><div class="card-icon">03</div><h3>Fidéliser</h3><p>Assurer un suivi cohérent pour transformer une prestation réussie en relation durable.</p></article>
+  </div>
+</div>
+</section>
+
+<section class="section reveal" id="accueil">
+<div class="container">
+  <div class="section-head"><div class="section-num">02 / ACCUEIL CLIENT</div><div><h2>Le parcours commence avant le fauteuil</h2></div></div>
+  <div class="prose">
+    <p>L’accueil client regroupe les premiers échanges, la compréhension de la demande et l’installation d’un cadre professionnel. Une organisation claire réduit les attentes inutiles et prépare la prestation.</p>
+  </div>
+  <div class="visual">
+    <svg viewBox="0 0 1000 290" role="img" aria-label="Schéma du parcours client en cinq étapes">
+      <line x1="90" y1="120" x2="910" y2="120" stroke="#C9BEB9" stroke-width="2"/>
+      <g font-family="Inter" text-anchor="middle">
+        <g><circle cx="90" cy="120" r="28" fill="#FDFBFA" stroke="#8C3B4A" stroke-width="2"/><text x="90" y="125" fill="#8C3B4A" font-weight="700">1</text><text x="90" y="175" fill="#201716" font-weight="600">Rendez-vous</text><text x="90" y="198" fill="#201716" font-size="13">demande</text></g>
+        <g><circle cx="295" cy="120" r="28" fill="#FDFBFA" stroke="#8C3B4A" stroke-width="2"/><text x="295" y="125" fill="#8C3B4A" font-weight="700">2</text><text x="295" y="175" fill="#201716" font-weight="600">Accueil</text><text x="295" y="198" fill="#201716" font-size="13">écoute</text></g>
+        <g><circle cx="500" cy="120" r="28" fill="#FDFBFA" stroke="#8C3B4A" stroke-width="2"/><text x="500" y="125" fill="#8C3B4A" font-weight="700">3</text><text x="500" y="175" fill="#201716" font-weight="600">Diagnostic</text><text x="500" y="198" fill="#201716" font-size="13">besoin</text></g>
+        <g><circle cx="705" cy="120" r="28" fill="#FDFBFA" stroke="#8C3B4A" stroke-width="2"/><text x="705" y="125" fill="#8C3B4A" font-weight="700">4</text><text x="705" y="175" fill="#201716" font-weight="600">Prestation</text><text x="705" y="198" fill="#201716" font-size="13">suivi du temps</text></g>
+        <g><circle cx="910" cy="120" r="28" fill="#FDFBFA" stroke="#8C3B4A" stroke-width="2"/><text x="910" y="125" fill="#8C3B4A" font-weight="700">5</text><text x="910" y="175" fill="#201716" font-weight="600">Suivi</text><text x="910" y="198" fill="#201716" font-size="13">fidélisation</text></g>
+      </g>
+    </svg>
+    <div class="caption">Schéma 1 — Une prestation se pense comme un parcours continu, et non comme un simple temps de fauteuil.</div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><p>La qualité de l’accueil repose sur une écoute attentive, une information claire et une organisation visible.</p></div>
+  <div class="grid grid-2">
+    <article class="card"><h3>Avant l’arrivée</h3><p>Noter la demande, prévoir le créneau adapté et vérifier les contraintes utiles à la prestation.</p></article>
+    <article class="card"><h3>À l’arrivée</h3><p>Saluer, confirmer la prestation et installer la cliente dans un parcours simple et rassurant.</p></article>
+  </div>
+</div>
+</section>
+
+<section class="section alt reveal" id="temps">
+<div class="container">
+  <div class="section-head"><div class="section-num">03 / TEMPS DE FAUTEUIL</div><div><h2>Faire du temps un outil de qualité</h2></div></div>
+  <div class="prose"><p>La gestion du temps de fauteuil consiste à prévoir les étapes d’une prestation, leurs durées et les transitions. L’objectif est de conserver un rythme professionnel sans sacrifier l’écoute ni la qualité du geste.</p></div>
+  <div class="stepper" aria-label="Séquence de gestion du temps">
+    <div class="step"><span class="n">ÉTAPE 01</span><strong>Préparer</strong><span>poste, outils, produits</span></div>
+    <div class="step"><span class="n">ÉTAPE 02</span><strong>Installer</strong><span>cliente et diagnostic</span></div>
+    <div class="step"><span class="n">ÉTAPE 03</span><strong>Réaliser</strong><span>respect des étapes</span></div>
+    <div class="step"><span class="n">ÉTAPE 04</span><strong>Contrôler</strong><span>résultat et finition</span></div>
+    <div class="step"><span class="n">ÉTAPE 05</span><strong>Conclure</strong><span>conseils et prochain suivi</span></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Moment</th><th scope="col">Organisation</th><th scope="col">Repère</th></tr></thead>
+      <tbody>
+        <tr><td>Avant prestation</td><td>Préparer le poste et les produits nécessaires</td><td class="mono">Anticiper</td></tr>
+        <tr><td>Début</td><td>Accueil, écoute et clarification de la demande</td><td class="mono">Écouter</td></tr>
+        <tr><td>Pendant</td><td>Respecter l’ordre des opérations et surveiller les transitions</td><td class="mono">Maîtriser</td></tr>
+        <tr><td>Fin</td><td>Contrôler le résultat et transmettre les conseils</td><td class="mono">Conclure</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong><p>Accumuler du retard à chaque étape peut désorganiser toute la journée. Il faut donc prévoir les transitions et remettre le poste en ordre au bon moment.</p></div>
+</div>
+</section>
+
+<section class="section reveal" id="fidelisation">
+<div class="container">
+  <div class="section-head"><div class="section-num">04 / FIDÉLISATION</div><div><h2>Transformer une bonne prestation en relation durable</h2></div></div>
+  <div class="tabs" data-tabs>
+    <div class="tab-buttons" role="tablist" aria-label="Approches de fidélisation">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-ecoute" id="btn-ecoute">Écoute</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-conseil" id="btn-conseil">Conseil</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-suivi" id="btn-suivi">Suivi</button>
+    </div>
+    <div class="tab-panel active" id="tab-ecoute" role="tabpanel" aria-labelledby="btn-ecoute"><h3>Écouter et mémoriser la demande</h3><p class="prose">La relation se construit en prenant en compte les attentes exprimées, les habitudes de la cliente et les éléments utiles à la prochaine prestation.</p></div>
+    <div class="tab-panel" id="tab-conseil" role="tabpanel" aria-labelledby="btn-conseil"><h3>Conseiller avec précision</h3><p class="prose">Un conseil doit rester lié au besoin de la cliente et à l’entretien du résultat. Il prolonge la prestation au-delà du salon.</p></div>
+    <div class="tab-panel" id="tab-suivi" role="tabpanel" aria-labelledby="btn-suivi"><h3>Assurer le suivi</h3><p class="prose">Le suivi permet de maintenir le lien, de préparer la prochaine visite et d’identifier les besoins futurs.</p></div>
+  </div>
+  <div class="visual">
+    <svg viewBox="0 0 1000 330" role="img" aria-label="Cycle de fidélisation client">
+      <circle cx="500" cy="165" r="105" fill="none" stroke="#C9BEB9" stroke-width="2"/>
+      <circle cx="500" cy="165" r="55" fill="#FDFBFA" stroke="#8C3B4A" stroke-width="2"/>
+      <text x="500" y="160" text-anchor="middle" font-family="Fraunces" font-size="22" fill="#201716">Relation</text>
+      <text x="500" y="184" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#8C3B4A">DURABLE</text>
+      <g font-family="Inter" text-anchor="middle">
+        <text x="500" y="30" fill="#201716" font-weight="600">ÉCOUTE</text>
+        <text x="780" y="175" fill="#201716" font-weight="600">CONSEIL</text>
+        <text x="500" y="310" fill="#201716" font-weight="600">SUIVI</text>
+        <text x="220" y="175" fill="#201716" font-weight="600">CONFIANCE</text>
+      </g>
+      <path d="M548 75Q690 75 730 140M730 190Q690 255 548 255M452 255Q310 255 270 190M270 140Q310 75 452 75" fill="none" stroke="#8C3B4A" stroke-width="2"/>
+    </svg>
+    <div class="caption">Schéma 2 — La fidélisation est un cycle : écouter, conseiller, suivre et construire la confiance.</div>
+  </div>
+</div>
+</section>
+
+<section class="section alt reveal" id="hygiene">
+<div class="container">
+  <div class="section-head"><div class="section-num">05 / HYGIÈNE DU POSTE</div><div><h2>Un poste prêt avant, propre pendant, maîtrisé après</h2></div></div>
+  <div class="grid grid-3">
+    <article class="card"><div class="card-icon">A</div><h3>Avant</h3><p>Préparer un espace ordonné, les outils nécessaires et les produits utiles à la prestation.</p></article>
+    <article class="card"><div class="card-icon">B</div><h3>Pendant</h3><p>Maintenir l’ordre du poste et éviter les manipulations inutiles qui perturbent le déroulement.</p></article>
+    <article class="card"><div class="card-icon">C</div><h3>Après</h3><p>Remettre le poste en état pour la prochaine prestation et conserver un environnement professionnel.</p></article>
+  </div>
+  <div class="visual">
+    <svg viewBox="0 0 1000 310" role="img" aria-label="Schéma d'organisation du poste de travail">
+      <rect x="110" y="80" width="780" height="150" fill="none" stroke="#C9BEB9"/>
+      <rect x="160" y="115" width="180" height="80" fill="none" stroke="#8C3B4A"/>
+      <rect x="410" y="115" width="180" height="80" fill="none" stroke="#201716"/>
+      <rect x="660" y="115" width="180" height="80" fill="none" stroke="#8C3B4A"/>
+      <text x="250" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#8C3B4A">AVANT</text>
+      <text x="250" y="175" text-anchor="middle" font-family="Inter" font-size="14" fill="#201716">Préparer</text>
+      <text x="500" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#201716">PENDANT</text>
+      <text x="500" y="175" text-anchor="middle" font-family="Inter" font-size="14" fill="#201716">Maintenir</text>
+      <text x="750" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#8C3B4A">APRÈS</text>
+      <text x="750" y="175" text-anchor="middle" font-family="Inter" font-size="14" fill="#201716">Remettre en état</text>
+      <path d="M340 155h70M590 155h70" stroke="#C9BEB9" stroke-width="2"/>
+    </svg>
+    <div class="caption">Schéma 3 — L’hygiène du poste accompagne chaque moment de la prestation.</div>
+  </div>
+  <div class="callout"><strong>📌 Rappel d’hygiène ou de sécurité</strong><p>La propreté et l’ordre du poste participent à la sécurité, à l’efficacité du travail et à la confiance de la clientèle.</p></div>
+  <div class="accordion" id="faq">
+    <div class="acc-item">
+      <button class="acc-btn" aria-expanded="false"><span>Pourquoi préparer le poste avant l’arrivée ?</span><span>+</span></button>
+      <div class="acc-content">Pour éviter les recherches pendant la prestation, réduire les interruptions et installer immédiatement un cadre professionnel.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" aria-expanded="false"><span>Quel lien entre hygiène et relation client ?</span><span>+</span></button>
+      <div class="acc-content">Un poste ordonné et entretenu rend visible le sérieux de l’organisation et contribue au sentiment de confiance.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" aria-expanded="false"><span>Que doit permettre la fin de prestation ?</span><span>+</span></button>
+      <div class="acc-content">Elle doit permettre de vérifier le résultat, transmettre les conseils utiles, organiser le suivi et préparer le poste pour la suite.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section reveal" id="synthese">
+<div class="container">
+  <div class="section-head"><div class="section-num">06 / SYNTHÈSE</div><div><h2>Les repères essentiels</h2></div></div>
+  <div class="key-grid">
+    <div class="key"><b>01 · ACCUEIL</b><p>Écouter, clarifier la demande et installer un cadre professionnel.</p></div>
+    <div class="key"><b>02 · TEMPS</b><p>Anticiper les étapes, respecter les transitions et maîtriser le rythme.</p></div>
+    <div class="key"><b>03 · FIDÉLISATION</b><p>Conseiller et assurer un suivi qui prolonge la relation.</p></div>
+    <div class="key"><b>04 · HYGIÈNE</b><p>Maintenir un poste ordonné et maîtrisé avant, pendant et après.</p></div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><p>Une bonne gestion de salon relie organisation, qualité de service, hygiène du poste et relation client. Chaque étape prépare la suivante.</p></div>
+</div>
+</section>
+
+<section class="container">
+  <nav class="nav-lessons" aria-label="Navigation entre les leçons">
+    <a class="lesson-link" href="#" aria-label="Leçon précédente"><small>← Leçon précédente</small><strong>Leçon 19 — Lissage, permanente et texturisation</strong></a>
+    <a class="lesson-link" href="#top"><small>Module 4</small><strong>↑ Sommaire</strong></a>
+    <a class="lesson-link next" href="#" aria-label="Leçon suivante"><small>Leçon suivante →</small><strong>Leçon 21 — Théorie des couleurs appliquée au maquillage</strong></a>
+  </nav>
+</section>
+</main>
+
+<footer>
+  <div class="container">Filière Soins & Beauté · Module 4 · Leçon 20 · Support pédagogique</div>
+</footer>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const topBtn=document.getElementById('topBtn');
+const menuToggle=document.getElementById('menuToggle');
+const toc=document.getElementById('toc');
+
+function updateScroll(){
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const p=h>0?(window.scrollY/h)*100:0;
+  progress.style.width=p+'%';
+  topBtn.classList.toggle('show',window.scrollY>500);
+}
+window.addEventListener('scroll',updateScroll,{passive:true});
+updateScroll();
+
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+menuToggle.addEventListener('click',()=>{
+  const open=toc.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded',open);
+});
+toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toc.classList.remove('open')));
+
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  const buttons=[...group.querySelectorAll('.tab-btn')];
+  const panels=[...group.querySelectorAll('.tab-panel')];
+  function activate(i){
+    buttons.forEach((b,n)=>{
+      const on=n===i;b.setAttribute('aria-selected',on);
+      panels[n].classList.toggle('active',on);
+    });
+  }
+  buttons.forEach((b,i)=>{
+    b.addEventListener('click',()=>activate(i));
+    b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight')activate((i+1)%buttons.length);
+      if(e.key==='ArrowLeft')activate((i-1+buttons.length)%buttons.length);
+    });
+  });
+});
+
+document.querySelectorAll('.acc-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.closest('.acc-item');
+    const open=item.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open);
+    btn.querySelector('span:last-child').textContent=open?'−':'+';
+  });
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

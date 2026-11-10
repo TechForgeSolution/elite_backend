@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 17 — Organisation d'un service en restauration : petit-déjeuner, déjeuner et dîner.">
+<title>Leçon 17 — Organisation d'un service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FDF3E7;
+  --color-text:#3B2314;
+  --color-accent:#E8752C;
+  --color-neutral:#8A6E5C;
+  --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --shadow:0 10px 30px color-mix(in srgb,var(--color-text) 10%,transparent);
+  --display:"Playfair Display",Georgia,serif;
+  --body:"Inter",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--body);line-height:1.68}
+body:focus-within{scroll-behavior:smooth}
+a{color:var(--color-text);text-decoration:none}
+a:hover{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+#progress{position:fixed;top:0;left:0;width:0;height:4px;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:0;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:.02em}
+.brand span{color:var(--color-accent)}
+.nav a{font-size:.85rem;font-weight:600}
+.container{max-width:1100px;margin:auto;padding:0 24px}
+.hero{padding:68px 0 42px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--color-neutral);margin:0 0 12px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0}
+h1{font-size:clamp(2.35rem,6vw,4.5rem);max-width:850px}
+h2{font-size:clamp(1.65rem,3vw,2.35rem);margin-bottom:18px}
+h3{font-size:1.2rem;margin-bottom:8px}
+.lead{max-width:720px;font-size:1.08rem;color:var(--muted);margin:20px 0 28px}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{border:1px solid var(--border);padding:7px 11px;border-radius:999px;font-size:.78rem;font-weight:600;background:var(--bg-alt)}
+.badge.accent{border-color:var(--color-accent);color:var(--color-accent)}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;margin-bottom:54px}
+.toc-title{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--color-neutral);margin-bottom:10px}
+.toc nav{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{padding:7px 10px;border:1px solid var(--border);font-size:.82rem;border-radius:5px;transition:.2s}
+.toc a:hover{border-color:var(--color-accent);transform:translateY(-1px)}
+section{padding:54px 0;border-bottom:1px solid var(--border)}
+.section-inner{max-width:920px}
+.kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--color-accent);text-transform:uppercase;margin-bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--bg-alt);border:1px solid var(--border);padding:22px;border-radius:8px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+.card .icon{font-size:1.45rem;margin-bottom:10px}
+.card p{margin:0;color:var(--muted);font-size:.92rem}
+.callout{margin:24px 0;padding:18px 20px;background:var(--accent-soft);border-left:4px solid var(--color-accent);border-radius:4px}
+.callout strong{display:block;margin-bottom:5px}
+.process{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:25px 0}
+.step{position:relative;padding:16px 12px;background:var(--bg-alt);border:1px solid var(--border);min-height:132px}
+.step::before{content:attr(data-step);font-family:var(--mono);font-size:.7rem;color:var(--color-accent)}
+.step h3{font-size:1rem;margin:8px 0 5px}
+.step p{font-size:.78rem;color:var(--muted);margin:0}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+table{width:100%;border-collapse:collapse;min-width:680px;background:var(--bg-alt)}
+th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--color-neutral)}
+td{font-size:.9rem}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:var(--accent-soft)}
+.time{font-family:var(--mono);white-space:nowrap;color:var(--color-accent)}
+.diagram{margin:26px 0;padding:22px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px}
+.diagram svg{width:100%;height:auto;display:block}
+svg text{font-family:var(--body);fill:var(--color-text)}
+.tabs{margin-top:24px}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.tab-buttons button{cursor:pointer;border:1px solid var(--border);background:var(--bg-alt);padding:9px 13px;border-radius:5px;font-weight:600;font-size:.82rem}
+.tab-buttons button[aria-selected="true"]{border-color:var(--color-accent);color:var(--color-accent)}
+.tab-panel{display:none;padding:20px;background:var(--bg-alt);border:1px solid var(--border);border-radius:7px}
+.tab-panel.active{display:block}
+.accordion{border-top:1px solid var(--border)}
+details{border-bottom:1px solid var(--border);padding:15px 0}
+summary{cursor:pointer;font-weight:700}
+summary::marker{color:var(--color-accent)}
+details p{color:var(--muted);margin:10px 0 0;max-width:720px}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{padding:18px;border-top:3px solid var(--color-accent);background:var(--bg-alt)}
+.key b{font-family:var(--mono);font-size:.72rem;color:var(--color-accent)}
+.key p{font-size:.85rem;margin:8px 0 0}
+nav.bottom{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;padding:36px 0}
+.navbox{border:1px solid var(--border);padding:16px;background:var(--bg-alt)}
+.navbox.next{text-align:right}
+.navbox small{display:block;color:var(--muted);font-size:.72rem;margin-bottom:4px}
+.navbox strong{font-family:var(--display)}
+footer{border-top:1px solid var(--border);padding:28px 0 45px;color:var(--muted);font-size:.8rem}
+.top{border:1px solid var(--border);padding:10px 13px;border-radius:5px;background:var(--bg-alt)}
+.reveal{opacity:0;transform:translateY(14px);transition:.6s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+@media(max-width:850px){
+  .grid{grid-template-columns:1fr 1fr}
+  .process{grid-template-columns:1fr 1fr}
+  .key-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .container{padding:0 17px}
+  .nav{padding:12px 17px}
+  .hero{padding:45px 0 30px}
+  .grid,.process,.key-grid{grid-template-columns:1fr}
+  .process .step{min-height:auto}
+  section{padding:40px 0}
+  nav.bottom{grid-template-columns:1fr}
+  .navbox.next{text-align:left}
+  .toc nav{display:grid;grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  *{transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="#top">Filière <span>Restauration</span></a>
+    <a href="#sommaire">Sommaire</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="container">
+    <section class="hero" style="border-bottom:0">
+      <p class="eyebrow">Module 4 · Leçon 17</p>
+      <h1>Organisation d'un service</h1>
+      <p class="lead">Petit-déjeuner, déjeuner, dîner : adapter l'organisation de la salle au type de service, au rythme de travail, à la rotation des tables et aux pics d'activité.</p>
+      <div class="badges">
+        <span class="badge accent">BAC Pro</span>
+        <span class="badge">20 min</span>
+        <span class="badge">Service en salle</span>
+      </div>
+    </section>
+
+    <div class="toc" id="sommaire">
+      <div class="toc-title">Sommaire</div>
+      <nav aria-label="Sommaire de la leçon">
+        <a href="#objectif">Objectif</a>
+        <a href="#principes">Principes</a>
+        <a href="#services">3 services</a>
+        <a href="#planning">Planning</a>
+        <a href="#rotation">Rotation</a>
+        <a href="#pics">Pics d'activité</a>
+        <a href="#cles">Points clés</a>
+      </nav>
+    </div>
+
+    <section id="objectif" class="reveal">
+      <div class="section-inner">
+        <div class="kicker">01 · Objectif</div>
+        <h2>Organiser avant que le service commence</h2>
+        <p>L'organisation d'un service consiste à préparer les personnes, les tables, le matériel et les priorités afin que le déroulement soit fluide. Elle varie selon le moment de la journée et le comportement attendu des clients.</p>
+        <div class="callout">
+          <strong>💡 À retenir</strong>
+          Une bonne organisation anticipe le rythme du service : elle répartit les tâches, prépare les ressources et prévoit les périodes de forte activité.
+        </div>
+      </div>
+    </section>
+
+    <section id="principes" class="reveal">
+      <div class="section-inner">
+        <div class="kicker">02 · Principes</div>
+        <h2>Les 4 leviers d'une organisation efficace</h2>
+        <div class="grid">
+          <article class="card"><div class="icon">👥</div><h3>Répartition</h3><p>Attribuer clairement les zones, les tables et les responsabilités de chaque membre de l'équipe.</p></article>
+          <article class="card"><div class="icon">🍽️</div><h3>Préparation</h3><p>Vérifier la mise en place, le matériel, les menus et les besoins spécifiques du service.</p></article>
+          <article class="card"><div class="icon">⏱️</div><h3>Rythme</h3><p>Adapter le rythme des prises de commande, du service et du débarrassage à l'affluence.</p></article>
+          <article class="card"><div class="icon">🔄</div><h3>Rotation</h3><p>Suivre les tables libérées, les tables à remettre en place et les nouvelles arrivées.</p></article>
+          <article class="card"><div class="icon">📣</div><h3>Communication</h3><p>Transmettre rapidement les informations utiles entre salle, cuisine et encadrement.</p></article>
+          <article class="card"><div class="icon">📋</div><h3>Anticipation</h3><p>Prévoir les pics d'activité et renforcer les postes lorsque la charge augmente.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="reveal">
+      <div class="section-inner">
+        <div class="kicker">03 · Les types de service</div>
+        <h2>Petit-déjeuner, déjeuner, dîner</h2>
+        <p>Chaque service possède ses propres contraintes. L'équipe conserve les mêmes principes d'organisation, mais ajuste la mise en place, le rythme et la surveillance des tables.</p>
+
+        <div class="tabs" role="tablist" aria-label="Comparaison des services">
+          <div class="tab-buttons">
+            <button role="tab" aria-selected="true" aria-controls="tab-petit" data-tab="tab-petit">Petit-déjeuner</button>
+            <button role="tab" aria-selected="false" aria-controls="tab-midi" data-tab="tab-midi">Déjeuner</button>
+            <button role="tab" aria-selected="false" aria-controls="tab-soir" data-tab="tab-soir">Dîner</button>
+          </div>
+          <div id="tab-petit" class="tab-panel active" role="tabpanel">
+            <h3>Un service généralement court et concentré</h3>
+            <p>La priorité est la rapidité de mise en place et le réassort. L'équipe surveille les consommations, débarrasse au fur et à mesure et maintient les espaces propres pendant toute la période.</p>
+          </div>
+          <div id="tab-midi" class="tab-panel" role="tabpanel">
+            <h3>Un rythme souvent marqué par un pic</h3>
+            <p>Les prises de commande et les départs peuvent se concentrer sur une période limitée. La coordination des zones et la fluidité entre commande, service et débarrassage deviennent essentielles.</p>
+          </div>
+          <div id="tab-soir" class="tab-panel" role="tabpanel">
+            <h3>Un service plus étalé et plus suivi</h3>
+            <p>Le rythme peut être plus progressif. L'équipe veille à la qualité de l'accueil, au suivi des tables et à l'enchaînement des étapes jusqu'à l'encaissement.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap" style="margin-top:28px">
+          <table>
+            <thead><tr><th>Service</th><th>Priorité d'organisation</th><th>Rythme</th><th>Point de vigilance</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Petit-déjeuner</strong></td><td>Mise en place + réassort</td><td class="time">rapide</td><td>Disponibilité immédiate du matériel et des produits</td></tr>
+              <tr><td><strong>Déjeuner</strong></td><td>Fluidité + rotation</td><td class="time">soutenu</td><td>Pic d'arrivées et de commandes</td></tr>
+              <tr><td><strong>Dîner</strong></td><td>Suivi + qualité</td><td class="time">progressif</td><td>Coordination jusqu'au départ et à l'encaissement</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="planning" class="reveal">
+      <div class="section-inner">
+        <div class="kicker">04 · Calendrier de service</div>
+        <h2>Planifier avant, pendant et après</h2>
+        <div class="process" aria-label="Chronologie d'organisation d'un service">
+          <div class="step" data-step="01"><h3>Préparer</h3><p>Vérifier salle, matériel, tables et répartition.</p></div>
+          <div class="step" data-step="02"><h3>Accueillir</h3><p>Installer les clients et identifier les priorités.</p></div>
+          <div class="step" data-step="03"><h3>Servir</h3><p>Coordonner commandes, service et communication.</p></div>
+          <div class="step" data-step="04"><h3>Tourner</h3><p>Débarrasser et remettre rapidement les tables.</p></div>
+          <div class="step" data-step="05"><h3>Clôturer</h3><p>Ranger, contrôler et transmettre les informations.</p></div>
+        </div>
+
+        <div class="diagram" aria-label="Schéma du cycle d'un service">
+          <svg viewBox="0 0 900 180" role="img" aria-labelledby="cycleTitle cycleDesc">
+            <title id="cycleTitle">Cycle d'organisation d'un service</title>
+            <desc id="cycleDesc">Préparation, accueil, service, rotation et clôture forment une boucle d'organisation.</desc>
+            <g fill="none" stroke="var(--color-neutral)" stroke-width="2">
+              <line x1="120" y1="90" x2="270" y2="90"/><line x1="300" y1="90" x2="450" y2="90"/>
+              <line x1="480" y1="90" x2="630" y2="90"/><line x1="660" y1="90" x2="810" y2="90"/>
+            </g>
+            <g fill="var(--bg-alt)" stroke="var(--color-accent)" stroke-width="2">
+              <circle cx="90" cy="90" r="28"/><circle cx="285" cy="90" r="28"/><circle cx="465" cy="90" r="28"/>
+              <circle cx="645" cy="90" r="28"/><circle cx="825" cy="90" r="28"/>
+            </g>
+            <g font-size="12" text-anchor="middle" font-weight="600">
+              <text x="90" y="94">Préparer</text><text x="285" y="94">Accueillir</text><text x="465" y="94">Servir</text>
+              <text x="645" y="94">Tourner</text><text x="825" y="94">Clôturer</text>
+            </g>
+            <text x="450" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="var(--color-accent)">ORGANISATION DU SERVICE</text>
+            <text x="450" y="160" text-anchor="middle" font-size="11">La qualité dépend de la continuité entre les étapes.</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="rotation" class="reveal">
+      <div class="section-inner">
+        <div class="kicker">05 · Rotation des tables</div>
+        <h2>Lire la salle en temps réel</h2>
+        <p>La rotation correspond au passage d'une table d'un état à l'autre. Le personnel doit savoir quelles tables sont occupées, lesquelles viennent d'être libérées et lesquelles sont prêtes à recevoir de nouveaux clients.</p>
+        <div class="grid">
+          <article class="card"><h3>1 · Occupée</h3><p>Le service est en cours : accueil, commande, suivi et débarrassage partiel.</p></article>
+          <article class="card"><h3>2 · Libérée</h3><p>Les clients sont partis : débarrasser et contrôler rapidement la table.</p></article>
+          <article class="card"><h3>3 · Prête</h3><p>La table est remise en place et peut être proposée à une nouvelle arrivée.</p></article>
+        </div>
+        <div class="callout">
+          <strong>👨‍🍳 Conseil de chef</strong>
+          Ne regardez pas uniquement votre propre zone : gardez une vision globale de la salle afin d'anticiper les prochaines arrivées et d'éviter les tables inutilisées.
+        </div>
+      </div>
+    </section>
+
+    <section id="pics" class="reveal">
+      <div class="section-inner">
+        <div class="kicker">06 · Gestion des pics</div>
+        <h2>Quand l'activité augmente</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Moment</th><th>Signal</th><th>Action organisationnelle</th></tr></thead>
+            <tbody>
+              <tr><td>Avant le pic</td><td>Réservations / arrivées prévues</td><td>Renforcer la mise en place et vérifier le matériel.</td></tr>
+              <tr><td>Pendant le pic</td><td>Plusieurs tables simultanément</td><td>Prioriser, communiquer et maintenir la rotation.</td></tr>
+              <tr><td>Après le pic</td><td>Départs groupés</td><td>Accélérer le débarrassage et la remise en place.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <strong>⚠️ Attention — erreur fréquente</strong>
+          Attendre que la salle soit déjà saturée pour s'organiser. L'anticipation permet de conserver un service régulier même lorsque plusieurs tables sollicitent l'équipe en même temps.
+        </div>
+
+        <div class="accordion">
+          <details>
+            <summary>Pourquoi adapter l'organisation à chaque service ?</summary>
+            <p>Parce que le rythme de travail, la durée d'occupation des tables, les habitudes de consommation et la concentration des arrivées peuvent varier entre le matin, le midi et le soir.</p>
+          </details>
+          <details>
+            <summary>Que faut-il surveiller pendant tout le service ?</summary>
+            <p>La disponibilité des tables, le rythme des commandes, la propreté, les besoins des clients, la coordination avec la cuisine et la capacité de l'équipe à absorber les nouvelles arrivées.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="cles" class="reveal">
+      <div class="section-inner">
+        <div class="kicker">07 · Synthèse</div>
+        <h2>Points clés à retenir</h2>
+        <div class="key-grid">
+          <div class="key"><b>01</b><p>L'organisation commence avant l'arrivée des clients.</p></div>
+          <div class="key"><b>02</b><p>Petit-déjeuner, déjeuner et dîner demandent des adaptations.</p></div>
+          <div class="key"><b>03</b><p>La rotation des tables soutient la fluidité du service.</p></div>
+          <div class="key"><b>04</b><p>Les pics d'activité doivent être anticipés et coordonnés.</p></div>
+        </div>
+        <div class="callout">
+          <strong>📌 Rappel professionnel</strong>
+          Organiser un service, c'est coordonner les personnes, l'espace, le matériel et le temps pour maintenir une expérience client fluide du début à la fin.
+        </div>
+      </div>
+    </section>
+
+    <nav class="bottom" aria-label="Navigation entre les leçons">
+      <a class="navbox" href="resto-lecon-16-mise-en-place-de-la-salle.html">
+        <small>← Leçon précédente</small><strong>Leçon 16 — Mise en place de la salle</strong>
+      </a>
+      <a class="top" href="#top">↑ Haut</a>
+      <a class="navbox next" href="resto-lecon-18-banquets-et-evenements.html">
+        <small>Leçon suivante →</small><strong>Leçon 18 — Banquets et événements</strong>
+      </a>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div>Filière Restauration · Module 4 · Leçon 17</div>
+    <div>Support pédagogique — organisation du service en salle.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const progress=document.getElementById('progress');
+  function updateProgress(){
+    const h=document.documentElement;
+    const max=h.scrollHeight-h.clientHeight;
+    progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+  }
+  window.addEventListener('scroll',updateProgress,{passive:true});
+  updateProgress();
+
+  const buttons=document.querySelectorAll('.tab-buttons button');
+  const panels=document.querySelectorAll('.tab-panel');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+    btn.addEventListener('keydown',e=>{
+      const list=[...buttons], i=list.indexOf(btn);
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();list[(i+1)%list.length].focus();}
+      if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();list[(i-1+list.length)%list.length].focus();}
+    });
+  });
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target);}});
+  },{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Restauration — Leçon 25 · Outils bureautiques pour la restauration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#FDF3E7;--color-text:#3B2314;--color-accent:#E8752C;--color-neutral:#8A6E5C;
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --soft2:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+ --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
+body:focus-within{scroll-behavior:smooth}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:transparent;z-index:99}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:20;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav{max-width:1160px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:.82rem}
+.brand b{color:var(--color-accent)}
+.nav a{color:var(--color-text);text-decoration:none;font-size:.88rem}
+.wrap{max-width:1160px;margin:auto;padding:0 24px}
+.hero{padding:76px 0 48px;display:grid;grid-template-columns:1.25fr .75fr;gap:52px;align-items:center}
+.kicker{font:600 .78rem "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.12;margin:0 0 16px}
+h1{font-size:clamp(2.5rem,6vw,5.3rem);max-width:850px}
+h2{font-size:clamp(1.8rem,3vw,2.8rem)}
+h3{font-size:1.35rem}
+.lead{font-size:1.12rem;max-width:720px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.badge{border:1px solid var(--border);padding:7px 11px;border-radius:999px;font:500 .75rem "IBM Plex Mono",monospace}
+.badge.accent{border-color:var(--color-accent)}
+.hero-art{border:1px solid var(--border);background:var(--soft);padding:20px;border-radius:18px}
+.hero-art svg{width:100%;height:auto;display:block}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:25px 0;margin-bottom:60px}
+.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.toc a{padding:12px;border:1px solid var(--border);text-decoration:none;color:var(--color-text);transition:.2s}
+.toc a:hover,.toc a:focus{border-color:var(--color-accent);transform:translateY(-2px)}
+.num{font:600 .72rem "IBM Plex Mono",monospace;color:var(--color-accent);display:block;margin-bottom:3px}
+section{padding:70px 0;border-bottom:1px solid var(--border)}
+.section-inner{max-width:900px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card,.callout{border:1px solid var(--border);border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .icon{font-size:1.5rem;margin-bottom:8px}
+.callout{border-left:5px solid var(--color-accent);background:var(--soft2);margin:24px 0}
+.callout strong{display:block;margin-bottom:5px}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:30px 0}
+.step{border-top:3px solid var(--color-neutral);padding:15px 10px}
+.step.active{border-color:var(--color-accent)}
+.step b{font:600 .78rem "IBM Plex Mono",monospace;color:var(--color-accent)}
+.table-wrap{overflow-x:auto;margin:26px 0}
+table{border-collapse:collapse;width:100%;min-width:680px}
+th,td{padding:13px 14px;border-bottom:1px solid var(--border);text-align:left}
+th{font:600 .78rem "IBM Plex Mono",monospace;text-transform:uppercase;background:var(--soft)}
+tr:hover td{background:var(--soft)}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.tabs{margin:28px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.tab-buttons button{font:600 .85rem Inter,sans-serif;color:var(--color-text);background:transparent;border:1px solid var(--border);padding:10px 14px;cursor:pointer}
+.tab-buttons button[aria-selected=true]{border-color:var(--color-accent);background:var(--soft2)}
+.tab-panel{display:none;padding:22px;border:1px solid var(--border);border-top:0}
+.tab-panel.active{display:block}
+details{border-bottom:1px solid var(--border);padding:17px 0}
+summary{cursor:pointer;font-weight:700}
+.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.key{border:1px solid var(--border);padding:20px;border-radius:14px}
+.key b{font:600 1.4rem "IBM Plex Mono",monospace;color:var(--color-accent)}
+footer{padding:38px 0;color:var(--muted)}
+.bottom-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center;padding:45px 0}
+.bottom-nav a{border:1px solid var(--border);padding:14px;text-decoration:none;color:var(--color-text)}
+.bottom-nav a:hover{border-color:var(--color-accent)}
+.top{position:fixed;right:20px;bottom:20px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-text);padding:10px 13px;cursor:pointer;border-radius:8px}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){
+ .hero{grid-template-columns:1fr;padding-top:50px}.toc-grid{grid-template-columns:1fr 1fr}
+ .grid2,.grid3{grid-template-columns:1fr}.stepper{grid-template-columns:1fr 1fr}
+ .key-grid{grid-template-columns:1fr 1fr}.bottom-nav{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ .wrap{padding:0 16px}.nav{padding:12px 16px}.nav a{display:none}
+ h1{font-size:2.65rem}.toc-grid{grid-template-columns:1fr}.key-grid{grid-template-columns:1fr}
+ section{padding:50px 0}.stepper{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+<header><div class="nav"><div class="brand">Chef <b>&amp;</b> Terracotta · Restauration</div><a href="#sommaire">Sommaire</a></div></header>
+
+<main id="top">
+<div class="wrap">
+<section class="hero reveal">
+<div>
+<div class="kicker">Module 5 · Gestion de Restaurant — coûts, achats et outils</div>
+<h1>Outils bureautiques pour la restauration</h1>
+<p class="lead">Utiliser les outils numériques courants pour organiser, suivre et sécuriser la gestion quotidienne d’un restaurant.</p>
+<div class="badges"><span class="badge accent">Leçon 25</span><span class="badge">BTS</span><span class="badge">25 min</span><span class="badge">Gestion &amp; outils</span></div>
+</div>
+<div class="hero-art">
+<svg viewBox="0 0 520 350" role="img" aria-label="Schéma d'un écosystème numérique de restaurant">
+<rect x="45" y="45" width="430" height="260" rx="24" fill="none" stroke="#8A6E5C" stroke-width="2"/>
+<rect x="180" y="105" width="160" height="105" rx="14" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+<text x="260" y="138" text-anchor="middle" fill="#3B2314" font-family="Inter" font-size="18" font-weight="700">TABLEAU</text>
+<text x="260" y="163" text-anchor="middle" fill="#3B2314" font-family="Inter" font-size="18" font-weight="700">DE BORD</text>
+<path d="M180 157H100M340 157h80M260 105V72M260 210v35" stroke="#E8752C" stroke-width="3"/>
+<g fill="#FDF3E7" stroke="#8A6E5C" stroke-width="2">
+<rect x="65" y="125" width="70" height="65" rx="10"/><rect x="385" y="125" width="70" height="65" rx="10"/>
+<rect x="225" y="50" width="70" height="50" rx="10"/><rect x="225" y="245" width="70" height="50" rx="10"/>
+</g>
+<g fill="#3B2314" font-family="Inter" font-size="11" text-anchor="middle">
+<text x="100" y="153">TABLEUR</text><text x="100" y="170">stocks / coûts</text>
+<text x="420" y="153">CAISSE</text><text x="420" y="170">ventes</text>
+<text x="260" y="72">RÉSERVATIONS</text><text x="260" y="89">planning</text>
+<text x="260" y="269">SAUVEGARDE</text><text x="260" y="286">données</text>
+</g>
+</svg>
+</div>
+</section>
+
+<section id="sommaire" class="toc reveal">
+<h2>Sommaire</h2>
+<div class="toc-grid">
+<a href="#comprendre"><span class="num">01</span>Comprendre les outils</a>
+<a href="#tableur"><span class="num">02</span>Tableurs de gestion</a>
+<a href="#caisse"><span class="num">03</span>Logiciels de caisse</a>
+<a href="#reservation"><span class="num">04</span>Réservation en ligne</a>
+<a href="#dashboard"><span class="num">05</span>Tableaux de bord</a>
+<a href="#donnees"><span class="num">06</span>Sauvegarde des données</a>
+<a href="#bonnes"><span class="num">07</span>Bonnes pratiques</a>
+<a href="#essentiel"><span class="num">08</span>Points clés</a>
+</div>
+</section>
+
+<section id="comprendre" class="reveal"><div class="section-inner">
+<div class="kicker">01 · Comprendre</div><h2>Le numérique au service de la gestion</h2>
+<p>Dans un restaurant, les outils bureautiques et numériques servent à transformer des informations dispersées — achats, stocks, ventes, réservations et résultats — en données organisées et exploitables.</p>
+<div class="grid3">
+<div class="card"><div class="icon">▦</div><h3>Centraliser</h3><p>Rassembler les informations dans des fichiers ou logiciels structurés pour limiter les doublons.</p></div>
+<div class="card"><div class="icon">↗</div><h3>Analyser</h3><p>Calculer des indicateurs et repérer rapidement les écarts entre prévisions et résultats.</p></div>
+<div class="card"><div class="icon">✓</div><h3>Décider</h3><p>Appuyer les décisions de gestion sur des informations à jour, lisibles et vérifiables.</p></div>
+</div>
+<div class="callout"><strong>💡 À retenir</strong>Un outil numérique n’améliore la gestion que si les données saisies sont fiables, correctement structurées et régulièrement mises à jour.</div>
+</div></section>
+
+<section id="tableur" class="reveal"><div class="section-inner">
+<div class="kicker">02 · Tableurs</div><h2>Tableurs de gestion</h2>
+<p>Un tableur permet de structurer des listes, automatiser des calculs et suivre les coûts. En restauration, il peut servir au suivi des achats, des stocks, des fiches de coûts ou des plannings.</p>
+<div class="stepper">
+<div class="step active"><b>01</b><br>Structurer</div><div class="step"><b>02</b><br>Saisir</div><div class="step"><b>03</b><br>Calculer</div><div class="step"><b>04</b><br>Contrôler</div><div class="step"><b>05</b><br>Analyser</div>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Produit</th><th scope="col">Qté</th><th scope="col">PU</th><th scope="col">Coût</th><th scope="col">Statut</th></tr></thead>
+<tbody>
+<tr><td>Tomates</td><td class="mono">12 kg</td><td class="mono">2,40 €</td><td class="mono">28,80 €</td><td>à réceptionner</td></tr>
+<tr><td>Filet de poulet</td><td class="mono">8 kg</td><td class="mono">7,80 €</td><td class="mono">62,40 €</td><td>commandé</td></tr>
+<tr><td>Riz</td><td class="mono">10 kg</td><td class="mono">3,10 €</td><td class="mono">31,00 €</td><td>en stock</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>👨‍🍳 Conseil de chef</strong>Une colonne = une information homogène. Évitez de mélanger dans une même cellule quantité, unité, commentaire et prix : les calculs et tris deviennent moins fiables.</div>
+</div></section>
+
+<section id="caisse" class="reveal"><div class="section-inner">
+<div class="kicker">03 · Caisse</div><h2>Logiciels de caisse</h2>
+<p>Le logiciel de caisse enregistre les ventes et facilite le suivi de l’activité. Selon sa configuration, il peut organiser les articles, transmettre les commandes et produire des états de vente.</p>
+<div class="grid2">
+<div class="card"><h3>Flux de vente</h3><p>Commande → enregistrement → encaissement → clôture → extraction des données.</p></div>
+<div class="card"><h3>Contrôles</h3><p>Vérifier les totaux, les moyens de paiement, les annulations et les écarts avant d’exploiter les résultats.</p></div>
+</div>
+<div class="tabs">
+<div class="tab-buttons" role="tablist" aria-label="Fonctions de caisse">
+<button role="tab" aria-selected="true" aria-controls="tab1" id="b1">Avant le service</button>
+<button role="tab" aria-selected="false" aria-controls="tab2" id="b2">Pendant</button>
+<button role="tab" aria-selected="false" aria-controls="tab3" id="b3">Après</button>
+</div>
+<div id="tab1" class="tab-panel active" role="tabpanel" aria-labelledby="b1"><b>Préparer :</b> vérifier les articles, prix, menus, utilisateurs et paramètres nécessaires au service.</div>
+<div id="tab2" class="tab-panel" role="tabpanel" aria-labelledby="b2"><b>Enregistrer :</b> saisir les commandes avec précision et corriger selon la procédure prévue.</div>
+<div id="tab3" class="tab-panel" role="tabpanel" aria-labelledby="b3"><b>Contrôler :</b> clôturer, vérifier les données et conserver les informations utiles à la gestion.</div>
+</div>
+</div></section>
+
+<section id="reservation" class="reveal"><div class="section-inner">
+<div class="kicker">04 · Réservation</div><h2>Réservation en ligne</h2>
+<p>Un outil de réservation aide à organiser les arrivées et à visualiser la capacité disponible. Il doit être synchronisé avec l’organisation réelle de la salle.</p>
+<div class="grid3">
+<div class="card"><h3>Prendre</h3><p>Enregistrer date, heure, nombre de couverts et informations nécessaires.</p></div>
+<div class="card"><h3>Planifier</h3><p>Répartir les tables en tenant compte des capacités et des contraintes du service.</p></div>
+<div class="card"><h3>Confirmer</h3><p>Vérifier les informations et assurer le suivi des modifications ou annulations.</p></div>
+</div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>Une réservation numérique n’est pas automatiquement une table disponible : il faut tenir compte des capacités, des horaires, des rotations et des contraintes de service.</div>
+</div></section>
+
+<section id="dashboard" class="reveal"><div class="section-inner">
+<div class="kicker">05 · Tableaux de bord</div><h2>Lire l’activité en un coup d’œil</h2>
+<p>Le tableau de bord rassemble quelques indicateurs utiles. Il doit rester lisible : trop d’indicateurs rendent les priorités moins visibles.</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Indicateur</th><th scope="col">Utilité</th><th scope="col">Source possible</th><th scope="col">Lecture</th></tr></thead>
+<tbody>
+<tr><td>Chiffre d’affaires</td><td>Suivre les ventes</td><td>Caisse</td><td>évolution par période</td></tr>
+<tr><td>Achats</td><td>Surveiller les dépenses</td><td>Tableur / achats</td><td>écart au budget</td></tr>
+<tr><td>Stock</td><td>Anticiper les besoins</td><td>Inventaire</td><td>niveau / variation</td></tr>
+<tr><td>Réservations</td><td>Préparer le service</td><td>Planning</td><td>couverts attendus</td></tr>
+</tbody></table></div>
+<svg viewBox="0 0 760 250" role="img" aria-label="Schéma de lecture d'un tableau de bord" style="width:100%;height:auto;margin-top:20px">
+<rect x="20" y="55" width="150" height="130" rx="14" fill="#FDF3E7" stroke="#8A6E5C" stroke-width="2"/>
+<rect x="205" y="55" width="150" height="130" rx="14" fill="#FDF3E7" stroke="#8A6E5C" stroke-width="2"/>
+<rect x="390" y="55" width="150" height="130" rx="14" fill="#FDF3E7" stroke="#8A6E5C" stroke-width="2"/>
+<rect x="575" y="55" width="150" height="130" rx="14" fill="#FDF3E7" stroke="#E8752C" stroke-width="3"/>
+<g fill="#3B2314" font-family="Inter" font-size="16" text-anchor="middle"><text x="95" y="92">DONNÉES</text><text x="280" y="92">CONTRÔLE</text><text x="465" y="92">INDICATEURS</text><text x="650" y="92">DÉCISION</text></g>
+<g fill="#8A6E5C" font-family="IBM Plex Mono" font-size="12" text-anchor="middle"><text x="95" y="125">caisse / achats</text><text x="280" y="125">qualité</text><text x="465" y="125">CA / stock</text><text x="650" y="125">action</text></g>
+<g stroke="#E8752C" stroke-width="3"><path d="M170 120h35M355 120h35M540 120h35"/></g>
+</svg>
+</div></section>
+
+<section id="donnees" class="reveal"><div class="section-inner">
+<div class="kicker">06 · Sauvegarde</div><h2>Protéger les données</h2>
+<p>Les données de gestion ont une valeur opérationnelle. Une sauvegarde régulière limite les conséquences d’une suppression, d’une panne ou d’une erreur de manipulation.</p>
+<div class="stepper">
+<div class="step active"><b>01</b><br>Identifier</div><div class="step"><b>02</b><br>Sauvegarder</div><div class="step"><b>03</b><br>Vérifier</div><div class="step"><b>04</b><br>Organiser</div><div class="step"><b>05</b><br>Restaurer</div>
+</div>
+<div class="grid2">
+<div class="card"><h3>Organisation</h3><p>Nommer clairement les fichiers, distinguer les versions et classer les documents par période ou fonction.</p></div>
+<div class="card"><h3>Vérification</h3><p>Une sauvegarde n’est utile que si elle peut être retrouvée et exploitée lorsque cela est nécessaire.</p></div>
+</div>
+<div class="callout"><strong>📌 Rappel sécurité</strong>Limiter les accès aux données aux personnes qui en ont besoin dans leur fonction et respecter les procédures internes de l’établissement.</div>
+</div></section>
+
+<section id="bonnes" class="reveal"><div class="section-inner">
+<div class="kicker">07 · Bonnes pratiques</div><h2>Construire une information fiable</h2>
+<div class="grid2">
+<div class="card"><h3>Standardiser</h3><p>Utiliser les mêmes unités, formats de date, noms d’articles et règles de saisie.</p></div>
+<div class="card"><h3>Contrôler</h3><p>Comparer les totaux, repérer les valeurs incohérentes et corriger les erreurs à la source.</p></div>
+<div class="card"><h3>Documenter</h3><p>Conserver une structure compréhensible et expliquer les conventions utilisées dans les fichiers.</p></div>
+<div class="card"><h3>Actualiser</h3><p>Éviter les tableaux abandonnés : un indicateur ancien peut conduire à une mauvaise décision.</p></div>
+</div>
+<details><summary>Pourquoi éviter les fichiers trop complexes ?</summary><p>Parce qu’un outil difficile à comprendre ou à maintenir augmente le risque d’erreur. Un modèle simple, documenté et partagé est souvent plus utile qu’un fichier très sophistiqué.</p></details>
+<details><summary>Comment choisir entre tableur et logiciel spécialisé ?</summary><p>Le choix dépend du besoin, du volume de données, du nombre d’utilisateurs, des fonctions attendues et des procédures de l’établissement. Le cours fournit les principes de gestion mais ne prescrit pas un logiciel particulier.</p></details>
+<details><summary>Quel rôle pour le responsable ?</summary><p>Définir les règles de saisie, vérifier la cohérence des données, organiser les accès et utiliser les résultats pour piloter l’activité.</p></details>
+</div></section>
+
+<section id="essentiel" class="reveal"><div class="section-inner">
+<div class="kicker">08 · Synthèse</div><h2>Points clés à retenir</h2>
+<div class="key-grid">
+<div class="key"><b>01</b><h3>Structurer</h3><p>Des données organisées facilitent les calculs et les décisions.</p></div>
+<div class="key"><b>02</b><h3>Contrôler</h3><p>Les outils numériques ne remplacent pas la vérification humaine.</p></div>
+<div class="key"><b>03</b><h3>Piloter</h3><p>Un tableau de bord doit montrer les indicateurs réellement utiles.</p></div>
+<div class="key"><b>04</b><h3>Sécuriser</h3><p>La sauvegarde et la gestion des accès protègent l’information.</p></div>
+</div>
+<div class="callout"><strong>👨‍🍳 Conseil professionnel</strong>Pensez « donnée → contrôle → indicateur → décision ». C’est cette chaîne, plus que l’outil lui-même, qui donne sa valeur au numérique dans la gestion d’un restaurant.</div>
+</div></section>
+
+<div class="bottom-nav">
+<a href="#sommaire">← Sommaire du module</a>
+<span class="mono">LEÇON 25</span>
+<a href="#top" style="text-align:right">Retour au début ↑</a>
+</div>
+</div>
+</main>
+<footer><div class="wrap">Chef &amp; Terracotta · Filière Restauration · Module 5 · Leçon 25</div></footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){const d=document.documentElement;const max=d.scrollHeight-d.clientHeight;progress.style.width=(max?d.scrollTop/max*100:0)+'%'}
+addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+document.getElementById('topBtn').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+document.querySelectorAll('.tab-buttons button').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  const group=btn.parentElement;
+  group.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected','false'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.setAttribute('aria-selected','true');
+  document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+ });
+});
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

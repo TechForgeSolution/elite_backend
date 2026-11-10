@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 6 — Construire un premier assistant de réponse aux questions fréquentes</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235B4BDB'/%3E%3Cpath d='M8 11h16v9H15l-4 4v-4H8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F7FB;--color-text:#0A0A0F;--color-text-muted:#5F6370;--color-accent:#5B4BDB;--color-accent-soft:#EEECFF;--color-border:#E4E3EC;--r:12px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.25;margin:0 0 .6em}
+h1{font-size:clamp(1.9rem,5vw,2.9rem)}h2{font-size:clamp(1.5rem,3.5vw,2rem)}h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1.1em}a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:960px;margin:0 auto;padding:0 1.25rem}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px;gap:1rem}
+.brand{font:600 .9rem Sora,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu-btn{background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:.45rem .9rem;font:600 .9rem Inter;cursor:pointer}
+#menu{display:none;position:absolute;right:1.25rem;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:.5rem;width:min(320px,calc(100vw - 2.5rem));box-shadow:0 8px 30px rgba(10,10,15,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:.5rem .75rem;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#menu a:hover{background:var(--color-accent-soft)}
+.hero{background:var(--color-bg-alt);padding:4rem 0 3rem;border-bottom:1px solid var(--color-border)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.badge{font-size:.82rem;font-weight:600;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--color-border);background:#fff;color:var(--color-text-muted)}
+.badge.mod{background:var(--color-accent-soft);color:#4536c4;border-color:transparent}
+.toc{padding:2.5rem 0}
+.toc ol{margin:0;padding-left:1.2rem;columns:1;color:var(--color-text-muted)}
+.toc li{padding:.15rem 0}.toc a{text-decoration:none;color:var(--color-text)}.toc a:hover{color:var(--color-accent)}
+section.s{padding:3.5rem 0}section.s:nth-of-type(even){background:var(--color-bg-alt)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+.callout{border-radius:var(--r);padding:1rem 1.25rem;margin:1.5rem 0;border:1px solid var(--color-border);background:#fff;border-left:4px solid var(--color-accent)}
+.callout strong{display:block;margin-bottom:.25rem}.callout.warn{border-left-color:#0A0A0F}.callout.more{background:var(--color-accent-soft);border-color:transparent}
+.callout p:last-child{margin:0}
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:1.5rem 0}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1.25rem;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .ic{width:40px;height:40px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;font-size:1.3rem;margin-bottom:.75rem}
+.card h3{font-size:1.05rem;margin-bottom:.3rem}.card p{margin:0;color:var(--color-text-muted);font-size:.95rem;line-height:1.55}
+.tabs [role=tablist]{display:flex;gap:.25rem;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{background:none;border:0;padding:.7rem 1rem;font:600 .95rem Inter;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:1.25rem 0}.tabs [role=tabpanel][hidden]{display:none}
+.acc{border:1px solid var(--color-border);border-radius:var(--r);background:#fff;margin:.75rem 0}
+.acc button{width:100%;text-align:left;background:none;border:0;padding:1rem 1.25rem;font:600 1rem Inter;cursor:pointer;display:flex;justify-content:space-between;gap:1rem;color:var(--color-text)}
+.acc button::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+.acc button[aria-expanded=true]::after{content:"−"}
+.acc .body{padding:0 1.25rem 1rem}.acc .body[hidden]{display:none}.acc .body p:last-child{margin:0}
+.stepper{list-style:none;padding:0;margin:1.5rem 0;display:grid;gap:.75rem;counter-reset:st}
+.stepper li{counter-increment:st;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem;position:relative;font-size:.95rem;line-height:1.5}
+.stepper li::before{content:counter(st);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem Sora;margin-bottom:.5rem}
+.stepper b{display:block}
+.fig{margin:1.5rem 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem}
+.fig svg{width:100%;height:auto;display:block}.fig figcaption{font-size:.85rem;color:var(--color-text-muted);margin-top:.5rem}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.95rem;line-height:1.5}
+th,td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--color-border);vertical-align:top}th{font-family:Sora;font-size:.9rem}
+.pros-cons{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pros-cons ul{margin:0;padding-left:1.1rem}.pros-cons li{margin:.4rem 0}
+.key{background:var(--color-text);color:#fff;padding:4rem 0}.key h2{color:#fff}
+.key ul{padding-left:1.2rem;margin:0}.key li{margin:.7rem 0}.key li::marker{color:#a99fff}
+.nav{display:flex;justify-content:space-between;gap:1rem;padding:2.5rem 0;flex-wrap:wrap}
+.nav a{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem 1.25rem;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}.nav small{display:block;color:var(--color-text-muted)}.nav .next{text-align:right}
+.nav .off{opacity:.45;pointer-events:none}
+footer{border-top:1px solid var(--color-border);padding:1.5rem 0;color:var(--color-text-muted);font-size:.85rem;text-align:center}
+#top{position:fixed;right:1.25rem;bottom:1.25rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+#top.show{opacity:1;pointer-events:auto}
+@media(min-width:768px){.toc ol{columns:2}.stepper{grid-template-columns:repeat(4,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade{opacity:1;transform:none;transition:none}.card{transition:none}.card:hover{transform:none}}
+pre{margin:0;background:#0B0D12;color:#E9E8F2;border-radius:var(--r);padding:1rem 1.1rem;overflow-x:auto;font:.86rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word}
+.code{position:relative;margin:1.25rem 0}.code .lbl{font-size:.8rem;color:var(--color-text-muted);margin-bottom:.35rem}
+.code button{position:absolute;top:2rem;right:.6rem;background:#1c1f2b;color:#cfcbff;border:1px solid #34385a;border-radius:8px;padding:.25rem .65rem;font:600 .78rem Inter;cursor:pointer;transition:background .2s}
+.code button:hover{background:#2a2d45}.code pre{padding-top:1rem}
+pre .k{color:#a99fff;font-weight:700}pre .c{color:#8b8fa3}
+.cmp{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="brand">Création de chatbots et assistants IA pour les entreprises</span>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire de la leçon">
+    <a href="#creation">1. Création de l’assistant</a><a href="#import">2. Importer la base</a><a href="#accueil">3. Accueil, ton et réponses types</a><a href="#tests">4. Premiers tests</a><a href="#synthese">Synthèse</a>
+  </nav>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge mod">Module 2 — Construire, déployer et piloter son assistant</span><span class="badge">⏱ 45 min</span><span class="badge">Niveau : Débutant</span></div>
+  <p class="sub" style="margin-bottom:.5rem">Leçon 6</p>
+  <h1>Construire un premier assistant de réponse aux questions fréquentes</h1>
+  <p class="sub">Du compte vierge à un assistant qui répond correctement aux questions des clients, avec un outil no-code.</p>
+  <p style="margin:0"><b>Objectif :</b> créer et configurer un premier chatbot opérationnel qui répond aux questions des clients.</p>
+</div></div>
+
+<div class="toc"><div class="wrap">
+  <h2 style="font-size:1.2rem">Dans cette leçon</h2>
+  <ol>
+    <li><a href="#creation">Création et initialisation de l’assistant</a></li>
+    <li><a href="#import">Importation et structuration de la base de connaissances</a></li>
+    <li><a href="#accueil">Message d’accueil, ton et réponses types</a></li>
+    <li><a href="#tests">Premiers tests de cohérence et d’alignement</a></li>
+  </ol>
+</div></div>
+
+<section class="s" id="creation"><div class="wrap fade">
+  <h2>1. Création et initialisation de l’assistant</h2>
+  <p>Un <b>assistant de FAQ</b> répond aux questions fréquentes des clients à partir d’informations validées par l’entreprise. C’est le meilleur premier projet : le périmètre est limité, les réponses sont vérifiables et le risque est faible.</p>
+  <p>Une <b>plateforme no-code</b> permet de le construire par formulaires et réglages, sans programmer. Les noms des menus varient d’un outil à l’autre, mais la démarche reste la même. Nous reprenons l’exemple de la boutique fictive « Aurore Cycles ».</p>
+  <ol class="stepper" aria-label="Étapes de création">
+    <li><b>Créer</b>Ouvrir un nouveau projet d’assistant.</li>
+    <li><b>Nommer</b>Choisir un nom, une langue et un canal (site web).</li>
+    <li><b>Instruire</b>Coller le prompt système de la leçon 5.</li>
+    <li><b>Enregistrer</b>Sauvegarder cette première version.</li>
+  </ol>
+  <h3>Les réglages de départ</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Réglage</th><th>Rôle</th><th>Exemple</th></tr></thead>
+    <tbody>
+    <tr><td>Nom</td><td>Identité visible par le client</td><td>Léa, conseillère Aurore Cycles</td></tr>
+    <tr><td>Langue</td><td>Langue des réponses</td><td>Français</td></tr>
+    <tr><td>Canal</td><td>Où l’assistant apparaît</td><td>Site web de la boutique</td></tr>
+    <tr><td>Instructions</td><td>Prompt système</td><td>Rôle, règles, limites, format</td></tr>
+    <tr><td>Source des réponses</td><td>Base à consulter</td><td>Base de connaissances importée</td></tr>
+    </tbody></table></div>
+  <figure class="fig">
+    <svg viewBox="0 0 640 170" role="img" aria-labelledby="t1 d1"><title id="t1">Éléments d’un assistant de FAQ</title><desc id="d1">Le client écrit dans le canal, l’assistant applique ses instructions et consulte la base de connaissances, puis répond.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="50" width="140" height="70" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="80" y="82">Canal</text><text x="80" y="102" font-size="11" fill="#5F6370" font-weight="400">site web</text>
+      <rect x="250" y="20" width="140" height="60" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="320" y="55">Assistant</text>
+      <rect x="250" y="100" width="140" height="55" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="320" y="132">Base de connaissances</text>
+      <rect x="490" y="50" width="140" height="70" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="560" y="82">Réponse</text><text x="560" y="102" font-size="11" fill="#5F6370" font-weight="400">affichée au client</text></g>
+      <path d="M150 75L250 55M390 55L490 75M320 80v20" stroke="#5B4BDB" stroke-width="2" fill="none"/>
+    </svg>
+    <figcaption>Trois éléments à configurer : le canal, les instructions et la base.</figcaption>
+  </figure>
+  <div class="callout"><strong>💡 À retenir</strong><p>Commencez petit : une dizaine de questions bien traitées valent mieux que cent questions approximatives.</p></div>
+</div></section>
+
+<section class="s" id="import"><div class="wrap fade">
+  <h2>2. Importation et structuration de la base de connaissances</h2>
+  <p>L’<b>importation</b> consiste à fournir à l’outil les contenus rédigés dans la leçon 5. Les plateformes acceptent en général plusieurs formes de sources.</p>
+  <div class="tabs">
+    <div role="tablist" aria-label="Modes d’importation">
+      <button role="tab" id="tb1" aria-selected="true" aria-controls="tp1">Fichier tableur</button>
+      <button role="tab" id="tb2" aria-selected="false" aria-controls="tp2" tabindex="-1">Documents</button>
+      <button role="tab" id="tb3" aria-selected="false" aria-controls="tp3" tabindex="-1">Saisie directe</button>
+    </div>
+    <div role="tabpanel" id="tp1" aria-labelledby="tb1"><p>Idéal pour une FAQ : une ligne par question, des colonnes fixes. C’est le format le plus simple à relire et à corriger.</p>
+      <div class="code"><div class="lbl">faq-aurore-cycles.csv</div><button type="button">Copier</button><pre><code><span class="k">theme,question,reponse,mis_a_jour</span>
+Horaires,"Vous ouvrez le samedi ?","Oui, de 10h à 17h.",02/09/2026
+Retours,"Puis-je rendre mon vélo ?","Sous 14 jours, vélo non utilisé.",02/09/2026
+Services,"Combien coûte une révision ?","79 € TTC, pièces non comprises.",02/09/2026</code></pre></div></div>
+    <div role="tabpanel" id="tp2" aria-labelledby="tb2" hidden><p>PDF, documents texte ou pages du site. Pratique, mais le contenu doit être propre : un document mal structuré (colonnes, tableaux scannés) sera mal compris. Vérifiez toujours ce que l’outil a réellement retenu.</p></div>
+    <div role="tabpanel" id="tp3" aria-labelledby="tb3" hidden><p>Saisie des fiches une à une dans l’outil. Convient pour démarrer avec quelques informations, mais devient lourd quand la base grandit.</p></div>
+  </div>
+  <h3>Structurer avant d’importer</h3>
+  <div class="cards">
+    <div class="card"><div class="ic">🏷️</div><h3>Thèmes</h3><p>Regrouper par sujet : horaires, retours, services, tarifs.</p></div>
+    <div class="card"><div class="ic">✂️</div><h3>Une idée par fiche</h3><p>Éviter les fiches fourre-tout qui mélangent plusieurs sujets.</p></div>
+    <div class="card"><div class="ic">🧹</div><h3>Nettoyage</h3><p>Supprimer doublons, versions anciennes et informations contradictoires.</p></div>
+  </div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Importer « tout ce qu’on a » sans tri. Deux documents qui se contredisent produiront des réponses contradictoires.</p></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a1">Comment vérifier qu’un import s’est bien passé ?</button>
+    <div class="body" id="a1" hidden><p>Contrôlez le nombre de fiches importées, ouvrez quelques-unes au hasard, et vérifiez que les accents, les montants et les dates sont intacts.</p></div></div>
+</div></section>
+
+<section class="s" id="accueil"><div class="wrap fade">
+  <h2>3. Message d’accueil, ton et réponses types</h2>
+  <p>Ces trois réglages forment la « première impression » : le client sait d’emblée à qui il parle et ce qu’il peut demander.</p>
+  <div class="cards">
+    <div class="card"><div class="ic">👋</div><h3>Message d’accueil</h3><p>Se présenter, dire ce que l’assistant sait faire, annoncer qu’il s’agit d’une IA.</p></div>
+    <div class="card"><div class="ic">🎙️</div><h3>Ton</h3><p>Vouvoiement ou tutoiement, registre chaleureux ou formel, cohérent avec la marque.</p></div>
+    <div class="card"><div class="ic">💬</div><h3>Réponses types</h3><p>Formules prévues pour les cas récurrents : salutation, information absente, transfert.</p></div>
+  </div>
+  <div class="code"><div class="lbl">Exemple de message d’accueil</div><button type="button">Copier</button><pre><code>Bonjour, je suis Léa, l'assistante virtuelle d'Aurore Cycles.
+Je peux vous renseigner sur nos horaires, nos services de
+réparation, nos prix et nos conditions de retour.
+Comment puis-je vous aider ?</code></pre></div>
+  <h3>Les réponses types à prévoir</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Situation</th><th>Réponse type</th></tr></thead>
+    <tbody>
+    <tr><td>Information absente de la base</td><td>« Je n’ai pas cette information. Notre équipe pourra vous répondre : contact@aurore-cycles.example. »</td></tr>
+    <tr><td>Question hors sujet</td><td>« Je peux vous aider sur nos produits, horaires et services. »</td></tr>
+    <tr><td>Demande à confier à un humain</td><td>« Je vous mets en relation avec un conseiller. »</td></tr>
+    <tr><td>Clôture</td><td>« Puis-je vous aider sur autre chose ? »</td></tr>
+    </tbody></table></div>
+  <div class="callout more"><strong>🔗 Pour aller plus loin</strong><p>Le passage vers un conseiller et la collecte d’informations seront développés dans la leçon 7.</p></div>
+</div></section>
+
+<section class="s" id="tests"><div class="wrap fade">
+  <h2>4. Premiers tests de cohérence et d’alignement</h2>
+  <p>Avant toute mise en ligne, on teste l’assistant en posant des questions comme le ferait un vrai client. Deux qualités sont contrôlées :</p>
+  <ul>
+    <li>la <b>cohérence</b> : la réponse est exacte et ne contredit pas la base ;</li>
+    <li>l’<b>alignement</b> : la réponse respecte le prompt (ton, longueur, limites, règle « dire quand on ne sait pas »).</li>
+  </ul>
+  <h3>Quels tests mener ?</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type de test</th><th>Exemple de question</th><th>Résultat attendu</th></tr></thead>
+    <tbody>
+    <tr><td>Question directe</td><td>« Quels sont vos horaires ? »</td><td>Horaires exacts de la base</td></tr>
+    <tr><td>Reformulation</td><td>« Vous bossez le samedi ? »</td><td>Même réponse que la question directe</td></tr>
+    <tr><td>Information absente</td><td>« Vendez-vous des trottinettes ? »</td><td>Aveu d’ignorance, pas d’invention</td></tr>
+    <tr><td>Hors sujet</td><td>« Quel temps fera-t-il demain ? »</td><td>Rappel du périmètre</td></tr>
+    <tr><td>Cas sensible</td><td>« Je veux me plaindre. »</td><td>Proposition de contact humain</td></tr>
+    </tbody></table></div>
+  <figure class="fig">
+    <svg viewBox="0 0 640 160" role="img" aria-labelledby="t2 d2"><title id="t2">Boucle de test et d’ajustement</title><desc id="d2">On pose une question, on compare la réponse à la base et au prompt, puis on corrige la base ou le prompt avant de retester.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="40" width="130" height="60" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="75" y="75">Poser</text>
+      <rect x="180" y="40" width="130" height="60" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="245" y="75">Comparer</text>
+      <rect x="350" y="40" width="130" height="60" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="415" y="75">Corriger</text>
+      <rect x="520" y="40" width="110" height="60" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="575" y="75">Retester</text></g>
+      <path d="M140 70h40M310 70h40M480 70h40" stroke="#5B4BDB" stroke-width="2"/><path d="M575 100v35H75v-35" stroke="#5F6370" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+    </svg>
+    <figcaption>Chaque écart observé mène à un ajustement, puis à un nouveau test.</figcaption>
+  </figure>
+  <h3>Où corriger quand la réponse est mauvaise ?</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Symptôme</th><th>Cause probable</th><th>Action</th></tr></thead>
+    <tbody>
+    <tr><td>Information fausse</td><td>Fiche périmée ou contradictoire</td><td>Corriger la base</td></tr>
+    <tr><td>Réponse inventée</td><td>Règle « ne pas inventer » absente ou faible</td><td>Renforcer le prompt</td></tr>
+    <tr><td>Ton inadapté</td><td>Consignes de ton imprécises</td><td>Préciser le prompt</td></tr>
+    <tr><td>Question reformulée non comprise</td><td>Variantes manquantes</td><td>Ajouter des variantes</td></tr>
+    </tbody></table></div>
+  <div class="callout warn"><strong>⚠️ Attention</strong><p>Ne testez pas seulement les questions « faciles ». Les erreurs apparaissent surtout avec les reformulations, les fautes de frappe et les demandes hors périmètre. Notez chaque test et son résultat.</p></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a2">Qui doit tester l’assistant ?</button>
+    <div class="body" id="a2" hidden><p>Idéalement, plusieurs personnes : le concepteur, mais aussi un conseiller de l’équipe et quelqu’un qui connaît peu l’entreprise. Chacun pose des questions différentes.</p></div></div>
+</div></section>
+
+<section class="s" id="synthese"><div class="wide fade">
+  <h2 style="max-width:720px">Synthèse visuelle</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 800 200" role="img" aria-labelledby="t3 d3"><title id="t3">Synthèse de la leçon</title><desc id="d3">De la création de l’assistant à l’import de la base, au paramétrage de l’accueil puis aux tests.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="60" width="160" height="80" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="90" y="105">Création</text>
+      <rect x="220" y="60" width="160" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="300" y="98">Import de la</text><text x="300" y="118">base</text>
+      <rect x="430" y="60" width="160" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="510" y="98">Accueil, ton,</text><text x="510" y="118">réponses types</text>
+      <rect x="640" y="60" width="150" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="715" y="105">Tests</text></g>
+      <path d="M170 100h50M380 100h50M590 100h50" stroke="#5B4BDB" stroke-width="2"/>
+    </svg>
+    <figcaption>Fil conducteur de la leçon.</figcaption>
+  </figure>
+</div></section>
+
+<section class="key" id="points-cles"><div class="wrap fade">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Un assistant de FAQ est un excellent premier projet : périmètre limité et réponses vérifiables.</li>
+    <li>Créer l’assistant revient à régler le nom, la langue, le canal, les instructions et la source des réponses.</li>
+    <li>Structurer et nettoyer la base avant l’import : un thème, une idée par fiche, aucune contradiction.</li>
+    <li>Le message d’accueil présente l’assistant, annonce qu’il est une IA et indique ce qu’il sait faire.</li>
+    <li>Prévoir des réponses types pour l’information absente, le hors-sujet, le transfert et la clôture.</li>
+    <li>Tester la cohérence et l’alignement, puis corriger la base ou le prompt selon le symptôme observé.</li>
+  </ul>
+</div></section>
+
+<div class="wrap"><nav class="nav" aria-label="Navigation entre leçons">
+  <a href="lecon-05-prompts-et-base-de-connaissances.html"><small>Leçon précédente</small>Leçon 5 — Rédiger les consignes (prompts) et la base de connaissances de l’assistant</a>
+  <a class="next" href="lecon-07.html"><small>Leçon suivante</small>Leçon 7 — Collecter des informations et orienter les utilisateurs</a>
+</nav></div>
+</main>
+<footer><div class="wrap">Création de chatbots et assistants IA pour les entreprises — Module 2, Leçon 6</div></footer>
+<button id="top" aria-label="Retour en haut">↑</button>
+<script>
+(function(){
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);bar.style.width=(p*100)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.onclick=function(){scrollTo({top:0})};
+var mb=document.getElementById('menuBtn'),m=document.getElementById('menu');
+mb.onclick=function(){var o=m.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+m.addEventListener('click',function(e){if(e.target.tagName==='A'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('.acc button').forEach(function(b){b.onclick=function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',!o);document.getElementById(b.getAttribute('aria-controls')).hidden=o}});
+document.querySelectorAll('.tabs').forEach(function(t){var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+function sel(x){tabs.forEach(function(y){var on=y===x;y.setAttribute('aria-selected',on);y.tabIndex=on?0:-1;document.getElementById(y.getAttribute('aria-controls')).hidden=!on});x.focus()}
+tabs.forEach(function(x,i){x.onclick=function(){sel(x)};x.onkeydown=function(e){if(e.key==='ArrowRight')sel(tabs[(i+1)%tabs.length]);if(e.key==='ArrowLeft')sel(tabs[(i-1+tabs.length)%tabs.length])}})});
+var els=document.querySelectorAll('.fade');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
+document.querySelectorAll(".code button").forEach(function(b){b.onclick=function(){var t=b.parentNode.querySelector("code").textContent;function ok(){b.textContent="Copié ✓";setTimeout(function(){b.textContent="Copier"},1800)}if(navigator.clipboard){navigator.clipboard.writeText(t).then(ok,ok)}else{ok()}}});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 39 — Résultat comptable et résultat fiscal | Fiscalité des entreprises</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:720px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:720px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  td.num.negative{color:var(--color-accent-alt);}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+  .status-pill{display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:600; border-radius:100px; padding:3px 10px;}
+  .status-pill.done{color:var(--color-accent); background:var(--color-accent-soft);}
+  .status-pill.progress{color:#8A6D1F; background:#FBF3DC;}
+  .status-pill.late{color:var(--color-accent-alt); background:#FBEEE6;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+  .card .priority-tag{display:inline-block; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.03em; border-radius:100px; padding:3px 10px; margin-bottom:10px;}
+  .card .priority-tag.high{color:#fff; background:var(--color-accent-alt);}
+  .card .priority-tag.medium{color:#8A6D1F; background:#FBF3DC;}
+  .card .priority-tag.low{color:var(--color-accent); background:var(--color-accent-soft);}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column;}
+    .step:not(:last-child)::after{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filière Comptabilité
+    </div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 7 — Fiscalité des entreprises</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau intermédiaire</span>
+    </div>
+    <h1>Leçon 39 — Résultat comptable et résultat fiscal</h1>
+    <p class="lede">Comprendre pourquoi le bénéfice affiché dans les comptes n'est presque jamais celui sur lequel l'impôt est calculé, identifier les réintégrations et les déductions, et déterminer le bénéfice imposable.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Deux résultats, deux logiques" data-num="39.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">39.1</span><h2>Deux résultats, deux logiques</h2></div>
+      <p>Le <strong>résultat comptable</strong> est calculé selon les règles du plan comptable : il vise à donner une image fidèle de la performance de l'entreprise. Le <strong>résultat fiscal</strong> est calculé selon les règles du droit fiscal : il sert uniquement à déterminer la base de l'impôt sur les bénéfices.</p>
+      <p>Les deux règles ne poursuivent pas le même objectif. La comptabilité constate toutes les charges engagées par l'entreprise ; l'administration fiscale, elle, n'admet en déduction que celles qui respectent certaines conditions (engagées dans l'intérêt de l'entreprise, justifiées, non excessives).</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Comparaison des deux résultats">
+        <button class="tab-btn" role="tab" id="tab-res39-1" aria-controls="panel-res39-1" aria-selected="true">Résultat comptable</button>
+        <button class="tab-btn" role="tab" id="tab-res39-2" aria-controls="panel-res39-2" aria-selected="false" tabindex="-1">Résultat fiscal</button>
+      </div>
+      <div class="tab-panel active" id="panel-res39-1" role="tabpanel" aria-labelledby="tab-res39-1" tabindex="0">
+        <div class="prose">
+          <p><strong>Finalité :</strong> informer les associés, les banques et les tiers sur la situation financière. <strong>Base :</strong> produits − charges de l'exercice, selon le référentiel comptable. <strong>Document :</strong> compte de résultat.</p>
+        </div>
+      </div>
+      <div class="tab-panel" id="panel-res39-2" role="tabpanel" aria-labelledby="tab-res39-2" tabindex="0" hidden>
+        <div class="prose">
+          <p><strong>Finalité :</strong> déterminer le bénéfice sur lequel l'impôt est calculé. <strong>Base :</strong> résultat comptable corrigé par des retraitements extra-comptables. <strong>Document :</strong> tableau de détermination du résultat fiscal, joint à la déclaration annuelle.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Le passage du résultat comptable au résultat fiscal se fait par des retraitements <em>extra-comptables</em> : ils figurent dans la déclaration fiscale, jamais dans les écritures de l'entreprise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Les réintégrations" data-num="39.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">39.2</span><h2>Les réintégrations</h2></div>
+      <p>Une <strong>réintégration</strong> consiste à ajouter au résultat comptable une charge que l'entreprise a bien comptabilisée, mais que la loi fiscale n'admet pas en déduction (ou pas en totalité). Elle <em>augmente</em> le bénéfice imposable.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.01"/></svg>
+        <h3>Amendes et pénalités</h3>
+        <p>Sanctions pécuniaires et majorations fiscales : jamais déductibles.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M8 7V5h8v2"/></svg>
+        <h3>Dépenses somptuaires</h3>
+        <p>Charges de luxe ou sans lien avec l'exploitation, ou dépassant les limites admises.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <h3>Amortissements excédentaires</h3>
+        <p>Part de l'amortissement comptable qui dépasse le plafond fiscal admis.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <h3>Provisions non déductibles</h3>
+        <p>Provisions ne remplissant pas les conditions fiscales (risque non précis ou non probable).</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention</div>
+        <p>Les listes de charges non déductibles, les plafonds et les taux varient selon la législation fiscale applicable. Les exemples de cette leçon illustrent la méthode ; les seuils exacts se vérifient toujours dans le code général des impôts en vigueur.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Les déductions" data-num="39.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">39.3</span><h2>Les déductions</h2></div>
+      <p>À l'inverse, une <strong>déduction</strong> retire du résultat comptable un produit comptabilisé mais non imposable, ou une charge admise fiscalement qui n'a pas été comptabilisée. Elle <em>diminue</em> le bénéfice imposable.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <h3>Produits non imposables</h3>
+        <p>Produits exonérés par la loi (ex. certaines plus-values ou dividendes selon le régime applicable).</p>
+      </div>
+      <div class="card">
+        <h3>Reprises sur provisions déjà taxées</h3>
+        <p>Une provision réintégrée l'année N ne doit pas être imposée une seconde fois lors de sa reprise.</p>
+      </div>
+      <div class="card">
+        <h3>Charges admises non comptabilisées</h3>
+        <p>Charges déductibles fiscalement qui ne figurent pas au compte de résultat.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Réintégrer = <strong>ajouter</strong> une charge refusée. Déduire = <strong>retirer</strong> un produit non imposable. Le sens du retraitement est la première chose à vérifier avant de calculer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="Du résultat comptable au bénéfice imposable" data-num="39.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">39.4</span><h2>Du résultat comptable au bénéfice imposable</h2></div>
+      <p>La détermination du bénéfice imposable suit toujours la même séquence : on part du résultat comptable, on applique les retraitements, puis on impute les éventuels déficits antérieurs.</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 720 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Formule : résultat comptable, plus réintégrations, moins déductions, égale résultat fiscal, moins déficits reportables, égale bénéfice imposable">
+        <g font-family="Inter, sans-serif" font-size="12" text-anchor="middle">
+          <rect x="4" y="30" width="100" height="64" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="54" y="58" font-weight="600" fill="#0B0F0D">Résultat</text><text x="54" y="74" font-weight="600" fill="#0B0F0D">comptable</text>
+          <text x="124" y="68" font-size="20" fill="#B3541E" font-weight="600">+</text>
+          <rect x="144" y="30" width="100" height="64" rx="8" fill="#FBEEE6" stroke="#B3541E"></rect>
+          <text x="194" y="58" font-weight="600" fill="#B3541E">Réintégra-</text><text x="194" y="74" font-weight="600" fill="#B3541E">tions</text>
+          <text x="264" y="68" font-size="20" fill="#1F6F54" font-weight="600">−</text>
+          <rect x="284" y="30" width="100" height="64" rx="8" fill="#FFFFFF" stroke="#1F6F54"></rect>
+          <text x="334" y="66" font-weight="600" fill="#1F6F54">Déductions</text>
+          <text x="404" y="68" font-size="20" fill="#0B0F0D" font-weight="600">=</text>
+          <rect x="424" y="30" width="100" height="64" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="474" y="58" font-weight="600" fill="#1F6F54">Résultat</text><text x="474" y="74" font-weight="600" fill="#1F6F54">fiscal</text>
+          <text x="544" y="68" font-size="20" fill="#1F6F54" font-weight="600">−</text>
+          <rect x="564" y="30" width="96" height="64" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="612" y="58" font-weight="600" fill="#0B0F0D">Déficits</text><text x="612" y="74" fill="#5A6560" font-size="11">reportables</text>
+          <text x="678" y="68" font-size="20" fill="#0B0F0D" font-weight="600">=</text>
+        </g>
+        <text x="700" y="64" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" fill="#1F6F54" text-anchor="middle">BÉNÉF.</text>
+        <text x="700" y="78" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" fill="#1F6F54" text-anchor="middle">IMPOSABLE</text>
+      </svg>
+    </div>
+
+    <div class="stepper reveal">
+      <div class="step"><div class="step-index">1</div><h3>Partir du résultat</h3><p>Reprendre le résultat comptable de l'exercice.</p></div>
+      <div class="step"><div class="step-index">2</div><h3>Réintégrer</h3><p>Ajouter les charges non déductibles.</p></div>
+      <div class="step"><div class="step-index">3</div><h3>Déduire</h3><p>Retirer les produits non imposables.</p></div>
+      <div class="step"><div class="step-index">4</div><h3>Imputer</h3><p>Soustraire les déficits reportables.</p></div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Cas pratique — détermination du bénéfice imposable (en FCFA)</caption>
+        <thead><tr><th scope="col">Élément</th><th scope="col" class="num">Montant</th></tr></thead>
+        <tbody>
+          <tr><td>Résultat comptable de l'exercice</td><td class="num">12 000 000</td></tr>
+          <tr><td>+ Amendes et pénalités</td><td class="num">350 000</td></tr>
+          <tr><td>+ Dépenses somptuaires</td><td class="num">650 000</td></tr>
+          <tr><td>+ Amortissement excédentaire</td><td class="num">1 200 000</td></tr>
+          <tr><td>− Reprise de provision déjà taxée</td><td class="num negative">− 800 000</td></tr>
+          <tr><td>− Produits non imposables</td><td class="num negative">− 500 000</td></tr>
+          <tr class="total"><td>Résultat fiscal (12 000 000 + 2 200 000 − 1 300 000)</td><td class="num">12 900 000</td></tr>
+          <tr><td>− Déficit reportable des exercices antérieurs</td><td class="num negative">− 1 400 000</td></tr>
+          <tr class="total"><td>Bénéfice imposable</td><td class="num">11 500 000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧮 Cas pratique</div>
+        <p>Avec un résultat comptable de 12 000 000 FCFA, l'entreprise cumule 2 200 000 FCFA de réintégrations (350 000 + 650 000 + 1 200 000) et 1 300 000 FCFA de déductions (800 000 + 500 000). Son résultat fiscal est de 12 900 000 FCFA ; après imputation d'un déficit antérieur de 1 400 000 FCFA, le bénéfice imposable s'établit à 11 500 000 FCFA. C'est cette base, et non le résultat comptable, que la leçon suivante soumettra au taux de l'impôt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Erreurs fréquentes et questions" data-num="39.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">39.5</span><h2>Erreurs fréquentes et questions</h2></div>
+    </div>
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Le résultat fiscal peut-il être inférieur au résultat comptable ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body"><div class="accordion-body-inner">
+          <p>Oui, lorsque les déductions dépassent les réintégrations. Il peut même être négatif : l'entreprise constate alors un déficit fiscal, généralement reportable sur les exercices suivants dans les limites prévues par la loi.</p>
+        </div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Doit-on corriger les écritures comptables des réintégrations ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body"><div class="accordion-body-inner">
+          <p>Non. Les retraitements sont extra-comptables : le compte de résultat reste inchangé, et les corrections apparaissent uniquement dans le tableau de détermination du résultat fiscal.</p>
+        </div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Quelle est l'erreur la plus courante ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body"><div class="accordion-body-inner">
+          <p>Inverser le sens d'un retraitement : déduire une charge qu'il fallait réintégrer, ou l'inverse. Un contrôle simple : une charge refusée augmente toujours le bénéfice imposable.</p>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s6" data-title="Points clés à retenir" data-num="39.6">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">39.6</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Le résultat comptable reflète la performance ; le résultat fiscal détermine la base de l'impôt.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>Une réintégration ajoute au résultat une charge comptabilisée mais non déductible fiscalement.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Une déduction retire un produit non imposable ou ajoute une charge admise non comptabilisée.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Résultat fiscal = résultat comptable + réintégrations − déductions.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Le bénéfice imposable s'obtient après imputation des déficits reportables.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente · Module 7</span>
+        <span class="dest">TVA : mécanisme et calcul</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante · Module 7</span>
+        <span class="dest">Impôt sur les bénéfices</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 7</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 7</span>
+    <span>Leçon 39 — Fiscalité des entreprises</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && e.target !== tocBtn){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

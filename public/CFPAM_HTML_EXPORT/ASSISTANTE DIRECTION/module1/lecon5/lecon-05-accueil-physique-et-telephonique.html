@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 5 — Accueil physique et téléphonique</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 5 — Accueil physique et téléphonique</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#protocole-accueil">1. Protocole d'accueil</a>
+          <a href="#voix-formulations">2. Voix et formulations</a>
+          <a href="#filtrage-appels">3. Filtrage des appels</a>
+          <a href="#prise-message">4. Prise de message</a>
+          <a href="#visiteurs-difficiles">5. Visiteurs difficiles</a>
+          <a href="#registre-appels">6. Registre des appels</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+          <a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 1 — Secrétariat et bureautique professionnelle</span>
+      <span class="badge brass">Niveau débutant</span>
+      <span class="badge">25 min</span>
+    </div>
+    <h1>Leçon 5 — Accueil physique et téléphonique</h1>
+    <p class="subtitle">Recevoir, filtrer et orienter avec professionnalisme : bâtir un protocole d'accueil fiable, maîtriser sa voix au téléphone et gérer les situations délicates sans perdre son calme.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Appliquer un protocole d'accueil physique cohérent, de l'arrivée du visiteur à sa prise en charge.</li>
+      <li>Répondre au téléphone avec une formule d'accueil professionnelle et une voix maîtrisée.</li>
+      <li>Filtrer les appels entrants selon des critères clairs, sans improviser au cas par cas.</li>
+      <li>Prendre un message téléphonique complet et immédiatement exploitable par le destinataire.</li>
+      <li>Gérer un visiteur difficile ou un appel tendu en gardant le contrôle de l'échange.</li>
+      <li>Tenir un registre des appels et des visites à jour, dans le respect de la confidentialité.</li>
+    </ul>
+  </div>
+
+  <section id="protocole-accueil">
+    <h2>1. Protocole d'accueil</h2>
+    <p>L'accueil est le premier contact — parfois le seul — entre un visiteur ou un appelant et l'organisation. Il se joue en quelques secondes et conditionne l'image que la personne se fera de l'ensemble de la structure. Un protocole d'accueil sert précisément à ne jamais laisser ce moment au hasard.</p>
+    <p>Que l'accueil soit physique ou téléphonique, il suit la même logique en quatre temps : <strong>accueillir</strong> (marquer la présence de la personne), <strong>identifier</strong> (qui elle est, ce qu'elle souhaite), <strong>annoncer ou orienter</strong> (prévenir la personne attendue ou rediriger), puis <strong>accompagner</strong> (installer le visiteur, conclure l'appel proprement).</p>
+
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma des quatre temps du protocole d'accueil" style="width:100%; max-width:600px; display:block; margin:20px auto;">
+      <rect x="10" y="70" width="130" height="60" rx="3" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1.5"/>
+      <text x="75" y="95" font-family="Inter" font-size="12" fill="#16181C" text-anchor="middle" font-weight="600">Accueillir</text>
+      <text x="75" y="112" font-family="Inter" font-size="10" fill="#5E5A54" text-anchor="middle">Marquer la présence</text>
+      <rect x="175" y="70" width="130" height="60" rx="3" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1.5"/>
+      <text x="240" y="95" font-family="Inter" font-size="12" fill="#16181C" text-anchor="middle" font-weight="600">Identifier</text>
+      <text x="240" y="112" font-family="Inter" font-size="10" fill="#5E5A54" text-anchor="middle">Qui, pour quel motif</text>
+      <rect x="340" y="70" width="130" height="60" rx="3" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1.5"/>
+      <text x="405" y="95" font-family="Inter" font-size="12" fill="#16181C" text-anchor="middle" font-weight="600">Orienter</text>
+      <text x="405" y="112" font-family="Inter" font-size="10" fill="#5E5A54" text-anchor="middle">Annoncer, rediriger</text>
+      <rect x="505" y="70" width="130" height="60" rx="3" fill="#E8EFEB" stroke="#2F5D50" stroke-width="1.5"/>
+      <text x="570" y="95" font-family="Inter" font-size="12" fill="#16181C" text-anchor="middle" font-weight="600">Accompagner</text>
+      <text x="570" y="112" font-family="Inter" font-size="10" fill="#5E5A54" text-anchor="middle">Installer, conclure</text>
+      <line x1="140" y1="100" x2="175" y2="100" stroke="#A8823C" stroke-width="2" marker-end="url(#arr1)"/>
+      <line x1="305" y1="100" x2="340" y2="100" stroke="#A8823C" stroke-width="2" marker-end="url(#arr1)"/>
+      <line x1="470" y1="100" x2="505" y2="100" stroke="#A8823C" stroke-width="2" marker-end="url(#arr1)"/>
+      <defs><marker id="arr1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#A8823C"/></marker></defs>
+    </svg>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Les dix premières secondes d'un accueil, physique ou téléphonique, ne se rattrapent pas. Un sourire perceptible dans la voix ou un regard levé vers le visiteur valent toutes les formules toutes faites.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Temps</th><th>À l'accueil physique</th><th>Au téléphone</th></tr></thead>
+        <tbody>
+          <tr><td>Accueillir</td><td>Lever les yeux, se lever si possible, sourire</td><td>Décrocher avant la 3ᵉ sonnerie</td></tr>
+          <tr><td>Identifier</td><td>« Bonjour, que puis-je faire pour vous ? »</td><td>« [Organisation], bonjour, [Prénom] à votre écoute »</td></tr>
+          <tr><td>Orienter</td><td>Prévenir la personne attendue, indiquer un siège</td><td>Transférer, mettre en attente brièvement ou proposer un rappel</td></tr>
+          <tr><td>Accompagner</td><td>Proposer une boisson, indiquer la salle</td><td>Reformuler avant de raccrocher, remercier</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Faire attendre un visiteur en continuant sa tâche à l'écran sans un mot. Même occupée, l'assistante doit accuser réception de la présence du visiteur en quelques secondes : « Je suis à vous dans un instant. »
+    </div>
+  </section>
+
+  <section id="voix-formulations">
+    <h2>2. Voix et formulations</h2>
+    <p>Au téléphone, la voix remplace entièrement le langage corporel : elle porte à elle seule le sourire, l'attention et le professionnalisme. Trois leviers se travaillent facilement : le débit (ni précipité, ni traînant), l'articulation, et le choix des mots.</p>
+
+    <div class="tabs" data-tabs="formulations">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Formulations à éviter</button>
+        <button class="tab-btn" role="tab" data-tab="b">Formulations professionnelles</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>« Allô ? » — « C'est pour quoi ? » — « Il est pas là, rappelez plus tard. » — « Ne quittez pas » suivi d'un silence prolongé sans musique d'attente ni retour. Ces formulations donnent une impression d'improvisation et de désintérêt, même sans mauvaise intention.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>« [Organisation], bonjour. » — « Puis-je vous demander l'objet de votre appel ? » — « Monsieur/Madame [Nom] est actuellement en réunion ; puis-je prendre un message ou souhaitez-vous être rappelé(e) ? » — « Je vous mets en relation, un instant je vous prie. »</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Débit maîtrisé</h3><p>Ni trop rapide (incompréhensible), ni trop lent (impression d'ennui). Articuler particulièrement les noms propres et les numéros.</p></div>
+      <div class="card"><h3>Sourire audible</h3><p>Le sourire modifie la tonalité de la voix, même invisible : l'interlocuteur le perçoit dès les premiers mots.</p></div>
+      <div class="card"><h3>Vocabulaire positif</h3><p>Remplacer « je ne sais pas » par « je me renseigne et je vous recontacte », « c'est impossible » par « voici ce que je peux vous proposer ».</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Répondre au téléphone la bouche pleine, en mangeant un mot sur deux, ou en parlant à quelqu'un d'autre en simultané : l'appelant l'entend distinctement et le perçoit comme un manque de considération.
+    </div>
+  </section>
+
+  <section id="filtrage-appels">
+    <h2>3. Filtrage des appels</h2>
+    <p>Filtrer un appel ne consiste pas à faire barrage systématique, mais à orienter chaque appel vers la réponse la plus adaptée : transfert immédiat, prise de message, ou redirection vers un autre service. Ce filtrage doit reposer sur des critères connus à l'avance, pas sur une décision improvisée à chaud.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Décrocher</h3><p>Formule d'accueil standard, avant la 3ᵉ sonnerie.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Identifier l'appelant</h3><p>Nom, société, et objet précis de l'appel.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Appliquer les critères</h3><p>Urgence, rendez-vous confirmé, interlocuteur habituel, démarchage.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Décider et informer</h3><p>Transférer, proposer un message, ou rediriger vers le bon service.</p></div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Appel à transférer</h3><p>Rendez-vous confirmé, interlocuteur habituel identifié, urgence signalée par un supérieur.</p></div>
+      <div class="card"><h3>Message à prendre</h3><p>Personne demandée indisponible mais appel légitime : rappel prévu dans la journée.</p></div>
+      <div class="card"><h3>À rediriger ou écarter</h3><p>Mauvais service, démarchage commercial non sollicité : réponse courtoise mais ferme.</p></div>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      Ne jamais confirmer à un inconnu l'absence, les horaires ou le planning précis d'un membre de la direction. Préférer une formule neutre : « Il n'est pas disponible pour le moment » plutôt que « Il est en congés jusqu'au 14. »
+    </div>
+  </section>
+
+  <section id="prise-message">
+    <h2>4. Prise de message</h2>
+    <p>Un message mal pris fait perdre plus de temps qu'il n'en fait gagner : rappel inutile de l'appelant, information incomplète, urgence non signalée. Six informations rendent un message immédiatement exploitable par son destinataire.</p>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Identité complète de l'appelant <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Nom, prénom et société épelés si nécessaire — une erreur d'orthographe rend le rappel plus difficile, notamment sur un nom peu courant.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Coordonnées de rappel <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Numéro direct, éventuellement un horaire de disponibilité si l'appelant précise qu'il n'est joignable qu'à certains moments.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Objet précis de l'appel <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Reformuler en une phrase courte plutôt que de recopier mot à mot ; vérifier la compréhension en la répétant à l'appelant avant de raccrocher.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Degré d'urgence et horaire <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Préciser si un rappel est attendu le jour même, et noter systématiquement la date et l'heure de l'appel sur le message.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Fiche de prise de message</span><button class="copy-btn" data-copy-target="model-1">Copier</button></div>
+      <pre id="model-1">FICHE DE MESSAGE TÉLÉPHONIQUE
+
+Date : ___/___/______        Heure : ______
+
+Message pour : _____________________________
+
+Appel de : __________________________________
+Société : ___________________________________
+Téléphone : _________________________________
+
+Objet de l'appel :
+_____________________________________________
+_____________________________________________
+
+☐ Merci de rappeler       ☐ Rappellera lui-même
+☐ Urgent                  ☐ Sans urgence particulière
+
+Message pris par : __________________________</pre>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant de transmettre un message : nom vérifié à l'oral, numéro relu à voix haute, objet reformulé et compris par l'appelant, message daté et signé.
+    </div>
+  </section>
+
+  <section id="visiteurs-difficiles">
+    <h2>5. Visiteurs difficiles</h2>
+    <p>Un visiteur mécontent, un appelant agressif ou une personne insistante sans rendez-vous font partie des situations que tout poste d'accueil rencontre tôt ou tard. L'objectif n'est jamais de « gagner » l'échange, mais de le désamorcer sans compromettre ni l'image de l'organisation ni la sécurité des lieux.</p>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Visiteur sans rendez-vous, insistant <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Rester ferme sur le principe (rien ne se décide sans vérification) tout en restant courtois : « Je comprends votre démarche, laissez-moi vérifier si Madame [Nom] peut vous recevoir quelques minutes. » Ne jamais laisser un visiteur non identifié accéder seul aux bureaux.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Appelant qui hausse le ton <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Baisser volontairement son propre débit et son volume plutôt que de répondre sur le même registre. Reformuler la demande pour montrer qu'elle a été entendue, avant de proposer une solution concrète.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Visiteur mécontent d'un service rendu <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Ne jamais couper la parole ni justifier immédiatement l'organisation. Laisser la personne exposer sa réclamation, la noter, puis orienter vers l'interlocuteur compétent plutôt que de tenter de répondre sur le fond soi-même.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Prendre une remarque désagréable comme une attaque personnelle et répondre sur le même ton. L'assistante représente l'organisation à cet instant précis : la réaction professionnelle prime sur la réaction spontanée.
+    </div>
+  </section>
+
+  <section id="registre-appels">
+    <h2>6. Registre des appels</h2>
+    <p>Le registre des appels et des visites permet de conserver une trace fiable de l'activité d'accueil : qui est venu, qui a appelé, pour quel motif. Il sert autant à la traçabilité qu'à l'analyse des pics d'activité ou des demandes récurrentes.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date / heure</th><th>Type</th><th>Nom</th><th>Objet</th><th>Suite donnée</th></tr></thead>
+        <tbody>
+          <tr><td>12/03 — 9h40</td><td>Appel</td><td>M. Ferrand</td><td>Demande de rendez-vous</td><td>Transmis à l'agenda</td></tr>
+          <tr><td>12/03 — 11h15</td><td>Visite</td><td>Mme Okoye</td><td>Livraison de dossier</td><td>Remis en main propre</td></tr>
+          <tr><td>12/03 — 14h05</td><td>Appel</td><td>Sté Averin</td><td>Relance facture</td><td>Message transmis à la comptabilité</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Extrait d'un registre quotidien : chaque ligne reste factuelle et datée, sans commentaire personnel.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Registre des appels et visites</span><button class="copy-btn" data-copy-target="model-2">Copier</button></div>
+      <pre id="model-2">REGISTRE DES APPELS ET VISITES — [Date]
+
+Heure | Type (Appel/Visite) | Nom | Société | Objet | Suite donnée
+
+________________________________________________
+________________________________________________
+________________________________________________</pre>
+    </div>
+
+    <div class="callout privacy">
+      <span class="callout-label">🔒 Confidentialité</span>
+      Le registre contient des données à caractère personnel (noms, sociétés, motifs). Il doit rester accessible aux seules personnes autorisées et être conservé selon la durée fixée par l'organisation.
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Dans certaines structures, ce registre est numérisé dans un tableur partagé, ce qui facilite les statistiques mensuelles (motifs les plus fréquents, heures de pointe) sans en changer le principe.
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Cinq jeux de rôle filmés sont à préparer et à jouer en binôme : trois appels et deux visites à traiter, dans l'ordre suivant.</p>
+      <p><strong>Appels :</strong> 1) un partenaire habituel souhaitant parler au directeur, absent pour la matinée ; 2) un appel de démarchage commercial insistant ; 3) un client mécontent d'un délai, au ton agacé.</p>
+      <p style="margin-bottom:0;"><strong>Visites :</strong> 1) un visiteur sans rendez-vous demandant à voir « quelqu'un de la direction » ; 2) un livreur attendu, à orienter vers le bon service. Chaque séquence est filmée puis commentée à l'aide de la fiche de procédure d'accueil.</p>
+    </div>
+  </section>
+<section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Le protocole d'accueil suit toujours les quatre mêmes temps : accueillir, identifier, orienter, accompagner.</li>
+      <li>Au téléphone, la voix (débit, articulation, sourire audible) remplace tout le langage corporel.</li>
+      <li>Le filtrage des appels repose sur des critères définis à l'avance, jamais sur une improvisation.</li>
+      <li>Un message téléphonique complet comporte identité, coordonnées, objet reformulé, urgence, date et heure.</li>
+      <li>Face à un visiteur difficile, baisser le ton et reformuler la demande désamorce l'essentiel des tensions.</li>
+      <li>Le registre des appels et des visites doit être tenu à jour et protégé comme toute donnée personnelle.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : une <strong>fiche de procédure d'accueil</strong>, complétée par l'<strong>enregistrement commenté des cinq simulations</strong> (trois appels, deux visites) réalisées en jeu de rôle.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Fiche de procédure d'accueil</span><button class="copy-btn" data-copy-target="model-3">Copier</button></div>
+      <pre id="model-3">FICHE DE PROCÉDURE D'ACCUEIL — [Organisation]
+
+1. ACCUEIL PHYSIQUE
+   Formule d'accueil : ________________________
+   Délai maximal d'attente avant prise en charge : ______
+
+2. ACCUEIL TÉLÉPHONIQUE
+   Formule de décroché : ______________________
+   Nombre de sonneries max avant décroché : ______
+
+3. CRITÈRES DE FILTRAGE
+   À transférer immédiatement : _______________
+   À faire patienter / rappeler : _____________
+   À rediriger : _______________________________
+
+4. PRISE DE MESSAGE
+   Utiliser systématiquement la fiche de message ci-jointe.
+
+5. SITUATIONS DIFFICILES
+   Personne(s) ressource en cas de visiteur ou appel difficile : ____</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Fiche de procédure d'accueil complétée pour l'organisation</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Trois appels simulés, filmés et commentés</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Deux visites simulées, filmées et commentées</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Fiches de message utilisées pendant les simulations</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Commentaire écrit ou oral sur les points forts et axes d'amélioration</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 4 — Classement et archivage</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 6 — Rédaction administrative</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 1 — Secrétariat et bureautique professionnelle · Leçon 5 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+})();
+</script>
+</body>
+</html>

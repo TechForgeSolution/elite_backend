@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 10 — Mesurer, améliorer et construire son plan de déploiement</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235B4BDB'/%3E%3Cpath d='M8 11h16v9H15l-4 4v-4H8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F7FB;--color-text:#0A0A0F;--color-text-muted:#5F6370;--color-accent:#5B4BDB;--color-accent-soft:#EEECFF;--color-border:#E4E3EC;--r:12px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;font-weight:700;line-height:1.25;margin:0 0 .6em}
+h1{font-size:clamp(1.9rem,5vw,2.9rem)}h2{font-size:clamp(1.5rem,3.5vw,2rem)}h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1.1em}a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:960px;margin:0 auto;padding:0 1.25rem}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px;gap:1rem}
+.brand{font:600 .9rem Sora,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu-btn{background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:.45rem .9rem;font:600 .9rem Inter;cursor:pointer}
+#menu{display:none;position:absolute;right:1.25rem;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:.5rem;width:min(320px,calc(100vw - 2.5rem));box-shadow:0 8px 30px rgba(10,10,15,.08)}
+#menu.open{display:block}
+#menu a{display:block;padding:.5rem .75rem;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#menu a:hover{background:var(--color-accent-soft)}
+.hero{background:var(--color-bg-alt);padding:4rem 0 3rem;border-bottom:1px solid var(--color-border)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.badge{font-size:.82rem;font-weight:600;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--color-border);background:#fff;color:var(--color-text-muted)}
+.badge.mod{background:var(--color-accent-soft);color:#4536c4;border-color:transparent}
+.toc{padding:2.5rem 0}
+.toc ol{margin:0;padding-left:1.2rem;columns:1;color:var(--color-text-muted)}
+.toc li{padding:.15rem 0}.toc a{text-decoration:none;color:var(--color-text)}.toc a:hover{color:var(--color-accent)}
+section.s{padding:3.5rem 0}section.s:nth-of-type(even){background:var(--color-bg-alt)}
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}.fade.in{opacity:1;transform:none}
+.callout{border-radius:var(--r);padding:1rem 1.25rem;margin:1.5rem 0;border:1px solid var(--color-border);background:#fff;border-left:4px solid var(--color-accent)}
+.callout strong{display:block;margin-bottom:.25rem}.callout.warn{border-left-color:#0A0A0F}.callout.more{background:var(--color-accent-soft);border-color:transparent}
+.callout p:last-child{margin:0}
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:1.5rem 0}
+.card{background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1.25rem;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card .ic{width:40px;height:40px;border-radius:10px;background:var(--color-accent-soft);display:grid;place-items:center;font-size:1.3rem;margin-bottom:.75rem}
+.card h3{font-size:1.05rem;margin-bottom:.3rem}.card p{margin:0;color:var(--color-text-muted);font-size:.95rem;line-height:1.55}
+.tabs [role=tablist]{display:flex;gap:.25rem;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{background:none;border:0;padding:.7rem 1rem;font:600 .95rem Inter;color:var(--color-text-muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:1.25rem 0}.tabs [role=tabpanel][hidden]{display:none}
+.acc{border:1px solid var(--color-border);border-radius:var(--r);background:#fff;margin:.75rem 0}
+.acc button{width:100%;text-align:left;background:none;border:0;padding:1rem 1.25rem;font:600 1rem Inter;cursor:pointer;display:flex;justify-content:space-between;gap:1rem;color:var(--color-text)}
+.acc button::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+.acc button[aria-expanded=true]::after{content:"−"}
+.acc .body{padding:0 1.25rem 1rem}.acc .body[hidden]{display:none}.acc .body p:last-child{margin:0}
+.stepper{list-style:none;padding:0;margin:1.5rem 0;display:grid;gap:.75rem;counter-reset:st}
+.stepper li{counter-increment:st;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem;position:relative;font-size:.95rem;line-height:1.5}
+.stepper li::before{content:counter(st);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem Sora;margin-bottom:.5rem}
+.stepper b{display:block}
+.fig{margin:1.5rem 0;background:#fff;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem}
+.fig svg{width:100%;height:auto;display:block}.fig figcaption{font-size:.85rem;color:var(--color-text-muted);margin-top:.5rem}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.95rem;line-height:1.5}
+th,td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--color-border);vertical-align:top}th{font-family:Sora;font-size:.9rem}
+.pros-cons{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pros-cons ul{margin:0;padding-left:1.1rem}.pros-cons li{margin:.4rem 0}
+.key{background:var(--color-text);color:#fff;padding:4rem 0}.key h2{color:#fff}
+.key ul{padding-left:1.2rem;margin:0}.key li{margin:.7rem 0}.key li::marker{color:#a99fff}
+.nav{display:flex;justify-content:space-between;gap:1rem;padding:2.5rem 0;flex-wrap:wrap}
+.nav a{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--r);padding:1rem 1.25rem;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}.nav small{display:block;color:var(--color-text-muted)}.nav .next{text-align:right}
+.nav .off{opacity:.45;pointer-events:none}
+footer{border-top:1px solid var(--color-border);padding:1.5rem 0;color:var(--color-text-muted);font-size:.85rem;text-align:center}
+#top{position:fixed;right:1.25rem;bottom:1.25rem;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+#top.show{opacity:1;pointer-events:auto}
+@media(min-width:768px){.toc ol{columns:2}.stepper{grid-template-columns:repeat(4,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade{opacity:1;transform:none;transition:none}.card{transition:none}.card:hover{transform:none}}
+pre{margin:0;background:#0B0D12;color:#E9E8F2;border-radius:var(--r);padding:1rem 1.1rem;overflow-x:auto;font:.86rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word}
+.code{position:relative;margin:1.25rem 0}.code .lbl{font-size:.8rem;color:var(--color-text-muted);margin-bottom:.35rem}
+.code button{position:absolute;top:2rem;right:.6rem;background:#1c1f2b;color:#cfcbff;border:1px solid #34385a;border-radius:8px;padding:.25rem .65rem;font:600 .78rem Inter;cursor:pointer;transition:background .2s}
+.code button:hover{background:#2a2d45}.code pre{padding-top:1rem}
+pre .k{color:#a99fff;font-weight:700}pre .c{color:#8b8fa3}
+.cmp{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="brand">Création de chatbots et assistants IA pour les entreprises</span>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Sommaire</button>
+  <nav id="menu" aria-label="Sommaire de la leçon">
+    <a href="#kpi">1. Indicateurs clés</a><a href="#analyse">2. Analyse et amélioration</a><a href="#smart">3. Objectifs SMART et roadmap</a><a href="#ressources">4. Ressources et budget</a><a href="#synthese">Synthèse</a>
+  </nav>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge mod">Module 2 — Construire, déployer et piloter son assistant</span><span class="badge">⏱ 45 min</span><span class="badge">Niveau : Débutant</span></div>
+  <p class="sub" style="margin-bottom:.5rem">Leçon 10</p>
+  <h1>Mesurer, améliorer et construire son plan de déploiement</h1>
+  <p class="sub">Savoir si l’assistant fonctionne, le faire progresser, et organiser un plan d’action réaliste.</p>
+  <p style="margin:0"><b>Objectif :</b> suivre les résultats de l’assistant, l’améliorer et élaborer un plan d’action complet.</p>
+</div></div>
+
+<div class="toc"><div class="wrap">
+  <h2 style="font-size:1.2rem">Dans cette leçon</h2>
+  <ol>
+    <li><a href="#kpi">Les indicateurs clés de performance</a></li>
+    <li><a href="#analyse">Analyser les conversations et s’améliorer en continu</a></li>
+    <li><a href="#smart">Objectifs SMART et plan d’action sur 30 jours</a></li>
+    <li><a href="#ressources">Organiser les ressources : tâches, temps et budget</a></li>
+  </ol>
+</div></div>
+
+<section class="s" id="kpi"><div class="wrap fade">
+  <h2>1. Les indicateurs clés de performance</h2>
+  <p>Un <b>indicateur clé de performance</b> (<b>KPI</b>, en anglais <i>Key Performance Indicator</i>) est une mesure chiffrée qui indique si l’assistant atteint son but. Sans mesure, on juge à l’impression ; avec quelques indicateurs bien choisis, on décide sur des faits.</p>
+  <div class="cards">
+    <div class="card"><div class="ic">💬</div><h3>Conversations</h3><p>Le volume d’échanges : l’assistant est-il utilisé ?</p></div>
+    <div class="card"><div class="ic">✅</div><h3>Résolution</h3><p>La part des demandes réglées sans intervention humaine.</p></div>
+    <div class="card"><div class="ic">📇</div><h3>Contacts collectés</h3><p>Le nombre de coordonnées laissées par les visiteurs.</p></div>
+    <div class="card"><div class="ic">⭐</div><h3>Satisfaction</h3><p>La note ou l’avis donné par les clients.</p></div>
+    <div class="card"><div class="ic">🤝</div><h3>Transfert</h3><p>La part des conversations passées à un conseiller.</p></div>
+  </div>
+  <h3>Comment les calculer et les lire</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Indicateur</th><th>Calcul</th><th>Lecture</th></tr></thead>
+    <tbody>
+    <tr><td>Conversations</td><td>Nombre total sur une période</td><td>Une baisse peut signaler un widget peu visible</td></tr>
+    <tr><td>Taux de résolution</td><td>Demandes résolues par l’assistant ÷ conversations</td><td>Plus il monte, plus l’équipe est soulagée</td></tr>
+    <tr><td>Contacts collectés</td><td>Nombre de coordonnées obtenues</td><td>Mesure l’utilité commerciale</td></tr>
+    <tr><td>Satisfaction</td><td>Moyenne des notes reçues</td><td>À lire avec le nombre de réponses</td></tr>
+    <tr><td>Taux de transfert</td><td>Conversations transférées ÷ conversations</td><td>Trop élevé : base insuffisante. Nul : transfert peut-être trop difficile</td></tr>
+    </tbody></table></div>
+  <div class="code"><div class="lbl">Exemple de calcul sur un mois</div><button type="button">Copier</button><pre><code><span class="k">Conversations :</span> 400
+<span class="k">Résolues par l'assistant :</span> 280  → taux de résolution = 280 / 400 = 70 %
+<span class="k">Transférées :</span> 80          → taux de transfert = 80 / 400 = 20 %
+<span class="k">Contacts collectés :</span> 45
+<span class="k">Satisfaction :</span> 4,2 / 5 (sur 60 avis)</code></pre></div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Suivre un seul chiffre. Un taux de résolution élevé n’a pas de valeur si la satisfaction baisse : les indicateurs se lisent ensemble.</p></div>
+</div></section>
+
+<section class="s" id="analyse"><div class="wrap fade">
+  <h2>2. Analyser les conversations et améliorer en continu</h2>
+  <p>Les chiffres disent <i>combien</i>, les <b>historiques de conversation</b> disent <i>pourquoi</i>. On relit régulièrement un échantillon d’échanges pour repérer ce qui fonctionne et ce qui échoue. La démarche forme un cycle, appelé <b>amélioration continue</b>.</p>
+  <ol class="stepper" aria-label="Cycle d’amélioration continue">
+    <li><b>Mesurer</b>Consulter les indicateurs de la période.</li>
+    <li><b>Analyser</b>Relire les conversations problématiques.</li>
+    <li><b>Corriger</b>Ajuster la base de connaissances ou le prompt.</li>
+    <li><b>Contrôler</b>Retester puis comparer à la période suivante.</li>
+  </ol>
+  <figure class="fig">
+    <svg viewBox="0 0 640 170" role="img" aria-labelledby="t1 d1"><title id="t1">Cycle d’amélioration continue</title><desc id="d1">Les indicateurs sont mesurés, les conversations analysées, l’assistant corrigé, puis le résultat est contrôlé avant de recommencer.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="40" width="130" height="60" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="75" y="75">Mesurer</text>
+      <rect x="180" y="40" width="130" height="60" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="245" y="75">Analyser</text>
+      <rect x="350" y="40" width="130" height="60" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="415" y="75">Corriger</text>
+      <rect x="520" y="40" width="110" height="60" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="575" y="75">Contrôler</text></g>
+      <path d="M140 70h40M310 70h40M480 70h40" stroke="#5B4BDB" stroke-width="2"/><path d="M575 100v38H75v-38" stroke="#5F6370" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+    </svg>
+    <figcaption>Le cycle se répète à intervalle régulier, par exemple chaque mois.</figcaption>
+  </figure>
+  <h3>Que chercher dans les historiques ?</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Ce qu’on observe</th><th>Ce que cela révèle</th><th>Action</th></tr></thead>
+    <tbody>
+    <tr><td>Question restée sans réponse</td><td>Sujet absent de la base</td><td>Ajouter une fiche</td></tr>
+    <tr><td>Client qui reformule plusieurs fois</td><td>Réponse peu claire ou variantes manquantes</td><td>Simplifier, ajouter des variantes</td></tr>
+    <tr><td>Réponse inexacte</td><td>Fiche périmée ou prompt trop vague</td><td>Corriger la base ou le prompt</td></tr>
+    <tr><td>Abandon en cours d’échange</td><td>Parcours trop long</td><td>Raccourcir le parcours</td></tr>
+    </tbody></table></div>
+  <div class="callout warn"><strong>⚠️ Attention</strong><p>Les conversations contiennent parfois des données personnelles. Limitez l’accès aux personnes autorisées et masquez les informations inutiles, conformément à la leçon 9.</p></div>
+  <div class="acc"><button aria-expanded="false" aria-controls="a1">Combien de conversations relire ?</button>
+    <div class="body" id="a1" hidden><p>Pas besoin de tout lire. Un échantillon, par exemple les conversations transférées, les moins bien notées et quelques conversations au hasard, donne déjà une bonne image.</p></div></div>
+</div></section>
+
+<section class="s" id="smart"><div class="wrap fade">
+  <h2>3. Objectifs SMART et plan d’action</h2>
+  <p>Un objectif vague (« améliorer l’assistant ») ne guide aucune décision. La méthode <b>SMART</b> le rend vérifiable : il doit être <b>Spécifique, Mesurable, Atteignable, Réaliste et Temporel</b>.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Lettre</th><th>Question à se poser</th><th>Exemple</th></tr></thead>
+    <tbody>
+    <tr><td>S — Spécifique</td><td>Que veut-on précisément ?</td><td>Réduire les questions simples traitées par l’équipe</td></tr>
+    <tr><td>M — Mesurable</td><td>Quel chiffre le prouve ?</td><td>Taux de résolution de 70 %</td></tr>
+    <tr><td>A — Atteignable</td><td>Est-ce possible avec nos moyens ?</td><td>Base déjà prête pour les questions fréquentes</td></tr>
+    <tr><td>R — Réaliste</td><td>Est-ce utile pour l’entreprise ?</td><td>Libérer du temps pour les cas complexes</td></tr>
+    <tr><td>T — Temporel</td><td>Pour quand ?</td><td>Dans les 30 jours après la mise en ligne</td></tr>
+    </tbody></table></div>
+  <div class="callout"><strong>💡 À retenir</strong><p>Exemple d’objectif SMART : « Atteindre 70 % de résolution sans intervention humaine et une note de satisfaction d’au moins 4/5 dans les 30 jours suivant la mise en ligne. »</p></div>
+  <h3>Roadmap de déploiement sur 30 jours</h3>
+  <ol class="stepper" aria-label="Roadmap sur 30 jours">
+    <li><b>Semaine 1 — Préparer</b>Objectifs, canal choisi, base de connaissances rédigée.</li>
+    <li><b>Semaine 2 — Construire</b>Création de l’assistant, import, accueil et tests.</li>
+    <li><b>Semaine 3 — Lancer</b>Mise en ligne limitée, sécurité vérifiée, équipe informée.</li>
+    <li><b>Semaine 4 — Mesurer</b>Analyse des KPI, corrections et décision d’extension.</li>
+  </ol>
+  <figure class="fig">
+    <svg viewBox="0 0 640 130" role="img" aria-labelledby="t2 d2"><title id="t2">Frise des 30 jours</title><desc id="d2">Quatre semaines : préparer, construire, lancer puis mesurer.</desc>
+      <path d="M30 60h580" stroke="#E4E3EC" stroke-width="4"/>
+      <g fill="#fff" stroke="#5B4BDB" stroke-width="3"><circle cx="90" cy="60" r="12"/><circle cx="240" cy="60" r="12"/><circle cx="390" cy="60" r="12"/><circle cx="540" cy="60" r="12" fill="#5B4BDB"/></g>
+      <g font-size="13" font-weight="600" text-anchor="middle" fill="#0A0A0F"><text x="90" y="100">S1 Préparer</text><text x="240" y="100">S2 Construire</text><text x="390" y="100">S3 Lancer</text><text x="540" y="100">S4 Mesurer</text></g>
+    </svg>
+    <figcaption>Un lancement progressif limite les risques.</figcaption>
+  </figure>
+  <div class="acc"><button aria-expanded="false" aria-controls="a2">Exemple de plan d’action détaillé</button>
+    <div class="body" id="a2" hidden><div class="code"><button type="button">Copier</button><pre><code><span class="k">Action</span>                          | <span class="k">Responsable</span> | <span class="k">Échéance</span> | <span class="k">Indicateur</span>
+Rédiger 30 fiches de base      | Service client | Jour 7   | 30 fiches validées
+Configurer et tester           | Chargé digital | Jour 14  | 20 questions testées
+Mettre en ligne sur le site    | Chargé digital | Jour 21  | Widget visible
+Analyser les KPI               | Responsable    | Jour 30  | Résolution 70 %</code></pre></div></div></div>
+</div></section>
+
+<section class="s" id="ressources"><div class="wrap fade">
+  <h2>4. Organiser les ressources : tâches, temps et budget</h2>
+  <h3>Répartir les tâches</h3>
+  <div class="cards">
+    <div class="card"><div class="ic">🧭</div><h3>Responsable du projet</h3><p>Fixe les objectifs, arbitre et suit les KPI.</p></div>
+    <div class="card"><div class="ic">📚</div><h3>Gestionnaire de contenus</h3><p>Rédige et met à jour la base de connaissances.</p></div>
+    <div class="card"><div class="ic">🛠️</div><h3>Référent technique</h3><p>Intègre l’assistant et vérifie son fonctionnement.</p></div>
+    <div class="card"><div class="ic">🎧</div><h3>Conseillers</h3><p>Traitent les transferts et signalent les lacunes.</p></div>
+  </div>
+  <p>Dans une petite entreprise, une même personne peut cumuler plusieurs rôles : l’essentiel est que chaque tâche ait un responsable.</p>
+  <h3>Gérer le temps</h3>
+  <p>Prévoyez une charge <b>régulière</b> après le lancement : une relecture hebdomadaire courte au début, puis une revue mensuelle. Un assistant non suivi se dégrade vite.</p>
+  <h3>Estimer le budget</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Poste</th><th>Nature de la dépense</th><th>À prévoir</th></tr></thead>
+    <tbody>
+    <tr><td>Abonnement à l’outil</td><td>Récurrente (mensuelle ou annuelle)</td><td>Selon la formule et le volume de conversations</td></tr>
+    <tr><td>Canaux de messagerie</td><td>Variable selon l’usage</td><td>Vérifier la grille tarifaire des plateformes</td></tr>
+    <tr><td>Temps interne</td><td>Heures de rédaction, test et suivi</td><td>Heures × coût horaire</td></tr>
+    <tr><td>Prestation externe</td><td>Ponctuelle (intégration, formation)</td><td>Selon le devis</td></tr>
+    <tr><td>Marge de sécurité</td><td>Imprévus</td><td>Une réserve, par exemple 10 à 15 %</td></tr>
+    </tbody></table></div>
+  <div class="callout warn"><strong>⚠️ Erreur fréquente</strong><p>Ne budgéter que l’abonnement. Le temps de rédaction et de suivi représente souvent la plus grosse part du coût réel.</p></div>
+  <div class="callout more"><strong>🔗 Pour aller plus loin</strong><p>Le projet professionnel de fin de parcours reprendra ce plan d’action pour votre propre assistant.</p></div>
+</div></section>
+
+<section class="s" id="synthese"><div class="wide fade">
+  <h2 style="max-width:720px">Synthèse visuelle</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 800 200" role="img" aria-labelledby="t3 d3"><title id="t3">Synthèse de la leçon</title><desc id="d3">Des indicateurs à l’analyse, puis aux objectifs SMART et à l’organisation des ressources.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle" fill="#0A0A0F">
+      <rect x="10" y="60" width="160" height="80" rx="12" fill="#EEECFF" stroke="#5B4BDB" stroke-width="2"/><text x="90" y="105">Indicateurs</text>
+      <rect x="220" y="60" width="160" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="300" y="98">Analyse et</text><text x="300" y="118">amélioration</text>
+      <rect x="430" y="60" width="160" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="510" y="98">Objectifs SMART</text><text x="510" y="118">et roadmap</text>
+      <rect x="640" y="60" width="150" height="80" rx="12" fill="#fff" stroke="#E4E3EC" stroke-width="2"/><text x="715" y="98">Tâches, temps</text><text x="715" y="118">et budget</text></g>
+      <path d="M170 100h50M380 100h50M590 100h50" stroke="#5B4BDB" stroke-width="2"/>
+    </svg>
+    <figcaption>Fil conducteur de la leçon.</figcaption>
+  </figure>
+</div></section>
+
+<section class="key" id="points-cles"><div class="wrap fade">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Cinq KPI à suivre ensemble : conversations, résolution, contacts collectés, satisfaction, transfert.</li>
+    <li>Les chiffres montrent l’ampleur, les historiques de conversation en expliquent les causes.</li>
+    <li>L’amélioration continue suit un cycle : mesurer, analyser, corriger, contrôler.</li>
+    <li>Un objectif SMART est spécifique, mesurable, atteignable, réaliste et daté.</li>
+    <li>Un lancement progressif sur 30 jours : préparer, construire, lancer, mesurer.</li>
+    <li>Chaque tâche a un responsable, le suivi demande du temps et le budget inclut le travail interne.</li>
+  </ul>
+</div></section>
+
+<div class="wrap"><nav class="nav" aria-label="Navigation entre leçons">
+  <a href="lecon-09.html"><small>Leçon précédente</small>Leçon 9 — Tester, sécuriser et protéger les données</a>
+  <a class="next off" href="#" aria-disabled="true"><small>Fin du parcours de formation</small>Quiz final et projet professionnel</a>
+</nav></div>
+</main>
+<footer><div class="wrap">Création de chatbots et assistants IA pour les entreprises — Module 2, Leçon 10</div></footer>
+<button id="top" aria-label="Retour en haut">↑</button>
+<script>
+(function(){
+var bar=document.getElementById('bar'),top=document.getElementById('top');
+function onScroll(){var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);bar.style.width=(p*100)+'%';top.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+top.onclick=function(){scrollTo({top:0})};
+var mb=document.getElementById('menuBtn'),m=document.getElementById('menu');
+mb.onclick=function(){var o=m.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+m.addEventListener('click',function(e){if(e.target.tagName==='A'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',function(e){if(e.key==='Escape'){m.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+document.querySelectorAll('.acc button').forEach(function(b){b.onclick=function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',!o);document.getElementById(b.getAttribute('aria-controls')).hidden=o}});
+document.querySelectorAll('.tabs').forEach(function(t){var tabs=[].slice.call(t.querySelectorAll('[role=tab]'));
+function sel(x){tabs.forEach(function(y){var on=y===x;y.setAttribute('aria-selected',on);y.tabIndex=on?0:-1;document.getElementById(y.getAttribute('aria-controls')).hidden=!on});x.focus()}
+tabs.forEach(function(x,i){x.onclick=function(){sel(x)};x.onkeydown=function(e){if(e.key==='ArrowRight')sel(tabs[(i+1)%tabs.length]);if(e.key==='ArrowLeft')sel(tabs[(i-1+tabs.length)%tabs.length])}})});
+var els=document.querySelectorAll('.fade');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
+document.querySelectorAll(".code button").forEach(function(b){b.onclick=function(){var t=b.parentNode.querySelector("code").textContent;function ok(){b.textContent="Copié ✓";setTimeout(function(){b.textContent="Copier"},1800)}if(navigator.clipboard){navigator.clipboard.writeText(t).then(ok,ok)}else{ok()}}});
+})();
+</script>
+</body>
+</html>

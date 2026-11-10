@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 10 — Supports de présentation</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232F5D50'/%3E%3Ctext x='50' y='68' font-size='60' fill='%23FDFCFA' text-anchor='middle' font-family='Georgia'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FDFCFA;
+    --color-bg-alt:#F5F2EC;
+    --color-text:#16181C;
+    --color-text-muted:#5E5A54;
+    --color-accent:#2F5D50;
+    --color-accent-soft:#E8EFEB;
+    --color-brass:#A8823C;
+    --color-border:#E4DFD6;
+    --radius:3px;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'Inter', 'Public Sans', sans-serif;
+  }
+  [data-theme="dark"]{
+    --color-bg:#15171A;
+    --color-bg-alt:#1C1F23;
+    --color-text:#EDEAE3;
+    --color-text-muted:#A8A399;
+    --color-accent:#6FA893;
+    --color-accent-soft:#20302B;
+    --color-brass:#C4A05C;
+    --color-border:#33362F;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; color:var(--color-text); line-height:1.25;}
+  h1{font-size:2.1rem;} h2{font-size:1.5rem; margin-top:2.6rem;} h3{font-size:1.15rem;}
+  p{margin:0.9rem 0;}
+  a{color:var(--color-accent);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--color-text-muted);}
+  .caption{font-size:0.8rem; letter-spacing:0.02em; color:var(--color-text-muted);}
+
+  /* Progress bar */
+  #progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; background:var(--color-accent); z-index:1000; transition:width 0.1s ease-out;}
+
+  /* Sticky header */
+  header.site{
+    position:sticky; top:0; z-index:900; background:var(--color-bg);
+    border-bottom:1px solid var(--color-border); padding:10px 0;
+  }
+  .header-inner{max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .filiere-tag{font-size:0.72rem; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; text-transform:uppercase;}
+  .lecon-title-mini{font-size:0.85rem; color:var(--color-text-muted); display:none;}
+  @media(min-width:640px){ .lecon-title-mini{display:inline;} }
+  nav.somm-toggle{position:relative;}
+  .somm-btn{
+    background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius);
+    padding:7px 14px; font-family:var(--font-body); font-size:0.85rem; cursor:pointer; color:var(--color-text);
+  }
+  .somm-btn:hover{border-color:var(--color-accent);}
+  .somm-menu{
+    position:absolute; right:0; top:calc(100% + 8px); background:var(--color-bg); border:1px solid var(--color-border);
+    border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.06); min-width:260px; padding:10px; display:none; max-height:70vh; overflow-y:auto;
+  }
+  .somm-menu.open{display:block;}
+  .somm-menu a{display:block; padding:7px 10px; font-size:0.88rem; color:var(--color-text); text-decoration:none; border-radius:var(--radius);}
+  .somm-menu a:hover{background:var(--color-accent-soft); color:var(--color-accent);}
+  .theme-btn{background:none; border:1px solid var(--color-border); border-radius:var(--radius); padding:6px 10px; cursor:pointer; font-size:0.8rem; color:var(--color-text-muted);}
+
+  /* Hero */
+  .hero{padding:56px 0 32px; border-bottom:1px solid var(--color-border);}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .badge{
+    font-size:0.72rem; padding:4px 11px; border-radius:var(--radius); background:var(--color-accent-soft);
+    color:var(--color-accent); border:1px solid var(--color-border); font-weight:600;
+  }
+  .badge.brass{background:transparent; color:var(--color-brass); border-color:var(--color-brass);}
+  .hero h1{margin:0 0 10px;}
+  .hero .subtitle{font-size:1.05rem; color:var(--color-text-muted); max-width:600px;}
+
+  /* Sommaire block */
+  .sommaire-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:20px 24px; margin:30px 0;}
+  .sommaire-block h2{margin-top:0; font-size:1.05rem;}
+  .sommaire-block ol{margin:0; padding-left:1.2rem;}
+  .sommaire-block li{margin:6px 0;}
+  .sommaire-block a{text-decoration:none;}
+  .sommaire-block a:hover{text-decoration:underline;}
+
+  /* Sections */
+  section{padding:34px 0; border-bottom:1px solid var(--color-border);}
+  section:last-of-type{border-bottom:none;}
+
+  /* Objectifs */
+  .objectifs-list{list-style:none; padding:0; margin:0; display:grid; gap:10px;}
+  .objectifs-list li{display:flex; gap:10px; align-items:flex-start; font-size:0.98rem;}
+  .objectifs-list li::before{content:"—"; color:var(--color-accent); flex-shrink:0;}
+
+  /* Callout boxes */
+  .callout{border-left:3px solid var(--color-accent); background:var(--color-bg-alt); border-radius:var(--radius); padding:16px 18px; margin:22px 0;}
+  .callout .callout-label{font-weight:600; font-size:0.88rem; margin-bottom:4px; display:block;}
+  .callout.warn{border-left-color:var(--color-brass);}
+  .callout.model{border-left-color:#5E5A54;}
+  .callout.check{border-left-color:var(--color-accent);}
+  .callout.scenario{border-left-color:var(--color-brass); background:var(--color-accent-soft);}
+  .callout.privacy{border-left-color:#8B4B4B;}
+  .callout.more{border-left-color:var(--color-text-muted);}
+
+  /* Model block with copy */
+  .model-block{background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:var(--radius); padding:0; margin:18px 0; overflow:hidden;}
+  .model-block-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--color-border); background:var(--color-bg);}
+  .model-block-head span{font-size:0.8rem; font-weight:600; color:var(--color-text-muted);}
+  .copy-btn{background:var(--color-bg); border:1px solid var(--color-border); border-radius:var(--radius); padding:5px 12px; font-size:0.78rem; cursor:pointer; color:var(--color-accent); font-family:var(--font-body);}
+  .copy-btn:hover{background:var(--color-accent-soft);}
+  .model-block pre{margin:0; padding:16px; font-family:'Courier New', monospace; font-size:0.85rem; white-space:pre-wrap; line-height:1.55;}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:var(--radius);}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  th, td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--color-border);}
+  th{background:var(--color-bg-alt); font-weight:600; font-family:var(--font-body);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tabs */
+  .tabs{margin:22px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; padding:10px 16px; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--color-accent); border-bottom-color:var(--color-accent); font-weight:600;}
+  .tab-panel{display:none; padding:18px 4px;}
+  .tab-panel.active{display:block;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--color-border); border-radius:var(--radius); margin:10px 0; background:var(--color-bg);}
+  .accordion-trigger{width:100%; text-align:left; background:none; border:none; padding:14px 16px; font-family:var(--font-body); font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--color-text);}
+  .accordion-trigger .chevron{transition:transform 0.2s ease; color:var(--color-text-muted);}
+  .accordion-item.open .chevron{transform:rotate(180deg);}
+  .accordion-panel{display:none; padding:0 16px 16px; color:var(--color-text-muted); font-size:0.92rem;}
+  .accordion-item.open .accordion-panel{display:block;}
+
+  /* Cards grid */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:22px 0;}
+  .card{border:1px solid var(--color-border); border-radius:var(--radius); padding:16px; background:var(--color-bg-alt);}
+  .card h3{margin:0 0 8px; font-size:1rem;}
+  .card p{margin:0; font-size:0.88rem; color:var(--color-text-muted);}
+
+  /* Stepper */
+  .stepper{display:flex; gap:0; margin:26px 0; overflow-x:auto; padding-bottom:6px;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 14px 0 0;}
+  .step-num{width:28px; height:28px; border-radius:50%; background:var(--color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:600; margin-bottom:10px;}
+  .step-line{position:absolute; top:14px; left:28px; right:14px; height:1px; background:var(--color-border);}
+  .step:last-child .step-line{display:none;}
+  .step h3{font-size:0.92rem; margin:0 0 4px;}
+  .step p{font-size:0.82rem; margin:0;}
+
+  /* Checklist */
+  .checklist{list-style:none; padding:0; margin:18px 0; display:grid; gap:8px;}
+  .checklist li{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg);}
+  .checklist input[type="checkbox"]{margin-top:3px; width:16px; height:16px; accent-color:var(--color-accent); flex-shrink:0;}
+  .checklist label{font-size:0.92rem; cursor:pointer;}
+  .checklist li.checked{background:var(--color-accent-soft); border-color:var(--color-accent);}
+  .checklist li.checked label{color:var(--color-text-muted); text-decoration:line-through;}
+
+
+  /* Nav prev/next */
+  .prevnext{display:flex; gap:16px; justify-content:space-between; margin:30px 0;}
+  .prevnext a, .prevnext span{
+    flex:1; border:1px solid var(--color-border); border-radius:var(--radius); padding:16px 18px; text-decoration:none;
+    color:var(--color-text); font-size:0.88rem; display:block;
+  }
+  .prevnext a:hover{border-color:var(--color-accent);}
+  .prevnext .dir-label{color:var(--color-text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;}
+  .prevnext .disabled{color:var(--color-text-muted); opacity:0.55; cursor:default;}
+  .back-module{text-align:center; margin:16px 0 34px;}
+  .back-module a{font-size:0.86rem;}
+
+  footer{padding:30px 0 60px; text-align:center; color:var(--color-text-muted); font-size:0.8rem;}
+
+  /* Back to top */
+  #back-to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%; background:var(--color-accent);
+    color:#fff; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:1.1rem; z-index:800;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  #back-to-top.show{display:flex;}
+
+  .fade-in{opacity:0; transform:translateY(8px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .fade-in.visible{opacity:1; transform:translateY(0);}
+
+  @media print{
+    header.site, #progress-bar, #back-to-top, .theme-btn, .prevnext, footer .no-print{display:none !important;}
+    body{background:#fff; color:#000;}
+    section{border-bottom:1px solid #ccc; break-inside:avoid;}
+    .callout, .model-block, .card, .accordion-panel{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <span class="filiere-tag">Assistance de direction</span>
+      <span class="lecon-title-mini"> · Leçon 10 — Supports de présentation</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="theme-btn" id="theme-toggle" aria-label="Basculer le mode sombre">🌓</button>
+      <nav class="somm-toggle">
+        <button class="somm-btn" id="somm-btn" aria-expanded="false" aria-controls="somm-menu">Sommaire ▾</button>
+        <div class="somm-menu" id="somm-menu">
+          <a href="#objectifs">Objectifs pédagogiques</a>
+          <a href="#message-cle">1. Message clé</a>
+          <a href="#plan">2. Plan</a>
+          <a href="#regle-sobriete">3. Règle de sobriété</a>
+          <a href="#graphiques">4. Graphiques</a>
+          <a href="#modeles-charte">5. Modèles et charte</a>
+          <a href="#mode-presentateur">6. Mode présentateur</a>
+          <a href="#export-pdf">7. Export PDF</a>
+          <a href="#mise-en-situation">Mise en situation</a>
+<a href="#points-cles">Points clés à retenir</a>
+          <a href="#boite-a-outils">Boîte à outils</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="badges">
+      <span class="badge">Module 2 — Communication professionnelle écrite et orale</span>
+      <span class="badge brass">Niveau intermédiaire</span>
+      <span class="badge">30 min</span>
+    </div>
+    <h1>Leçon 10 — Supports de présentation</h1>
+    <p class="subtitle">Concevoir un support lisible qui appuie la parole de la direction, sans jamais s'y substituer : message clé, plan, sobriété visuelle et export soigné.</p>
+  </section>
+
+  <div class="sommaire-block" id="objectifs">
+    <h2>Objectifs pédagogiques</h2>
+    <ul class="objectifs-list">
+      <li>Formuler un message clé unique avant de commencer à concevoir les diapositives.</li>
+      <li>Construire un plan de présentation cohérent, adapté au temps et à l'audience.</li>
+      <li>Appliquer une règle de sobriété visuelle stricte sur chaque diapositive.</li>
+      <li>Choisir et lire un graphique adapté au message à transmettre.</li>
+      <li>Utiliser un modèle et une charte graphique pour garantir la cohérence du support.</li>
+      <li>Piloter une présentation avec le mode présentateur et produire un export PDF propre.</li>
+    </ul>
+  </div>
+
+  <section id="message-cle">
+    <h2>1. Message clé</h2>
+    <p>Avant d'ouvrir le logiciel de présentation, une question précède tout le reste : si l'auditoire ne retenait qu'une seule phrase, laquelle serait-ce ? Cette phrase, le <strong>message clé</strong>, guide ensuite chaque choix de contenu — ce qui l'appuie reste, ce qui ne l'appuie pas est écarté ou renvoyé en annexe.</p>
+    <p>Un comité de direction dispose rarement de plus de dix minutes d'attention réelle. Une présentation construite sans message clé produit un empilement d'informations exactes mais sans hiérarchie, que l'auditoire doit reconstruire lui-même.</p>
+
+    <div class="callout">
+      <span class="callout-label">💡 À retenir</span>
+      Le message clé se formule en une phrase complète, jamais en un simple titre de sujet : « Le projet X est en retard mais reste rattrapable si la décision Y est prise cette semaine », et non « Point d'avancement projet X ».
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Commencer par créer les diapositives puis chercher, à la fin, quel message elles racontent globalement. Le message clé doit être écrit en premier, avant la première diapositive.
+    </div>
+  </section>
+
+  <section id="plan">
+    <h2>2. Plan</h2>
+    <p>Une présentation de comité de direction suit généralement une structure en entonnoir : contexte bref, constat ou résultat, analyse, puis recommandation ou décision attendue. Ce plan s'établit avant la mise en forme, sur papier ou dans un simple document texte.</p>
+
+    <div class="stepper">
+      <div class="step"><div class="step-line"></div><div class="step-num">1</div><h3>Contexte</h3><p>Une ou deux diapositives, jamais plus, pour rappeler le cadre.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">2</div><h3>Constat</h3><p>Les données ou faits qui posent le sujet.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">3</div><h3>Analyse</h3><p>Ce que ces faits impliquent pour l'organisation.</p></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">4</div><h3>Décision attendue</h3><p>Ce qui est demandé au comité, formulé clairement.</p></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Durée totale</th><th>Diapositives recommandées</th><th>Répartition</th></tr></thead>
+        <tbody>
+          <tr><td>5 minutes</td><td>5 à 7</td><td>1 contexte, 2-3 constat, 1-2 analyse, 1 décision</td></tr>
+          <tr><td>10 minutes</td><td>8 à 10</td><td>1-2 contexte, 3-4 constat, 2 analyse, 1-2 décision</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="regle-sobriete">
+    <h2>3. Règle de sobriété</h2>
+    <p>Une diapositive de comité de direction n'est pas un document à lire mais un support à regarder pendant que quelqu'un parle. Elle doit donc rester lisible en quelques secondes, sans effort de lecture soutenu.</p>
+
+    <div class="tabs" data-tabs="sobriete">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="a">Diapositive surchargée</button>
+        <button class="tab-btn" role="tab" data-tab="b">Diapositive sobre</button>
+      </div>
+      <div class="tab-panel active" data-panel="a">
+        <p>Un titre générique, six puces de texte complet, un tableau de douze lignes et un logo décoratif : l'auditoire hésite entre écouter l'intervenant et déchiffrer l'écran, et finit par ne suivre ni l'un ni l'autre correctement.</p>
+      </div>
+      <div class="tab-panel" data-panel="b">
+        <p>Un titre qui énonce déjà le message de la diapositive, trois éléments visuels maximum (mots-clés, chiffre, graphique), beaucoup d'espace blanc : l'auditoire capte l'essentiel en un regard et reste disponible pour écouter la parole de l'intervenant.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h3>Une idée par diapositive</h3><p>Si deux idées sont nécessaires, deux diapositives valent mieux qu'une seule surchargée.</p></div>
+      <div class="card"><h3>Titre-message</h3><p>Le titre énonce la conclusion de la diapositive, pas seulement son sujet : « Budget maîtrisé » plutôt que « Budget ».</p></div>
+      <div class="card"><h3>Six lignes maximum</h3><p>Au-delà, le texte devient un document à lire plutôt qu'un support à regarder.</p></div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Rédiger les diapositives comme un compte rendu écrit, avec des phrases complètes, en pensant qu'elles pourront « se suffire à elles-mêmes ». Une diapositive de réunion et un document de référence répondent à deux besoins différents.
+    </div>
+  </section>
+
+  <section id="graphiques">
+    <h2>4. Graphiques</h2>
+    <p>Un graphique n'est utile que s'il rend un message plus rapide à saisir qu'un tableau de chiffres. Le choix du type de graphique dépend directement de ce que l'on cherche à montrer.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Message à transmettre</th><th>Graphique adapté</th></tr></thead>
+        <tbody>
+          <tr><td>Évolution dans le temps</td><td>Courbe ou histogramme chronologique</td></tr>
+          <tr><td>Comparaison entre catégories</td><td>Histogramme vertical ou horizontal</td></tr>
+          <tr><td>Répartition d'un total</td><td>Diagramme circulaire, à réserver à peu de catégories</td></tr>
+          <tr><td>Un seul chiffre clé</td><td>Un chiffre en grand, sans graphique superflu</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Simplifier avant de mettre en forme <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Retirer les quadrillages, les effets 3D et les légendes inutiles. Un graphique de comité de direction gagne en clarté à mesure qu'on lui retire des éléments décoratifs.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Faire ressortir le point important <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Une couleur d'accent unique sur la barre ou le point à mettre en valeur permet d'orienter le regard directement vers l'information utile.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant d'insérer un graphique : le titre de l'axe est-il lisible, l'échelle n'exagère-t-elle pas une variation mineure, et le graphique répond-il bien au message clé de la diapositive ?
+    </div>
+  </section>
+
+  <section id="modeles-charte">
+    <h2>5. Modèles et charte</h2>
+    <p>Comme pour un document Word, un support de présentation repose sur un modèle plutôt que sur une mise en forme diapositive par diapositive. Le modèle fixe les polices, les couleurs, la place du titre et du logo : la personne qui prépare la présentation se concentre sur le contenu, pas sur la mise en page.</p>
+
+    <div class="card-grid">
+      <div class="card"><h3>Masque de diapositives</h3><p>Un seul réglage de police ou de couleur dans le masque s'applique à l'ensemble du support.</p></div>
+      <div class="card"><h3>Palette limitée</h3><p>Deux à trois couleurs maximum, cohérentes avec l'identité visuelle de l'organisation.</p></div>
+      <div class="card"><h3>Gabarits de mise en page</h3><p>Quelques dispositions type (titre + texte, titre + graphique, citation) suffisent à couvrir l'essentiel d'une présentation.</p></div>
+    </div>
+
+    <div class="callout more">
+      <span class="callout-label">🔗 Pour aller plus loin</span>
+      Lorsqu'un modèle d'organisation existe déjà (charte imposée par la direction de la communication), il doit toujours être utilisé tel quel plutôt que recréé à chaque présentation.
+    </div>
+  </section>
+
+  <section id="mode-presentateur">
+    <h2>6. Mode présentateur</h2>
+    <p>Le mode présentateur affiche, sur l'écran de l'intervenant uniquement, les notes de la diapositive en cours, la diapositive suivante et un minuteur, pendant que l'auditoire ne voit que la diapositive elle-même en plein écran.</p>
+
+    <div class="accordion" data-accordion>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Préparer les notes avant la soutenance <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Les notes ne sont pas un texte à lire mot pour mot, mais des repères courts : chiffres exacts, transition vers la diapositive suivante, point à ne pas oublier.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger">Vérifier le branchement avant la réunion <span class="chevron">⌄</span></button>
+        <div class="accordion-panel">
+          <p>Le mode présentateur dépend de la configuration d'affichage entre l'ordinateur et le vidéoprojecteur : un test préalable évite de découvrir un problème devant le comité.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-label">⚠️ Erreur fréquente</span>
+      Découvrir en direct que le mode présentateur affiche à l'auditoire les notes destinées à l'intervenant, faute de test préalable de l'affichage.
+    </div>
+  </section>
+
+  <section id="export-pdf">
+    <h2>7. Export PDF</h2>
+    <p>Comme pour un document Word, l'export en PDF fige la présentation pour sa diffusion après la réunion : le comité peut la consulter sans dépendre du logiciel ni du modèle d'origine, et sans risquer une modification involontaire du contenu.</p>
+
+    <div class="callout check">
+      <span class="callout-label">✅ Checklist</span>
+      Avant export : vérifier que les animations ne masquent aucun contenu essentiel une fois figées, que les notes de présentateur ne sont pas incluses si elles sont confidentielles, et que le fichier est nommé clairement (sujet, date).
+    </div>
+  </section>
+
+  <section id="mise-en-situation">
+    <h2>Mise en situation professionnelle</h2>
+    <div class="callout scenario">
+      <span class="callout-label">🎭 Mise en situation</span>
+      <p>Préparez une présentation de dix diapositives pour un comité de direction, sur un sujet de votre choix lié à votre environnement professionnel (avancement d'un projet, bilan d'activité, proposition de décision).</p>
+      <p style="margin-bottom:0;">Formulez d'abord le message clé en une phrase, construisez le plan en quatre temps, puis réalisez les diapositives en appliquant la règle de sobriété. La présentation se conclut par une soutenance orale de cinq minutes, mode présentateur activé.</p>
+    </div>
+  </section>
+<section id="points-cles">
+    <h2>Points clés à retenir</h2>
+    <ul class="objectifs-list">
+      <li>Le message clé se formule en une phrase complète, avant même d'ouvrir le logiciel de présentation.</li>
+      <li>Le plan d'un support de comité de direction suit un entonnoir : contexte, constat, analyse, décision attendue.</li>
+      <li>Une diapositive porte une seule idée, avec un titre qui énonce déjà le message.</li>
+      <li>Le type de graphique se choisit selon le message à transmettre, jamais par habitude.</li>
+      <li>Un modèle et une charte cohérents évitent de refaire la mise en forme à chaque présentation.</li>
+      <li>Le mode présentateur et l'export PDF se préparent et se testent avant la réunion, jamais en direct.</li>
+    </ul>
+  </section>
+
+  <section id="boite-a-outils">
+    <h2>Boîte à outils</h2>
+    <p>Livrable de la leçon : la <strong>présentation complète de dix diapositives</strong>, accompagnée de sa <strong>soutenance orale de cinq minutes</strong> en mode présentateur.</p>
+
+    <div class="model-block">
+      <div class="model-block-head"><span>📋 Modèle — Structure d'une présentation de comité de direction</span><button class="copy-btn" data-copy-target="model-1">Copier</button></div>
+      <pre id="model-1">PRÉSENTATION COMITÉ DE DIRECTION — [Sujet]
+
+Message clé (une phrase) : ___________________
+
+1. Contexte (1-2 diapositives)
+2. Constat / résultats (2-4 diapositives)
+3. Analyse (1-2 diapositives)
+4. Décision attendue (1-2 diapositives)
+
+Pour chaque diapositive :
+   Titre-message : ____________________________
+   Élément visuel principal : _________________
+   Note présentateur : ________________________</pre>
+    </div>
+
+    <h3>Checklist de livraison</h3>
+    <ul class="checklist" id="delivery-checklist">
+      <li><input type="checkbox" id="chk1"><label for="chk1">Message clé formulé en une phrase avant la conception</label></li>
+      <li><input type="checkbox" id="chk2"><label for="chk2">Dix diapositives réalisées selon la règle de sobriété</label></li>
+      <li><input type="checkbox" id="chk3"><label for="chk3">Graphiques choisis en fonction du message à transmettre</label></li>
+      <li><input type="checkbox" id="chk4"><label for="chk4">Notes de présentateur préparées pour chaque diapositive</label></li>
+      <li><input type="checkbox" id="chk5"><label for="chk5">Export PDF vérifié et fichier nommé clairement</label></li>
+      <li><input type="checkbox" id="chk6"><label for="chk6">Soutenance orale de 5 minutes réalisée en mode présentateur</label></li>
+    </ul>
+  </section>
+
+  <div class="prevnext">
+    <a href="#"><span class="dir-label">← Précédent</span>Leçon 9 — Communication orale et relation client</a>
+    <a href="#"><span class="dir-label">Suivant →</span>Leçon 11 — Agenda et gestion des priorités</a>
+  </div>
+  <div class="back-module"><a href="#">← Retour au module</a></div>
+
+</main>
+
+<footer>
+  <div class="wrap no-print">Module 2 — Communication professionnelle écrite et orale · Leçon 10 sur le parcours Assistance de direction</div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (t) => document.documentElement.setAttribute('data-theme', t);
+  let saved = null;
+  try{ saved = localStorage.getItem('lecon-theme'); }catch(e){}
+  if(saved) applyTheme(saved);
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('lecon-theme', next); }catch(e){}
+  });
+
+  // Sommaire dropdown
+  const sommBtn = document.getElementById('somm-btn');
+  const sommMenu = document.getElementById('somm-menu');
+  sommBtn.addEventListener('click', () => {
+    const open = sommMenu.classList.toggle('open');
+    sommBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if(!sommMenu.contains(e.target) && e.target !== sommBtn){ sommMenu.classList.remove('open'); sommBtn.setAttribute('aria-expanded','false'); }
+  });
+  sommMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sommMenu.classList.remove('open')));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top');
+  document.addEventListener('scroll', () => {
+    backBtn.classList.toggle('show', (document.documentElement.scrollTop || document.body.scrollTop) > 500);
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Tabs
+  document.querySelectorAll('.tabs').forEach(tabs => {
+    const btns = tabs.querySelectorAll('.tab-btn');
+    const panels = tabs.querySelectorAll('.tab-panel');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.querySelector('.tab-panel[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    }));
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      trigger.parentElement.classList.toggle('open');
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      const text = target.textContent;
+      const done = () => { const orig = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = orig, 1600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // Checklist persistence (per session, in-memory + localStorage best-effort)
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    let stored = null;
+    try{ stored = localStorage.getItem('chk-' + cb.id); }catch(e){}
+    if(stored === '1'){ cb.checked = true; cb.parentElement.classList.add('checked'); }
+    cb.addEventListener('change', () => {
+      cb.parentElement.classList.toggle('checked', cb.checked);
+      try{ localStorage.setItem('chk-' + cb.id, cb.checked ? '1' : '0'); }catch(e){}
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:0.15}) : null;
+  document.querySelectorAll('section, .sommaire-block').forEach(el => {
+    el.classList.add('fade-in');
+    if(observer) observer.observe(el); else el.classList.add('visible');
+  });
+
+</script>
+</body>
+</html>

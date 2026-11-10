@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 05 — Sécuriser son ordinateur et son smartphone | Filière Cybersécurité</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232563EB' d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identiques sur tous les cours de la filière) ===== */
+:root{
+  --color-bg:#FFFFFF; --color-bg-alt:#F4F8FC; --color-text:#0A0F14; --color-text-muted:#5B6472;
+  --color-accent:#2563EB; --color-accent-soft:#EAF2FF; --color-border:#E2E8F0;
+  --font-display:'Sora','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font-body);font-size:1.0625rem;line-height:1.7;color:var(--color-text);background:var(--color-bg)}
+a{color:var(--color-accent)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.2;margin:0 0 .6em}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0 0 1em}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:960px;margin:0 auto;padding:0 20px}
+.muted{color:var(--color-text-muted)}
+
+/* ===== Barre de progression + header ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:.95rem;text-decoration:none;color:var(--color-text)}
+.brand svg{width:22px;height:22px}
+.menu-btn{font:500 .9rem var(--font-body);background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--color-text);transition:border-color .2s}
+.menu-btn:hover{border-color:var(--color-accent)}
+#drawer{display:none;position:absolute;right:20px;top:60px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(10,15,20,.08)}
+#drawer.open{display:block}
+#drawer a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--color-text);font-size:.95rem}
+#drawer a:hover{background:var(--color-accent-soft);color:var(--color-accent)}
+
+/* ===== Hero ===== */
+.hero{padding:72px 0 56px;border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.82rem;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent)}
+.badge.plain{background:var(--color-bg-alt);color:var(--color-text-muted);border:1px solid var(--color-border)}
+.hero .lead{font-size:1.2rem;color:var(--color-text-muted);max-width:620px}
+.course{font-size:.95rem;color:var(--color-text-muted);margin-bottom:12px}
+
+/* ===== Sommaire ===== */
+.toc{background:var(--color-bg-alt);border-radius:var(--radius);padding:24px 28px;margin:40px auto}
+.toc ol{margin:0;padding-left:1.2em}
+.toc li{padding:3px 0}
+.toc a{text-decoration:none;color:var(--color-text);transition:color .2s}
+.toc a:hover{color:var(--color-accent)}
+
+/* ===== Sections ===== */
+section.lesson{padding:64px 0}
+section.lesson.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ===== Cartes ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius);padding:20px;transition:border-color .2s,transform .2s}
+.alt .card{background:#fff}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.card svg{width:28px;height:28px;stroke:var(--color-accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.card h3{margin-bottom:.3em}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+
+/* ===== Encadrés ===== */
+.note{display:flex;gap:14px;border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:28px 0}
+.note .ic{font-size:1.3rem;line-height:1.5}
+.note strong{display:block;font-family:var(--font-display);margin-bottom:2px}
+.note p{margin:0;font-size:.98rem}
+
+/* ===== Tabs ===== */
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;overflow:hidden}
+.tablist{display:flex;overflow-x:auto;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}
+.tablist button{flex:1 0 auto;font:500 .95rem var(--font-body);padding:12px 18px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:2px solid transparent;transition:color .2s}
+.tablist button:hover{color:var(--color-text)}
+.tablist button[aria-selected=true]{color:var(--color-accent);border-bottom-color:var(--color-accent);background:#fff}
+.tabpanel{padding:20px 22px}
+.tabpanel[hidden]{display:none}
+.tabpanel p:last-child{margin:0}
+
+/* ===== Accordéons ===== */
+details{border:1px solid var(--color-border);border-radius:var(--radius);background:#fff;margin:10px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--color-accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details>div{padding:0 18px 16px;color:var(--color-text-muted);font-size:.98rem}
+
+/* ===== Schémas ===== */
+figure{margin:32px 0}
+figure svg{width:100%;height:auto;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius)}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--font-body)}
+
+/* ===== Stepper ===== */
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;counter-reset:s}
+.stepper li{counter-increment:s;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:44px 14px 14px;font-size:.92rem}
+.stepper li::before{content:counter(s);position:absolute;top:12px;left:14px;width:24px;height:24px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .8rem/24px var(--font-display);text-align:center}
+.stepper b{display:block;font-family:var(--font-display);margin-bottom:2px}
+.stepper span{color:var(--color-text-muted)}
+
+/* ===== Points clés, nav, footer ===== */
+.keys{list-style:none;padding:0;margin:24px 0;display:grid;gap:12px}
+.keys li{display:flex;gap:12px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius);padding:14px 18px}
+.keys li::before{content:"✓";color:var(--color-accent);font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding:48px 0}
+.nav a,.nav span{flex:1 1 240px;border:1px solid var(--color-border);border-radius:var(--radius);padding:16px 20px;text-decoration:none;color:var(--color-text);transition:border-color .2s}
+.nav a:hover{border-color:var(--color-accent)}
+.nav small{display:block;color:var(--color-text-muted)}
+.nav .next{text-align:right}
+.nav span{color:var(--color-text-muted);background:var(--color-bg-alt)}
+.modlink{text-align:center;margin-bottom:40px}
+footer{border-top:1px solid var(--color-border);padding:28px 0;font-size:.9rem;color:var(--color-text-muted);text-align:center}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border);background:#fff;color:var(--color-accent);font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,border-color .2s}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{border-color:var(--color-accent)}
+.pwd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1rem;background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:nowrap}
+.bad{border-left:3px solid #5B6472}.good{border-left:3px solid var(--color-accent)}
+@media (max-width:600px){.hero{padding:48px 0 40px}section.lesson{padding:44px 0}.toc{padding:20px}}
+</style>
+</head>
+<body>
+<div id="progress" role="presentation"></div>
+
+<header class="top">
+  <div class="wide">
+    <a class="brand" href="#debut">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#2563EB" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="M8.5 12l2.4 2.4L15.5 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Filière Cybersécurité
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="drawer">Sommaire</button>
+  </div>
+  <nav id="drawer" aria-label="Sommaire rapide">
+    <a href="#maj">1. Mises à jour</a>
+    <a href="#antivirus">2. Antivirus et protections intégrées</a>
+    <a href="#acces">3. Contrôle d'accès et comptes</a>
+    <a href="#apps">4. Applications et permissions</a>
+    <a href="#chiffrement">5. Chiffrement, localisation, effacement</a>
+    <a href="#peripheriques">6. Périphériques externes</a>
+    <a href="#cles">Points clés à retenir</a>
+  </nav>
+</header>
+
+<main id="debut">
+<div class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 1 — Fondamentaux de la sécurité numérique</span>
+      <span class="badge plain">⏱ 15 min de lecture</span>
+      <span class="badge plain">Niveau débutant</span>
+    </div>
+    <p class="course">Leçon 05</p>
+    <h1>Sécuriser son ordinateur et son smartphone</h1>
+    <p class="lead">Objectif : configurer ses appareils pour réduire les risques d'infection, de vol et de perte de données.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sommaire de la leçon">
+    <h2 style="font-size:1.1rem">Dans cette leçon</h2>
+    <ol>
+      <li><a href="#maj">Mises à jour du système et des applications</a></li>
+      <li><a href="#antivirus">Antivirus et protections intégrées</a></li>
+      <li><a href="#acces">Contrôle d'accès et gestion des comptes</a></li>
+      <li><a href="#apps">Sources d'applications fiables et permissions</a></li>
+      <li><a href="#chiffrement">Chiffrement, localisation et effacement à distance</a></li>
+      <li><a href="#peripheriques">Risques liés aux périphériques externes</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============ 1. Mises à jour ============ -->
+<section class="lesson" id="maj">
+  <div class="wrap reveal">
+    <h2>1. Mises à jour du système et des applications</h2>
+    <p>Aucun logiciel n'est parfait : des <strong>failles</strong> (vulnérabilités) sont découvertes régulièrement. Les éditeurs publient alors des <strong>correctifs de sécurité</strong>, livrés par les mises à jour. Tant que le correctif n'est pas installé, la faille reste ouverte, et les attaquants connaissent désormais son existence.</p>
+  </div>
+  <div class="wide reveal">
+    <ol class="stepper" aria-label="Cycle de vie d'une faille corrigée">
+      <li><b>Faille découverte</b><span>Un chercheur ou un éditeur la repère.</span></li>
+      <li><b>Correctif publié</b><span>L'éditeur diffuse la mise à jour.</span></li>
+      <li><b>Fenêtre d'exposition</b><span>Les appareils non mis à jour restent vulnérables.</span></li>
+      <li><b>Mise à jour installée</b><span>La faille est refermée.</span></li>
+    </ol>
+  </div>
+  <div class="wrap reveal">
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Activez les mises à jour automatiques du système et des applications. Plus la fenêtre d'exposition est courte, plus le risque diminue.</p></div></div>
+    <details><summary>Que se passe-t-il quand un appareil n'est plus supporté ?</summary><div>Passé une certaine date, l'éditeur ne publie plus de correctifs : les nouvelles failles restent ouvertes pour toujours. Un système ou un téléphone en fin de support doit être remplacé ou limité à des usages peu sensibles.</div></details>
+    <details><summary>Pourquoi mettre à jour aussi les applications ?</summary><div>Navigateur, lecteur PDF, messagerie : ces programmes manipulent des contenus venant d'Internet et sont des cibles fréquentes. Une application oubliée peut ouvrir la porte même si le système est à jour.</div></details>
+  </div>
+</section>
+
+<!-- ============ 2. Antivirus ============ -->
+<section class="lesson alt" id="antivirus">
+  <div class="wrap reveal">
+    <h2>2. Antivirus et protections intégrées</h2>
+    <p>Un <strong>antivirus</strong> analyse les fichiers et les comportements pour repérer les logiciels malveillants. Un <strong>pare-feu</strong> filtre les connexions entrantes et sortantes de l'appareil. Les systèmes modernes en intègrent déjà.</p>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Protections par système">
+        <button role="tab">Windows</button><button role="tab">macOS</button><button role="tab">iOS et Android</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p><strong>Microsoft Defender</strong> (antivirus) et le <strong>Pare-feu Windows</strong> sont fournis et activés par défaut. Pour un usage courant, ils offrent une protection de base solide s'ils restent actifs et à jour.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>macOS intègre des protections natives (<strong>Gatekeeper</strong>, <strong>XProtect</strong>, pare-feu activable) qui vérifient l'origine des applications et bloquent des logiciels malveillants connus.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Les téléphones isolent chaque application dans un <strong>« bac à sable »</strong> et contrôlent les installations. Sur Android, <strong>Google Play Protect</strong> analyse les applications ; sur iOS, le contrôle de l'App Store joue ce rôle.</p></div>
+    </div>
+    <div class="note"><span class="ic">⚠️</span><div><strong>Erreur fréquente</strong><p>Installer plusieurs antivirus en même temps provoque des conflits et ralentit l'appareil. Un seul antivirus actif suffit, et un antivirus ne remplace pas la prudence face aux liens et pièces jointes.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 3. Contrôle d'accès ============ -->
+<section class="lesson" id="acces">
+  <div class="wrap reveal">
+    <h2>3. Contrôle d'accès physique et logique</h2>
+    <p>Un appareil volé ou laissé sans surveillance donne accès à tout ce qu'il contient. Le <strong>contrôle d'accès</strong> limite qui peut l'utiliser, à deux niveaux : <em>physique</em> (l'appareil en main) et <em>logique</em> (comptes et droits).</p>
+  </div>
+  <div class="wide reveal">
+    <div class="cards">
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><h3>Verrouillage d'écran</h3><p>Activez un verrouillage automatique après un court délai d'inactivité.</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3"/><path d="M11 12h10M18 12v3M21 12v2"/></svg><h3>Mot de passe de session</h3><p>Un code ou mot de passe solide pour ouvrir la session. Évitez « 0000 » ou « 1234 ».</p></div>
+      <div class="card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4a6 6 0 0 1 9 5v3M6 10a6 6 0 0 1 1-3M12 8a2 2 0 0 1 2 2v6M9 11v4a4 4 0 0 0 1 3M6 13v2"/></svg><h3>Biométrie</h3><p>Empreinte ou visage : pratique pour déverrouiller vite, en complément d'un code solide.</p></div>
+    </div>
+  </div>
+  <div class="wrap reveal">
+    <h3>Administrateur ou utilisateur standard ?</h3>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Types de compte">
+        <button role="tab">Administrateur</button><button role="tab">Utilisateur standard</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p>Peut installer des logiciels, modifier les réglages système et gérer les autres comptes. Si ce compte est infecté, le logiciel malveillant hérite de ces droits étendus.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Peut utiliser l'appareil au quotidien mais ne peut pas modifier le système sans autorisation. Une infection est plus limitée dans ses effets. <strong>Recommandé pour l'usage de tous les jours.</strong></p></div>
+    </div>
+    <details><summary>La biométrie est-elle fiable ?</summary><div>Elle est pratique et difficile à deviner, mais on ne peut pas la changer en cas de compromission, et elle peut être imposée dans certaines situations. C'est pourquoi un code ou un mot de passe solide doit toujours exister en solution de repli.</div></details>
+  </div>
+</section>
+
+<!-- ============ 4. Applications ============ -->
+<section class="lesson alt" id="apps">
+  <div class="wrap reveal">
+    <h2>4. Sources d'applications fiables et permissions</h2>
+    <p>Une application est un programme qui s'exécute avec vos droits : l'installer, c'est lui faire confiance. Mieux vaut donc la choisir avec soin.</p>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div class="card"><h3>Magasins officiels</h3><p>App Store, Google Play, Microsoft Store : les applications y sont contrôlées, sans que ce soit une garantie absolue.</p></div>
+      <div class="card"><h3>Sites des éditeurs</h3><p>Sur ordinateur, téléchargez depuis le site officiel de l'éditeur, pas depuis un site tiers ou un lien reçu.</p></div>
+      <div class="card"><h3>Sources à éviter</h3><p>Versions « gratuites » de logiciels payants, fichiers d'installation transmis par message, magasins non officiels.</p></div>
+    </div>
+    <p>Sur mobile, chaque application demande des <strong>permissions</strong> : accès à l'appareil photo, au micro, aux contacts, à la localisation. Le principe est celui du <strong>moindre privilège</strong> : n'accorder que ce qui est nécessaire au service rendu.</p>
+    <details><summary>Exemple d'une permission suspecte</summary><div>Une application de lampe de poche qui demande l'accès à vos contacts et à votre position n'en a pas besoin pour fonctionner. Refuser, ou choisir « uniquement pendant l'utilisation », limite l'exposition de vos données.</div></details>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Vérifiez périodiquement les permissions accordées dans les réglages et retirez celles qui ne sont plus utiles, de même que les applications inutilisées.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 5. Chiffrement ============ -->
+<section class="lesson" id="chiffrement">
+  <div class="wrap reveal">
+    <h2>5. Chiffrement complet et effacement à distance</h2>
+    <p>Un verrouillage d'écran n'empêche pas toujours de lire les données d'un disque démonté puis branché sur un autre appareil. Le <strong>chiffrement complet</strong> transforme le contenu en données illisibles sans la clé : sans elle, un appareil volé ne livre pas ses fichiers.</p>
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-labelledby="f5t f5d">
+        <title id="f5t">Principe du chiffrement d'un appareil</title>
+        <desc id="f5d">Les données lisibles sont chiffrées par une clé et deviennent illisibles sur le disque ; avec la clé du propriétaire, elles redeviennent lisibles.</desc>
+        <defs><marker id="ar5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l7 4-7 4z" fill="#2563EB"/></marker></defs>
+        <g fill="#fff" stroke="#2563EB" stroke-width="2"><rect x="10" y="50" width="150" height="70" rx="10"/><rect x="250" y="50" width="150" height="70" rx="10" fill="#EAF2FF"/><rect x="490" y="50" width="140" height="70" rx="10"/></g>
+        <g stroke="#2563EB" stroke-width="2" marker-end="url(#ar5)"><line x1="162" y1="85" x2="246" y2="85"/><line x1="402" y1="85" x2="486" y2="85"/></g>
+        <g fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"><rect x="313" y="14" width="24" height="18" rx="4"/><path d="M319 14v-4a6 6 0 0 1 12 0v4"/></g>
+        <g font-size="13" text-anchor="middle" fill="#0A0F14"><text x="85" y="82">Données</text><text x="85" y="100">lisibles</text><text x="325" y="82">Disque chiffré</text><text x="325" y="100">(illisible)</text><text x="560" y="82">Lisibles avec</text><text x="560" y="100">la clé</text><text x="325" y="150">Clé / code de l'utilisateur</text></g>
+      </svg>
+      <figcaption>Sans la clé, le contenu d'un appareil volé reste inexploitable.</figcaption>
+    </figure>
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Chiffrement par système">
+        <button role="tab">Windows</button><button role="tab">macOS</button><button role="tab">Smartphone</button>
+      </div>
+      <div class="tabpanel" role="tabpanel"><p><strong>BitLocker</strong> (selon les éditions) ou le <strong>chiffrement de l'appareil</strong> chiffrent le disque. Conservez la clé de récupération en lieu sûr : sans elle, l'accès peut être définitivement perdu.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p><strong>FileVault</strong> chiffre tout le disque de démarrage. Il se règle dans les réglages de sécurité et une clé de récupération est proposée.</p></div>
+      <div class="tabpanel" role="tabpanel" hidden><p>Les iPhone et la plupart des Android récents chiffrent leurs données dès qu'un <strong>code de verrouillage</strong> est défini. Le code est donc ce qui protège la clé : il doit être solide.</p></div>
+    </div>
+    <h3>Si l'appareil est perdu ou volé</h3>
+    <p>Les systèmes proposent des fonctions <strong>à activer à l'avance</strong> : « Localiser mon appareil » (Google, Windows) ou « Localiser » (Apple).</p>
+  </div>
+  <div class="wide reveal">
+    <ol class="stepper" aria-label="Réaction à la perte d'un appareil">
+      <li><b>Localiser</b><span>Voir la dernière position connue.</span></li>
+      <li><b>Verrouiller</b><span>Bloquer l'appareil, afficher un message.</span></li>
+      <li><b>Effacer à distance</b><span>Supprimer les données si la récupération est improbable.</span></li>
+      <li><b>Changer les accès</b><span>Renouveler les mots de passe des comptes concernés.</span></li>
+    </ol>
+  </div>
+  <div class="wrap reveal">
+    <div class="note"><span class="ic">💡</span><div><strong>À retenir</strong><p>Chiffrement et effacement à distance protègent la confidentialité, mais pas contre la perte : faites des sauvegardes régulières pour ne pas perdre vos propres données.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 6. Périphériques ============ -->
+<section class="lesson alt" id="peripheriques">
+  <div class="wrap reveal">
+    <h2>6. Risques liés aux périphériques externes</h2>
+    <p>Une clé USB ou un disque externe est un moyen de transporter des fichiers, mais aussi des logiciels malveillants. Un support peut être infecté à l'insu de son propriétaire, ou abandonné volontairement pour piéger un curieux.</p>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div class="card"><h3>Clé trouvée</h3><p>Une clé USB inconnue ne doit jamais être branchée sur un appareil personnel ou professionnel.</p></div>
+      <div class="card"><h3>Support partagé</h3><p>Un disque prêté ou utilisé sur des machines inconnues peut transmettre une infection.</p></div>
+      <div class="card"><h3>Données non protégées</h3><p>Un support perdu expose son contenu s'il n'est pas chiffré.</p></div>
+    </div>
+    <details><summary>Qu'est-ce que l'autorun ?</summary><div>L'<strong>autorun</strong> est une fonction ancienne qui lançait automatiquement un programme dès le branchement d'un support. Les systèmes récents l'ont désactivé par défaut pour les clés USB, mais ouvrir un fichier ou un raccourci piégé reste possible. Le réflexe reste donc la prudence.</div></details>
+    <div class="note"><span class="ic">🔐</span><div><strong>Bonne pratique de sécurité</strong><p>Ne branchez que des supports dont vous connaissez l'origine, analysez-les avant d'ouvrir leur contenu, et chiffrez ceux qui transportent des données sensibles.</p></div></div>
+    <div class="note"><span class="ic">🔗</span><div><strong>Pour aller plus loin</strong><p>Le module 2 s'intéresse à la sécurité du réseau : connexion Internet et navigation.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ Points clés ============ -->
+<section class="lesson" id="cles">
+  <div class="wrap reveal">
+    <h2>Points clés à retenir</h2>
+    <ul class="keys">
+      <li>Les mises à jour automatiques referment les failles connues.</li>
+      <li>Les protections intégrées suffisent pour un usage courant si elles restent actives.</li>
+      <li>Verrouillage, code solide et compte standard limitent l'accès et les dégâts.</li>
+      <li>On installe depuis des sources fiables et on limite les permissions des applications.</li>
+      <li>Le chiffrement protège un appareil volé ; la localisation et l'effacement à distance se préparent à l'avance.</li>
+      <li>Un support externe inconnu est un risque : on ne le branche pas.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="nav">
+    <a href="lecon-04-reconnaitre-le-phishing-et-les-arnaques-en-ligne.html" rel="prev"><small>Leçon précédente</small>Leçon 04 — Reconnaître le phishing et les arnaques en ligne</a>
+    <a class="next" href="lecon-06-securiser-sa-connexion-internet-et-sa-navigation.html" rel="next"><small>Leçon suivante (Module 2)</small>Leçon 06 — Sécuriser sa connexion Internet et sa navigation</a>
+  </div>
+  <p class="modlink"><a href="module-1.html">Retour au sommaire du module 1</a></p>
+</div>
+</main>
+
+<footer><div class="wrap">Filière Cybersécurité · Module 1 · Leçon 05</div></footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* Barre de progression, bouton retour haut */
+const bar=document.getElementById('progress'),topBtn=document.getElementById('top');
+function onScroll(){
+  const h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+  bar.style.width=(max>0?h.scrollTop/max*100:0)+'%';
+  topBtn.classList.toggle('show',h.scrollTop>600);
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+/* Menu sommaire */
+const mb=document.getElementById('menuBtn'),dr=document.getElementById('drawer');
+mb.onclick=()=>{const o=dr.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+dr.addEventListener('click',e=>{if(e.target.tagName==='A'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){dr.classList.remove('open');mb.setAttribute('aria-expanded',false)}});
+
+/* Onglets accessibles (flèches, Home, End) */
+document.querySelectorAll('[data-tabs]').forEach((box,n)=>{
+  const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+  tabs.forEach((t,i)=>{t.id=`t${n}-${i}`;panels[i].setAttribute('aria-labelledby',t.id);panels[i].tabIndex=0});
+  function select(i){tabs.forEach((t,j)=>{const on=i===j;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;panels[j].hidden=!on})}
+  tabs.forEach((t,i)=>{
+    t.onclick=()=>select(i);
+    t.onkeydown=e=>{
+      let k=null;
+      if(e.key==='ArrowRight')k=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft')k=(i-1+tabs.length)%tabs.length;
+      if(e.key==='Home')k=0;if(e.key==='End')k=tabs.length-1;
+      if(k!==null){e.preventDefault();select(k);tabs[k].focus()}
+    };
+  });
+  select(0);
+});
+
+/* Apparition douce des sections (désactivée si prefers-reduced-motion) */
+const els=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+  els.forEach(el=>io.observe(el));
+}else els.forEach(el=>el.classList.add('in'));
+</script>
+</body>
+</html>

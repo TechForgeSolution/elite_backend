@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 05 — Monter une vidéo courte</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='9' y='2' width='14' height='28' rx='4' fill='%237C3AED'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#FFFFFF;--color-bg-alt:#F7F5FA;--color-text:#0A0A0F;--color-text-muted:#5B6472;--color-accent:#7C3AED;--color-accent-soft:#F0EAFE;--color-border:#E5E8EE;--accent-text:#6D28D9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font:400 1.0625rem/1.7 Inter,system-ui,sans-serif;color:var(--color-text);background:var(--color-bg)}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.2;margin:0 0 .6em;letter-spacing:-.02em}
+h1{font-size:clamp(2rem,5vw,3.25rem);font-weight:700}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 1em}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border)}
+header.top .wide{display:flex;justify-content:space-between;align-items:center;height:56px}
+.logo{font:700 1rem Sora,sans-serif;display:flex;align-items:center;gap:8px}
+.logo i{width:12px;height:20px;border-radius:4px;background:var(--color-accent);display:inline-block}
+header.top a.menu{font-size:.9rem;text-decoration:none;color:var(--color-text);padding:6px 12px;border:1px solid var(--color-border);border-radius:99px;transition:.2s}
+header.top a.menu:hover{border-color:var(--color-accent);color:var(--accent-text)}
+.hero{padding:72px 0 48px;background:var(--color-bg-alt)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:.85rem;padding:4px 12px;border-radius:99px;background:var(--color-accent-soft);color:var(--accent-text);font-weight:500}
+.badge.plain{background:#fff;border:1px solid var(--color-border);color:var(--color-text-muted)}
+.hero .sub{color:var(--color-text-muted);font-size:1.15rem}
+.hero .lesson{color:var(--accent-text);font:600 .95rem Sora,sans-serif;margin-bottom:12px}
+.toc{padding:40px 0}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:block;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;text-decoration:none;color:var(--color-text);transition:.2s}
+.toc a:hover{border-color:var(--color-accent);transform:translateX(4px)}
+section.s{padding:64px 0}
+section.s.alt{background:var(--color-bg-alt)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}*{transition:none!important}}
+.callout{display:flex;gap:14px;padding:16px 18px;margin:24px 0;border-left:4px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 12px 12px 0}
+.callout b{display:block;font-family:Sora,sans-serif}
+.callout p{margin:0}
+.fig{margin:28px 0;padding:16px;background:#fff;border:1px solid var(--color-border);border-radius:14px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{font-size:.875rem;color:var(--color-text-muted);margin-top:8px}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:24px 0}
+.card{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-3px)}
+.card .ic{font-size:1.5rem}
+.card h3{font-size:1.05rem;margin:.4em 0}
+.card p{font-size:.95rem;color:var(--color-text-muted);margin:0}
+.card em{display:block;margin-top:8px;font-size:.95rem;color:var(--color-text);font-style:normal;font-weight:500}
+.tabs [role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--color-border);overflow-x:auto}
+.tabs [role=tab]{font:600 .95rem Sora,sans-serif;padding:10px 16px;border:0;background:none;cursor:pointer;color:var(--color-text-muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs [role=tab][aria-selected=true]{color:var(--accent-text);border-color:var(--color-accent)}
+.tabs [role=tabpanel]{padding:20px 0}
+.tabs [role=tabpanel][hidden]{display:none}
+.stepper{list-style:none;padding:0;margin:28px 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));counter-reset:st}
+.stepper li{counter-increment:st;position:relative;padding:44px 14px 14px;background:#fff;border:1px solid var(--color-border);border-radius:12px;font-size:.95rem}
+.stepper li::before{content:counter(st);position:absolute;top:10px;left:14px;width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;font:600 .85rem/26px Sora,sans-serif;text-align:center}
+.stepper b{display:block;font-family:Sora,sans-serif}
+details{border:1px solid var(--color-border);border-radius:12px;background:#fff;margin:10px 0;padding:0 16px}
+summary{cursor:pointer;padding:14px 0;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--accent-text);font-weight:700}
+details[open] summary::after{content:"–"}
+details p{color:var(--color-text-muted)}
+.script{background:var(--color-text);color:#F3F1F8;border-radius:14px;padding:16px;margin:16px 0;position:relative}
+.script .cp{position:absolute;top:10px;right:10px;font:500 .8rem Inter,sans-serif;padding:4px 10px;border-radius:99px;border:1px solid #5B6472;background:none;color:#F3F1F8;cursor:pointer;transition:.2s}
+.script .cp:hover{border-color:#C4B5FD;color:#C4B5FD}
+.script .ttl{font:600 .85rem Sora,sans-serif;color:#C4B5FD;margin:0 0 10px;padding-right:80px}
+.script .ln{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:8px 0;border-top:1px solid #2A2D38;font-size:.95rem;line-height:1.55}
+.script .tc{font:600 .85rem Sora,sans-serif;color:#C4B5FD}
+.script .ln span b{display:block;font-size:.8rem;color:#A9B0BD;font-weight:500}
+.vs{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:24px 0}
+.vs .card.no{border-style:dashed}
+.vs .card.no p{text-decoration:line-through;text-decoration-color:#5B6472}
+.vs .card.yes{border-color:var(--color-accent);background:var(--color-accent-soft)}
+.vs .card.yes p{color:var(--color-text)}
+.quiz .q{padding:18px;background:#fff;border:1px solid var(--color-border);border-radius:14px;margin:14px 0}
+.quiz .q p{font-weight:500}
+.opts{display:grid;gap:8px}
+.opts button{font:inherit;text-align:left;padding:10px 14px;border:1px solid var(--color-border);border-radius:10px;background:#fff;cursor:pointer;transition:.2s}
+.opts button:hover:not(:disabled){border-color:var(--color-accent);background:var(--color-accent-soft)}
+.opts button.ok{border-color:var(--color-accent);background:var(--color-accent-soft);font-weight:500}
+.opts button.ko{border-style:dashed;color:var(--color-text-muted);text-decoration:line-through}
+.fb{font-size:.95rem;margin:10px 0 0;color:var(--color-text-muted);min-height:1.4em}
+.score{font:600 1.1rem Sora,sans-serif;margin-top:16px}
+.key ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.key li{padding:12px 16px 12px 44px;position:relative;background:#fff;border:1px solid var(--color-border);border-radius:12px}
+.key li::before{content:"✓";position:absolute;left:14px;color:var(--color-accent);font-weight:700}
+.pager{display:grid;gap:12px;grid-template-columns:1fr 1fr;padding:48px 0 24px}
+.pager a{padding:16px;border:1px solid var(--color-border);border-radius:14px;text-decoration:none;color:var(--color-text);display:block;transition:.2s}
+.pager a:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.pager small{display:block;color:var(--color-text-muted)}
+.pager .next{text-align:right}
+.back{text-align:center;padding-bottom:32px}
+footer{border-top:1px solid var(--color-border);padding:24px 0;color:var(--color-text-muted);font-size:.9rem;text-align:center}
+#top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:0;background:var(--color-accent);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:.3s}
+#top.show{opacity:1;pointer-events:auto}
+@media (max-width:520px){.pager{grid-template-columns:1fr}.pager .next{text-align:left}.hero{padding:48px 0 32px}section.s{padding:48px 0}.script .ln{grid-template-columns:1fr;gap:2px}}
+.tl{margin:0;padding:0;list-style:none}
+.spec{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;margin:16px 0;padding:16px;background:#fff;border:1px solid var(--color-border);border-radius:14px;font-size:.95rem}
+.spec dt{font:600 .9rem Sora,sans-serif;color:var(--accent-text)}
+.spec dd{margin:0;color:var(--color-text)}
+@media (max-width:520px){.spec{grid-template-columns:1fr}.spec dd{margin-bottom:8px}}
+</style>
+</head>
+<body>
+<div id="bar" aria-hidden="true"></div>
+<header class="top"><div class="wide">
+  <span class="logo"><i></i>Création de contenu vidéo court</span>
+  <a class="menu" href="#sommaire">Sommaire</a>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge">Module 1 — Concevoir et réaliser sa vidéo courte</span><span class="badge plain">⏱ 15 min</span><span class="badge plain">Niveau débutant</span></div>
+  <p class="lesson">Leçon 05</p>
+  <h1>Monter une vidéo courte</h1>
+  <p class="sub">À la fin de cette leçon, vous saurez assembler vos plans en une vidéo rythmée avec une application gratuite comme CapCut, ajouter le son, puis l'exporter en bonne qualité.</p>
+</div></div>
+
+<nav class="toc" id="sommaire" aria-label="Sommaire"><div class="wrap">
+  <h2>Sommaire</h2>
+  <ol>
+    <li><a href="#rythme">Découpage dynamique et rythme</a></li>
+    <li><a href="#transitions">Transitions et effets sobres</a></li>
+    <li><a href="#son">Musique, effets sonores et voix</a></li>
+    <li><a href="#export">Exporter en bonne qualité</a></li>
+    <li><a href="#capcut">Prise en main de CapCut</a></li>
+    <li><a href="#quiz">Vérifiez vos acquis</a></li>
+    <li><a href="#cles">Points clés à retenir</a></li>
+  </ol>
+</div></nav>
+
+<section class="s alt reveal" id="rythme"><div class="wrap">
+  <h2>Découpage dynamique et rythme</h2>
+  <p>Le <strong>montage</strong> consiste à assembler vos plans dans l'ordre le plus clair et le plus vivant. Un <strong>cut</strong> est une coupe franche : on passe d'un plan à l'autre sans effet. Le <strong>découpage dynamique</strong> enchaîne des plans courts pour garder l'attention, et le <strong>rythme</strong> est la vitesse de cet enchaînement.</p>
+  <p>Votre premier réflexe de monteur : supprimer les <strong>blancs</strong>, c'est-à-dire les silences, les hésitations et les temps morts avant et après chaque phrase.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 600 200" role="img" aria-label="Deux frises : la séquence brute contient des blancs entre les parties utiles ; la séquence montée est plus courte, sans blancs.">
+      <text x="20" y="24" font-family="Inter,sans-serif" font-size="13" fill="#5B6472">Séquence brute</text>
+      <rect x="20" y="34" width="110" height="36" rx="6" fill="#F0EAFE" stroke="#7C3AED"/>
+      <rect x="130" y="34" width="60" height="36" fill="#fff" stroke="#5B6472" stroke-dasharray="4 4"/>
+      <rect x="190" y="34" width="140" height="36" rx="6" fill="#F0EAFE" stroke="#7C3AED"/>
+      <rect x="330" y="34" width="60" height="36" fill="#fff" stroke="#5B6472" stroke-dasharray="4 4"/>
+      <rect x="390" y="34" width="110" height="36" rx="6" fill="#F0EAFE" stroke="#7C3AED"/>
+      <rect x="500" y="34" width="80" height="36" fill="#fff" stroke="#5B6472" stroke-dasharray="4 4"/>
+      <text x="160" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#5B6472">blanc</text>
+      <text x="360" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#5B6472">blanc</text>
+      <text x="540" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#5B6472">blanc</text>
+      <text x="20" y="114" font-family="Inter,sans-serif" font-size="13" fill="#5B6472">Séquence montée</text>
+      <rect x="20" y="124" width="110" height="36" rx="6" fill="#7C3AED"/>
+      <rect x="130" y="124" width="140" height="36" rx="6" fill="#7C3AED" stroke="#fff"/>
+      <rect x="270" y="124" width="110" height="36" rx="6" fill="#7C3AED" stroke="#fff"/>
+      <text x="400" y="147" font-family="Inter,sans-serif" font-size="14" fill="#0A0A0F">Même contenu, plus court</text>
+      <text x="75" y="147" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" fill="#fff">cut</text>
+      <text x="200" y="147" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" fill="#fff">cut</text>
+      <text x="325" y="147" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" fill="#fff">cut</text>
+    </svg>
+    <figcaption>Illustration de principe : couper les blancs raccourcit la vidéo sans perdre d'information.</figcaption>
+  </figure>
+  <h3>Exemple de montage</h3>
+  <p>Voici la liste de plans d'un tutoriel de 30 secondes. Chaque plan dure quelques secondes, ce qui relance l'attention.</p>
+  <div class="script"><button class="cp" type="button">Copier</button><p class="ttl">Montage d'un tutoriel express</p>
+    <div class="ln"><span class="tc">0–3 s</span><span><b>Plan 1</b>Gros plan sur le résultat final, avec l'accroche dite à voix haute.</span></div>
+    <div class="ln"><span class="tc">3–9 s</span><span><b>Plan 2</b>Étape 1, vue d'ensemble. Cut au premier mot.</span></div>
+    <div class="ln"><span class="tc">9–16 s</span><span><b>Plan 3</b>Étape 2, plan rapproché sur les mains.</span></div>
+    <div class="ln"><span class="tc">16–23 s</span><span><b>Plan 4</b>Étape 3, changement d'angle pour relancer le regard.</span></div>
+    <div class="ln"><span class="tc">23–30 s</span><span><b>Plan 5</b>Résultat final, phrase de conclusion et appel à l'action.</span></div>
+  </div>
+  <div class="callout" role="note"><span aria-hidden="true">💡</span><div><b>À retenir</b><p>Changez de plan ou de cadrage régulièrement, par exemple toutes les 3 à 7 secondes. C'est un repère, pas une règle : suivez le rythme de votre message.</p></div></div>
+</div></section>
+
+<section class="s reveal" id="transitions"><div class="wrap">
+  <h2>Transitions et effets sobres</h2>
+  <p>Une <strong>transition</strong> est l'effet qui relie deux plans. En vidéo courte, la meilleure transition est presque toujours le cut. Les autres s'utilisent pour un but précis.</p>
+  <div class="cards">
+    <div class="card"><div class="ic">✂️</div><h3>Le cut</h3><p>Coupe franche, invisible. À utiliser par défaut.</p></div>
+    <div class="card"><div class="ic">🌫️</div><h3>Le fondu</h3><p>Passage doux. Pour marquer un changement de lieu ou de moment.</p></div>
+    <div class="card"><div class="ic">🔍</div><h3>Le zoom</h3><p>Un léger agrandissement qui souligne un mot ou une idée forte.</p></div>
+    <div class="card"><div class="ic">👉</div><h3>Le glissé</h3><p>Le plan glisse sur le côté. Pour une liste ou une comparaison.</p></div>
+  </div>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Erreur fréquente</b><p>Multiplier les effets différents fatigue l'œil et détourne du message. Choisissez <strong>une ou deux</strong> transitions et gardez-les sur toute la vidéo.</p></div></div>
+</div></section>
+
+<section class="s alt reveal" id="son"><div class="wrap">
+  <h2>Musique, effets sonores et voix</h2>
+  <p>Le son se monte sur plusieurs <strong>pistes</strong> superposées. La règle d'or : la <strong>voix</strong> doit toujours rester parfaitement compréhensible.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 600 140" role="img" aria-label="Trois pistes audio : la voix, au volume le plus fort ; la musique, plus basse ; les effets sonores, brefs, placés sur les moments clés.">
+      <text x="20" y="38" font-family="Inter,sans-serif" font-size="13" fill="#0A0A0F">Voix</text>
+      <rect x="110" y="20" width="470" height="26" rx="6" fill="#7C3AED"/>
+      <text x="20" y="80" font-family="Inter,sans-serif" font-size="13" fill="#0A0A0F">Musique</text>
+      <rect x="110" y="68" width="470" height="14" rx="4" fill="#F0EAFE" stroke="#7C3AED"/>
+      <text x="20" y="116" font-family="Inter,sans-serif" font-size="13" fill="#0A0A0F">Effets</text>
+      <rect x="190" y="104" width="14" height="18" rx="3" fill="#0A0A0F"/><rect x="340" y="104" width="14" height="18" rx="3" fill="#0A0A0F"/><rect x="500" y="104" width="14" height="18" rx="3" fill="#0A0A0F"/>
+      <text x="580" y="116" text-anchor="end" font-family="Inter,sans-serif" font-size="12" fill="#5B6472">sur les moments clés</text>
+    </svg>
+    <figcaption>Illustration de principe : la hauteur d'une piste évoque son volume relatif.</figcaption>
+  </figure>
+  <div class="cards">
+    <div class="card"><div class="ic">🎙️</div><h3>La voix</h3><p>Le niveau de référence. Retirez les bruits parasites et les blancs.</p></div>
+    <div class="card"><div class="ic">🎵</div><h3>La musique</h3><p>Un fond sonore, nettement plus bas que la voix. Calez les changements de plan sur le rythme.</p></div>
+    <div class="card"><div class="ic">💥</div><h3>Les effets sonores</h3><p>Un court son sur un geste ou une transition. Utilisez-les avec parcimonie.</p></div>
+  </div>
+  <p><strong>Synchroniser</strong>, c'est faire coïncider un son et une image : un cut sur un temps fort de la musique, un effet au moment exact d'un geste. Écoutez toujours votre montage avec des écouteurs avant de l'exporter.</p>
+  <div class="callout" role="note"><span aria-hidden="true">⚠️</span><div><b>Attention</b><p>Utilisez des musiques et des sons autorisés pour votre usage : ceux proposés par l'application ou la plateforme. Les règles diffèrent entre un compte personnel et un compte professionnel, vérifiez-les.</p></div></div>
+</div></section>
+
+<section class="s reveal" id="export"><div class="wrap">
+  <h2>Exporter en bonne qualité</h2>
+  <p>L'<strong>exportation</strong> transforme votre projet de montage en un fichier vidéo prêt à publier. Un mauvais réglage peut flouter une image pourtant bien filmée. Voici les réglages à viser.</p>
+  <dl class="spec">
+    <dt>Résolution</dt><dd>1080 × 1920 (Full HD vertical), ou la plus haute disponible pour votre téléphone.</dd>
+    <dt>Images par seconde</dt><dd>Gardez la même cadence que le tournage (souvent 30 i/s).</dd>
+    <dt>Qualité / débit</dt><dd>Choisissez un niveau élevé ou recommandé : le fichier sera plus lourd, mais plus net.</dd>
+    <dt>Format</dt><dd>MP4, accepté par toutes les plateformes.</dd>
+  </dl>
+  <details><summary>Pourquoi ma vidéo semble moins nette une fois publiée ?</summary><p>Les plateformes recompressent les vidéos. Partir d'un fichier de haute qualité limite cette perte. Évitez aussi d'exporter, de réimporter puis de réexporter plusieurs fois.</p></details>
+  <details><summary>Dois-je garder le filigrane de l'application ?</summary><p>Retirez-le si l'application le permet : un filigrane d'une autre plateforme peut réduire la portée de votre vidéo. Vérifiez les options de chaque outil.</p></details>
+  <p>Les noms des menus et les options varient selon la version de l'application. Les valeurs ci-dessus sont des repères généraux.</p>
+</div></section>
+
+<section class="s alt reveal" id="capcut"><div class="wrap">
+  <h2>Prise en main de CapCut</h2>
+  <p><strong>CapCut</strong> est une application de montage gratuite pour smartphone. Voici le parcours type d'un premier montage. Choisissez un onglet pour comparer avec d'autres outils.</p>
+  <div class="tabs" id="tabs1">
+    <div role="tablist" aria-label="Outils de montage">
+      <button role="tab" id="t1" aria-controls="p1" aria-selected="true">CapCut pas à pas</button>
+      <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Outils équivalents</button>
+    </div>
+    <div role="tabpanel" id="p1" aria-labelledby="t1">
+      <ol class="stepper">
+        <li><b>Créer</b>Nouveau projet, puis choisir vos vidéos.</li>
+        <li><b>Couper</b>Placer la tête de lecture, puis diviser et supprimer les blancs.</li>
+        <li><b>Assembler</b>Ordonner les plans sur la ligne de temps.</li>
+        <li><b>Sonoriser</b>Ajouter musique et effets, puis baisser leur volume.</li>
+        <li><b>Exporter</b>Choisir les réglages, puis enregistrer.</li>
+      </ol>
+    </div>
+    <div role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+      <p>D'autres applications gratuites proposent des fonctions comparables, par exemple <strong>VN</strong> ou <strong>InShot</strong>. Le principe reste le même : une ligne de temps, des plans à couper et à ordonner, des pistes audio et un export. Vérifiez ce qui est inclus dans la version gratuite avant de commencer.</p>
+    </div>
+  </div>
+  <div class="callout" role="note"><span aria-hidden="true">🔗</span><div><b>Pour aller plus loin</b><p>Faites un premier montage de 15 secondes avec trois plans seulement. Un petit projet terminé apprend plus qu'un grand projet abandonné.</p></div></div>
+</div></section>
+
+<section class="s reveal quiz" id="quiz"><div class="wrap">
+  <h2>Vérifiez vos acquis</h2>
+  <p>Quatre questions. Cliquez sur une réponse pour voir la correction.</p>
+  <div id="qz"></div>
+  <div class="score" id="score" aria-live="polite"></div>
+</div></section>
+
+<section class="s alt reveal key" id="cles"><div class="wrap">
+  <h2>Points clés à retenir</h2>
+  <ul>
+    <li>Coupez les blancs et changez de plan régulièrement pour garder le rythme.</li>
+    <li>Le cut est la transition par défaut ; limitez-vous à une ou deux autres.</li>
+    <li>La voix reste claire : la musique est plus basse, les effets sont rares.</li>
+    <li>Exportez en 1080 × 1920, au format MP4, avec une qualité élevée.</li>
+    <li>CapCut ou un outil équivalent suffit : créer, couper, assembler, sonoriser, exporter.</li>
+  </ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pager" aria-label="Navigation entre leçons">
+    <a class="prev" href="lecon-04-tourner-avec-son-smartphone.html"><small>Leçon précédente</small>Leçon 04 — Tourner avec son smartphone</a>
+    <a class="next" href="lecon-06-renforcer-impact-sous-titres-texte-voix-sons.html"><small>Leçon suivante</small>Leçon 06 — Renforcer l'impact : sous-titres, texte, voix et sons (Module 2)</a>
+  </nav>
+  <p class="back"><a href="#sommaire">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer><div class="wide">Module 1 — Concevoir et réaliser sa vidéo courte</div></footer>
+<button id="top" aria-label="Retour en haut de la page">↑</button>
+
+<script>
+// Barre de progression + bouton retour
+const bar=document.getElementById('bar'),topBtn=document.getElementById('top');
+function onScroll(){const h=document.documentElement,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?h.scrollTop/m*100:0)+'%';topBtn.classList.toggle('show',h.scrollTop>600)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+topBtn.onclick=()=>scrollTo({top:0});
+
+// Apparition au scroll
+const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08}):null;
+document.querySelectorAll('.reveal').forEach(el=>io?io.observe(el):el.classList.add('in'));
+
+// Onglets accessibles (flèches, Début, Fin)
+document.querySelectorAll('.tabs').forEach(t=>{
+  const tabs=[...t.querySelectorAll('[role=tab]')];
+  const sel=i=>tabs.forEach((b,j)=>{const on=i===j;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on;if(on)b.focus()});
+  tabs.forEach((b,i)=>{b.onclick=()=>sel(i);b.onkeydown=e=>{const k={ArrowRight:(i+1)%tabs.length,ArrowLeft:(i-1+tabs.length)%tabs.length,Home:0,End:tabs.length-1}[e.key];if(k!==undefined){e.preventDefault();sel(k)}}});
+});
+
+// Bouton « Copier » des scripts
+document.querySelectorAll('.script .cp').forEach(b=>{b.onclick=async()=>{
+  const box=b.parentElement,txt=box.querySelector('.ttl').textContent+'\n'+[...box.querySelectorAll('.ln')].map(l=>l.querySelector('.tc').textContent+' ['+l.querySelector('b').textContent+'] '+l.querySelector('span:last-child').childNodes[1].textContent).join('\n');
+  let ok=true;try{await navigator.clipboard.writeText(txt)}catch(e){ok=false}
+  b.textContent=ok?'Copié !':'Copie impossible';setTimeout(()=>b.textContent='Copier',1800)}});
+
+// Mini-quiz
+const Q=[
+ {q:"Qu'est-ce qu'un cut ?",o:["Une coupe franche entre deux plans, sans effet","Un effet de fondu lent","Un filtre de couleur"],a:0,f:"Le cut est la transition la plus simple, et souvent la plus efficace."},
+ {q:"Que faut-il supprimer en priorité pour donner du rythme ?",o:["La musique","Les blancs et les temps morts","Le dernier plan"],a:1,f:"Couper les silences et les hésitations raccourcit la vidéo sans perdre le message."},
+ {q:"Comment régler le volume de la musique par rapport à la voix ?",o:["Plus fort que la voix","Au même niveau","Nettement plus bas que la voix"],a:2,f:"La voix doit rester parfaitement compréhensible."},
+ {q:"Quel réglage d'exportation vise une bonne qualité en vertical ?",o:["1080 × 1920 en MP4, qualité élevée","480 × 640, qualité minimale","Format horizontal 16:9"],a:0,f:"Un fichier de haute qualité limite la perte due à la recompression des plateformes."}
+];
+
+const qz=document.getElementById('qz'),sc=document.getElementById('score');let done=0,good=0;
+Q.forEach((it,i)=>{
+  const d=document.createElement('div');d.className='q';
+  d.innerHTML='<p>'+(i+1)+'. '+it.q+'</p><div class="opts"></div><p class="fb"></p>';
+  const box=d.querySelector('.opts'),fb=d.querySelector('.fb');
+  it.o.forEach((t,j)=>{const b=document.createElement('button');b.type='button';b.textContent=t;
+    b.onclick=()=>{[...box.children].forEach((x,k)=>{x.disabled=true;if(k===it.a)x.classList.add('ok');else if(k===j)x.classList.add('ko')});
+      const ok=j===it.a;if(ok)good++;fb.textContent=(ok?'Correct. ':'Pas tout à fait. ')+it.f;
+      if(++done===Q.length)sc.textContent='Résultat : '+good+' / '+Q.length};
+    box.appendChild(b)});
+  qz.appendChild(d);
+});
+</script>
+</body>
+</html>

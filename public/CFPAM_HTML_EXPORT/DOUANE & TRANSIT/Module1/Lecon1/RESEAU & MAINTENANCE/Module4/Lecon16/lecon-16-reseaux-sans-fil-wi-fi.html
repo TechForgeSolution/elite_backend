@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 16 — Réseaux sans fil (Wi‑Fi)</title>
+<meta name="description" content="Support pédagogique — Déployer et sécuriser un réseau Wi‑Fi.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%231F6FEB' d='M8 25a38 38 0 0 1 48 0l-5 6a30 30 0 0 0-38 0zm8 10a25 25 0 0 1 32 0l-5 6a17 17 0 0 0-22 0zm8 10a12 12 0 0 1 16 0l-8 9z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+ --line:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+ --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+ --tint:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+ --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;height:100%;width:0;background:var(--color-accent)}
+.topbar{position:sticky;top:4px;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;min-height:64px;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700}
+.brand-mark{width:32px;height:32px;border:2px solid var(--color-accent);border-radius:8px;display:grid;place-items:center;color:var(--color-accent);font-family:"IBM Plex Mono"}
+.nav-actions{display:flex;gap:9px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--color-bg);color:var(--color-text);padding:8px 12px;border-radius:9px;cursor:pointer}
+.btn:hover,.btn:focus-visible{border-color:var(--color-accent);outline:none}
+main{max-width:1180px;margin:auto;padding:42px 22px 70px}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:stretch;margin-bottom:34px}
+.hero-copy{padding:30px 0}
+.eyebrow{font:600 13px "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12}
+h1{font-size:clamp(38px,6vw,68px);margin:10px 0 18px;max-width:850px}
+h2{font-size:clamp(28px,4vw,42px);margin:0 0 16px}
+h3{font-size:20px;margin:0 0 8px}
+.lead{font-size:19px;max-width:720px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.badge{font:500 13px "IBM Plex Mono";padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--soft)}
+.hero-card{border:1px solid var(--line);background:var(--soft);border-radius:18px;padding:20px;display:flex;flex-direction:column;justify-content:center}
+.hero-card strong{font-family:"IBM Plex Mono";font-size:14px;color:var(--color-accent)}
+.hero-card p{margin:7px 0 18px}
+.toc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:55px}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 18px}
+.toc a{padding:7px 0;display:block}
+section{scroll-margin-top:90px;margin:0 0 72px}
+.section-band{background:var(--soft);padding:42px 28px;border-radius:22px}
+.kicker{font:600 12px "IBM Plex Mono";color:var(--color-accent);letter-spacing:.08em;text-transform:uppercase}
+.content{max-width:760px}
+p{margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:25px 0}
+.card{border:1px solid var(--line);background:var(--color-bg);border-radius:15px;padding:18px;transition:.2s}
+.card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:28px;color:var(--color-accent);margin-bottom:8px}
+.note{border-left:5px solid var(--color-accent);background:var(--tint);padding:16px 18px;margin:24px 0;border-radius:0 12px 12px 0}
+.note strong{font-family:"Space Grotesk"}
+.diagram{margin:26px 0;border:1px solid var(--line);background:var(--color-bg);border-radius:16px;padding:14px;overflow:auto}
+.diagram svg{display:block;width:100%;min-width:650px;height:auto}
+svg text{font-family:"IBM Plex Sans",sans-serif;fill:var(--color-text)}
+svg .mono{font-family:"IBM Plex Mono",monospace}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-family:"IBM Plex Mono",monospace;font-size:14px;background:var(--color-bg)}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"IBM Plex Sans";background:var(--tint)}
+tr:hover td{background:var(--soft)}
+.code{position:relative;margin:20px 0}
+pre{margin:0;overflow:auto;background:var(--tint);border:1px solid var(--line);border-radius:13px;padding:18px 52px 18px 18px;font:13px/1.65 "IBM Plex Mono"}
+.copy{position:absolute;right:10px;top:10px}
+.tabs{margin:24px 0}
+.tablist{display:flex;gap:6px;border-bottom:1px solid var(--line);overflow:auto}
+.tab{border:0;border-bottom:2px solid transparent;background:transparent;padding:10px 14px;cursor:pointer;white-space:nowrap}
+.tab[aria-selected=true]{color:var(--color-accent);border-color:var(--color-accent)}
+.panel{display:none;padding:18px 2px}.panel.active{display:block}
+details{border-bottom:1px solid var(--line);padding:13px 0}
+summary{cursor:pointer;font-weight:600}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:25px 0}
+.step{border-top:3px solid var(--color-accent);padding:12px;background:var(--soft)}
+.step b{font:600 12px "IBM Plex Mono";color:var(--color-accent)}
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.key{padding:15px;border:1px solid var(--line);border-radius:12px;background:var(--color-bg)}
+.footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:35px}
+.nav-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--soft)}
+.nav-card small{display:block;color:var(--muted);font:500 12px "IBM Plex Mono";margin-bottom:5px}
+footer{border-top:1px solid var(--line);padding:25px 22px;color:var(--muted);font-size:13px}
+.backtop{position:fixed;right:18px;bottom:18px;z-index:800;opacity:0;pointer-events:none}
+.backtop.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.toc-grid{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){main{padding:28px 15px 55px}.nav{padding:8px 15px}.brand span{display:none}.grid,.toc-grid,.key-grid,.footer-nav{grid-template-columns:1fr}h1{font-size:42px}.section-band{padding:28px 17px}.stepper{grid-template-columns:1fr}.lead{font-size:17px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{transition:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+<header class="topbar">
+ <nav class="nav" aria-label="Navigation principale">
+  <a class="brand" href="#top"><span class="brand-mark">Wi</span><span>Maintenance & Réseau Informatique</span></a>
+  <div class="nav-actions"><a class="btn" href="#sommaire">Sommaire</a><button class="btn" id="themeBtn" type="button" aria-label="Basculer le thème">◐</button></div>
+ </nav>
+</header>
+
+<main id="top">
+<section class="hero reveal">
+ <div class="hero-copy">
+  <div class="eyebrow">Module 4 · Réseaux informatiques — Sécurité et supervision</div>
+  <h1>Réseaux sans fil<br>(Wi‑Fi)</h1>
+  <p class="lead">Déployer et sécuriser un réseau Wi‑Fi en comprenant les normes 802.11, les canaux, la sécurité WPA, les points d’accès, la portée et les interférences.</p>
+  <div class="meta"><span class="badge">Intermédiaire</span><span class="badge">15 min</span><span class="badge">Leçon 16</span><span class="badge">Wi‑Fi · 802.11 · WPA</span></div>
+ </div>
+ <aside class="hero-card">
+  <strong>OBJECTIF PÉDAGOGIQUE</strong>
+  <p>Déployer et sécuriser un réseau Wi‑Fi.</p>
+  <div class="diagram" style="margin:0;padding:8px;border-radius:12px">
+   <svg viewBox="0 0 360 190" role="img" aria-label="Illustration d'un point d'accès diffusant un réseau Wi-Fi vers plusieurs équipements">
+    <path d="M180 65 Q125 15 70 65 M180 65 Q235 15 290 65" fill="none" stroke="#1F6FEB" stroke-width="5" opacity=".45"/>
+    <path d="M180 82 Q145 52 110 82 M180 82 Q215 52 250 82" fill="none" stroke="#1F6FEB" stroke-width="5"/>
+    <circle cx="180" cy="103" r="9" fill="#1F6FEB"/>
+    <rect x="145" y="115" width="70" height="35" rx="7" fill="#F4F7FA" stroke="#10161D" stroke-width="2"/>
+    <rect x="28" y="125" width="48" height="30" rx="5" fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2"/>
+    <rect x="284" y="125" width="48" height="30" rx="5" fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2"/>
+    <rect x="105" y="160" width="45" height="22" rx="4" fill="#F4F7FA" stroke="#A9B4BE"/>
+    <rect x="210" y="160" width="45" height="22" rx="4" fill="#F4F7FA" stroke="#A9B4BE"/>
+    <text x="180" y="137" text-anchor="middle" font-size="11">POINT D’ACCÈS</text>
+    <text x="52" y="143" text-anchor="middle" font-size="10">PC</text><text x="308" y="143" text-anchor="middle" font-size="10">TÉL.</text>
+   </svg>
+  </div>
+ </aside>
+</section>
+
+<section id="sommaire" class="toc reveal">
+ <div class="kicker">Sommaire</div>
+ <div class="toc-grid">
+  <a href="#normes">01 · Normes 802.11</a>
+  <a href="#canaux">02 · Canaux et fréquences</a>
+  <a href="#securite">03 · Sécurité WPA</a>
+  <a href="#ap">04 · Points d’accès</a>
+  <a href="#portee">05 · Portée et interférences</a>
+  <a href="#synthese">06 · Points clés à retenir</a>
+ </div>
+</section>
+
+<section id="normes" class="reveal">
+ <div class="kicker">01 · Technologies</div><h2>Normes 802.11</h2>
+ <div class="content">
+  <p>La famille <strong>IEEE 802.11</strong> regroupe les standards utilisés pour les réseaux locaux sans fil. Les différentes générations ont fait évoluer le débit, la largeur de canal, l’efficacité radio et la capacité à servir plusieurs clients.</p>
+ </div>
+ <div class="grid">
+  <article class="card"><div class="icon">◉</div><h3>802.11n</h3><p>Wi‑Fi 4. Introduit notamment l’utilisation de plusieurs flux radio et la bande 5 GHz en complément de 2,4 GHz.</p></article>
+  <article class="card"><div class="icon">◈</div><h3>802.11ac</h3><p>Wi‑Fi 5. Orienté 5 GHz, avec des canaux plus larges et des débits supérieurs.</p></article>
+  <article class="card"><div class="icon">◇</div><h3>802.11ax</h3><p>Wi‑Fi 6. Améliore l’efficacité dans les environnements denses grâce à des mécanismes de partage de ressources radio.</p></article>
+ </div>
+ <div class="diagram">
+  <svg viewBox="0 0 900 260" role="img" aria-label="Frise des générations Wi-Fi">
+   <line x1="80" y1="130" x2="820" y2="130" stroke="#A9B4BE" stroke-width="3"/>
+   <g><circle cx="150" cy="130" r="15" fill="#1F6FEB"/><text x="150" y="88" text-anchor="middle" font-weight="700">802.11n</text><text x="150" y="165" text-anchor="middle" class="mono" font-size="13">Wi‑Fi 4</text><text x="150" y="188" text-anchor="middle" font-size="12">2,4 / 5 GHz</text></g>
+   <g><circle cx="450" cy="130" r="15" fill="#1F6FEB"/><text x="450" y="88" text-anchor="middle" font-weight="700">802.11ac</text><text x="450" y="165" text-anchor="middle" class="mono" font-size="13">Wi‑Fi 5</text><text x="450" y="188" text-anchor="middle" font-size="12">5 GHz</text></g>
+   <g><circle cx="750" cy="130" r="15" fill="#1F6FEB"/><text x="750" y="88" text-anchor="middle" font-weight="700">802.11ax</text><text x="750" y="165" text-anchor="middle" class="mono" font-size="13">Wi‑Fi 6</text><text x="750" y="188" text-anchor="middle" font-size="12">efficacité en densité</text></g>
+  </svg>
+ </div>
+ <div class="note"><strong>💡 À retenir</strong><br>Le nom commercial « Wi‑Fi 4/5/6 » facilite la lecture des générations, tandis que les références 802.11 identifient les standards techniques.</div>
+</section>
+
+<section id="canaux" class="section-band reveal">
+ <div class="kicker">02 · Radio</div><h2>Canaux et fréquences</h2>
+ <div class="content">
+  <p>Un réseau Wi‑Fi utilise des canaux radio. Le choix de la bande et du canal influence la portée, le débit disponible et le niveau d’interférences. La bande <strong>2,4 GHz</strong> porte généralement plus loin mais est plus exposée à la congestion ; la bande <strong>5 GHz</strong> offre davantage de canaux et de capacité, avec une portée moindre.</p>
+ </div>
+ <div class="diagram">
+  <svg viewBox="0 0 900 300" role="img" aria-label="Comparaison visuelle des bandes Wi-Fi 2,4 GHz et 5 GHz">
+   <text x="35" y="45" font-weight="700" font-size="20">2,4 GHz</text>
+   <rect x="170" y="23" width="620" height="38" rx="8" fill="#F4F7FA" stroke="#A9B4BE"/>
+   <rect x="220" y="23" width="120" height="38" rx="8" fill="#1F6FEB" opacity=".28"/><rect x="390" y="23" width="120" height="38" rx="8" fill="#1F6FEB" opacity=".28"/><rect x="560" y="23" width="120" height="38" rx="8" fill="#1F6FEB" opacity=".28"/>
+   <text x="280" y="48" text-anchor="middle" class="mono" font-size="12">canal</text><text x="450" y="48" text-anchor="middle" class="mono" font-size="12">canal</text><text x="620" y="48" text-anchor="middle" class="mono" font-size="12">canal</text>
+   <text x="35" y="130" font-weight="700" font-size="20">5 GHz</text>
+   <rect x="170" y="108" width="620" height="38" rx="8" fill="#F4F7FA" stroke="#A9B4BE"/>
+   <g fill="#1F6FEB" opacity=".28">
+    <rect x="190" y="108" width="58" height="38" rx="6"/><rect x="265" y="108" width="58" height="38" rx="6"/><rect x="340" y="108" width="58" height="38" rx="6"/><rect x="415" y="108" width="58" height="38" rx="6"/><rect x="490" y="108" width="58" height="38" rx="6"/><rect x="565" y="108" width="58" height="38" rx="6"/><rect x="640" y="108" width="58" height="38" rx="6"/><rect x="715" y="108" width="58" height="38" rx="6"/>
+   </g>
+   <text x="480" y="190" text-anchor="middle" font-size="14">Plus de canaux disponibles → plus de possibilités de planification</text>
+   <path d="M210 235h250" stroke="#1F6FEB" stroke-width="5"/><text x="335" y="260" text-anchor="middle" class="mono" font-size="12">portée relative ↑</text>
+   <path d="M550 235h230" stroke="#A9B4BE" stroke-width="5"/><text x="665" y="260" text-anchor="middle" class="mono" font-size="12">capacité / canaux ↑</text>
+  </svg>
+ </div>
+ <div class="note"><strong>⚠️ Attention</strong><br>Multiplier la puissance d’émission n’est pas une stratégie universelle : cela peut augmenter les interférences et créer un déséquilibre entre émission et réception.</div>
+</section>
+
+<section id="securite" class="reveal">
+ <div class="kicker">03 · Protection</div><h2>Sécurité WPA</h2>
+ <div class="content">
+  <p>La sécurité Wi‑Fi repose sur un mécanisme d’authentification et de chiffrement. Les familles <strong>WPA</strong> ont succédé aux mécanismes plus anciens afin d’améliorer la protection des communications radio.</p>
+ </div>
+ <div class="tabs">
+  <div class="tablist" role="tablist" aria-label="Comparaison des modes de sécurité">
+   <button class="tab" role="tab" aria-selected="true" aria-controls="wpa2" data-tab="wpa2">WPA2</button>
+   <button class="tab" role="tab" aria-selected="false" aria-controls="wpa3" data-tab="wpa3">WPA3</button>
+  </div>
+  <div id="wpa2" class="panel active" role="tabpanel"><h3>WPA2</h3><p>Solution largement déployée. En environnement domestique ou petite structure, le mode personnel repose sur une clé pré-partagée.</p><div class="code"><button class="btn copy" data-copy="security=wpa2-personal">Copier</button><pre>security=wpa2-personal</pre></div></div>
+  <div id="wpa3" class="panel" role="tabpanel"><h3>WPA3</h3><p>Génération plus récente, conçue pour renforcer l’authentification et la protection contre certaines attaques visant les mots de passe.</p><div class="code"><button class="btn copy" data-copy="security=wpa3-personal">Copier</button><pre>security=wpa3-personal</pre></div></div>
+ </div>
+ <div class="grid">
+  <article class="card"><div class="icon">▣</div><h3>Mot de passe</h3><p>Choisir une phrase secrète suffisamment longue et éviter les informations faciles à deviner.</p></article>
+  <article class="card"><div class="icon">⌁</div><h3>Chiffrement</h3><p>Les communications doivent être protégées par le mécanisme de sécurité fourni par le mode Wi‑Fi choisi.</p></article>
+  <article class="card"><div class="icon">▤</div><h3>Administration</h3><p>Changer les identifiants d’administration par défaut du point d’accès et limiter l’accès à sa gestion.</p></article>
+ </div>
+ <div class="note"><strong>🔒 Sécurité / bonne pratique</strong><br>Ne jamais considérer le SSID caché comme une mesure de sécurité suffisante. La protection doit reposer sur l’authentification, le chiffrement et une administration correctement configurée.</div>
+</section>
+
+<section id="ap" class="section-band reveal">
+ <div class="kicker">04 · Infrastructure</div><h2>Points d’accès</h2>
+ <div class="content"><p>Le <strong>point d’accès (AP)</strong> fournit la connectivité radio aux clients Wi‑Fi et fait le lien avec le réseau filaire. Dans un déploiement professionnel, plusieurs AP peuvent être répartis pour couvrir une zone tout en permettant la mobilité des utilisateurs.</p></div>
+ <div class="diagram">
+  <svg viewBox="0 0 900 330" role="img" aria-label="Architecture réseau avec routeur, commutateur, points d'accès et clients Wi-Fi">
+   <rect x="355" y="30" width="190" height="55" rx="10" fill="#F4F7FA" stroke="#10161D" stroke-width="2"/><text x="450" y="64" text-anchor="middle" font-weight="700">ROUTEUR / PARE-FEU</text>
+   <rect x="355" y="130" width="190" height="55" rx="10" fill="#F4F7FA" stroke="#10161D" stroke-width="2"/><text x="450" y="164" text-anchor="middle" font-weight="700">COMMUTATEUR</text>
+   <line x1="450" y1="85" x2="450" y2="130" stroke="#1F6FEB" stroke-width="4"/>
+   <rect x="125" y="235" width="170" height="52" rx="10" fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2"/><text x="210" y="267" text-anchor="middle">AP 01 · zone A</text>
+   <rect x="365" y="235" width="170" height="52" rx="10" fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2"/><text x="450" y="267" text-anchor="middle">AP 02 · zone B</text>
+   <rect x="605" y="235" width="170" height="52" rx="10" fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2"/><text x="690" y="267" text-anchor="middle">AP 03 · zone C</text>
+   <line x1="450" y1="185" x2="210" y2="235" stroke="#1F6FEB" stroke-width="3"/><line x1="450" y1="185" x2="450" y2="235" stroke="#1F6FEB" stroke-width="3"/><line x1="450" y1="185" x2="690" y2="235" stroke="#1F6FEB" stroke-width="3"/>
+   <path d="M210 220q-45-40-90 0m90 0q45-40 90 0" fill="none" stroke="#1F6FEB" stroke-width="4" opacity=".6"/>
+   <path d="M450 220q-45-40-90 0m90 0q45-40 90 0" fill="none" stroke="#1F6FEB" stroke-width="4" opacity=".6"/>
+   <path d="M690 220q-45-40-90 0m90 0q45-40 90 0" fill="none" stroke="#1F6FEB" stroke-width="4" opacity=".6"/>
+  </svg>
+ </div>
+ <div class="stepper" aria-label="Étapes de déploiement">
+  <div class="step"><b>01</b><br>Identifier la zone</div><div class="step"><b>02</b><br>Positionner les AP</div><div class="step"><b>03</b><br>Choisir les canaux</div><div class="step"><b>04</b><br>Sécuriser le SSID</div><div class="step"><b>05</b><br>Tester la couverture</div>
+ </div>
+ <details><summary>Pourquoi plusieurs points d’accès ?</summary><p>Ils permettent de mieux répartir la couverture radio et la capacité. Le positionnement doit tenir compte des murs, des usages, des zones de forte densité et des sources d’interférences.</p></details>
+</section>
+
+<section id="portee" class="reveal">
+ <div class="kicker">05 · Qualité radio</div><h2>Portée et interférences</h2>
+ <div class="content"><p>La qualité d’un réseau Wi‑Fi dépend autant de l’environnement que du matériel. Les murs, structures métalliques, appareils radio et réseaux voisins peuvent réduire la portée ou augmenter les retransmissions.</p></div>
+ <div class="grid">
+  <article class="card"><div class="icon">⌂</div><h3>Obstacles</h3><p>Les matériaux et la structure du bâtiment atténuent le signal. Une cloison légère n’a pas le même effet qu’un élément dense ou métallique.</p></article>
+  <article class="card"><div class="icon">≋</div><h3>Réseaux voisins</h3><p>Des points d’accès proches utilisant des canaux qui se chevauchent peuvent dégrader les performances.</p></article>
+  <article class="card"><div class="icon">⊙</div><h3>Densité</h3><p>Une zone comportant beaucoup de clients nécessite une planification adaptée, au-delà de la simple notion de portée.</p></article>
+ </div>
+ <div class="diagram">
+  <svg viewBox="0 0 900 310" role="img" aria-label="Illustration de couverture Wi-Fi et obstacles">
+   <rect x="45" y="45" width="810" height="215" rx="12" fill="#F4F7FA" stroke="#A9B4BE"/>
+   <rect x="425" y="70" width="25" height="165" fill="#10161D" opacity=".16"/>
+   <rect x="610" y="70" width="25" height="165" fill="#10161D" opacity=".16"/>
+   <circle cx="260" cy="155" r="105" fill="#1F6FEB" opacity=".08" stroke="#1F6FEB" stroke-width="3"/>
+   <circle cx="260" cy="155" r="65" fill="none" stroke="#1F6FEB" stroke-width="3" opacity=".45"/>
+   <circle cx="260" cy="155" r="10" fill="#1F6FEB"/>
+   <text x="260" y="190" text-anchor="middle" font-size="13" font-weight="600">POINT D’ACCÈS</text>
+   <path d="M365 155h40" stroke="#1F6FEB" stroke-width="3" stroke-dasharray="7 6"/>
+   <text x="510" y="110" text-anchor="middle" font-size="13">obstacle</text><text x="700" y="110" text-anchor="middle" font-size="13">obstacle</text>
+   <path d="M675 155q50-45 105 0" fill="none" stroke="#A9B4BE" stroke-width="4"/>
+   <text x="760" y="195" text-anchor="middle" class="mono" font-size="12">signal atténué</text>
+  </svg>
+ </div>
+ <div class="note"><strong>🛠️ Cas pratique</strong><br>Lors d’un diagnostic, commencer par observer l’emplacement des AP, les canaux utilisés, les obstacles et la densité de clients avant de modifier la puissance d’émission.</div>
+</section>
+
+<section id="synthese" class="section-band reveal">
+ <div class="kicker">06 · Synthèse</div><h2>Points clés à retenir</h2>
+ <div class="key-grid">
+  <div class="key"><strong>802.11</strong><br>La famille de standards définit les évolutions techniques du Wi‑Fi.</div>
+  <div class="key"><strong>Canaux</strong><br>Leur planification réduit les conflits radio et améliore la capacité disponible.</div>
+  <div class="key"><strong>WPA</strong><br>L’authentification et le chiffrement sont essentiels pour sécuriser l’accès sans fil.</div>
+  <div class="key"><strong>AP</strong><br>Le positionnement des points d’accès doit être pensé selon la couverture et la densité.</div>
+  <div class="key"><strong>Interférences</strong><br>Les réseaux voisins et les obstacles peuvent dégrader la qualité du signal.</div>
+  <div class="key"><strong>Méthode</strong><br>Un bon déploiement associe choix technologique, planification radio et sécurité.</div>
+ </div>
+ <div class="footer-nav">
+  <a class="nav-card" href="#top"><small>LEÇON PRÉCÉDENTE</small>← Leçon 15 · Protocoles réseau</a>
+  <a class="nav-card" href="#top"><small>LEÇON SUIVANTE</small>Leçon 17 · VPN et interconnexion de sites →</a>
+ </div>
+</section>
+</main>
+
+<button class="btn backtop" id="backtop" type="button">↑ Haut</button>
+<footer>Module 4 · Réseaux informatiques — Sécurité et supervision · Leçon 16 · Support autonome HTML</footer>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+ const d=document.documentElement;
+ const max=d.scrollHeight-d.clientHeight;
+ progress.style.width=(max?Math.min(100,scrollY/max*100):0)+'%';
+ document.getElementById('backtop').classList.toggle('show',scrollY>500);
+}
+addEventListener('scroll',updateProgress,{passive:true}); updateProgress();
+
+document.getElementById('backtop').onclick=()=>scrollTo({top:0,behavior:'smooth'});
+
+document.querySelectorAll('.tab').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  const group=btn.closest('.tabs');
+  group.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b===btn));
+  group.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===btn.dataset.tab));
+ });
+});
+
+document.querySelectorAll('.copy').forEach(btn=>{
+ btn.addEventListener('click',async()=>{
+  const value=btn.dataset.copy;
+  try{await navigator.clipboard.writeText(value);btn.textContent='Copié ✓';setTimeout(()=>btn.textContent='Copier',1200)}
+  catch(e){btn.textContent='Sélectionner';}
+ });
+});
+
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+
+document.getElementById('themeBtn').addEventListener('click',()=>{
+ const dark=document.body.dataset.dark==='1';
+ document.body.dataset.dark=dark?'0':'1';
+ document.documentElement.style.setProperty('--color-bg',dark?'#F4F7FA':'#10161D');
+ document.documentElement.style.setProperty('--color-text',dark?'#10161D':'#F4F7FA');
+});
+</script>
+</body>
+</html>

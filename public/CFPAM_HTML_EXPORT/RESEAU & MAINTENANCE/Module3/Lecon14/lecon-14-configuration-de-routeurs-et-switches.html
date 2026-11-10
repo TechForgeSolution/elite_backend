@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LEÇON 14 Configuration de routeurs et switches — Maintenance et Réseau Informatique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg:#F4F7FA; --color-text:#10161D; --color-accent:#1F6FEB; --color-neutral:#A9B4BE;
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+.progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--color-accent);z-index:1000}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
+.nav{max-width:1180px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.02em} .brand span{color:var(--color-accent)}
+.nav a{color:var(--color-text);text-decoration:none;font-weight:600;font-size:.92rem} .nav a:hover{color:var(--color-accent)}
+main{max-width:1180px;margin:auto;padding:30px 24px 80px}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:center;padding:55px 0 35px}
+.eyebrow{font:600 .78rem "IBM Plex Mono";color:var(--color-accent);text-transform:uppercase;letter-spacing:.08em}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.15;letter-spacing:-.03em} h1{font-size:clamp(2.2rem,5vw,4.3rem);margin:12px 0} h2{font-size:2rem;margin-top:0} h3{font-size:1.25rem}
+.lead{font-size:1.12rem;max-width:720px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px} .badge{border:1px solid var(--border);padding:6px 10px;border-radius:999px;font:500 .78rem "IBM Plex Mono";background:var(--soft)}
+.hero-card,.card,.callout{border:1px solid var(--border);background:var(--color-bg);border-radius:16px;padding:22px}
+.hero-card{background:var(--soft);box-shadow:0 12px 30px color-mix(in srgb,var(--color-text) 8%,transparent)}
+.hero-card svg{width:100%;height:auto}
+.toc{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:25px 0;margin:10px 0 45px}
+.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px} .toc a{padding:12px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--color-text);font-weight:600} .toc a:hover{border-color:var(--color-accent);color:var(--color-accent)}
+section{padding:65px 0;border-bottom:1px solid var(--border)} section:nth-of-type(even){background:var(--soft);margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px}
+.text{max-width:760px} p{margin:0 0 16px} ul{padding-left:22px}
+.visual{margin:28px 0;overflow:auto;border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--color-bg)} svg{min-width:650px;max-width:100%;height:auto}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:25px} .card{transition:.2s} .card:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{font-size:1.7rem;color:var(--color-accent);font-family:"IBM Plex Mono"} .card h3{margin:8px 0}
+.callout{border-left:5px solid var(--color-accent);margin:24px 0;background:var(--soft10)} .callout strong{font-family:"Space Grotesk"}
+table{width:100%;border-collapse:collapse;font-family:"IBM Plex Mono";font-size:.9rem;min-width:650px} th,td{padding:13px;text-align:left;border-bottom:1px solid var(--border)} th{color:var(--color-accent);background:var(--soft10)} tr:hover td{background:var(--soft)}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:24px 0}
+.tabs{margin:25px 0} .tab-buttons{display:flex;gap:6px;flex-wrap:wrap} .tab-buttons button{border:1px solid var(--border);background:var(--color-bg);padding:10px 15px;border-radius:9px;cursor:pointer;font-weight:700;color:var(--color-text)} .tab-buttons button.active{border-color:var(--color-accent);color:var(--color-accent);background:var(--soft10)} .tab-panel{display:none;padding:20px;border:1px solid var(--border);border-radius:12px;margin-top:8px} .tab-panel.active{display:block}
+.code{position:relative;background:var(--soft10);border:1px solid var(--border);border-radius:12px;padding:20px;overflow:auto;font:500 .9rem/1.7 "IBM Plex Mono";white-space:pre}
+.copy{position:absolute;right:10px;top:10px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);padding:6px 9px;border-radius:7px;cursor:pointer}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:30px 0} .step{border-top:3px solid var(--color-accent);padding:14px 4px} .step b{font:600 .8rem "IBM Plex Mono";color:var(--color-accent)}
+details{border-bottom:1px solid var(--border);padding:15px 0} summary{cursor:pointer;font-weight:700;font-family:"Space Grotesk"}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px} .key{padding:18px;border:1px solid var(--border);border-radius:12px;background:var(--soft)} .key b{display:block;font-family:"Space Grotesk";margin-bottom:5px}
+.bottom-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;margin-top:50px;align-items:stretch} .bottom-nav a{border:1px solid var(--border);padding:16px;border-radius:12px;text-decoration:none;color:var(--color-text)} .bottom-nav a:hover{border-color:var(--color-accent)} .next{text-align:right}
+.top{position:fixed;right:20px;bottom:20px;border:1px solid var(--color-accent);background:var(--color-bg);color:var(--color-accent);border-radius:50%;width:46px;height:46px;cursor:pointer;font-size:1.2rem}
+footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;color:var(--muted);font-size:.9rem}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease} .reveal.visible{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.toc-grid{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.keys{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.bottom-nav{grid-template-columns:1fr}.next{text-align:left}}
+@media(max-width:480px){main{padding:20px 16px 60px}.nav{padding:12px 16px}.toc-grid,.keys,.steps{grid-template-columns:1fr}h1{font-size:2.35rem}section:nth-of-type(even){margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}*{transition:none!important}}
+</style>
+</head>
+<body id="top">
+<div class="progress" id="progress"></div>
+<header><nav class="nav">
+  <div class="brand">MAINTENANCE <span>&</span> RÉSEAU</div>
+  <a href="#sommaire">Sommaire</a>
+</nav></header>
+
+<main>
+<section class="hero reveal" style="border-bottom:0">
+  <div>
+    <div class="eyebrow">Module 3 · Réseaux informatiques — Fondamentaux</div>
+    <h1>LEÇON 14 Configuration de routeurs et switches</h1>
+    <p class="lead">Configurer des VLAN et un routage de base entre réseaux.</p>
+    <div class="badges"><span class="badge">MODULE 3 : Réseaux informatiques – Fondamentaux</span><span class="badge">intermédiaire</span><span class="badge">15 min</span></div>
+  </div>
+  <div class="hero-card">
+    <svg viewBox="0 0 620 350" role="img" aria-label="Schéma d'un réseau avec switch, routeur, VLAN et deux réseaux IP">
+      <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="var(--color-accent)"/></marker></defs>
+      <rect x="25" y="25" width="570" height="300" rx="18" fill="none" stroke="var(--color-neutral)"/>
+      <rect x="235" y="125" width="150" height="75" rx="10" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="310" y="155" text-anchor="middle" font-family="IBM Plex Sans" font-weight="700" fill="var(--color-text)">SWITCH</text>
+      <text x="310" y="178" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--muted)">VLAN 10 / 20</text>
+      <rect x="255" y="45" width="110" height="48" rx="9" fill="var(--color-bg)" stroke="var(--color-text)"/>
+      <text x="310" y="75" text-anchor="middle" font-family="IBM Plex Sans" font-weight="700">ROUTEUR</text>
+      <line x1="310" y1="93" x2="310" y2="125" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arrow)"/>
+      <g font-family="IBM Plex Mono" font-size="11" fill="var(--color-text)">
+        <rect x="55" y="105" width="125" height="65" rx="9" fill="var(--soft)" stroke="var(--color-neutral)"/>
+        <text x="117" y="132" text-anchor="middle">VLAN 10</text><text x="117" y="153" text-anchor="middle">192.168.10.0/24</text>
+        <rect x="440" y="105" width="125" height="65" rx="9" fill="var(--soft)" stroke="var(--color-neutral)"/>
+        <text x="502" y="132" text-anchor="middle">VLAN 20</text><text x="502" y="153" text-anchor="middle">192.168.20.0/24</text>
+      </g>
+      <line x1="180" y1="138" x2="235" y2="150" stroke="var(--color-neutral)" stroke-width="3"/>
+      <line x1="385" y1="150" x2="440" y2="138" stroke="var(--color-neutral)" stroke-width="3"/>
+      <circle cx="95" cy="240" r="22" fill="var(--soft10)" stroke="var(--color-accent)"/><circle cx="155" cy="240" r="22" fill="var(--soft10)" stroke="var(--color-accent)"/>
+      <circle cx="465" cy="240" r="22" fill="var(--soft10)" stroke="var(--color-accent)"/><circle cx="525" cy="240" r="22" fill="var(--soft10)" stroke="var(--color-accent)"/>
+      <g stroke="var(--color-neutral)" stroke-width="2"><line x1="95" y1="218" x2="117" y2="170"/><line x1="155" y1="218" x2="145" y2="170"/><line x1="465" y1="218" x2="475" y2="170"/><line x1="525" y1="218" x2="505" y2="170"/></g>
+      <g font-family="IBM Plex Mono" font-size="11" text-anchor="middle" fill="var(--color-text)"><text x="95" y="244">PC-01</text><text x="155" y="244">PC-02</text><text x="465" y="244">PC-03</text><text x="525" y="244">PC-04</text></g>
+      <text x="310" y="286" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--muted)">TRUNK · ROUTAGE · CONFIGURATION</text>
+    </svg>
+  </div>
+</section>
+
+<div class="toc reveal" id="sommaire">
+  <h2>Sommaire</h2>
+  <div class="toc-grid">
+    <a href="#bases">01 · Bases</a><a href="#vlan">02 · VLAN</a><a href="#interfaces">03 · Interfaces</a>
+    <a href="#routage">04 · Routage</a><a href="#trunk">05 · Trunking</a><a href="#sauvegarde">06 · Sauvegarde</a>
+    <a href="#synthese">07 · Points clés</a><a href="#faq">08 · FAQ</a>
+  </div>
+</div>
+
+<section id="bases" class="reveal">
+  <div class="eyebrow">01 · Comprendre</div><h2>Le rôle du switch et du routeur</h2>
+  <div class="text">
+    <p>Un <strong>switch</strong> relie principalement les équipements d'un même réseau local. Il apprend les adresses MAC et utilise sa table de commutation pour transmettre les trames vers le bon port.</p>
+    <p>Un <strong>routeur</strong> relie des réseaux IP différents. Sa table de routage détermine par quelle interface et vers quelle passerelle un paquet doit être envoyé.</p>
+  </div>
+  <div class="grid">
+    <article class="card"><div class="icon">01</div><h3>Commutation</h3><p>Le switch travaille sur le réseau local et associe les adresses MAC aux ports.</p></article>
+    <article class="card"><div class="icon">02</div><h3>Routage</h3><p>Le routeur choisit un chemin entre différents réseaux IP.</p></article>
+    <article class="card"><div class="icon">03</div><h3>Segmentation</h3><p>Les VLAN permettent de séparer logiquement plusieurs domaines de broadcast.</p></article>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><br>Le switch connecte et segmente le réseau local ; le routeur permet la communication entre réseaux distincts.</div>
+</section>
+
+<section id="vlan" class="reveal">
+  <div class="eyebrow">02 · VLAN</div><h2>Créer une séparation logique du réseau</h2>
+  <div class="text"><p>Un <strong>VLAN</strong> permet de regrouper logiquement des ports d'un switch afin de créer plusieurs réseaux indépendants sur une même infrastructure physique.</p></div>
+  <div class="visual">
+    <svg viewBox="0 0 900 280" role="img" aria-label="Illustration de deux VLAN séparés sur un switch">
+      <rect x="30" y="35" width="840" height="210" rx="18" fill="none" stroke="var(--color-neutral)"/>
+      <rect x="325" y="85" width="250" height="100" rx="12" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="450" y="120" text-anchor="middle" font-family="Space Grotesk" font-weight="700">SWITCH</text>
+      <text x="450" y="146" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">PORTS 1—24</text>
+      <g font-family="IBM Plex Mono" font-size="12">
+        <rect x="65" y="75" width="185" height="55" rx="9" fill="var(--soft)" stroke="var(--color-neutral)"/><text x="157" y="98" text-anchor="middle">VLAN 10</text><text x="157" y="117" text-anchor="middle">Utilisateurs</text>
+        <rect x="650" y="75" width="185" height="55" rx="9" fill="var(--soft)" stroke="var(--color-neutral)"/><text x="742" y="98" text-anchor="middle">VLAN 20</text><text x="742" y="117" text-anchor="middle">Administration</text>
+      </g>
+      <g stroke="var(--color-accent)" stroke-width="3"><line x1="250" y1="102" x2="325" y2="115"/><line x1="575" y1="115" x2="650" y2="102"/></g>
+      <text x="450" y="215" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--muted)">Isolation logique · infrastructure physique partagée</text>
+    </svg>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th scope="col">Élément</th><th scope="col">Exemple</th><th scope="col">Fonction</th></tr></thead><tbody>
+    <tr><td>VLAN ID</td><td>10</td><td>Identifie le VLAN</td></tr><tr><td>Port access</td><td>Fa0/1</td><td>Associe un port à un VLAN</td></tr><tr><td>Port trunk</td><td>Gi0/1</td><td>Transport de plusieurs VLAN</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="interfaces" class="reveal">
+  <div class="eyebrow">03 · Interfaces</div><h2>Configurer les interfaces</h2>
+  <p class="text">La configuration d'une interface consiste notamment à sélectionner le port, lui attribuer son rôle et, lorsqu'il s'agit d'une interface routée, définir son adressage IP.</p>
+  <div class="tabs">
+    <div class="tab-buttons" role="tablist">
+      <button class="active" data-tab="switch" role="tab">Switch</button><button data-tab="router" role="tab">Routeur</button>
+    </div>
+    <div id="switch" class="tab-panel active" role="tabpanel">
+      <p>Exemple de configuration d'un port d'accès dans un VLAN :</p>
+      <div class="code">enable
+configure terminal
+interface GigabitEthernet0/1
+switchport mode access
+switchport access vlan 10
+no shutdown</div>
+    </div>
+    <div id="router" class="tab-panel" role="tabpanel">
+      <p>Exemple d'activation d'une interface avec une adresse IP :</p>
+      <div class="code">enable
+configure terminal
+interface GigabitEthernet0/0
+ip address 192.168.10.1 255.255.255.0
+no shutdown</div>
+    </div>
+  </div>
+  <div class="callout"><strong>⚠️ Attention</strong><br>Une interface administrativement désactivée ne pourra pas assurer le trafic attendu. Vérifier l'état de l'interface après configuration.</div>
+</section>
+
+<section id="routage" class="reveal">
+  <div class="eyebrow">04 · Routage</div><h2>Lire une table de routage</h2>
+  <p class="text">La table de routage contient les réseaux connus du routeur et les informations nécessaires pour déterminer le prochain saut ou l'interface de sortie.</p>
+  <div class="visual">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Flux de routage entre deux réseaux via un routeur">
+      <rect x="45" y="85" width="230" height="110" rx="12" fill="var(--soft)" stroke="var(--color-neutral)"/>
+      <text x="160" y="120" text-anchor="middle" font-family="Space Grotesk" font-weight="700">RÉSEAU A</text>
+      <text x="160" y="148" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">192.168.10.0/24</text>
+      <rect x="335" y="65" width="230" height="150" rx="12" fill="var(--soft10)" stroke="var(--color-accent)" stroke-width="2"/>
+      <text x="450" y="110" text-anchor="middle" font-family="Space Grotesk" font-weight="700">ROUTEUR</text>
+      <text x="450" y="138" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">G0/0 · .1</text>
+      <text x="450" y="162" text-anchor="middle" font-family="IBM Plex Mono" font-size="12">G0/1 · .1</text>
+      <text x="450" y="190" text-anchor="middle" font-family="IBM Plex Mono" font-size="11">TABLE DE ROUTAGE</text>
+      <rect x="625" y="85" width="230" height="110" rx="12" fill="var(--soft)" stroke="var(--color-neutral)"/>
+      <text x="740" y="120" text-anchor="middle" font-family="Space Grotesk" font-weight="700">RÉSEAU B</text>
+      <text x="740" y="148" text-anchor="middle" font-family="IBM Plex Mono" font-size="13">192.168.20.0/24</text>
+      <g stroke="var(--color-accent)" stroke-width="3"><line x1="275" y1="140" x2="335" y2="140"/><line x1="565" y1="140" x2="625" y2="140"/></g>
+      <text x="450" y="260" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--muted)">DESTINATION → PROCHAIN SAUT / INTERFACE DE SORTIE</text>
+    </svg>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th scope="col">Destination</th><th scope="col">Masque</th><th scope="col">Passerelle / sortie</th></tr></thead><tbody>
+    <tr><td>192.168.10.0</td><td>/24</td><td>G0/0</td></tr><tr><td>192.168.20.0</td><td>/24</td><td>G0/1</td></tr><tr><td>0.0.0.0</td><td>/0</td><td>Route par défaut</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="trunk" class="reveal">
+  <div class="eyebrow">05 · Trunking</div><h2>Transporter plusieurs VLAN</h2>
+  <p class="text">Un lien <strong>trunk</strong> transporte plusieurs VLAN entre équipements réseau. Il est particulièrement utile entre switches ou entre un switch et un routeur lorsque plusieurs VLAN doivent traverser le même lien physique.</p>
+  <div class="steps">
+    <div class="step"><b>01</b><br>Créer les VLAN</div><div class="step"><b>02</b><br>Attribuer les ports</div><div class="step"><b>03</b><br>Configurer le trunk</div><div class="step"><b>04</b><br>Configurer le routage</div><div class="step"><b>05</b><br>Vérifier les flux</div>
+  </div>
+  <div class="code">interface GigabitEthernet0/24
+switchport mode trunk
+switchport trunk allowed vlan 10,20</div>
+  <div class="callout"><strong>🔒 Sécurité / bonne pratique</strong><br>Limiter les VLAN autorisés sur un trunk réduit les flux inutiles et facilite la maîtrise de l'architecture.</div>
+</section>
+
+<section id="sauvegarde" class="reveal">
+  <div class="eyebrow">06 · Configuration</div><h2>Sauvegarder la configuration</h2>
+  <p class="text">Après une modification validée, la configuration doit être conservée afin qu'elle puisse être restaurée ou réutilisée après un redémarrage ou une intervention.</p>
+  <div class="grid">
+    <article class="card"><div class="icon">RAM</div><h3>Configuration courante</h3><p>Représente l'état actuellement utilisé par l'équipement.</p></article>
+    <article class="card"><div class="icon">NVR</div><h3>Configuration sauvegardée</h3><p>Permet de conserver la configuration nécessaire au redémarrage.</p></article>
+    <article class="card"><div class="icon">BK</div><h3>Copie externe</h3><p>Une copie contrôlée facilite la restauration et la traçabilité.</p></article>
+  </div>
+  <div class="code">copy running-config startup-config</div>
+  <details><summary>Pourquoi vérifier après sauvegarde ?</summary><p>La vérification permet de confirmer que les paramètres attendus sont présents et que la sauvegarde correspond bien à l'état souhaité de l'équipement.</p></details>
+</section>
+
+<section id="synthese" class="reveal">
+  <div class="eyebrow">07 · Synthèse</div><h2>Points clés à retenir</h2>
+  <div class="keys">
+    <div class="key"><b>VLAN</b>Segmente logiquement un réseau local.</div>
+    <div class="key"><b>Interface</b>Définit le rôle et les paramètres d'un port.</div>
+    <div class="key"><b>Routage</b>Permet la communication entre réseaux IP.</div>
+    <div class="key"><b>Trunk</b>Transporte plusieurs VLAN sur un même lien.</div>
+  </div>
+  <div class="callout"><strong>💡 À retenir</strong><br>Une configuration réseau fiable suit une logique simple : segmenter, configurer les interfaces, assurer le routage, transporter correctement les VLAN, puis sauvegarder et vérifier la configuration.</div>
+</section>
+
+<section id="faq" class="reveal">
+  <div class="eyebrow">08 · Repères</div><h2>Questions fréquentes</h2>
+  <details><summary>Quelle est la différence entre un port access et un port trunk ?</summary><p>Un port access est généralement associé à un seul VLAN pour les équipements terminaux. Un port trunk transporte plusieurs VLAN entre équipements réseau.</p></details>
+  <details><summary>Pourquoi utiliser plusieurs VLAN ?</summary><p>Ils permettent de séparer logiquement des groupes d'équipements et de mieux structurer les domaines de broadcast.</p></details>
+  <details><summary>À quoi sert la table de routage ?</summary><p>Elle fournit au routeur les informations nécessaires pour sélectionner une destination et une sortie adaptées à chaque réseau connu.</p></details>
+  <details><summary>Pourquoi sauvegarder la configuration ?</summary><p>Pour conserver les paramètres validés et permettre à l'équipement de retrouver une configuration opérationnelle après un redémarrage.</p></details>
+</section>
+
+<div class="bottom-nav">
+  <a href="#" aria-label="Leçon précédente">← <strong>Leçon précédente</strong><br>LEÇON 13 Adressage IP et sous-réseaux</a>
+  <a href="#top">↑ Haut</a>
+  <a href="#" class="next" aria-label="Leçon suivante"><strong>Leçon suivante →</strong><br>LEÇON 15 Protocoles réseau (DNS, DHCP, HTTP...)</a>
+</div>
+</main>
+<footer>Maintenance et Réseau Informatique · LEÇON 14 Configuration de routeurs et switches · Support pédagogique</footer>
+<button class="top" onclick="window.scrollTo({top:0})" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+function updateProgress(){
+ const d=document.documentElement, s=d.scrollTop, h=d.scrollHeight-d.clientHeight;
+ progress.style.width=(h?100*s/h:0)+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true}); updateProgress();
+
+document.querySelectorAll('.tab-buttons button').forEach(btn=>btn.addEventListener('click',()=>{
+ const box=btn.closest('.tabs');
+ box.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+ box.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+ btn.classList.add('active'); box.querySelector('#'+btn.dataset.tab).classList.add('active');
+}));
+
+document.querySelectorAll('.code').forEach(block=>{
+ const b=document.createElement('button'); b.className='copy'; b.textContent='Copier';
+ b.onclick=async()=>{await navigator.clipboard.writeText(block.innerText.replace('Copier','').trim()); b.textContent='Copié'; setTimeout(()=>b.textContent='Copier',1200)};
+ block.appendChild(b);
+});
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+</script>
+</body>
+</html>

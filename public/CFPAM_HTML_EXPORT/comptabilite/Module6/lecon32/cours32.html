@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 32 — Charges directes et indirectes | Comptabilité analytique</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231F6F54'/%3E%3Cline x1='22' y1='34' x2='78' y2='34' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='50' x2='78' y2='50' stroke='%23fff' stroke-width='6'/%3E%3Cline x1='22' y1='66' x2='58' y2='66' stroke='%23fff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#FFFFFF;
+    --color-bg-alt:#F6F8F6;
+    --color-text:#0B0F0D;
+    --color-text-muted:#5A6560;
+    --color-accent:#1F6F54;
+    --color-accent-soft:#E7F2ED;
+    --color-border:#E3E8E5;
+    --color-accent-alt:#B3541E;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--color-text);
+    background:var(--color-bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 0.5em;}
+  h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:700; line-height:1.1;}
+  h2{font-size:clamp(1.4rem,2.6vw,1.9rem); line-height:1.25;}
+  h3{font-size:1.15rem; line-height:1.35;}
+  p{margin:0 0 1.1em; color:var(--color-text);}
+  a{color:var(--color-accent);}
+  .mono, table td.num, table th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  .mono{font-size:0.92em;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose{max-width:720px;}
+
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:200; transition:width 0.1s linear;
+  }
+
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:1rem;}
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:14px; height:14px;}
+  nav.toc-toggle{position:relative;}
+  .toc-btn{
+    font-family:var(--font-body); font-size:0.9rem; font-weight:500;
+    background:var(--color-accent-soft); color:var(--color-accent);
+    border:none; border-radius:8px; padding:8px 16px; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:background 0.15s ease;
+  }
+  .toc-btn:hover{background:#d9ecdf;}
+  .toc-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .toc-panel{
+    position:absolute; right:0; top:calc(100% + 10px);
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px;
+    box-shadow:0 12px 28px rgba(11,15,13,0.1);
+    padding:10px; width:280px; max-height:70vh; overflow-y:auto;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .toc-panel.open{opacity:1; visibility:visible; transform:translateY(0);}
+  .toc-panel a{
+    display:flex; gap:10px; align-items:baseline; padding:8px 10px; border-radius:6px;
+    color:var(--color-text); text-decoration:none; font-size:0.9rem;
+  }
+  .toc-panel a:hover{background:var(--color-bg-alt);}
+  .toc-panel .num{color:var(--color-accent); font-family:var(--font-mono); font-size:0.82rem; flex-shrink:0;}
+
+  .hero{
+    padding:64px 0 48px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--color-border) 38px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .badge{
+    font-size:0.8rem; font-weight:500; color:var(--color-accent);
+    background:var(--color-accent-soft); border-radius:100px; padding:5px 13px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .badge.muted{color:var(--color-text-muted); background:var(--color-bg-alt); border:1px solid var(--color-border);}
+  .hero h1{max-width:820px;}
+  .hero .lede{font-size:1.1rem; color:var(--color-text-muted); max-width:640px; margin-top:14px;}
+
+  .sommaire{padding:44px 0; border-bottom:1px solid var(--color-border);}
+  .sommaire h2{font-size:1rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:600; margin-bottom:18px;}
+  .sommaire ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:4px 32px;}
+  .sommaire li a{
+    display:flex; gap:14px; align-items:baseline; text-decoration:none; color:var(--color-text);
+    padding:10px 4px; border-bottom:1px solid var(--color-border);
+  }
+  .sommaire li a:hover{color:var(--color-accent);}
+  .sommaire li a:hover .num{color:var(--color-accent);}
+  .sommaire .num{font-family:var(--font-mono); color:var(--color-text-muted); font-size:0.85rem; flex-shrink:0; width:2.4em;}
+
+  section.lesson-section{padding:56px 0;}
+  section.lesson-section.alt{background:var(--color-bg-alt);}
+  .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:20px;}
+  .section-head .num{font-family:var(--font-mono); color:var(--color-accent); font-size:1rem; flex-shrink:0;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity 0.5s ease, transform 0.5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .callout{
+    border-left:3px solid var(--color-accent); background:var(--color-accent-soft);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:24px 0; max-width:720px;
+  }
+  .callout.warn{border-left-color:var(--color-accent-alt); background:#FBEEE6;}
+  .callout-label{font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p, .callout li{font-size:0.95rem;}
+
+  .table-scroll{overflow-x:auto; margin:20px 0; border:1px solid var(--color-border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:0.92rem;}
+  table caption{text-align:left; font-family:var(--font-display); font-weight:600; font-size:0.95rem; padding:14px 16px; background:var(--color-bg-alt); border-bottom:1px solid var(--color-border); caption-side:top;}
+  th, td{padding:10px 16px; text-align:left; border-bottom:1px solid var(--color-border);}
+  thead th{background:var(--color-bg-alt); font-weight:600; font-size:0.82rem; color:var(--color-text-muted);}
+  td.num, th.num{text-align:right;}
+  td.center, th.center{text-align:center;}
+  td.num.negative{color:var(--color-accent-alt);}
+  tr.total td{font-weight:600; color:var(--color-accent); border-top:1.5px solid var(--color-accent); border-bottom:none;}
+  tr.total td.num{font-family:var(--font-mono);}
+  tbody tr:hover{background:var(--color-bg-alt);}
+  tbody tr:last-child td{border-bottom:none;}
+  .letter-code{display:inline-block; font-family:var(--font-mono); font-size:0.8rem; color:var(--color-accent); background:var(--color-accent-soft); border-radius:5px; padding:2px 7px;}
+  .status-pill{display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:600; border-radius:100px; padding:3px 10px;}
+  .status-pill.done{color:var(--color-accent); background:var(--color-accent-soft);}
+  .status-pill.progress{color:#8A6D1F; background:#FBF3DC;}
+  .status-pill.late{color:var(--color-accent-alt); background:#FBEEE6;}
+
+  .tabs{margin:24px 0;}
+  .tab-list{display:flex; gap:4px; border-bottom:1px solid var(--color-border); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.92rem; font-weight:500; color:var(--color-text-muted);
+    background:none; border:none; padding:10px 4px; margin-right:24px; cursor:pointer;
+    border-bottom:2px solid transparent; transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-accent); border-bottom-color:var(--color-accent);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .tab-panel{padding-top:20px; display:none;}
+  .tab-panel.active{display:block;}
+  .tab-panel ul{margin:0 0 1.1em; padding-left:1.2em;}
+  .tab-panel li{margin-bottom:4px;}
+
+  .accordion-item{border-bottom:1px solid var(--color-border);}
+  .accordion-item:first-child{border-top:1px solid var(--color-border);}
+  .accordion-trigger{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-body); font-weight:600; font-size:0.98rem; color:var(--color-text);
+  }
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .plus{flex-shrink:0; width:18px; height:18px; position:relative;}
+  .accordion-trigger .plus::before, .accordion-trigger .plus::after{
+    content:""; position:absolute; background:var(--color-accent); border-radius:2px;
+  }
+  .accordion-trigger .plus::before{width:18px; height:2px; top:8px; left:0;}
+  .accordion-trigger .plus::after{width:2px; height:18px; top:0; left:8px; transition:transform 0.2s ease;}
+  .accordion-trigger[aria-expanded="true"] .plus::after{transform:rotate(90deg); opacity:0;}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height 0.25s ease;}
+  .accordion-body-inner{padding:0 4px 18px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0;}
+  .card{
+    border:1px solid var(--color-border); border-radius:10px; padding:20px;
+    background:var(--color-bg); transition:border-color 0.15s ease;
+  }
+  .card:hover{border-color:var(--color-accent);}
+  .card .icon{width:30px; height:30px; margin-bottom:12px; color:var(--color-accent);}
+  .card h3{font-size:1rem; margin-bottom:6px;}
+  .card p{font-size:0.9rem; color:var(--color-text-muted); margin:0;}
+  .card .example{margin-top:10px; font-family:var(--font-mono); font-size:0.78rem; color:var(--color-accent);}
+  .card .priority-tag{display:inline-block; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.03em; border-radius:100px; padding:3px 10px; margin-bottom:10px;}
+  .card .priority-tag.high{color:#fff; background:var(--color-accent-alt);}
+  .card .priority-tag.medium{color:#8A6D1F; background:#FBF3DC;}
+  .card .priority-tag.low{color:var(--color-accent); background:var(--color-accent-soft);}
+
+  .stepper{display:flex; gap:0; margin:32px 0; overflow-x:auto;}
+  .step{flex:1; min-width:150px; position:relative; padding:0 16px 0 0;}
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:15px; left:calc(100% - 8px); width:calc(100% - 8px);
+    height:1px; background:var(--color-border);
+  }
+  .step-index{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--color-accent); color:var(--color-accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:0.85rem;
+    background:var(--color-bg); position:relative; z-index:1; margin-bottom:12px;
+  }
+  .step h3{font-size:0.95rem; margin-bottom:4px;}
+  .step p{font-size:0.85rem; color:var(--color-text-muted);}
+  section.alt .step-index{background:var(--color-bg-alt);}
+
+  .formula{
+    max-width:720px; margin:24px 0; padding:16px 20px; border:1px solid var(--color-border);
+    border-radius:10px; background:var(--color-bg); font-family:var(--font-mono); font-size:0.95rem;
+    font-variant-numeric:tabular-nums; overflow-x:auto;
+  }
+  .formula .label{display:block; font-family:var(--font-body); font-size:0.78rem; color:var(--color-text-muted); margin-bottom:6px;}
+  .formula strong{color:var(--color-accent); font-weight:600;}
+
+  .diagram-wrap{margin:28px 0; border:1px solid var(--color-border); border-radius:12px; padding:24px; background:var(--color-bg-alt); overflow-x:auto;}
+  .diagram-wrap svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+  section.alt .diagram-wrap{background:var(--color-bg);}
+
+  .keypoints{padding:56px 0;}
+  .keypoints-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+  .kp-card{
+    background:var(--color-bg); border:1px solid var(--color-border); border-radius:10px; padding:18px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .kp-card .num{font-family:var(--font-mono); color:var(--color-accent); font-size:0.85rem; flex-shrink:0; padding-top:2px;}
+  .kp-card p{margin:0; font-size:0.92rem;}
+
+  .lesson-nav{border-top:1px solid var(--color-border); padding:40px 0;}
+  .lesson-nav-links{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .nav-card{
+    flex:1; min-width:220px; border:1px solid var(--color-border); border-radius:10px; padding:18px 20px;
+    text-decoration:none; color:var(--color-text); transition:border-color 0.15s ease;
+  }
+  .nav-card:hover{border-color:var(--color-accent);}
+  .nav-card:focus-visible{outline:2px solid var(--color-accent); outline-offset:2px;}
+  .nav-card .dir{font-size:0.78rem; color:var(--color-text-muted); margin-bottom:4px; display:block;}
+  .nav-card .dest{font-family:var(--font-display); font-weight:600; font-size:0.98rem;}
+  .nav-card.next{text-align:right;}
+  .back-to-module{display:block; text-align:center; margin-top:24px; font-size:0.9rem; color:var(--color-text-muted); text-decoration:none;}
+  .back-to-module:hover{color:var(--color-accent);}
+
+  footer{border-top:1px solid var(--color-border); padding:28px 0; color:var(--color-text-muted); font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  #back-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background:var(--color-accent); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(31,111,84,0.3);
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index:150;
+  }
+  #back-top.show{opacity:1; visibility:visible; transform:translateY(0);}
+  #back-top:focus-visible{outline:2px solid var(--color-accent); outline-offset:3px;}
+
+  @media (max-width:768px){
+    .sommaire ol{grid-template-columns:1fr;}
+    .lesson-nav-links{flex-direction:column;}
+    .nav-card.next{text-align:left;}
+    .stepper{flex-direction:column; gap:18px;}
+    .step{padding-right:0;}
+    .step:not(:last-child)::after{display:none;}
+    .hero{padding:44px 0 36px;}
+    section.lesson-section{padding:44px 0;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="7" x2="20" y2="7" stroke="#fff" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/><line x1="4" y1="17" x2="14" y2="17" stroke="#fff" stroke-width="2"/></svg>
+      </span>
+      Filière comptabilité
+    </div>
+    <nav class="toc-toggle" aria-label="Sommaire rapide">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">
+        Sommaire
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 6 — Comptabilité analytique</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau débutant</span>
+    </div>
+    <h1>Leçon 32 — Charges directes et indirectes</h1>
+    <p class="lede">Distinguer les charges qui se rattachent directement à un produit de celles qui sont partagées, choisir une clé de répartition adaptée et affecter chaque euro de charge au produit ou au service qui l'a réellement consommé.</p>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap">
+    <h2>Dans cette leçon</h2>
+    <ol id="sommaire-list"></ol>
+  </div>
+</nav>
+
+<main>
+
+<section class="lesson-section" id="s1" data-title="Pourquoi distinguer deux familles de charges" data-num="32.1">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">32.1</span><h2>Pourquoi distinguer deux familles de charges</h2></div>
+      <p>La comptabilité analytique cherche à savoir ce que coûte réellement chaque produit ou service, et non seulement ce que coûte l'entreprise dans son ensemble. Pour y parvenir, chaque charge de la période doit être rattachée à un objet de coût : un produit, un service, une commande ou une activité.</p>
+      <p>Toutes les charges ne se rattachent pas de la même façon. Une <strong>charge directe</strong> peut être attribuée à un seul produit sans calcul intermédiaire, grâce à une pièce justificative (bon de sortie de matières, feuille de temps, facture dédiée). Une <strong>charge indirecte</strong> concerne plusieurs produits à la fois : il faut d'abord la répartir avant de l'affecter.</p>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Deux chemins d'affectation : les charges directes sont affectées directement aux produits, les charges indirectes passent d'abord par une clé de répartition avant d'être affectées aux produits">
+        <defs>
+          <marker id="arrow32a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#1F6F54"></path>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif" font-size="12.5" fill="#0B0F0D">
+          <rect x="10" y="115" width="140" height="60" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="80" y="141" text-anchor="middle" font-weight="600">Charges</text>
+          <text x="80" y="158" text-anchor="middle" fill="#5A6560" font-size="11">de la période</text>
+
+          <line x1="150" y1="145" x2="196" y2="62" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow32a)"></line>
+          <line x1="150" y1="145" x2="196" y2="228" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow32a)"></line>
+
+          <rect x="200" y="32" width="150" height="56" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="275" y="56" text-anchor="middle" font-weight="600">Charges directes</text>
+          <text x="275" y="73" text-anchor="middle" fill="#5A6560" font-size="11">un seul produit</text>
+
+          <rect x="200" y="202" width="150" height="56" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="275" y="226" text-anchor="middle" font-weight="600" fill="#1F6F54">Charges indirectes</text>
+          <text x="275" y="243" text-anchor="middle" fill="#1F6F54" font-size="11">plusieurs produits</text>
+
+          <line x1="350" y1="60" x2="396" y2="60" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow32a)"></line>
+          <line x1="350" y1="230" x2="396" y2="230" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow32a)"></line>
+
+          <rect x="400" y="32" width="140" height="56" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="470" y="56" text-anchor="middle" font-weight="600">Affectation</text>
+          <text x="470" y="73" text-anchor="middle" fill="#5A6560" font-size="11">directe</text>
+
+          <rect x="400" y="202" width="140" height="56" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="470" y="226" text-anchor="middle" font-weight="600" fill="#1F6F54">Clé de</text>
+          <text x="470" y="243" text-anchor="middle" fill="#1F6F54" font-weight="600">répartition</text>
+
+          <line x1="540" y1="60" x2="576" y2="128" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow32a)"></line>
+          <line x1="540" y1="230" x2="576" y2="162" stroke="#1F6F54" stroke-width="1.5" marker-end="url(#arrow32a)"></line>
+
+          <rect x="580" y="105" width="130" height="80" rx="8" fill="#FFFFFF" stroke="#1F6F54" stroke-width="1.5"></rect>
+          <text x="645" y="139" text-anchor="middle" font-weight="600">Produits</text>
+          <text x="645" y="157" text-anchor="middle" fill="#5A6560" font-size="11">ou services</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>Le caractère direct ou indirect d'une charge ne dépend pas de sa nature comptable, mais de la possibilité de la rattacher à un objet de coût précis. Ce classement se décide donc produit par produit, pas une fois pour toutes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s2" data-title="Reconnaître une charge directe ou indirecte" data-num="32.2">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">32.2</span><h2>Reconnaître une charge directe ou indirecte</h2></div>
+      <p>Pour classer une charge, on se pose une seule question : « Puis-je prouver, sans calcul de partage, quelle part de cette charge a été consommée par ce produit ? » Si oui, elle est directe. Sinon, elle est indirecte.</p>
+    </div>
+
+    <div class="tabs reveal">
+      <div class="tab-list" role="tablist" aria-label="Charges directes et charges indirectes">
+        <button class="tab-btn" role="tab" id="tab-ch32-1" aria-controls="panel-ch32-1" aria-selected="true">Charges directes</button>
+        <button class="tab-btn" role="tab" id="tab-ch32-2" aria-controls="panel-ch32-2" aria-selected="false" tabindex="-1">Charges indirectes</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-ch32-1" role="tabpanel" aria-labelledby="tab-ch32-1" tabindex="0">
+        <div class="prose">
+          <p>Elles sont rattachées à un produit à partir d'un document de gestion : le coût est connu dès l'origine, sans clé de partage.</p>
+          <ul>
+            <li>Les matières premières consommées pour fabriquer une commande (bon de sortie de magasin).</li>
+            <li>La main-d'œuvre directe d'un ouvrier affecté à une seule ligne de fabrication (feuille de temps).</li>
+            <li>Une sous-traitance facturée pour un produit précis.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-ch32-2" role="tabpanel" aria-labelledby="tab-ch32-2" tabindex="0" hidden>
+        <div class="prose">
+          <p>Elles profitent à plusieurs produits en même temps et ne peuvent pas être attribuées à l'un d'eux sans convention de partage.</p>
+          <ul>
+            <li>Le loyer, le chauffage et l'assurance de l'atelier.</li>
+            <li>L'électricité consommée par des machines utilisées par tous les produits.</li>
+            <li>Le salaire du responsable de production, qui supervise plusieurs lignes.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Classement de quelques charges pour un produit donné (une chaise)</caption>
+        <thead>
+          <tr><th scope="col">Charge</th><th scope="col">Justificatif disponible</th><th scope="col" class="center">Classement</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bois utilisé pour les chaises</td>
+            <td>Bon de sortie de matières</td>
+            <td class="center"><span class="status-pill done">Directe</span></td>
+          </tr>
+          <tr>
+            <td>Salaire de l'ouvrier de la ligne « chaises »</td>
+            <td>Feuille de temps de la ligne</td>
+            <td class="center"><span class="status-pill done">Directe</span></td>
+          </tr>
+          <tr>
+            <td>Loyer de l'atelier</td>
+            <td>Facture unique pour tout le site</td>
+            <td class="center"><span class="status-pill progress">Indirecte</span></td>
+          </tr>
+          <tr>
+            <td>Électricité de l'atelier</td>
+            <td>Compteur commun aux deux lignes</td>
+            <td class="center"><span class="status-pill progress">Indirecte</span></td>
+          </tr>
+          <tr>
+            <td>Salaire du chef d'atelier</td>
+            <td>Aucune feuille de temps par produit</td>
+            <td class="center"><span class="status-pill progress">Indirecte</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Erreur fréquente</div>
+        <p>Une même charge peut changer de classe selon l'objet de coût. Le salaire d'un ouvrier est direct pour la ligne qu'il occupe à temps plein, mais devient indirect s'il travaille successivement sur plusieurs produits sans que son temps soit enregistré.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s3" data-title="Choisir une clé de répartition" data-num="32.3">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">32.3</span><h2>Choisir une clé de répartition</h2></div>
+      <p>Une <strong>clé de répartition</strong> est une grandeur mesurable qui traduit la consommation d'une charge indirecte par chaque produit. Le bon choix repose sur un lien de cause à effet : la clé doit varier dans le même sens que la charge à répartir.</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg>
+        <h3>Surface occupée</h3>
+        <p>Adaptée aux charges liées aux locaux : plus un produit occupe d'espace, plus il en supporte le coût.</p>
+        <div class="example">loyer, chauffage → m²</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
+        <h3>Heures machine</h3>
+        <p>Adaptée aux charges qui dépendent de l'usage des équipements.</p>
+        <div class="example">énergie, amortissement → h</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c2.9.3 5 2.6 5 5.8"/></svg>
+        <h3>Heures de main-d'œuvre</h3>
+        <p>Adaptée aux charges de personnel ou de suivi qui accompagnent le travail humain.</p>
+        <div class="example">supervision, formation → h</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <h3>Chiffre d'affaires</h3>
+        <p>Adaptée aux charges commerciales et de structure qui suivent l'activité de vente.</p>
+        <div class="example">frais commerciaux → €</div>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+        <h3>Matières consommées</h3>
+        <p>Adaptée aux charges de stockage et de manutention proportionnelles au volume de matières traitées.</p>
+        <div class="example">magasinage → € de matières</div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout warn">
+        <div class="callout-label">⚠️ Attention</div>
+        <p>Une clé choisie par facilité fausse les coûts. Répartir l'électricité des machines selon le chiffre d'affaires ferait supporter davantage de charges au produit le plus cher à la vente, même s'il utilise peu les machines.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s4" data-title="La démarche d'affectation, étape par étape" data-num="32.4">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">32.4</span><h2>La démarche d'affectation, étape par étape</h2></div>
+      <p>Que la charge soit simple ou complexe, l'affectation suit toujours le même enchaînement. Les charges directes sont traitées en premier, puis les charges indirectes sont réparties selon la clé retenue.</p>
+    </div>
+
+    <div class="stepper reveal" role="list">
+      <div class="step" role="listitem">
+        <div class="step-index">1</div>
+        <h3>Classer</h3>
+        <p>Trier chaque charge en directe ou indirecte pour chaque produit.</p>
+      </div>
+      <div class="step" role="listitem">
+        <div class="step-index">2</div>
+        <h3>Affecter le direct</h3>
+        <p>Imputer les charges directes au produit concerné, à partir des justificatifs.</p>
+      </div>
+      <div class="step" role="listitem">
+        <div class="step-index">3</div>
+        <h3>Choisir la clé</h3>
+        <p>Retenir la grandeur qui explique la consommation de la charge indirecte.</p>
+      </div>
+      <div class="step" role="listitem">
+        <div class="step-index">4</div>
+        <h3>Calculer</h3>
+        <p>Diviser la charge indirecte par le total de la clé pour obtenir un coefficient.</p>
+      </div>
+      <div class="step" role="listitem">
+        <div class="step-index">5</div>
+        <h3>Répartir et vérifier</h3>
+        <p>Multiplier par la clé de chaque produit et contrôler que le total est conservé.</p>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">💡 À retenir</div>
+        <p>La dernière étape est un contrôle simple mais indispensable : la somme des charges réparties doit être exactement égale à la charge indirecte de départ. Aucune charge ne doit apparaître ni disparaître.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="s5" data-title="Cas pratique chiffré : deux produits, une charge partagée" data-num="32.5">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">32.5</span><h2>Cas pratique chiffré : deux produits, une charge partagée</h2></div>
+      <p>Un atelier fabrique des chaises et des tables. Sur la période, les matières et la main-d'œuvre sont suivies produit par produit (charges directes). Le loyer et l'énergie de l'atelier, soit <span class="mono">18 000 €</span>, sont communs aux deux fabrications (charges indirectes). Les machines ont fonctionné <span class="mono">1 200 h</span> pour les chaises et <span class="mono">800 h</span> pour les tables : les heures machine servent de clé de répartition.</p>
+    </div>
+
+    <div class="formula reveal">
+      <span class="label">Coefficient de répartition</span>
+      18 000 € ÷ (1 200 h + 800 h) = <strong>9 € par heure machine</strong>
+    </div>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Répartition de 18 000 euros de charges indirectes : 10 800 euros pour les chaises (60 pour cent) et 7 200 euros pour les tables (40 pour cent), selon les heures machine">
+        <g font-family="Inter, sans-serif" font-size="12.5" fill="#0B0F0D">
+          <text x="20" y="28" font-weight="600">Charges indirectes de l'atelier : 18 000 €</text>
+          <rect x="20" y="44" width="360" height="52" rx="8" fill="#E7F2ED" stroke="#1F6F54"></rect>
+          <text x="38" y="66" font-weight="600" fill="#1F6F54">Chaises</text>
+          <text x="38" y="84" fill="#1F6F54" font-family="IBM Plex Mono, monospace" font-size="12">10 800 € · 60 %</text>
+          <rect x="380" y="44" width="240" height="52" rx="8" fill="#FFFFFF" stroke="#E3E8E5"></rect>
+          <text x="398" y="66" font-weight="600">Tables</text>
+          <text x="398" y="84" fill="#5A6560" font-family="IBM Plex Mono, monospace" font-size="12">7 200 € · 40 %</text>
+          <text x="20" y="128" fill="#5A6560" font-size="11.5">Clé de répartition : heures machine</text>
+          <text x="20" y="146" fill="#5A6560" font-family="IBM Plex Mono, monospace" font-size="11.5">1 200 h × 9 € = 10 800 €     800 h × 9 € = 7 200 €</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table>
+        <caption>Coût complet de la période par produit (en euros)</caption>
+        <thead>
+          <tr><th scope="col">Élément de coût</th><th scope="col" class="center">Nature</th><th scope="col" class="num">Chaises</th><th scope="col" class="num">Tables</th><th scope="col" class="num">Total</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Matières premières</td>
+            <td class="center"><span class="status-pill done">Directe</span></td>
+            <td class="num">20 000</td><td class="num">30 000</td><td class="num">50 000</td>
+          </tr>
+          <tr>
+            <td>Main-d'œuvre directe</td>
+            <td class="center"><span class="status-pill done">Directe</span></td>
+            <td class="num">15 000</td><td class="num">15 000</td><td class="num">30 000</td>
+          </tr>
+          <tr>
+            <td>Loyer et énergie de l'atelier</td>
+            <td class="center"><span class="status-pill progress">Indirecte</span></td>
+            <td class="num">10 800</td><td class="num">7 200</td><td class="num">18 000</td>
+          </tr>
+          <tr class="total">
+            <td>Coût total</td>
+            <td></td>
+            <td class="num">45 800</td><td class="num">52 200</td><td class="num">98 000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose reveal">
+      <div class="callout">
+        <div class="callout-label">🧪 Exercice pratique</div>
+        <p>Reprenez le cas avec des heures machine identiques pour les deux produits : 1 000 h pour les chaises et 1 000 h pour les tables. Quel serait le nouveau coefficient et quelle part de charges indirectes supporterait chaque produit ?</p>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Voir la correction
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Le total des heures reste de 2 000 h, donc le coefficient est inchangé : <span class="mono">18 000 ÷ 2 000 = 9 € par heure</span>. Chaque produit supporte alors <span class="mono">1 000 × 9 = 9 000 €</span> de charges indirectes. La somme reste égale à <span class="mono">18 000 €</span>, ce qui valide le contrôle.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section alt" id="s6" data-title="Questions fréquentes" data-num="32.6">
+  <div class="wrap">
+    <div class="prose reveal">
+      <div class="section-head"><span class="num">32.6</span><h2>Questions fréquentes</h2></div>
+      <p>Quelques interrogations reviennent systématiquement lorsqu'on applique la méthode pour la première fois.</p>
+    </div>
+
+    <div class="prose reveal">
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Pourquoi ne pas tout traiter comme des charges directes ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Parce que le suivi précis de chaque charge par produit aurait un coût de gestion supérieur à son intérêt. Certaines charges, comme le loyer, sont par nature communes : les rattacher artificiellement à un produit serait moins fiable qu'une répartition assumée par une clé.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Comment savoir si une clé de répartition est la bonne ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Testez le lien de cause à effet : si le volume de la clé doublait pour un produit, la charge consommée doublerait-elle aussi ? Si la réponse est non, la clé n'explique pas la charge et une autre grandeur doit être recherchée.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Peut-on utiliser plusieurs clés pour une même entreprise ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Oui, et c'est même recommandé : chaque famille de charges indirectes (locaux, énergie, encadrement, frais commerciaux) a sa propre clé. Une clé unique appliquée à toutes les charges est la principale source de coûts déformés.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          Que faire si une clé change d'une période à l'autre ?
+          <span class="plus"></span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Recalculez le coefficient à chaque période avec les données réelles. Si vous changez la nature de la clé elle-même, documentez le changement, car il rend les coûts moins comparables d'une période à l'autre.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="keypoints" id="s7" data-title="Points clés à retenir" data-num="32.7">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="num">32.7</span><h2>Points clés à retenir</h2></div>
+    <div class="keypoints-grid reveal">
+      <div class="kp-card"><span class="num">01</span><p>Une charge directe se rattache à un seul produit grâce à un justificatif ; une charge indirecte concerne plusieurs produits et doit être répartie.</p></div>
+      <div class="kp-card"><span class="num">02</span><p>Le classement se décide pour chaque objet de coût : une même charge peut être directe pour un produit et indirecte pour un autre.</p></div>
+      <div class="kp-card"><span class="num">03</span><p>Une bonne clé de répartition repose sur un lien de cause à effet avec la charge : surface, heures machine, heures de main-d'œuvre, chiffre d'affaires.</p></div>
+      <div class="kp-card"><span class="num">04</span><p>Le coefficient s'obtient en divisant la charge indirecte par le total de la clé, puis en multipliant par la clé de chaque produit.</p></div>
+      <div class="kp-card"><span class="num">05</span><p>Le total réparti doit toujours être égal à la charge indirecte de départ : c'est le contrôle final de toute affectation.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap">
+    <div class="lesson-nav-links">
+      <a class="nav-card prev" href="#">
+        <span class="dir">Leçon précédente · Module 6</span>
+        <span class="dest">Introduction à la comptabilité analytique</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Leçon suivante · Module 6</span>
+        <span class="dest">Coût d'achat et coût de production</span>
+      </a>
+    </div>
+    <a class="back-to-module" href="#">↑ Retour au sommaire du Module 6</a>
+  </div>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <span>Filière Comptabilité — Module 6</span>
+    <span>Leçon 32 — Comptabilité analytique</span>
+  </div>
+</footer>
+
+<button id="back-top" aria-label="Retour en haut de page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  var backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', function(){
+    if((window.scrollY||document.documentElement.scrollTop) > 600){ backTop.classList.add('show'); }
+    else{ backTop.classList.remove('show'); }
+  }, { passive:true });
+  backTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var sommaireList = document.getElementById('sommaire-list');
+  var tocPanel = document.getElementById('toc-panel');
+
+  sections.forEach(function(sec){
+    var num = sec.getAttribute('data-num');
+    var title = sec.getAttribute('data-title');
+    var id = sec.getAttribute('id');
+
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    li.appendChild(a);
+    sommaireList.appendChild(li);
+
+    var tocA = document.createElement('a');
+    tocA.href = '#' + id;
+    tocA.innerHTML = '<span class="num">' + num + '</span><span>' + title + '</span>';
+    tocPanel.appendChild(tocA);
+  });
+
+  var tocBtn = document.getElementById('toc-btn');
+  function closeToc(){
+    tocPanel.classList.remove('open');
+    tocBtn.setAttribute('aria-expanded','false');
+  }
+  tocBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = tocPanel.classList.toggle('open');
+    tocBtn.setAttribute('aria-expanded', isOpen ? 'true':'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!tocPanel.contains(e.target) && !tocBtn.contains(e.target)){ closeToc(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeToc(); }
+  });
+  tocPanel.addEventListener('click', function(){ closeToc(); });
+
+  document.querySelectorAll('.tabs').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-btn'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('.tab-panel'));
+
+    function selectTab(tab){
+      tabs.forEach(function(t){
+        var selected = (t === tab);
+        t.setAttribute('aria-selected', selected ? 'true':'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.id === tab.getAttribute('aria-controls');
+        p.classList.toggle('active', match);
+        if(match){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ selectTab(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){ tabs[newIdx].focus(); selectTab(tabs[newIdx]); e.preventDefault(); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger){
+    var body = trigger.nextElementSibling;
+    trigger.addEventListener('click', function(){
+      var expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', expanded ? 'false':'true');
+      if(expanded){
+        body.style.maxHeight = null;
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

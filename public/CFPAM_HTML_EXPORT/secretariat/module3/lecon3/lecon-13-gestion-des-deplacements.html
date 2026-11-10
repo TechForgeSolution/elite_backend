@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 13 — Gestion des déplacements | Secrétariat</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%232E4374'/%3E%3Cpath d='M20 55h60M30 55l12-28h16l12 28M27 68h46' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#fff;--color-bg-alt:#F7F7F9;--color-text:#101216;--color-text-muted:#5C6270;--color-accent:#2E4374;--color-accent-soft:#E8EBF3;--color-border:#E4E5EA;--color-accent-alt:#A6432B;--font-display:'Space Grotesk',sans-serif;--font-body:'Inter',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+body{margin:0;font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-.01em;margin:0 0 .5em}h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:700;line-height:1.1}h2{font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.25}h3{font-size:1.15rem;line-height:1.35}p{margin:0 0 1.1em}a{color:var(--color-accent)}.mono{font-family:var(--font-mono)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}.prose{max-width:720px}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--color-accent);z-index:200;transition:width .1s linear}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-border)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:auto}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:600;font-size:1rem}.brand-mark{width:26px;height:26px;border-radius:6px;background:var(--color-accent);display:flex;align-items:center;justify-content:center}.brand-mark svg{width:15px;height:15px}
+.toc-toggle{position:relative}.toc-btn{font:500 .9rem var(--font-body);background:var(--color-accent-soft);color:var(--color-accent);border:0;border-radius:8px;padding:8px 16px;cursor:pointer;display:flex;align-items:center;gap:6px}.toc-btn:hover{background:#d9dff0}.toc-panel{position:absolute;right:0;top:calc(100% + 10px);background:#fff;border:1px solid var(--color-border);border-radius:10px;box-shadow:0 12px 28px rgba(16,18,22,.1);padding:10px;width:330px;max-height:70vh;overflow:auto;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.15s}.toc-panel.open{opacity:1;visibility:visible;transform:translateY(0)}.toc-panel a{display:flex;gap:10px;padding:8px 10px;border-radius:6px;color:var(--color-text);text-decoration:none;font-size:.9rem}.toc-panel a:hover{background:var(--color-bg-alt)}.toc-panel .num{color:var(--color-accent);font-family:var(--font-mono);font-size:.82rem}
+.hero{padding:64px 0 48px;background-image:repeating-linear-gradient(to bottom,transparent,transparent 37px,var(--color-border) 38px);border-bottom:1px solid var(--color-border)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}.badge{font-size:.8rem;font-weight:500;color:var(--color-accent);background:var(--color-accent-soft);border-radius:100px;padding:5px 13px}.badge.muted{color:var(--color-text-muted);background:var(--color-bg-alt);border:1px solid var(--color-border)}.hero h1{max-width:820px}.hero .lede{font-size:1.1rem;color:var(--color-text-muted);max-width:700px;margin-top:14px}
+.objectives{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;margin-top:28px}.objective-list{margin:0;padding:0;list-style:none}.objective-list li{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--color-border);font-size:.92rem}.objective-list .n{font:500 .78rem var(--font-mono);color:var(--color-accent);min-width:24px}
+.sommaire{padding:44px 0;border-bottom:1px solid var(--color-border)}.sommaire h2{font:600 1rem var(--font-body);color:var(--color-text-muted);margin-bottom:18px}.sommaire ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:4px 32px}.sommaire li a{display:flex;gap:14px;align-items:baseline;text-decoration:none;color:var(--color-text);padding:10px 4px;border-bottom:1px solid var(--color-border)}.sommaire li a:hover{color:var(--color-accent)}.sommaire .num{font:.85rem var(--font-mono);color:var(--color-text-muted);width:2.4em;flex-shrink:0}
+.lesson-section{padding:56px 0}.lesson-section.alt{background:var(--color-bg-alt)}.section-head{display:flex;gap:16px;align-items:baseline;margin-bottom:20px}.section-head .num{font:1rem var(--font-mono);color:var(--color-accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+.callout{border-left:3px solid var(--color-accent);background:var(--color-accent-soft);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0;max-width:720px}.callout.warn{border-left-color:var(--color-accent-alt);background:#f8eeeb}.callout.norm{border-left-color:var(--color-accent);background:#eef0f6}.callout-label{font-weight:600;font-size:.92rem;margin-bottom:6px}.callout p:last-child{margin-bottom:0}.callout p,.callout li{font-size:.95rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}.card{border:1px solid var(--color-border);border-radius:10px;padding:20px;background:#fff;transition:border-color .15s}.card:hover{border-color:var(--color-accent)}.card .icon{width:30px;height:30px;margin-bottom:12px;color:var(--color-accent)}.card h3{font-size:1rem;margin-bottom:6px}.card p{font-size:.9rem;color:var(--color-text-muted);margin:0}
+.diagram-wrap{margin:28px 0;border:1px solid var(--color-border);border-radius:12px;padding:24px;background:var(--color-bg-alt);overflow-x:auto}.diagram-wrap svg{display:block;margin:auto;max-width:100%;height:auto}
+.stepper{display:flex;margin:32px 0;overflow-x:auto}.step{flex:1;min-width:150px;position:relative;padding:0 16px 0 0}.step:not(:last-child)::after{content:"";position:absolute;top:15px;left:calc(100% - 8px);width:calc(100% - 8px);height:1px;background:var(--color-border)}.step-index{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--color-accent);color:var(--color-accent);display:flex;align-items:center;justify-content:center;font:.85rem var(--font-mono);background:#fff;position:relative;z-index:1;margin-bottom:12px}.step h3{font-size:.95rem;margin-bottom:4px}.step p{font-size:.85rem;color:var(--color-text-muted)}
+.table-scroll{overflow-x:auto;margin:20px 0;border:1px solid var(--color-border);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:760px;font-size:.92rem}caption{text-align:left;font:600 .95rem var(--font-display);padding:14px 16px;background:var(--color-bg-alt);border-bottom:1px solid var(--color-border)}th,td{padding:10px 16px;text-align:left;border-bottom:1px solid var(--color-border);vertical-align:top}thead th{background:var(--color-bg-alt);font-size:.82rem;color:var(--color-text-muted)}tbody tr:hover{background:var(--color-bg-alt)}tbody tr:last-child td{border-bottom:0}
+.bad{color:var(--color-accent-alt);font-weight:600}.good{color:var(--color-accent);font-weight:600}
+.tabs{margin:28px 0;border:1px solid var(--color-border);border-radius:12px;overflow:hidden;background:#fff}.tab-buttons{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--color-border);background:var(--color-bg-alt)}.tab-btn{flex:1 1 auto;min-width:130px;border:0;background:transparent;padding:13px 14px;font:600 .88rem var(--font-body);color:var(--color-text-muted);cursor:pointer;border-bottom:2px solid transparent}.tab-btn.active{background:#fff;color:var(--color-accent);box-shadow:inset 0 -2px 0 var(--color-accent)}.tab-panel{display:none;padding:22px}.tab-panel.active{display:block}.tab-panel h3{font-size:1rem}
+.accordion{border:1px solid var(--color-border);border-radius:12px;overflow:hidden;background:#fff;margin:24px 0}.accordion-item{border-bottom:1px solid var(--color-border)}.accordion-item:last-child{border-bottom:0}.accordion-item>summary{cursor:pointer;list-style:none;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px;font:600 .95rem var(--font-body);color:var(--color-text)}.accordion-item>summary::-webkit-details-marker{display:none}.accordion-item>summary .plus{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-accent);color:var(--color-accent);display:flex;align-items:center;justify-content:center;font-size:1rem;line-height:1}.accordion-item[open]>summary .plus::before{content:"–"}.accordion-item:not([open])>summary .plus::before{content:"+"}.accordion-body{padding:0 20px 20px;font-size:.92rem;color:var(--color-text-muted)}.accordion-body p:last-child{margin-bottom:0}
+.keypoints{padding:56px 0}.keypoints-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.kp-card{border:1px solid var(--color-border);border-radius:10px;padding:18px;display:flex;gap:12px;align-items:flex-start}.kp-card .num{font:.85rem var(--font-mono);color:var(--color-accent)}.kp-card p{margin:0;font-size:.92rem}
+.cta-final{padding:56px 0;border-top:1px solid var(--color-border);background:var(--color-accent-soft)}.cta-final .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px}.cta-final p{margin:0;color:var(--color-text-muted);max-width:560px}.cta-btn{display:inline-flex;align-items:center;gap:10px;color:#fff;background:var(--color-accent);border:0;border-radius:10px;padding:16px 26px;font-weight:600;text-decoration:none;box-shadow:0 8px 20px rgba(46,67,116,.25)}
+.lesson-nav{border-top:1px solid var(--color-border);padding:40px 0}.lesson-nav-links{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.nav-card{flex:1;min-width:220px;border:1px solid var(--color-border);border-radius:10px;padding:18px 20px;text-decoration:none;color:var(--color-text)}.nav-card:hover{border-color:var(--color-accent)}.nav-card .dir{font-size:.78rem;color:var(--color-text-muted);display:block;margin-bottom:4px}.nav-card .dest{font:600 .98rem var(--font-display)}.nav-card.next{text-align:right}
+.back-to-module{display:block;text-align:center;margin-top:24px;font-size:.9rem;color:var(--color-text-muted);text-decoration:none}footer{border-top:1px solid var(--color-border);padding:28px 0;color:var(--color-text-muted);font-size:.85rem}footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+#back-top{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--color-accent);color:#fff;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(46,67,116,.3);opacity:0;visibility:hidden;transform:translateY(10px);transition:.2s;z-index:150}#back-top.show{opacity:1;visibility:visible;transform:none}
+.budget-total{font:600 1rem var(--font-mono);color:var(--color-accent)}.mini-list{padding-left:20px}.mini-list li{margin:5px 0}
+@media(max-width:768px){.sommaire ol{grid-template-columns:1fr}.lesson-nav-links{flex-direction:column}.nav-card.next{text-align:left}.stepper{flex-direction:column}.step:not(:last-child)::after{display:none}.cta-final .wrap{flex-direction:column;align-items:flex-start}.objectives{grid-template-columns:1fr}.wrap{padding:0 18px}.hero{padding-top:44px}.tab-btn{text-align:left;min-width:100%}.toc-panel{width:min(330px,calc(100vw - 36px))}}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5z" stroke="#fff" stroke-width="1.6"/><path d="M4 9h16M8 4v5M16 4v5" stroke="#fff" stroke-width="1.4"/><path d="M8 13h3M13 13h3M8 17h3M13 17h3" stroke="#fff" stroke-width="1.3"/></svg></span>Filière secrétariat</div>
+    <nav class="toc-toggle">
+      <button class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-panel">Sommaire <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1L5 5 9 1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
+      <div class="toc-panel" id="toc-panel"></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Module 3 — Assistante de Direction : agenda, accueil et déplacements</span>
+      <span class="badge muted">15 min de lecture</span>
+      <span class="badge muted">Niveau BAC</span>
+    </div>
+    <h1>Gestion des déplacements</h1>
+    <p class="lede">Leçon 13 — préparer, organiser et suivre un déplacement professionnel de façon fiable : formalités, réservations, carnet de voyage, budget, imprévus et suivi après-mission.</p>
+    <div class="objectives">
+      <div class="prose">
+        <h2>Objectifs pédagogiques</h2>
+        <p>À la fin de cette leçon, l'apprenant doit être capable d'organiser un déplacement professionnel de A à Z, en respectant les procédures de l'entreprise et les contraintes de budget, de temps et de sécurité.</p>
+      </div>
+      <ol class="objective-list">
+        <li><span class="n">01</span><span>Établir les formalités administratives d'un déplacement : ordre de mission, assurances, pièces d'identité, passeport et visas.</span></li>
+        <li><span class="n">02</span><span>Réserver les transports et hébergements en élaborant un carnet de voyage clair et optimisé.</span></li>
+        <li><span class="n">03</span><span>Établir le budget prévisionnel de mission et gérer les notes de frais au retour.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<nav class="sommaire" aria-label="Sommaire de la leçon">
+  <div class="wrap"><h2>Dans cette leçon</h2><ol id="sommaire-list"></ol></div>
+</nav>
+
+<main>
+<section class="lesson-section" id="s1" data-title="Phase préparatoire et formalités" data-num="13.1">
+<div class="wrap">
+<div class="prose reveal">
+  <div class="section-head"><span class="num">13.1</span><h2>La phase préparatoire et les formalités d'ordre de mission</h2></div>
+  <p>Un déplacement professionnel commence par le recueil précis du besoin. L'assistante doit connaître la destination, les dates, l'objectif de la mission, les personnes concernées, les contraintes horaires et les règles prévues par la politique voyage de l'entreprise.</p>
+</div>
+
+<div class="card-grid reveal">
+  <div class="card"><h3>📋 Recueillir les besoins</h3><p>Destination, dates, horaires, motif, participants, lieux de rendez-vous, contraintes particulières et niveau de flexibilité.</p></div>
+  <div class="card"><h3>📌 Travel Policy</h3><p>Vérifier les plafonds, les catégories de transport autorisées, les conditions d'hébergement et les procédures de validation.</p></div>
+  <div class="card"><h3>🪪 Documents</h3><p>Contrôler pièce d'identité, passeport, visa éventuel, assurance et formalités sanitaires applicables au déplacement.</p></div>
+</div>
+
+<div class="callout reveal">
+  <div class="callout-label">📌 Conformité d'entreprise</div>
+  <p>Respecter la charte des voyages (<strong>Travel Policy</strong>) et les plafonds de dépenses autorisés. Une réservation pratique n'est pas nécessairement une réservation conforme.</p>
+</div>
+
+<div class="stepper reveal" aria-label="Les 5 étapes de constitution d'un dossier de déplacement">
+  <div class="step"><div class="step-index">1</div><h3>Besoin</h3><p>Recueillir destination, dates, objectif et contraintes.</p></div>
+  <div class="step"><div class="step-index">2</div><h3>Validation</h3><p>Faire valider la mission selon la procédure interne.</p></div>
+  <div class="step"><div class="step-index">3</div><h3>Formalités</h3><p>Contrôler identité, visa, assurance et documents.</p></div>
+  <div class="step"><div class="step-index">4</div><h3>Réservations</h3><p>Organiser transport, hôtel et autres prestations.</p></div>
+  <div class="step"><div class="step-index">5</div><h3>Dossier final</h3><p>Assembler le carnet de voyage et les contacts utiles.</p></div>
+</div>
+
+<div class="callout warn reveal">
+  <div class="callout-label">⚠️ Alerte Validité</div>
+  <p>Vérifier que le <strong>passeport est valide au moins 6 mois après la date de retour prévue</strong>, lorsque cette exigence s'applique à la destination.</p>
+</div>
+
+<div class="callout reveal">
+  <div class="callout-label">💡 À retenir</div>
+  <p>Toujours doubler les documents de voyage : <strong>version numérique sur smartphone + version papier dans la pochette</strong>.</p>
+</div>
+</div></section>
+
+<section class="lesson-section alt" id="s2" data-title="Réservation des prestations logistiques" data-num="13.2">
+<div class="wrap">
+<div class="prose reveal">
+  <div class="section-head"><span class="num">13.2</span><h2>La réservation des prestations logistiques</h2></div>
+  <p>Une bonne réservation recherche le meilleur équilibre entre coût, durée, confort, proximité et conformité à la politique voyage. Les références de réservation doivent être conservées dans un dossier unique et facilement consultable.</p>
+</div>
+
+<div class="tabs reveal" id="travel-tabs">
+  <div class="tab-buttons" role="tablist">
+    <button class="tab-btn active" data-tab="national" role="tab" aria-selected="true">Déplacement national</button>
+    <button class="tab-btn" data-tab="international" role="tab" aria-selected="false">Mission internationale</button>
+  </div>
+  <div class="tab-panel active" id="tab-national" role="tabpanel">
+    <h3>Train / Voiture de fonction / Hôtel standard</h3>
+    <p>Comparer les horaires et tarifs, privilégier un itinéraire cohérent avec les rendez-vous et choisir un hébergement conforme aux plafonds de l'entreprise.</p>
+    <ul class="mini-list">
+      <li>Train : vérifier heure de départ, arrivée, classe et conditions d'échange.</li>
+      <li>Voiture : contrôler disponibilité, carburant, péages et conditions d'utilisation.</li>
+      <li>Hôtel : privilégier la proximité des lieux de rendez-vous et un tarif conforme.</li>
+    </ul>
+  </div>
+  <div class="tab-panel" id="tab-international" role="tabpanel">
+    <h3>Avion / Visa / Passeport / Devises / Assurance / Fuseaux horaires</h3>
+    <p>Une mission internationale exige une vérification documentaire plus complète et une anticipation des contraintes liées au pays de destination.</p>
+    <ul class="mini-list">
+      <li>Avion : contrôler horaires, escales, numéro de vol et conditions tarifaires.</li>
+      <li>Formalités : vérifier passeport, visa éventuel et assurance.</li>
+      <li>Organisation : anticiper devise, fuseau horaire et contacts locaux.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card-grid reveal">
+  <div class="card"><h3>🚆 Comparer</h3><p>Comparer plusieurs options selon le prix total, le temps de trajet, les horaires et les conditions d'annulation.</p></div>
+  <div class="card"><h3>🏨 Héberger</h3><p>Choisir un hôtel adapté aux rendez-vous : localisation, tarif, conditions de réservation et coordonnées.</p></div>
+  <div class="card"><h3>🚗 Déplacer</h3><p>Pour une location, vérifier catégorie, assurance, conducteur, durée, lieu de retrait et restitution.</p></div>
+  <div class="card"><h3>⭐ Fidélité</h3><p>Utiliser les cartes de fidélité ou comptes société conformément aux règles de l'entreprise et à l'intérêt professionnel.</p></div>
+</div>
+
+<div class="callout reveal">
+  <div class="callout-label">🧮 Réflexe budget</div>
+  <p>Comparer le <strong>coût global</strong>, et pas seulement le prix affiché : transport, bagages, transferts, taxes, petit-déjeuner, parking, péages ou frais de modification peuvent modifier le budget final.</p>
+</div>
+</div></section>
+
+<section class="lesson-section" id="s3" data-title="Carnet de voyage et dossier de mission" data-num="13.3">
+<div class="wrap">
+<div class="prose reveal">
+  <div class="section-head"><span class="num">13.3</span><h2>La réalisation du carnet de voyage et du dossier de mission</h2></div>
+  <p>Le carnet de voyage est la synthèse opérationnelle du déplacement. Il doit permettre au responsable de savoir <strong>où aller, quand, comment, avec qui et avec quels documents</strong>, sans devoir rechercher plusieurs confirmations séparées.</p>
+</div>
+
+<div class="diagram-wrap reveal">
+<svg viewBox="0 0 980 310" role="img" aria-label="Chronologie globale d'une mission de déplacement">
+<defs><marker id="arrowMission" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2E4374"/></marker></defs>
+<path d="M115 145H865" stroke="#E4E5EA" stroke-width="3" marker-end="url(#arrowMission)"/>
+<g font-family="Inter, sans-serif">
+<g><circle cx="180" cy="145" r="58" fill="#E8EBF3" stroke="#2E4374" stroke-width="1.6"/><text x="180" y="137" text-anchor="middle" font-size="12" font-weight="600" fill="#2E4374">AVANT</text><text x="180" y="157" text-anchor="middle" font-size="9.5" fill="#5C6270">Préparer</text></g>
+<g><circle cx="490" cy="145" r="58" fill="#fff" stroke="#2E4374" stroke-width="1.6"/><text x="490" y="137" text-anchor="middle" font-size="12" font-weight="600" fill="#2E4374">PENDANT</text><text x="490" y="157" text-anchor="middle" font-size="9.5" fill="#5C6270">Suivre</text></g>
+<g><circle cx="800" cy="145" r="58" fill="#E8EBF3" stroke="#2E4374" stroke-width="1.6"/><text x="800" y="137" text-anchor="middle" font-size="12" font-weight="600" fill="#2E4374">APRÈS</text><text x="800" y="157" text-anchor="middle" font-size="9.5" fill="#5C6270">Clôturer</text></g>
+<text x="180" y="235" text-anchor="middle" font-size="10.5" fill="#5C6270">Ordre de mission</text><text x="180" y="253" text-anchor="middle" font-size="10.5" fill="#5C6270">Réservations • carnet de voyage</text>
+<text x="490" y="235" text-anchor="middle" font-size="10.5" fill="#5C6270">Suivi à distance</text><text x="490" y="253" text-anchor="middle" font-size="10.5" fill="#5C6270">Contacts d'urgence</text>
+<text x="800" y="235" text-anchor="middle" font-size="10.5" fill="#5C6270">Note de frais • bilan</text><text x="800" y="253" text-anchor="middle" font-size="10.5" fill="#5C6270">Classement du dossier</text>
+</g>
+</svg>
+</div>
+
+<div class="table-scroll reveal">
+<table>
+<caption>Modèle complet de Carnet de Voyage / Feuille de Route de Mission</caption>
+<thead><tr><th>Date</th><th>Étape</th><th>Transport / Vol</th><th>Réservation</th><th>Hébergement</th><th>RDV / Adresse</th><th>Contact local</th></tr></thead>
+<tbody>
+<tr><td class="mono">J1 — 08:00</td><td>Départ</td><td class="mono">TRAIN 1234</td><td class="mono">DOSS-TR-4582</td><td>—</td><td>Gare de départ</td><td class="mono">+237 6XX XX XX XX</td></tr>
+<tr><td class="mono">J1 — 12:30</td><td>Arrivée / transfert</td><td>Taxi / véhicule</td><td class="mono">TRANS-204</td><td>Hôtel Central</td><td>15 rue Exemple</td><td class="mono">+33 6 XX XX XX XX</td></tr>
+<tr><td class="mono">J1 — 15:00</td><td>Réunion</td><td>—</td><td>—</td><td>Hôtel Central</td><td>20 avenue Exemple</td><td>Responsable local</td></tr>
+<tr><td class="mono">J2 — 09:00</td><td>Réunion</td><td>—</td><td>—</td><td>Hôtel Central</td><td>8 boulevard Exemple</td><td>Accueil site</td></tr>
+<tr><td class="mono">J2 — 18:00</td><td>Retour</td><td class="mono">VOL AF 123</td><td class="mono">PNR-AF-73K9</td><td>—</td><td>Aéroport</td><td class="mono">Contact urgence</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card-grid reveal">
+  <div class="card"><h3>📁 Pochette de voyage</h3><p>Ordre de mission, billets, confirmations, pièce d'identité, assurance, coordonnées et documents nécessaires.</p></div>
+  <div class="card"><h3>🗺️ Fiches d'accès</h3><p>Adresses des réunions, horaires, moyens d'accès, temps de trajet estimé et informations utiles.</p></div>
+  <div class="card"><h3>☎️ Urgences</h3><p>Contacts de l'entreprise, hôtel, transporteur, assistance et interlocuteurs locaux.</p></div>
+</div>
+
+<div class="callout reveal">
+  <div class="callout-label">💡 Bonne pratique</div>
+  <p>Le carnet de voyage doit être lisible <strong>sur smartphone comme sur papier</strong>. Utiliser des références courtes et le monospace pour les numéros de réservation, vols et horaires.</p>
+</div>
+</div></section>
+
+<section class="lesson-section alt" id="s4" data-title="Budget, suivi et après-mission" data-num="13.4">
+<div class="wrap">
+<div class="prose reveal">
+  <div class="section-head"><span class="num">13.4</span><h2>La gestion du budget, le suivi à distance et l'après-mission</h2></div>
+  <p>Le suivi financier commence avant le départ avec le budget prévisionnel et se termine après la mission avec la collecte des justificatifs, la note de frais et le classement des documents.</p>
+</div>
+
+<div class="table-scroll reveal">
+<table>
+<caption>Exemple de budget prévisionnel de mission</caption>
+<thead><tr><th>Poste</th><th>Quantité</th><th>Coût unitaire</th><th>Total</th><th>Contrôle</th></tr></thead>
+<tbody>
+<tr><td>Transport aller-retour</td><td class="mono">2</td><td class="mono">150 €</td><td class="mono">300 €</td><td>Conforme au plafond</td></tr>
+<tr><td>Hébergement</td><td class="mono">2 nuits</td><td class="mono">90 €</td><td class="mono">180 €</td><td>Tarif standard</td></tr>
+<tr><td>Transferts locaux</td><td class="mono">4</td><td class="mono">20 €</td><td class="mono">80 €</td><td>Estimation</td></tr>
+<tr><td>Repas</td><td class="mono">4</td><td class="mono">25 €</td><td class="mono">100 €</td><td>Plafond repas</td></tr>
+<tr><td>Imprévus</td><td class="mono">1</td><td class="mono">50 €</td><td class="mono">50 €</td><td>Réserve</td></tr>
+<tr><td><strong>Total prévisionnel</strong></td><td></td><td></td><td class="budget-total">710 €</td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card-grid reveal">
+  <div class="card"><h3>💶 Avant le départ</h3><p>Établir le budget, demander une avance sur frais si nécessaire et vérifier les modalités de paiement.</p></div>
+  <div class="card"><h3>📱 Pendant la mission</h3><p>Suivre les horaires, les éventuels changements et rester joignable via les contacts prévus.</p></div>
+  <div class="card"><h3>🧾 Au retour</h3><p>Collecter les justificatifs, rapprocher les dépenses du budget et préparer la note de frais.</p></div>
+  <div class="card"><h3>📚 Classer</h3><p>Archiver l'ordre de mission, les justificatifs, la note de frais et le compte rendu selon les règles internes.</p></div>
+</div>
+
+<div class="accordion reveal">
+  <details class="accordion-item" open><summary><span>🚆 Retard ou annulation de train</span><span class="plus"></span></summary><div class="accordion-body"><p>Vérifier immédiatement les solutions proposées par le transporteur, conserver la preuve du retard ou de l'annulation et réorganiser les rendez-vous concernés. Informer le responsable et les interlocuteurs impactés.</p></div></details>
+  <details class="accordion-item"><summary><span>✈️ Retard ou annulation de vol</span><span class="plus"></span></summary><div class="accordion-body"><p>Consulter les possibilités de réacheminement, vérifier les conséquences sur l'hôtel et les rendez-vous, puis communiquer le nouvel itinéraire aux personnes concernées. Conserver les confirmations et justificatifs.</p></div></details>
+  <details class="accordion-item"><summary><span>🧳 Perte de bagages</span><span class="plus"></span></summary><div class="accordion-body"><p>Déclarer la perte auprès du service compétent, conserver le numéro de dossier, informer l'entreprise et vérifier les dispositions prévues par l'assurance ou le transporteur.</p></div></details>
+  <details class="accordion-item"><summary><span>🏨 Problème de réservation d'hôtel</span><span class="plus"></span></summary><div class="accordion-body"><p>Présenter la référence de réservation, demander une solution équivalente et conserver toute preuve. Si nécessaire, contacter l'agence ou le service voyage de l'entreprise.</p></div></details>
+  <details class="accordion-item"><summary><span>🩺 Urgence de santé sur place</span><span class="plus"></span></summary><div class="accordion-body"><p>Priorité à la sécurité de la personne : contacter les services d'urgence locaux et l'assistance prévue. Informer ensuite les interlocuteurs de l'entreprise selon la procédure et conserver les documents utiles.</p></div></details>
+</div>
+
+<div class="callout norm reveal">
+  <div class="callout-label">📌 Après-mission</div>
+  <p>La mission n'est pas terminée au retour : vérifier les justificatifs, établir la note de frais, récupérer les éventuelles pièces manquantes, produire le compte rendu demandé et classer le dossier.</p>
+</div>
+</div></section>
+
+<section class="lesson-section" id="s5" data-title="Cas pratique — 2 jours à Paris pour deux responsables" data-num="13.5">
+<div class="wrap">
+<div class="prose reveal">
+  <div class="section-head"><span class="num">13.5</span><h2>🧮 Cas pratique — 2 jours à Paris pour deux responsables</h2></div>
+  <p>Vous êtes assistante de direction. Deux responsables doivent effectuer une mission de <strong>2 jours à Paris</strong> avec un budget contraint. Vous devez construire un dossier logistique complet : transports, hôtel, budget prévisionnel, feuille de route et gestion des imprévus.</p>
+</div>
+
+<div class="table-scroll reveal">
+<table>
+<caption>Proposition de dossier logistique</caption>
+<thead><tr><th>Élément</th><th>Choix retenu</th><th>Coût estimatif</th><th>Référence / vigilance</th></tr></thead>
+<tbody>
+<tr><td>Transport aller-retour</td><td>Train pour 2 responsables</td><td class="mono">300 €</td><td>Horaires compatibles avec les RDV</td></tr>
+<tr><td>Hébergement</td><td>2 chambres × 2 nuits</td><td class="mono">360 €</td><td>Hôtel proche du lieu principal</td></tr>
+<tr><td>Transports locaux</td><td>Métro / transferts</td><td class="mono">80 €</td><td>Prévoir marge d'imprévu</td></tr>
+<tr><td>Repas</td><td>Forfait prévisionnel</td><td class="mono">200 €</td><td>Respecter le plafond interne</td></tr>
+<tr><td>Réserve</td><td>Imprévus</td><td class="mono">60 €</td><td>À utiliser seulement si nécessaire</td></tr>
+<tr><td><strong>Total</strong></td><td></td><td class="budget-total">1 000 €</td><td>Budget à valider</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="table-scroll reveal">
+<table>
+<caption>Feuille de route — mission de 2 jours</caption>
+<thead><tr><th>Jour / Heure</th><th>Action</th><th>Lieu</th><th>Transport</th><th>Contact / document</th></tr></thead>
+<tbody>
+<tr><td class="mono">J1 — 06:30</td><td>Départ</td><td>Gare</td><td class="mono">TRAIN</td><td>Billets numériques + papier</td></tr>
+<tr><td class="mono">J1 — 10:00</td><td>Arrivée / transfert</td><td>Paris</td><td>Métro / taxi</td><td>Adresse hôtel</td></tr>
+<tr><td class="mono">J1 — 11:30</td><td>Dépôt bagages</td><td>Hôtel</td><td>À pied</td><td class="mono">RES-HOT-240</td></tr>
+<tr><td class="mono">J1 — 14:00</td><td>Réunion 1</td><td>Site client</td><td>Métro</td><td>Contact client</td></tr>
+<tr><td class="mono">J1 — 17:00</td><td>Réunion 2</td><td>Site partenaire</td><td>Métro</td><td>Contact partenaire</td></tr>
+<tr><td class="mono">J2 — 09:00</td><td>Réunion 3</td><td>Siège</td><td>Métro</td><td>Dossier mission</td></tr>
+<tr><td class="mono">J2 — 15:30</td><td>Retour vers gare</td><td>Gare</td><td>Métro</td><td>Marge de sécurité</td></tr>
+<tr><td class="mono">J2 — 17:00</td><td>Retour</td><td>Gare d'arrivée</td><td class="mono">TRAIN</td><td>Conserver justificatifs</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="accordion reveal">
+  <details class="accordion-item" open><summary><span>🔎 Analyse attendue</span><span class="plus"></span></summary><div class="accordion-body"><p>Le choix doit privilégier des prestations compatibles avec les rendez-vous tout en respectant le budget et la politique voyage. Une marge de sécurité doit être conservée pour les transferts et les imprévus.</p></div></details>
+  <details class="accordion-item"><summary><span>🧾 Dossier à remettre aux responsables</span><span class="plus"></span></summary><div class="accordion-body"><p>Inclure l'ordre de mission, les billets, confirmations d'hôtel, feuille de route, adresses des rendez-vous, contacts locaux, informations d'urgence et rappel des règles de dépenses.</p></div></details>
+  <details class="accordion-item"><summary><span>📊 Après le déplacement</span><span class="plus"></span></summary><div class="accordion-body"><p>Récupérer les justificatifs, comparer les dépenses au budget prévisionnel, préparer la note de frais et classer le dossier de mission.</p></div></details>
+</div>
+
+<div class="callout warn reveal">
+  <div class="callout-label">🧮 Point de vigilance</div>
+  <p>Un budget contraint ne signifie pas choisir systématiquement l'option la moins chère. Il faut rechercher l'option <strong>la plus pertinente et conforme</strong> au regard du coût global, des horaires, des rendez-vous et des risques d'imprévu.</p>
+</div>
+</div></section>
+
+<section class="keypoints" id="s6" data-title="Points clés à retenir" data-num="13.6">
+<div class="wrap">
+  <div class="section-head reveal"><span class="num">13.6</span><h2>Points clés à retenir</h2></div>
+  <div class="keypoints-grid reveal">
+    <div class="kp-card"><span class="num">01</span><p>Commencer par recueillir les besoins et vérifier la <strong>Travel Policy</strong> de l'entreprise.</p></div>
+    <div class="kp-card"><span class="num">02</span><p>Contrôler les formalités : ordre de mission, identité, passeport, visa, assurance et documents nécessaires.</p></div>
+    <div class="kp-card"><span class="num">03</span><p>Comparer les prestations selon le <strong>coût global</strong>, les horaires, la localisation et les conditions de modification.</p></div>
+    <div class="kp-card"><span class="num">04</span><p>Centraliser toutes les informations dans un <strong>carnet de voyage clair</strong> et accessible.</p></div>
+    <div class="kp-card"><span class="num">05</span><p>Prévoir le budget avant le départ et conserver systématiquement les justificatifs pendant la mission.</p></div>
+    <div class="kp-card"><span class="num">06</span><p>En cas d'imprévu, informer, réorganiser, conserver les preuves et suivre la procédure de l'entreprise.</p></div>
+  </div>
+</div>
+</section>
+</main>
+
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="wrap"><div class="lesson-nav-links">
+    <a class="nav-card prev" href="#"><span class="dir">Leçon précédente</span><span class="dest">Leçon 12 — Accueil téléphonique</span></a>
+    <a class="nav-card next" href="#"><span class="dir">Leçon suivante</span><span class="dest">Leçon 14 — Communication interne/externe</span></a>
+  </div><a class="back-to-module" href="#">↑ Retour au sommaire du Module 3</a></div>
+</nav>
+
+<footer><div class="wrap"><span>Secrétariat — Module 3</span><span>Leçon 13</span></div></footer>
+<button id="back-top" aria-label="Retour en haut"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></button>
+
+<script>
+(function(){
+"use strict";
+var progress=document.getElementById('progress-bar');
+function updateProgress(){var y=window.scrollY||document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;progress.style.width=(h>0?(y/h)*100:0)+'%'}
+window.addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+
+var top=document.getElementById('back-top');
+window.addEventListener('scroll',function(){top.classList.toggle('show',(window.scrollY||0)>600)},{passive:true});
+top.addEventListener('click',function(){window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'})});
+
+var sections=[...document.querySelectorAll('main>section[id]')],list=document.getElementById('sommaire-list'),panel=document.getElementById('toc-panel');
+sections.forEach(function(sec){
+ var num=sec.dataset.num,title=sec.dataset.title,id=sec.id;
+ var li=document.createElement('li'),a=document.createElement('a');a.href='#'+id;a.innerHTML='<span class="num">'+num+'</span><span>'+title+'</span>';li.appendChild(a);list.appendChild(li);
+ var b=a.cloneNode(true);panel.appendChild(b);
+});
+
+var btn=document.getElementById('toc-btn');
+function closeToc(){panel.classList.remove('open');btn.setAttribute('aria-expanded','false')}
+btn.addEventListener('click',function(e){e.stopPropagation();var open=panel.classList.toggle('open');btn.setAttribute('aria-expanded',open?'true':'false')});
+document.addEventListener('click',function(e){if(!panel.contains(e.target)&&e.target!==btn)closeToc()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeToc()});panel.addEventListener('click',closeToc);
+
+document.querySelectorAll('.tab-btn').forEach(function(b){
+ b.addEventListener('click',function(){
+  var group=b.closest('.tabs');
+  group.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-selected','false')});
+  group.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active')});
+  b.classList.add('active');b.setAttribute('aria-selected','true');group.querySelector('#tab-'+b.dataset.tab).classList.add('active');
+ });
+});
+
+var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches,els=document.querySelectorAll('.reveal');
+if(reduce||!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')})}
+else{var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})}
+})();
+</script>
+</body>
+</html>

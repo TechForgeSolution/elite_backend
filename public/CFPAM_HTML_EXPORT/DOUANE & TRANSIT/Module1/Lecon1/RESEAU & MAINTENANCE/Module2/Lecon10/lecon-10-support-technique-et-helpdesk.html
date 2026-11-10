@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 10 — Support technique et helpdesk. Maintenance informatique, tickets, priorisation, communication client, base de connaissances et escalade.">
+<title>Leçon 10 — Support technique et helpdesk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F7FA;
+  --color-text:#10161D;
+  --color-accent:#1F6FEB;
+  --color-neutral:#A9B4BE;
+  --radius:14px;
+  --shadow:0 10px 30px rgba(16,22,29,.08);
+  --content:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--color-bg);color:var(--color-text);
+  font-family:"IBM Plex Sans",sans-serif;line-height:1.7;
+}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}
+#progress{
+  position:fixed;z-index:1000;top:0;left:0;height:4px;width:0;
+  background:var(--color-accent)
+}
+.container{width:min(calc(100% - 40px),var(--content));margin:auto}
+.topbar{
+  position:sticky;top:0;z-index:100;background:rgba(244,247,250,.94);
+  backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))
+}
+.topbar-inner{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:.02em}
+.brand span{color:var(--color-accent)}
+.module{font-family:"IBM Plex Mono";font-size:.78rem;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+.menu-btn{
+  border:1px solid var(--color-neutral);background:var(--color-bg);color:var(--color-text);
+  border-radius:9px;padding:9px 13px;cursor:pointer
+}
+.toc{
+  display:none;padding:12px 0 18px;border-top:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))
+}
+.toc.open{display:block}
+.toc a{display:block;padding:6px 0}
+.hero{padding:76px 0 50px}
+.eyebrow{
+  display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px
+}
+.badge{
+  display:inline-flex;align-items:center;border:1px solid var(--color-neutral);
+  border-radius:999px;padding:5px 10px;font-family:"IBM Plex Mono";font-size:.76rem;
+  background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))
+}
+.badge.key{border-color:var(--color-accent);color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.15}
+h1{font-size:clamp(2.5rem,6vw,5rem);max-width:900px;margin:0 0 22px;letter-spacing:-.045em}
+.hero p{max-width:720px;font-size:1.18rem;margin:0}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:38px;align-items:end}
+.hero-visual{min-height:270px}
+section{padding:76px 0;scroll-margin-top:80px}
+section:nth-of-type(even){background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.section-head{max-width:720px;margin-bottom:34px}
+.kicker{
+  color:var(--color-accent);font-family:"IBM Plex Mono";font-size:.8rem;
+  font-weight:600;letter-spacing:.08em;text-transform:uppercase
+}
+h2{font-size:clamp(2rem,4vw,3rem);margin:8px 0 14px}
+h3{font-size:1.35rem;margin:30px 0 10px}
+p{max-width:720px}
+.lead{font-size:1.08rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{
+  border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  background:var(--color-bg);border-radius:var(--radius);padding:22px;
+  transition:.2s ease;box-shadow:0 0 0 rgba(0,0,0,0)
+}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent);box-shadow:var(--shadow)}
+.icon{
+  width:42px;height:42px;border:1px solid var(--color-accent);border-radius:10px;
+  display:grid;place-items:center;color:var(--color-accent);font-weight:700;margin-bottom:15px
+}
+.callout{
+  border-left:5px solid var(--color-accent);padding:18px 20px;margin:28px 0;
+  background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));border-radius:0 var(--radius) var(--radius) 0
+}
+.callout strong{display:block;margin-bottom:5px}
+.diagram{
+  margin:32px 0;padding:20px;border:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  border-radius:var(--radius);background:var(--color-bg);overflow:auto
+}
+.diagram svg{display:block;width:100%;min-width:680px;height:auto}
+svg text{font-family:"IBM Plex Sans",sans-serif;fill:var(--color-text)}
+svg .mono{font-family:"IBM Plex Mono",monospace}
+svg .line{stroke:var(--color-neutral);stroke-width:2;fill:none}
+svg .accent{stroke:var(--color-accent);stroke-width:3;fill:none}
+svg .box{fill:var(--color-bg);stroke:var(--color-neutral);stroke-width:2}
+svg .keybox{fill:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));stroke:var(--color-accent);stroke-width:2}
+table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--color-bg);border:1px solid var(--color-neutral)}
+th,td{padding:13px 15px;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+th{font-family:"IBM Plex Mono";font-size:.8rem;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg))}
+tr:hover td{background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
+.code{
+  position:relative;margin:24px 0;background:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  border:1px solid color-mix(in srgb,var(--color-accent) 35%,var(--color-bg));
+  border-radius:var(--radius);padding:20px;overflow:auto
+}
+pre{margin:0;font:500 .86rem/1.65 "IBM Plex Mono",monospace;white-space:pre}
+.copy{
+  position:absolute;right:12px;top:12px;border:1px solid var(--color-accent);
+  background:var(--color-bg);color:var(--color-accent);border-radius:7px;padding:5px 9px;cursor:pointer
+}
+.tabs{margin:28px 0}
+.tab-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab-button{
+  border:1px solid var(--color-neutral);background:var(--color-bg);padding:9px 14px;
+  border-radius:8px;cursor:pointer
+}
+.tab-button[aria-selected="true"]{border-color:var(--color-accent);color:var(--color-accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+details{
+  border-top:1px solid var(--color-neutral);padding:15px 0
+}
+details:last-child{border-bottom:1px solid var(--color-neutral)}
+summary{cursor:pointer;font-weight:600}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:35px 0}
+.step{position:relative;padding:18px 14px 10px;border-top:3px solid var(--color-neutral)}
+.step::before{
+  content:attr(data-step);position:absolute;top:-18px;left:0;width:32px;height:32px;
+  display:grid;place-items:center;border:2px solid var(--color-accent);border-radius:50%;
+  background:var(--color-bg);color:var(--color-accent);font:600 .75rem "IBM Plex Mono"
+}
+.step:not(:last-child)::after{
+  content:"";position:absolute;top:-3px;right:0;width:50%;border-top:3px solid var(--color-neutral)
+}
+.key-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.key-item{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--color-neutral);padding:16px;border-radius:12px}
+.key-item b{color:var(--color-accent)}
+footer{padding:42px 0;border-top:1px solid var(--color-neutral)}
+.footer-nav{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.nav-card{
+  border:1px solid var(--color-neutral);border-radius:12px;padding:16px 20px;flex:1;min-width:220px
+}
+.backtop{
+  position:fixed;right:20px;bottom:20px;border:1px solid var(--color-accent);
+  background:var(--color-bg);color:var(--color-accent);border-radius:50%;width:44px;height:44px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:.2s
+}
+.backtop.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+.small{font-size:.88rem;color:color-mix(in srgb,var(--color-text) 60%,var(--color-bg))}
+@media(max-width:850px){
+  .hero-grid{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr;gap:16px}
+  .step{border-top:0;border-left:3px solid var(--color-neutral);padding-left:45px}
+  .step::before{left:-18px;top:8px}
+  .step:not(:last-child)::after{display:none}
+}
+@media(max-width:560px){
+  .container{width:min(calc(100% - 28px),var(--content))}
+  .hero{padding-top:50px}
+  section{padding:55px 0}
+  .grid,.key-list{grid-template-columns:1fr}
+  h1{font-size:2.65rem}
+  .topbar-inner{min-height:60px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div class="brand">MAINTENANCE <span>&</span> RÉSEAU</div>
+    <div class="module">MODULE 2 · DÉPANNAGE & SUPPORT</div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="toc">Sommaire</button>
+  </div>
+  <nav class="toc container" id="toc" aria-label="Sommaire">
+    <a href="#tickets">01 — Tickets de support</a>
+    <a href="#priorisation">02 — Priorisation</a>
+    <a href="#communication">03 — Communication client</a>
+    <a href="#knowledge">04 — Base de connaissances</a>
+    <a href="#escalade">05 — Escalade</a>
+    <a href="#synthese">06 — Points clés</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="reveal">
+      <div class="eyebrow">
+        <span class="badge key">LEÇON 10</span>
+        <span class="badge">DÉBUTANT</span>
+        <span class="badge">15 MIN</span>
+      </div>
+      <h1>Support technique<br>et helpdesk</h1>
+      <p class="lead">Traiter les tickets de support et communiquer efficacement avec les utilisateurs.</p>
+    </div>
+    <div class="hero-visual reveal">
+      <svg viewBox="0 0 520 290" role="img" aria-label="Illustration d'un flux de support allant de l'utilisateur au technicien puis à l'escalade">
+        <rect class="box" x="25" y="75" width="125" height="120" rx="12"/>
+        <rect class="keybox" x="198" y="45" width="125" height="180" rx="12"/>
+        <rect class="box" x="371" y="75" width="125" height="120" rx="12"/>
+        <path class="accent" d="M150 135H198M323 135H371"/>
+        <path class="accent" d="M185 126l13 9-13 9M358 126l13 9-13 9"/>
+        <circle cx="87" cy="108" r="18" fill="none" stroke="var(--color-accent)" stroke-width="3"/>
+        <path class="line" d="M58 166c10-25 48-25 58 0"/>
+        <text x="87" y="184" text-anchor="middle" font-size="14">Utilisateur</text>
+        <text x="260" y="98" text-anchor="middle" font-size="17" font-weight="700">HELPDESK</text>
+        <text x="260" y="126" text-anchor="middle" class="mono" font-size="13">TICKET</text>
+        <text x="260" y="153" text-anchor="middle" class="mono" font-size="13">TRIAGE</text>
+        <text x="260" y="180" text-anchor="middle" class="mono" font-size="13">SUIVI</text>
+        <text x="433" y="108" text-anchor="middle" font-size="17" font-weight="700">EXPERT</text>
+        <text x="433" y="137" text-anchor="middle" font-size="13">Escalade</text>
+        <text x="433" y="160" text-anchor="middle" font-size="13">si nécessaire</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="tickets">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="kicker">01 / Tickets</div>
+    <h2>Le ticket : la trace de l'incident</h2>
+    <p>Un ticket formalise une demande d'assistance. Il permet de conserver les informations utiles, de suivre l'avancement et de garder une trace des actions réalisées.</p>
+  </div>
+
+  <div class="grid reveal">
+    <article class="card"><div class="icon">01</div><h3>Identifier</h3><p>Qui rencontre le problème ? Quel équipement, service ou application est concerné ?</p></article>
+    <article class="card"><div class="icon">02</div><h3>Décrire</h3><p>Noter les symptômes, le contexte, le moment d'apparition et les messages d'erreur observés.</p></article>
+    <article class="card"><div class="icon">03</div><h3>Tracer</h3><p>Enregistrer les actions effectuées, leur résultat et l'état actuel de la demande.</p></article>
+  </div>
+
+  <div class="diagram reveal">
+    <svg viewBox="0 0 1000 310" role="img" aria-label="Structure visuelle d'un ticket de support">
+      <rect class="keybox" x="30" y="35" width="180" height="240" rx="14"/>
+      <rect class="box" x="250" y="35" width="180" height="240" rx="14"/>
+      <rect class="box" x="470" y="35" width="180" height="240" rx="14"/>
+      <rect class="box" x="690" y="35" width="280" height="240" rx="14"/>
+      <text x="120" y="72" text-anchor="middle" font-weight="700">DEMANDE</text>
+      <text x="120" y="110" text-anchor="middle">Utilisateur</text>
+      <text x="120" y="140" text-anchor="middle">Service</text>
+      <text x="120" y="170" text-anchor="middle">Équipement</text>
+      <text x="120" y="200" text-anchor="middle">Symptôme</text>
+      <text x="340" y="72" text-anchor="middle" font-weight="700">CONTEXTE</text>
+      <text x="340" y="115" text-anchor="middle">Quand ?</text>
+      <text x="340" y="145" text-anchor="middle">Depuis quand ?</text>
+      <text x="340" y="175" text-anchor="middle">Impact ?</text>
+      <text x="340" y="205" text-anchor="middle">Message d'erreur ?</text>
+      <text x="560" y="72" text-anchor="middle" font-weight="700">TRAITEMENT</text>
+      <text x="560" y="115" text-anchor="middle">Diagnostic</text>
+      <text x="560" y="145" text-anchor="middle">Actions</text>
+      <text x="560" y="175" text-anchor="middle">Résultats</text>
+      <text x="560" y="205" text-anchor="middle">Statut</text>
+      <text x="830" y="72" text-anchor="middle" font-weight="700">SUIVI</text>
+      <text x="830" y="115" text-anchor="middle">Priorité</text>
+      <text x="830" y="145" text-anchor="middle">Responsable</text>
+      <text x="830" y="175" text-anchor="middle">Communication</text>
+      <text x="830" y="205" text-anchor="middle">Résolution / clôture</text>
+      <path class="accent" d="M210 155H250M430 155H470M650 155H690"/>
+    </svg>
+  </div>
+
+  <div class="callout reveal"><strong>💡 À retenir</strong>Un bon ticket doit permettre à un autre technicien de comprendre rapidement la situation sans devoir recommencer toute la collecte d'informations.</div>
+</div>
+</section>
+
+<section id="priorisation">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="kicker">02 / Priorisation</div>
+    <h2>Traiter d'abord ce qui a le plus d'impact</h2>
+    <p>La priorisation aide le helpdesk à organiser les demandes. L'urgence ne dépend pas seulement du fait qu'un utilisateur soit gêné : elle dépend aussi de l'impact sur le service.</p>
+  </div>
+
+  <table class="reveal">
+    <thead><tr><th scope="col">Niveau</th><th scope="col">Impact</th><th scope="col">Exemple</th><th scope="col">Action</th></tr></thead>
+    <tbody>
+      <tr><td><code>P1</code></td><td>Très fort</td><td>Service critique indisponible pour plusieurs utilisateurs</td><td>Traitement immédiat</td></tr>
+      <tr><td><code>P2</code></td><td>Fort</td><td>Fonction importante indisponible pour une équipe</td><td>Traitement prioritaire</td></tr>
+      <tr><td><code>P3</code></td><td>Modéré</td><td>Incident limité à un utilisateur</td><td>File de traitement normale</td></tr>
+      <tr><td><code>P4</code></td><td>Faible</td><td>Demande d'information ou amélioration</td><td>Planification</td></tr>
+    </tbody>
+  </table>
+
+  <div class="diagram reveal">
+    <svg viewBox="0 0 900 360" role="img" aria-label="Matrice de priorisation croisant impact et urgence">
+      <line class="line" x1="160" y1="300" x2="780" y2="300"/>
+      <line class="line" x1="160" y1="300" x2="160" y2="45"/>
+      <text x="470" y="340" text-anchor="middle" class="mono">URGENCE →</text>
+      <text x="75" y="180" text-anchor="middle" transform="rotate(-90 75 180)" class="mono">IMPACT →</text>
+      <rect class="box" x="160" y="175" width="155" height="125"/>
+      <rect class="keybox" x="315" y="175" width="155" height="125"/>
+      <rect class="keybox" x="470" y="175" width="155" height="125"/>
+      <rect class="keybox" x="625" y="175" width="155" height="125"/>
+      <rect class="box" x="160" y="50" width="155" height="125"/>
+      <rect class="keybox" x="315" y="50" width="155" height="125"/>
+      <rect class="keybox" x="470" y="50" width="155" height="125"/>
+      <rect class="keybox" x="625" y="50" width="155" height="125"/>
+      <text x="238" y="245" text-anchor="middle">Faible</text><text x="393" y="245" text-anchor="middle">Modérée</text>
+      <text x="548" y="245" text-anchor="middle">Forte</text><text x="703" y="245" text-anchor="middle">Critique</text>
+      <text x="238" y="120" text-anchor="middle">Impact limité</text>
+      <text x="238" y="145" text-anchor="middle" class="mono">P3/P4</text>
+      <text x="548" y="120" text-anchor="middle">Impact élevé</text>
+      <text x="548" y="145" text-anchor="middle" class="mono">P1/P2</text>
+    </svg>
+  </div>
+
+  <div class="callout reveal"><strong>⚠️ Attention</strong>Ne pas confondre urgence et importance. Une demande très visible mais sans impact collectif peut être moins prioritaire qu'une panne discrète qui bloque un service essentiel.</div>
+</div>
+</section>
+
+<section id="communication">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="kicker">03 / Communication</div>
+    <h2>Le support est aussi une relation utilisateur</h2>
+    <p>Le technicien doit expliquer simplement ce qu'il comprend, ce qu'il fait et ce qui est attendu. Une communication claire réduit les incompréhensions et facilite le diagnostic.</p>
+  </div>
+
+  <div class="tabs reveal">
+    <div class="tab-buttons" role="tablist" aria-label="Approches de communication">
+      <button class="tab-button" role="tab" aria-selected="true" aria-controls="tab-ecoute" id="btn-ecoute">Écouter</button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-diagnostic" id="btn-diagnostic">Diagnostiquer</button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-suivi" id="btn-suivi">Informer</button>
+    </div>
+    <div id="tab-ecoute" class="tab-panel active" role="tabpanel" tabindex="0" aria-labelledby="btn-ecoute">
+      <h3>Écouter avant de conclure</h3>
+      <p>Faire préciser le problème avec des questions factuelles : <em>Que s'est-il passé ? Quand ? Quel message apparaît ? Qui est concerné ?</em></p>
+    </div>
+    <div id="tab-diagnostic" class="tab-panel" role="tabpanel" tabindex="0" aria-labelledby="btn-diagnostic">
+      <h3>Expliquer le diagnostic</h3>
+      <p>Présenter les vérifications avec des mots compréhensibles et éviter le jargon lorsque celui-ci n'apporte rien à l'utilisateur.</p>
+    </div>
+    <div id="tab-suivi" class="tab-panel" role="tabpanel" tabindex="0" aria-labelledby="btn-suivi">
+      <h3>Informer sur le suivi</h3>
+      <p>Indiquer l'état du ticket, la prochaine étape et, lorsque cela est connu, le délai ou la condition qui permettra de poursuivre.</p>
+    </div>
+  </div>
+
+  <div class="diagram reveal">
+    <svg viewBox="0 0 1000 280" role="img" aria-label="Cycle de communication entre utilisateur et support">
+      <circle class="keybox" cx="150" cy="140" r="82"/>
+      <circle class="box" cx="500" cy="140" r="82"/>
+      <circle class="keybox" cx="850" cy="140" r="82"/>
+      <path class="accent" d="M232 140H418M582 140H768"/>
+      <path class="accent" d="M402 131l16 9-16 9M752 131l16 9-16 9"/>
+      <text x="150" y="135" text-anchor="middle" font-weight="700">UTILISATEUR</text>
+      <text x="150" y="158" text-anchor="middle">décrit</text>
+      <text x="500" y="135" text-anchor="middle" font-weight="700">HELPDESK</text>
+      <text x="500" y="158" text-anchor="middle">analyse</text>
+      <text x="850" y="135" text-anchor="middle" font-weight="700">SUIVI</text>
+      <text x="850" y="158" text-anchor="middle">informe</text>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section id="knowledge">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="kicker">04 / Base de connaissances</div>
+    <h2>Transformer les solutions en savoir réutilisable</h2>
+    <p>Une base de connaissances regroupe des procédures, solutions, consignes et informations utiles. Elle évite de repartir de zéro lorsqu'un problème similaire réapparaît.</p>
+  </div>
+
+  <div class="grid reveal">
+    <article class="card"><div class="icon">A</div><h3>Procédure</h3><p>Décrire les étapes dans un ordre logique, avec les prérequis nécessaires.</p></article>
+    <article class="card"><div class="icon">B</div><h3>Solution</h3><p>Documenter le symptôme, la cause identifiée et la correction appliquée.</p></article>
+    <article class="card"><div class="icon">C</div><h3>Contexte</h3><p>Préciser les systèmes, versions, équipements ou situations auxquels la procédure s'applique.</p></article>
+  </div>
+
+  <div class="code reveal">
+    <button class="copy" data-copy="knowledge-text" aria-label="Copier le contenu">Copier</button>
+    <pre id="knowledge-text"># FICHE — INCIDENT COURANT
+Titre       : Impossible d'accéder au service
+Symptôme    : Connexion refusée
+Vérification: Tester la connectivité puis l'authentification
+Cause       : À compléter après diagnostic
+Solution    : À compléter après diagnostic
+Périmètre   : Service / version / environnement
+Dernière MAJ: À renseigner</pre>
+  </div>
+
+  <details class="reveal">
+    <summary>Que doit contenir une bonne fiche ?</summary>
+    <p>Un titre explicite, un contexte, les symptômes observables, les prérequis, les étapes, les résultats attendus et les limites de la procédure.</p>
+  </details>
+  <details class="reveal">
+    <summary>Pourquoi actualiser les connaissances ?</summary>
+    <p>Une procédure obsolète peut conduire à une mauvaise manipulation. La documentation doit donc évoluer avec les systèmes et les méthodes de support.</p>
+  </details>
+</div>
+</section>
+
+<section id="escalade">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="kicker">05 / Escalade</div>
+    <h2>Savoir quand transmettre</h2>
+    <p>L'escalade intervient lorsque le niveau de compétence, les droits d'accès ou le périmètre du premier niveau ne permettent pas de poursuivre correctement le traitement.</p>
+  </div>
+
+  <div class="steps reveal">
+    <div class="step" data-step="01"><h3>Qualifier</h3><p class="small">Comprendre précisément la demande.</p></div>
+    <div class="step" data-step="02"><h3>Vérifier</h3><p class="small">Réaliser les contrôles autorisés.</p></div>
+    <div class="step" data-step="03"><h3>Documenter</h3><p class="small">Conserver symptômes et actions.</p></div>
+    <div class="step" data-step="04"><h3>Escalader</h3><p class="small">Transmettre au bon niveau.</p></div>
+    <div class="step" data-step="05"><h3>Suivre</h3><p class="small">Actualiser le ticket et informer.</p></div>
+  </div>
+
+  <div class="diagram reveal">
+    <svg viewBox="0 0 1000 300" role="img" aria-label="Niveaux d'escalade du support">
+      <rect class="keybox" x="45" y="90" width="250" height="120" rx="14"/>
+      <rect class="box" x="375" y="90" width="250" height="120" rx="14"/>
+      <rect class="box" x="705" y="90" width="250" height="120" rx="14"/>
+      <path class="accent" d="M295 150H375M625 150H705"/>
+      <path class="accent" d="M359 141l16 9-16 9M689 141l16 9-16 9"/>
+      <text x="170" y="130" text-anchor="middle" font-weight="700">NIVEAU 1</text>
+      <text x="170" y="158" text-anchor="middle">Accueil · qualification</text>
+      <text x="170" y="184" text-anchor="middle">incidents courants</text>
+      <text x="500" y="130" text-anchor="middle" font-weight="700">NIVEAU 2</text>
+      <text x="500" y="158" text-anchor="middle">Expertise technique</text>
+      <text x="500" y="184" text-anchor="middle">diagnostic approfondi</text>
+      <text x="830" y="130" text-anchor="middle" font-weight="700">NIVEAU 3</text>
+      <text x="830" y="158" text-anchor="middle">Expert / constructeur</text>
+      <text x="830" y="184" text-anchor="middle">problème complexe</text>
+    </svg>
+  </div>
+
+  <div class="callout reveal"><strong>🛠️ Cas pratique de support</strong>Avant une escalade, transmettre un ticket exploitable : description du problème, impact, vérifications réalisées, résultats obtenus, captures ou messages d'erreur utiles et informations de contexte disponibles.</div>
+
+  <div class="callout reveal"><strong>🔒 Sécurité / bonne pratique</strong>Ne pas contourner les contrôles d'accès pour résoudre plus vite un incident. Respecter les droits, les procédures et les validations prévues.</div>
+</div>
+</section>
+
+<section id="synthese">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="kicker">06 / Synthèse</div>
+    <h2>Points clés à retenir</h2>
+    <p>Le helpdesk repose sur une méthode : recueillir, qualifier, prioriser, traiter, documenter, communiquer et escalader lorsque nécessaire.</p>
+  </div>
+
+  <div class="key-list reveal">
+    <div class="key-item"><b>01</b><span><strong>Ticket</strong> — garder une trace structurée de la demande et des actions.</span></div>
+    <div class="key-item"><b>02</b><span><strong>Priorité</strong> — considérer l'urgence et surtout l'impact.</span></div>
+    <div class="key-item"><b>03</b><span><strong>Communication</strong> — expliquer clairement et maintenir l'utilisateur informé.</span></div>
+    <div class="key-item"><b>04</b><span><strong>Connaissance</strong> — transformer les solutions en documentation réutilisable.</span></div>
+    <div class="key-item"><b>05</b><span><strong>Escalade</strong> — transmettre avec suffisamment de contexte au niveau compétent.</span></div>
+    <div class="key-item"><b>06</b><span><strong>Traçabilité</strong> — documenter les résultats pour faciliter le suivi et la continuité.</span></div>
+  </div>
+
+  <div class="callout reveal"><strong>🔗 Pour aller plus loin</strong>Cette leçon prépare à la gestion structurée des incidents et à la communication technique qui accompagnent les activités de maintenance informatique et de réseau.</div>
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-nav">
+      <a class="nav-card" href="#" aria-label="Leçon précédente"><span class="small">← Leçon précédente</span><br><strong>Leçon 09 — Gestion de parc informatique</strong></a>
+      <a class="nav-card" href="#toc"><span class="small">Retour au sommaire</span><br><strong>Module 2 — Dépannage et support</strong></a>
+      <a class="nav-card" href="#" aria-label="Leçon suivante"><span class="small">Leçon suivante →</span><br><strong>Leçon 11 — Modèle OSI et TCP/IP</strong></a>
+    </div>
+    <p class="small">Maintenance et Réseau Informatique · Module 2 · Leçon 10</p>
+  </div>
+</footer>
+
+<button class="backtop" id="backtop" aria-label="Retour en haut">↑</button>
+
+<script>
+const progress=document.getElementById('progress');
+const backtop=document.getElementById('backtop');
+const menuBtn=document.getElementById('menuBtn');
+const toc=document.getElementById('toc');
+
+function updateScroll(){
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const p=h>0?(window.scrollY/h)*100:0;
+  progress.style.width=p+'%';
+  backtop.classList.toggle('show',window.scrollY>500);
+}
+window.addEventListener('scroll',updateScroll,{passive:true});
+updateScroll();
+
+menuBtn.addEventListener('click',()=>{
+  const open=toc.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded',String(open));
+});
+toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  toc.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded','false');
+}));
+backtop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+document.querySelectorAll('.tab-button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent=btn.closest('.tabs');
+    parent.querySelectorAll('.tab-button').forEach(b=>b.setAttribute('aria-selected','false'));
+    parent.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.setAttribute('aria-selected','true');
+    document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.copy').forEach(btn=>{
+  btn.addEventListener('click',async()=>{
+    const target=document.getElementById(btn.dataset.copy);
+    try{
+      await navigator.clipboard.writeText(target.innerText);
+      const old=btn.textContent; btn.textContent='Copié';
+      setTimeout(()=>btn.textContent=old,1200);
+    }catch(e){}
+  });
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

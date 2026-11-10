@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 12 — Élaboration du budget projet | Gestion de Projet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2314213D'/%3E%3Cpath d='M20 60 L45 35 L60 50 L80 25' stroke='%23FF9F1C' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='80' cy='25' r='7' fill='%23FF9F1C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#F4F6F8;
+    --color-text:#14213D;
+    --color-accent:#FF9F1C;
+    --color-neutral:#8D99AE;
+
+    --bg-alt: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+    --text-muted: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+    --border-soft: color-mix(in srgb, var(--color-neutral) 50%, var(--color-bg));
+    --accent-tint: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    --accent-tint-strong: color-mix(in srgb, var(--color-accent) 18%, var(--color-bg));
+    --neutral-tint: color-mix(in srgb, var(--color-neutral) 12%, var(--color-bg));
+
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--color-bg);
+    color:var(--color-text);
+    font-family:var(--font-body);
+    font-weight:400;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  img,svg{max-width:100%;}
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    color:var(--color-text);
+    line-height:1.25;
+    margin:0 0 0.6em 0;
+  }
+  h1{font-size:clamp(1.9rem, 4vw, 2.7rem); font-weight:800; letter-spacing:-0.01em;}
+  h2{font-size:clamp(1.4rem, 2.6vw, 1.85rem); font-weight:700;}
+  h3{font-size:1.15rem; font-weight:600;}
+  p{margin:0 0 1.1em 0;}
+  .lede{font-size:1.05rem; color:var(--text-muted);}
+
+  a{color:var(--color-accent); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .container{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .prose-width{max-width:720px;}
+
+  /* ---------- Progress bar ---------- */
+  #reading-progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--color-accent); z-index:1000; transition:width 0.1s linear;
+  }
+
+  /* ---------- Header ---------- */
+  header.site-header{
+    position:sticky; top:0; z-index:900;
+    background:color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .header-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 24px; gap:16px;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:0.95rem; color:var(--color-text);}
+  .brand-mark{width:30px; height:30px; border-radius:8px; background:var(--color-text); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .brand-mark svg{width:16px; height:16px;}
+
+  nav.top-nav{display:flex; align-items:center; gap:4px;}
+  .nav-toggle{display:none; background:none; border:1px solid var(--border-soft); border-radius:8px; padding:8px 10px; cursor:pointer; color:var(--color-text); font-family:var(--font-body); font-size:0.85rem;}
+  .toc-menu{display:flex; flex-wrap:wrap; gap:2px 4px;}
+  .toc-menu a{font-size:0.8rem; color:var(--text-muted); padding:6px 10px; border-radius:6px; white-space:nowrap;}
+  .toc-menu a:hover{background:var(--accent-tint); color:var(--color-text); text-decoration:none;}
+
+  @media (max-width: 860px){
+    .toc-menu{display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column; background:var(--color-bg); border-bottom:1px solid var(--border-soft); padding:10px 24px 16px;}
+    .toc-menu.open{display:flex;}
+    .nav-toggle{display:inline-block;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{padding:64px 0 40px; border-bottom:1px solid var(--border-soft);}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .badge{font-family:var(--font-mono); font-size:0.72rem; font-weight:500; text-transform:uppercase; letter-spacing:0.04em; padding:5px 11px; border-radius:999px; border:1px solid var(--border-soft); color:var(--text-muted); background:var(--color-bg);}
+  .badge.accent{border-color:color-mix(in srgb, var(--color-accent) 55%, var(--color-bg)); color:var(--color-text); background:var(--accent-tint);}
+  .hero .module-tag{font-family:var(--font-mono); font-size:0.78rem; color:var(--color-accent); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px; display:block; font-weight:600;}
+
+  /* ---------- Sommaire ---------- */
+  .toc-card{background:var(--color-bg); border:1px solid var(--border-soft); border-radius:14px; padding:22px 24px; margin:36px 0 8px;}
+  .toc-card h2{font-size:1rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:14px; color:var(--text-muted);}
+  .toc-list{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:6px 18px;}
+  @media (max-width:640px){.toc-list{grid-template-columns:1fr;}}
+  .toc-list li a{display:flex; align-items:baseline; gap:8px; color:var(--color-text); font-size:0.92rem; padding:5px 0;}
+  .toc-list li a::before{content:attr(data-num); font-family:var(--font-mono); font-size:0.75rem; color:var(--color-accent); flex-shrink:0;}
+  .toc-list li a:hover{text-decoration:none; color:var(--color-accent);}
+
+  /* ---------- Sections ---------- */
+  section.lesson-section{padding:56px 0; opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease;}
+  section.lesson-section.is-visible{opacity:1; transform:translateY(0);}
+  section.lesson-section.alt-bg{background:var(--bg-alt);}
+  .section-kicker{font-family:var(--font-mono); font-size:0.75rem; color:var(--color-accent); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; display:block; font-weight:600;}
+
+  /* ---------- Callouts ---------- */
+  .callout{border:1px solid var(--border-soft); border-left:4px solid var(--color-accent); border-radius:10px; padding:18px 20px; margin:24px 0; background:var(--color-bg); display:flex; gap:14px;}
+  .callout .icon{font-size:1.3rem; line-height:1; flex-shrink:0;}
+  .callout .callout-title{font-family:var(--font-display); font-weight:700; font-size:0.95rem; margin-bottom:4px; color:var(--color-text);}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p{font-size:0.94rem; color:var(--text-muted);}
+
+  /* ---------- Fiche de pilotage ---------- */
+  .pilot-card{background:var(--accent-tint); border:1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-bg)); border-radius:12px; padding:20px 22px; margin:24px 0; position:relative;}
+  .pilot-card .pilot-label{font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-accent); font-weight:600; display:block; margin-bottom:10px;}
+  .pilot-card pre{font-family:var(--font-mono); font-size:0.86rem; margin:0; white-space:pre-wrap; color:var(--color-text); line-height:1.65;}
+  .copy-btn{position:absolute; top:14px; right:14px; font-family:var(--font-mono); font-size:0.7rem; background:var(--color-bg); border:1px solid var(--border-soft); color:var(--text-muted); border-radius:6px; padding:5px 9px; cursor:pointer;}
+  .copy-btn:hover{border-color:var(--color-accent); color:var(--color-text);}
+
+  /* ---------- Tables ---------- */
+  .table-scroll{overflow-x:auto; margin:24px 0; border:1px solid var(--border-soft); border-radius:12px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:0.9rem;}
+  thead th{background:var(--color-text); color:var(--color-bg); font-family:var(--font-display); font-weight:600; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.03em; text-align:left; padding:12px 14px;}
+  tbody td{padding:11px 14px; border-bottom:1px solid var(--border-soft); font-family:var(--font-body); color:var(--color-text);}
+  tbody td.num, thead th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr.milestone-row{background:var(--accent-tint);}
+  tbody tr.milestone-row td:first-child{border-left:3px solid var(--color-accent);}
+  tbody tr:hover{background:var(--neutral-tint);}
+
+  /* ---------- Cards grid ---------- */
+  .cards-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:28px 0;}
+  .info-card{border:1px solid var(--border-soft); border-radius:12px; padding:20px; background:var(--color-bg); transition:border-color 0.2s ease, transform 0.2s ease;}
+  .info-card:hover{border-color:var(--color-accent); transform:translateY(-2px);}
+  .info-card .card-icon{width:38px; height:38px; border-radius:9px; background:var(--accent-tint); display:flex; align-items:center; justify-content:center; margin-bottom:12px; font-size:1.1rem;}
+  .info-card h3{font-size:1rem; margin-bottom:6px;}
+  .info-card p{font-size:0.88rem; color:var(--text-muted); margin-bottom:0;}
+
+  /* ---------- Tabs ---------- */
+  .tabs{margin:28px 0; border:1px solid var(--border-soft); border-radius:12px; overflow:hidden;}
+  .tab-list{display:flex; background:var(--neutral-tint); border-bottom:1px solid var(--border-soft);}
+  .tab-btn{flex:1; padding:13px 16px; background:none; border:none; cursor:pointer; font-family:var(--font-display); font-weight:600; font-size:0.88rem; color:var(--text-muted); border-bottom:2px solid transparent;}
+  .tab-btn:hover{color:var(--color-text);}
+  .tab-btn[aria-selected="true"]{color:var(--color-text); border-bottom-color:var(--color-accent); background:var(--color-bg);}
+  .tab-btn:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .tab-panel{padding:22px 22px 24px; display:none;}
+  .tab-panel.active{display:block;}
+  .tab-panel p:last-child{margin-bottom:0;}
+
+  /* ---------- Accordion ---------- */
+  .accordion{margin:28px 0; border:1px solid var(--border-soft); border-radius:12px; overflow:hidden;}
+  .accordion-item + .accordion-item{border-top:1px solid var(--border-soft);}
+  .accordion-trigger{width:100%; text-align:left; background:var(--color-bg); border:none; cursor:pointer; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; font-family:var(--font-display); font-weight:600; font-size:0.95rem; color:var(--color-text);}
+  .accordion-trigger:hover{background:var(--bg-alt);}
+  .accordion-trigger:focus-visible{outline:2px solid var(--color-accent); outline-offset:-2px;}
+  .accordion-trigger .chevron{flex-shrink:0; width:18px; height:18px; transition:transform 0.25s ease; color:var(--color-accent);}
+  .accordion-trigger[aria-expanded="true"] .chevron{transform:rotate(180deg);}
+  .accordion-panel{max-height:0; overflow:hidden; transition:max-height 0.3s ease; background:var(--color-bg);}
+  .accordion-panel-inner{padding:0 20px 18px; font-size:0.92rem; color:var(--text-muted);}
+  .accordion-panel-inner p:last-child{margin-bottom:0;}
+
+  /* ---------- Stepper / frise ---------- */
+  .stepper-wrap{margin:32px 0; overflow-x:auto;}
+  .stepper{display:flex; min-width:640px; gap:0;}
+  .step{flex:1; position:relative; padding:0 10px 0 0; text-align:left;}
+  .step .step-line{height:3px; background:var(--border-soft); position:relative; margin-bottom:14px;}
+  .step:first-child .step-line{border-radius:3px 0 0 3px;}
+  .step:last-child .step-line{border-radius:0 3px 3px 0;}
+  .step .step-line.filled{background:var(--color-accent);}
+  .step .step-dot{width:14px; height:14px; border-radius:50%; background:var(--color-accent); border:3px solid var(--color-bg); position:absolute; top:-5.5px; left:0; box-shadow:0 0 0 1px var(--color-accent);}
+  .step .step-num{font-family:var(--font-mono); font-size:0.72rem; color:var(--color-accent); font-weight:600;}
+  .step h3{font-size:0.92rem; margin:4px 0 4px;}
+  .step p{font-size:0.8rem; color:var(--text-muted); margin-bottom:0;}
+
+  /* ---------- Key takeaways ---------- */
+  .takeaway-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:24px;}
+  .takeaway{border:1px solid var(--border-soft); border-radius:12px; padding:18px 20px; background:var(--color-bg); border-top:3px solid var(--color-accent);}
+  .takeaway .num{font-family:var(--font-mono); color:var(--color-accent); font-weight:600; font-size:0.85rem;}
+  .takeaway p{font-size:0.92rem; margin:6px 0 0; color:var(--color-text);}
+
+  /* ---------- Back to top ---------- */
+  #back-to-top{position:fixed; bottom:26px; right:26px; z-index:800; width:44px; height:44px; border-radius:50%; background:var(--color-text); color:var(--color-bg); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s ease, transform 0.25s ease; box-shadow:0 4px 14px rgba(20,33,61,0.25);}
+  #back-to-top.visible{opacity:1; pointer-events:auto;}
+  #back-to-top:hover{background:var(--color-accent); color:var(--color-text);}
+
+  /* ---------- Lesson nav ---------- */
+  .lesson-nav{border-top:1px solid var(--border-soft); padding:44px 0;}
+  .lesson-nav-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){.lesson-nav-grid{grid-template-columns:1fr;}}
+  .lesson-nav-card{border:1px solid var(--border-soft); border-radius:12px; padding:18px 20px; display:block; color:var(--color-text);}
+  .lesson-nav-card:hover{border-color:var(--color-accent); text-decoration:none;}
+  .lesson-nav-card .dir{font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--color-accent); display:block; margin-bottom:6px;}
+  .lesson-nav-card.next{text-align:right;}
+  .lesson-nav-card .lesson-title{font-family:var(--font-display); font-weight:700; font-size:0.98rem;}
+  .module-return{text-align:center; margin-top:20px;}
+  .module-return a{font-size:0.85rem; color:var(--text-muted);}
+
+  /* ---------- Footer ---------- */
+  footer.site-footer{border-top:1px solid var(--border-soft); padding:28px 0 40px; text-align:center;}
+  footer.site-footer p{font-size:0.8rem; color:var(--text-muted); margin:0;}
+
+  /* ---------- Misc ---------- */
+  .section-header{margin-bottom:20px;}
+  ul.plain{padding-left:1.2em; margin:0 0 1.1em;}
+  ul.plain li{margin-bottom:6px; color:var(--color-text);}
+  .kpi-row{display:flex; flex-wrap:wrap; gap:16px; margin:24px 0;}
+  .kpi{flex:1; min-width:150px; border:1px solid var(--border-soft); border-radius:12px; padding:16px 18px; background:var(--color-bg); text-align:center;}
+  .kpi .kpi-val{font-family:var(--font-mono); font-size:1.5rem; font-weight:600; color:var(--color-text);}
+  .kpi .kpi-label{font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;}
+</style>
+</head>
+<body>
+
+<div id="reading-progress"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 15 L10 9 L14 13 L20 6" stroke="#FF9F1C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="6" r="1.8" fill="#FF9F1C"/>
+        </svg>
+      </span>
+      <span>Gestion de Projet — CFPAM</span>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="tocMenu">Sommaire ▾</button>
+    <nav class="top-nav">
+      <ul class="toc-menu" id="tocMenu">
+        <li><a href="#couts-directs-indirects">Directs/indirects</a></li>
+        <li><a href="#couts-fixes-variables">Fixes/variables</a></li>
+        <li><a href="#construction-budget">Construction</a></li>
+        <li><a href="#reserve-aleas">Réserve aléas</a></li>
+        <li><a href="#budget-total">Budget total</a></li>
+        <li><a href="#ecarts">Écarts</a></li>
+        <li><a href="#synthese">Synthèse</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container prose-width">
+      <span class="module-tag">Module 3 — Budget, ressources et risques</span>
+      <h1>Leçon 12 — Élaboration du budget projet</h1>
+      <p class="lede">Construire un budget prévisionnel, c'est traduire un planning et des ressources en engagement financier réaliste. Cette leçon détaille les briques qui composent un budget de projet solide, de la nature des coûts jusqu'au suivi des écarts.</p>
+      <div class="badges">
+        <span class="badge accent">Module 3</span>
+        <span class="badge">Niveau Intermédiaire</span>
+        <span class="badge">⏱ 18 min de lecture</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="container prose-width">
+    <nav class="toc-card" aria-label="Sommaire de la leçon">
+      <h2>Sommaire</h2>
+      <ul class="toc-list">
+        <li><a href="#couts-directs-indirects" data-num="01">Coûts directs / indirects</a></li>
+        <li><a href="#couts-fixes-variables" data-num="02">Coûts fixes / variables</a></li>
+        <li><a href="#construction-budget" data-num="03">Construction du budget</a></li>
+        <li><a href="#reserve-aleas" data-num="04">Réserve pour aléas</a></li>
+        <li><a href="#budget-total" data-num="05">Budget total</a></li>
+        <li><a href="#ecarts" data-num="06">Suivi des écarts</a></li>
+        <li><a href="#synthese" data-num="07">Points clés à retenir</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- 1. COÛTS DIRECTS / INDIRECTS -->
+  <section class="lesson-section" id="couts-directs-indirects">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 01</span>
+        <h2>Coûts directs et coûts indirects</h2>
+      </div>
+      <p>Tout budget de projet distingue deux natures de dépenses. Les <strong>coûts directs</strong> sont imputables sans ambiguïté au projet : main-d'œuvre affectée, matériel dédié, sous-traitance spécifique. Les <strong>coûts indirects</strong> correspondent à des ressources partagées avec d'autres activités de l'organisation, réparties selon une clé de répartition (temps passé, surface occupée, effectif).</p>
+
+      <div class="tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Types de coûts par imputabilité">
+          <button class="tab-btn" role="tab" aria-selected="true" id="tab-cd" aria-controls="panel-cd">Coûts directs</button>
+          <button class="tab-btn" role="tab" aria-selected="false" id="tab-ci" aria-controls="panel-ci" tabindex="-1">Coûts indirects</button>
+        </div>
+        <div class="tab-panel active" id="panel-cd" role="tabpanel" aria-labelledby="tab-cd">
+          <p>Rattachés exclusivement au projet : salaires de l'équipe dédiée, licences logicielles achetées pour le projet, prestations de sous-traitance spécifiques. Faciles à tracer, ils forment le cœur du budget opérationnel.</p>
+        </div>
+        <div class="tab-panel" id="panel-ci" role="tabpanel" aria-labelledby="tab-ci" hidden>
+          <p>Partagés avec d'autres activités : quote-part de loyer des locaux, temps d'un support informatique mutualisé, frais de structure. Imputés au projet via une clé de répartition définie en amont par le contrôle de gestion.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="icon">⚠️</span>
+        <div>
+          <div class="callout-title">Attention / erreur fréquente</div>
+          <p>Oublier les coûts indirects dans le budget prévisionnel est une cause fréquente de dépassement : un projet « gratuit » en apparence côté ressources internes mobilise malgré tout des moyens partagés qui ont un coût réel pour l'organisation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. COÛTS FIXES / VARIABLES -->
+  <section class="lesson-section alt-bg" id="couts-fixes-variables">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 02</span>
+        <h2>Coûts fixes et coûts variables</h2>
+      </div>
+      <p>Une seconde lecture du budget distingue les coûts selon leur sensibilité au volume d'activité. Les <strong>coûts fixes</strong> restent stables quel que soit l'avancement du projet (licence annuelle, poste de chef de projet). Les <strong>coûts variables</strong> évoluent avec le volume de travail réalisé (heures de développement, quantités de matériel consommé).</p>
+
+      <div class="cards-grid">
+        <div class="info-card">
+          <div class="card-icon">📌</div>
+          <h3>Coûts fixes</h3>
+          <p>Licence logicielle annuelle, salaire du chef de projet à temps plein, location d'un local dédié.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">📈</div>
+          <h3>Coûts variables</h3>
+          <p>Heures de prestataires facturées à la journée, consommables, frais de déplacement liés à l'avancement.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">🔀</div>
+          <h3>Coûts semi-variables</h3>
+          <p>Une part fixe (abonnement minimum) et une part variable (dépassement de quota) — ex. hébergement cloud.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="icon">💡</span>
+        <div>
+          <div class="callout-title">À retenir</div>
+          <p>La distinction directs/indirects répond à la question « à qui appartient la dépense ? », tandis que fixes/variables répond à « comment la dépense évolue-t-elle avec l'activité ? ». Ce sont deux grilles de lecture complémentaires, pas concurrentes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CONSTRUCTION DU BUDGET -->
+  <section class="lesson-section" id="construction-budget">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 03</span>
+        <h2>Construction du budget</h2>
+      </div>
+      <p>La méthode la plus fiable consiste à construire le budget « de bas en haut » (bottom-up) : chaque lot de la structure de découpage du projet (WBS) est chiffré individuellement, puis les montants sont agrégés. Cette approche est plus précise qu'une estimation globale, car elle s'appuie sur le détail des tâches réelles.</p>
+
+      <h3>Schéma — De la WBS au budget agrégé</h3>
+      <svg viewBox="0 0 700 210" role="img" aria-label="Schéma de construction bottom-up du budget : trois lots de travail chiffrés individuellement puis agrégés en un budget total">
+        <defs>
+          <marker id="arrowB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#8D99AE"/>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif">
+          <rect x="10" y="15" width="170" height="50" rx="8" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="95" y="36" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Lot 1 — Conception</text>
+          <text x="95" y="52" text-anchor="middle" font-size="10.5" fill="#8D99AE" font-family="JetBrains Mono, monospace">18 200 €</text>
+
+          <rect x="10" y="80" width="170" height="50" rx="8" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="95" y="101" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Lot 2 — Développement</text>
+          <text x="95" y="117" text-anchor="middle" font-size="10.5" fill="#8D99AE" font-family="JetBrains Mono, monospace">64 500 €</text>
+
+          <rect x="10" y="145" width="170" height="50" rx="8" fill="#F4F6F8" stroke="#8D99AE"/>
+          <text x="95" y="166" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Lot 3 — Tests & déploiement</text>
+          <text x="95" y="182" text-anchor="middle" font-size="10.5" fill="#8D99AE" font-family="JetBrains Mono, monospace">19 800 €</text>
+
+          <path d="M180,40 C 280,40 280,105 340,105" stroke="#8D99AE" stroke-width="1.4" fill="none" marker-end="url(#arrowB)"/>
+          <path d="M180,105 L 340,105" stroke="#8D99AE" stroke-width="1.4" fill="none" marker-end="url(#arrowB)"/>
+          <path d="M180,170 C 280,170 280,105 340,105" stroke="#8D99AE" stroke-width="1.4" fill="none" marker-end="url(#arrowB)"/>
+
+          <rect x="345" y="65" width="200" height="80" rx="10" fill="#FF9F1C" fill-opacity="0.12" stroke="#FF9F1C" stroke-width="1.5"/>
+          <text x="445" y="95" text-anchor="middle" font-size="12" fill="#14213D" font-weight="700">Budget agrégé</text>
+          <text x="445" y="118" text-anchor="middle" font-size="14" fill="#14213D" font-weight="700" font-family="JetBrains Mono, monospace">102 500 €</text>
+          <text x="445" y="133" text-anchor="middle" font-size="9" fill="#8D99AE">avant réserve pour aléas</text>
+        </g>
+      </svg>
+
+      <div class="callout">
+        <span class="icon">📐</span>
+        <div>
+          <div class="callout-title">Bonnes pratiques professionnelles</div>
+          <p>Toujours documenter l'hypothèse de chiffrage de chaque lot (taux journalier, quantité, source de l'estimation) : c'est ce qui permet d'expliquer un écart a posteriori et d'affiner les futures estimations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. RÉSERVE POUR ALÉAS -->
+  <section class="lesson-section alt-bg" id="reserve-aleas">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 04</span>
+        <h2>Réserve pour aléas</h2>
+      </div>
+      <p>Aucune estimation n'est parfaite. La réserve pour aléas est une provision budgétaire, généralement exprimée en pourcentage du budget de base, destinée à absorber les imprévus sans remettre en cause l'équilibre financier global du projet.</p>
+      <p>Elle se distingue de la <strong>réserve de gestion</strong>, détenue par le sponsor ou la direction, mobilisée uniquement en cas de changement de périmètre majeur — la réserve pour aléas, elle, reste sous la responsabilité du chef de projet.</p>
+
+      <div class="pilot-card">
+        <span class="pilot-label">Fiche de pilotage — Calcul de la réserve pour aléas</span>
+        <button class="copy-btn" data-copy-target="copy-1">Copier</button>
+        <pre id="copy-1">BUDGET DE BASE (lots agrégés)   : 102 500 €
+TAUX DE RÉSERVE POUR ALÉAS      : 8%
+RÉSERVE POUR ALÉAS              : 8 200 €
+BUDGET AVEC RÉSERVE             : 110 700 €</pre>
+      </div>
+
+      <div class="callout">
+        <span class="icon">⚠️</span>
+        <div>
+          <div class="callout-title">Attention / erreur fréquente</div>
+          <p>Fixer un taux de réserve identique pour tous les projets, sans tenir compte du niveau de risque réel (complexité technique, maturité de l'équipe, nombre de dépendances externes) conduit soit à sous-provisionner un projet risqué, soit à sur-provisionner un projet simple.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. BUDGET TOTAL -->
+  <section class="lesson-section" id="budget-total">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 05</span>
+        <h2>Budget total</h2>
+      </div>
+      <p>Le budget total consolide l'ensemble des composantes : coûts directs, coûts indirects, et réserve pour aléas. C'est ce montant qui est formellement validé par le sponsor et qui sert de référence pour tout le suivi financier ultérieur.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Composante</th>
+              <th scope="col" class="num">Montant (€)</th>
+              <th scope="col" class="num">Part du total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Coûts directs (lots WBS)</td>
+              <td class="num">102 500</td>
+              <td class="num">83,4%</td>
+            </tr>
+            <tr>
+              <td>Coûts indirects (quote-part structure)</td>
+              <td class="num">12 300</td>
+              <td class="num">10,0%</td>
+            </tr>
+            <tr class="milestone-row">
+              <td>Réserve pour aléas (8%)</td>
+              <td class="num">8 200</td>
+              <td class="num">6,6%</td>
+            </tr>
+            <tr>
+              <td><strong>Budget total</strong></td>
+              <td class="num"><strong>123 000</strong></td>
+              <td class="num"><strong>100%</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val mono">123 000 €</div><div class="kpi-label">Budget total validé</div></div>
+        <div class="kpi"><div class="kpi-val mono">6,6%</div><div class="kpi-label">Part de la réserve</div></div>
+        <div class="kpi"><div class="kpi-val mono">4</div><div class="kpi-label">Lignes budgétaires</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. SUIVI DES ÉCARTS -->
+  <section class="lesson-section alt-bg" id="ecarts">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Étape 06</span>
+        <h2>Suivi des écarts</h2>
+      </div>
+      <p>Une fois le budget validé, il devient la référence par rapport à laquelle chaque dépense réelle est comparée. Le suivi des écarts permet de détecter tôt une dérive et d'agir avant qu'elle ne devienne irréversible.</p>
+
+      <h3>Jauges de suivi budgétaire</h3>
+      <svg viewBox="0 0 700 160" role="img" aria-label="Trois jauges de suivi budgétaire : consommation du budget à 74%, avancement physique du projet à 68%, écart de performance des coûts">
+        <g font-family="Inter, sans-serif">
+          <text x="115" y="20" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Consommation budget</text>
+          <rect x="20" y="35" width="190" height="14" rx="7" fill="#8D99AE" fill-opacity="0.25"/>
+          <rect x="20" y="35" width="141" height="14" rx="7" fill="#FF9F1C"/>
+          <text x="115" y="65" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#14213D" font-weight="600">74%</text>
+
+          <text x="350" y="20" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Avancement physique</text>
+          <rect x="255" y="35" width="190" height="14" rx="7" fill="#8D99AE" fill-opacity="0.25"/>
+          <rect x="255" y="35" width="129" height="14" rx="7" fill="#14213D"/>
+          <text x="350" y="65" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#14213D" font-weight="600">68%</text>
+
+          <text x="585" y="20" text-anchor="middle" font-size="11" fill="#14213D" font-weight="600">Écart (budget − avancement)</text>
+          <rect x="490" y="35" width="190" height="14" rx="7" fill="#8D99AE" fill-opacity="0.25"/>
+          <rect x="490" y="35" width="12" height="14" rx="7" fill="#FF9F1C"/>
+          <text x="585" y="65" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#14213D" font-weight="600">+6 pts</text>
+
+          <text x="20" y="100" font-size="10" fill="#8D99AE">Le budget consommé (74%) dépasse l'avancement physique réel (68%) : signal d'alerte à documenter.</text>
+        </g>
+      </svg>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Poste</th>
+              <th scope="col" class="num">Prévu (€)</th>
+              <th scope="col" class="num">Réalisé (€)</th>
+              <th scope="col" class="num">Écart</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lot 1 — Conception</td>
+              <td class="num">18 200</td>
+              <td class="num">18 200</td>
+              <td class="num">0%</td>
+            </tr>
+            <tr class="milestone-row">
+              <td>Lot 2 — Développement</td>
+              <td class="num">64 500</td>
+              <td class="num">72 100</td>
+              <td class="num">+11,8%</td>
+            </tr>
+            <tr>
+              <td>Lot 3 — Tests & déploiement</td>
+              <td class="num">19 800</td>
+              <td class="num">—</td>
+              <td class="num">non démarré</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="icon">🔗</span>
+        <div>
+          <div class="callout-title">Pour aller plus loin</div>
+          <p>Le suivi des écarts s'appuie souvent sur la méthode de la valeur acquise (Earned Value Management), qui compare simultanément le budget prévu, le coût réel et la valeur du travail effectivement produit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRISE DE CONSTRUCTION BUDGÉTAIRE -->
+  <section class="lesson-section">
+    <div class="container">
+      <div class="section-header prose-width">
+        <span class="section-kicker">Vue d'ensemble</span>
+        <h2>Frise d'élaboration du budget</h2>
+        <p>Ces six étapes s'enchaînent de la définition des natures de coûts jusqu'au pilotage des écarts en cours de projet.</p>
+      </div>
+      <div class="stepper-wrap">
+        <div class="stepper">
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">01</span>
+            <h3>Qualifier</h3>
+            <p>Directs / indirects</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">02</span>
+            <h3>Distinguer</h3>
+            <p>Fixes / variables</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">03</span>
+            <h3>Chiffrer</h3>
+            <p>Approche bottom-up par lot</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">04</span>
+            <h3>Provisionner</h3>
+            <p>Réserve pour aléas</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">05</span>
+            <h3>Consolider</h3>
+            <p>Budget total validé</p>
+          </div>
+          <div class="step">
+            <div class="step-line filled"><span class="step-dot"></span></div>
+            <span class="step-num">06</span>
+            <h3>Piloter</h3>
+            <p>Suivi des écarts</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYNTHÈSE -->
+  <section class="lesson-section alt-bg" id="synthese">
+    <div class="container prose-width">
+      <div class="section-header">
+        <span class="section-kicker">Synthèse</span>
+        <h2>Points clés à retenir</h2>
+      </div>
+      <div class="takeaway-grid">
+        <div class="takeaway">
+          <span class="num mono">01</span>
+          <p>Coûts directs et indirects répondent à « à qui appartient la dépense » ; fixes et variables répondent à « comment évolue-t-elle avec l'activité ».</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">02</span>
+          <p>L'approche bottom-up, lot par lot de la WBS, donne un budget plus fiable qu'une estimation globale.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">03</span>
+          <p>La réserve pour aléas doit être proportionnée au niveau de risque réel du projet, pas fixée par habitude.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">04</span>
+          <p>Le budget total validé devient la référence unique pour tout le suivi financier ultérieur.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">05</span>
+          <p>Un écart se lit toujours en relation avec l'avancement physique réel, pas seulement en valeur absolue.</p>
+        </div>
+        <div class="takeaway">
+          <span class="num mono">06</span>
+          <p>Documenter les hypothèses de chiffrage permet d'expliquer les écarts et d'améliorer les estimations futures.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="lesson-nav" aria-label="Navigation entre leçons">
+  <div class="container prose-width">
+    <div class="lesson-nav-grid">
+      <a class="lesson-nav-card prev" href="#">
+        <span class="dir">← Leçon précédente</span>
+        <span class="lesson-title">Leçon 11 — Gestion des ressources du projet</span>
+      </a>
+      <a class="lesson-nav-card next" href="#">
+        <span class="dir">Leçon suivante →</span>
+        <span class="lesson-title">Leçon 13 — Gestion des achats et fournisseurs</span>
+      </a>
+    </div>
+    <div class="module-return">
+      <a href="#">↑ Retour au sommaire du Module 3</a>
+    </div>
+  </div>
+</nav>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>CFPAM GROUP — Filière Gestion de Projet · Module 3, Leçon 12 sur 30</p>
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Retour en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- Reading progress bar ---- */
+  var progressBar = document.getElementById('reading-progress');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* ---- Back to top ---- */
+  var backBtn = document.getElementById('back-to-top');
+  function toggleBackBtn(){
+    if((window.scrollY||document.documentElement.scrollTop) > 500){ backBtn.classList.add('visible'); }
+    else{ backBtn.classList.remove('visible'); }
+  }
+  window.addEventListener('scroll', toggleBackBtn, {passive:true});
+  toggleBackBtn();
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+
+  /* ---- Mobile TOC toggle ---- */
+  var navToggle = document.getElementById('navToggle');
+  var tocMenu = document.getElementById('tocMenu');
+  navToggle.addEventListener('click', function(){
+    var open = tocMenu.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  tocMenu.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      tocMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ---- Tabs ---- */
+  document.querySelectorAll('[data-tabs]').forEach(function(tabGroup){
+    var tabs = Array.prototype.slice.call(tabGroup.querySelectorAll('[role="tab"]'));
+    var panels = Array.prototype.slice.call(tabGroup.querySelectorAll('[role="tabpanel"]'));
+
+    function activate(tab){
+      tabs.forEach(function(t){
+        var selected = t === tab;
+        t.setAttribute('aria-selected', selected ? 'true' : 'false');
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        var match = p.getAttribute('aria-labelledby') === tab.id;
+        p.hidden = !match;
+        p.classList.toggle('active', match);
+      });
+    }
+
+    tabs.forEach(function(tab, idx){
+      tab.addEventListener('click', function(){ activate(tab); });
+      tab.addEventListener('keydown', function(e){
+        var newIdx = null;
+        if(e.key === 'ArrowRight'){ newIdx = (idx+1) % tabs.length; }
+        else if(e.key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length) % tabs.length; }
+        if(newIdx !== null){
+          e.preventDefault();
+          tabs[newIdx].focus();
+          activate(tabs[newIdx]);
+        }
+      });
+    });
+  });
+
+  /* ---- Accordion ---- */
+  document.querySelectorAll('[data-accordion]').forEach(function(accordion){
+    var triggers = accordion.querySelectorAll('.accordion-trigger');
+    triggers.forEach(function(trigger){
+      trigger.addEventListener('click', function(){
+        var expanded = trigger.getAttribute('aria-expanded') === 'true';
+        var panel = document.getElementById(trigger.getAttribute('aria-controls'));
+        trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        if(expanded){
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+  });
+
+  /* ---- Copy buttons ---- */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.getAttribute('data-copy-target'));
+      if(!target) return;
+      var text = target.textContent;
+      var original = btn.textContent;
+      function done(ok){
+        btn.textContent = ok ? 'Copié !' : 'Erreur';
+        setTimeout(function(){ btn.textContent = original; }, 1600);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){done(true);}, function(){done(false);});
+      } else {
+        try{
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done(true);
+        }catch(err){ done(false); }
+      }
+    });
+  });
+
+  /* ---- Scroll fade-in animations ---- */
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = document.querySelectorAll('.lesson-section');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    sections.forEach(function(s){ s.classList.add('is-visible'); });
+  } else {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.1, rootMargin:'0px 0px -60px 0px'});
+    sections.forEach(function(s){ observer.observe(s); });
+  }
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 08 — Virtualisation. Maintenance et Réseau Informatique.">
+<title>Leçon 08 — Virtualisation | Maintenance et Réseau Informatique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F4F7FA;
+  --color-text:#10161D;
+  --color-accent:#1F6FEB;
+  --color-neutral:#A9B4BE;
+  --bg-alt:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --text-muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --accent-soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --shadow:0 12px 30px rgba(16,22,29,.07);
+  --radius:16px;
+  --max:1160px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:"IBM Plex Sans",sans-serif;line-height:1.7}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:transparent;z-index:1000}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+.header{position:sticky;top:0;z-index:900;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:var(--max);margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.02em}
+.brand small{display:block;color:var(--text-muted);font:500 11px "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase}
+.menu-btn{display:none;border:1px solid var(--border);background:var(--color-bg);padding:8px 12px;border-radius:10px;cursor:pointer}
+.toc-mini{display:flex;gap:16px;flex-wrap:wrap;font-size:14px}
+.container{max-width:var(--max);margin:auto;padding:0 24px}
+.hero{padding:76px 0 52px}
+.eyebrow{font:600 12px "IBM Plex Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk";line-height:1.15;margin:0 0 18px}
+h1{font-size:clamp(42px,7vw,76px);letter-spacing:-.045em;max-width:850px}
+h2{font-size:clamp(30px,4vw,46px);letter-spacing:-.03em}
+h3{font-size:22px}
+.lead{max-width:720px;font-size:19px;color:var(--text-muted)}
+.badges{display:flex;gap:9px;flex-wrap:wrap;margin:26px 0}
+.badge{border:1px solid var(--border);border-radius:999px;padding:7px 12px;font:500 12px "IBM Plex Mono";background:var(--bg-alt)}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:center}
+.virtual-card{border:1px solid var(--border);border-radius:var(--radius);background:var(--color-bg);box-shadow:var(--shadow);padding:20px}
+.server{border:2px solid var(--color-text);border-radius:14px;padding:16px;position:relative}
+.server:before{content:"HYPERVISEUR";position:absolute;top:-11px;left:16px;background:var(--color-bg);padding:0 7px;font:600 11px "IBM Plex Mono";color:var(--color-accent)}
+.host-line{height:8px;background:var(--accent-soft);border-left:28px solid var(--color-accent);margin:10px 0 18px;border-radius:4px}
+.vms{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vm{border:1px solid var(--border);border-radius:11px;padding:14px;background:var(--bg-alt)}
+.vm strong{font-family:"IBM Plex Mono";font-size:13px}
+.vm .dot{display:inline-block;width:7px;height:7px;background:var(--color-accent);border-radius:50%;margin-right:7px}
+section{padding:70px 0;scroll-margin-top:75px}
+.section-alt{background:var(--bg-alt)}
+.section-head{max-width:760px;margin-bottom:34px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--color-bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:.2s ease}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card-icon{font-size:27px;margin-bottom:13px}
+.card p{margin:0;color:var(--text-muted)}
+.callout{border:2px solid var(--color-accent);border-radius:14px;padding:20px 22px;margin:26px 0;background:var(--color-bg)}
+.callout strong{display:block;font-family:"Space Grotesk";margin-bottom:5px}
+.callout p{margin:0}
+.diagram{border:1px solid var(--border);border-radius:var(--radius);background:var(--color-bg);padding:20px;overflow:hidden}
+.diagram svg{display:block;width:100%;height:auto}
+.caption{font-size:13px;color:var(--text-muted);margin:10px 4px 0}
+table{width:100%;border-collapse:collapse;font-size:15px;background:var(--color-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:14px 16px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{font-family:"IBM Plex Mono";font-size:12px;text-transform:uppercase;letter-spacing:.04em;background:var(--accent-soft)}
+tr:last-child td{border-bottom:0}
+code,.mono{font-family:"IBM Plex Mono",monospace}
+.inline-code{background:var(--accent-soft);padding:2px 6px;border-radius:5px}
+.tabs{margin-top:24px}
+.tab-buttons{display:flex;gap:6px;border-bottom:1px solid var(--border);overflow:auto}
+.tab-buttons button{border:0;background:transparent;padding:12px 16px;cursor:pointer;color:var(--text-muted);white-space:nowrap}
+.tab-buttons button.active{color:var(--color-accent);border-bottom:2px solid var(--color-accent);font-weight:600}
+.tab-panel{display:none;padding:22px 2px}
+.tab-panel.active{display:block}
+.stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
+.step{border:1px solid var(--border);padding:20px;border-radius:14px;background:var(--color-bg);position:relative}
+.step-num{font:600 12px "IBM Plex Mono";color:var(--color-accent);margin-bottom:10px}
+.step p{margin:0;color:var(--text-muted);font-size:14px}
+.accordion{border-top:1px solid var(--border)}
+.acc-item{border-bottom:1px solid var(--border)}
+.acc-btn{width:100%;display:flex;justify-content:space-between;gap:20px;border:0;background:none;text-align:left;padding:20px 0;cursor:pointer;font-family:"Space Grotesk";font-size:18px}
+.acc-content{display:none;padding:0 0 20px;color:var(--text-muted);max-width:760px}
+.acc-item.open .acc-content{display:block}
+.acc-btn span:last-child{color:var(--color-accent)}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.summary .card{padding:20px}
+.summary b{display:block;font-family:"IBM Plex Mono";color:var(--color-accent);font-size:12px;margin-bottom:8px}
+.nav-lessons{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.lesson-link{border:1px solid var(--border);border-radius:14px;padding:22px;background:var(--color-bg);transition:.2s}
+.lesson-link:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.lesson-link small{display:block;color:var(--text-muted);font:500 11px "IBM Plex Mono";text-transform:uppercase;margin-bottom:8px}
+.top{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);padding:28px 0;color:var(--text-muted);font-size:13px}
+.reveal{opacity:0;transform:translateY(16px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){
+ .hero-grid,.grid-2{grid-template-columns:1fr}
+ .grid-3{grid-template-columns:1fr 1fr}
+ .stepper{grid-template-columns:1fr 1fr}
+ .summary{grid-template-columns:1fr 1fr}
+ .toc-mini{display:none}
+ .menu-btn{display:block}
+ .toc-mini.open{display:flex;position:absolute;left:0;right:0;top:60px;background:var(--color-bg);padding:15px 24px;border-bottom:1px solid var(--border)}
+}
+@media(max-width:560px){
+ .container{padding:0 17px}
+ .hero{padding-top:50px}
+ .grid-3,.summary,.stepper,.nav-lessons{grid-template-columns:1fr}
+ section{padding:50px 0}
+ h1{font-size:46px}
+ .lead{font-size:17px}
+ .vms{grid-template-columns:1fr}
+ th,td{padding:11px 10px}
+ .diagram{padding:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{animation:none!important;transition:none!important}
+ .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="header">
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">Maintenance & Réseau <small>Filière technique</small></div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="toc">Sommaire</button>
+    <div class="toc-mini" id="toc">
+      <a href="#definition">Définition</a>
+      <a href="#hyperviseurs">Hyperviseurs</a>
+      <a href="#vm">Machines virtuelles</a>
+      <a href="#snapshots">Snapshots</a>
+      <a href="#ressources">Ressources</a>
+      <a href="#usages">Cas d’usage</a>
+      <a href="#essentiel">À retenir</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+<div class="container hero-grid">
+  <div class="reveal">
+    <div class="eyebrow">Module 2 · Maintenance informatique – Dépannage et support</div>
+    <h1>Virtualisation</h1>
+    <p class="lead">Créer et gérer des machines virtuelles pour exécuter plusieurs environnements informatiques sur un même ordinateur ou serveur.</p>
+    <div class="badges">
+      <span class="badge">LEÇON 08</span>
+      <span class="badge">DÉBUTANT</span>
+      <span class="badge">15 MIN</span>
+    </div>
+  </div>
+  <div class="virtual-card reveal" aria-label="Illustration d'un hyperviseur hébergeant plusieurs machines virtuelles">
+    <div class="server">
+      <div class="host-line"></div>
+      <div class="vms">
+        <div class="vm"><span class="dot"></span><strong>VM-01</strong><br>Environnement A</div>
+        <div class="vm"><span class="dot"></span><strong>VM-02</strong><br>Environnement B</div>
+        <div class="vm"><span class="dot"></span><strong>VM-03</strong><br>Test / labo</div>
+        <div class="vm"><span class="dot"></span><strong>VM-04</strong><br>Service isolé</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="definition">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="eyebrow">01 · Comprendre</div>
+    <h2>Qu’est-ce que la virtualisation ?</h2>
+    <p>La virtualisation consiste à créer une représentation logicielle d’une ressource informatique. Dans cette leçon, l’objectif principal est de comprendre comment un ordinateur physique peut héberger plusieurs machines virtuelles.</p>
+  </div>
+
+  <div class="grid-3">
+    <article class="card reveal"><div class="card-icon">▣</div><h3>Machine physique</h3><p>L’ordinateur ou le serveur réel fournit le processeur, la mémoire, le stockage et les interfaces réseau.</p></article>
+    <article class="card reveal"><div class="card-icon">⌘</div><h3>Couche de virtualisation</h3><p>L’hyperviseur organise et distribue les ressources physiques aux environnements virtuels.</p></article>
+    <article class="card reveal"><div class="card-icon">□</div><h3>Machines virtuelles</h3><p>Chaque VM possède son propre environnement virtuel et peut être utilisée comme une machine distincte.</p></article>
+  </div>
+
+  <div class="diagram reveal" style="margin-top:25px">
+    <svg viewBox="0 0 900 390" role="img" aria-label="Schéma de principe de la virtualisation">
+      <rect x="30" y="25" width="840" height="340" rx="20" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+      <text x="55" y="60" fill="#10161D" font-family="IBM Plex Mono" font-size="16">ORDINATEUR / SERVEUR PHYSIQUE</text>
+      <rect x="65" y="90" width="770" height="72" rx="12" fill="color-mix(in srgb,#1F6FEB 10%,#F4F7FA)" stroke="#1F6FEB" stroke-width="2"/>
+      <text x="450" y="132" text-anchor="middle" fill="#10161D" font-family="IBM Plex Sans" font-size="21" font-weight="600">HYPERVISEUR</text>
+      <text x="450" y="153" text-anchor="middle" fill="#10161D" opacity=".6" font-family="IBM Plex Mono" font-size="12">allocation · isolation · gestion</text>
+      <line x1="150" y1="162" x2="150" y2="195" stroke="#1F6FEB" stroke-width="2"/>
+      <line x1="300" y1="162" x2="300" y2="195" stroke="#1F6FEB" stroke-width="2"/>
+      <line x1="600" y1="162" x2="600" y2="195" stroke="#1F6FEB" stroke-width="2"/>
+      <line x1="750" y1="162" x2="750" y2="195" stroke="#1F6FEB" stroke-width="2"/>
+      <g fill="#F4F7FA" stroke="#A9B4BE" stroke-width="2">
+        <rect x="75" y="195" width="150" height="95" rx="12"/>
+        <rect x="225" y="195" width="150" height="95" rx="12"/>
+        <rect x="525" y="195" width="150" height="95" rx="12"/>
+        <rect x="675" y="195" width="150" height="95" rx="12"/>
+      </g>
+      <g fill="#10161D" font-family="IBM Plex Mono" font-size="13" text-anchor="middle">
+        <text x="150" y="225">VM 01</text><text x="150" y="250">OS / apps</text>
+        <text x="300" y="225">VM 02</text><text x="300" y="250">OS / apps</text>
+        <text x="600" y="225">VM 03</text><text x="600" y="250">OS / apps</text>
+        <text x="750" y="225">VM 04</text><text x="750" y="250">OS / apps</text>
+      </g>
+      <line x1="95" y1="315" x2="805" y2="315" stroke="#1F6FEB" stroke-width="5" stroke-linecap="round"/>
+      <text x="450" y="345" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="13">CPU · RAM · STOCKAGE · RÉSEAU</text>
+    </svg>
+    <p class="caption">La virtualisation sépare les environnements logiciels des ressources physiques qui les hébergent.</p>
+  </div>
+
+  <div class="callout reveal"><strong>💡 À retenir</strong><p>Une machine virtuelle n’est pas un nouvel ordinateur physique : c’est un environnement logiciel qui utilise une partie des ressources de la machine hôte.</p></div>
+</div>
+</section>
+
+<section id="hyperviseurs" class="section-alt">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="eyebrow">02 · Hyperviseurs</div>
+    <h2>Le rôle de l’hyperviseur</h2>
+    <p>L’hyperviseur est la couche qui permet de créer, exécuter et gérer les machines virtuelles. Il contrôle l’accès aux ressources de l’hôte.</p>
+  </div>
+
+  <div class="grid-2">
+    <article class="card reveal"><h3>Type 1 — sur le matériel</h3><p>Il s’exécute directement sur le matériel physique. Il est particulièrement adapté aux environnements serveurs et à la consolidation de ressources.</p></article>
+    <article class="card reveal"><h3>Type 2 — au-dessus d’un OS</h3><p>Il fonctionne comme un logiciel installé sur un système d’exploitation existant. Il est pratique pour les postes de travail, les tests et l’apprentissage.</p></article>
+  </div>
+
+  <div class="tabs reveal">
+    <div class="tab-buttons" role="tablist" aria-label="Types d'hyperviseurs">
+      <button class="active" role="tab" aria-selected="true" data-tab="t1">Type 1</button>
+      <button role="tab" aria-selected="false" data-tab="t2">Type 2</button>
+    </div>
+    <div class="tab-panel active" id="t1" role="tabpanel">
+      <div class="diagram">
+        <svg viewBox="0 0 700 220" role="img" aria-label="Architecture d'un hyperviseur de type 1">
+          <rect x="70" y="25" width="560" height="45" rx="8" fill="#F4F7FA" stroke="#A9B4BE"/>
+          <text x="350" y="53" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">VM 01 · VM 02 · VM 03</text>
+          <rect x="70" y="85" width="560" height="48" rx="8" fill="#F4F7FA" stroke="#1F6FEB" stroke-width="2"/>
+          <text x="350" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="17" fill="#10161D">HYPERVISEUR</text>
+          <rect x="70" y="148" width="560" height="45" rx="8" fill="#F4F7FA" stroke="#A9B4BE"/>
+          <text x="350" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">MATÉRIEL PHYSIQUE</text>
+        </svg>
+      </div>
+    </div>
+    <div class="tab-panel" id="t2" role="tabpanel">
+      <div class="diagram">
+        <svg viewBox="0 0 700 220" role="img" aria-label="Architecture d'un hyperviseur de type 2">
+          <rect x="70" y="25" width="560" height="45" rx="8" fill="#F4F7FA" stroke="#A9B4BE"/>
+          <text x="350" y="53" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">VM 01 · VM 02 · VM 03</text>
+          <rect x="70" y="85" width="560" height="48" rx="8" fill="#F4F7FA" stroke="#1F6FEB" stroke-width="2"/>
+          <text x="350" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="17" fill="#10161D">HYPERVISEUR / LOGICIEL</text>
+          <rect x="70" y="148" width="560" height="45" rx="8" fill="#F4F7FA" stroke="#A9B4BE"/>
+          <text x="350" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#10161D">SYSTÈME D’EXPLOITATION HÔTE</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout reveal"><strong>⚠️ Attention / erreur fréquente</strong><p>Plusieurs machines virtuelles peuvent partager le même matériel, mais elles restent dépendantes des ressources réellement disponibles sur l’hôte.</p></div>
+</div>
+</section>
+
+<section id="vm">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="eyebrow">03 · Machines virtuelles</div>
+    <h2>Comprendre une machine virtuelle</h2>
+    <p>Une VM reçoit des ressources virtuelles : processeur, mémoire, stockage et réseau. Elle peut ensuite accueillir un système d’exploitation et des applications.</p>
+  </div>
+
+  <div class="grid-3">
+    <article class="card reveal"><h3>CPU virtuel</h3><p>Une partie de la capacité de calcul de l’hôte est attribuée à la VM.</p></article>
+    <article class="card reveal"><h3>Mémoire virtuelle</h3><p>Une quantité de RAM physique est réservée ou allouée selon la configuration.</p></article>
+    <article class="card reveal"><h3>Disque virtuel</h3><p>La VM utilise un fichier ou un volume représentant son espace de stockage.</p></article>
+  </div>
+
+  <div class="diagram reveal" style="margin-top:25px">
+    <svg viewBox="0 0 900 330" role="img" aria-label="Composition d'une machine virtuelle">
+      <rect x="40" y="30" width="820" height="270" rx="18" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+      <rect x="70" y="55" width="760" height="52" rx="10" fill="#F4F7FA" stroke="#1F6FEB" stroke-width="2"/>
+      <text x="450" y="88" text-anchor="middle" fill="#10161D" font-family="IBM Plex Sans" font-size="19" font-weight="600">APPLICATIONS</text>
+      <rect x="70" y="120" width="760" height="52" rx="10" fill="#F4F7FA" stroke="#A9B4BE"/>
+      <text x="450" y="153" text-anchor="middle" fill="#10161D" font-family="IBM Plex Sans" font-size="19">SYSTÈME D’EXPLOITATION INVITÉ</text>
+      <rect x="70" y="185" width="760" height="52" rx="10" fill="#F4F7FA" stroke="#A9B4BE"/>
+      <text x="450" y="218" text-anchor="middle" fill="#10161D" font-family="IBM Plex Mono" font-size="15">CPU v · RAM v · DISQUE v · RÉSEAU v</text>
+      <text x="450" y="273" text-anchor="middle" fill="#1F6FEB" font-family="IBM Plex Mono" font-size="13">RESSOURCES VIRTUELLES</text>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section id="snapshots" class="section-alt">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="eyebrow">04 · Snapshots</div>
+    <h2>Revenir à un état précédent</h2>
+    <p>Un snapshot capture l’état d’une machine virtuelle à un instant donné. Il peut être utile avant une modification importante ou une opération de test.</p>
+  </div>
+
+  <div class="stepper">
+    <article class="step reveal"><div class="step-num">ÉTAT 01</div><h3>VM stable</h3><p>La machine fonctionne normalement.</p></article>
+    <article class="step reveal"><div class="step-num">ÉTAT 02</div><h3>Snapshot</h3><p>Un point de référence est créé.</p></article>
+    <article class="step reveal"><div class="step-num">ÉTAT 03</div><h3>Modification</h3><p>Une installation ou configuration est testée.</p></article>
+    <article class="step reveal"><div class="step-num">ÉTAT 04</div><h3>Retour</h3><p>Selon l’outil, l’état précédent peut être restauré.</p></article>
+  </div>
+
+  <div class="callout reveal"><strong>🔒 Sécurité / bonne pratique</strong><p>Un snapshot ne doit pas être considéré comme le remplacement d’une sauvegarde. Il faut conserver une stratégie de sauvegarde adaptée aux données importantes.</p></div>
+</div>
+</section>
+
+<section id="ressources">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="eyebrow">05 · Ressources</div>
+    <h2>Allouer les ressources correctement</h2>
+    <p>La performance d’une VM dépend de l’équilibre entre les ressources demandées par les machines virtuelles et les capacités de l’hôte.</p>
+  </div>
+
+  <div class="diagram reveal">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Répartition des ressources d'un hôte entre plusieurs machines virtuelles">
+      <text x="40" y="42" font-family="IBM Plex Mono" font-size="14" fill="#10161D">HÔTE</text>
+      <rect x="40" y="65" width="820" height="48" rx="9" fill="#F4F7FA" stroke="#A9B4BE"/>
+      <rect x="40" y="65" width="205" height="48" rx="9" fill="#1F6FEB" opacity=".18"/>
+      <rect x="245" y="65" width="205" height="48" fill="#1F6FEB" opacity=".12"/>
+      <rect x="450" y="65" width="205" height="48" fill="#1F6FEB" opacity=".18"/>
+      <rect x="655" y="65" width="205" height="48" rx="9" fill="#1F6FEB" opacity=".12"/>
+      <g font-family="IBM Plex Mono" font-size="12" fill="#10161D" text-anchor="middle">
+        <text x="142" y="94">VM 01</text><text x="347" y="94">VM 02</text><text x="552" y="94">VM 03</text><text x="757" y="94">VM 04</text>
+      </g>
+      <g font-family="IBM Plex Mono" font-size="13" fill="#10161D">
+        <text x="40" y="160">CPU</text><text x="40" y="202">RAM</text><text x="40" y="244">STOCKAGE</text>
+      </g>
+      <g stroke="#A9B4BE" stroke-width="2">
+        <line x1="130" y1="155" x2="850" y2="155"/><line x1="130" y1="197" x2="850" y2="197"/><line x1="130" y1="239" x2="850" y2="239"/>
+      </g>
+      <g stroke="#1F6FEB" stroke-width="6" stroke-linecap="round">
+        <line x1="130" y1="155" x2="620" y2="155"/><line x1="130" y1="197" x2="700" y2="197"/><line x1="130" y1="239" x2="790" y2="239"/>
+      </g>
+    </svg>
+  </div>
+
+  <div style="overflow-x:auto;margin-top:24px" class="reveal">
+    <table>
+      <thead><tr><th scope="col">Ressource</th><th scope="col">Rôle</th><th scope="col">Point d’attention</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">CPU</td><td>Exécuter les traitements</td><td>Une allocation excessive peut réduire les ressources disponibles pour les autres VM.</td></tr>
+        <tr><td class="mono">RAM</td><td>Stocker les données utilisées par les systèmes et applications</td><td>Une VM a besoin de suffisamment de mémoire pour fonctionner correctement.</td></tr>
+        <tr><td class="mono">Stockage</td><td>Conserver le système, les applications et les données</td><td>Prévoir l’espace nécessaire et surveiller son évolution.</td></tr>
+        <tr><td class="mono">Réseau</td><td>Permettre les communications</td><td>La configuration virtuelle doit correspondre aux besoins de l’environnement.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<section id="usages" class="section-alt">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="eyebrow">06 · Applications</div>
+    <h2>Dans quels cas utiliser la virtualisation ?</h2>
+    <p>La virtualisation est particulièrement utile lorsque l’on souhaite isoler des environnements, tester des configurations ou optimiser l’utilisation d’un serveur.</p>
+  </div>
+
+  <div class="grid-3">
+    <article class="card reveal"><div class="card-icon">⌁</div><h3>Tests</h3><p>Créer un environnement séparé pour expérimenter une installation ou une configuration.</p></article>
+    <article class="card reveal"><div class="card-icon">▤</div><h3>Formation</h3><p>Mettre à disposition plusieurs environnements virtuels pour apprendre sans modifier directement la machine principale.</p></article>
+    <article class="card reveal"><div class="card-icon">▥</div><h3>Serveurs</h3><p>Héberger plusieurs services ou systèmes sur une même infrastructure physique.</p></article>
+    <article class="card reveal"><div class="card-icon">◇</div><h3>Isolation</h3><p>Séparer des environnements afin de limiter l’impact d’une modification ou d’un problème.</p></article>
+    <article class="card reveal"><div class="card-icon">↻</div><h3>Déploiement</h3><p>Reproduire plus facilement un environnement logiciel configuré de manière similaire.</p></article>
+    <article class="card reveal"><div class="card-icon">⌂</div><h3>Labo réseau</h3><p>Construire des environnements virtuels pour observer des systèmes et services en réseau.</p></article>
+  </div>
+
+  <div class="accordion reveal" style="margin-top:35px">
+    <div class="acc-item">
+      <button class="acc-btn" aria-expanded="false"><span>Pourquoi isoler les environnements ?</span><span>+</span></button>
+      <div class="acc-content">L’isolation permet de travailler sur un environnement virtuel sans modifier directement un autre environnement. Cela facilite notamment les tests et l’apprentissage.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" aria-expanded="false"><span>Pourquoi surveiller les ressources ?</span><span>+</span></button>
+      <div class="acc-content">Toutes les VM utilisent les ressources de l’hôte. Une mauvaise répartition peut donc affecter les performances globales.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" aria-expanded="false"><span>Quel est le rôle d’un snapshot ?</span><span>+</span></button>
+      <div class="acc-content">Il constitue un point de référence permettant, selon l’outil de virtualisation, de revenir à un état antérieur de la VM.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="essentiel">
+<div class="container">
+  <div class="section-head reveal">
+    <div class="eyebrow">07 · Synthèse</div>
+    <h2>Points clés à retenir</h2>
+  </div>
+  <div class="summary">
+    <article class="card reveal"><b>01 · CONCEPT</b>La virtualisation permet d’exécuter plusieurs environnements virtuels sur une même machine physique.</article>
+    <article class="card reveal"><b>02 · HYPERVISEUR</b>L’hyperviseur crée et gère les machines virtuelles et leur accès aux ressources.</article>
+    <article class="card reveal"><b>03 · SNAPSHOT</b>Un snapshot conserve un état de référence d’une VM pour faciliter certains retours en arrière.</article>
+    <article class="card reveal"><b>04 · RESSOURCES</b>CPU, RAM, stockage et réseau doivent être alloués selon les besoins des VM et les capacités de l’hôte.</article>
+  </div>
+
+  <div class="callout reveal"><strong>💡 L’idée essentielle</strong><p>Pour créer et gérer correctement une machine virtuelle, il faut comprendre trois éléments : <span class="mono">l’hyperviseur</span>, <span class="mono">les ressources virtuelles</span> et <span class="mono">l’état de la VM</span> à travers des mécanismes comme les snapshots.</p></div>
+</div>
+</section>
+
+<section>
+<div class="container">
+  <div class="nav-lessons reveal">
+    <a class="lesson-link" href="#" aria-label="Leçon précédente">
+      <small>← Leçon précédente</small>
+      <strong>Leçon 07 — Sauvegarde et récupération de données</strong>
+    </a>
+    <a class="lesson-link" href="#" aria-label="Leçon suivante">
+      <small>Leçon suivante →</small>
+      <strong>Leçon 09 — Gestion de parc informatique</strong>
+    </a>
+  </div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="container">
+  <strong>Maintenance et Réseau Informatique</strong> · Module 2 · Leçon 08 — Virtualisation
+</div>
+</footer>
+
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+const progressBar=document.getElementById('progressBar');
+const topBtn=document.getElementById('topBtn');
+const menuBtn=document.getElementById('menuBtn');
+const toc=document.getElementById('toc');
+
+function updateScroll(){
+  const doc=document.documentElement;
+  const max=doc.scrollHeight-doc.clientHeight;
+  const pct=max>0?(window.scrollY/max)*100:0;
+  progressBar.style.width=pct+'%';
+  topBtn.classList.toggle('show',window.scrollY>500);
+}
+window.addEventListener('scroll',updateScroll,{passive:true});
+updateScroll();
+
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+menuBtn.addEventListener('click',()=>{
+  const open=toc.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded',String(open));
+});
+toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toc.classList.remove('open')));
+
+document.querySelectorAll('.tab-buttons button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent=btn.closest('.tabs');
+    parent.querySelectorAll('.tab-buttons button').forEach(b=>{
+      b.classList.remove('active');
+      b.setAttribute('aria-selected','false');
+    });
+    parent.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+    parent.querySelector('#'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.acc-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.closest('.acc-item');
+    const open=item.classList.toggle('open');
+    btn.setAttribute('aria-expanded',String(open));
+    btn.querySelector('span:last-child').textContent=open?'−':'+';
+  });
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

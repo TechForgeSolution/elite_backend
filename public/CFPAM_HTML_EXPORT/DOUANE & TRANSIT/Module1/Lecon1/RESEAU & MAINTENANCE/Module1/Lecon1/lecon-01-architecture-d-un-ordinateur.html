@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leçon 01 — Architecture d'un ordinateur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--color-bg:#F4F7FA;--color-text:#10161D;--color-accent:#1F6FEB;--color-neutral:#A9B4BE;
+--section:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));--soft:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+--muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));--border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg))}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--color-bg);color:var(--color-text);font:400 16px/1.7 "IBM Plex Sans",sans-serif}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--color-accent);width:0;z-index:99}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav,.wrap{max-width:1120px;margin:auto;padding:0 24px}.nav{height:62px;display:flex;align-items:center;justify-content:space-between}
+.brand,h1,h2,h3{font-family:"Space Grotesk",sans-serif}.brand{font-weight:700}.brand b,.eyebrow,a{color:var(--color-accent)}a{text-decoration:none}a:hover{text-decoration:underline}
+.hero{padding:68px 24px 52px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;max-width:1120px;margin:auto}
+.eyebrow{font:600 .76rem "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase}h1{font-size:clamp(2.5rem,6vw,4.7rem);line-height:1.05;margin:12px 0 20px;letter-spacing:-.04em}h2{font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.15;margin:0 0 18px}h3{margin:0 0 8px}
+.lead{font-size:1.12rem;max-width:720px;color:var(--muted)}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badge{border:1px solid var(--border);border-radius:999px;padding:6px 11px;background:var(--soft);font-size:.82rem}
+.art,.visual{border:1px solid var(--border);border-radius:16px;background:var(--section);padding:16px;overflow:auto}.art svg,.visual svg{display:block;width:100%;height:auto}
+.toc{border-block:1px solid var(--border);padding:24px 0}.tocgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.toc a{border:1px solid var(--border);padding:11px 13px;border-radius:9px;display:block;background:var(--color-bg)}
+section.lesson{padding:68px 0}section.lesson:nth-child(even){background:var(--section)}.text{max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}.card,.key,.navcard{border:1px solid var(--border);border-radius:13px;background:var(--color-bg);padding:20px;transition:.2s}.card:hover,.navcard:hover{border-color:var(--color-accent);transform:translateY(-2px)}
+.icon{width:40px;height:40px;border:1px solid var(--color-accent);border-radius:9px;display:grid;place-items:center;color:var(--color-accent);font:600 .8rem "IBM Plex Mono";margin-bottom:14px}
+.callout{margin:25px 0;padding:16px 18px;border-left:4px solid var(--color-accent);background:var(--soft);border-radius:0 10px 10px 0}.callout strong{display:block;margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin-top:24px;background:var(--color-bg);border:1px solid var(--border)}th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left}th{font:600 .78rem "IBM Plex Mono";text-transform:uppercase}tr:hover td{background:var(--soft)}.mono{font-family:"IBM Plex Mono"}
+.tabs{margin-top:25px}.tabbtns{display:flex;gap:8px;flex-wrap:wrap}button{font:600 15px "IBM Plex Sans";cursor:pointer}.tabbtn{padding:9px 13px;border:1px solid var(--border);background:var(--color-bg);border-radius:8px;color:var(--color-text)}.tabbtn[aria-selected=true]{border-color:var(--color-accent);color:var(--color-accent)}.panel{display:none;border:1px solid var(--border);padding:17px;border-radius:0 0 10px 10px}.panel.active{display:block}
+details{border-bottom:1px solid var(--border);padding:15px 0}summary{cursor:pointer;font-weight:700}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:25px 0}.step{border:1px solid var(--border);padding:13px;border-radius:10px;background:var(--color-bg)}.step b{color:var(--color-accent);font-family:"IBM Plex Mono"}
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}.navbottom{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:35px}.next{text-align:right}
+.back{position:fixed;right:18px;bottom:18px;width:45px;height:45px;border:1px solid var(--color-accent);border-radius:50%;background:var(--color-bg);color:var(--color-accent);opacity:0;pointer-events:none;z-index:40}.back.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);text-align:center;color:var(--muted);padding:26px}
+.reveal{opacity:0;transform:translateY(14px);transition:.55s}.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.nav,.wrap{padding-inline:16px}.hero{padding:42px 16px}.grid,.keys,.navbottom,.tocgrid{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}section.lesson{padding:50px 0}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header><div class="nav"><div class="brand">Maintenance <b>&</b> Réseau Informatique</div><a href="#sommaire">Sommaire</a></div></header>
+
+<div class="hero">
+<div><div class="eyebrow">Module 1 · Matériel et systèmes</div><h1>Architecture d'un ordinateur</h1>
+<p class="lead">Identifier les composants matériels d'un ordinateur et comprendre le rôle de chacun.</p>
+<div class="badges"><span class="badge">Leçon <b>01</b></span><span class="badge">Débutant</span><span class="badge">15 min</span></div></div>
+<div class="art"><svg viewBox="0 0 620 410" role="img" aria-label="Architecture simplifiée d'un ordinateur">
+<rect x="45" y="30" width="530" height="350" rx="24" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+<rect x="190" y="100" width="240" height="210" rx="16" fill="none" stroke="#1F6FEB" stroke-width="3"/>
+<text x="310" y="140" text-anchor="middle" font-family="Space Grotesk" font-size="22" font-weight="700" fill="#10161D">CARTE MÈRE</text>
+<rect x="260" y="165" width="100" height="72" rx="8" fill="none" stroke="#10161D" stroke-width="2"/><text x="310" y="209" text-anchor="middle" font-family="IBM Plex Mono" font-size="16" fill="#10161D">CPU</text>
+<rect x="215" y="255" width="75" height="35" rx="6" fill="none" stroke="#A9B4BE"/><text x="252" y="278" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#10161D">RAM</text>
+<rect x="330" y="255" width="75" height="35" rx="6" fill="none" stroke="#A9B4BE"/><text x="367" y="278" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#10161D">BUS</text>
+<g fill="none" stroke="#1F6FEB" stroke-width="2"><path d="M190 140H115V90H45"/><path d="M190 205H115V175H45"/><path d="M430 140H505V90H575"/><path d="M430 205H505V175H575"/><path d="M310 310V360"/></g>
+<g font-family="IBM Plex Mono" font-size="13" fill="#10161D"><text x="50" y="82">STOCKAGE</text><text x="50" y="168">ALIMENTATION</text><text x="438" y="82">REFROID.</text><text x="438" y="168">E/S</text><text x="245" y="392">BUS / DONNÉES</text></g>
+</svg></div></div>
+
+<div class="wrap"><div class="toc" id="sommaire"><div class="eyebrow">Navigation</div><div class="tocgrid">
+<a href="#vue">01 · Vue d'ensemble</a><a href="#cpu">02 · CPU & RAM</a><a href="#stockage">03 · Stockage</a><a href="#carte">04 · Carte mère</a><a href="#energie">05 · Énergie & refroidissement</a><a href="#synthese">06 · Synthèse</a>
+</div></div></div>
+
+<main>
+<section class="lesson" id="vue"><div class="wrap reveal"><div class="text"><div class="eyebrow">01 · Vue d'ensemble</div><h2>Les fonctions essentielles</h2><p>Un ordinateur associe plusieurs composants qui traitent, mémorisent, stockent et alimentent les données. La carte mère permet leur interconnexion.</p></div>
+<div class="grid"><article class="card"><div class="icon">CPU</div><h3>Calculer</h3><p>Exécute les instructions et réalise les opérations.</p></article><article class="card"><div class="icon">RAM</div><h3>Travailler</h3><p>Conserve temporairement les données utilisées.</p></article><article class="card"><div class="icon">SSD</div><h3>Conserver</h3><p>Stocke durablement le système et les fichiers.</p></article></div>
+<div class="visual"><svg viewBox="0 0 1000 280" role="img" aria-label="Flux des données">
+<g fill="none" stroke="#A9B4BE" stroke-width="2"><rect x="30" y="90" width="170" height="80" rx="12"/><rect x="290" y="55" width="190" height="150" rx="12"/><rect x="570" y="25" width="160" height="75" rx="12"/><rect x="570" y="180" width="160" height="75" rx="12"/><rect x="820" y="90" width="140" height="80" rx="12"/></g>
+<g fill="#10161D" font-family="IBM Plex Sans" font-weight="700" text-anchor="middle"><text x="115" y="138">ENTRÉES</text><text x="385" y="135">CARTE MÈRE</text><text x="650" y="70">RAM</text><text x="650" y="225">STOCKAGE</text><text x="890" y="138">SORTIES</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M200 130H290"/><path d="M480 100H570"/><path d="M480 165H570"/><path d="M730 63H820"/><path d="M730 218H780V160H820"/></g></svg></div></div></section>
+
+<section class="lesson" id="cpu"><div class="wrap reveal"><div class="text"><div class="eyebrow">02 · CPU & mémoire</div><h2>CPU et RAM</h2><p>Le <strong>CPU</strong> interprète les instructions et effectue les calculs. La <strong>RAM</strong> est une mémoire de travail rapide et volatile : son contenu disparaît à l'extinction.</p></div>
+<div class="visual"><svg viewBox="0 0 900 300" role="img" aria-label="Relation CPU RAM">
+<rect x="60" y="85" width="220" height="130" rx="15" fill="none" stroke="#A9B4BE" stroke-width="2"/><rect x="340" y="50" width="220" height="200" rx="15" fill="none" stroke="#1F6FEB" stroke-width="3"/><rect x="620" y="85" width="220" height="130" rx="15" fill="none" stroke="#A9B4BE" stroke-width="2"/>
+<g fill="#10161D" text-anchor="middle"><text x="170" y="140" font-family="Space Grotesk" font-size="25" font-weight="700">RAM</text><text x="170" y="175" font-family="IBM Plex Mono" font-size="12">données actives</text><text x="450" y="135" font-family="Space Grotesk" font-size="25" font-weight="700">CPU</text><text x="450" y="170" font-family="IBM Plex Mono" font-size="12">calcul + contrôle</text><text x="730" y="140" font-family="Space Grotesk" font-size="23" font-weight="700">PROGRAMME</text><text x="730" y="175" font-family="IBM Plex Mono" font-size="12">instructions</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M280 150H340"/><path d="M560 150H620"/></g></svg></div>
+<div class="callout"><strong>💡 À retenir</strong>Le CPU traite les instructions avec les données disponibles en RAM ; le stockage conserve les données durablement.</div>
+<table><thead><tr><th>Composant</th><th>Rôle</th><th>Nature</th></tr></thead><tbody><tr><td class="mono">CPU</td><td>Exécuter les instructions</td><td>Traitement</td></tr><tr><td class="mono">RAM</td><td>Stocker temporairement les données actives</td><td>Volatile</td></tr></tbody></table></div></section>
+
+<section class="lesson" id="stockage"><div class="wrap reveal"><div class="text"><div class="eyebrow">03 · Stockage</div><h2>Conserver les données</h2><p>Le stockage conserve le système d'exploitation, les logiciels et les fichiers après extinction de l'ordinateur.</p></div>
+<div class="grid"><article class="card"><div class="icon">SSD</div><h3>SSD</h3><p>Mémoire flash, sans pièces mécaniques mobiles, généralement très réactive.</p></article><article class="card"><div class="icon">HDD</div><h3>HDD</h3><p>Stockage magnétique mécanique utilisant des plateaux et une tête de lecture.</p></article><article class="card"><div class="icon">DATA</div><h3>Fichiers</h3><p>Documents, applications et système sont conservés sur un support non volatil.</p></article></div>
+<div class="tabs"><div class="tabbtns" role="tablist"><button class="tabbtn" role="tab" aria-selected="true" aria-controls="ssd">SSD</button><button class="tabbtn" role="tab" aria-selected="false" aria-controls="hdd">HDD</button></div><div id="ssd" class="panel active" role="tabpanel">Le SSD utilise de la mémoire flash et n'a pas de mécanisme de rotation.</div><div id="hdd" class="panel" role="tabpanel">Le HDD repose sur un mécanisme magnétique avec pièces mobiles.</div></div>
+<div class="callout"><strong>🔒 Sécurité / bonne pratique</strong>Un support de stockage n'est pas une sauvegarde. Les données importantes doivent être copiées sur un autre emplacement.</div></div></section>
+
+<section class="lesson" id="carte"><div class="wrap reveal"><div class="text"><div class="eyebrow">04 · Interconnexion</div><h2>La carte mère</h2><p>La carte mère accueille les composants et fournit les interfaces permettant leur communication et leur alimentation.</p></div>
+<div class="visual"><svg viewBox="0 0 1000 430" role="img" aria-label="Carte mère simplifiée">
+<rect x="70" y="30" width="860" height="370" rx="20" fill="none" stroke="#A9B4BE" stroke-width="3"/><rect x="360" y="125" width="280" height="180" rx="15" fill="none" stroke="#1F6FEB" stroke-width="3"/>
+<text x="500" y="200" text-anchor="middle" font-family="Space Grotesk" font-size="28" font-weight="700" fill="#10161D">CPU</text><text x="500" y="230" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#10161D">socket</text>
+<g fill="none" stroke="#A9B4BE" stroke-width="2"><rect x="120" y="75" width="170" height="70" rx="9"/><rect x="690" y="75" width="170" height="70" rx="9"/><rect x="120" y="285" width="170" height="70" rx="9"/><rect x="690" y="285" width="170" height="70" rx="9"/></g>
+<g font-family="IBM Plex Mono" font-size="14" fill="#10161D" text-anchor="middle"><text x="205" y="118">RAM</text><text x="775" y="118">STOCKAGE</text><text x="205" y="328">E/S</text><text x="775" y="328">ALIMENTATION</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M290 110H360"/><path d="M640 110H690"/><path d="M290 320H360"/><path d="M640 320H690"/></g></svg></div>
+<details><summary>Pourquoi la carte mère est-elle centrale ?</summary><p>Elle regroupe les sockets, emplacements et connecteurs nécessaires aux composants et à leurs échanges.</p></details>
+<details><summary>Que vérifier en maintenance ?</summary><p>Identifier les connecteurs, vérifier les branchements et rechercher les signes de dommage avant toute manipulation.</p></details></div></section>
+
+<section class="lesson" id="energie"><div class="wrap reveal"><div class="text"><div class="eyebrow">05 · Énergie & thermique</div><h2>Alimentation et refroidissement</h2><p>L'alimentation fournit l'énergie électrique adaptée aux composants. Le refroidissement aide à évacuer la chaleur produite pendant leur fonctionnement.</p></div>
+<div class="steps"><div class="step"><b>01</b><br>Secteur</div><div class="step"><b>02</b><br>Alimentation</div><div class="step"><b>03</b><br>Distribution</div><div class="step"><b>04</b><br>Composants</div><div class="step"><b>05</b><br>Chaleur</div><div class="step"><b>06</b><br>Évacuation</div></div>
+<div class="visual"><svg viewBox="0 0 1000 290" role="img" aria-label="Chaîne énergie et chaleur">
+<g fill="none" stroke="#A9B4BE" stroke-width="2"><rect x="40" y="90" width="180" height="90" rx="13"/><rect x="300" y="65" width="190" height="140" rx="13"/><rect x="570" y="90" width="170" height="90" rx="13"/><rect x="820" y="90" width="130" height="90" rx="13"/></g>
+<g fill="#10161D" text-anchor="middle" font-family="Space Grotesk" font-weight="700"><text x="130" y="143">SECTEUR</text><text x="395" y="130">ALIMENTATION</text><text x="395" y="160">PSU</text><text x="655" y="143">COMPOSANTS</text><text x="885" y="143">CHALEUR</text></g>
+<g stroke="#1F6FEB" stroke-width="3"><path d="M220 135H300"/><path d="M490 135H570"/><path d="M740 135H820"/></g><path d="M885 180V245H655V180" fill="none" stroke="#A9B4BE" stroke-width="2"/><text x="770" y="268" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#10161D">DISSIPATEUR + VENTILATION</text></svg></div>
+<div class="callout"><strong>⚠️ Attention / erreur fréquente</strong>La poussière et les obstructions peuvent gêner l'évacuation de chaleur. Avant une intervention, couper et sécuriser l'alimentation.</div></div></section>
+
+<section class="lesson" id="synthese"><div class="wrap reveal"><div class="text"><div class="eyebrow">06 · Synthèse</div><h2>Points clés à retenir</h2><p>Chaque composant possède une fonction précise et participe au fonctionnement global de la machine.</p></div>
+<div class="keys"><div class="key"><b>CPU</b> — traitement et calcul.</div><div class="key"><b>RAM</b> — mémoire de travail temporaire.</div><div class="key"><b>Stockage</b> — conservation durable.</div><div class="key"><b>Carte mère</b> — interconnexion.</div><div class="key"><b>Alimentation</b> — fourniture d'énergie.</div><div class="key"><b>Refroidissement</b> — évacuation de chaleur.</div></div>
+<div class="callout"><strong>💡 À retenir</strong>Comprendre l'architecture revient à relier chaque composant à sa fonction : traiter, travailler temporairement, conserver, connecter, alimenter et refroidir.</div>
+<div class="navbottom"><div class="navcard"><div class="eyebrow">Précédente</div><strong>Aucune — première leçon</strong></div><div class="navcard next"><div class="eyebrow">Suivante</div><a href="#"><strong>Leçon 02 — Assemblage et diagnostic matériel →</strong></a></div></div></div></section>
+</main>
+<button class="back" id="back" aria-label="Retour en haut">↑</button>
+<footer>Maintenance et Réseau Informatique · Module 1 · Leçon 01</footer>
+<script>
+const p=document.getElementById('progress'),b=document.getElementById('back');
+function scrollUI(){let h=document.documentElement.scrollHeight-innerHeight;p.style.width=(h?scrollY/h*100:0)+'%';b.classList.toggle('show',scrollY>500)}addEventListener('scroll',scrollUI,{passive:true});scrollUI();b.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+document.querySelectorAll('.tabs').forEach(t=>{let bs=t.querySelectorAll('[role=tab]'),ps=t.querySelectorAll('[role=tabpanel]');bs.forEach(x=>x.onclick=()=>{bs.forEach(q=>q.setAttribute('aria-selected','false'));ps.forEach(q=>q.classList.remove('active'));x.setAttribute('aria-selected','true');document.getElementById(x.getAttribute('aria-controls')).classList.add('active')})});
+const els=document.querySelectorAll('.reveal');if('IntersectionObserver'in window){let io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});els.forEach(e=>io.observe(e))}else els.forEach(e=>e.classList.add('visible'));
+</script>
+</body></html>

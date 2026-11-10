@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Leçon 30 — Projet final : piloter la communication d'entreprise de A à Z">
+<title>Leçon 30 — Projet final : piloter la communication d'entreprise de A à Z</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#F6F5F2;
+  --color-text:#1B1F2E;
+  --color-accent:#FF5A36;
+  --color-neutral:#9AA3B2;
+  --soft:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg));
+  --soft10:color-mix(in srgb,var(--color-accent) 10%,var(--color-bg));
+  --muted:color-mix(in srgb,var(--color-text) 60%,var(--color-bg));
+  --border:color-mix(in srgb,var(--color-neutral) 50%,var(--color-bg));
+  --shadow:0 14px 40px color-mix(in srgb,var(--color-text) 8%,transparent);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:Inter,system-ui,sans-serif;line-height:1.68}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--color-accent);outline-offset:4px}
+.progress{position:fixed;z-index:1000;top:0;left:0;width:100%;height:4px;background:transparent}
+.progress span{display:block;width:0;height:100%;background:var(--color-accent)}
+header{position:sticky;top:4px;z-index:100;background:color-mix(in srgb,var(--color-bg) 94%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{max-width:1180px;margin:auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-.02em}
+.brand small{display:block;color:var(--muted);font:500 11px "IBM Plex Mono";letter-spacing:.06em;text-transform:uppercase}
+.nav a{text-decoration:none;font-weight:600;font-size:14px}
+.container{max-width:1120px;margin:auto;padding:0 24px}
+.hero{padding:76px 0 54px;display:grid;grid-template-columns:1.2fr .8fr;gap:42px;align-items:center}
+.eyebrow,.kicker{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.12em;color:var(--color-accent)}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.1;letter-spacing:-.035em}
+h1{font-size:clamp(38px,6vw,68px);margin:14px 0 20px;max-width:850px}
+h2{font-size:clamp(28px,4vw,42px);margin:8px 0 18px}
+h3{font-size:20px;margin:0 0 8px}
+.lead{font-size:18px;max-width:720px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
+.badge{padding:8px 11px;border:1px solid var(--border);border-radius:999px;background:var(--soft10);font:600 11px "IBM Plex Mono";letter-spacing:.04em}
+.hero-card{border:1px solid var(--border);background:var(--soft);padding:24px;border-radius:24px;box-shadow:var(--shadow)}
+.hero-card .mono{margin-top:16px}
+.mono{font:500 13px/1.65 "IBM Plex Mono";background:var(--soft10);border:1px solid color-mix(in srgb,var(--color-accent) 30%,var(--color-bg));border-radius:14px;padding:16px;overflow:auto}
+.toc{margin:14px auto 62px;border:1px solid var(--border);border-radius:20px;padding:20px;background:var(--soft)}
+.toc-title{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.toc a{padding:11px 12px;border:1px solid var(--border);border-radius:11px;text-decoration:none;font-size:14px;background:var(--color-bg)}
+.toc a:hover{border-color:var(--color-accent)}
+section{padding:76px 0;scroll-margin-top:80px}
+section:nth-of-type(even){background:var(--soft)}
+.section-inner{max-width:1120px;margin:auto;padding:0 24px}
+.section-intro{max-width:720px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:30px 0}
+.grid.two{grid-template-columns:repeat(2,1fr)}
+.card{border:1px solid var(--border);border-radius:18px;padding:22px;background:var(--color-bg);transition:.2s ease}
+.card:hover{transform:translateY(-3px);border-color:var(--color-accent)}
+.card .icon{font-size:22px;color:var(--color-accent);margin-bottom:12px}
+.callout{margin:28px 0;padding:20px 22px;border-left:5px solid var(--color-accent);background:var(--soft10);border-radius:0 15px 15px 0}
+.callout strong{font-family:"Space Grotesk"}
+.visual{margin:30px 0;border:1px solid var(--border);border-radius:22px;background:var(--color-bg);padding:16px;overflow:auto}
+.visual svg{display:block;width:100%;min-width:680px;height:auto}
+table{width:100%;border-collapse:collapse;margin:26px 0;font-size:14px}
+th,td{text-align:left;padding:14px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font:600 11px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.06em}
+tbody tr:hover{background:var(--soft)}
+.tabs{margin:30px 0}
+.tab-buttons{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border)}
+.tab-btn{border:1px solid var(--border);border-bottom:0;border-radius:10px 10px 0 0;background:var(--color-bg);padding:11px 15px;cursor:pointer;font:600 13px Inter;color:var(--color-text)}
+.tab-btn[aria-selected="true"]{background:var(--color-accent);color:var(--color-bg);border-color:var(--color-accent)}
+.tab-panel{display:none;padding:22px;border:1px solid var(--border);border-top:0;background:var(--color-bg);border-radius:0 0 15px 15px}
+.tab-panel.active{display:block}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:30px 0}
+.step{position:relative;border:1px solid var(--border);border-radius:16px;padding:18px;background:var(--color-bg)}
+.step b{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--color-accent);color:var(--color-bg);font-family:"IBM Plex Mono";margin-bottom:14px}
+.step small{display:block;color:var(--muted)}
+details{border-top:1px solid var(--border);padding:16px 0}
+details:last-child{border-bottom:1px solid var(--border)}
+summary{cursor:pointer;font-weight:700;font-family:"Space Grotesk"}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.summary-item{padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--color-bg)}
+.summary-item b{display:block;font:600 11px "IBM Plex Mono";color:var(--color-accent);margin-bottom:7px}
+.nav-bottom{padding:50px 0}
+.nav-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.nav-card{border:1px solid var(--border);border-radius:18px;padding:20px;text-decoration:none;background:var(--soft);display:block}
+.nav-card:hover{border-color:var(--color-accent)}
+.nav-card span{display:block;color:var(--muted);font:600 11px "IBM Plex Mono";text-transform:uppercase;margin-bottom:8px}
+footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;color:var(--muted);font-size:13px}
+.top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--color-bg);color:var(--color-text);cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}
+.top.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){
+ .hero{grid-template-columns:1fr;padding-top:54px}
+ .toc-grid{grid-template-columns:repeat(2,1fr)}
+ .grid,.grid.two{grid-template-columns:1fr}
+ .stepper{grid-template-columns:1fr}
+ .summary-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+ .container,.section-inner{padding:0 17px}
+ .nav{padding:13px 17px}
+ .toc-grid,.summary-grid,.nav-cards{grid-template-columns:1fr}
+ h1{font-size:40px}
+ section{padding:58px 0}
+ .lead{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*:before,*:after{animation:none!important;transition:none!important}
+ .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">Communication d’Entreprise<small>Leçon 30 · Module 6</small></div>
+    <a href="#sommaire">Sommaire</a>
+  </nav>
+</header>
+
+<main>
+  <div class="container">
+    <section class="hero reveal" id="debut">
+      <div>
+        <div class="eyebrow">Module 6 · Stratégie de communication, marque et événementiel</div>
+        <h1>Projet final : piloter la communication d'entreprise de A à Z</h1>
+        <p class="lead">Mobiliser l'ensemble des compétences en communication acquises pour construire, déployer, piloter et évaluer une stratégie cohérente.</p>
+        <div class="badges">
+          <span class="badge">LEÇON 30</span><span class="badge">22 MIN</span><span class="badge">AVANCÉ / PROFESSIONNEL</span>
+          <span class="badge">PROJET GLOBAL</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="kicker">Fil conducteur</div>
+        <h3>Du diagnostic à la performance</h3>
+        <div class="mono">DIAGNOSTIC → PLAN → CANAUX → CRISE → MARQUE → ÉVÉNEMENT → KPI</div>
+        <p>Le pilotage A à Z consiste à relier chaque décision de communication à un objectif, une cible, une action et une mesure.</p>
+      </div>
+    </section>
+
+    <nav class="toc reveal" id="sommaire" aria-label="Sommaire de la leçon">
+      <div class="toc-title">Sommaire cliquable</div>
+      <div class="toc-grid">
+        <a href="#diagnostic">01 · Diagnostic</a>
+        <a href="#plan">02 · Plan de communication</a>
+        <a href="#interne-externe">03 · Interne & externe</a>
+        <a href="#digital">04 · Digital</a>
+        <a href="#crise">05 · Gestion de crise</a>
+        <a href="#marque">06 · Marque</a>
+        <a href="#evenement">07 · Événementiel</a>
+        <a href="#performance">08 · Performance</a>
+      </div>
+    </nav>
+  </div>
+
+  <section id="diagnostic">
+    <div class="section-inner reveal">
+      <div class="kicker">01 · Comprendre avant d'agir</div>
+      <h2>Diagnostic : poser le bon point de départ</h2>
+      <p class="section-intro">Toute stratégie solide commence par une lecture structurée de l'organisation, de son environnement, de ses publics et de sa réputation.</p>
+      <div class="grid">
+        <article class="card"><div class="icon">01</div><h3>Organisation</h3><p>Clarifier l'activité, les objectifs, les ressources, la culture et les contraintes de l'entreprise.</p></article>
+        <article class="card"><div class="icon">02</div><h3>Publics</h3><p>Identifier les parties prenantes, leurs attentes, leurs freins et les relations à construire.</p></article>
+        <article class="card"><div class="icon">03</div><h3>Environnement</h3><p>Observer concurrence, tendances, opportunités, risques et conversations qui influencent l'image.</p></article>
+      </div>
+      <div class="visual" role="img" aria-label="Schéma du diagnostic de communication">
+        <svg viewBox="0 0 1000 310" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Inter,Arial,sans-serif" fill="none" stroke-linejoin="round">
+            <rect x="25" y="105" width="180" height="95" rx="18" fill="#F6F5F2" stroke="#9AA3B2"/>
+            <rect x="270" y="55" width="180" height="195" rx="18" fill="#F6F5F2" stroke="#FF5A36" stroke-width="3"/>
+            <rect x="515" y="105" width="180" height="95" rx="18" fill="#F6F5F2" stroke="#9AA3B2"/>
+            <rect x="760" y="55" width="215" height="195" rx="18" fill="#FF5A36" stroke="#FF5A36"/>
+            <path d="M205 152H270M450 152H515M695 152H760" stroke="#1B1F2E" stroke-width="3"/>
+            <path d="M258 145l12 7-12 7M503 145l12 7-12 7M748 145l12 7-12 7" fill="#1B1F2E" stroke="none"/>
+            <g fill="#1B1F2E" stroke="none" text-anchor="middle">
+              <text x="115" y="140" font-size="18" font-weight="700">Observer</text><text x="115" y="169" font-size="13">faits, données</text>
+              <text x="360" y="120" font-size="18" font-weight="700">Analyser</text><text x="360" y="151" font-size="13">forces · faiblesses</text><text x="360" y="176" font-size="13">opportunités · risques</text>
+              <text x="605" y="140" font-size="18" font-weight="700">Prioriser</text><text x="605" y="169" font-size="13">enjeux stratégiques</text>
+            </g>
+            <g fill="#F6F5F2" stroke="none" text-anchor="middle">
+              <text x="867" y="115" font-size="19" font-weight="700">Diagnostic</text><text x="867" y="150" font-size="13">synthèse exploitable</text><text x="867" y="178" font-size="13">pour décider</text><text x="867" y="210" font-size="12" font-family="IBM Plex Mono">BASE DE DÉCISION</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="callout"><strong>💡 À retenir</strong><br>Un bon diagnostic ne cherche pas à tout décrire : il fait émerger les enjeux de communication qui méritent une décision.</div>
+    </div>
+  </section>
+
+  <section id="plan">
+    <div class="section-inner reveal">
+      <div class="kicker">02 · Transformer l'analyse en stratégie</div>
+      <h2>Plan de communication : donner une direction</h2>
+      <p class="section-intro">Le plan organise les objectifs, les publics, les messages, les actions, les ressources, le calendrier et les indicateurs.</p>
+      <div class="stepper" aria-label="Étapes de construction du plan">
+        <div class="step"><b>1</b><h3>Objectifs</h3><small>Ce que l'organisation veut obtenir.</small></div>
+        <div class="step"><b>2</b><h3>Cibles</h3><small>Les publics prioritaires.</small></div>
+        <div class="step"><b>3</b><h3>Messages</h3><small>Ce qu'il faut faire comprendre.</small></div>
+        <div class="step"><b>4</b><h3>Actions</h3><small>Les dispositifs et canaux.</small></div>
+        <div class="step"><b>5</b><h3>Mesure</h3><small>Comment juger les résultats.</small></div>
+      </div>
+      <div class="visual" role="img" aria-label="Chaîne objectifs cibles messages actions indicateurs">
+        <svg viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+            <g fill="#F6F5F2" stroke="#9AA3B2">
+              <rect x="25" y="70" width="150" height="80" rx="16"/><rect x="215" y="70" width="150" height="80" rx="16"/>
+              <rect x="405" y="70" width="150" height="80" rx="16"/><rect x="595" y="70" width="150" height="80" rx="16"/>
+            </g>
+            <rect x="785" y="70" width="180" height="80" rx="16" fill="#FF5A36" stroke="#FF5A36"/>
+            <g stroke="#1B1F2E" stroke-width="2"><path d="M175 110h40M365 110h40M555 110h40M745 110h40"/></g>
+            <g fill="#1B1F2E" font-size="16" font-weight="700"><text x="100" y="105">OBJECTIFS</text><text x="290" y="105">CIBLES</text><text x="480" y="105">MESSAGES</text><text x="670" y="105">ACTIONS</text></g>
+            <text x="875" y="105" fill="#F6F5F2" font-size="16" font-weight="700">INDICATEURS</text>
+            <g fill="#9AA3B2" font-size="12"><text x="100" y="130">résultat attendu</text><text x="290" y="130">public prioritaire</text><text x="480" y="130">promesse</text><text x="670" y="130">dispositif</text></g>
+            <text x="875" y="130" fill="#F6F5F2" font-size="12">preuve du résultat</text>
+          </g>
+        </svg>
+      </div>
+      <table>
+        <thead><tr><th scope="col">Élément</th><th scope="col">Question de pilotage</th><th scope="col">Livrable attendu</th></tr></thead>
+        <tbody>
+          <tr><td>Objectif</td><td>Quel changement cherche-t-on ?</td><td>Objectif formulé clairement</td></tr>
+          <tr><td>Cible</td><td>Qui doit être touché en priorité ?</td><td>Segmentation des publics</td></tr>
+          <tr><td>Message</td><td>Quelle idée doit rester ?</td><td>Message central + déclinaisons</td></tr>
+          <tr><td>Action</td><td>Quel dispositif rend le message visible ?</td><td>Plan d'actions et calendrier</td></tr>
+          <tr><td>KPI</td><td>Quelle preuve montrera l'évolution ?</td><td>Tableau de bord</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="interne-externe">
+    <div class="section-inner reveal">
+      <div class="kicker">03 · Faire circuler la cohérence</div>
+      <h2>Communication interne et externe</h2>
+      <p class="section-intro">Piloter la communication exige de coordonner ce que l'organisation dit à l'extérieur avec ce qu'elle fait vivre à l'intérieur.</p>
+      <div class="tabs" data-tabs>
+        <div class="tab-buttons" role="tablist" aria-label="Comparaison des communications">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-interne" id="btn-interne">Communication interne</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-externe" id="btn-externe">Communication externe</button>
+        </div>
+        <div class="tab-panel active" id="tab-interne" role="tabpanel" aria-labelledby="btn-interne">
+          <h3>Mobiliser les collaborateurs</h3>
+          <p>Information, engagement, compréhension des orientations et circulation des messages dans l'organisation. Les canaux doivent être adaptés aux usages des équipes.</p>
+          <div class="mono">MESSAGE MANAGÉRIAL → ÉQUIPES → FEEDBACK → AJUSTEMENT</div>
+        </div>
+        <div class="tab-panel" id="tab-externe" role="tabpanel" aria-labelledby="btn-externe">
+          <h3>Construire la relation avec les publics</h3>
+          <p>Relations médias, communication institutionnelle, clients, partenaires et communautés. La cohérence entre promesse, preuve et expérience protège la crédibilité.</p>
+          <div class="mono">PROMESSE → PRISE DE PAROLE → EXPÉRIENCE → RÉPUTATION</div>
+        </div>
+      </div>
+      <div class="grid two">
+        <article class="card"><h3>Une même ligne directrice</h3><p>Les messages peuvent varier selon les publics, mais l'identité, les faits et les engagements fondamentaux doivent rester cohérents.</p></article>
+        <article class="card"><h3>Un dialogue, pas seulement une diffusion</h3><p>Le pilotage intègre les retours, les signaux faibles et les remontées terrain pour ajuster la communication.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="digital">
+    <div class="section-inner reveal">
+      <div class="kicker">04 · Déployer dans l'écosystème numérique</div>
+      <h2>Digital : orchestrer les contenus et les canaux</h2>
+      <p class="section-intro">Le digital ne constitue pas une stratégie isolée : il prolonge les objectifs de communication et permet d'observer rapidement les réactions des publics.</p>
+      <div class="visual" role="img" aria-label="Écosystème digital de communication">
+        <svg viewBox="0 0 1000 390" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+            <circle cx="500" cy="195" r="90" fill="#FF5A36"/>
+            <text x="500" y="188" fill="#F6F5F2" font-size="21" font-weight="700">MESSAGE</text>
+            <text x="500" y="216" fill="#F6F5F2" font-size="12" font-family="IBM Plex Mono">COHÉRENCE</text>
+            <g fill="#F6F5F2" stroke="#9AA3B2">
+              <rect x="55" y="55" width="190" height="78" rx="15"/><rect x="755" y="55" width="190" height="78" rx="15"/>
+              <rect x="55" y="257" width="190" height="78" rx="15"/><rect x="755" y="257" width="190" height="78" rx="15"/>
+            </g>
+            <g fill="#1B1F2E" font-size="16" font-weight="700"><text x="150" y="90">RÉSEAUX SOCIAUX</text><text x="850" y="90">SITE / LANDING</text><text x="150" y="292">EMAIL / CRM</text><text x="850" y="292">CONTENUS</text></g>
+            <g fill="#9AA3B2" font-size="12"><text x="150" y="112">visibilité · conversation</text><text x="850" y="112">information · conversion</text><text x="150" y="314">relation · fidélisation</text><text x="850" y="314">preuve · expertise</text></g>
+            <g stroke="#1B1F2E" stroke-width="2"><path d="M245 95L425 165M755 95L575 165M245 295L425 225M755 295L575 225"/></g>
+          </g>
+        </svg>
+      </div>
+      <div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong><br>Pour chaque canal, définir sa fonction : informer, engager, convertir, rassurer, démontrer l'expertise ou maintenir la relation. Éviter de publier le même contenu partout sans adaptation.</div>
+      <div class="mono">CALENDRIER ÉDITORIAL · FORMAT · CANAL · CIBLE · MESSAGE · DATE · KPI</div>
+    </div>
+  </section>
+
+  <section id="crise">
+    <div class="section-inner reveal">
+      <div class="kicker">05 · Protéger la confiance</div>
+      <h2>Gestion de crise : prévoir, réagir, apprendre</h2>
+      <p class="section-intro">La communication de crise doit être préparée avant l'incident et pilotée avec rapidité, précision, empathie et cohérence.</p>
+      <div class="stepper">
+        <div class="step"><b>1</b><h3>Alerter</h3><small>Qualifier le signal et activer le dispositif.</small></div>
+        <div class="step"><b>2</b><h3>Vérifier</h3><small>Établir les faits disponibles.</small></div>
+        <div class="step"><b>3</b><h3>Répondre</h3><small>Porter une parole claire et maîtrisée.</small></div>
+        <div class="step"><b>4</b><h3>Actualiser</h3><small>Partager les informations vérifiées.</small></div>
+        <div class="step"><b>5</b><h3>Apprendre</h3><small>Capitaliser après la crise.</small></div>
+      </div>
+      <div class="grid two">
+        <article class="card"><h3>Ce qui protège</h3><p>Une chaîne d'alerte claire, des rôles définis, des éléments de langage préparés et une capacité à distinguer faits établis, hypothèses et informations inconnues.</p></article>
+        <article class="card"><h3>Ce qui fragilise</h3><p>Le silence prolongé, les contradictions, la spéculation, les réponses défensives ou l'écart entre le discours et les actions réelles.</p></article>
+      </div>
+      <div class="callout"><strong>⚠️ Attention / erreur fréquente</strong><br>Répondre vite ne signifie pas répondre sans vérifier. La vitesse doit être accompagnée d'une discipline factuelle.</div>
+    </div>
+  </section>
+
+  <section id="marque">
+    <div class="section-inner reveal">
+      <div class="kicker">06 · Donner une identité durable</div>
+      <h2>Marque : aligner identité, positionnement et expérience</h2>
+      <p class="section-intro">La marque rend la stratégie reconnaissable. Elle articule une identité, un positionnement, des valeurs, une promesse et des preuves.</p>
+      <div class="visual" role="img" aria-label="Architecture de plateforme de marque">
+        <svg viewBox="0 0 1000 360" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+            <rect x="350" y="25" width="300" height="70" rx="18" fill="#FF5A36"/>
+            <text x="500" y="56" fill="#F6F5F2" font-size="18" font-weight="700">POSITIONNEMENT</text>
+            <text x="500" y="78" fill="#F6F5F2" font-size="11">place distinctive dans l'esprit des publics</text>
+            <g fill="#F6F5F2" stroke="#9AA3B2">
+              <rect x="60" y="145" width="200" height="70" rx="16"/><rect x="290" y="145" width="200" height="70" rx="16"/>
+              <rect x="520" y="145" width="200" height="70" rx="16"/><rect x="750" y="145" width="190" height="70" rx="16"/>
+            </g>
+            <g fill="#1B1F2E" font-size="15" font-weight="700"><text x="160" y="177">IDENTITÉ</text><text x="390" y="177">VALEURS</text><text x="620" y="177">PROMESSE</text><text x="845" y="177">PREUVES</text></g>
+            <path d="M500 95v50M500 120H160v25M500 120H845v25" fill="none" stroke="#1B1F2E" stroke-width="2"/>
+            <rect x="270" y="270" width="460" height="60" rx="16" fill="#F6F5F2" stroke="#FF5A36" stroke-width="3"/>
+            <text x="500" y="298" fill="#1B1F2E" font-size="16" font-weight="700">EXPÉRIENCE DE MARQUE</text>
+            <text x="500" y="318" fill="#9AA3B2" font-size="11">ce que les publics perçoivent et retiennent</text>
+            <path d="M160 215v35h340M390 215v35M620 215v35M845 215v35H500" fill="none" stroke="#1B1F2E" stroke-width="2"/>
+          </g>
+        </svg>
+      </div>
+      <div class="callout"><strong>💡 À retenir</strong><br>Une marque crédible n'est pas seulement une identité graphique. Elle est confirmée ou infirmée par les expériences et les preuves produites par l'organisation.</div>
+    </div>
+  </section>
+
+  <section id="evenement">
+    <div class="section-inner reveal">
+      <div class="kicker">07 · Créer un temps fort</div>
+      <h2>Événementiel : transformer un objectif en expérience</h2>
+      <p class="section-intro">Un événement d'entreprise doit être pensé comme un dispositif de communication : objectif, publics, concept, parcours, contenus, logistique, visibilité et mesure.</p>
+      <div class="visual" role="img" aria-label="Rétroplanning événementiel">
+        <svg viewBox="0 0 1000 330" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Inter,Arial,sans-serif">
+            <text x="25" y="35" fill="#1B1F2E" font-size="17" font-weight="700">RÉTROPLANNING — DE L'IDÉE AU BILAN</text>
+            <g stroke="#9AA3B2" fill="#F6F5F2">
+              <rect x="25" y="70" width="180" height="62" rx="13"/><rect x="225" y="70" width="180" height="62" rx="13"/>
+              <rect x="425" y="70" width="180" height="62" rx="13"/><rect x="625" y="70" width="180" height="62" rx="13"/>
+              <rect x="825" y="70" width="150" height="62" rx="13"/>
+            </g>
+            <g fill="#1B1F2E" font-size="14" font-weight="700" text-anchor="middle">
+              <text x="115" y="98">CADRAGE</text><text x="315" y="98">PRÉPARATION</text><text x="515" y="98">PROMOTION</text><text x="715" y="98">JOUR J</text><text x="900" y="98">BILAN</text>
+            </g>
+            <g fill="#9AA3B2" font-size="11" text-anchor="middle">
+              <text x="115" y="118">objectif · budget</text><text x="315" y="118">prestataires · contenu</text><text x="515" y="118">invitations · médias</text><text x="715" y="118">expérience · gestion</text><text x="900" y="118">KPI · retours</text>
+            </g>
+            <path d="M115 160V280M315 160V280M515 160V280M715 160V280M900 160V280" stroke="#9AA3B2"/>
+            <path d="M25 280H975" stroke="#FF5A36" stroke-width="4"/>
+            <g fill="#FF5A36"><circle cx="115" cy="280" r="7"/><circle cx="315" cy="280" r="7"/><circle cx="515" cy="280" r="7"/><circle cx="715" cy="280" r="7"/><circle cx="900" cy="280" r="7"/></g>
+            <text x="25" y="310" fill="#9AA3B2" font-size="11" font-family="IBM Plex Mono">T-12 SEMAINES</text>
+            <text x="850" y="310" fill="#9AA3B2" font-size="11" font-family="IBM Plex Mono">J+7 / BILAN</text>
+          </g>
+        </svg>
+      </div>
+      <div class="grid">
+        <article class="card"><h3>Avant</h3><p>Créer l'attente, informer les participants et installer le sens de l'événement.</p></article>
+        <article class="card"><h3>Pendant</h3><p>Maîtriser l'expérience, les prises de parole, les contenus et les imprévus.</p></article>
+        <article class="card"><h3>Après</h3><p>Prolonger la visibilité, recueillir les retours et mesurer les effets obtenus.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="performance">
+    <div class="section-inner reveal">
+      <div class="kicker">08 · Prouver la valeur</div>
+      <h2>Mesure de la performance : piloter par les résultats</h2>
+      <p class="section-intro">La performance ne se réduit pas au volume de publications ou à la portée. Elle relie les indicateurs aux objectifs définis au départ.</p>
+      <div class="tabs" data-tabs>
+        <div class="tab-buttons" role="tablist" aria-label="Lectures de la performance">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-visibilite" id="btn-visibilite">Visibilité</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-engagement" id="btn-engagement">Engagement</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-impact" id="btn-impact">Impact</button>
+        </div>
+        <div class="tab-panel active" id="tab-visibilite" role="tabpanel" aria-labelledby="btn-visibilite"><h3>Être vu</h3><p>Portée, impressions, présence médiatique, trafic ou exposition permettent d'observer la diffusion du message.</p></div>
+        <div class="tab-panel" id="tab-engagement" role="tabpanel" aria-labelledby="btn-engagement"><h3>Faire réagir</h3><p>Interactions, commentaires, partages, réponses, participation ou taux de clic montrent la qualité de la relation avec les publics.</p></div>
+        <div class="tab-panel" id="tab-impact" role="tabpanel" aria-labelledby="btn-impact"><h3>Produire un changement</h3><p>Évolution de la perception, génération d'opportunités, adoption d'un comportement ou contribution à un objectif organisationnel donnent une lecture plus stratégique.</p></div>
+      </div>
+      <table>
+        <thead><tr><th scope="col">Niveau</th><th scope="col">Question</th><th scope="col">Exemples de KPI</th><th scope="col">Décision</th></tr></thead>
+        <tbody>
+          <tr><td>Visibilité</td><td>Le message a-t-il circulé ?</td><td class="mono">PORTÉE · IMPRESSIONS · TRAFIC</td><td>Optimiser la diffusion</td></tr>
+          <tr><td>Engagement</td><td>Les publics ont-ils réagi ?</td><td class="mono">CLICS · PARTAGES · RÉPONSES</td><td>Adapter contenu et ciblage</td></tr>
+          <tr><td>Impact</td><td>Quel changement est observable ?</td><td class="mono">PERCEPTION · LEADS · ACTION</td><td>Arbitrer la stratégie</td></tr>
+        </tbody>
+      </table>
+      <div class="visual" role="img" aria-label="Boucle de pilotage de la performance">
+        <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+            <circle cx="500" cy="140" r="58" fill="#FF5A36"/>
+            <text x="500" y="135" fill="#F6F5F2" font-size="17" font-weight="700">DÉCIDER</text><text x="500" y="157" fill="#F6F5F2" font-size="11">ajuster</text>
+            <g fill="#F6F5F2" stroke="#9AA3B2">
+              <rect x="60" y="100" width="170" height="80" rx="16"/><rect x="300" y="25" width="170" height="80" rx="16"/>
+              <rect x="530" y="25" width="170" height="80" rx="16"/><rect x="770" y="100" width="170" height="80" rx="16"/>
+            </g>
+            <g fill="#1B1F2E" font-size="15" font-weight="700"><text x="145" y="132">OBJECTIF</text><text x="385" y="57">ACTION</text><text x="615" y="57">MESURE</text><text x="855" y="132">ANALYSE</text></g>
+            <g fill="#9AA3B2" font-size="11"><text x="145" y="153">résultat visé</text><text x="385" y="78">dispositif</text><text x="615" y="78">KPI</text><text x="855" y="153">écarts · causes</text></g>
+            <path d="M230 140h70M470 65h60M700 65h70M855 180L550 210L450 210L145 180" fill="none" stroke="#1B1F2E" stroke-width="2"/>
+            <path d="M283 133l10 7-10 7M523 58l7 7-7 7M763 58l7 7-7 7" fill="#1B1F2E"/>
+            <text x="500" y="248" fill="#9AA3B2" font-size="11" font-family="IBM Plex Mono">MESURER → APPRENDRE → ARBITRER → RECOMMENCER</text>
+          </g>
+        </svg>
+      </div>
+      <div class="callout"><strong>📐 Bonnes pratiques professionnelles</strong><br>Un KPI utile doit aider à prendre une décision. Si une donnée n'influence jamais un arbitrage, sa valeur de pilotage est limitée.</div>
+    </div>
+  </section>
+
+  <section id="synthese">
+    <div class="section-inner reveal">
+      <div class="kicker">Synthèse finale</div>
+      <h2>Points clés à retenir</h2>
+      <p class="section-intro">Piloter la communication de A à Z signifie construire une chaîne cohérente entre analyse, stratégie, exécution et apprentissage.</p>
+      <div class="summary-grid">
+        <div class="summary-item"><b>01 · DIAGNOSTIC</b>Comprendre l'organisation, ses publics et son environnement.</div>
+        <div class="summary-item"><b>02 · STRATÉGIE</b>Relier objectifs, cibles, messages et actions.</div>
+        <div class="summary-item"><b>03 · COHÉRENCE</b>Aligner communication interne, externe, marque et expérience.</div>
+        <div class="summary-item"><b>04 · DIGITAL</b>Orchestrer contenus et canaux selon leur fonction.</div>
+        <div class="summary-item"><b>05 · CRISE</b>Préparer, vérifier, répondre et capitaliser.</div>
+        <div class="summary-item"><b>06 · MARQUE</b>Construire une identité distinctive soutenue par des preuves.</div>
+        <div class="summary-item"><b>07 · ÉVÉNEMENT</b>Créer une expérience avant, pendant et après le temps fort.</div>
+        <div class="summary-item"><b>08 · PERFORMANCE</b>Mesurer pour apprendre et arbitrer.</div>
+      </div>
+      <div class="mono" style="margin-top:30px">DIAGNOSTIC → OBJECTIFS → CIBLES → MESSAGES → ACTIONS → CANAUX → CRISE → MARQUE → ÉVÉNEMENT → KPI → APPRENTISSAGE</div>
+      <div class="callout"><strong>💡 À retenir</strong><br>Le responsable communication ne pilote pas une succession d'actions isolées. Il construit un système cohérent où chaque action sert une intention, chaque message s'adresse à un public et chaque mesure permet d'améliorer la décision suivante.</div>
+      <details><summary>Comment vérifier la cohérence globale d'une stratégie ?</summary><p>Reprendre la chaîne depuis l'objectif : chaque cible doit être justifiée, chaque message doit répondre à un enjeu, chaque action doit avoir une fonction et chaque indicateur doit permettre d'évaluer un résultat utile.</p></details>
+      <details><summary>Quel est le rôle du pilotage dans le temps ?</summary><p>Le pilotage compare les résultats observés aux objectifs, identifie les écarts, explique les causes et permet d'arbitrer les ressources ou les actions.</p></details>
+    </div>
+  </section>
+
+  <div class="container nav-bottom">
+    <div class="nav-cards">
+      <a class="nav-card" href="#debut"><span>← Leçon précédente</span><strong>Leçon 29 · Budget et pilotage de la fonction communication</strong></a>
+      <a class="nav-card" href="#sommaire"><span>Parcours</span><strong>Retour au sommaire du module · Dernière leçon</strong></a>
+    </div>
+  </div>
+</main>
+
+<footer>Communication d’Entreprise · Module 6 · Leçon 30 · Projet final</footer>
+<button class="top" id="topBtn" aria-label="Retour en haut">↑</button>
+
+<script>
+(function(){
+  const bar=document.getElementById('progressBar');
+  const topBtn=document.getElementById('topBtn');
+  function update(){
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    const p=max>0?(window.scrollY/max)*100:0;
+    bar.style.width=p+'%';
+    topBtn.classList.toggle('show',window.scrollY>500);
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  document.querySelectorAll('[data-tabs]').forEach(group=>{
+    const buttons=group.querySelectorAll('.tab-btn');
+    const panels=group.querySelectorAll('.tab-panel');
+    buttons.forEach((btn,i)=>{
+      btn.addEventListener('click',()=>{
+        buttons.forEach(b=>b.setAttribute('aria-selected','false'));
+        panels.forEach(p=>p.classList.remove('active'));
+        btn.setAttribute('aria-selected','true');
+        panels[i].classList.add('active');
+      });
+      btn.addEventListener('keydown',e=>{
+        if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+          e.preventDefault();
+          const next=e.key==='ArrowRight'?(i+1)%buttons.length:(i-1+buttons.length)%buttons.length;
+          buttons[next].focus(); buttons[next].click();
+        }
+      });
+    });
+  });
+
+  const items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');io.unobserve(entry.target);}});
+    },{threshold:.08});
+    items.forEach(el=>io.observe(el));
+  }else items.forEach(el=>el.classList.add('visible'));
+})();
+</script>
+</body>
+</html>

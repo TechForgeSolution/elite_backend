@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leçon 09 — Automatiser et gagner du temps</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0F14'/%3E%3Crect x='6' y='16' width='5' height='10' fill='%2316A34A'/%3E%3Crect x='14' y='10' width='5' height='16' fill='%23fff'/%3E%3Crect x='22' y='6' width='5' height='20' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens (identité de la filière : ne pas modifier) ===== */
+:root{--bg:#FFFFFF;--bg-alt:#F4F8F7;--text:#0A0F14;--muted:#5B6472;--accent:#16A34A;--accent-dark:#0F7A37;--soft:#EAF7EF;--border:#E2E8F0;
+--display:'Sora','Inter',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+a{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100}
+header.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.bar{max-width:1080px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo svg{width:26px;height:26px}
+.bar nav a{margin-left:18px;font-size:.92rem;color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--accent-dark)}
+.wrap{max-width:720px;margin:auto;padding:0 20px}
+.hero{background:var(--bg-alt);padding:64px 0 48px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{background:var(--soft);color:var(--accent-dark);font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:99px}
+.badge.dark{background:var(--text);color:#fff}
+h1{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.25;margin:0 0 20px;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:1.15rem;margin:28px 0 8px}
+section{padding:56px 0}section:nth-of-type(even){background:var(--bg-alt)}
+p{margin:0 0 16px}
+.toc{padding:40px 0 0}.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.toc a{display:flex;gap:14px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s}
+.toc a:hover{border-color:var(--accent);transform:translateX(4px)}
+.toc b{color:var(--accent);font-family:var(--display);min-width:1.4em}
+/* cartes */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+section:nth-of-type(odd) .card{background:var(--bg-alt)}
+.card .ic{width:38px;height:38px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem;margin-bottom:10px}
+.card h4{margin:0 0 4px;font-family:var(--display);font-size:1rem}.card p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.55}
+/* encadrés */
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:16px 20px;border-radius:0 10px 10px 0;margin:24px 0}
+.note strong{display:block;margin-bottom:4px;font-family:var(--display)}.note p{margin:0}
+.note.warn{background:#fff;border:1px solid var(--border);border-left:4px solid var(--text)}
+/* figures */
+figure{margin:28px 0;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+svg text{font-family:var(--body)}
+/* stepper */
+.stepper{display:flex;gap:0;overflow-x:auto;margin:28px 0;padding-bottom:8px;counter-reset:s}
+.step{flex:1 0 118px;position:relative;text-align:center;padding:0 6px}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:2px;background:var(--border)}
+.step:first-child::before{display:none}
+.step button{all:unset;cursor:pointer;display:block;width:100%}
+.dot{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;margin:0 auto 8px;background:var(--bg);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--display);font-weight:700;transition:.2s}
+.step[aria-current=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{font-size:.88rem;font-weight:600}
+.step-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;min-height:110px}
+.step-detail h3{margin-top:0}.step-detail p{margin:0}
+/* tabs */
+.tabs{margin:24px 0}.tablist{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tablist button{font:inherit;font-weight:600;background:none;border:0;padding:10px 16px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tablist button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tablist button:hover{color:var(--accent-dark)}
+.panel{padding:20px 0 0}.panel[hidden]{display:none}.panel ul{margin:0;padding-left:20px}.panel li{margin-bottom:6px}
+/* tableau */
+.tbl{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--soft);font-family:var(--display);font-size:.9rem}tr:last-child td{border-bottom:0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}td.l{text-align:left}
+/* code */
+.code{position:relative;background:#0A0F14;color:#E6EDF3;border-radius:10px;margin:20px 0}
+.code pre{margin:0;padding:18px 70px 18px 18px;overflow-x:auto;font:.9rem/1.6 var(--mono)}
+.code .fn{color:#4ADE80}.code .cm{color:#8B98A8}
+.copy{position:absolute;top:8px;right:8px;font:600 .78rem var(--body);background:#1C2530;color:#fff;border:1px solid #2E3A48;border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+/* accordéon */
+details{border:1px solid var(--border);border-radius:10px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}details>div{padding:0 18px 14px}
+/* points clés */
+.keys{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.keys li{display:flex;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.keys li::before{content:"✓";color:var(--accent);font-weight:700}
+/* nav */
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:40px 0}
+.pn a,.pn span{padding:14px 20px;border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600;transition:border-color .2s}
+.pn a:hover{border-color:var(--accent)}.pn span{color:var(--muted);background:var(--bg-alt)}
+.pn small{display:block;font-weight:400;color:var(--muted)}
+.center{text-align:center;padding-bottom:24px}
+footer{border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
+#top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,background .2s}
+#top.show{opacity:1;pointer-events:auto}#top:hover{background:var(--accent)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.reveal.in{opacity:1;transform:none}
+@media(max-width:640px){body{font-size:16px}.bar nav{display:none}.hero{padding:44px 0 36px}section{padding:44px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#haut"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0A0F14"/><rect x="6" y="17" width="5" height="9" fill="#16A34A"/><rect x="14" y="11" width="5" height="15" fill="#fff"/><rect x="22" y="6" width="5" height="20" fill="#fff"/></svg>Data Analyst · Filière</a>
+  <nav aria-label="Accès rapide"><a href="#s1">Modèles</a><a href="#s2">Productivité</a><a href="#s3">Données</a><a href="#s4">Formulaires</a><a href="#s5">Macros</a><a href="#s6">IA</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero"><div class="wrap">
+  <div class="badges"><span class="badge dark">Module 2 — Visualiser, analyser avec l'IA et présenter</span><span class="badge">⏱ 20 min</span><span class="badge">Niveau débutant</span></div>
+  <h1>Automatiser et gagner du temps</h1>
+  <p class="sub">Leçon 09 — Vous découvrez comment réduire les tâches répétitives grâce aux modèles, aux connexions de données et aux automatisations simples.</p>
+</div></div>
+
+<nav class="wrap toc" aria-label="Sommaire"><h2 style="font-size:1.2rem">Sommaire</h2>
+<ol>
+<li><a href="#s1"><b>1</b>Les modèles réutilisables</a></li>
+<li><a href="#s2"><b>2</b>Raccourcis clavier et séries automatiques</a></li>
+<li><a href="#s3"><b>3</b>Importer et actualiser les données</a></li>
+<li><a href="#s4"><b>4</b>Collecte automatique avec un formulaire</a></li>
+<li><a href="#s5"><b>5</b>Macros et Google Apps Script</a></li>
+<li><a href="#s6"><b>6</b>L'IA pour écrire un script simple</a></li>
+<li><a href="#cles"><b>✓</b>Points clés à retenir</a></li>
+</ol></nav>
+
+<!-- ===== 1 ===== -->
+<section id="s1"><div class="wrap reveal">
+<h2>1. Les modèles réutilisables</h2>
+<p>Une analyse refaite chaque mois (ventes, budget, suivi de stock) reprend presque toujours la même structure : mêmes colonnes, mêmes formules, même mise en forme. Un <strong>modèle</strong> (template) conserve cette structure prête à l'emploi : on l'ouvre, on y place les nouvelles données, et tout le reste est déjà en place.</p>
+<div class="cards">
+  <div class="card"><div class="ic">📐</div><h4>Structure figée</h4><p>Colonnes, en-têtes et mise en forme identiques à chaque utilisation.</p></div>
+  <div class="card"><div class="ic">🧮</div><h4>Formules intégrées</h4><p>Totaux, moyennes et pourcentages se calculent dès la saisie.</p></div>
+  <div class="card"><div class="ic">📊</div><h4>Graphiques prêts</h4><p>Les graphiques se mettent à jour avec les nouvelles données.</p></div>
+  <div class="card"><div class="ic">✅</div><h4>Analyses homogènes</h4><p>Toute l'équipe travaille avec le même format.</p></div>
+</div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Modèles">
+    <button role="tab" aria-selected="true">Excel : fichier .xltx</button>
+    <button role="tab" aria-selected="false">Google Sheets : modèles</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>On construit le classeur, puis on l'enregistre au format <strong>Modèle Excel (.xltx)</strong>.</li><li>Un double-clic sur ce fichier ouvre une <em>copie</em> vierge : le modèle d'origine reste intact.</li><li>Les modèles proposés par Excel sont accessibles depuis <em>Fichier › Nouveau</em>.</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>On prépare une feuille de référence, puis on utilise <em>Fichier › Créer une copie</em> à chaque nouvelle période.</li><li>La galerie de modèles propose des structures prêtes à l'emploi (budget, planning, suivi).</li><li>Les organisations peuvent publier leurs propres modèles pour toute l'équipe.</li></ul></div>
+</div>
+<div class="note"><strong>📊 Bonne pratique d'analyse</strong><p>Videz les données d'exemple avant d'enregistrer un modèle, mais gardez les formules et les en-têtes : un bon modèle ne contient que la structure.</p></div>
+</div></section>
+
+<!-- ===== 2 ===== -->
+<section id="s2"><div class="wrap reveal">
+<h2>2. Raccourcis clavier et séries automatiques</h2>
+<p>Chaque geste évité à la souris économise quelques secondes ; répétés des centaines de fois, ils représentent un gain réel. Voici les raccourcis les plus utiles, valables dans Excel comme dans Google Sheets.</p>
+<div class="tbl"><table>
+<caption class="sr" style="position:absolute;left:-9999px">Raccourcis clavier essentiels des tableurs</caption>
+<tr><th>Raccourci</th><th>Effet</th></tr>
+<tr><td><strong>Ctrl + C / X / V</strong></td><td>Copier, couper, coller</td></tr>
+<tr><td><strong>Ctrl + Z / Y</strong></td><td>Annuler, rétablir</td></tr>
+<tr><td><strong>Ctrl + D</strong></td><td>Recopier la cellule du dessus vers le bas</td></tr>
+<tr><td><strong>Ctrl + Flèche</strong></td><td>Aller au bord d'une plage de données</td></tr>
+<tr><td><strong>Ctrl + Espace</strong> / <strong>Maj + Espace</strong></td><td>Sélectionner une colonne / une ligne</td></tr>
+<tr><td><strong>Ctrl + ;</strong></td><td>Insérer la date du jour</td></tr>
+<tr><td><strong>Ctrl + Maj + L</strong></td><td>Activer ou désactiver les filtres</td></tr>
+<tr><td><strong>F4</strong></td><td>Figer une référence dans une formule ($A$1)</td></tr>
+</table></div>
+<p>Le tableur sait aussi <strong>générer des séries</strong> : saisissez deux valeurs (par exemple 1 et 2, ou « Janvier » et « Février »), sélectionnez-les, puis tirez la <em>poignée de recopie</em>, le petit carré en bas à droite de la sélection. Il prolonge la suite logique : nombres, dates, jours de la semaine, mois.</p>
+<div class="cards">
+  <div class="card"><div class="ic">🔢</div><h4>Séries numériques</h4><p>1, 2, 3… ou 10, 20, 30… selon le pas détecté.</p></div>
+  <div class="card"><div class="ic">📅</div><h4>Séries chronologiques</h4><p>Jours, semaines, mois ou années à la suite.</p></div>
+</div>
+<details><summary>Générer une série par formule</summary><div><p>La fonction <code>SEQUENCE</code> produit toute une série en une seule formule (Google Sheets et Excel récent). Ici : 5 lignes, 1 colonne, départ à 10, pas de 10.</p>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Série : 10, 20, 30, 40, 50</span>
+=<span class="fn">SEQUENCE</span>(5;1;10;10)</code></pre></div></div></details>
+</div></section>
+
+<!-- ===== 3 ===== -->
+<section id="s3"><div class="wrap reveal">
+<h2>3. Importer et actualiser les données</h2>
+<p>Copier-coller un export à chaque mise à jour est lent et source d'erreurs. Mieux vaut <strong>connecter</strong> le tableur à la source : une fois la connexion créée, une actualisation suffit pour récupérer les données les plus récentes.</p>
+<figure>
+<svg viewBox="0 0 640 130" role="img" aria-label="Flux de données connecté : source de données, connexion, feuille de calcul, graphique, avec une flèche d'actualisation qui revient vers la source">
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="10" y="25" width="120" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="70" y="53" fill="#0A0F14">Source (CSV, web)</text>
+<rect x="175" y="25" width="120" height="46" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="235" y="53" fill="#0A0F14">Connexion</text>
+<rect x="340" y="25" width="120" height="46" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="400" y="53" fill="#0A0F14">Feuille</text>
+<rect x="505" y="25" width="125" height="46" rx="8" fill="#0A0F14"/><text x="567" y="53" fill="#fff">Graphique</text>
+</g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M130 48h43"/><path d="M295 48h43"/><path d="M460 48h43"/></g>
+<path d="M235 73V100H70V73" stroke="#16A34A" stroke-width="1.8" stroke-dasharray="5 4" fill="none" marker-end="url(#ar)"/>
+<text x="152" y="120" font-size="12" fill="#5B6472" text-anchor="middle">Actualiser = relire la source</text>
+</svg>
+<figcaption>Une connexion de données évite de recommencer l'importation à la main.</figcaption></figure>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Importation">
+    <button role="tab" aria-selected="true">Excel : Power Query</button>
+    <button role="tab" aria-selected="false">Google Sheets : IMPORTRANGE et IMPORTDATA</button>
+  </div>
+  <div class="panel" role="tabpanel"><p><strong>Power Query</strong> se trouve dans l'onglet <em>Données › Obtenir des données</em>. Il se connecte à un fichier, un dossier, une page web ou une base, puis enregistre chaque transformation (supprimer des colonnes, filtrer, changer un type) comme une étape rejouable.</p><ul><li>Un clic sur <em>Actualiser tout</em> relance la connexion et toutes les étapes.</li><li>Le nettoyage n'est fait qu'une seule fois, puis appliqué automatiquement.</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><p>Google Sheets importe par <strong>fonctions</strong>, directement dans une cellule :</p><ul><li><code>IMPORTRANGE</code> récupère une plage d'un autre classeur Google Sheets (un accès doit être autorisé la première fois).</li><li><code>IMPORTDATA</code> récupère un fichier CSV ou TSV publié à une adresse web.</li></ul>
+  <div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Plage d'un autre classeur (adresse à adapter)</span>
+=<span class="fn">IMPORTRANGE</span>("https://docs.google.com/spreadsheets/d/ID_DU_CLASSEUR";"Ventes!A1:D100")
+
+<span class="cm">// Fichier CSV hébergé en ligne (adresse à adapter)</span>
+=<span class="fn">IMPORTDATA</span>("https://exemple.com/ventes.csv")</code></pre></div></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Si la source change de forme (colonne renommée, fichier déplacé), la connexion peut afficher une erreur. Une source stable et bien nommée rend l'automatisation fiable.</p></div>
+</div></section>
+
+<!-- ===== 4 ===== -->
+<section id="s4"><div class="wrap reveal">
+<h2>4. Collecte automatique avec un formulaire</h2>
+<p>Un formulaire en ligne remplace la saisie manuelle : chaque personne répond depuis son téléphone ou son ordinateur, et les réponses arrivent seules dans le tableur, une ligne par réponse, sans erreur de recopie. C'est une excellente façon d'alimenter l'étape de <em>collecte</em> d'une analyse.</p>
+<div class="stepper" role="list" id="stepper"></div>
+<div class="step-detail" id="stepdetail" aria-live="polite"></div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Formulaires">
+    <button role="tab" aria-selected="true">Google Forms</button>
+    <button role="tab" aria-selected="false">Microsoft Forms</button>
+  </div>
+  <div class="panel" role="tabpanel"><p>Dans l'onglet <em>Réponses</em>, l'icône Google Sheets crée (ou relie) une feuille qui se remplit à chaque envoi. La première colonne enregistre l'horodatage de la réponse.</p></div>
+  <div class="panel" role="tabpanel" hidden><p>Dans l'onglet <em>Réponses</em>, l'option <em>Ouvrir dans Excel</em> génère un classeur lié au formulaire. Les nouvelles réponses y apparaissent à chaque actualisation.</p></div>
+</div>
+<div class="note"><strong>💡 À retenir</strong><p>Des questions à choix fermés (listes, cases) donnent des réponses homogènes, donc des données propres dès la collecte.</p></div>
+</div></section>
+
+<!-- ===== 5 ===== -->
+<section id="s5"><div class="wrap reveal">
+<h2>5. Macros et Google Apps Script</h2>
+<p>Une <strong>macro</strong> enregistre une suite d'actions (mise en forme, tri, copie) pour la rejouer en un clic ou par un raccourci. Une automatisation <strong>programmée</strong> va plus loin : elle s'exécute seule à une heure choisie ou lors d'un événement.</p>
+<div class="cards">
+  <div class="card"><div class="ic">⏺️</div><h4>Enregistrer</h4><p>Le tableur mémorise vos actions pendant que vous les effectuez.</p></div>
+  <div class="card"><div class="ic">▶️</div><h4>Rejouer</h4><p>Un clic ou un raccourci répète toute la séquence à l'identique.</p></div>
+  <div class="card"><div class="ic">⏰</div><h4>Programmer</h4><p>Un déclencheur lance le script chaque jour, chaque semaine ou à chaque réponse.</p></div>
+</div>
+<div class="tabs" data-tabs>
+  <div class="tablist" role="tablist" aria-label="Macros">
+    <button role="tab" aria-selected="true">Excel : macros</button>
+    <button role="tab" aria-selected="false">Google : Apps Script</button>
+  </div>
+  <div class="panel" role="tabpanel"><ul><li>Onglet <em>Affichage › Macros › Enregistrer une macro</em> : on la nomme, on réalise les actions, puis on arrête l'enregistrement.</li><li>Excel traduit les actions en code <strong>VBA</strong> sans que l'on ait à l'écrire.</li><li>Un classeur contenant des macros s'enregistre au format <strong>.xlsm</strong>.</li></ul></div>
+  <div class="panel" role="tabpanel" hidden><ul><li>Menu <em>Extensions › Macros</em> pour enregistrer des actions, ou <em>Extensions › Apps Script</em> pour ouvrir l'éditeur de code.</li><li><strong>Apps Script</strong> est basé sur JavaScript et relie Sheets, Forms, Gmail ou Agenda.</li><li>Les <em>déclencheurs</em> exécutent un script automatiquement, à heure fixe ou à chaque nouvelle réponse.</li></ul></div>
+</div>
+<div class="note warn"><strong>⚠️ Attention</strong><p>Une macro exécute des actions réelles sur vos fichiers. N'activez jamais les macros d'un document dont vous ne connaissez pas la provenance.</p></div>
+</div></section>
+
+<!-- ===== 6 ===== -->
+<section id="s6"><div class="wrap reveal">
+<h2>6. L'IA pour écrire un script simple</h2>
+<p>Un assistant d'IA peut rédiger un petit script à partir d'une description en langage courant, et expliquer ce qu'il fait ligne par ligne. Aucune connaissance préalable en code n'est requise pour comprendre le résultat, à condition de demander des commentaires.</p>
+<figure>
+<svg viewBox="0 0 640 120" role="img" aria-label="Processus : décrire le besoin, l'IA propose un script commenté, l'analyste relit et teste, puis le script est exécuté">
+<defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5B6472"/></marker></defs>
+<g font-size="13" font-weight="600" text-anchor="middle">
+<rect x="10" y="30" width="130" height="50" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="75" y="60" fill="#0A0F14">Décrire le besoin</text>
+<rect x="170" y="30" width="140" height="50" rx="8" fill="#EAF7EF" stroke="#16A34A"/><text x="240" y="60" fill="#0A0F14">Script commenté</text>
+<rect x="340" y="30" width="140" height="50" rx="8" fill="#fff" stroke="#E2E8F0"/><text x="410" y="60" fill="#0A0F14">Relire et tester</text>
+<rect x="510" y="30" width="120" height="50" rx="8" fill="#0A0F14"/><text x="570" y="60" fill="#fff">Exécuter</text>
+</g>
+<g stroke="#5B6472" stroke-width="1.5" fill="none" marker-end="url(#ar2)"><path d="M140 55h28"/><path d="M310 55h28"/><path d="M480 55h28"/></g>
+<text x="320" y="106" font-size="12" fill="#5B6472" text-anchor="middle">L'IA propose, l'analyste vérifie</text>
+</svg>
+<figcaption>Un script écrit par l'IA passe toujours par une relecture humaine.</figcaption></figure>
+<h3>Exemple de demande</h3>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Demande formulée à l'IA</span>
+Écris un script Google Apps Script qui supprime les doublons
+de la feuille active. Ajoute un commentaire sur chaque ligne
+pour m'expliquer ce qu'elle fait, comme si j'étais débutant.</code></pre></div>
+<h3>Exemple de réponse</h3>
+<div class="code"><button class="copy">Copier</button><pre><code><span class="cm">// Nom de la fonction : elle sera lancée depuis le menu</span>
+function <span class="fn">supprimerDoublons</span>() {
+  <span class="cm">// On récupère la feuille actuellement ouverte</span>
+  const feuille = SpreadsheetApp.getActiveSheet();
+  <span class="cm">// On sélectionne toutes les cellules contenant des données</span>
+  const donnees = feuille.getDataRange();
+  <span class="cm">// On supprime les lignes identiques</span>
+  donnees.removeDuplicates();
+}</code></pre></div>
+<div class="note warn"><strong>⚠️ Erreur fréquente</strong><p>Faire confiance à un script sans le comprendre. Un script qui supprime ou modifie des données doit être relu, puis essayé sur une copie du fichier, jamais directement sur l'original. Évitez aussi de transmettre à l'IA des données confidentielles : décrivez la structure, pas le contenu.</p></div>
+<details><summary>Comment obtenir un meilleur script ?</summary><div><p>Précisez l'outil (Apps Script ou VBA), la structure du tableau (noms des colonnes), le résultat attendu et demandez des commentaires pour débutant. Une description précise donne un script plus juste.</p></div></details>
+<div class="note"><strong>🔗 Pour aller plus loin</strong><p>La leçon suivante montre comment présenter ses conclusions et réunir toutes ces compétences dans un projet d'analyse complet.</p></div>
+</div></section>
+
+<!-- ===== Points clés ===== -->
+<section id="cles"><div class="wrap reveal">
+<h2>Points clés à retenir</h2>
+<ul class="keys">
+<li>Un modèle (.xltx ou copie Google Sheets) conserve la structure d'une analyse pour la réutiliser à l'identique.</li>
+<li>Les raccourcis clavier et les séries automatiques accélèrent le travail quotidien.</li>
+<li>Power Query (Excel) et IMPORTRANGE / IMPORTDATA (Google Sheets) connectent le tableur à ses sources et permettent l'actualisation.</li>
+<li>Un formulaire lié à une feuille alimente automatiquement les données, avec des réponses homogènes.</li>
+<li>Une macro rejoue des actions ; Google Apps Script permet des automatisations programmées avec des déclencheurs.</li>
+<li>L'IA peut écrire et commenter un script simple, mais l'analyste relit, teste et reste responsable du résultat.</li>
+</ul>
+</div></section>
+
+<div class="wrap">
+  <nav class="pn" aria-label="Navigation entre leçons">
+    <a href="lecon-08-utiliser-ia-analyser-interpreter-donnees.html">Leçon précédente<small>Leçon 08 — Utiliser l'IA pour analyser et interpréter les données</small></a>
+    <a href="lecon-10-presenter-conclusions-projet-analyse.html">Leçon suivante<small>Leçon 10 — Présenter ses conclusions et réaliser un projet d'analyse complet</small></a>
+  </nav>
+  <p class="center"><a href="#haut">Retour au sommaire du module</a></p>
+</div>
+</main>
+
+<footer>Filière Data Analyst — Module 2 · Leçon 09</footer>
+<button id="top" aria-label="Retour en haut de page">↑</button>
+
+<script>
+/* ===== Étapes (stepper) : lier un formulaire à une feuille ===== */
+const steps=[
+["Créer","Rédiger le formulaire dans Google Forms ou Microsoft Forms, avec des questions claires et, si possible, des choix fermés."],
+["Lier","Relier le formulaire à une feuille de calcul depuis l'onglet des réponses : la feuille se crée avec une colonne par question."],
+["Diffuser","Partager le lien du formulaire. Chaque personne répond en quelques clics, sans accéder à la feuille."],
+["Recevoir","Chaque réponse ajoute automatiquement une nouvelle ligne dans le tableur, avec la date et l'heure."],
+["Analyser","Les formules, tableaux croisés et graphiques s'appuient sur la feuille et se mettent à jour avec les nouvelles lignes."]];
+const st=document.getElementById('stepper'),sd=document.getElementById('stepdetail');
+function showStep(i){[...st.children].forEach((e,j)=>e.setAttribute('aria-current',j===i));sd.innerHTML='<h3>Étape '+(i+1)+' — '+steps[i][0]+'</h3><p>'+steps[i][1]+'</p>'}
+steps.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.setAttribute('role','listitem');
+d.innerHTML='<button type="button"><div class="dot">'+(i+1)+'</div><span>'+s[0]+'</span></button>';
+d.querySelector('button').onclick=()=>showStep(i);st.appendChild(d)});showStep(0);
+
+/* ===== Onglets (clavier : flèches) ===== */
+document.querySelectorAll('[data-tabs]').forEach(box=>{
+const tabs=[...box.querySelectorAll('[role=tab]')],panels=[...box.querySelectorAll('[role=tabpanel]')];
+function sel(i){tabs.forEach((t,j)=>{t.setAttribute('aria-selected',j===i);t.tabIndex=j===i?0:-1;panels[j].hidden=j!==i})}
+tabs.forEach((t,i)=>{t.onclick=()=>sel(i);t.onkeydown=e=>{let n=null;
+if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+if(n!==null){sel(n);tabs[n].focus()}}});sel(0)});
+
+/* ===== Copier le code ===== */
+document.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+const t=b.nextElementSibling.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});
+b.textContent='Copié';setTimeout(()=>b.textContent='Copier',1500)});
+
+/* ===== Progression, retour en haut, apparitions ===== */
+const bar=document.getElementById('progress'),top_=document.getElementById('top');
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+bar.style.width=(p*100)+'%';top_.classList.toggle('show',h.scrollTop>600)},{passive:true});
+top_.onclick=()=>scrollTo({top:0});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>
