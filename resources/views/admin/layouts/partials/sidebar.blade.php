@@ -49,6 +49,12 @@
                 </svg>
                 <span>Packs formation</span>
             </a>
+            <a href="{{ route('admin.advertisements.index') }}" class="menu-item {{ request()->routeIs('admin.advertisements.*') ? 'active' : '' }}">
+                <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.182 1.038l-4.6-6.138A2 2 0 013 12.94V10a2 2 0 012-2h1.764a2 2 0 001.61-.82l1.626-2.172A1 1 0 0111 5.882zM15 9l4 4m0-4l-4 4" />
+                </svg>
+                <span>Publicités mobile</span>
+            </a>
         </div>
 
         <div class="menu-section">

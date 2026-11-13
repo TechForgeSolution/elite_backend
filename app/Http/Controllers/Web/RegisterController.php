@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\EliteUser;
-use App\Services\ReferralService;
+use App\Models\SystemSetting;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
 
 class RegisterController extends Controller
 {
@@ -34,132 +32,64 @@ class RegisterController extends Controller
     /**
      * Traiter l'inscription web
      */
-    public function register(Request $request)
+    public function register(Request $request, AuthService $authService)
     {
-        $request->validate([
+        $telephone = preg_replace('/\D+/', '', (string) $request->input('telephone'));
+        if (str_starts_with($telephone, '237') && strlen($telephone) === 12) {
+            $telephone = substr($telephone, 3);
+        }
+        $request->merge(['telephone' => $telephone]);
+
+        $data = $request->validate([
             'nom'                  => 'required|string|max:255',
             'prenom'               => 'required|string|max:255',
-            'telephone'            => 'required|string|unique:elite_users,telephone',
-            'email'                => 'nullable|email|unique:elite_users,email',
+            'telephone'            => ['required', 'string', 'regex:/^6\d{8}$/', 'unique:elite_users,telephone'],
             'dernier_diplome'      => 'required|string|max:255',
             'ville'                => 'required|string|max:255',
             'password'             => 'required|string|min:6|confirmed',
-            'referral_code'        => 'nullable|string',
+            'referral_code'        => 'nullable|string|max:50',
         ]);
 
-        // Vérifier le code de parrainage
-        $referralCode = null;
-        if ($request->referral_code) {
-            $parrain = EliteUser::where('referral_code', $request->referral_code)->first();
-            if ($parrain) {
-                $referralCode = $request->referral_code;
-            }
-        }
+        $data['referral_code'] = $data['referral_code'] ?: SystemSetting::getDefaultReferralCode();
 
-        $user = EliteUser::create([
-            'nom'             => $request->nom,
-            'prenom'          => $request->prenom,
-            'telephone'       => $request->telephone,
-            'email'           => $request->email,
-            'dernier_diplome' => $request->dernier_diplome,
-            'ville'           => $request->ville,
-            'password'        => Hash::make($request->password),
-            'referred_by'     => $referralCode,
-            'referral_code'   => strtoupper(substr(md5(uniqid()), 0, 8)),
+        $authService->register($data);
+        $request->session()->put('registration_telephone', $data['telephone']);
+
+        return redirect()->route('web.verify-whatsapp');
+    }
+
+    public function showWhatsappVerification(Request $request)
+    {
+        abort_unless($request->session()->has('registration_telephone'), 403);
+
+        return view('web.whatsapp_otp', [
+            'telephone' => $request->session()->get('registration_telephone'),
         ]);
+    }
 
-        // Rediriger vers le store approprié selon l'appareil
+    public function verifyWhatsappOtp(Request $request, AuthService $authService)
+    {
+        abort_unless($request->session()->has('registration_telephone'), 403);
+        $data = $request->validate(['code' => 'required|string|size:6|regex:/^[0-9]{6}$/']);
+        $telephone = $request->session()->get('registration_telephone');
+
+        $authService->verifyWhatsappOtp($telephone, $data['code'], false);
+        $request->session()->forget('registration_telephone');
+
+        $user = EliteUser::where('telephone', $telephone)->firstOrFail();
         $userAgent = $request->header('User-Agent', '');
-        $isIos     = stripos($userAgent, 'iPhone') !== false || stripos($userAgent, 'iPad') !== false;
-
-        $storeUrl = $isIos
-            ? 'https://apps.apple.com/app/elite-20/id0000000000' // Remplacer par l'App Store ID réel
+        $storeUrl = stripos($userAgent, 'iPhone') !== false || stripos($userAgent, 'iPad') !== false
+            ? 'https://apps.apple.com/app/elite-20/id0000000000'
             : 'https://play.google.com/store/apps/details?id=com.ghost777xsorganization.elite20';
 
         return view('web.register_success', compact('user', 'storeUrl'));
     }
 
-    /**
-     * Redirection vers Google OAuth
-     */
-    public function redirectToGoogle(Request $request)
+    public function resendWhatsappOtp(Request $request, AuthService $authService)
     {
-        $referralCode = $request->query('ref', '');
-        session(['referral_code' => $referralCode]);
-        return Socialite::driver('google')->redirect();
-    }
+        abort_unless($request->session()->has('registration_telephone'), 403);
+        $authService->resendWhatsappOtp($request->session()->get('registration_telephone'));
 
-    /**
-     * Callback Google OAuth
-     */
-    public function handleGoogleCallback(Request $request)
-    {
-        try {
-            $googleUser   = Socialite::driver('google')->user();
-            $referralCode = session('referral_code', '');
-
-            $user = EliteUser::where('email', $googleUser->getEmail())->first();
-
-            if (!$user) {
-                $user = EliteUser::create([
-                    'nom'             => $googleUser->getName(),
-                    'prenom'          => '',
-                    'email'           => $googleUser->getEmail(),
-                    'telephone'       => '',
-                    'dernier_diplome' => '',
-                    'ville'           => '',
-                    'password'        => Hash::make(uniqid()),
-                    'referred_by'     => $referralCode ?: null,
-                    'referral_code'   => strtoupper(substr(md5(uniqid()), 0, 8)),
-                    'google_id'       => $googleUser->getId(),
-                ]);
-            }
-
-            $userAgent = $request->header('User-Agent', '');
-            $isIos     = stripos($userAgent, 'iPhone') !== false || stripos($userAgent, 'iPad') !== false;
-
-            $storeUrl = $isIos
-                ? 'https://apps.apple.com/app/elite-20/id0000000000'
-                : 'https://play.google.com/store/apps/details?id=com.ghost777xsorganization.elite20';
-
-            return view('web.register_success', compact('user', 'storeUrl'));
-
-        } catch (\Exception $e) {
-            return redirect()->route('web.register')->withErrors(['google' => 'Erreur lors de la connexion Google.']);
-        }
-    }
-
-    /**
-     * Envoyer un OTP (pour inscription par email/téléphone)
-     */
-    public function sendOtp(Request $request)
-    {
-        $request->validate(['telephone' => 'required|string']);
-
-        $otp = rand(100000, 999999);
-        session(['otp' => $otp, 'otp_telephone' => $request->telephone, 'otp_expires_at' => now()->addMinutes(10)]);
-
-        // TODO: Intégrer un service SMS réel ici (ex: Twilio, Orange SMS)
-        // Pour le dev : on retourne l'OTP dans la réponse (à supprimer en prod)
-        return response()->json(['success' => true, 'message' => 'OTP envoyé.', 'dev_otp' => $otp]);
-    }
-
-    /**
-     * Vérifier l'OTP
-     */
-    public function verifyOtp(Request $request)
-    {
-        $request->validate(['otp' => 'required|string', 'telephone' => 'required|string']);
-
-        if (
-            session('otp') != $request->otp ||
-            session('otp_telephone') != $request->telephone ||
-            now()->isAfter(session('otp_expires_at'))
-        ) {
-            return response()->json(['success' => false, 'message' => 'OTP invalide ou expiré.'], 422);
-        }
-
-        session()->forget(['otp', 'otp_telephone', 'otp_expires_at']);
-        return response()->json(['success' => true, 'message' => 'OTP vérifié.']);
+        return back()->with('status', 'Un nouveau code a été envoyé sur WhatsApp.');
     }
 }

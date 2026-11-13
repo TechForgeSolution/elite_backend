@@ -19,8 +19,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'nom'              => 'required|string|max:255',
             'prenom'           => 'required|string|max:255',
-            'telephone'        => 'required_without:email|nullable|string|unique:elite_users,telephone',
-            'email'            => 'required_without:telephone|nullable|email|unique:elite_users,email',
+            'telephone'        => 'required|string|max:20|unique:elite_users,telephone',
             'dernier_diplome'  => 'required|in:primaire,secondaire,universitaire',
             'ville'            => 'required|string|max:255',
             'password'         => 'required|string|min:6|confirmed',
@@ -54,15 +53,15 @@ class AuthController extends Controller
         return response()->json(['success' => true, 'data' => $result]);
     }
 
-    // ── Connexion sociale (Google / Apple) ────────────────────
+    // ── Connexion Apple pour comptes déjà créés ───────────────
     public function socialLogin(Request $request): JsonResponse
     {
         $data = $request->validate([
             'firebase_token' => 'required|string',
-            'provider'       => 'required|in:google,apple',
+            'provider'       => 'required|in:apple',
         ]);
 
-        $result = $this->authService->socialLogin($data['firebase_token'], $data['provider']);
+        $result = $this->authService->socialLogin($data['firebase_token']);
         return response()->json(['success' => true, 'data' => $result]);
     }
 
@@ -75,7 +74,7 @@ class AuthController extends Controller
             'dernier_diplome' => 'required|in:primaire,secondaire,universitaire',
             'ville'           => 'required|string|max:255',
             'referral_code'   => 'required|string|max:50',
-            'telephone'       => 'nullable|string|unique:elite_users,telephone,' . $request->user()->id,
+            'telephone'       => 'required|string|max:20|unique:elite_users,telephone,' . $request->user()->id,
             'password'        => 'nullable|string|min:6|confirmed',
         ]);
 
@@ -102,6 +101,46 @@ class AuthController extends Controller
         return response()->json(['success' => true, 'message' => 'Code renvoyé avec succès.']);
     }
 
+    public function verifyWhatsappOtp(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'telephone' => 'required|string|max:20',
+            'code' => 'required|string|size:6|regex:/^[0-9]{6}$/',
+        ]);
+
+        $result = $this->authService->verifyWhatsappOtp($data['telephone'], $data['code']);
+        return response()->json(['success' => true, 'data' => $result]);
+    }
+
+    public function resendWhatsappOtp(Request $request): JsonResponse
+    {
+        $data = $request->validate(['telephone' => 'required|string|max:20']);
+        $this->authService->resendWhatsappOtp($data['telephone']);
+        return response()->json(['success' => true, 'message' => 'Un nouveau code a été envoyé sur WhatsApp.']);
+    }
+
+    public function forgotPasswordWhatsapp(Request $request): JsonResponse
+    {
+        $data = $request->validate(['telephone' => 'required|string|max:20']);
+        $this->authService->sendPasswordResetWhatsappOtp($data['telephone']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Si ce numéro correspond à un compte, un code a été envoyé sur WhatsApp.',
+        ]);
+    }
+
+    public function resetPasswordWhatsapp(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'telephone' => 'required|string|max:20',
+            'code' => 'required|string|size:6|regex:/^[0-9]{6}$/',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $this->authService->resetPasswordWithWhatsappOtp($data['telephone'], $data['code'], $data['password']);
+        return response()->json(['success' => true, 'message' => 'Votre mot de passe a été modifié.']);
+    }
+
     // ── Profil ────────────────────────────────────────────────
     public function profile(Request $request): JsonResponse
     {
@@ -119,6 +158,7 @@ class AuthController extends Controller
                 'user'                    => $user,
                 'career_profile'          => $careerProfile,
                 'needs_completion'        => !$user->isProfileComplete(),
+                'needs_whatsapp_verification' => !$user->whatsapp_verified && !empty($user->telephone),
                 'requires_correspondence' => !$user->correspondence_completed,
                 'requires_profile_choice' => $user->correspondence_completed && !$user->profile_chosen,
             ],

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class FirebaseService
 {
-    private string $webApiKey;
+    private ?string $webApiKey;
 
     public function __construct()
     {
@@ -20,6 +20,11 @@ class FirebaseService
      */
     public function verifyToken(string $idToken): ?array
     {
+        if (!$this->webApiKey) {
+            Log::error('Firebase web API key is not configured.');
+            return null;
+        }
+
         try {
             $response = Http::timeout(10)->post(
                 "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={$this->webApiKey}",
@@ -47,15 +52,4 @@ class FirebaseService
         }
     }
 
-    /**
-     * Extrait le provider principal (google.com, apple.com, etc.)
-     */
-    public function extractProvider(array $firebaseUser, string $requestedProvider): string
-    {
-        $providerMap = [
-            'google' => 'google',
-            'apple'  => 'apple',
-        ];
-        return $providerMap[$requestedProvider] ?? $requestedProvider;
-    }
 }

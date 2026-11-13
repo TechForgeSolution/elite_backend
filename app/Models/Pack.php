@@ -16,6 +16,7 @@ class Pack extends Model
         'slug',
         'description',
         'image_url',
+        'banner_path',
         'niveau_requis',
         'durees_disponibles',
         'diplomes_possibles',

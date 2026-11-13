@@ -7,6 +7,7 @@ use App\Models\Pack;
 use App\Models\Category;
 use App\Models\CareerProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PackController extends Controller
@@ -30,6 +31,7 @@ class PackController extends Controller
             'category_id' => 'required|exists:categories,id',
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
             'niveau_requis' => 'required|string|in:BEPC,Probatoire,BAC,Licence,Master',
             'durees_disponibles' => 'required|array|min:1',
             'diplomes_possibles' => 'nullable|array',
@@ -42,6 +44,10 @@ class PackController extends Controller
 
         $validated['slug'] = Str::slug($validated['nom']);
         $validated['active'] = $request->boolean('active');
+        unset($validated['banner']);
+        if ($request->hasFile('banner')) {
+            $validated['banner_path'] = $request->file('banner')->store('packs', 'public');
+        }
         $validated['diplomes_possibles'] = $request->input('diplomes_possibles', []);
         if (isset($validated['debouches']) && is_array($validated['debouches'])) {
             $validated['debouches'] = array_values(array_filter(array_map('trim', $validated['debouches'])));
@@ -82,6 +88,8 @@ class PackController extends Controller
             'category_id' => 'required|exists:categories,id',
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
+            'remove_banner' => 'nullable|boolean',
             'niveau_requis' => 'required|string|in:BEPC,Probatoire,BAC,Licence,Master',
             'durees_disponibles' => 'required|array|min:1',
             'diplomes_possibles' => 'nullable|array',
@@ -94,6 +102,18 @@ class PackController extends Controller
 
         $validated['slug'] = Str::slug($validated['nom']);
         $validated['active'] = $request->boolean('active');
+        unset($validated['banner'], $validated['remove_banner']);
+        if ($request->boolean('remove_banner')) {
+            if ($pack->banner_path) {
+                Storage::disk('public')->delete($pack->banner_path);
+            }
+            $validated['banner_path'] = null;
+        } elseif ($request->hasFile('banner')) {
+            if ($pack->banner_path) {
+                Storage::disk('public')->delete($pack->banner_path);
+            }
+            $validated['banner_path'] = $request->file('banner')->store('packs', 'public');
+        }
         $validated['diplomes_possibles'] = $request->input('diplomes_possibles', []);
         if (isset($validated['debouches']) && is_array($validated['debouches'])) {
             $validated['debouches'] = array_values(array_filter(array_map('trim', $validated['debouches'])));

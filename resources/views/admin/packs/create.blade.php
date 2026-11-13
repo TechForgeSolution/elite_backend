@@ -352,8 +352,20 @@
 </div>
 @endif
 
-<form action="{{ route('admin.packs.store') }}" method="POST" class="space-y-6">
+<form action="{{ route('admin.packs.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
     @csrf
+
+    <div class="form-card">
+        <div class="form-header"><h2>Bannière du pack</h2></div>
+        <div class="form-body">
+            <div class="form-group">
+                <label for="banner" class="form-label">Image de couverture (facultative)</label>
+                <input type="file" name="banner" id="banner" accept="image/jpeg,image/png,image/webp" class="form-input">
+                <small>JPG, PNG ou WEBP · 8 Mo maximum. Elle sera affichée dans l’application mobile.</small>
+                @error('banner') <div class="error-message">{{ $message }}</div> @enderror
+            </div>
+        </div>
+    </div>
 
     <!-- Informations de base -->
     <div class="form-card">

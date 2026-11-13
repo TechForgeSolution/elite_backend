@@ -4,401 +4,190 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inscription — Elite 2.0</title>
-  <meta name="csrf-token" content="{{ csrf_token() }}">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #172033; background: #F4F6FA;
     }
-    .card {
-      background: #fff;
-      border-radius: 24px;
-      padding: 40px 36px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .logo h1 {
-      font-size: 28px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #4F46E5, #7C3AED);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .logo p { color: #6B7280; font-size: 14px; margin-top: 4px; }
-
-    .referral-banner {
-      background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
-      border: 1px solid #6EE7B7;
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .referral-banner .icon { font-size: 20px; }
-    .referral-banner .text { font-size: 13px; color: #065F46; line-height: 1.4; }
-    .referral-banner strong { color: #047857; }
-
-    .tabs {
-      display: flex;
-      background: #F3F4F6;
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 28px;
-    }
-    .tab {
-      flex: 1;
-      padding: 10px;
-      text-align: center;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #6B7280;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: none;
-      background: none;
-    }
-    .tab.active { background: #fff; color: #4F46E5; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-
+    .card { width: 100%; max-width: 480px; padding: 32px; border-radius: 22px; background: #fff; box-shadow: 0 16px 48px rgba(23,32,51,.08); }
+    .logo { text-align: center; margin-bottom: 22px; }
+    .logo h1 { margin: 0; font-size: 26px; }
+    .logo p { margin: 5px 0 0; color: #667085; font-size: 14px; }
+    .referral-banner { display: flex; gap: 10px; padding: 12px; margin-bottom: 16px; border-radius: 12px; background: #ECFDF5; color: #065F46; font-size: 13px; line-height: 1.5; }
+    .progress { height: 5px; margin: 22px 0 10px; overflow: hidden; border-radius: 99px; background: #E5E7EB; }
+    .progress-fill { width: 12.5%; height: 100%; background: #314B83; transition: width .2s ease; }
+    .progress-message { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 20px; color: #667085; font-size: 13px; }
+    .progress-message strong { color: #314B83; white-space: nowrap; }
+    .step { display: none; }
+    .step.active { display: block; }
+    .step-title { margin: 0 0 18px; font-size: 20px; }
     .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    label { display: block; margin-bottom: 6px; color: #344054; font-size: 13px; font-weight: 600; }
     input, select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid #E5E7EB;
-      border-radius: 12px;
-      font-size: 15px;
-      color: #111827;
-      transition: border-color 0.2s;
-      outline: none;
+      width: 100%; padding: 13px 15px; border: 1px solid #D0D5DD; border-radius: 12px;
+      outline: none; color: #172033; background: #fff; font-size: 16px;
     }
-    input:focus, select:focus { border-color: #4F46E5; }
-    input.readonly { background: #F9FAFB; color: #6B7280; cursor: not-allowed; }
-
-    .referral-code-field {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    input:focus, select:focus { border-color: #314B83; box-shadow: 0 0 0 3px rgba(49,75,131,.1); }
+    input[readonly] { background: #F9FAFB; }
+    .actions { display: flex; gap: 10px; margin-top: 20px; }
+    .button {
+      flex: 1; padding: 14px 16px; border: 0; border-radius: 12px; cursor: pointer;
+      font-size: 15px; font-weight: 700;
     }
-    .referral-code-field input { flex: 1; }
-    .badge-code {
-      background: #EEF2FF;
-      color: #4F46E5;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .otp-section { display: none; }
-    .otp-section.visible { display: block; }
-    .otp-row { display: flex; gap: 8px; }
-    .otp-row input { flex: 1; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px; }
-    .send-otp-btn {
-      padding: 12px 16px;
-      border: 1.5px solid #4F46E5;
-      border-radius: 12px;
-      color: #4F46E5;
-      font-weight: 600;
-      font-size: 13px;
-      background: none;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .send-otp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #4F46E5, #7C3AED);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: opacity 0.2s;
-    }
-    .btn-primary:hover { opacity: 0.92; }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 20px 0;
-      color: #9CA3AF;
-      font-size: 13px;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #E5E7EB;
-    }
-
-    .btn-google {
-      width: 100%;
-      padding: 13px;
-      border: 1.5px solid #E5E7EB;
-      border-radius: 12px;
-      background: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      color: #374151;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: background 0.2s;
-      margin-bottom: 10px;
-    }
-    .btn-google:hover { background: #F9FAFB; }
-
-    .alert { padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 14px; }
-    .alert-error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FCA5A5; }
-    .alert-success { background: #ECFDF5; color: #065F46; border: 1px solid #6EE7B7; }
-
-    .terms { font-size: 12px; color: #9CA3AF; text-align: center; margin-top: 16px; }
-    .terms a { color: #4F46E5; }
-
-    @media (max-width: 480px) {
-      .card { padding: 28px 20px; }
-    }
+    .primary { color: #fff; background: #172F64; }
+    .secondary { flex: 0 0 auto; color: #344054; background: #F2F4F7; }
+    .terms { margin: 18px 0 0; color: #667085; text-align: center; font-size: 12px; line-height: 1.5; }
+    .alert { padding: 12px; margin-bottom: 14px; border-radius: 10px; color: #B42318; background: #FEF3F2; font-size: 14px; }
+    @media (max-width: 480px) { .card { padding: 26px 20px; } }
   </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">
+<main class="card">
+  <header class="logo">
     <h1>Elite 2.0</h1>
     <p>Votre plateforme de formation professionnelle</p>
-  </div>
+  </header>
 
   @if($referralCode && $parrainName)
-  <div class="referral-banner">
-    <span class="icon">🎉</span>
-    <div class="text">
-      Vous avez été invité(e) par <strong>{{ $parrainName }}</strong>.<br>
-      Inscrivez-vous et bénéficiez jusqu'à <strong>3 Millions FCFA de subvention</strong> !
+    <div class="referral-banner">
+      <span aria-hidden="true">🎉</span>
+      <span>Vous avez été invité(e) par <strong>{{ $parrainName }}</strong>.</span>
     </div>
-  </div>
   @endif
 
-  @if(session('error'))
-  <div class="alert alert-error">{{ session('error') }}</div>
+  @if($errors->any())
+    <div class="alert" role="alert">{{ $errors->first() }}</div>
   @endif
 
-  <!-- Onglets -->
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('phone')">📱 Téléphone</button>
-    <button class="tab" onclick="switchTab('email')">📧 Email</button>
+  <div class="progress" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-message">
+    <span id="progressMessage">Une question à la fois, vous avancez bien.</span>
+    <strong id="stepCount">1/8</strong>
   </div>
 
-  <!-- Connexion Google -->
-  <a href="{{ route('web.auth.google', $referralCode ? ['ref' => $referralCode] : []) }}" style="text-decoration:none;">
-    <button type="button" class="btn-google">
-      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continuer avec Google
-    </button>
-  </a>
-
-  <div class="divider">ou remplissez le formulaire</div>
-
-  <!-- Formulaire -->
   <form id="registerForm" action="{{ route('web.register.submit') }}" method="POST">
     @csrf
-
-    <div class="form-group">
-      <label>Prénom *</label>
-      <input type="text" name="prenom" required placeholder="Votre prénom" value="{{ old('prenom') }}">
-    </div>
-
-    <div class="form-group">
-      <label>Nom *</label>
-      <input type="text" name="nom" required placeholder="Votre nom" value="{{ old('nom') }}">
-    </div>
-
-    <!-- Champ téléphone (tab phone) -->
-    <div id="phone-fields">
+    <section class="step active">
+      <h2 class="step-title">Comment vous appelez-vous ?</h2>
       <div class="form-group">
-        <label>Numéro de téléphone *</label>
-        <div class="otp-row">
-          <input type="tel" name="telephone" id="telephone" placeholder="6XXXXXXXX" value="{{ old('telephone') }}">
-          <button type="button" class="send-otp-btn" id="sendOtpBtn" onclick="sendOtp()">Envoyer OTP</button>
-        </div>
+        <label for="prenom">Prénom</label>
+        <input id="prenom" name="prenom" value="{{ old('prenom') }}" placeholder="Ex. : Jean" required autocomplete="given-name">
       </div>
-      <div class="form-group otp-section" id="otpSection">
-        <label>Code OTP reçu *</label>
-        <input type="text" name="otp_code" id="otpCode" placeholder="_ _ _ _ _ _" maxlength="6">
-        <input type="hidden" name="otp_verified" id="otpVerified" value="0">
-      </div>
-    </div>
-
-    <!-- Champ email (tab email) -->
-    <div id="email-fields" style="display:none">
+    </section>
+    <section class="step">
+      <h2 class="step-title">Quel est votre nom ?</h2>
       <div class="form-group">
-        <label>Email *</label>
-        <input type="email" name="email" placeholder="votre@email.com" value="{{ old('email') }}">
+        <label for="nom">Nom</label>
+        <input id="nom" name="nom" value="{{ old('nom') }}" placeholder="Ex. : Dupont" required autocomplete="family-name">
       </div>
-    </div>
-
-    <div class="form-group">
-      <label>Dernier diplôme *</label>
-      <select name="dernier_diplome" required>
-        <option value="">Sélectionner...</option>
-        <option value="BEPC">BEPC</option>
-        <option value="Probatoire">Probatoire</option>
-        <option value="BAC">BAC</option>
-        <option value="BTS">BTS</option>
-        <option value="Licence">Licence</option>
-        <option value="Master">Master</option>
-        <option value="Doctorat">Doctorat</option>
-        <option value="Autre">Autre</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Ville *</label>
-      <input type="text" name="ville" required placeholder="Votre ville" value="{{ old('ville') }}">
-    </div>
-
-    <div class="form-group">
-      <label>Mot de passe *</label>
-      <input type="password" name="password" required placeholder="Minimum 6 caractères">
-    </div>
-
-    <div class="form-group">
-      <label>Confirmer le mot de passe *</label>
-      <input type="password" name="password_confirmation" required placeholder="Répétez le mot de passe">
-    </div>
-
-    <!-- Code de parrainage (pré-rempli depuis l'URL) -->
-    <div class="form-group">
-      <label>Code d'invitation</label>
-      <div class="referral-code-field">
-        <input
-          type="text"
-          name="referral_code"
-          id="referralCodeInput"
-          value="{{ $referralCode }}"
-          placeholder="Optionnel"
-          {{ $referralCode ? 'class=readonly readonly' : '' }}
-        >
-        @if($referralCode)
-          <span class="badge-code">✓ Appliqué</span>
-        @endif
+    </section>
+    <section class="step">
+      <h2 class="step-title">Votre numéro WhatsApp</h2>
+      <div class="form-group">
+        <label for="telephone">Numéro WhatsApp (+237)</label>
+        <input id="telephone" name="telephone" type="tel" inputmode="tel" value="{{ old('telephone') }}" placeholder="6XXXXXXXX" required autocomplete="tel" maxlength="13">
       </div>
+    </section>
+    <section class="step">
+      <h2 class="step-title">Votre niveau d’études</h2>
+      <div class="form-group">
+        <label for="dernier_diplome">Dernier diplôme</label>
+        <select id="dernier_diplome" name="dernier_diplome" required>
+          <option value="">Sélectionner...</option>
+          @foreach(['BEPC', 'Probatoire', 'BAC', 'BTS', 'Licence', 'Master', 'Doctorat', 'Autre'] as $diploma)
+            <option value="{{ $diploma }}" @selected(old('dernier_diplome') === $diploma)>{{ $diploma }}</option>
+          @endforeach
+        </select>
+      </div>
+    </section>
+    <section class="step">
+      <h2 class="step-title">Où habitez-vous ?</h2>
+      <div class="form-group">
+        <label for="ville">Ville</label>
+        <input id="ville" name="ville" value="{{ old('ville') }}" placeholder="Ex. : Douala" required autocomplete="address-level2">
+      </div>
+    </section>
+    <section class="step">
+      <h2 class="step-title">Choisissez un mot de passe</h2>
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input id="password" name="password" type="password" minlength="6" placeholder="Au moins 6 caractères" required autocomplete="new-password">
+      </div>
+    </section>
+    <section class="step">
+      <h2 class="step-title">Confirmez votre mot de passe</h2>
+      <div class="form-group">
+        <label for="password_confirmation">Confirmer le mot de passe</label>
+        <input id="password_confirmation" name="password_confirmation" type="password" minlength="6" placeholder="Répétez le mot de passe" required autocomplete="new-password">
+      </div>
+    </section>
+    <section class="step">
+      <h2 class="step-title">C’est presque fini !</h2>
+      <div class="form-group">
+        <label for="referral_code">Code de parrainage / centre partenaire</label>
+        <input id="referral_code" name="referral_code" value="{{ old('referral_code', $referralCode) }}" placeholder="Facultatif" {{ $referralCode ? 'readonly' : '' }}>
+      </div>
+      <p class="terms">Vous recevrez ensuite un code sur WhatsApp pour vérifier votre numéro.</p>
+    </section>
+    <div class="actions">
+      <button type="button" class="button secondary" id="backBtn" hidden>Retour</button>
+      <button type="button" class="button primary" id="nextBtn">Continuer</button>
+      <button type="submit" class="button primary" id="submitBtn" hidden>Recevoir mon code WhatsApp</button>
     </div>
-
-    <button type="submit" class="btn-primary" id="submitBtn">
-      Créer mon compte
-    </button>
   </form>
 
-  <p class="terms">
-    En vous inscrivant, vous acceptez nos
-    <a href="#">Conditions d'utilisation</a> et notre
-    <a href="#">Politique de confidentialité</a>.
-  </p>
-</div>
-
+  <p class="terms">Inscription par numéro WhatsApp uniquement. Aucun compte n’est activé avant vérification.</p>
+</main>
 <script>
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  const steps = [...document.querySelectorAll('.step')];
+  const form = document.getElementById('registerForm');
+  let currentStep = 0;
 
-  function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach((t, i) => {
-      t.classList.toggle('active', (i === 0 && tab === 'phone') || (i === 1 && tab === 'email'));
+  function showStep(index) {
+    currentStep = index;
+    steps.forEach((step, stepIndex) => {
+      step.classList.toggle('active', stepIndex === index);
+      step.querySelectorAll('input, select').forEach(input => {
+        input.required = stepIndex === index && input.name !== 'referral_code';
+      });
     });
-    document.getElementById('phone-fields').style.display = tab === 'phone' ? 'block' : 'none';
-    document.getElementById('email-fields').style.display = tab === 'email' ? 'block' : 'none';
+    document.getElementById('stepCount').textContent = `${index + 1}/${steps.length}`;
+    document.getElementById('progressFill').style.width = `${((index + 1) / steps.length) * 100}%`;
+    document.getElementById('progressMessage').textContent = index >= 5
+      ? 'C’est presque fini, encore quelques instants.'
+      : 'Une question à la fois, vous avancez bien.';
+    document.getElementById('backBtn').hidden = index === 0;
+    document.getElementById('nextBtn').hidden = index === steps.length - 1;
+    document.getElementById('submitBtn').hidden = index !== steps.length - 1;
   }
 
-  let otpSent = false;
-  let otpVerified = false;
-
-  async function sendOtp() {
-    const telephone = document.getElementById('telephone').value;
-    if (!telephone) { alert('Veuillez saisir votre numéro de téléphone.'); return; }
-
-    const btn = document.getElementById('sendOtpBtn');
-    btn.disabled = true;
-    btn.textContent = 'Envoi...';
-
-    try {
-      const res = await fetch('{{ route("web.send-otp") }}', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-        body: JSON.stringify({ telephone }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById('otpSection').classList.add('visible');
-        btn.textContent = 'Renvoi (60s)';
-        let countdown = 60;
-        const interval = setInterval(() => {
-          countdown--;
-          btn.textContent = `Renvoi (${countdown}s)`;
-          if (countdown <= 0) {
-            clearInterval(interval);
-            btn.disabled = false;
-            btn.textContent = 'Envoyer OTP';
-          }
-        }, 1000);
-        otpSent = true;
-        // En dev, afficher le code OTP
-        if (data.dev_otp) alert(`DEV MODE — OTP : ${data.dev_otp}`);
-      } else {
-        alert('Erreur : ' + data.message);
-        btn.disabled = false;
-        btn.textContent = 'Envoyer OTP';
-      }
-    } catch(e) {
-      alert('Erreur réseau.');
-      btn.disabled = false;
-      btn.textContent = 'Envoyer OTP';
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    const input = steps[currentStep].querySelector('input, select');
+    if (input && !input.reportValidity()) return;
+    if (currentStep === 6 && document.getElementById('password').value !== document.getElementById('password_confirmation').value) {
+      const confirmation = document.getElementById('password_confirmation');
+      confirmation.setCustomValidity('Les mots de passe ne correspondent pas.');
+      confirmation.reportValidity();
+      confirmation.setCustomValidity('');
+      return;
     }
-  }
-
-  // Vérification OTP en temps réel
-  document.addEventListener('DOMContentLoaded', function() {
-    const otpInput = document.getElementById('otpCode');
-    if (otpInput) {
-      otpInput.addEventListener('input', async function() {
-        if (this.value.length === 6) {
-          const telephone = document.getElementById('telephone').value;
-          const res = await fetch('{{ route("web.verify-otp") }}', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-            body: JSON.stringify({ otp: this.value, telephone }),
-          });
-          const data = await res.json();
-          if (data.success) {
-            this.style.borderColor = '#10B981';
-            document.getElementById('otpVerified').value = '1';
-            otpVerified = true;
-          } else {
-            this.style.borderColor = '#EF4444';
-          }
-        }
-      });
+    showStep(currentStep + 1);
+  });
+  document.getElementById('backBtn').addEventListener('click', () => showStep(currentStep - 1));
+  form.addEventListener('submit', event => {
+    const password = document.getElementById('password').value;
+    const confirmation = document.getElementById('password_confirmation').value;
+    if (password !== confirmation) {
+      event.preventDefault();
+      const input = document.getElementById('password_confirmation');
+      input.setCustomValidity('Les mots de passe ne correspondent pas.');
+      input.reportValidity();
+      input.setCustomValidity('');
     }
   });
+  showStep(0);
 </script>
 </body>
 </html>

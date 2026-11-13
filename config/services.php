@@ -27,6 +27,12 @@ return [
         'key' => env('RESEND_API_KEY'),
     ],
 
+    'carey' => [
+        'api_url' => env('CAREY_API_URL', 'https://backend-carey.tfs237.com/v1'),
+        'api_key' => env('CAREY_API_KEY'),
+        'app_name' => env('CAREY_APP_NAME', 'Elite 2.0'),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

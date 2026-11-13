@@ -23,6 +23,7 @@ class EliteUser extends Authenticatable
         'password', 'referral_code', 'referred_by', 'solde_points',
         'correspondence_completed', 'profile_chosen', 'parcours_mode', 'photo_url',
         'firebase_uid', 'provider', 'email_verified', 'otp_code', 'otp_expires_at',
+        'whatsapp_verified', 'whatsapp_otp_id', 'whatsapp_otp_expires_at', 'whatsapp_otp_purpose',
         'trial_started_at', 'trial_expires_at', 'account_activated', 'activated_at',
     ];
 
@@ -32,6 +33,8 @@ class EliteUser extends Authenticatable
         'email_verified_at'        => 'datetime',
         'email_verified'           => 'boolean',
         'otp_expires_at'           => 'datetime',
+        'whatsapp_verified'        => 'boolean',
+        'whatsapp_otp_expires_at'  => 'datetime',
         'correspondence_completed' => 'boolean',
         'profile_chosen'           => 'boolean',
         'account_activated'        => 'boolean',

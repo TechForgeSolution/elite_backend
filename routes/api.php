@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\InstallmentController;
 use App\Http\Controllers\Api\OpportunityController as ApiOpportunityController;
 use App\Http\Controllers\Api\PublicCourseController;
+use App\Http\Controllers\Api\DashboardAdvertisementController;
 use Illuminate\Support\Facades\Route;
 
 // ============================================
@@ -33,6 +34,10 @@ Route::prefix('auth')->group(function () {
     Route::post('/check-referral-code', [AuthController::class, 'checkReferralCode']);
     Route::post('/verify-email-otp',    [AuthController::class, 'verifyEmailOtp']);
     Route::post('/resend-email-otp',    [AuthController::class, 'resendEmailOtp']);
+    Route::post('/verify-whatsapp-otp', [AuthController::class, 'verifyWhatsappOtp'])->middleware('throttle:10,1');
+    Route::post('/resend-whatsapp-otp', [AuthController::class, 'resendWhatsappOtp'])->middleware('throttle:3,10');
+    Route::post('/forgot-password-whatsapp', [AuthController::class, 'forgotPasswordWhatsapp'])->middleware('throttle:3,10');
+    Route::post('/reset-password-whatsapp', [AuthController::class, 'resetPasswordWhatsapp'])->middleware('throttle:10,1');
 });
 
 // ============================================
@@ -83,6 +88,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/trial/status',    [TrialController::class, 'status']);
     Route::post('/trial/start',    [TrialController::class, 'start']);
     Route::post('/trial/activate', [TrialController::class, 'activate']);
+
+    Route::get('/dashboard/advertisement', [DashboardAdvertisementController::class, 'active']);
 
     // Correspondence
     Route::prefix('correspondence')->group(function () {

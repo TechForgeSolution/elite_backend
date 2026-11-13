@@ -10,8 +10,10 @@ use App\Models\SystemSetting;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Validation\ValidationException;
 
 class AuthService
@@ -24,54 +26,34 @@ class AuthService
 
     public function register(array $data): array
     {
-        return DB::transaction(function () use ($data) {
-            $isByEmail = !empty($data['email']) && empty($data['telephone']);
+        $resolved = $this->resolveReferral($data['referral_code'] ?? '');
+        $otp = $this->requestWhatsappOtp($data['telephone']);
 
-            // Vérification et résolution obligatoire du code
-            $referralCode = $data['referral_code'] ?? '';
-            $resolved = $this->resolveReferral($referralCode);
-
-            // Création de l'utilisateur
-            $user = EliteUser::create([
+        $user = DB::transaction(function () use ($data, $resolved, $otp) {
+            return EliteUser::create([
                 'nom'              => $data['nom'],
                 'prenom'           => $data['prenom'],
                 'telephone'        => $data['telephone'] ?? null,
-                'email'            => $data['email'] ?? null,
                 'dernier_diplome'  => $data['dernier_diplome'],
                 'ville'            => $data['ville'],
                 'password'         => Hash::make($data['password']),
                 'referral_code'    => EliteUser::generateReferralCode(),
                 'partner_id'       => $resolved['partner']?->id,
                 'referred_by'      => $resolved['code'],
-                'provider'         => $isByEmail ? 'email' : 'phone',
+                'provider'         => 'phone',
                 'email_verified'   => false,
+                'whatsapp_verified' => false,
+                'whatsapp_otp_id' => $otp['id'],
+                'whatsapp_otp_expires_at' => now()->addMinutes(5),
+                'whatsapp_otp_purpose' => 'registration',
             ]);
-
-            if ($resolved['type'] === 'user' && $resolved['parrain']) {
-                $this->creditReferralPoints($resolved['parrain'], $user);
-            }
-
-            // Par email → envoyer OTP, pas de token encore
-            if ($isByEmail) {
-                $this->sendOtp($user);
-                return [
-                    'needs_otp' => true,
-                    'email'     => $user->email,
-                    'message'   => 'Un code de vérification a été envoyé à votre adresse email.',
-                ];
-            }
-
-            // Par téléphone → token direct
-            $token = $user->createToken('elite-mobile')->plainTextToken;
-            $user->load('partner');
-            return [
-                'needs_otp'             => false,
-                'user'                  => $user,
-                'token'                 => $token,
-                'requires_correspondence' => !$user->correspondence_completed,
-                'requires_profile_choice' => $user->correspondence_completed && !$user->profile_chosen,
-            ];
         });
+
+        return [
+            'needs_otp' => true,
+            'telephone' => $user->telephone,
+            'message' => 'Un code de vérification a été envoyé sur WhatsApp.',
+        ];
     }
 
     // ──────────────────────────────────────────
@@ -96,7 +78,19 @@ class AuthService
             ]);
         }
 
-        // Email non vérifié
+        if ($user->provider === 'phone' && !$user->whatsapp_verified) {
+            if (!$user->whatsapp_otp_id || !$user->whatsapp_otp_expires_at || now()->greaterThanOrEqualTo($user->whatsapp_otp_expires_at)) {
+                $this->sendWhatsappOtp($user, 'registration');
+            }
+
+            return [
+                'needs_otp' => true,
+                'telephone' => $user->telephone,
+                'message' => 'Vérifiez votre numéro WhatsApp pour continuer.',
+            ];
+        }
+
+        // Email non vérifié (anciens comptes)
         if ($user->provider === 'email' && !$user->email_verified) {
             $this->sendOtp($user);
             return [
@@ -118,10 +112,10 @@ class AuthService
     }
 
     // ──────────────────────────────────────────
-    // CONNEXION SOCIALE (Google / Apple)
+    // CONNEXION APPLE POUR LES COMPTES DÉJÀ CRÉÉS
     // ──────────────────────────────────────────
 
-    public function socialLogin(string $firebaseToken, string $provider): array
+    public function socialLogin(string $firebaseToken): array
     {
         $firebaseUser = $this->firebase->verifyToken($firebaseToken);
 
@@ -131,40 +125,32 @@ class AuthService
             ]);
         }
 
+        $providerIds = array_column($firebaseUser['providerUserInfo'] ?? [], 'providerId');
+        if (!in_array('apple.com', $providerIds, true)) {
+            throw ValidationException::withMessages([
+                'provider' => ['La connexion Apple est réservée aux comptes déjà créés.'],
+            ]);
+        }
+
         $firebaseUid = $firebaseUser['localId'];
         $email       = $firebaseUser['email'] ?? null;
-        $displayName = $firebaseUser['displayName'] ?? '';
         $photoUrl    = $firebaseUser['photoUrl'] ?? null;
 
         // Chercher par firebase_uid d'abord, puis par email
         $user = EliteUser::where('firebase_uid', $firebaseUid)->first()
              ?? ($email ? EliteUser::where('email', $email)->first() : null);
 
-        if ($user) {
-            // Mise à jour du firebase_uid si nécessaire
-            $user->update([
-                'firebase_uid' => $firebaseUid,
-                'email_verified' => true,
-                'photo_url'    => $user->photo_url ?? $photoUrl,
-            ]);
-        } else {
-            // Nouvel utilisateur social — profil incomplet
-            [$prenom, $nom] = $this->splitDisplayName($displayName);
-            $user = EliteUser::create([
-                'firebase_uid'   => $firebaseUid,
-                'email'          => $email,
-                'nom'            => $nom ?: 'Utilisateur',
-                'prenom'         => $prenom ?: 'Nouveau',
-                'provider'       => $provider,
-                'email_verified' => true,
-                'referral_code'  => EliteUser::generateReferralCode(),
-                'photo_url'      => $photoUrl,
-                'dernier_diplome' => 'secondaire', // placeholder
-                'ville'          => '',            // placeholder
-                'referred_by'    => SystemSetting::getDefaultReferralCode(),
-                'solde_points'   => 0,
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'provider' => ['Créez d’abord votre compte avec un numéro WhatsApp.'],
             ]);
         }
+
+        $user->update([
+            'firebase_uid' => $firebaseUid,
+            'email_verified' => true,
+            'photo_url' => $user->photo_url ?? $photoUrl,
+        ]);
 
         $token           = $user->createToken('elite-mobile')->plainTextToken;
         $needsCompletion = !$user->isProfileComplete() || empty($user->dernier_diplome) || empty($user->ville);
@@ -199,21 +185,27 @@ class AuthService
             $updateData['partner_id'] = $resolved['partner']->id;
         }
 
-        if (!empty($data['telephone']) && empty($user->telephone)) {
-            $updateData['telephone'] = $data['telephone'];
-        }
+        $updateData['telephone'] = $data['telephone'];
         if (!empty($data['password'])) {
             $updateData['password'] = Hash::make($data['password']);
         }
 
         $user->update($updateData);
 
-        if ($resolved['type'] === 'user' && $resolved['parrain']) {
+        if ($user->whatsapp_verified && $resolved['type'] === 'user' && $resolved['parrain']) {
             $this->creditReferralPoints($resolved['parrain'], $user);
         }
 
         $freshUser = $user->fresh();
         $freshUser->load('partner');
+
+        if (!$freshUser->whatsapp_verified) {
+            $this->sendWhatsappOtp($freshUser, 'registration');
+            return [
+                'needs_otp' => true,
+                'telephone' => $freshUser->telephone,
+            ];
+        }
 
         return [
             'user'                    => $freshUser,
@@ -275,6 +267,182 @@ class AuthService
         $user = EliteUser::where('email', $email)->first();
         if (!$user || $user->email_verified) return;
         $this->sendOtp($user);
+    }
+
+    public function resendWhatsappOtp(string $telephone): void
+    {
+        $user = EliteUser::where('telephone', $telephone)->first();
+        if (!$user || $user->whatsapp_verified) {
+            throw ValidationException::withMessages([
+                'telephone' => ['Aucun compte en attente de vérification ne correspond à ce numéro.'],
+            ]);
+        }
+
+        $this->sendWhatsappOtp($user, 'registration');
+    }
+
+    public function verifyWhatsappOtp(string $telephone, string $code, bool $createToken = true): array
+    {
+        $user = EliteUser::where('telephone', $telephone)->first();
+        if (!$user || !$user->whatsapp_otp_id || !$user->whatsapp_otp_expires_at ||
+            now()->greaterThanOrEqualTo($user->whatsapp_otp_expires_at) ||
+            $user->whatsapp_otp_purpose !== 'registration') {
+            throw ValidationException::withMessages([
+                'code' => ['Ce code est expiré ou ne correspond pas à une inscription en attente.'],
+            ]);
+        }
+
+        $this->verifyCareyOtp($user->whatsapp_otp_id, $code);
+
+        return DB::transaction(function () use ($user, $createToken) {
+            $user = EliteUser::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            if ($user->whatsapp_verified || $user->whatsapp_otp_purpose !== 'registration') {
+                throw ValidationException::withMessages(['code' => ['Ce code a déjà été utilisé.']]);
+            }
+
+            $user->update([
+                'whatsapp_verified' => true,
+                'whatsapp_otp_id' => null,
+                'whatsapp_otp_expires_at' => null,
+                'whatsapp_otp_purpose' => null,
+            ]);
+
+            $resolved = $this->findReferralEntity($user->referred_by ?? '');
+            if (($resolved['type'] ?? null) === 'user' && $resolved['parrain']) {
+                $this->creditReferralPoints($resolved['parrain'], $user);
+            }
+
+            $user->load('partner');
+            if (!$createToken) {
+                return ['user' => $user];
+            }
+
+            $token = $user->createToken('elite-mobile')->plainTextToken;
+            return $this->buildLoginResponse($user, $token);
+        });
+    }
+
+    public function sendPasswordResetWhatsappOtp(string $telephone): void
+    {
+        $user = EliteUser::where('telephone', $telephone)->first();
+        if ($user) {
+            $this->sendWhatsappOtp($user, 'password_reset');
+        }
+    }
+
+    public function resetPasswordWithWhatsappOtp(string $telephone, string $code, string $password): void
+    {
+        $user = EliteUser::where('telephone', $telephone)->first();
+        if (!$user || !$user->whatsapp_otp_id || !$user->whatsapp_otp_expires_at ||
+            now()->greaterThanOrEqualTo($user->whatsapp_otp_expires_at) ||
+            $user->whatsapp_otp_purpose !== 'password_reset') {
+            throw ValidationException::withMessages([
+                'code' => ['Ce code est expiré ou ne correspond pas à une demande de réinitialisation.'],
+            ]);
+        }
+
+        $this->verifyCareyOtp($user->whatsapp_otp_id, $code);
+
+        DB::transaction(function () use ($user, $password) {
+            $user = EliteUser::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            if ($user->whatsapp_otp_purpose !== 'password_reset') {
+                throw ValidationException::withMessages(['code' => ['Ce code a déjà été utilisé.']]);
+            }
+
+            $user->update([
+                'password' => Hash::make($password),
+                'whatsapp_otp_id' => null,
+                'whatsapp_otp_expires_at' => null,
+                'whatsapp_otp_purpose' => null,
+            ]);
+            $user->tokens()->delete();
+        });
+    }
+
+    private function sendWhatsappOtp(EliteUser $user, string $purpose): void
+    {
+        $response = $this->requestWhatsappOtp($user->telephone);
+
+        $user->update([
+            'whatsapp_otp_id' => $response['id'],
+            'whatsapp_otp_expires_at' => now()->addMinutes(5),
+            'whatsapp_otp_purpose' => $purpose,
+        ]);
+    }
+
+    private function requestWhatsappOtp(string $telephone): array
+    {
+        $response = $this->careyRequest('/otp/send', [
+            'to' => $this->formatWhatsappTelephone($telephone),
+            'length' => 6,
+            'ttl_minutes' => 5,
+            'lang' => 'fr',
+            'app_name' => config('services.carey.app_name'),
+        ], 'telephone');
+
+        if (empty($response['id'])) {
+            Log::error('Carey OTP response did not contain an OTP identifier.');
+            abort(503, 'Le service de vérification WhatsApp est temporairement indisponible.');
+        }
+
+        return $response;
+    }
+
+    private function formatWhatsappTelephone(string $telephone): string
+    {
+        $digits = preg_replace('/\D+/', '', $telephone) ?? '';
+
+        return strlen($digits) === 9 ? '237' . $digits : $digits;
+    }
+
+    private function verifyCareyOtp(string $id, string $code): void
+    {
+        $response = $this->careyRequest('/otp/verify', [
+            'id' => $id,
+            'code' => $code,
+        ], 'code');
+
+        if (($response['verified'] ?? false) !== true) {
+            throw ValidationException::withMessages(['code' => ['Le code WhatsApp est incorrect.']]);
+        }
+    }
+
+    private function careyRequest(string $path, array $payload, string $field): array
+    {
+        $apiKey = config('services.carey.api_key');
+        if (!$apiKey) {
+            Log::error('Carey API key is not configured.');
+            abort(503, 'La vérification WhatsApp n’est pas configurée.');
+        }
+
+        try {
+            $response = Http::withToken($apiKey)
+                ->acceptJson()
+                ->timeout(15)
+                ->post(rtrim(config('services.carey.api_url'), '/') . $path, $payload);
+        } catch (ConnectionException $exception) {
+            Log::warning('Carey API connection failed.', ['path' => $path]);
+            abort(503, 'Le service WhatsApp est temporairement indisponible.');
+        }
+
+        if (!$response->successful()) {
+            $error = $response->json('error');
+            if ($response->status() === 429 || $error === 'rate_limited') {
+                throw ValidationException::withMessages([$field => ['Trop de tentatives. Veuillez patienter avant de réessayer.']]);
+            }
+            if ($error === 'not_on_whatsapp') {
+                throw ValidationException::withMessages([$field => ['Ce numéro ne possède pas de compte WhatsApp.']]);
+            }
+            if (in_array($error, ['invalid_code', 'expired', 'blocked', 'already_verified'], true)) {
+                throw ValidationException::withMessages(['code' => ['Le code est invalide, expiré ou déjà utilisé.']]);
+            }
+
+            Log::warning('Carey API request failed.', ['path' => $path, 'status' => $response->status(), 'error' => $error]);
+            abort(503, 'Le service WhatsApp est temporairement indisponible.');
+        }
+
+        $decoded = $response->json();
+        return is_array($decoded) ? $decoded : [];
     }
 
     // ──────────────────────────────────────────
@@ -434,11 +602,4 @@ class AuthService
         ];
     }
 
-    private function splitDisplayName(string $displayName): array
-    {
-        $parts  = explode(' ', trim($displayName), 2);
-        $prenom = $parts[0] ?? '';
-        $nom    = $parts[1] ?? '';
-        return [$prenom, $nom];
-    }
 }

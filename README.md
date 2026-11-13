@@ -21,6 +21,20 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Elite mobile configuration
+
+WhatsApp OTP is sent and verified server-side through Carey. Configure `CAREY_API_KEY`
+in the backend `.env` file (and optionally `CAREY_API_URL` and `CAREY_APP_NAME`); never
+put this credential in the mobile application or commit it to source control. Rotate the
+key if it has been exposed.
+
+Account creation on mobile and web requires a phone number verified through WhatsApp;
+the mobile and web forms collect details one question at a time. Email sign-in remains
+available for existing accounts.
+
+Run the database migrations and `php artisan storage:link` after deployment so uploaded
+pack and dashboard-advertisement banners can be served to the mobile app.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.

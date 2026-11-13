@@ -352,9 +352,32 @@
 </div>
 @endif
 
-<form action="{{ route('admin.packs.update', $pack) }}" method="POST" class="space-y-6">
+<form action="{{ route('admin.packs.update', $pack) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
     @csrf
     @method('PUT')
+
+    <div class="form-card">
+        <div class="form-header"><h2>Bannière du pack</h2></div>
+        <div class="form-body">
+            @if($pack->banner_path)
+                <div class="form-group">
+                    <img src="{{ asset('storage/'.$pack->banner_path) }}" alt="Bannière actuelle du pack" style="max-width:100%;max-height:220px;border-radius:10px">
+                </div>
+            @endif
+            <div class="form-group">
+                <label for="banner" class="form-label">Remplacer la bannière (facultatif)</label>
+                <input type="file" name="banner" id="banner" accept="image/jpeg,image/png,image/webp" class="form-input">
+                <small>JPG, PNG ou WEBP · 8 Mo maximum.</small>
+                @error('banner') <div class="error-message">{{ $message }}</div> @enderror
+            </div>
+            @if($pack->banner_path)
+                <label class="checkbox-item">
+                    <input type="checkbox" name="remove_banner" value="1">
+                    <span>Supprimer la bannière actuelle</span>
+                </label>
+            @endif
+        </div>
+    </div>
 
     <!-- Informations de base -->
     <div class="form-card">

@@ -76,6 +76,7 @@ class CourseService
                 'slug' => $pack->slug,
                 'description' => $pack->description,
                 'image_url' => $pack->image_url,
+                'banner_url' => $pack->banner_path ? asset('storage/' . $pack->banner_path) : null,
                 'category' => [
                     'id' => $pack->category->id,
                     'nom' => $pack->category->nom,
@@ -122,6 +123,7 @@ class CourseService
                 'slug' => $pack->slug,
                 'description' => $pack->description,
                 'image_url' => $pack->image_url,
+                'banner_url' => $pack->banner_path ? asset('storage/' . $pack->banner_path) : null,
                 'category' => [
                     'id' => $pack->category->id,
                     'nom' => $pack->category->nom,
@@ -155,6 +157,7 @@ class CourseService
             'slug' => $pack->slug,
             'description' => $pack->description,
             'image_url' => $pack->image_url,
+            'banner_url' => $pack->banner_path ? asset('storage/' . $pack->banner_path) : null,
             'category' => [
                 'id' => $pack->category->id,
                 'nom' => $pack->category->nom,
